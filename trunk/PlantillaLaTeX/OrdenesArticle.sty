@@ -1,0 +1,131 @@
+% ----------------------------------------
+% Paquete con \'ordenes para personalizar
+% un documento de tipo article
+% ----------------------------------------
+
+% Autor: Juan Andrada Romero
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{OrdenesArticle}
+
+% =======================================
+% Declaraci\'on de opciones
+% =======================================
+
+% Opci\'on spanish. Esta opci\'on se utiliza para
+% poner en las leyendas de las tablas, la palabra
+% "Tabla" en lugar de "Cuadro". Se supone cargado 
+% el paquete babel con la opci\'on spanish
+\newif\ifOrdenes@spanish \Ordenes@spanishfalse
+\DeclareOption{spanish}{\Ordenes@spanishtrue}
+
+% Opci\'on cap. Esta opci\'on se utiliza para 
+% cambiar el estilo de las leyendas de tablas
+% y figuras
+\newif\ifOrdenes@cap \Ordenes@capfalse
+\DeclareOption{cap}{\Ordenes@captrue}
+
+% Opci\'on cont. Esta opci\'on se utiliza para 
+% redefinir los contadores de las leyendes de 
+% figuras y tablas, lig\'andolos al contador de
+% secciones
+\newif\ifOrdenes@cont \Ordenes@contfalse
+\DeclareOption{cont}{\Ordenes@conttrue}
+
+% Opci\'on title. Esta opci\'on se utiliza para 
+% redefinir el estilo de los t\'itulos de las 
+% secciones
+\newif\ifOrdenes@title \Ordenes@titlefalse
+\DeclareOption{title}{\Ordenes@titletrue}
+
+% Opci\'on fancy. Esta opci\'on se utiliza para 
+% personalizar el encabezado y pie de p\'agina
+\newif\ifOrdenes@fancy \Ordenes@fancyfalse
+\DeclareOption{fancy}{\Ordenes@fancytrue}
+
+% Opciones no v\'alidas
+\DeclareOption*{\PackageWarningNoLine{OrdenesArticle}{Unknown option \CurrentOption}}
+
+% =======================================
+% Procesamiento de opciones
+% =======================================
+\ProcessOptions
+
+
+% =======================================
+% C\'odigo principal
+% =======================================
+
+% En español, se cambia el nombre "Cuadro" por "Tabla"
+\ifOrdenes@spanish 
+	\addto\captionsspanish{
+  	\def\listtablename{\'Indice de tablas}%
+    \def\tablename{Tabla}} 
+\fi
+
+% Carga de paquete para adaptar el formato
+% de las leyendas de figuras y tablas
+\ifOrdenes@cap 
+	\RequirePackage[hang,large,bf]{caption}
+\fi
+
+% Paquete para subordinar los contadores de 
+% figuras y tablas
+\ifOrdenes@cont
+	\RequirePackage{chngcntr}
+	\counterwithin*{section}{part} % En documentos a doble cara, es mejor dar distinto formato a las páginas pares e impares
+	\counterwithin{figure}{section}
+	\counterwithin{table}{section}
+\fi
+
+% Paquete para adaptar el estilo de los t\'itulos
+% de secciones
+\ifOrdenes@title
+	\RequirePackage{titlesec}
+	\titleformat{\section}
+		{\bfseries\LARGE\scshape}
+		{\LARGE\thesection. }
+		{1.5pt}
+		{}
+
+	\titleformat{\subsection}
+		{\bfseries\Large}
+		{\Large\thesubsection. }
+		{0.5pt}
+		{}
+
+	\titleformat{\subsubsection}
+		{\itshape\bfseries\large}
+		{\large\thesubsubsection. }
+		{0.5pt}
+		{}
+\fi
+
+% Paquete para personalizar encabezados y
+% pies de p\'agina
+\ifOrdenes@fancy
+	\RequirePackage{fancyhdr}
+	\lhead{\nouppercase{\leftmark}}
+	\chead{}
+	\rhead{\small{Juan Andrada Romero}}
+	\lfoot{\scriptsize{\textbf{Edición de documentos técnicos en \LaTeX}}}
+	\cfoot{}
+	\rfoot{\thepage}	
+\else
+	\let\ps@fancy\ps@plain % Con esto, si no se carga el paquete fancy, se toma el estilo plano y no da fallo 
+\fi
+
+% \'Ordenes para ajustar los m\'argenes del documento
+\setlength{\headheight}{15pt} 
+\setlength{\headsep}{8mm}
+\setlength{\footskip}{30pt}
+\setlength{\topmargin}{-15pt} 
+
+\setlength{\textheight}{0.8\paperheight} 
+\setlength{\textwidth}{0.78\paperwidth} 
+\setlength{\oddsidemargin}{\dimexpr(\paperwidth-\textwidth)*9/18-1in}
+\setlength{\evensidemargin}{\dimexpr(\paperwidth-\textwidth)*9/18-1in}
+
+\setlength{\pdfpagewidth}{\paperwidth}
+\setlength{\pdfpageheight}{\paperheight}
+
