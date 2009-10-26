@@ -1,6 +1,6 @@
 
-CREATE DATABASE salud CHARACTER SET utf8 COLLATE utf8_bin;
-USE salud;
+CREATE DATABASE bdssca CHARACTER SET utf8 COLLATE utf8_bin;
+USE bdssca;
 
 CREATE TABLE centros (
        id INT NOT NULL AUTO_INCREMENT,
@@ -17,21 +17,21 @@ CREATE TABLE usuarios (
        apellidos VARCHAR(255) NOT NULL default '',
        id_centro INT NOT NULL,
        PRIMARY KEY (dni),
-       FOREIGN KEY (id_centro) REFERENCES centro (id) ON DELETE CASCADE ON UPDATE CASCADE
+       FOREIGN KEY (id_centro) REFERENCES centros (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE administrativos (
        dni INT NOT NULL,
        tipo INT NOT NULL, 
        PRIMARY KEY (dni),
-       FOREIGN KEY (dni) REFERENCES usuario (dni) ON DELETE CASCADE ON UPDATE CASCADE       
+       FOREIGN KEY (dni) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE       
 ) TYPE=InnoDB;
 
 CREATE TABLE medicos (
        dni INT NOT NULL, 
        tipo INT NOT NULL,
        PRIMARY KEY (dni),
-       FOREIGN KEY (dni) REFERENCES usuario (dni) ON DELETE CASCADE ON UPDATE CASCADE
+       FOREIGN KEY (dni) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 
