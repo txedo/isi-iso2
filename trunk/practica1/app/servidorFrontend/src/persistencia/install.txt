@@ -1,0 +1,38 @@
+
+CREATE DATABASE salud CHARACTER SET utf8 COLLATE utf8_bin;
+USE salud;
+
+CREATE TABLE centros (
+       id INT NOT NULL AUTO_INCREMENT,
+       nombre VARCHAR(255) NOT NULL default '', 
+       direccion VARCHAR(255) NOT NULL default '', 
+       PRIMARY KEY (id )
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
+CREATE TABLE usuarios (
+       dni INT NOT NULL, 
+       login VARCHAR(255) NOT NULL default '',
+       password VARCHAR(255) NOT NULL default '', 
+       nombre VARCHAR(255) NOT NULL default '',
+       apellidos VARCHAR(255) NOT NULL default '',
+       id_centro INT NOT NULL,
+       PRIMARY KEY (dni),
+       FOREIGN KEY (id_centro) REFERENCES centro (id) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB;
+
+CREATE TABLE administrativos (
+       dni INT NOT NULL,
+       tipo INT NOT NULL, 
+       PRIMARY KEY (dni),
+       FOREIGN KEY (dni) REFERENCES usuario (dni) ON DELETE CASCADE ON UPDATE CASCADE       
+) TYPE=InnoDB;
+
+CREATE TABLE medicos (
+       dni INT NOT NULL, 
+       tipo INT NOT NULL,
+       PRIMARY KEY (dni),
+       FOREIGN KEY (dni) REFERENCES usuario (dni) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB;
+
+
+
