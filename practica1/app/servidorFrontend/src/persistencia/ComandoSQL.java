@@ -1,15 +1,17 @@
 package persistencia;
 
-public class ComandoSQL {
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-	private String sentencia;
-	private Object[] parametros;
-	private TipoComandoSQL tipo;
+public abstract class ComandoSQL {
+
+	protected String sentencia;
+	protected Object[] parametros;
 	
-	public ComandoSQL(String sentencia, TipoComandoSQL tipo, Object... parametros) {
+	public ComandoSQL(String sentencia, Object... parametros) {
 		this.sentencia = sentencia;
 		this.parametros = parametros;
-		this.tipo = tipo;
 	}
 
 	public String getSentencia() {
@@ -20,8 +22,6 @@ public class ComandoSQL {
 		return parametros;
 	}
 	
-	public TipoComandoSQL getTipo() {
-		return tipo;
-	}
+	public abstract Statement crearStatement(Connection bd) throws SQLException;
 
 }
