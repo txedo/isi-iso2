@@ -1,12 +1,14 @@
 package persistencia;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Agente de la base de datos local del servidor frontend.
+ */
 public class Agente implements IConexion {
 
 	protected static Agente instancia = null;
@@ -39,55 +41,23 @@ public class Agente implements IConexion {
 		return instancia;
 	}
 	
-	public ResultSet consultar(ComandoSQL sql) throws SQLException {
-		PreparedStatement prepared;
-		CallableStatement callable;
+	public ResultSet consultar(ComandoSQL comando) throws SQLException {
+		PreparedStatement sentencia;
 		ResultSet resultado;
-		int i;
-		
-		resultado = null;
-		
-		switch(sql.getTipo()) {
-		case Sentencia:
-			prepared = conexion.prepareStatement(sql.getSentencia());
-			for(i = 0; i < sql.getParametros().length; i++) {
-				prepared.setObject(i + 1, sql.getParametros()[i]);
-			}
-			resultado = prepared.executeQuery();
-			break;
-		case Procedimiento:
-			callable = conexion.prepareCall(sql.getSentencia());
-			for(i = 0; i < sql.getParametros().length; i++) {
-				callable.setObject(i + 1, sql.getParametros()[i]);
-			}
-			resultado = callable.executeQuery();
-			break;
-		}
+
+		// Obtenemos y ejecutamos la sentencia en la base de datos del agente
+		sentencia = comando.crearStatement(conexion);
+		resultado = sentencia.executeQuery();
 		
 		return resultado;
 	}
 
-	public void ejecutar(ComandoSQL sql) throws SQLException {
-		PreparedStatement prepared;
-		CallableStatement callable;
-		int i;
+	public void ejecutar(ComandoSQL comando) throws SQLException {
+		PreparedStatement sentencia;
 		
-		switch(sql.getTipo()) {
-		case Sentencia:
-			prepared = conexion.prepareStatement(sql.getSentencia());
-			for(i = 0; i < sql.getParametros().length; i++) {
-				prepared.setObject(i + 1, sql.getParametros()[i]);
-			}
-			prepared.executeUpdate();
-			break;
-		case Procedimiento:
-			callable = conexion.prepareCall(sql.getSentencia());
-			for(i = 0; i < sql.getParametros().length; i++) {
-				callable.setObject(i + 1, sql.getParametros()[i]);
-			}
-			callable.executeUpdate();
-			break;
-		}
+		// Obtenemos y ejecutamos la sentencia en la base de datos del agente
+		sentencia = comando.crearStatement(conexion);
+		sentencia.executeUpdate();
 	}
 	
 }

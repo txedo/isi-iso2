@@ -1,9 +1,13 @@
 package persistencia;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
+/**
+ * Clase abstracta que representa una consulta o modificación sobre una
+ * base de datos.
+ */
 public abstract class ComandoSQL {
 
 	protected String sentencia;
@@ -22,6 +26,6 @@ public abstract class ComandoSQL {
 		return parametros;
 	}
 	
-	public abstract Statement crearStatement(Connection bd) throws SQLException;
+	public abstract PreparedStatement crearStatement(Connection bd) throws SQLException;
 
 }
