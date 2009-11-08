@@ -1,27 +1,53 @@
 package dominio;
 
+import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
 
 public class GestorSesiones {
 	// Tabla hash de sesiones. La clave es el idSesion y el valor es la Sesion con ese idSesion
 	private static Hashtable<Long,Sesion> sesiones = new Hashtable<Long,Sesion>();
+		
+	public static void cerrarSesion (Sesion sesion){
+		sesiones.remove(sesion.getId());
+	}	
 	
-	public static ISesion identificar(String login, String password) {
+	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException {
 		long idSesion;
 		Sesion s = null;
+		boolean encontrado=false;
+		Sesion sesionAbierta = null;
+		
 		// Se consulta el login y password. Si el usuario existe, se crea la sesion
 		Usuario u = Usuario.consultar(login, password);		
 		if (u!=null){
+			// Se comprueba si el usuario ya tenia una sesion iniciada
+			Enumeration<Sesion> sesionesAbiertas = sesiones.elements();
+			while(sesionesAbiertas.hasMoreElements() && !encontrado) {
+				sesionAbierta=sesionesAbiertas.nextElement();			
+				if (sesionAbierta.getUsuario().getDni() == u.getDni())
+					encontrado=true;
+			}
+			// Si tenia una sesion iniciada, se cierra
+			if (encontrado)
+				cerrarSesion(sesionAbierta);
+			
+			/* 
+			 * 
+			 * Cambiar a una forma de generar id unicos 
+			 * 
+			 * 
+			 */
 			Random ran = new Random();
 			// ¿ Cambiar la semilla del random ? 
 			
-			// el identificador de sesion debe ser unico
+			// El identificador de sesion debe ser unico
 			do {
 				idSesion = ran.nextLong();
 			} while (sesiones.containsKey(idSesion));
-			// Se crea la sesion, se inserta en la tabla de sesiones abiertas
 			
+			// Se crea la sesion, se inserta en la tabla de sesiones abiertas
 			s = new Sesion(idSesion,u);
 			sesiones.put(idSesion, s);
 		}

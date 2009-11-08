@@ -15,11 +15,11 @@ public class Usuario {
 
 	}
 	
-	public static Usuario consultar(int dni) throws SQLException {
+	public static Usuario consultar(int dni) throws SQLException, UsuarioIncorrectoException {
 		return FPUsuario.consultar(dni);
 	}
 	
-	public static Usuario consultar(String login, String password) throws SQLException {
+	public static Usuario consultar(String login, String password) throws SQLException, UsuarioIncorrectoException {
 		return FPUsuario.consultar(login, password);
 	}
 	

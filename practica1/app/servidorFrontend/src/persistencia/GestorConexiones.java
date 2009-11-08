@@ -9,11 +9,11 @@ import java.util.ArrayList;
  */
 public class GestorConexiones {
 
-	private static ArrayList<IConexion> conexiones;
+	private static ArrayList<IConexion> conexiones = new ArrayList<IConexion>();
 	
-	public GestorConexiones() {
+	/*public GestorConexiones() {
 		conexiones = new ArrayList<IConexion>();
-	}
+	}*/
 	
 	public static void ponerConexion(IConexion conexion) {
 		if(!conexiones.contains(conexion)) {
