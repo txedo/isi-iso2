@@ -1,22 +1,26 @@
 package dominio;
 
+import java.sql.SQLException;
+import persistencia.FPUsuario;
+
 public class Usuario {
-	private String dni;
+
+	private int dni;
 	private String login;
 	private String password;
 	private String nombre;
 	private String apellidos;
 	
 	public Usuario() {
-		
+
 	}
 	
-	public static Usuario consultar(String dni) {
-		//return FPUsuario.blablabla
+	public static Usuario consultar(int dni) throws SQLException {
+		return FPUsuario.consultar(dni);
 	}
 	
-	public static Usuario consultar(String login, String password) {
-		//return FPUsuario.blablabla
+	public static Usuario consultar(String login, String password) throws SQLException {
+		return FPUsuario.consultar(login, password);
 	}
 	
 	public void insertar() {
@@ -31,11 +35,11 @@ public class Usuario {
 		
 	}
 
-	public String getDni() {
+	public int getDni() {
 		return dni;
 	}
 
-	public void setDni(String dni) {
+	public void setDni(int dni) {
 		this.dni = dni;
 	}
 
