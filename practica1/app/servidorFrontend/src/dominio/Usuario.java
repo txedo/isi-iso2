@@ -5,14 +5,14 @@ import persistencia.FPUsuario;
 
 public class Usuario {
 
-	private int dni;
+	private String dni;
 	private String login;
 	private String password;
 	private String nombre;
 	private String apellidos;
+	private int idCentro;
 	
 	public Usuario() {
-
 	}
 	
 	public static Usuario consultar(int dni) throws SQLException, UsuarioIncorrectoException {
@@ -35,11 +35,11 @@ public class Usuario {
 		
 	}
 
-	public int getDni() {
+	public String getDni() {
 		return dni;
 	}
 
-	public void setDni(int dni) {
+	public void setDni(String dni) {
 		this.dni = dni;
 	}
 
@@ -73,6 +73,14 @@ public class Usuario {
 
 	public void setApellidos(String apellidos) {
 		this.apellidos = apellidos;
+	}
+	
+	public int getIdCentro() {
+		return idCentro;
+	}
+	
+	public void setIdCentro(int idCentro) {
+		this.idCentro = idCentro;
 	}
 	
 }

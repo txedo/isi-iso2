@@ -11,10 +11,6 @@ public class GestorConexiones {
 
 	private static ArrayList<IConexion> conexiones = new ArrayList<IConexion>();
 	
-	/*public GestorConexiones() {
-		conexiones = new ArrayList<IConexion>();
-	}*/
-	
 	public static void ponerConexion(IConexion conexion) {
 		if(!conexiones.contains(conexion)) {
 			conexiones.add(conexion);
