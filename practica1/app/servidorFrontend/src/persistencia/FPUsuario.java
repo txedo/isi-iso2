@@ -34,7 +34,7 @@ public class FPUsuario {
 		} else {
 			// Creamos el usuario
 			usuario = new Usuario();
-			usuario.setDni(datos.getInt(COL_DNI));
+			usuario.setDni(datos.getString(COL_DNI));
 			usuario.setLogin(datos.getString(COL_LOGIN));
 			usuario.setPassword(datos.getString(COL_PASSWORD));
 			usuario.setNombre(datos.getString(COL_NOMBRE));
