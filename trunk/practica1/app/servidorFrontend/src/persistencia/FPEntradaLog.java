@@ -11,6 +11,7 @@ import dominio.EntradaLog;
 public class FPEntradaLog {
 
 	private static final String TABLA_LOG = "entradasLog";
+	
 	private static final String COL_USUARIO = "usuario";
 	private static final String COL_FECHA = "fecha";
 	private static final String COL_ACCION = "accion";
@@ -45,7 +46,7 @@ public class FPEntradaLog {
 		
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_LOG + " (" + COL_USUARIO + ", " + COL_FECHA + ", " + COL_ACCION + ", " + COL_MENSAJE + ") "
-				                        + "VALUES (" + entrada.getUsuario() + ", " + entrada.getFecha() + ", " + entrada.getAccion() + ", " + entrada.getMensaje() + ")");
+				                        + "VALUES (?,?,?,?)", entrada.getUsuario(), entrada.getFecha(), entrada.getAccion(), entrada.getMensaje());
 		GestorConexiones.ejecutar(comando);
 	}
 	
