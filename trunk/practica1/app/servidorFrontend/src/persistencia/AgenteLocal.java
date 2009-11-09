@@ -29,6 +29,7 @@ public class AgenteLocal implements IConexion {
             System.exit(0);
         }
 		conexion = DriverManager.getConnection(url);
+		conexion.setAutoCommit(false);
 	}
 	
 	public static AgenteLocal getAgente() throws SQLException {

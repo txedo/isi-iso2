@@ -54,7 +54,7 @@ public class GestorConexiones {
 		}
 		// Aplicamos los cambios en todas las conexiones
 		for(IConexion conexion : conexiones) {
-			conexion.rollback();
+			conexion.commit();
 		}
 	}
 	
