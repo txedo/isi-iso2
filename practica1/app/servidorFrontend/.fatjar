@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Mon Nov 09 20:33:19 CET 2009
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=servidorFrontend_fat.jar
+manifest.mergeall=true
+manifest.mainclass=
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<po|servidorFrontend>~com/;<po|servidorFrontend>~persistencia/;<po|servidorFrontend>~presentacion/;<jar|mysql-connector-java-5.1.10-bin.jar>
+includes=
