@@ -3,7 +3,6 @@ package persistencia;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Random;
 import dominio.CentroSalud;
 import excepciones.CentroSaludIncorrectoException;
@@ -14,7 +13,6 @@ import excepciones.CentroSaludIncorrectoException;
 public class FPCentroSalud {
 
 	private static final String TABLA_CENTROS = "centros";
-	
 	private static final String COL_ID = "id";
 	private static final String COL_NOMBRE = "nombre";
 	private static final String COL_DIRECCION = "direccion";
@@ -65,7 +63,7 @@ public class FPCentroSalud {
 		}
 		
 		// Devolvemos un centro aleatorio
-		rnd = new Random(Calendar.getInstance().getTimeInMillis());
+		rnd = new Random(System.currentTimeMillis());
 		centro = consultar(listaIds.get(rnd.nextInt(listaIds.size())));
 		
 		return centro;
