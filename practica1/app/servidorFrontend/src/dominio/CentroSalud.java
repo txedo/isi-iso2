@@ -9,8 +9,7 @@ public class CentroSalud {
 	public CentroSalud() {
 	}
 	
-	public CentroSalud(int id, String nombre, String direccion) {
-		this.id = id;
+	public CentroSalud(String nombre, String direccion) {
 		this.nombre = nombre;
 		this.direccion = direccion;
 	}

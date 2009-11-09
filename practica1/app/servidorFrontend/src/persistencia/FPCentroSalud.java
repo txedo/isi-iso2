@@ -13,6 +13,7 @@ import excepciones.CentroSaludIncorrectoException;
 public class FPCentroSalud {
 
 	private static final String TABLA_CENTROS = "centros";
+	
 	private static final String COL_ID = "id";
 	private static final String COL_NOMBRE = "nombre";
 	private static final String COL_DIRECCION = "direccion";

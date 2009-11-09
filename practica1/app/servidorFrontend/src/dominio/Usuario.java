@@ -10,12 +10,12 @@ import persistencia.FPUsuario;
  */
 public abstract class Usuario {
 
-	private String dni;
-	private String login;
-	private String password;
-	private String nombre;
-	private String apellidos;
-	private CentroSalud centro;
+	protected String dni;
+	protected String login;
+	protected String password;
+	protected String nombre;
+	protected String apellidos;
+	protected CentroSalud centro;
 	
 	public Usuario() {
 	}
@@ -29,6 +29,8 @@ public abstract class Usuario {
 		this.centro = centro;
 	}
 
+	public abstract Roles getRol();
+	
 	public static Usuario consultar(int dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		return FPUsuario.consultar(dni);
 	}
@@ -97,6 +99,6 @@ public abstract class Usuario {
 		this.centro = centro;
 	}
 	
-	public abstract Roles getRol();
+	
 	
 }

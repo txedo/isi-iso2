@@ -1,6 +1,8 @@
 package dominio;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
@@ -12,8 +14,10 @@ public class GestorSesiones {
 	// Tabla hash de sesiones. La clave es el idSesion y el valor es la Sesion con ese idSesion
 	private static Hashtable<Long,Sesion> sesiones = new Hashtable<Long,Sesion>();
 		
-	public static void cerrarSesion (Sesion sesion){
+	public static void cerrarSesion (Sesion sesion) throws SQLException{
 		sesiones.remove(sesion.getId());
+		EntradaLog entrada = new EntradaLog(sesion.getUsuario().getLogin(),new Timestamp((new Date()).getTime()),"read","Se ha cerrado la sesion");
+		entrada.insertar();
 	}	
 	
 	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, Exception {
@@ -44,9 +48,15 @@ public class GestorSesiones {
 				idSesion = ran.nextLong();
 			} while (sesiones.containsKey(idSesion));
 			
-			// Se crea la sesion y se inserta en la tabla de sesiones abiertas
+			// Se crea la sesion, se inserta en la tabla de sesiones abiertas y se escribe el log
 			s = new Sesion(idSesion,u);
 			sesiones.put(idSesion, s);
+			EntradaLog entrada = new EntradaLog(login,new Timestamp((new Date()).getTime()),"read","Se ha creado la sesion");
+			entrada.insertar();
+		}
+		else {
+			EntradaLog entrada = new EntradaLog(login,new Timestamp((new Date()).getTime()),"read","Intento de acceso al sistema fallido");
+			entrada.insertar();
 		}
 		
 		return (ISesion)s;
