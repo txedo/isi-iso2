@@ -2,9 +2,6 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.mysql.jdbc.ResultSetRow;
-
 import dominio.Usuario;
 import dominio.UsuarioIncorrectoException;
 
@@ -30,10 +27,11 @@ public class FPUsuario {
 		datos = GestorConexiones.consultar(comando);
 		datos.next();
 		
-		// Si no se obtienen datos, es porque el usuario es incorrecto (o no existe, pero se trata como incorrecto)
-		if (datos.getRow() == 0)
+		// Si no se obtienen datos, es porque el usuario es
+		// incorrecto (o no existe, pero se trata como incorrecto)
+		if(datos.getRow() == 0) {
 			throw new UsuarioIncorrectoException("El DNI introducido no es válido");
-		else{
+		} else {
 			// Creamos el usuario
 			usuario = new Usuario();
 			usuario.setDni(datos.getInt(COL_DNI));
@@ -55,13 +53,14 @@ public class FPUsuario {
 		datos = GestorConexiones.consultar(comando);
 		datos.next();
 		
-		// Si no se obtienen datos, es porque el login o el pass es incorrecto (o no existe)
-		if (datos.getRow()==0)
+		// Si no se obtienen datos, es porque el usuario es
+		// incorrecto (o no existe, pero se trata como incorrecto)
+		if(datos.getRow() == 0) {
 			throw new UsuarioIncorrectoException("El nombre de usuario o contraseña introducidos no son válidos");
-		else {		
+		} else {		
 			// Creamos el usuario
 			usuario = new Usuario();
-			usuario.setDni(datos.getInt(COL_DNI));
+			usuario.setDni(datos.getString(COL_DNI));
 			usuario.setLogin(datos.getString(COL_LOGIN));
 			usuario.setPassword(datos.getString(COL_PASSWORD));
 			usuario.setNombre(datos.getString(COL_NOMBRE));
