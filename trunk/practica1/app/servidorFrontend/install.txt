@@ -27,3 +27,13 @@ CREATE TABLE tipoMedico (
        PRIMARY KEY (dni),
        FOREIGN KEY (dni) REFERENCES usuarios (dni) ON DELETE NO ACTION ON UPDATE CASCADE
 ) TYPE=InnoDB;
+
+CREATE TABLE entradasLog (
+       id INT NOT NULL,
+       usuario VARCHAR(255) NOT NULL,
+       fecha DATE NOT NULL,
+       hora TIME NOT NULL,
+       accion ENUM ('create', 'read', 'update', 'delete') NOT NULL,
+       mensaje VARCHAR(255) NOT NULL,
+       PRIMARY KEY (id)
+) TYPE=InnoDB AUTO_INCREMENT=1;
