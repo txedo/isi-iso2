@@ -9,30 +9,21 @@ CREATE TABLE centros (
        PRIMARY KEY (id )
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
+CREATE TABLE tipoMedico (
+       dni INT NOT NULL,
+       tipo INT NOT NULL,
+       PRIMARY KEY (dni)
+) TYPE=InnoDB;
+
 CREATE TABLE usuarios (
        dni INT NOT NULL, 
-       login VARCHAR(255) NOT NULL default '',
+       login VARCHAR(255) UNIQUE NOT NULL default '',
        password VARCHAR(255) NOT NULL default '', 
+       rol INT NOT NULL default '-1',
        nombre VARCHAR(255) NOT NULL default '',
        apellidos VARCHAR(255) NOT NULL default '',
-       id_centro INT NOT NULL,
+       id_centro INT default '-1',
        PRIMARY KEY (dni),
-       FOREIGN KEY (id_centro) REFERENCES centros (id) ON DELETE CASCADE ON UPDATE CASCADE
+       FOREIGN KEY (id_centro) REFERENCES centros (id) ON DELETE SET NULL ON UPDATE CASCADE,
+       FOREIGN KEY (dni) REFERENCES tipoMedico (dni) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
-
-CREATE TABLE administrativos (
-       dni INT NOT NULL,
-       tipo INT NOT NULL, 
-       PRIMARY KEY (dni),
-       FOREIGN KEY (dni) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE       
-) TYPE=InnoDB;
-
-CREATE TABLE medicos (
-       dni INT NOT NULL, 
-       tipo INT NOT NULL,
-       PRIMARY KEY (dni),
-       FOREIGN KEY (dni) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE
-) TYPE=InnoDB;
-
-
-
