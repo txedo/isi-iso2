@@ -48,4 +48,11 @@ public class GestorConexiones {
 		// Aquí se deberían hacer los commit
 	}
 	
+	public static void cerrarConexiones() throws SQLException {
+		// Cerramos todas las conexiones con bases de datos
+		for(IConexion conexion : conexiones) {
+			conexion.cerrar();
+		}
+	}
+	
 }

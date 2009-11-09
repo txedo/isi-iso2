@@ -36,6 +36,8 @@ public class AgenteLocal implements IConexion {
 			instancia = new AgenteLocal();
 		}
 		if(instancia.conexion.isClosed()) {
+			// Indicamos que las modificaciones de la base
+			// datos no se apliquen hasta hacer un 'commit'
 			instancia.conexion = DriverManager.getConnection(instancia.url);
 			instancia.conexion.setAutoCommit(false); 
 		}
@@ -60,14 +62,17 @@ public class AgenteLocal implements IConexion {
 		sentencia = comando.crearStatement(conexion);
 		sentencia.executeUpdate();
 	}
-
-	public Connection getConexion() {
-		return conexion;
+	
+	public void commit() throws SQLException {
+		conexion.commit();
 	}
 
-	public void closeDB() throws SQLException{
+	public void rollback() throws SQLException {
+		conexion.rollback();
+	}
+
+	public void cerrar() throws SQLException {
 		conexion.close();
-		
 	}
 	
 }
