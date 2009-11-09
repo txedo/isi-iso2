@@ -13,8 +13,10 @@ public interface IConexion {
 	
 	public void ejecutar(ComandoSQL comando) throws SQLException;
 	
-//	public void commit();
+	public void commit() throws SQLException;
 	
-//	public void rollback();
+	public void rollback() throws SQLException;
+	
+	public void cerrar() throws SQLException;
 	
 }
