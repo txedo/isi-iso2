@@ -14,7 +14,7 @@ public class ServidorFrontendFachada extends UnicastRemoteObject implements ISer
 		super();
 	}
 	
-	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException {
+	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
 		return GestorSesiones.identificar(login, password);
 	}
 	
