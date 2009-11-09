@@ -16,7 +16,7 @@ public class GestorSesiones {
 		sesiones.remove(sesion.getId());
 	}	
 	
-	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, Exception {
 		long idSesion;
 		Sesion s = null;
 		boolean encontrado=false;
