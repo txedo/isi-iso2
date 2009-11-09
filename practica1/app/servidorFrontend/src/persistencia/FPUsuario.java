@@ -17,6 +17,9 @@ import excepciones.UsuarioIncorrectoException;
  */
 public class FPUsuario {
 	
+	private static final String TABLA_USUARIOS = "usuarios";
+	private static final String TABLA_CENTROS = "centros";
+	
 	private static final String COL_DNI = "dni";
 	private static final String COL_LOGIN = "login";
 	private static final String COL_PASSWORD = "password";
@@ -33,7 +36,7 @@ public class FPUsuario {
 		Usuario usuario = null;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM Usuarios,Centros WHERE " + COL_DNI + " = ? AND " + COL_ID_CENTRO_USUARIO + " = " + COL_ID_CENTRO, dni);
+		comando = new ComandoSQLSentencia("SELECT * FROM "+TABLA_USUARIOS +","+ TABLA_CENTROS +" WHERE " + COL_DNI + " = ? AND " + COL_ID_CENTRO_USUARIO + " = " + COL_ID_CENTRO, dni);
 		datos = GestorConexiones.consultar(comando);
 		datos.next();
 		
@@ -71,7 +74,7 @@ public class FPUsuario {
 		Usuario usuario = null;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM  Usuarios,Centros WHERE " + COL_LOGIN + "=? AND " + COL_PASSWORD + "=?", login, password);
+		comando = new ComandoSQLSentencia("SELECT * FROM  "+TABLA_USUARIOS +","+ TABLA_CENTROS +" WHERE " + COL_LOGIN + "=? AND " + COL_PASSWORD + "=?", login, password);
 		datos = GestorConexiones.consultar(comando);
 		datos.next();
 		
@@ -105,34 +108,16 @@ public class FPUsuario {
 	
 	public static void insertar (Usuario usu) throws SQLException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
-		Roles rol = null;
-		
-		// Comprobamos el rol del usuario
-		if (usu instanceof Citador)
-			rol=Roles.Citador;
-		else if (usu instanceof Administrador)
-			rol=Roles.Administrador;
-		else if (usu instanceof Medico)
-			rol=Roles.Medico;
-		
-		comando = new ComandoSQLSentencia("INSERT INTO Usuarios (" + COL_DNI +","+ COL_LOGIN +","+ COL_PASSWORD +","+ COL_ROL +","+ COL_NOMBRE +","+ COL_APELLIDOS +","+ COL_ID_CENTRO_USUARIO +") VALUES (?,?,?,?,?,?,?)", usu.getDni(),usu.getLogin(),usu.getPassword(),rol.ordinal(),usu.getNombre(),usu.getApellidos(),FPCentroSalud.consultarAleatorio().getId());
+
+		comando = new ComandoSQLSentencia("INSERT INTO "+TABLA_USUARIOS +" (" + COL_DNI +","+ COL_LOGIN +","+ COL_PASSWORD +","+ COL_ROL +","+ COL_NOMBRE +","+ COL_APELLIDOS +","+ COL_ID_CENTRO_USUARIO +") VALUES (?,?,?,?,?,?,?)", usu.getDni(),usu.getLogin(),usu.getPassword(),usu.getRol().ordinal(),usu.getNombre(),usu.getApellidos(),FPCentroSalud.consultarAleatorio().getId());
 		GestorConexiones.ejecutar(comando);	
 	
 	}
 	
 	public static void actualizar (Usuario usu) throws SQLException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
-		Roles rol = null;
 		
-		// Comprobamos el rol del usuario
-		if (usu instanceof Administrador)
-			rol=Roles.Administrador;
-		else if (usu instanceof Citador)
-			rol=Roles.Citador;
-		else if (usu instanceof Medico)
-			rol=Roles.Medico;
-		
-		comando = new ComandoSQLSentencia("UPDATE Usuarios SET " + COL_LOGIN +"=?,"+ COL_PASSWORD +"=?,"+ COL_ROL +"=?,"+ COL_NOMBRE +"=?,"+ COL_APELLIDOS +"=?,"+ COL_ID_CENTRO_USUARIO +"=? WHERE "+ COL_DNI +"=?", usu.getLogin(),usu.getPassword(),rol.ordinal(),usu.getNombre(),usu.getApellidos(),FPCentroSalud.consultarAleatorio().getId(),usu.getDni());
+		comando = new ComandoSQLSentencia("UPDATE "+TABLA_USUARIOS +" SET " + COL_LOGIN +"=?,"+ COL_PASSWORD +"=?,"+ COL_ROL +"=?,"+ COL_NOMBRE +"=?,"+ COL_APELLIDOS +"=?,"+ COL_ID_CENTRO_USUARIO +"=? WHERE "+ COL_DNI +"=?", usu.getLogin(),usu.getPassword(),usu.getRol().ordinal(),usu.getNombre(),usu.getApellidos(),FPCentroSalud.consultarAleatorio().getId(),usu.getDni());
 		GestorConexiones.ejecutar(comando);	
 	}
 	
@@ -149,7 +134,7 @@ public class FPUsuario {
 		else if (usu instanceof Medico)
 			rol=Roles.Medico;
 		
-		comando = new ComandoSQLSentencia("DELETE FROM Usuarios WHERE " + COL_DNI +"=?" , usu.getDni());
+		comando = new ComandoSQLSentencia("DELETE FROM "+TABLA_USUARIOS +" WHERE " + COL_DNI +"=?" , usu.getDni());
 		GestorConexiones.ejecutar(comando);
 	}
 }
