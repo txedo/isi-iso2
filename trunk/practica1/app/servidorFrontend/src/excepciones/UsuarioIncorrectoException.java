@@ -2,14 +2,8 @@ package excepciones;
 
 public class UsuarioIncorrectoException extends Exception {
 
-	private String mensajeError;
-
-	public UsuarioIncorrectoException(String mensajeError) {
-		this.mensajeError = mensajeError;
+	public UsuarioIncorrectoException(String mensaje) {
+		super(mensaje);
 	}
 
-	public String getMensajeError() {
-		return mensajeError;
-	}
-	
 }

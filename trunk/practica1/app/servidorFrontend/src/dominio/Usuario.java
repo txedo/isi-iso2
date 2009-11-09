@@ -1,22 +1,33 @@
 package dominio;
 
 import java.sql.SQLException;
-
 import excepciones.UsuarioIncorrectoException;
 import persistencia.FPUsuario;
 
-public class Usuario {
+/**
+ * Clase abstracta que representa un usuario del sistema.
+ */
+public abstract class Usuario {
 
 	private String dni;
 	private String login;
 	private String password;
 	private String nombre;
 	private String apellidos;
-	private int idCentro;
+	private CentroSalud centro;
 	
 	public Usuario() {
 	}
 	
+	public Usuario(String dni, String login, String password, String nombre, String apellidos, CentroSalud centro) {
+		this.dni = dni;
+		this.login = login;
+		this.password = password;
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.centro = centro;
+	}
+
 	public static Usuario consultar(int dni) throws SQLException, UsuarioIncorrectoException {
 		return FPUsuario.consultar(dni);
 	}
@@ -26,15 +37,15 @@ public class Usuario {
 	}
 	
 	public void insertar() {
-		
+//		return FPUsuario.insertar(this);
 	}
 	
 	public void actualizar() {
-		
+//		return FPUsuario.actualizar(this);
 	}
 	
 	public void borrar() {
-		
+//		return FPUsuario.borrar(this);
 	}
 
 	public String getDni() {
@@ -77,12 +88,12 @@ public class Usuario {
 		this.apellidos = apellidos;
 	}
 	
-	public int getIdCentro() {
-		return idCentro;
+	public CentroSalud getCentroSalud() {
+		return centro;
 	}
 	
-	public void setIdCentro(int idCentro) {
-		this.idCentro = idCentro;
+	public void setCentroSalud(CentroSalud centro) {
+		this.centro = centro;
 	}
 	
 }
