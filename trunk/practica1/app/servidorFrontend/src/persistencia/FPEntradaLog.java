@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import dominio.EntradaLog;
 
 /**
- * Clase dedicada a consultar y modificar entradas del log.
+ * Clase dedicada a consultar y modificar entradas del log en la base de datos.
  */
 public class FPEntradaLog {
 

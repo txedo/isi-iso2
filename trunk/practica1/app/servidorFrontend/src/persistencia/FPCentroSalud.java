@@ -8,7 +8,7 @@ import dominio.CentroSalud;
 import excepciones.CentroSaludIncorrectoException;
 
 /**
- * Clase dedicada a consultar y modificar centros de salud.
+ * Clase dedicada a consultar y modificar centros de salud en la base de datos.
  */
 public class FPCentroSalud {
 
