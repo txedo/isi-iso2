@@ -1,6 +1,8 @@
 package dominio;
 
 import java.sql.SQLException;
+
+import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 import persistencia.FPUsuario;
 
@@ -28,24 +30,24 @@ public abstract class Usuario {
 		this.centro = centro;
 	}
 
-	public static Usuario consultar(int dni) throws SQLException, UsuarioIncorrectoException {
+	public static Usuario consultar(int dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		return FPUsuario.consultar(dni);
 	}
 	
-	public static Usuario consultar(String login, String password) throws SQLException, UsuarioIncorrectoException {
+	public static Usuario consultar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		return FPUsuario.consultar(login, password);
 	}
 	
-	public void insertar() {
-//		return FPUsuario.insertar(this);
+	public void insertar() throws SQLException, CentroSaludIncorrectoException {
+		FPUsuario.insertar(this);
 	}
 	
-	public void actualizar() {
-//		return FPUsuario.actualizar(this);
+	public void actualizar() throws SQLException, CentroSaludIncorrectoException {
+		FPUsuario.actualizar(this);
 	}
 	
-	public void borrar() {
-//		return FPUsuario.borrar(this);
+	public void borrar() throws SQLException, CentroSaludIncorrectoException {
+		FPUsuario.eliminar(this);
 	}
 
 	public String getDni() {

@@ -1,7 +1,7 @@
 package dominio;
 
 public enum Roles {
-	Citador,
 	Administrador,
+	Citador,	
 	Medico
 }
