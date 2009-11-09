@@ -97,4 +97,6 @@ public abstract class Usuario {
 		this.centro = centro;
 	}
 	
+	public abstract Roles getRol();
+	
 }

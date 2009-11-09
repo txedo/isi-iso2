@@ -16,14 +16,12 @@ public class Sesion implements ISesion {
 	
 	@Override
 	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return idSesion;
 	}
 
 	@Override
 	public long getRol() {
-		// TODO Auto-generated method stub
-		return 0;
+		return usuario.getRol().ordinal();
 	}
 
 	public long getIdSesion() {
