@@ -68,14 +68,13 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 			AnchorLayout jPanel1Layout = new AnchorLayout();
 				getContentPane().add(jPanel1, BorderLayout.CENTER);
 				jPanel1.setLayout(jPanel1Layout);
-				jPanel1.setPreferredSize(new java.awt.Dimension(374, 245));
+				jPanel1.setPreferredSize(new java.awt.Dimension(374, 252));
 				{
 					botonDesconectar = new JButton();
-					jPanel1.add(botonDesconectar, new AnchorConstraint(42, 643, 124, 330, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					jPanel1.add(botonDesconectar, new AnchorConstraint(12, 680, 173, 134, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					botonDesconectar.setText("Desconectar");
-					botonDesconectar.setPreferredSize(new java.awt.Dimension(110, 30));
+					botonDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
 					botonDesconectar.setEnabled(false);
-					botonDesconectar.setSize(110, 30);
 					botonDesconectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							botonDesconectarActionPerformed(evt);
@@ -84,10 +83,10 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 				}
 				{
 					botonConectar = new JButton();
-					jPanel1.add(botonConectar, new AnchorConstraint(42, 303, 124, 28, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					jPanel1.add(botonConectar, new AnchorConstraint(12, 330, 173, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					botonConectar.setText("Conectar");
 					botonConectar.setPreferredSize(new java.awt.Dimension(110, 30));
-					botonConectar.setSize(110, 30);
+					botonConectar.setAutoscrolls(true);
 					botonConectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							botonConectarActionPerformed(evt);
@@ -96,10 +95,10 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 				}
 				{
 					jTextArea1 = new JTextArea();
-					jPanel1.add(jTextArea1, new AnchorConstraint(169, 974, 957, 28, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-					jTextArea1.setPreferredSize(new java.awt.Dimension(354, 193));
+					jPanel1.add(jTextArea1, new AnchorConstraint(54, 12, 11, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					jTextArea1.setEditable(false);
 					jTextArea1.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
+					jTextArea1.setPreferredSize(new java.awt.Dimension(349, 187));
 				}
 
 			pack();

@@ -56,14 +56,12 @@ public class FPCentroSalud {
 		// Obtenemos los ids de todos los centros
 		listaIds = new ArrayList<Integer>();
 		datos.next();
-		
 		if(datos.getRow() == 0) {
 			throw new CentroSaludIncorrectoException("No existe ningún centro de salud");
 		}
-		
 		do{
 			listaIds.add(datos.getInt(COL_ID));
-		}while(datos.next()) ;
+		} while(datos.next());
 
 		// Devolvemos un centro aleatorio
 		rnd = new Random(System.currentTimeMillis());
