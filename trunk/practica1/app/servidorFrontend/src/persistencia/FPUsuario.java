@@ -103,4 +103,53 @@ public class FPUsuario {
 		return usuario;
 	}
 	
+	public static void insertar (Usuario usu) throws SQLException, CentroSaludIncorrectoException {
+		ComandoSQL comando;
+		Roles rol = null;
+		
+		// Comprobamos el rol del usuario
+		if (usu instanceof Citador)
+			rol=Roles.Citador;
+		else if (usu instanceof Administrador)
+			rol=Roles.Administrador;
+		else if (usu instanceof Medico)
+			rol=Roles.Medico;
+		
+		comando = new ComandoSQLSentencia("INSERT INTO Usuarios (" + COL_DNI +","+ COL_LOGIN +","+ COL_PASSWORD +","+ COL_ROL +","+ COL_NOMBRE +","+ COL_APELLIDOS +","+ COL_ID_CENTRO_USUARIO +") VALUES (?,?,?,?,?,?,?)", usu.getDni(),usu.getLogin(),usu.getPassword(),rol.ordinal(),usu.getNombre(),usu.getApellidos(),FPCentroSalud.consultarAleatorio().getId());
+		GestorConexiones.ejecutar(comando);	
+	
+	}
+	
+	public static void actualizar (Usuario usu) throws SQLException, CentroSaludIncorrectoException {
+		ComandoSQL comando;
+		Roles rol = null;
+		
+		// Comprobamos el rol del usuario
+		if (usu instanceof Administrador)
+			rol=Roles.Administrador;
+		else if (usu instanceof Citador)
+			rol=Roles.Citador;
+		else if (usu instanceof Medico)
+			rol=Roles.Medico;
+		
+		comando = new ComandoSQLSentencia("UPDATE Usuarios SET " + COL_LOGIN +"=?,"+ COL_PASSWORD +"=?,"+ COL_ROL +"=?,"+ COL_NOMBRE +"=?,"+ COL_APELLIDOS +"=?,"+ COL_ID_CENTRO_USUARIO +"=? WHERE "+ COL_DNI +"=?", usu.getLogin(),usu.getPassword(),rol.ordinal(),usu.getNombre(),usu.getApellidos(),FPCentroSalud.consultarAleatorio().getId(),usu.getDni());
+		GestorConexiones.ejecutar(comando);	
+	}
+	
+	public static void eliminar (Usuario usu) throws SQLException, CentroSaludIncorrectoException {
+		ComandoSQL comando;
+		Roles rol = null;
+		
+		// Comprobamos el rol del usuario
+		
+		if (usu instanceof Administrador)
+			rol=Roles.Administrador;
+		else if (usu instanceof Citador)
+			rol=Roles.Citador;
+		else if (usu instanceof Medico)
+			rol=Roles.Medico;
+		
+		comando = new ComandoSQLSentencia("DELETE FROM Usuarios WHERE " + COL_DNI +"=?" , usu.getDni());
+		GestorConexiones.ejecutar(comando);
+	}
 }
