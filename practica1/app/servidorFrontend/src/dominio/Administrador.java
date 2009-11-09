@@ -7,8 +7,12 @@ public class Administrador extends Citador{
 		super(dni, login, password, nombre, apellidos, centro);
 		
 	}
-
+	
 	public Administrador() {
 		super();
+	}
+	
+	public Roles getRol(){
+		return Roles.Administrador;
 	}
 }

@@ -9,4 +9,8 @@ public class Citador extends Usuario {
 	public Citador(){
 		super();
 	}
+	
+	public Roles getRol(){
+		return Roles.Citador;
+	}
 }

@@ -11,4 +11,8 @@ public class Medico extends Usuario{
 	public Medico() { 
 		super(); 
 	}
+	
+	public Roles getRol(){
+		return Roles.Medico;
+	}
 }

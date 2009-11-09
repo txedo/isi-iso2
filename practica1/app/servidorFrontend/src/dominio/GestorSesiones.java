@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
 
+import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 
 public class GestorSesiones {
@@ -15,7 +16,7 @@ public class GestorSesiones {
 		sesiones.remove(sesion.getId());
 	}	
 	
-	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException {
+	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		long idSesion;
 		Sesion s = null;
 		boolean encontrado=false;
@@ -35,27 +36,18 @@ public class GestorSesiones {
 			if (encontrado)
 				cerrarSesion(sesionAbierta);
 			
-			/* 
-			 * 
-			 * Cambiar a una forma de generar id unicos 
-			 * 
-			 * 
-			 */
 			Random ran = new Random();
-			// ¿ Cambiar la semilla del random ? 
+			ran.setSeed(System.currentTimeMillis()); 
 			
 			// El identificador de sesion debe ser unico
 			do {
 				idSesion = ran.nextLong();
 			} while (sesiones.containsKey(idSesion));
 			
-			// Se crea la sesion, se inserta en la tabla de sesiones abiertas
+			// Se crea la sesion y se inserta en la tabla de sesiones abiertas
 			s = new Sesion(idSesion,u);
 			sesiones.put(idSesion, s);
 		}
-		//else
-			// Se podria poner una excepcion UsuarioIncorrecto para que en la interfaz se mostrase un error
-			// Aunque tambien se puede saber consultando si la ISesion es NULL, porque si lo es, es que no se ha creado la sesion en el IF
 		
 		return (ISesion)s;
 	}
@@ -67,19 +59,36 @@ public class GestorSesiones {
 		 
 		switch(operacion){
 		case CrearUsuario:
-			if (s.getRol()==) permitido=true;
+			if (s.getRol()==Roles.Administrador.ordinal()) 
+				permitido=true;
+			break;
+		case ModificarUsuario:
+			if (s.getRol()==Roles.Administrador.ordinal()) 
+				permitido=true;
 			break;
 		case EliminarUsuario:
-			if (s.getRol()==) permitido=true;
+			if (s.getRol()==Roles.Administrador.ordinal()) 
+				permitido=true;
 			break;
 		case TramitarCita:
-			if (s.getRol()==) permitido=true;
+			if (s.getRol()==Roles.Administrador.ordinal() || s.getRol()==Roles.Citador.ordinal()) 
+				permitido=true;
 			break;
 		case EliminarCita:
-			if (s.getRol()==) permitido=true;
+			if (s.getRol()==Roles.Administrador.ordinal() || s.getRol()==Roles.Citador.ordinal()) 
+				permitido=true;
 			break;
 		case RegistrarBeneficiario:
-			if (s.getRol()==) permitido=true;
+			if (s.getRol()==Roles.Administrador.ordinal() || s.getRol()==Roles.Citador.ordinal()) 
+				permitido=true;
+			break;
+		case ModificarCalendario:
+			if (s.getRol()==Roles.Administrador.ordinal()) 
+				permitido=true;
+			break;
+		case EstablecerSustituto:
+			if (s.getRol()==Roles.Administrador.ordinal()) 
+				permitido=true;
 			break;
 		}
 		
