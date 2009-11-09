@@ -26,26 +26,36 @@ public class GestorConexiones {
 	public static ResultSet consultar(ComandoSQL comando) throws SQLException {
 		// Para hacer una consulta utilizamos la primera conexión
 		if(conexiones.size() == 0) {
-			throw new SQLException("La lista de conexiones esta vacia.");
+			throw new SQLException("La lista de conexiones esta vacía");
 		}
 		return conexiones.get(0).consultar(comando);
 	}
 	
 	public static void ejecutar(ComandoSQL comando) throws SQLException {
+		ArrayList<IConexion> conexionesUsadas;
+		
 		// Para hacer una modificación accedemos a todas las bases de
 		// datos, y si alguna falla revertimos los cambios de las anteriores
 		if(conexiones.size() == 0) {
-			throw new SQLException("La lista de conexiones esta vacia.");
+			throw new SQLException("La lista de conexiones esta vacía");
 		}
+		conexionesUsadas = new ArrayList<IConexion>();
 		for(IConexion conexion : conexiones) {
 			try {
 				conexion.ejecutar(comando);
+				conexionesUsadas.add(conexion);
 			} catch(SQLException ex) {
-				// Aquí se deberían hacer los rollback
+				// Deshacemos los cambios en las conexiones
+				for(IConexion conexionUsada : conexionesUsadas) {
+					conexionUsada.rollback();
+				}
 				throw ex;
 			}
 		}
-		// Aquí se deberían hacer los commit
+		// Aplicamos los cambios en todas las conexiones
+		for(IConexion conexion : conexiones) {
+			conexion.rollback();
+		}
 	}
 	
 	public static void cerrarConexiones() throws SQLException {
