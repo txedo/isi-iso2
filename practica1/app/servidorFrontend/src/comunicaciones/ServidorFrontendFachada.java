@@ -2,7 +2,11 @@ package comunicaciones;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
 import java.util.Vector;
+import dominio.GestorSesiones;
+import dominio.ISesion;
+import excepciones.UsuarioIncorrectoException;
 
 public class ServidorFrontendFachada extends UnicastRemoteObject implements IServidorFrontend {
 
@@ -10,11 +14,11 @@ public class ServidorFrontendFachada extends UnicastRemoteObject implements ISer
 		super();
 	}
 	
-	public ISesion identificar(String login, String password) throws RemoteException {
+	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException {
 		return GestorSesiones.identificar(login, password);
 	}
 	
-	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException {
+/*	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException {
 		return GestorBeneficiarios.getBeneficiario(idSesion, dni);
 	}
 	
@@ -72,6 +76,6 @@ public class ServidorFrontendFachada extends UnicastRemoteObject implements ISer
 	
 	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException {
 		return GestorMedicos.emitirVolante(idSesion, beneficiario, emisor, destino);
-	}
+	} */
 	
 }

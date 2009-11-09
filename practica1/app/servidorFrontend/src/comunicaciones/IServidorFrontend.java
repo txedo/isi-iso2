@@ -2,13 +2,16 @@ package comunicaciones;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.Vector;
+import dominio.ISesion;
+import excepciones.UsuarioIncorrectoException;
 
 public interface IServidorFrontend extends Remote {
 
-	public ISesion identificar(String login, String password) throws RemoteException;
+	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException;
 	
-	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException;
+/*	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException;
 	
 	public Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws RemoteException;
 	
@@ -36,6 +39,6 @@ public interface IServidorFrontend extends Remote {
 	
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException;
 	
-	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException;
+	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException; */
 	
 }

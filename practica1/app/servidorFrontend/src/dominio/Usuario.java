@@ -1,7 +1,6 @@
 package dominio;
 
 import java.sql.SQLException;
-
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 import persistencia.FPUsuario;
