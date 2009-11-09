@@ -29,7 +29,7 @@ CREATE TABLE tipoMedico (
 ) TYPE=InnoDB;
 
 CREATE TABLE entradasLog (
-       id INT NOT NULL,
+       id INT NOT NULL AUTO_INCREMENT,
        usuario VARCHAR(255) NOT NULL,
        fecha TIMESTAMP NOT NULL,
        accion ENUM ('create', 'read', 'update', 'delete') NOT NULL,

@@ -1,20 +1,21 @@
 package dominio;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import persistencia.FPEntradaLog;
 
 public class EntradaLog {
 	private String usuario;
-	private Date fecha;
+	private Timestamp fecha;
 	private String accion;
 	private String mensaje;
 	
 	public EntradaLog() {
 	}
 	
-	public EntradaLog(String usuario, Date fecha, String accion, String mensaje) {
+	public EntradaLog(String usuario, Timestamp fecha, String accion, String mensaje) {
 		this.usuario = usuario;
 		this.fecha = fecha;
 		this.accion = accion;
@@ -41,7 +42,7 @@ public class EntradaLog {
 		return fecha;
 	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(Timestamp fecha) {
 		this.fecha = fecha;
 	}
 

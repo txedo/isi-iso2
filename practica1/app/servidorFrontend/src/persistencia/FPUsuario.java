@@ -123,16 +123,6 @@ public class FPUsuario {
 	
 	public static void eliminar (Usuario usu) throws SQLException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
-		Roles rol = null;
-		
-		// Comprobamos el rol del usuario
-		
-		if (usu instanceof Administrador)
-			rol=Roles.Administrador;
-		else if (usu instanceof Citador)
-			rol=Roles.Citador;
-		else if (usu instanceof Medico)
-			rol=Roles.Medico;
 		
 		comando = new ComandoSQLSentencia("DELETE FROM "+TABLA_USUARIOS +" WHERE " + COL_DNI +"=?" , usu.getDni());
 		GestorConexiones.ejecutar(comando);
