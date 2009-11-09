@@ -5,6 +5,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
 
+import excepciones.UsuarioIncorrectoException;
+
 public class GestorSesiones {
 	// Tabla hash de sesiones. La clave es el idSesion y el valor es la Sesion con ese idSesion
 	private static Hashtable<Long,Sesion> sesiones = new Hashtable<Long,Sesion>();

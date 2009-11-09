@@ -3,7 +3,7 @@ package persistencia;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import dominio.Usuario;
-import dominio.UsuarioIncorrectoException;
+import excepciones.UsuarioIncorrectoException;
 
 /**
  * Clase dedicada a consultar y modificar usuarios en la base de datos.
