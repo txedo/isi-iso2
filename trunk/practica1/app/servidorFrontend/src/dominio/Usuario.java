@@ -1,6 +1,8 @@
 package dominio;
 
 import java.sql.SQLException;
+
+import excepciones.UsuarioIncorrectoException;
 import persistencia.FPUsuario;
 
 public class Usuario {
