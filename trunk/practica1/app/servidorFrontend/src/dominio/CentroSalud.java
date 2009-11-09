@@ -2,15 +2,25 @@ package dominio;
 
 public class CentroSalud {
 	
+	private int id;
 	private String nombre;
 	private String direccion;
 	
 	public CentroSalud() {
 	}
 	
-	public CentroSalud(String nombre, String direccion) {
+	public CentroSalud(int id, String nombre, String direccion) {
+		this.id = id;
 		this.nombre = nombre;
 		this.direccion = direccion;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getNombre() {
