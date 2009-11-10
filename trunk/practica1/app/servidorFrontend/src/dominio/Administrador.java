@@ -1,6 +1,8 @@
 package dominio;
 
-public class Administrador extends Citador{
+import java.io.Serializable;
+
+public class Administrador extends Citador implements Serializable {
 
 	public Administrador(String dni, String login, String password,
 			String nombre, String apellidos, CentroSalud centro) {

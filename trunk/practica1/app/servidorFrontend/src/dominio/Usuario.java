@@ -1,5 +1,6 @@
 package dominio;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
@@ -8,7 +9,7 @@ import persistencia.FPUsuario;
 /**
  * Clase abstracta que representa un usuario del sistema.
  */
-public abstract class Usuario {
+public abstract class Usuario implements Serializable {
 
 	protected String dni;
 	protected String login;
