@@ -18,25 +18,22 @@ import excepciones.UsuarioIncorrectoException;
 public class FPUsuario {
 	
 	private static final String TABLA_USUARIOS = "usuarios";
-	private static final String TABLA_CENTROS = "centros";
-	
 	private static final String COL_DNI = "dni";
 	private static final String COL_LOGIN = "login";
 	private static final String COL_PASSWORD = "password";
 	private static final String COL_ROL = "rol";
 	private static final String COL_NOMBRE = "nombre";
 	private static final String COL_APELLIDOS = "apellidos";
-	private static final String COL_ID_CENTRO_USUARIO = "id_centro";
-	private static final String COL_ID_CENTRO = "id";
-
+	private static final String COL_ID_CENTRO = "id_centro";
 	
-	public static Usuario consultar(int dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Usuario consultar(String dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
 		ResultSet datos;
+		CentroSalud centro;
 		Usuario usuario = null;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM "+TABLA_USUARIOS +","+ TABLA_CENTROS +" WHERE " + COL_DNI + " = ? AND " + COL_ID_CENTRO_USUARIO + " = " + COL_ID_CENTRO, dni);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_DNI + " = ?", dni);
 		datos = GestorConexiones.consultar(comando);
 		datos.next();
 		
@@ -45,7 +42,8 @@ public class FPUsuario {
 		if(datos.getRow() == 0) {
 			throw new UsuarioIncorrectoException("El DNI introducido no es válido");
 		} else {
-			switch (Roles.values()[datos.getInt(COL_ROL)]){
+			// Creamos un usuario del tipo adecuado
+			switch(Roles.values()[datos.getInt(COL_ROL)]) {
 			case Citador:
 				usuario = new Citador();
 				break;
@@ -56,8 +54,9 @@ public class FPUsuario {
 				usuario = new Medico();
 				break;
 			}
-			// Creamos el usuario y su centro asociado
-			CentroSalud centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
+			// Buscamos el centro del usuario
+			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
+			// Establecemos los datos del usuario
 			usuario.setDni(datos.getString(COL_DNI));
 			usuario.setLogin(datos.getString(COL_LOGIN));
 			usuario.setPassword(datos.getString(COL_PASSWORD));			
@@ -65,16 +64,18 @@ public class FPUsuario {
 			usuario.setApellidos(datos.getString(COL_APELLIDOS));
 			usuario.setCentroSalud(centro);
 		}
+		
 		return usuario;
 	}
 	
 	public static Usuario consultar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
 		ResultSet datos;
+		CentroSalud centro;
 		Usuario usuario = null;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM  "+TABLA_USUARIOS +","+ TABLA_CENTROS +" WHERE " + COL_LOGIN + "=? AND " + COL_PASSWORD + "=?", login, password);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_LOGIN + " = ? AND " + COL_PASSWORD + " = ?", login, password);
 		datos = GestorConexiones.consultar(comando);
 		datos.next();
 		
@@ -83,7 +84,8 @@ public class FPUsuario {
 		if(datos.getRow() == 0) {
 			throw new UsuarioIncorrectoException("El nombre de usuario o contraseña introducidos no son válidos");
 		} else {	
-			switch (Roles.values()[datos.getInt(COL_ROL)]){
+			// Creamos un usuario del tipo adecuado
+			switch(Roles.values()[datos.getInt(COL_ROL)]) {
 			case Citador:
 				usuario = new Citador();
 				break;
@@ -94,8 +96,9 @@ public class FPUsuario {
 				usuario = new Medico();
 				break;
 			}
-			// Creamos el usuario
-			CentroSalud centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
+			// Buscamos el centro del usuario
+			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
+			// Establecemos los datos del usuario
 			usuario.setDni(datos.getString(COL_DNI));
 			usuario.setLogin(datos.getString(COL_LOGIN));
 			usuario.setPassword(datos.getString(COL_PASSWORD));
@@ -103,28 +106,31 @@ public class FPUsuario {
 			usuario.setApellidos(datos.getString(COL_APELLIDOS));
 			usuario.setCentroSalud(centro);
 		}
+		
 		return usuario;
 	}
 	
-	public static void insertar (Usuario usu) throws SQLException, CentroSaludIncorrectoException {
+	public static void insertar(Usuario usuario) throws SQLException {
 		ComandoSQL comando;
 
-		comando = new ComandoSQLSentencia("INSERT INTO "+TABLA_USUARIOS +" (" + COL_DNI +","+ COL_LOGIN +","+ COL_PASSWORD +","+ COL_ROL +","+ COL_NOMBRE +","+ COL_APELLIDOS +","+ COL_ID_CENTRO_USUARIO +") VALUES (?,?,?,?,?,?,?)", usu.getDni(),usu.getLogin(),usu.getPassword(),usu.getRol().ordinal(),usu.getNombre(),usu.getApellidos(),FPCentroSalud.consultarAleatorio().getId());
-		GestorConexiones.ejecutar(comando);	
-	
-	}
-	
-	public static void actualizar (Usuario usu) throws SQLException, CentroSaludIncorrectoException {
-		ComandoSQL comando;
-		
-		comando = new ComandoSQLSentencia("UPDATE "+TABLA_USUARIOS +" SET " + COL_LOGIN +"=?,"+ COL_PASSWORD +"=?,"+ COL_ROL +"=?,"+ COL_NOMBRE +"=?,"+ COL_APELLIDOS +"=?,"+ COL_ID_CENTRO_USUARIO +"=? WHERE "+ COL_DNI +"=?", usu.getLogin(),usu.getPassword(),usu.getRol().ordinal(),usu.getNombre(),usu.getApellidos(),FPCentroSalud.consultarAleatorio().getId(),usu.getDni());
+		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_USUARIOS + " (" + COL_DNI + ", " + COL_LOGIN + ", " + COL_PASSWORD + ", " + COL_ROL + ", " + COL_NOMBRE + ", " + COL_APELLIDOS + ", " + COL_ID_CENTRO + ") VALUES (?, ?, ?, ?, ?, ?, ?)",
+		                                  usuario.getDni(), usuario.getLogin(), usuario.getPassword(), usuario.getRol().ordinal(), usuario.getNombre(), usuario.getApellidos(), usuario.getCentroSalud().getId());
 		GestorConexiones.ejecutar(comando);	
 	}
 	
-	public static void eliminar (Usuario usu) throws SQLException, CentroSaludIncorrectoException {
+	public static void actualizar(Usuario usuario) throws SQLException {
 		ComandoSQL comando;
 		
-		comando = new ComandoSQLSentencia("DELETE FROM "+TABLA_USUARIOS +" WHERE " + COL_DNI +"=?" , usu.getDni());
+		comando = new ComandoSQLSentencia("UPDATE " + TABLA_USUARIOS + " SET " + COL_LOGIN + " = ?, "+ COL_PASSWORD + " = ?, " + COL_ROL + " = ?, " + COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_ID_CENTRO + " = ? WHERE " + COL_DNI + " = ?",
+		                                  usuario.getLogin(), usuario.getPassword(), usuario.getRol().ordinal(), usuario.getNombre(), usuario.getApellidos(), usuario.getCentroSalud().getId(), usuario.getDni());
+		GestorConexiones.ejecutar(comando);	
+	}
+	
+	public static void eliminar(Usuario usuario) throws SQLException {
+		ComandoSQL comando;
+		
+		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_USUARIOS + " WHERE " + COL_DNI + " = ?" , usuario.getDni());
 		GestorConexiones.ejecutar(comando);
 	}
+	
 }

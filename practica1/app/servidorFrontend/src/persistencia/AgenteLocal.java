@@ -28,6 +28,8 @@ public class AgenteLocal implements IConexion {
             e.printStackTrace();
             System.exit(0);
         }
+		// Indicamos que las modificaciones de la base de datos
+		// no se deben aplicar hasta llamar al método 'commit'
 		conexion = DriverManager.getConnection(url);
 		conexion.setAutoCommit(false);
 	}
@@ -37,12 +39,15 @@ public class AgenteLocal implements IConexion {
 			instancia = new AgenteLocal();
 		}
 		if(instancia.conexion.isClosed()) {
-			// Indicamos que las modificaciones de la base
-			// datos no se apliquen hasta hacer un 'commit'
+			// Reabrimos la base de datos
 			instancia.conexion = DriverManager.getConnection(instancia.url);
 			instancia.conexion.setAutoCommit(false); 
 		}
 		return instancia;
+	}
+	
+	public Connection getConexion() {
+		return conexion;
 	}
 	
 	public ResultSet consultar(ComandoSQL comando) throws SQLException {

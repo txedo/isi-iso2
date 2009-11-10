@@ -32,7 +32,7 @@ public abstract class Usuario implements Serializable {
 
 	public abstract Roles getRol();
 	
-	public static Usuario consultar(int dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Usuario consultar(String dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		return FPUsuario.consultar(dni);
 	}
 	
@@ -40,15 +40,15 @@ public abstract class Usuario implements Serializable {
 		return FPUsuario.consultar(login, password);
 	}
 	
-	public void insertar() throws SQLException, CentroSaludIncorrectoException {
+	public void insertar() throws SQLException {
 		FPUsuario.insertar(this);
 	}
 	
-	public void actualizar() throws SQLException, CentroSaludIncorrectoException {
+	public void actualizar() throws SQLException {
 		FPUsuario.actualizar(this);
 	}
 	
-	public void borrar() throws SQLException, CentroSaludIncorrectoException {
+	public void eliminar() throws SQLException {
 		FPUsuario.eliminar(this);
 	}
 
@@ -99,7 +99,17 @@ public abstract class Usuario implements Serializable {
 	public void setCentroSalud(CentroSalud centro) {
 		this.centro = centro;
 	}
-	
-	
+
+	public boolean equals(Object o) {
+		Usuario u;
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof Usuario) {
+			u = (Usuario)o;
+			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && centro.equals(u.getCentroSalud());
+		}
+		return dev;
+	}
 	
 }

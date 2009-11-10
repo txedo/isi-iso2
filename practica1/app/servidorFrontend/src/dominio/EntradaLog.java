@@ -3,10 +3,10 @@ package dominio;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import persistencia.FPEntradaLog;
 
 public class EntradaLog {
+	
 	private String usuario;
 	private Timestamp fecha;
 	private String accion;
@@ -22,11 +22,11 @@ public class EntradaLog {
 		this.mensaje = mensaje;
 	}
 	
-	public static ArrayList<EntradaLog> consultarLog () throws SQLException {
+	public static ArrayList<EntradaLog> consultarLog() throws SQLException {
 		return FPEntradaLog.consultarLog();
 	}
 	
-	public void insertar () throws SQLException {
+	public void insertar() throws SQLException {
 		FPEntradaLog.insertar(this);
 	}
 
@@ -38,7 +38,7 @@ public class EntradaLog {
 		this.usuario = usuario;
 	}
 
-	public Date getFecha() {
+	public Timestamp getFecha() {
 		return fecha;
 	}
 
@@ -60,6 +60,18 @@ public class EntradaLog {
 
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
+	}
+	
+	public boolean equals(Object o) {
+		EntradaLog e;
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof EntradaLog) {
+			e = (EntradaLog)o;
+			dev = usuario.equals(e.getUsuario()) && fecha.equals(e.getFecha()) && accion.equals(e.getAccion()) && mensaje.equals(e.getMensaje());
+		}
+		return dev;
 	}
 	
 }

@@ -45,8 +45,8 @@ public class FPEntradaLog {
 		ComandoSQL comando;
 		
 		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_LOG + " (" + COL_USUARIO + ", " + COL_FECHA + ", " + COL_ACCION + ", " + COL_MENSAJE + ") "
-				                        + "VALUES (?,?,?,?)", entrada.getUsuario(), entrada.getFecha(), entrada.getAccion(), entrada.getMensaje());
+		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_LOG + " (" + COL_USUARIO + ", " + COL_FECHA + ", " + COL_ACCION + ", " + COL_MENSAJE + ") VALUES (?, ?, ?, ?)",
+		                                  entrada.getUsuario(), entrada.getFecha(), entrada.getAccion(), entrada.getMensaje());
 		GestorConexiones.ejecutar(comando);
 	}
 	
