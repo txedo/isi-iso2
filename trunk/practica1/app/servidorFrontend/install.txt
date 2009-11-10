@@ -1,4 +1,3 @@
-
 CREATE DATABASE bdssca CHARACTER SET utf8 COLLATE utf8_bin;
 USE bdssca;
 
@@ -10,7 +9,7 @@ CREATE TABLE centros (
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE usuarios (
-       dni INT NOT NULL, 
+       dni VARCHAR(255) NOT NULL, 
        login VARCHAR(255) UNIQUE NOT NULL default '',
        password VARCHAR(255) NOT NULL default '', 
        rol INT NOT NULL default '-1',
@@ -22,7 +21,7 @@ CREATE TABLE usuarios (
 ) TYPE=InnoDB;
 
 CREATE TABLE tipoMedico (
-       dni INT NOT NULL,
+       dni VARCHAR(255) NOT NULL,
        tipo INT NOT NULL,
        PRIMARY KEY (dni),
        FOREIGN KEY (dni) REFERENCES usuarios (dni) ON DELETE NO ACTION ON UPDATE CASCADE
@@ -36,3 +35,6 @@ CREATE TABLE entradasLog (
        mensaje VARCHAR(255) NOT NULL,
        PRIMARY KEY (id)
 ) TYPE=InnoDB AUTO_INCREMENT=1;
+
+INSERT INTO centros (nombre,direccion) VALUES ("Centro de Pruebas", "Paseo de la Universidad, 4");
+INSERT INTO usuarios VALUES ("12345678", "admin" ,"admin", 0, "Foo", "Bar", 1);
