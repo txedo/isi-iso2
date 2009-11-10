@@ -43,8 +43,8 @@ public class PruebasPersistencia extends TestCase {
 			// Ponemos la conexión local con la base de datos
 			GestorConexiones.ponerConexion(AgenteLocal.getAgente());
 			// Creamos objetos de prueba
-			centro1 = new CentroSalud(-1, "Centro A", "Calle Toledo, 44");
-			centro2 = new CentroSalud(-1, "Centro B", null);
+			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
+			centro2 = new CentroSalud("Centro B", null);
 			entrada1 = new EntradaLog("juan", new Timestamp(109, 11, 1, 10, 10, 10, 0), "create", "Entrada de prueba 1.");
 			entrada2 = new EntradaLog("luis", new Timestamp(109, 5, 25, 7, 30, 0, 0), "update", "Entrada de prueba 2.");
 			entrada3 = new EntradaLog("mal", new Timestamp(109, 9, 10, 8, 0, 0, 0), "mal", "Entrada con errores.");
