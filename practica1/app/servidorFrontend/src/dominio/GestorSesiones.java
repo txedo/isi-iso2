@@ -33,7 +33,7 @@ public class GestorSesiones {
 			Enumeration<Sesion> sesionesAbiertas = sesiones.elements();
 			while(sesionesAbiertas.hasMoreElements() && !encontrado) {
 				sesionAbierta=sesionesAbiertas.nextElement();			
-				if (sesionAbierta.getUsuario().getDni() == u.getDni())
+				if (sesionAbierta.getUsuario().getDni().equals(u.getDni()))
 					encontrado=true;
 			}
 			// Si tenia una sesion iniciada, se cierra
