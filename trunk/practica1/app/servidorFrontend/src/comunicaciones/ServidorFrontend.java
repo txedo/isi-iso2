@@ -17,17 +17,18 @@ import excepciones.UsuarioIncorrectoException;
 import presentacion.JFServidorFrontend;
 
 public class ServidorFrontend extends UnicastRemoteObject implements IServidorFrontend {
+
 	protected ServidorFrontend() throws RemoteException {
 		super();
 		LocateRegistry.createRegistry(2995);
-		// TODO Auto-generated constructor stub
 	}
 
 	public static void main(String[] args) throws RemoteException, SQLException {
         persistencia.IConexion conexion = (persistencia.IConexion)persistencia.AgenteLocal.getAgente();
         persistencia.GestorConexiones.ponerConexion(conexion);
         
-		JFServidorFrontend inst = new JFServidorFrontend(new ServidorFrontend());
+		JFServidorFrontend inst = new JFServidorFrontend();
+		inst.setServidor(new ServidorFrontend());
 		inst.setVisible(true);
 	}
 	

@@ -1,4 +1,5 @@
 package presentacion;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import comunicaciones.ServidorFrontend;
@@ -21,7 +22,6 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.SwingUtilities;
 
-
 /**
 * This code was edited or generated using CloudGarden's Jigloo
 * SWT/Swing GUI Builder, which is free for non-commercial
@@ -35,18 +35,17 @@ import javax.swing.SwingUtilities;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class JFServidorFrontend extends javax.swing.JFrame {
+	
 	private ServidorFrontend servidorFE;
 	private JPanel jPanel1;
 	private JLabel labelBarraEstado;
 	private JButton botonDesconectar;
 	private JButton botonConectar;
 	private JTextArea jTextArea1;
-
 	
-	public JFServidorFrontend(ServidorFrontend serv) {
+	public JFServidorFrontend() {
 		super();
 		initGUI();
-		this.servidorFE = serv;
 	}
 	
 	private void initGUI() {
@@ -70,13 +69,13 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 				jPanel1.setPreferredSize(new java.awt.Dimension(374, 266));
 				{
 					labelBarraEstado = new JLabel();
-					jPanel1.add(labelBarraEstado, new AnchorConstraint(937, 10, 3, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					jPanel1.add(labelBarraEstado, new AnchorConstraint(937, 8, 8, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					labelBarraEstado.setText("Servidor desconectado...");
-					labelBarraEstado.setPreferredSize(new java.awt.Dimension(354, 14));
+					labelBarraEstado.setPreferredSize(new java.awt.Dimension(346, 14));
 				}
 				{
 					botonDesconectar = new JButton();
-					jPanel1.add(botonDesconectar, new AnchorConstraint(10, 643, 124, 140, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					jPanel1.add(botonDesconectar, new AnchorConstraint(13, 643, 124, 140, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					botonDesconectar.setText("Desconectar");
 					botonDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
 					botonDesconectar.setEnabled(false);
@@ -88,7 +87,7 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 				}
 				{
 					botonConectar = new JButton();
-					jPanel1.add(botonConectar, new AnchorConstraint(10, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					jPanel1.add(botonConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					botonConectar.setText("Conectar");
 					botonConectar.setPreferredSize(new java.awt.Dimension(110, 30));
 					botonConectar.addActionListener(new ActionListener() {
@@ -111,6 +110,10 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void setServidor(ServidorFrontend servidor) {
+		servidorFE = servidor;
 	}
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
