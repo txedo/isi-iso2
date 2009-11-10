@@ -25,10 +25,6 @@ public class Sesion implements ISesion, Serializable {
 		return usuario.getRol().ordinal();
 	}
 
-	public long getIdSesion() {
-		return idSesion;
-	}
-
 	public void setIdSesion(long idSesion) {
 		this.idSesion = idSesion;
 	}
@@ -47,6 +43,18 @@ public class Sesion implements ISesion, Serializable {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+	
+	public boolean equals(Object o) {
+		Sesion u;
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof Sesion) {
+			u = (Sesion)o;
+			dev = idSesion==u.getId() && usuario.equals(u.getUsuario());
+		}
+		return dev;
 	}
 
 }

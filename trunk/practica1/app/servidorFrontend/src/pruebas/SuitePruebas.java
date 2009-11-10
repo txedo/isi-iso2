@@ -14,6 +14,7 @@ public class SuitePruebas {
 		
 		suite = new TestSuite("Pruebas completas para el servidor frontend");
 		suite.addTestSuite(PruebasPersistencia.class);
+		suite.addTestSuite(PruebasSesiones.class);
 		return suite;
 	}
 	
