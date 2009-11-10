@@ -26,36 +26,44 @@ public class GestorSesiones {
 		boolean encontrado=false;
 		Sesion sesionAbierta = null;
 		
-		// Se consulta el login y password. Si el usuario existe, se crea la sesion
-		Usuario u = Usuario.consultar(login, password);		
-		if (u!=null){
-			// Se comprueba si el usuario ya tenia una sesion iniciada
-			Enumeration<Sesion> sesionesAbiertas = sesiones.elements();
-			while(sesionesAbiertas.hasMoreElements() && !encontrado) {
-				sesionAbierta=sesionesAbiertas.nextElement();			
-				if (sesionAbierta.getUsuario().getDni().equals(u.getDni()))
-					encontrado=true;
+		try {
+			// Se consulta el login y password. Si el usuario existe, se crea la
+			// sesion
+			Usuario u = Usuario.consultar(login, password);
+			if (u != null) {
+				// Se comprueba si el usuario ya tenia una sesion iniciada
+				Enumeration<Sesion> sesionesAbiertas = sesiones.elements();
+				while (sesionesAbiertas.hasMoreElements() && !encontrado) {
+					sesionAbierta = sesionesAbiertas.nextElement();
+					if (sesionAbierta.getUsuario().getDni().equals(u.getDni()))
+						encontrado = true;
+				}
+				// Si tenia una sesion iniciada, se cierra
+				if (encontrado)
+					cerrarSesion(sesionAbierta);
+
+				// El identificador de sesion debe ser unico
+				Random ran = new Random();
+				ran.setSeed(System.currentTimeMillis());
+				do {
+					idSesion = ran.nextLong();
+				} while (sesiones.containsKey(idSesion));
+
+				// Se crea la sesion, se inserta en la tabla de sesiones
+				// abiertas y se escribe el log
+				s = new Sesion(idSesion, u);
+				sesiones.put(idSesion, s);
+				EntradaLog entrada = new EntradaLog(login, new Timestamp(
+						(new Date()).getTime()), "read",
+						"Se ha creado la sesion");
+				entrada.insertar();
 			}
-			// Si tenia una sesion iniciada, se cierra
-			if (encontrado)
-				cerrarSesion(sesionAbierta);
-			
-			// El identificador de sesion debe ser unico
-			Random ran = new Random();
-			ran.setSeed(System.currentTimeMillis()); 		
-			do {
-				idSesion = ran.nextLong();
-			} while (sesiones.containsKey(idSesion));
-			
-			// Se crea la sesion, se inserta en la tabla de sesiones abiertas y se escribe el log
-			s = new Sesion(idSesion,u);
-			sesiones.put(idSesion, s);
-			EntradaLog entrada = new EntradaLog(login,new Timestamp((new Date()).getTime()),"read","Se ha creado la sesion");
+		} catch (UsuarioIncorrectoException e) {
+			EntradaLog entrada = new EntradaLog(login, new Timestamp(
+					(new Date()).getTime()), "read",
+					"Intento de acceso al sistema fallido");
 			entrada.insertar();
-		}
-		else {
-			EntradaLog entrada = new EntradaLog(login,new Timestamp((new Date()).getTime()),"read","Intento de acceso al sistema fallido");
-			entrada.insertar();
+			throw e;
 		}
 		
 		return (ISesion)s;
