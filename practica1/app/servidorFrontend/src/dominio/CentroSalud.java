@@ -1,6 +1,8 @@
 package dominio;
 
-public class CentroSalud {
+import java.io.Serializable;
+
+public class CentroSalud implements Serializable {
 	
 	private int id;
 	private String nombre;

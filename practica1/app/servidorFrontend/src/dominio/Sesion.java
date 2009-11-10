@@ -1,8 +1,9 @@
 package dominio;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Sesion implements ISesion {
+public class Sesion implements ISesion, Serializable {
 	private long idSesion;
 	private Date horaInicio;
 	private Usuario usuario;
