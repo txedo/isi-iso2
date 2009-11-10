@@ -32,7 +32,8 @@ public class CentroSalud implements Serializable {
 	}
 
 	public void insertar() throws SQLException {
-		FPCentroSalud.insertar(this);
+		// Al insertar el centro le asignamos el id autonumérico
+		id = FPCentroSalud.insertar(this);
 	}
 	
 	public int getId() {
