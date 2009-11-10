@@ -14,7 +14,7 @@ public class Proxy {
 
 		public static void main (String args[]) throws SQLException, UsuarioIncorrectoException, MalformedURLException, RemoteException, NotBoundException, Exception {
 			IServidorFrontend servidorFE = (IServidorFrontend)Naming.lookup("rmi://127.0.0.1:2995/servidorfrontend");
-			ISesion prueba = (ISesion)servidorFE.identificar("txedo", "asdf");
+			ISesion prueba = (ISesion)servidorFE.identificar("citador", "abcdef");
 			System.out.println(prueba.getId());
 			System.out.println(prueba.getRol());
 		}

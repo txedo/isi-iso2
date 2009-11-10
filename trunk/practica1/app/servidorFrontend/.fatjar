@@ -1,14 +1,14 @@
 #Fat Jar Configuration File
-#Tue Nov 10 03:02:13 CET 2009
+#Tue Nov 10 11:02:51 CET 2009
 onejar.license.required=false
 manifest.classpath=
 manifest.removesigners=true
 onejar.checkbox=false
-jarname=servidorFrontend_fat.jar
+jarname=servidorFrontendStubs.jar
 manifest.mergeall=true
 manifest.mainclass=comunicaciones.ServidorFrontend
 manifest.file=<createnew>
 jarname.isextern=false
 onejar.expand=
-excludes=
+excludes=<po|servidorFrontend>~com/;<po|servidorFrontend>~presentacion/;<po|servidorFrontend>~pruebas/;<jar|mysql-connector-java-5.1.10-bin.jar>;<jar|junit.jar>
 includes=

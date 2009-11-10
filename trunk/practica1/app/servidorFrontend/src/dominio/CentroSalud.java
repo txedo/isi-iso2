@@ -1,7 +1,14 @@
 package dominio;
 
 import java.io.Serializable;
+import java.sql.SQLException;
+import excepciones.CentroSaludIncorrectoException;
+import persistencia.FPCentroSalud;
 
+/**
+ * Clase que representa un centro de salud en el que pueden trabajan
+ * los usuarios (incluidos médicos) del sistema.
+ */
 public class CentroSalud implements Serializable {
 	
 	private int id;
@@ -11,9 +18,22 @@ public class CentroSalud implements Serializable {
 	public CentroSalud() {
 	}
 	
-	public CentroSalud(String nombre, String direccion) {
+	public CentroSalud(int id, String nombre, String direccion) {
+		this.id = id;
 		this.nombre = nombre;
 		this.direccion = direccion;
+	}
+	
+	public static CentroSalud consultar(int id) throws SQLException, CentroSaludIncorrectoException {
+		return FPCentroSalud.consultar(id);
+	}
+
+	public static CentroSalud consultarAleatorio() throws SQLException, CentroSaludIncorrectoException {
+		return FPCentroSalud.consultarAleatorio();
+	}
+
+	public void insertar() throws SQLException {
+		FPCentroSalud.insertar(this);
 	}
 	
 	public int getId() {
@@ -40,4 +60,16 @@ public class CentroSalud implements Serializable {
 		this.direccion = direccion;
 	}
 
+	public boolean equals(Object o) {
+		CentroSalud c;
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof CentroSalud) {
+			c = (CentroSalud)o;
+			dev = nombre.equals(c.getNombre()) && direccion.equals(c.getDireccion());
+		}
+		return dev;
+	}
+	
 }

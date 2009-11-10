@@ -4,7 +4,7 @@ USE bdssca;
 
 CREATE TABLE centros (
        id INT NOT NULL AUTO_INCREMENT,
-       nombre VARCHAR(255) NOT NULL default '', 
+       nombre VARCHAR(255) UNIQUE NOT NULL default '', 
        direccion VARCHAR(255) NOT NULL default '', 
        PRIMARY KEY (id )
 ) TYPE=InnoDB AUTO_INCREMENT=1;
