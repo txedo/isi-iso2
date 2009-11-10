@@ -8,12 +8,14 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import dominio.GestorSesiones;
 import dominio.ISesion;
 import excepciones.UsuarioIncorrectoException;
 
+import presentacion.IVentana;
 import presentacion.JFServidorFrontend;
 
 public class ServidorFrontend extends UnicastRemoteObject implements IServidorFrontend {
@@ -22,14 +24,24 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 		super();
 		LocateRegistry.createRegistry(2995);
 	}
+	
+	private static ArrayList<IVentana> guis;
 
 	public static void main(String[] args) throws RemoteException, SQLException {
         persistencia.IConexion conexion = (persistencia.IConexion)persistencia.AgenteLocal.getAgente();
         persistencia.GestorConexiones.ponerConexion(conexion);
         
+        guis = new ArrayList<IVentana>();
 		JFServidorFrontend inst = new JFServidorFrontend();
 		inst.setServidor(new ServidorFrontend());
 		inst.setVisible(true);
+		guis.add(inst);
+	}
+	
+	public void actualizarVentanas (String mensaje) {
+		for (IVentana v : guis) {
+			v.actualizarTexto(mensaje + '\n');
+		}
 	}
 	
     public void conectar() throws MalformedURLException, RemoteException {
@@ -47,7 +59,27 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	
     //TODO quitar la excepcion generica Exception
 	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		return GestorSesiones.identificar(login, password);
+		try {
+			ISesion s = GestorSesiones.identificar(login, password);
+			actualizarVentanas("Usuario '" + login + "' autenticado.");
+			return s;
+		}
+		catch (RemoteException re) {
+			actualizarVentanas(re.getMessage());
+			throw re;
+		}
+		catch (SQLException se) {
+			actualizarVentanas(se.getMessage());
+			throw se;
+		}
+		catch (UsuarioIncorrectoException uie) {
+			actualizarVentanas(uie.getMessage());
+			throw uie;
+		}
+		catch (Exception e) {
+			actualizarVentanas(e.getMessage());
+			throw e;
+		}
 	}
 	
 	/*	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException {

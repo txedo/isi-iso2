@@ -16,6 +16,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import javax.swing.WindowConstants;
@@ -34,14 +36,15 @@ import javax.swing.SwingUtilities;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JFServidorFrontend extends javax.swing.JFrame {
+public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 	
 	private ServidorFrontend servidorFE;
 	private JPanel jPanel1;
+	private JScrollPane jScrollPane1;
 	private JLabel labelBarraEstado;
 	private JButton botonDesconectar;
 	private JButton botonConectar;
-	private JTextArea jTextArea1;
+	private JTextArea textLog;
 	
 	public JFServidorFrontend() {
 		super();
@@ -52,7 +55,7 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 		try {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("Servidor Front-End");
-			this.setAlwaysOnTop(true);
+			//this.setAlwaysOnTop(true);
 			this.setPreferredSize(new java.awt.Dimension(374, 266));
 			this.setMinimumSize(new java.awt.Dimension(374, 266));
 
@@ -68,9 +71,21 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 				jPanel1.setLayout(jPanel1Layout);
 				jPanel1.setPreferredSize(new java.awt.Dimension(374, 266));
 				{
+					jScrollPane1 = new JScrollPane();
+					jPanel1.add(jScrollPane1, new AnchorConstraint(261, 974, 905, 28, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					jScrollPane1.setPreferredSize(new java.awt.Dimension(346, 154));
+					jScrollPane1.setMinimumSize(new java.awt.Dimension(346, 155));
+					{
+						textLog = new JTextArea();
+						jScrollPane1.setViewportView(textLog);
+						textLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
+						textLog.setEditable(false);
+					}
+				}
+				{
 					labelBarraEstado = new JLabel();
-					jPanel1.add(labelBarraEstado, new AnchorConstraint(937, 8, 8, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					labelBarraEstado.setText("Servidor desconectado...");
+					jPanel1.add(labelBarraEstado, new AnchorConstraint(937, 10, 3, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					labelBarraEstado.setText("Servidor desconectado.");
 					labelBarraEstado.setPreferredSize(new java.awt.Dimension(346, 14));
 				}
 				{
@@ -96,19 +111,11 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 						}
 					});
 				}
-				{
-					jTextArea1 = new JTextArea();
-					jPanel1.add(jTextArea1, new AnchorConstraint(56, 10, 28, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					jTextArea1.setPreferredSize(new java.awt.Dimension(354, 182));
-					jTextArea1.setEditable(false);
-					jTextArea1.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
-					jTextArea1.setPreferredSize(new java.awt.Dimension(349, 187));
-				}
 
 			pack();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			textLog.setText(textLog.getText() + e.toString());
 		}
 	}
 	
@@ -121,13 +128,11 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 			this.servidorFE.conectar();
 			this.botonConectar.setEnabled(false);
 			this.botonDesconectar.setEnabled(true);
-			this.labelBarraEstado.setText("Servidor conectado...");
+			this.labelBarraEstado.setText("Servidor preparado.");
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			textLog.setText(textLog.getText() + e.toString());
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			textLog.setText(textLog.getText() + e.toString());
 		}
 	}
 	
@@ -136,17 +141,19 @@ public class JFServidorFrontend extends javax.swing.JFrame {
 			this.servidorFE.desconectar();
 			this.botonDesconectar.setEnabled(false);
 			this.botonConectar.setEnabled(true);
-			this.labelBarraEstado.setText("Servidor desconectado...");
+			this.labelBarraEstado.setText("Servidor desconectado.");
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			textLog.setText(textLog.getText() + e.toString());
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			textLog.setText(textLog.getText() + e.toString());
 		} catch (NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			textLog.setText(textLog.getText() + e.toString());
 		}
+	}
+
+	@Override
+	public void actualizarTexto(String mensaje) {
+		textLog.setText(textLog.getText() + mensaje);	
 	}
 
 }
