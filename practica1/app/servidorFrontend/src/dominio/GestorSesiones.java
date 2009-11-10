@@ -40,10 +40,9 @@ public class GestorSesiones {
 			if (encontrado)
 				cerrarSesion(sesionAbierta);
 			
-			Random ran = new Random();
-			ran.setSeed(System.currentTimeMillis()); 
-			
 			// El identificador de sesion debe ser unico
+			Random ran = new Random();
+			ran.setSeed(System.currentTimeMillis()); 		
 			do {
 				idSesion = ran.nextLong();
 			} while (sesiones.containsKey(idSesion));
