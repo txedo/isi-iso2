@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 
 public class PruebasPersistencia extends TestCase {
 
-	CentroSalud centro1, centro2;
+	CentroSalud centro1, centro2, centro3;
 	EntradaLog entrada1, entrada2, entrada3;
 	Medico medico1, medico2;
 	Citador citador1, citador2;
@@ -45,12 +45,13 @@ public class PruebasPersistencia extends TestCase {
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
 			centro2 = new CentroSalud("Centro B", null);
+			centro3 = new CentroSalud("Centro C", "Otra calle");
 			entrada1 = new EntradaLog("juan", new Timestamp(109, 11, 1, 10, 10, 10, 0), "create", "Entrada de prueba 1.");
 			entrada2 = new EntradaLog("luis", new Timestamp(109, 5, 25, 7, 30, 0, 0), "update", "Entrada de prueba 2.");
 			entrada3 = new EntradaLog("mal", new Timestamp(109, 9, 10, 8, 0, 0, 0), "mal", "Entrada con errores.");
 			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1);
 			medico2 = new Medico("12345678", "medYaExisto", "abcdef", "Eduardo", "P. C", centro1);
-			citador1 = new Citador("1112223", "citador", "abcdef", "Luis", "E. G.", centro1);
+			citador1 = new Citador("1112223", "citador", "abcdef", "Luis", "E. G.", centro3);
 			citador2 = new Citador("9998887", "citador", "abcdef", "Ana", "B. E.", centro1);
 			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "", centro1);
 		} catch(Exception e) {
@@ -81,16 +82,17 @@ public class PruebasPersistencia extends TestCase {
 		}
 		
 		try {
-			// Insertamos un nuevo centro
+			// Insertamos varios centros correctos
 			centro1.insertar();
+			centro3.insertar();
 		} catch(SQLException e) {
 			fail(e.toString());
 		}
 		
 		try {
-			// Comprobamos que el centro se ha añadido correctamente
+			// Comprobamos que los centros se han añadido correctamente
 			centro = CentroSalud.consultarAleatorio();
-			assertEquals(centro1, centro);
+			assertTrue(centro1.equals(centro) || centro3.equals(centro));
 		} catch(CentroSaludIncorrectoException e) {
 			fail(e.toString());
 		} catch(SQLException e) {
@@ -110,14 +112,6 @@ public class PruebasPersistencia extends TestCase {
 			centro1.insertar();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
-		}
-
-		try {
-			// Insertamos un nuevo centro con un nombre no utilizado
-			centro1.setNombre("Centro B");
-			centro1.insertar();
-		} catch(SQLException e) {
-			fail(e.toString());
 		}
 
 		try {
@@ -184,8 +178,9 @@ public class PruebasPersistencia extends TestCase {
 		}
 		
 		try {
-			// Añadimos el centro de salud asociado a los usuarios
+			// Añadimos los centros de salud asociados a los usuarios
 			centro1.insertar();
+			centro3.insertar();
 			// Insertamos varios usuarios correctos
 			medico1.insertar();
 			citador1.insertar();
