@@ -1,12 +1,9 @@
 package dominio;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
-
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 
@@ -14,59 +11,64 @@ public class GestorSesiones {
 	// Tabla hash de sesiones. La clave es el idSesion y el valor es la Sesion con ese idSesion
 	private static Hashtable<Long,Sesion> sesiones = new Hashtable<Long,Sesion>();
 		
-	public static void cerrarSesion (Sesion sesion) throws SQLException{
+	public static void cerrarSesion(Sesion sesion) throws SQLException {
+		EntradaLog entrada;
+		
 		sesiones.remove(sesion.getId());
-		EntradaLog entrada = new EntradaLog(sesion.getUsuario().getLogin(),new Timestamp((new Date()).getTime()),"read","Se ha cerrado la sesion");
+		entrada = new EntradaLog(sesion.getUsuario().getLogin(), "read", "Se ha cerrado la sesion");
 		entrada.insertar();
 	}	
 	
 	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, Exception {
-		long idSesion;
-		Sesion s = null;
-		boolean encontrado=false;
+		Enumeration<Sesion> sesionesAbiertas; 
 		Sesion sesionAbierta = null;
+		Sesion sesion = null;
+		EntradaLog entrada;
+		Usuario usuario;
+		Random ran;
+		boolean encontrado;
+		long idSesion;
 		
 		try {
-			// Se consulta el login y password. Si el usuario existe, se crea la
-			// sesion
-			Usuario u = Usuario.consultar(login, password);
-			if (u != null) {
-				// Se comprueba si el usuario ya tenia una sesion iniciada
-				Enumeration<Sesion> sesionesAbiertas = sesiones.elements();
-				while (sesionesAbiertas.hasMoreElements() && !encontrado) {
-					sesionAbierta = sesionesAbiertas.nextElement();
-					if (sesionAbierta.getUsuario().getDni().equals(u.getDni()))
-						encontrado = true;
+			
+			// Comprobamos el login y el password del usuario
+			usuario = Usuario.consultar(login, password);
+			
+			// Se comprueba si el usuario ya tenía una sesion iniciada
+			sesionesAbiertas = sesiones.elements();
+			encontrado = false;
+			while(sesionesAbiertas.hasMoreElements() && !encontrado) {
+				sesionAbierta = sesionesAbiertas.nextElement();
+				if(sesionAbierta.getUsuario().getDni().equals(usuario.getDni())) {
+					encontrado = true;
 				}
-				// Si tenia una sesion iniciada, se cierra
-				if (encontrado)
-					cerrarSesion(sesionAbierta);
-
-				// El identificador de sesion debe ser unico
-				Random ran = new Random();
-				ran.setSeed(System.currentTimeMillis());
-				do {
-					idSesion = ran.nextLong();
-				} while (sesiones.containsKey(idSesion));
-
-				// Se crea la sesion, se inserta en la tabla de sesiones
-				// abiertas y se escribe el log
-				s = new Sesion(idSesion, u);
-				sesiones.put(idSesion, s);
-				EntradaLog entrada = new EntradaLog(login, new Timestamp(
-						(new Date()).getTime()), "read",
-						"Se ha creado la sesion");
-				entrada.insertar();
 			}
-		} catch (UsuarioIncorrectoException e) {
-			EntradaLog entrada = new EntradaLog(login, new Timestamp(
-					(new Date()).getTime()), "read",
-					"Intento de acceso al sistema fallido");
+			// Si el usuario ya tenía una sesion iniciada, se cierra
+			if(encontrado) {
+				cerrarSesion(sesionAbierta);
+			}
+
+			// Creamos un identificador único para la nueva sesión
+			ran = new Random();
+			ran.setSeed(System.currentTimeMillis());
+			do {
+				idSesion = ran.nextLong();
+			} while (sesiones.containsKey(idSesion));
+
+			// Se crea la sesion, se inserta en la tabla de sesiones
+			// abiertas y se escribe el log
+			sesion = new Sesion(idSesion, usuario);
+			sesiones.put(idSesion, sesion);
+			entrada = new EntradaLog(login, "read", "Se ha creado la sesion");
 			entrada.insertar();
-			throw e;
+			
+		} catch(UsuarioIncorrectoException ex) {
+			entrada = new EntradaLog(login, "read", "Intento de acceso al sistema fallido");
+			entrada.insertar();
+			throw ex;
 		}
 		
-		return (ISesion)s;
+		return (ISesion)sesion;
 	}
 	
 	public static boolean comprobar(long idSesion, Operacion operacion) {
@@ -74,44 +76,34 @@ public class GestorSesiones {
 		// Podrian hacerse comprobaciones si existe ese id. Se supone que si, porque primero se ha hecho el login
 		Sesion s = sesiones.get(idSesion);
 		 
-		switch(operacion){
+		switch(operacion) {
 		case CrearUsuario:
-			if (s.getRol()==Roles.Administrador.ordinal()) 
-				permitido=true;
+			permitido = (s.getRol() == Roles.Administrador.ordinal());
 			break;
 		case ModificarUsuario:
-			if (s.getRol()==Roles.Administrador.ordinal()) 
-				permitido=true;
+			permitido = (s.getRol() == Roles.Administrador.ordinal()); 
 			break;
 		case EliminarUsuario:
-			if (s.getRol()==Roles.Administrador.ordinal()) 
-				permitido=true;
+			permitido = (s.getRol() == Roles.Administrador.ordinal()); 
 			break;
 		case TramitarCita:
-			if (s.getRol()==Roles.Administrador.ordinal() || s.getRol()==Roles.Citador.ordinal()) 
-				permitido=true;
+			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
 			break;
 		case EliminarCita:
-			if (s.getRol()==Roles.Administrador.ordinal() || s.getRol()==Roles.Citador.ordinal()) 
-				permitido=true;
+			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
 			break;
 		case RegistrarBeneficiario:
-			if (s.getRol()==Roles.Administrador.ordinal() || s.getRol()==Roles.Citador.ordinal()) 
-				permitido=true;
+			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
 			break;
 		case ModificarCalendario:
-			if (s.getRol()==Roles.Administrador.ordinal()) 
-				permitido=true;
+			permitido = (s.getRol() == Roles.Administrador.ordinal()); 
 			break;
 		case EstablecerSustituto:
-			if (s.getRol()==Roles.Administrador.ordinal()) 
-				permitido=true;
+			permitido = (s.getRol() == Roles.Administrador.ordinal());
 			break;
 		}
 		
 		return permitido;
 	}
-
-	
 	
 }

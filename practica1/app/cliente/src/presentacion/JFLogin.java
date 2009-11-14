@@ -2,7 +2,7 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 
-import dominio.Controlador;
+import dominio.ControladorLogin;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -28,7 +28,7 @@ import javax.swing.SwingUtilities;
 */
 public class JFLogin extends javax.swing.JDialog {
 	
-	private Controlador controlador;
+	private ControladorLogin controlador;
 	private JLabel jLabel1;
 	private JLabel jLabel2;
 	private JTextField txtUsuario;
@@ -96,7 +96,7 @@ public class JFLogin extends javax.swing.JDialog {
 		}
 	}
 
-	public void setControlador(Controlador controlador) {
+	public void setControlador(ControladorLogin controlador) {
 		this.controlador = controlador;
 	}
 	

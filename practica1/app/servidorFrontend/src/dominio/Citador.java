@@ -2,6 +2,9 @@ package dominio;
 
 import java.io.Serializable;
 
+/**
+ * Clase que representa un usuario del sistema con rol de citador.
+ */
 public class Citador extends Usuario implements Serializable {
 
 	public Citador(String dni, String login, String password, String nombre, String apellidos, CentroSalud centro) {
@@ -15,4 +18,5 @@ public class Citador extends Usuario implements Serializable {
 	public Roles getRol(){
 		return Roles.Citador;
 	}
+	
 }
