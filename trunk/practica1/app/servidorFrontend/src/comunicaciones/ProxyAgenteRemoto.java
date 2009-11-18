@@ -16,10 +16,10 @@ public class ProxyAgenteRemoto implements IConexion {
 
 	private IConexion conexion;
 	
-	public void conectar(String ip, String basedatos) throws MalformedURLException, RemoteException, NotBoundException {
+	public void conectar(String ip) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
-		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + basedatos;
+		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorRespaldo";
         conexion = (IConexion)Naming.lookup(url);
 	}
 
