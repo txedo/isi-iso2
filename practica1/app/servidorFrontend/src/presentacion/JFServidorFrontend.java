@@ -2,7 +2,6 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import comunicaciones.ServidorFrontend;
 import dominio.ControladorPresentacion;
 
 import java.awt.BorderLayout;
