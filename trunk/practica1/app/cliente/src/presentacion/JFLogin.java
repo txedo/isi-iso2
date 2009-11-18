@@ -1,18 +1,19 @@
 package presentacion;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+import com.sun.org.apache.xerces.internal.impl.dtd.models.DFAContentModel;
 
 import dominio.ControladorLogin;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import javax.swing.WindowConstants;
-import javax.swing.SwingUtilities;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -32,8 +33,8 @@ public class JFLogin extends javax.swing.JDialog {
 	private JLabel jLabel1;
 	private JLabel jLabel2;
 	private JTextField txtUsuario;
-	private JButton jButton1;
-	private JTextField txtPassword;
+	private JButton btnConectar;
+	private JPasswordField txtPassword;
 	private JLabel jLabel3;
 
 	public JFLogin() {
@@ -51,37 +52,37 @@ public class JFLogin extends javax.swing.JDialog {
 			this.setMinimumSize(new java.awt.Dimension(10, 178));
 			this.setMaximumSize(new java.awt.Dimension(2147483647, 178));
 			{
-				jButton1 = new JButton();
-				getContentPane().add(jButton1, new AnchorConstraint(109, 202, 440, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jButton1.setText("Conectar");
-				jButton1.setPreferredSize(new java.awt.Dimension(87, 28));
-				jButton1.addActionListener(new ActionListener() {
+				btnConectar = new JButton();
+				getContentPane().add(btnConectar, new AnchorConstraint(109, 202, 440, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				btnConectar.setText("Conectar");
+				btnConectar.setPreferredSize(new java.awt.Dimension(87, 28));
+				btnConectar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
-						jButton1ActionPerformed(evt);
+						btnConectarActionPerformed(evt);
 					}
 				});
 			}
 			{
-				txtPassword = new JTextField();
-				getContentPane().add(txtPassword, new AnchorConstraint(72, 10, 10, 99, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtPassword.setPreferredSize(new java.awt.Dimension(285, 21));
+				txtPassword = new JPasswordField();
+				getContentPane().add(txtPassword, new AnchorConstraint(73, 10, 10, 99, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtPassword.setPreferredSize(new java.awt.Dimension(266, 21));
 			}
 			{
 				jLabel3 = new JLabel();
-				getContentPane().add(jLabel3, new AnchorConstraint(75, 10, 10, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				getContentPane().add(jLabel3, new AnchorConstraint(77, 10, 10, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				jLabel3.setText("Contraseña: ");
-				jLabel3.setPreferredSize(new java.awt.Dimension(87, 14));
+				jLabel3.setPreferredSize(new java.awt.Dimension(79, 14));
 			}
 			{
 				txtUsuario = new JTextField();
-				getContentPane().add(txtUsuario, new AnchorConstraint(39, 10, 10, 79, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtUsuario.setPreferredSize(new java.awt.Dimension(305, 21));
+				getContentPane().add(txtUsuario, new AnchorConstraint(39, 10, 10, 99, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtUsuario.setPreferredSize(new java.awt.Dimension(266, 21));
 			}
 			{
 				jLabel2 = new JLabel();
-				getContentPane().add(jLabel2, new AnchorConstraint(42, 10, 10, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				getContentPane().add(jLabel2, new AnchorConstraint(43, 10, 10, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				jLabel2.setText("Usuario: ");
-				jLabel2.setPreferredSize(new java.awt.Dimension(67, 14));
+				jLabel2.setPreferredSize(new java.awt.Dimension(79, 14));
 			}
 			{
 				jLabel1 = new JLabel();
@@ -100,8 +101,8 @@ public class JFLogin extends javax.swing.JDialog {
 		this.controlador = controlador;
 	}
 	
-	private void jButton1ActionPerformed(ActionEvent evt) {
-		controlador.iniciarSesion(txtUsuario.getText(), txtPassword.getText());
+	private void btnConectarActionPerformed(ActionEvent evt) {
+		controlador.iniciarSesion(txtUsuario.getText(), new String(txtPassword.getPassword()));
 	}
 
 }
