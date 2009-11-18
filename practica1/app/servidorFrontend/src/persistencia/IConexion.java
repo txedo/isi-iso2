@@ -1,5 +1,8 @@
 package persistencia;
 
+import java.nio.ReadOnlyBufferException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -7,16 +10,16 @@ import java.sql.SQLException;
  * Interfaz de acceso a una base de datos, que es utilizada por el
  * gestor de conexiones.
  */
-public interface IConexion {
+public interface IConexion extends Remote {
 
-	public ResultSet consultar(ComandoSQL comando) throws SQLException;
+	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException;
 	
-	public void ejecutar(ComandoSQL comando) throws SQLException;
+	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException;
 	
-	public void commit() throws SQLException;
+	public void commit() throws RemoteException, SQLException;
 	
-	public void rollback() throws SQLException;
+	public void rollback() throws RemoteException, SQLException;
 	
-	public void cerrar() throws SQLException;
+	public void cerrar() throws RemoteException, SQLException;
 	
 }
