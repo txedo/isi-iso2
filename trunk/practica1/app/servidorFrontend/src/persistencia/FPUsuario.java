@@ -2,7 +2,6 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import dominio.Administrador;
 import dominio.CentroSalud;
 import dominio.Citador;

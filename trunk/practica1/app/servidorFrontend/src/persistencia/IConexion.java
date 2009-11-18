@@ -1,6 +1,5 @@
 package persistencia;
 
-import java.nio.ReadOnlyBufferException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
@@ -12,6 +11,8 @@ import java.sql.SQLException;
  */
 public interface IConexion extends Remote {
 
+	public final int PUERTO_CONEXION = 1099;
+	
 	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException;
 	
 	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException;
