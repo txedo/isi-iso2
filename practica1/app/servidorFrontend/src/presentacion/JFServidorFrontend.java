@@ -72,7 +72,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 				jPanel1.setPreferredSize(new java.awt.Dimension(374, 266));
 				{
 					jScrollPane1 = new JScrollPane();
-					jPanel1.add(jScrollPane1, new AnchorConstraint(62, 10, 23, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					jPanel1.add(jScrollPane1, new AnchorConstraint(55, 10, 23, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					jScrollPane1.setPreferredSize(new java.awt.Dimension(346, 154));
 					jScrollPane1.setMinimumSize(new java.awt.Dimension(346, 155));
 					{

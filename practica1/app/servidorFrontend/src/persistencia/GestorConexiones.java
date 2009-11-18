@@ -53,12 +53,12 @@ public class GestorConexiones {
 				try {
 					conexion.ejecutar(comando);
 					conexionesUsadas.add(conexion);
-				} catch(SQLException ex) {
+				} catch(Exception ex) {
 					// Deshacemos los cambios en las conexiones
 					for(IConexion conexionUsada : conexionesUsadas) {
 						conexionUsada.rollback();
 					}
-					throw ex;
+					throw new SQLException("Error en el acceso a las bases de datos", ex);
 				}
 			}
 			// Aplicamos los cambios en todas las conexiones
