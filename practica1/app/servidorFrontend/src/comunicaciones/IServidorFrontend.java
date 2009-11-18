@@ -9,6 +9,9 @@ import excepciones.UsuarioIncorrectoException;
 
 public interface IServidorFrontend extends Remote {
 
+	public final String NOMBRE_SERVIDOR = "servidorfrontend";
+	public final int PUERTO_SERVIDOR = 2995;
+	
 	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception;
 	
 /*	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException;

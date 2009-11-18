@@ -1,15 +1,18 @@
 package dominio;
 
 import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import comunicaciones.IServidorFrontend;
+import comunicaciones.ProxyServidorFrontend;
 import excepciones.UsuarioIncorrectoException;
 import presentacion.JFLogin;
 
+/**
+ * Controlador que gestiona la identificación de los usuarios. 
+ */
 public class ControladorLogin {
 
 	private IServidorFrontend servidor;
@@ -35,7 +38,8 @@ public class ControladorLogin {
 	public void iniciarSesion(String login, String password) {
 		try {
 			// Intentamos conectarnos con el servidor frontend
-			servidor = (IServidorFrontend)Naming.lookup("rmi://127.0.0.1:2995/servidorfrontend");
+			servidor = new ProxyServidorFrontend();
+			((ProxyServidorFrontend)servidor).conectar("127.0.0.1");
 			// Nos identificamos en el servidor
 			sesion = (ISesion)servidor.identificar(login, password);
 			// Ocultamos la ventana de login
