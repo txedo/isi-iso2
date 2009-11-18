@@ -3,6 +3,7 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import comunicaciones.ServidorFrontend;
+import dominio.ControladorPresentacion;
 
 import java.awt.BorderLayout;
 
@@ -38,7 +39,7 @@ import javax.swing.SwingUtilities;
 */
 public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 	
-	private ServidorFrontend servidorFE;
+	private ControladorPresentacion controlador;
 	private JPanel jPanel1;
 	private JScrollPane jScrollPane1;
 	private JLabel labelBarraEstado;
@@ -119,13 +120,13 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 		}
 	}
 	
-	public void setServidor(ServidorFrontend servidor) {
-		servidorFE = servidor;
+	public void setControladorPresentacion(ControladorPresentacion controlador) {
+		this.controlador = controlador;
 	}
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
 		try {
-			this.servidorFE.conectar();
+			this.controlador.getServidor().conectar();
 			this.botonConectar.setEnabled(false);
 			this.botonDesconectar.setEnabled(true);
 			this.labelBarraEstado.setText("Servidor preparado.");
@@ -138,7 +139,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 	
 	private void botonDesconectarActionPerformed(ActionEvent evt) {
 		try {
-			this.servidorFE.desconectar();
+			this.controlador.getServidor().desconectar();
 			this.botonDesconectar.setEnabled(false);
 			this.botonConectar.setEnabled(true);
 			this.labelBarraEstado.setText("Servidor desconectado.");

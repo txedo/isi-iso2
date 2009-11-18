@@ -8,43 +8,25 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Vector;
 
+import dominio.ControladorPresentacion;
 import dominio.GestorSesiones;
 import dominio.ISesion;
 import excepciones.UsuarioIncorrectoException;
 
-import presentacion.IVentana;
-import presentacion.JFServidorFrontend;
+
 
 public class ServidorFrontend extends UnicastRemoteObject implements IServidorFrontend {
-
-	protected ServidorFrontend() throws RemoteException {
+	private ControladorPresentacion controlador;
+	
+	public ServidorFrontend(ControladorPresentacion c) throws RemoteException {
 		super();
 		LocateRegistry.createRegistry(2995);
-	}
-	
-	private static ArrayList<IVentana> guis;
-
-	public static void main(String[] args) throws RemoteException, SQLException {
-        persistencia.IConexion conexion = (persistencia.IConexion)persistencia.AgenteLocal.getAgente();
-        persistencia.GestorConexiones.ponerConexion(conexion);
-        
-        guis = new ArrayList<IVentana>();
-		JFServidorFrontend inst = new JFServidorFrontend();
-		inst.setServidor(new ServidorFrontend());
-		inst.setVisible(true);
-		guis.add(inst);
-	}
-	
-	public void actualizarVentanas (String mensaje) {
-		for (IVentana v : guis) {
-			v.actualizarTexto(mensaje + '\n');
-		}
+		controlador = c;
 	}
 	
     public void conectar() throws MalformedURLException, RemoteException {
+    	controlador.getObservador().actualizarVentanas("Servidor iniciado.");
         try {            
             Naming.bind("rmi://127.0.0.1:2995/servidorfrontend", this);
         }
@@ -54,6 +36,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
     }
     
     public void desconectar() throws RemoteException, MalformedURLException, NotBoundException {
+    	controlador.getObservador().actualizarVentanas("Servidor detenido.");
         Naming.unbind("rmi://127.0.0.1:2995/servidorfrontend");
     }
 	
@@ -61,23 +44,23 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
 		try {
 			ISesion s = GestorSesiones.identificar(login, password);
-			actualizarVentanas("Usuario '" + login + "' autenticado.");
+			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' autenticado.");
 			return s;
 		}
 		catch (RemoteException re) {
-			actualizarVentanas(re.getMessage());
+			controlador.getObservador().actualizarVentanas(re.getMessage());
 			throw re;
 		}
 		catch (SQLException se) {
-			actualizarVentanas(se.getMessage());
+			controlador.getObservador().actualizarVentanas(se.getMessage());
 			throw se;
 		}
 		catch (UsuarioIncorrectoException uie) {
-			actualizarVentanas(uie.getMessage());
+			controlador.getObservador().actualizarVentanas(uie.getMessage());
 			throw uie;
 		}
 		catch (Exception e) {
-			actualizarVentanas(e.getMessage());
+			controlador.getObservador().actualizarVentanas(e.getMessage());
 			throw e;
 		}
 	}
