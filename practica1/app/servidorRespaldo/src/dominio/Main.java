@@ -14,7 +14,6 @@ public class Main {
 		
 		try {
 			a = AgenteRemoto.getAgente();
-			System.out.println(a);
 			r.setAgente(a);
 			r.setVisible(true);
 		} catch (RemoteException e) {
