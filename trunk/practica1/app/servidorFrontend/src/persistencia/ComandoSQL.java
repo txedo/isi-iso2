@@ -1,5 +1,6 @@
 package persistencia;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -8,7 +9,7 @@ import java.sql.SQLException;
  * Clase abstracta que representa una consulta o modificación sobre una
  * base de datos.
  */
-public abstract class ComandoSQL {
+public abstract class ComandoSQL implements Serializable {
 
 	protected String sentencia;
 	protected Object[] parametros;

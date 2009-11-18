@@ -1,5 +1,5 @@
 CREATE DATABASE bdsscarespaldo CHARACTER SET utf8 COLLATE utf8_bin;
-USE bdsscaRespaldo;
+USE bdsscarespaldo;
 
 CREATE TABLE centros (
        id INT NOT NULL AUTO_INCREMENT,
