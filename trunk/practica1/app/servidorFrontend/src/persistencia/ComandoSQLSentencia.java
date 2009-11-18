@@ -10,6 +10,7 @@ import java.sql.SQLException;
  */
 public class ComandoSQLSentencia extends ComandoSQL {
 
+
 	public ComandoSQLSentencia(String sentencia, Object... parametros) {
 		super(sentencia, parametros);
 	}
