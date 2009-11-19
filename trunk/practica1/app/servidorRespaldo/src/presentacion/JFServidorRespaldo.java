@@ -16,15 +16,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.SwingUtilities;
-
-import persistencia.AgenteRespaldo;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -43,6 +40,8 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 	private ConexionBDRespaldo conexion;
 	private JPanel jPanel1;
 	private JScrollPane jScrollPane1;
+	private JLabel jlbIPRespaldo;
+	private JTextField jtxtIPRespaldo;
 	private JLabel labelBarraEstado;
 	private JButton botonDesconectar;
 	private JButton botonConectar;
@@ -58,7 +57,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("Servidor Respaldo");
 			//this.setAlwaysOnTop(true);
-			this.setPreferredSize(new java.awt.Dimension(374, 266));
+			this.setPreferredSize(new java.awt.Dimension(500, 266));
 			this.setMinimumSize(new java.awt.Dimension(374, 266));
 
 			this.addWindowListener(new java.awt.event.WindowAdapter() { 
@@ -72,6 +71,18 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 				getContentPane().add(jPanel1, BorderLayout.CENTER);
 				jPanel1.setLayout(jPanel1Layout);
 				jPanel1.setPreferredSize(new java.awt.Dimension(374, 266));
+				{
+					jlbIPRespaldo = new JLabel();
+					jPanel1.add(jlbIPRespaldo, new AnchorConstraint(8, 8, 94, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					jlbIPRespaldo.setText("IP Respaldo:");
+					jlbIPRespaldo.setPreferredSize(new java.awt.Dimension(92, 14));
+				}
+				{
+					jtxtIPRespaldo = new JTextField();
+					jPanel1.add(jtxtIPRespaldo, new AnchorConstraint(24, 12, 191, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					jtxtIPRespaldo.setPreferredSize(new java.awt.Dimension(88, 21));
+					jtxtIPRespaldo.setText("127.0.0.1");
+				}
 				{
 					jScrollPane1 = new JScrollPane();
 					jPanel1.add(jScrollPane1, new AnchorConstraint(55, 10, 23, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
@@ -127,7 +138,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
 		try {
-			this.conexion.conectar("127.0.0.1");
+			this.conexion.conectar(jtxtIPRespaldo.getText());
 			this.botonConectar.setEnabled(false);
 			this.botonDesconectar.setEnabled(true);
 			this.labelBarraEstado.setText("Servidor preparado.");
@@ -140,7 +151,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 	
 	private void botonDesconectarActionPerformed(ActionEvent evt) {
 		try {
-			this.conexion.desconectar("127.0.0.1");
+			this.conexion.desconectar(jtxtIPRespaldo.getText());
 			this.botonDesconectar.setEnabled(false);
 			this.botonConectar.setEnabled(true);
 			this.labelBarraEstado.setText("Servidor desconectado.");
