@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
+import comunicaciones.ConexionBDFrontEnd;
+
 import dominio.Administrador;
 import dominio.CentroSalud;
 import dominio.Citador;
@@ -13,7 +16,7 @@ import dominio.Medico;
 import dominio.Usuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
-import persistencia.AgenteLocal;
+import persistencia.AgenteFrontend;
 import persistencia.GestorConexiones;
 import junit.framework.TestCase;
 
@@ -24,6 +27,7 @@ public class PruebasPersistencia extends TestCase {
 	Medico medico1, medico2;
 	Citador citador1, citador2;
 	Administrador administrador1;
+	ConexionBDFrontEnd conexionF = null;
 	
 	protected void setUp() {
 		Connection bd;
@@ -31,7 +35,7 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Borramos la base de datos
-			bd = AgenteLocal.getAgente().getConexion();
+			bd = AgenteFrontend.getAgente().getConexion();
 			sentencia = bd.prepareStatement("DELETE FROM centros");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM usuarios");
@@ -41,7 +45,8 @@ public class PruebasPersistencia extends TestCase {
 			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
 			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
-			GestorConexiones.ponerConexion(AgenteLocal.getAgente());
+			conexionF = new ConexionBDFrontEnd();
+			GestorConexiones.ponerConexion(conexionF);
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
 			centro2 = new CentroSalud("Centro B", null);
@@ -60,12 +65,8 @@ public class PruebasPersistencia extends TestCase {
 	}
 	
 	protected void tearDown() {
-		try {
-			// Quitamos la conexión local con la base de datos
-			GestorConexiones.quitarConexion(AgenteLocal.getAgente());
-		} catch(SQLException e) {
-			fail(e.toString());
-		}
+		// Quitamos la conexión local con la base de datos
+		GestorConexiones.quitarConexion(conexionF);
 	}
 	
 	/** Pruebas de la tabla de centros de salud */
