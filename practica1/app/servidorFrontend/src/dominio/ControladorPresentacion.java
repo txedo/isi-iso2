@@ -20,7 +20,8 @@ public class ControladorPresentacion {
 	public ControladorPresentacion() {
 		observador = new ObservadorPresentacion();
 		try {
-			servidor = new ServidorFrontend(this);
+			servidor = new ServidorFrontend();
+			servidor.setControlador(this);
 		} catch (RemoteException e) {
 			observador.actualizarVentanas(e.getMessage());
 			System.out.println(e);
@@ -57,9 +58,33 @@ public class ControladorPresentacion {
 		IConexion conexion = (IConexion)persistencia.AgenteFrontend.getAgente();
 		ProxyAgenteRemoto proxy = new ProxyAgenteRemoto();
 		proxy.conectar("127.0.0.1");
+		
+	}
+
+private ProxyAgenteRemoto proxy;
+
+	public void iniciarServidor(String ipFrontend, String ipRespaldo) {
+		
+		// Conectamos el servidor y lo ponemos a la escucha 
+		servidor.conectar(ipFrontend);
+		// Establecemos conexión con el servidor de respaldo
+		proxy = new ProxyAgenteRemoto();
+		proxy.conectar(ipRespaldo);
+		// Establecemos las conexiones con la BD local y remota
 		GestorConexiones.ponerConexion(conexion);
 		GestorConexiones.ponerConexion(proxy);
-		
+	}
+	
+	public void detenerServidor(String ipFrontend, String ipRespaldo) {
+		try {
+			// Cerramos las conexiones con las BD y vaciamos la lista
+			GestorConexiones.cerrarConexiones();
+			GestorConexiones.quitarConexiones();
+			// Desconectamos el servidor
+			servidor.desconectar(ipFrontend);
+		} catch(Exception ex) {
+			
+		}
 	}
 
 	public ObservadorPresentacion getObservador() {

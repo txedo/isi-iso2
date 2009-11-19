@@ -23,7 +23,11 @@ public class GestorConexiones {
 			conexiones.remove(conexion);
 		}
 	}
-	
+
+	public static void quitarConexiones() {
+		conexiones.clear();
+	}
+
 	public static ResultSet consultar(ComandoSQL comando) throws SQLException {
 		ResultSet datos;
 		
