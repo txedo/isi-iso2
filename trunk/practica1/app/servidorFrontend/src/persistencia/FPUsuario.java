@@ -34,7 +34,7 @@ public class FPUsuario {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_DNI + " = ?", dni);
-		datos = GestorConexiones.consultar(comando);
+		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
 		// Si no se obtienen datos, es porque el usuario es
@@ -76,7 +76,7 @@ public class FPUsuario {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_LOGIN + " = ? AND " + COL_PASSWORD + " = ?", login, password);
-		datos = GestorConexiones.consultar(comando);
+		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
 		// Si no se obtienen datos, es porque el usuario es
@@ -115,7 +115,7 @@ public class FPUsuario {
 
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_USUARIOS + " (" + COL_DNI + ", " + COL_LOGIN + ", " + COL_PASSWORD + ", " + COL_ROL + ", " + COL_NOMBRE + ", " + COL_APELLIDOS + ", " + COL_ID_CENTRO + ") VALUES (?, ?, ?, ?, ?, ?, ?)",
 		                                  usuario.getDni(), usuario.getLogin(), usuario.getPassword(), usuario.getRol().ordinal(), usuario.getNombre(), usuario.getApellidos(), usuario.getCentroSalud().getId());
-		GestorConexiones.ejecutar(comando);	
+		GestorConexionesBD.ejecutar(comando);	
 	}
 	
 	public static void actualizar(Usuario usuario) throws SQLException {
@@ -123,14 +123,14 @@ public class FPUsuario {
 		
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_USUARIOS + " SET " + COL_LOGIN + " = ?, "+ COL_PASSWORD + " = ?, " + COL_ROL + " = ?, " + COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_ID_CENTRO + " = ? WHERE " + COL_DNI + " = ?",
 		                                  usuario.getLogin(), usuario.getPassword(), usuario.getRol().ordinal(), usuario.getNombre(), usuario.getApellidos(), usuario.getCentroSalud().getId(), usuario.getDni());
-		GestorConexiones.ejecutar(comando);	
+		GestorConexionesBD.ejecutar(comando);	
 	}
 	
 	public static void eliminar(Usuario usuario) throws SQLException {
 		ComandoSQL comando;
 		
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_USUARIOS + " WHERE " + COL_DNI + " = ?" , usuario.getDni());
-		GestorConexiones.ejecutar(comando);
+		GestorConexionesBD.ejecutar(comando);
 	}
 	
 }

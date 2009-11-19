@@ -5,13 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-
-import comunicaciones.ConexionBDFrontEnd;
-
+import comunicaciones.ConexionBDFrontend;
 import junit.framework.TestCase;
-
 import persistencia.AgenteFrontend;
-import persistencia.GestorConexiones;
+import persistencia.GestorConexionesBD;
 import dominio.Administrador;
 import dominio.CentroSalud;
 import dominio.Citador;
@@ -30,7 +27,7 @@ public class PruebasSesiones extends TestCase{
 	CentroSalud centro1;
 	Medico medico1;
 	Administrador administrador1;
-	ConexionBDFrontEnd conexionF = null;
+	ConexionBDFrontend conexionF = null;
 	
 	protected void setUp() {
 		Connection bd;
@@ -48,8 +45,8 @@ public class PruebasSesiones extends TestCase{
 			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
 			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
-			conexionF = new ConexionBDFrontEnd();
-			GestorConexiones.ponerConexion(conexionF);
+			conexionF = new ConexionBDFrontend();
+			GestorConexionesBD.ponerConexion(conexionF);
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
 			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1);
@@ -64,7 +61,7 @@ public class PruebasSesiones extends TestCase{
 	
 	protected void tearDown() {
 		// Quitamos la conexión local con la base de datos
-		GestorConexiones.quitarConexion(conexionF);
+		GestorConexionesBD.quitarConexion(conexionF);
 	}
 	
 	/** Prueba del escenario normal: se crea la sesion **/

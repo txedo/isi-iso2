@@ -1,6 +1,6 @@
 package persistencia;
 
-
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -4,11 +4,9 @@ import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-
-import persistencia.GestorConexiones;
-import persistencia.IConexion;
+import persistencia.GestorConexionesBD;
 import presentacion.JFServidorFrontend;
-
+import comunicaciones.ConexionBDFrontend;
 import comunicaciones.ProxyAgenteRemoto;
 import comunicaciones.ServidorFrontend;
 
@@ -16,75 +14,50 @@ public class ControladorPresentacion {
 	
 	private ServidorFrontend servidor;
 	private ObservadorPresentacion observador;
-	
+	private ProxyAgenteRemoto proxy;
+	private ConexionBDFrontend basedatos;
+
 	public ControladorPresentacion() {
 		observador = new ObservadorPresentacion();
-		try {
-			servidor = new ServidorFrontend();
-			servidor.setControlador(this);
-		} catch (RemoteException e) {
-			observador.actualizarVentanas(e.getMessage());
-			System.out.println(e);
-		}
+		servidor = null;
 	}
 	
-	public void iniciar() {
-		try {
-			
-			this.iniciarConexiones();
-			this.iniciarGUI();
-		} catch (SQLException e) {
-			observador.actualizarVentanas(e.getMessage());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private void iniciarGUI () {
-		JFServidorFrontend inst = new JFServidorFrontend();
-		inst.setControladorPresentacion(this);
-		inst.setVisible(true);
-		observador.add(inst);
-	}
-	
-	private void iniciarConexiones () throws SQLException, MalformedURLException, RemoteException, NotBoundException{
-		IConexion conexion = (IConexion)persistencia.AgenteFrontend.getAgente();
-		ProxyAgenteRemoto proxy = new ProxyAgenteRemoto();
-		proxy.conectar("127.0.0.1");
+	public void mostrarVentana() {
+		JFServidorFrontend vent;
 		
+		// Mostramos la ventana principal del servidor
+		vent = new JFServidorFrontend();
+		vent.setControladorPresentacion(this);
+		vent.setVisible(true);
+		observador.add(vent);
 	}
-
-private ProxyAgenteRemoto proxy;
-
-	public void iniciarServidor(String ipFrontend, String ipRespaldo) {
-		
-		// Conectamos el servidor y lo ponemos a la escucha 
-		servidor.conectar(ipFrontend);
+	
+	public void iniciarServidor(String ipFrontend, String ipRespaldo) throws MalformedURLException, RemoteException, NotBoundException, SQLException {
 		// Establecemos conexión con el servidor de respaldo
 		proxy = new ProxyAgenteRemoto();
 		proxy.conectar(ipRespaldo);
-		// Establecemos las conexiones con la BD local y remota
-		GestorConexiones.ponerConexion(conexion);
-		GestorConexiones.ponerConexion(proxy);
+		GestorConexionesBD.ponerConexion(proxy);
+		// Creamos una conexión con la base de datos local
+		basedatos = new ConexionBDFrontend();
+		GestorConexionesBD.ponerConexion(basedatos);
+		// Conectamos el servidor y lo ponemos a la escucha
+		if(servidor == null) {
+			servidor = new ServidorFrontend();
+		}
+		servidor.setControlador(this);
+		servidor.conectar(ipFrontend);
+		// Mostramos un mensaje indicando que el servidor está activo
+    	observador.actualizarVentanas("Servidor iniciado.");
 	}
 	
-	public void detenerServidor(String ipFrontend, String ipRespaldo) {
-		try {
-			// Cerramos las conexiones con las BD y vaciamos la lista
-			GestorConexiones.cerrarConexiones();
-			GestorConexiones.quitarConexiones();
-			// Desconectamos el servidor
-			servidor.desconectar(ipFrontend);
-		} catch(Exception ex) {
-			
-		}
+	public void detenerServidor(String ipFrontend, String ipRespaldo) throws RemoteException, MalformedURLException, NotBoundException, SQLException {
+		// Cerramos las conexiones con las BD y vaciamos la lista
+		GestorConexionesBD.cerrarConexiones();
+		GestorConexionesBD.quitarConexiones();
+		// Desconectamos el servidor
+		servidor.desconectar(ipFrontend);
+		// Mostramos un mensaje indicando que el servidor está inactivo
+		observador.actualizarVentanas("Servidor iniciado.");
 	}
 
 	public ObservadorPresentacion getObservador() {

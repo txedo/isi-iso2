@@ -15,9 +15,13 @@ import presentacion.JFLogin;
  */
 public class ControladorLogin {
 
-	private IServidorFrontend servidor;
+	private ProxyServidorFrontend servidor;
 	private ISesion sesion;
 	private JFLogin ventana;
+	
+	public ControladorLogin() {
+		servidor = null;
+	}
 	
 	public void identificarse() {
 		// Creamos la ventana de login y la mostramos
@@ -38,8 +42,10 @@ public class ControladorLogin {
 	public void iniciarSesion(String login, String password) {
 		try {
 			// Intentamos conectarnos con el servidor frontend
-			servidor = new ProxyServidorFrontend();
-			((ProxyServidorFrontend)servidor).conectar("127.0.0.1");
+			if(servidor == null) {
+				servidor = new ProxyServidorFrontend();
+			}
+			servidor.conectar("127.0.0.1");
 			// Nos identificamos en el servidor
 			sesion = (ISesion)servidor.identificar(login, password);
 			// Ocultamos la ventana de login

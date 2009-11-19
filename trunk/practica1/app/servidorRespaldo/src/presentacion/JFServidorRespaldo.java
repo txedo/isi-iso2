@@ -41,10 +41,10 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 	private JPanel jPanel1;
 	private JScrollPane jScrollPane1;
 	private JLabel jlbIPRespaldo;
-	private JTextField jtxtIPRespaldo;
-	private JLabel labelBarraEstado;
-	private JButton botonDesconectar;
-	private JButton botonConectar;
+	private JTextField txtIPRespaldo;
+	private JLabel lblBarraEstado;
+	private JButton btnDesconectar;
+	private JButton btnConectar;
 	private JTextArea textLog;
 	
 	public JFServidorRespaldo() {
@@ -78,10 +78,10 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 					jlbIPRespaldo.setPreferredSize(new java.awt.Dimension(92, 14));
 				}
 				{
-					jtxtIPRespaldo = new JTextField();
-					jPanel1.add(jtxtIPRespaldo, new AnchorConstraint(24, 12, 191, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-					jtxtIPRespaldo.setPreferredSize(new java.awt.Dimension(88, 21));
-					jtxtIPRespaldo.setText("127.0.0.1");
+					txtIPRespaldo = new JTextField();
+					jPanel1.add(txtIPRespaldo, new AnchorConstraint(24, 12, 191, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					txtIPRespaldo.setPreferredSize(new java.awt.Dimension(88, 21));
+					txtIPRespaldo.setText("127.0.0.1");
 				}
 				{
 					jScrollPane1 = new JScrollPane();
@@ -96,29 +96,29 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 					}
 				}
 				{
-					labelBarraEstado = new JLabel();
-					jPanel1.add(labelBarraEstado, new AnchorConstraint(937, 10, 3, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					labelBarraEstado.setText("Servidor desconectado.");
-					labelBarraEstado.setPreferredSize(new java.awt.Dimension(346, 14));
+					lblBarraEstado = new JLabel();
+					jPanel1.add(lblBarraEstado, new AnchorConstraint(937, 10, 3, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					lblBarraEstado.setText("Servidor desconectado.");
+					lblBarraEstado.setPreferredSize(new java.awt.Dimension(346, 14));
 				}
 				{
-					botonDesconectar = new JButton();
-					jPanel1.add(botonDesconectar, new AnchorConstraint(13, 643, 124, 140, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					botonDesconectar.setText("Desconectar");
-					botonDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
-					botonDesconectar.setEnabled(false);
-					botonDesconectar.addActionListener(new ActionListener() {
+					btnDesconectar = new JButton();
+					jPanel1.add(btnDesconectar, new AnchorConstraint(13, 643, 124, 140, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					btnDesconectar.setText("Desconectar");
+					btnDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
+					btnDesconectar.setEnabled(false);
+					btnDesconectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							botonDesconectarActionPerformed(evt);
 						}
 					});
 				}
 				{
-					botonConectar = new JButton();
-					jPanel1.add(botonConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					botonConectar.setText("Conectar");
-					botonConectar.setPreferredSize(new java.awt.Dimension(110, 30));
-					botonConectar.addActionListener(new ActionListener() {
+					btnConectar = new JButton();
+					jPanel1.add(btnConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					btnConectar.setText("Conectar");
+					btnConectar.setPreferredSize(new java.awt.Dimension(110, 30));
+					btnConectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							botonConectarActionPerformed(evt);
 						}
@@ -138,33 +138,38 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
 		try {
-			this.conexion.conectar(jtxtIPRespaldo.getText());
-			this.botonConectar.setEnabled(false);
-			this.botonDesconectar.setEnabled(true);
-			this.labelBarraEstado.setText("Servidor preparado.");
+			// Iniciamos el servidor de respaldo
+			conexion.conectar(txtIPRespaldo.getText());
+			// Cambiamos el estado de la ventana
+			btnConectar.setEnabled(false);
+			btnDesconectar.setEnabled(true);
+			txtIPRespaldo.setEditable(false);
+			lblBarraEstado.setText("Servidor preparado.");
 		} catch (MalformedURLException e) {
-			this.actualizarTexto(e.toString());
+			actualizarTexto("Error: " + e.toString());
 		} catch (RemoteException e) {
-			this.actualizarTexto(e.toString());
+			actualizarTexto("Error: " + e.toString());
 		}
 	}
 	
 	private void botonDesconectarActionPerformed(ActionEvent evt) {
 		try {
-			this.conexion.desconectar(jtxtIPRespaldo.getText());
-			this.botonDesconectar.setEnabled(false);
-			this.botonConectar.setEnabled(true);
-			this.labelBarraEstado.setText("Servidor desconectado.");
+			// Detenemos el servidor de respaldo
+			conexion.desconectar(txtIPRespaldo.getText());
+			// Cambiamos el estado de la ventana
+			btnDesconectar.setEnabled(false);
+			btnConectar.setEnabled(true);
+			txtIPRespaldo.setEditable(true);
+			lblBarraEstado.setText("Servidor desconectado.");
 		} catch (RemoteException e) {
-			this.actualizarTexto(e.toString());
+			actualizarTexto("Error: " + e.toString());
 		} catch (MalformedURLException e) {
-			this.actualizarTexto(e.toString());
+			actualizarTexto("Error: " + e.toString());
 		} catch (NotBoundException e) {
-			this.actualizarTexto(e.toString());
+			actualizarTexto("Error: " + e.toString());
 		}
 	}
 
-	@Override
 	public void actualizarTexto(String mensaje) {
 		textLog.setText(textLog.getText() + mensaje + "\n");	
 	}

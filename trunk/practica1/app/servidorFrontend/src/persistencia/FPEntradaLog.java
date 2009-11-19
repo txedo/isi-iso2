@@ -25,7 +25,7 @@ public class FPEntradaLog {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_LOG);
-		datos = GestorConexiones.consultar(comando);
+		datos = GestorConexionesBD.consultar(comando);
 		
 		// Devolvemos la lista completa de entradas del log
 		log = new ArrayList<EntradaLog>();
@@ -47,7 +47,7 @@ public class FPEntradaLog {
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_LOG + " (" + COL_USUARIO + ", " + COL_FECHA + ", " + COL_ACCION + ", " + COL_MENSAJE + ") VALUES (?, ?, ?, ?)",
 		                                  entrada.getUsuario(), entrada.getFecha(), entrada.getAccion(), entrada.getMensaje());
-		GestorConexiones.ejecutar(comando);
+		GestorConexionesBD.ejecutar(comando);
 	}
 	
 }

@@ -6,6 +6,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import dominio.ControladorPresentacion;
@@ -19,6 +20,8 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	
 	public ServidorFrontend() throws RemoteException {
 		super();
+//		unexportObject(this, false);
+		LocateRegistry.createRegistry(PUERTO_SERVIDOR);
 	}
 	
 	public void setControlador(ControladorPresentacion controlador) {
@@ -26,18 +29,18 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	}
 	
     public void conectar(String ip) throws MalformedURLException, RemoteException {
-    	controlador.getObservador().actualizarVentanas("Servidor iniciado.");
-        try {            
-    		LocateRegistry.createRegistry(PUERTO_SERVIDOR);
+        try {
+//            exportObject(this, PUERTO_SERVIDOR);
             Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
         } catch(AlreadyBoundException ex) {
+//            exportObject(this, PUERTO_SERVIDOR);
             Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
         }
     }
     
     public void desconectar(String ip) throws RemoteException, MalformedURLException, NotBoundException {
-    	controlador.getObservador().actualizarVentanas("Servidor detenido.");
-        Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
+//        unexportObject(this, false);
+    	Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
     }
 	
     //TODO quitar la excepcion generica Exception

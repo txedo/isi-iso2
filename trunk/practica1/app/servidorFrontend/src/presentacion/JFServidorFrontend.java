@@ -3,27 +3,22 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.ControladorPresentacion;
-
 import java.awt.BorderLayout;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.SwingUtilities;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -46,9 +41,9 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 	private JTextField txtIPFrontend;
 	private JTextField txtIPRespaldo;
 	private JLabel lblIP;
-	private JLabel labelBarraEstado;
-	private JButton botonDesconectar;
-	private JButton botonConectar;
+	private JLabel lblBarraEstado;
+	private JButton btnDesconectar;
+	private JButton btnConectar;
 	private JTextArea txtLog;
 	
 	public JFServidorFrontend() {
@@ -99,29 +94,29 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 					}
 				}
 				{
-					labelBarraEstado = new JLabel();
-					jPanel1.add(labelBarraEstado, new AnchorConstraint(937, 10, 5, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					labelBarraEstado.setText("Servidor desconectado.");
-					labelBarraEstado.setPreferredSize(new java.awt.Dimension(396, 14));
+					lblBarraEstado = new JLabel();
+					jPanel1.add(lblBarraEstado, new AnchorConstraint(937, 10, 5, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					lblBarraEstado.setText("Servidor desconectado.");
+					lblBarraEstado.setPreferredSize(new java.awt.Dimension(396, 14));
 				}
 				{
-					botonDesconectar = new JButton();
-					jPanel1.add(botonDesconectar, new AnchorConstraint(13, 643, 124, 133, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					botonDesconectar.setText("Desconectar");
-					botonDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
-					botonDesconectar.setEnabled(false);
-					botonDesconectar.addActionListener(new ActionListener() {
+					btnDesconectar = new JButton();
+					jPanel1.add(btnDesconectar, new AnchorConstraint(13, 643, 124, 133, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					btnDesconectar.setText("Desconectar");
+					btnDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
+					btnDesconectar.setEnabled(false);
+					btnDesconectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							botonDesconectarActionPerformed(evt);
 						}
 					});
 				}
 				{
-					botonConectar = new JButton();
-					jPanel1.add(botonConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					botonConectar.setText("Conectar");
-					botonConectar.setPreferredSize(new java.awt.Dimension(110, 30));
-					botonConectar.addActionListener(new ActionListener() {
+					btnConectar = new JButton();
+					jPanel1.add(btnConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					btnConectar.setText("Conectar");
+					btnConectar.setPreferredSize(new java.awt.Dimension(110, 30));
+					btnConectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							botonConectarActionPerformed(evt);
 						}
@@ -153,41 +148,48 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
 		try {
-			this.controlador.iniciarServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
+			// Iniciamos el servidor frontend
+			controlador.iniciarServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
 			// Cambiamos el estado de la ventana
-			botonConectar.setEnabled(false);
-			botonDesconectar.setEnabled(true);
+			btnConectar.setEnabled(false);
+			btnDesconectar.setEnabled(true);
 			txtIPFrontend.setEditable(false);
 			txtIPRespaldo.setEditable(false);
-			labelBarraEstado.setText("Servidor preparado.");
+			lblBarraEstado.setText("Servidor preparado.");
+		} catch (SQLException e) {
+			actualizarTexto("Error: " + e.toString());
 		} catch (MalformedURLException e) {
-			txtLog.setText(txtLog.getText() + e.toString());
+			actualizarTexto("Error: " + e.toString());
 		} catch (RemoteException e) {
-			txtLog.setText(txtLog.getText() + e.toString());
+			actualizarTexto("Error: " + e.toString());
+		} catch (NotBoundException e) {
+			actualizarTexto("Error: " + e.toString());
 		}
 	}
 	
 	private void botonDesconectarActionPerformed(ActionEvent evt) {
 		try {
-			this.controlador.iniciarServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
+			// Detenemos el servidor frontend
+			controlador.detenerServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
 			// Cambiamos el estado de la ventana
-			botonDesconectar.setEnabled(false);
-			botonConectar.setEnabled(true);
+			btnDesconectar.setEnabled(false);
+			btnConectar.setEnabled(true);
 			txtIPFrontend.setEditable(true);
 			txtIPRespaldo.setEditable(true);
-			labelBarraEstado.setText("Servidor desconectado.");
-		} catch (RemoteException e) {
-			txtLog.setText(txtLog.getText() + e.toString());
-		} catch (MalformedURLException e) {
-			txtLog.setText(txtLog.getText() + e.toString());
-		} catch (NotBoundException e) {
-			txtLog.setText(txtLog.getText() + e.toString());
+			lblBarraEstado.setText("Servidor desconectado.");
+		} catch(SQLException e) {
+			actualizarTexto("Error: " + e.toString());
+		} catch(RemoteException e) {
+			actualizarTexto("Error: " + e.toString());
+		} catch(MalformedURLException e) {
+			actualizarTexto("Error: " + e.toString());
+		} catch(NotBoundException e) {
+			actualizarTexto("Error: " + e.toString());
 		}
 	}
 
-	@Override
 	public void actualizarTexto(String mensaje) {
-		txtLog.setText(txtLog.getText() + mensaje);	
+		txtLog.setText(txtLog.getText() + mensaje + "\n");	
 	}
 
 }
