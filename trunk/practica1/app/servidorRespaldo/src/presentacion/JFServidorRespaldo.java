@@ -2,6 +2,7 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+import comunicaciones.ConexionBDRespaldo;
 
 import java.awt.BorderLayout;
 
@@ -23,7 +24,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.SwingUtilities;
 
-import persistencia.AgenteRemoto;
+import persistencia.AgenteRespaldo;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -39,7 +40,7 @@ import persistencia.AgenteRemoto;
 */
 public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 	
-	private AgenteRemoto agente;
+	private ConexionBDRespaldo conexion;
 	private JPanel jPanel1;
 	private JScrollPane jScrollPane1;
 	private JLabel labelBarraEstado;
@@ -120,13 +121,13 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 		}
 	}
 	
-	public void setAgente(AgenteRemoto agente) {
-		this.agente = agente;
+	public void setConexion(ConexionBDRespaldo c) {
+		this.conexion = c;
 	}
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
 		try {
-			this.agente.conectar("127.0.0.1");
+			this.conexion.conectar("127.0.0.1");
 			this.botonConectar.setEnabled(false);
 			this.botonDesconectar.setEnabled(true);
 			this.labelBarraEstado.setText("Servidor preparado.");
@@ -139,7 +140,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 	
 	private void botonDesconectarActionPerformed(ActionEvent evt) {
 		try {
-			this.agente.desconectar("127.0.0.1");
+			this.conexion.desconectar("127.0.0.1");
 			this.botonDesconectar.setEnabled(false);
 			this.botonConectar.setEnabled(true);
 			this.labelBarraEstado.setText("Servidor desconectado.");

@@ -54,7 +54,7 @@ public class ControladorPresentacion {
 	}
 	
 	private void iniciarConexiones () throws SQLException, MalformedURLException, RemoteException, NotBoundException{
-		IConexion conexion = (IConexion)persistencia.AgenteLocal.getAgente();
+		IConexion conexion = (IConexion)persistencia.AgenteFrontend.getAgente();
 		ProxyAgenteRemoto proxy = new ProxyAgenteRemoto();
 		proxy.conectar("127.0.0.1");
 		GestorConexiones.ponerConexion(conexion);

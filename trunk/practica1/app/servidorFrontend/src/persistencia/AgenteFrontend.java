@@ -9,13 +9,13 @@ import java.sql.SQLException;
 /**
  * Agente de la base de datos local del servidor frontend.
  */
-public class AgenteLocal implements IConexion {
+public class AgenteFrontend {
 
-	protected static AgenteLocal instancia = null;
+	protected static AgenteFrontend instancia = null;
 	protected Connection conexion;
 	protected String url = "jdbc:mysql://localhost:3306/bdssca?user=iso&password=osi";
 	
-	protected AgenteLocal() throws SQLException {
+	protected AgenteFrontend() throws SQLException {
 		try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch(IllegalAccessException e) {
@@ -34,9 +34,9 @@ public class AgenteLocal implements IConexion {
 		conexion.setAutoCommit(false);
 	}
 	
-	public static AgenteLocal getAgente() throws SQLException {
+	public static AgenteFrontend getAgente() throws SQLException {
 		if(instancia == null) {
-			instancia = new AgenteLocal();
+			instancia = new AgenteFrontend();
 		}
 		if(instancia.conexion.isClosed()) {
 			// Reabrimos la base de datos

@@ -3,18 +3,20 @@ package dominio;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 
-import persistencia.AgenteRemoto;
+import comunicaciones.ConexionBDRespaldo;
+
+import persistencia.AgenteRespaldo;
 import presentacion.JFServidorRespaldo;
 
 public class Main {
 	
 	public static void main(String[] args) {
 		JFServidorRespaldo r = new JFServidorRespaldo();
-		AgenteRemoto a;
+		ConexionBDRespaldo c ;
 		
 		try {
-			a = AgenteRemoto.getAgente();
-			r.setAgente(a);
+			c = new ConexionBDRespaldo();
+			r.setConexion(c);
 			r.setVisible(true);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block

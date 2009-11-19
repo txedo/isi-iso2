@@ -1,12 +1,7 @@
 package persistencia;
 
-import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
+
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,16 +11,15 @@ import java.sql.SQLException;
 /**
  * Agente de la base de datos local del servidor de respaldo.
  */
-public class AgenteRemoto extends UnicastRemoteObject implements IConexion {
+public class AgenteRespaldo {
 
-	protected static AgenteRemoto instancia = null;
+	protected static AgenteRespaldo instancia = null;
 	protected Connection conexion;
 	protected String url = "jdbc:mysql://localhost:3306/bdsscarespaldo?user=isor&password=rosi";
 	
-	protected AgenteRemoto() throws RemoteException, SQLException {
+	protected AgenteRespaldo() throws SQLException {
 		try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            LocateRegistry.createRegistry(PUERTO_CONEXION);
 		} catch(IllegalAccessException e) {
             e.printStackTrace();
             System.exit(0);
@@ -42,9 +36,9 @@ public class AgenteRemoto extends UnicastRemoteObject implements IConexion {
 		conexion.setAutoCommit(false);
 	}
 	
-	public static AgenteRemoto getAgente() throws RemoteException, SQLException {
+	public static AgenteRespaldo getAgente() throws RemoteException, SQLException {
 		if(instancia == null) {
-			instancia = new AgenteRemoto();
+			instancia = new AgenteRespaldo();
 		}
 		if(instancia.conexion.isClosed()) {
 			// Reabrimos la base de datos
@@ -54,19 +48,6 @@ public class AgenteRemoto extends UnicastRemoteObject implements IConexion {
 		return instancia;
 	}
 	
-	public void conectar(String ip) throws MalformedURLException, RemoteException {
-        try {            
-            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorRespaldo", this);
-        }
-        catch (AlreadyBoundException ex) {
-            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorRespaldo", this);
-        }
-    }
-	
-	public void desconectar(String ip) throws RemoteException, MalformedURLException, NotBoundException {
-        Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorRespaldo");
-    }
-
 	public Connection getConexion() {
 		return conexion;
 	}

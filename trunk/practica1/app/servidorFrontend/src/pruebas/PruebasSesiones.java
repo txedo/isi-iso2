@@ -6,9 +6,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import comunicaciones.ConexionBDFrontEnd;
+
 import junit.framework.TestCase;
 
-import persistencia.AgenteLocal;
+import persistencia.AgenteFrontend;
 import persistencia.GestorConexiones;
 import dominio.Administrador;
 import dominio.CentroSalud;
@@ -28,6 +30,7 @@ public class PruebasSesiones extends TestCase{
 	CentroSalud centro1;
 	Medico medico1;
 	Administrador administrador1;
+	ConexionBDFrontEnd conexionF = null;
 	
 	protected void setUp() {
 		Connection bd;
@@ -35,7 +38,7 @@ public class PruebasSesiones extends TestCase{
 		
 		try {
 			// Borramos la base de datos
-			bd = AgenteLocal.getAgente().getConexion();
+			bd = AgenteFrontend.getAgente().getConexion();
 			sentencia = bd.prepareStatement("DELETE FROM centros");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM usuarios");
@@ -45,7 +48,8 @@ public class PruebasSesiones extends TestCase{
 			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
 			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
-			GestorConexiones.ponerConexion(AgenteLocal.getAgente());
+			conexionF = new ConexionBDFrontEnd();
+			GestorConexiones.ponerConexion(conexionF);
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
 			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1);
@@ -59,12 +63,8 @@ public class PruebasSesiones extends TestCase{
 	}
 	
 	protected void tearDown() {
-		try {
-			// Quitamos la conexión local con la base de datos
-			GestorConexiones.quitarConexion(AgenteLocal.getAgente());
-		} catch(SQLException e) {
-			fail(e.toString());
-		}
+		// Quitamos la conexión local con la base de datos
+		GestorConexiones.quitarConexion(conexionF);
 	}
 	
 	/** Prueba del escenario normal: se crea la sesion **/
