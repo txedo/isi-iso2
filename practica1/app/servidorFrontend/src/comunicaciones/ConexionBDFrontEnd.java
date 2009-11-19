@@ -3,16 +3,18 @@ package comunicaciones;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import persistencia.AgenteFrontend;
 import persistencia.ComandoSQL;
 import persistencia.IConexion;
 
-public class ConexionBDFrontEnd implements IConexion{
+/**
+ * Clase intermedia para conectarse con la base de datos del servidor frontend.
+ */
+public class ConexionBDFrontend implements IConexion {
 
-	AgenteFrontend agente = null;
+	private AgenteFrontend agente = null;
 	
-	public ConexionBDFrontEnd () throws SQLException {
+	public ConexionBDFrontend() throws SQLException {
 		agente = AgenteFrontend.getAgente();
 	}
 
@@ -20,38 +22,24 @@ public class ConexionBDFrontEnd implements IConexion{
 		return agente;
 	}
 	
-	@Override
 	public void cerrar() throws RemoteException, SQLException {
 		agente.cerrar();
-		
 	}
 
-	@Override
-	public void commit() throws RemoteException, SQLException {
-		agente.commit();
-		
-	}
-
-	@Override
-	public ResultSet consultar(ComandoSQL comando) throws RemoteException,
-			SQLException {
+	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
 		return agente.consultar(comando);
 	}
 
-	@Override
-	public void ejecutar(ComandoSQL comando) throws RemoteException,
-			SQLException {
+	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException {
 		agente.ejecutar(comando);
-		
 	}
 
-	@Override
+	public void commit() throws RemoteException, SQLException {
+		agente.commit();
+	}
+
 	public void rollback() throws RemoteException, SQLException {
 		agente.rollback();
-		
 	}
-	
-	
-	
 	
 }

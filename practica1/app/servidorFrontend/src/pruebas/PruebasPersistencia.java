@@ -5,9 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-
-import comunicaciones.ConexionBDFrontEnd;
-
+import comunicaciones.ConexionBDFrontend;
 import dominio.Administrador;
 import dominio.CentroSalud;
 import dominio.Citador;
@@ -17,7 +15,7 @@ import dominio.Usuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 import persistencia.AgenteFrontend;
-import persistencia.GestorConexiones;
+import persistencia.GestorConexionesBD;
 import junit.framework.TestCase;
 
 public class PruebasPersistencia extends TestCase {
@@ -27,7 +25,7 @@ public class PruebasPersistencia extends TestCase {
 	Medico medico1, medico2;
 	Citador citador1, citador2;
 	Administrador administrador1;
-	ConexionBDFrontEnd conexionF = null;
+	ConexionBDFrontend conexionF = null;
 	
 	protected void setUp() {
 		Connection bd;
@@ -45,8 +43,8 @@ public class PruebasPersistencia extends TestCase {
 			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
 			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
-			conexionF = new ConexionBDFrontEnd();
-			GestorConexiones.ponerConexion(conexionF);
+			conexionF = new ConexionBDFrontend();
+			GestorConexionesBD.ponerConexion(conexionF);
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
 			centro2 = new CentroSalud("Centro B", null);
@@ -66,7 +64,7 @@ public class PruebasPersistencia extends TestCase {
 	
 	protected void tearDown() {
 		// Quitamos la conexión local con la base de datos
-		GestorConexiones.quitarConexion(conexionF);
+		GestorConexionesBD.quitarConexion(conexionF);
 	}
 	
 	/** Pruebas de la tabla de centros de salud */

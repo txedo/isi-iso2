@@ -10,7 +10,7 @@ public class Main {
 		
 		// Mostramos la única ventana del servidor
 		cont = new ControladorPresentacion();
-		cont.iniciar();
+		cont.mostrarVentana();
 	}
 	
 }

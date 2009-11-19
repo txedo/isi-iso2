@@ -25,7 +25,7 @@ public class FPCentroSalud {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CENTROS + " WHERE " + COL_ID + "=?", id);
-		datos = GestorConexiones.consultar(comando);
+		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
 		// Si no se obtienen datos, es porque el usuario es
@@ -52,7 +52,7 @@ public class FPCentroSalud {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT " + COL_ID + " FROM " + TABLA_CENTROS);
-		datos = GestorConexiones.consultar(comando);
+		datos = GestorConexionesBD.consultar(comando);
 		
 		// Obtenemos los ids de todos los centros
 		listaIds = new ArrayList<Integer>();
@@ -78,11 +78,11 @@ public class FPCentroSalud {
 		
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CENTROS + " (" + COL_NOMBRE + ", " + COL_DIRECCION + ") VALUES (?, ?)",
                                           centro.getNombre(), centro.getDireccion());
-		GestorConexiones.ejecutar(comando);
+		GestorConexionesBD.ejecutar(comando);
 		
 		// Devolvemos el id del nuevo centro de salud
 		comando = new ComandoSQLSentencia("SELECT LAST_INSERT_ID()");			
-		datos = GestorConexiones.consultar(comando);
+		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		id = datos.getInt("LAST_INSERT_ID()");
 		
