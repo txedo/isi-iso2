@@ -9,7 +9,7 @@ import java.sql.SQLException;
 /**
  * Agente de la base de datos local del servidor frontend.
  */
-public class AgenteFrontend {
+public class AgenteFrontend implements IConexion {
 
 	protected static AgenteFrontend instancia = null;
 	protected Connection conexion;

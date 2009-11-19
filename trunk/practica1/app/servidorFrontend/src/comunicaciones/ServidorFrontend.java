@@ -8,36 +8,36 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-
 import dominio.ControladorPresentacion;
 import dominio.GestorSesiones;
 import dominio.ISesion;
 import excepciones.UsuarioIncorrectoException;
 
-
-
 public class ServidorFrontend extends UnicastRemoteObject implements IServidorFrontend {
+	
 	private ControladorPresentacion controlador;
 	
-	public ServidorFrontend(ControladorPresentacion c) throws RemoteException {
+	public ServidorFrontend() throws RemoteException {
 		super();
-		LocateRegistry.createRegistry(2995);
-		controlador = c;
 	}
 	
-    public void conectar() throws MalformedURLException, RemoteException {
+	public void setControlador(ControladorPresentacion controlador) {
+		this.controlador = controlador;
+	}
+	
+    public void conectar(String ip) throws MalformedURLException, RemoteException {
     	controlador.getObservador().actualizarVentanas("Servidor iniciado.");
         try {            
-            Naming.bind("rmi://127.0.0.1:2995/servidorfrontend", this);
-        }
-        catch (AlreadyBoundException ex) {
-            Naming.rebind("rmi://127.0.0.1:2995/servidorfrontend", this);
+    		LocateRegistry.createRegistry(PUERTO_SERVIDOR);
+            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
+        } catch(AlreadyBoundException ex) {
+            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
         }
     }
     
-    public void desconectar() throws RemoteException, MalformedURLException, NotBoundException {
+    public void desconectar(String ip) throws RemoteException, MalformedURLException, NotBoundException {
     	controlador.getObservador().actualizarVentanas("Servidor detenido.");
-        Naming.unbind("rmi://127.0.0.1:2995/servidorfrontend");
+        Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
     }
 	
     //TODO quitar la excepcion generica Exception

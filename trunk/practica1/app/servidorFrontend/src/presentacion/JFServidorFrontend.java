@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
@@ -40,11 +41,15 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 	
 	private ControladorPresentacion controlador;
 	private JPanel jPanel1;
-	private JScrollPane jScrollPane1;
+	private JScrollPane scpPanelLog;
+	private JLabel jLabel1;
+	private JTextField txtIPFrontend;
+	private JTextField txtIPRespaldo;
+	private JLabel lblIP;
 	private JLabel labelBarraEstado;
 	private JButton botonDesconectar;
 	private JButton botonConectar;
-	private JTextArea textLog;
+	private JTextArea txtLog;
 	
 	public JFServidorFrontend() {
 		super();
@@ -55,8 +60,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 		try {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("Servidor Front-End");
-			//this.setAlwaysOnTop(true);
-			this.setPreferredSize(new java.awt.Dimension(374, 266));
+			this.setPreferredSize(new java.awt.Dimension(500, 266));
 			this.setMinimumSize(new java.awt.Dimension(374, 266));
 
 			this.addWindowListener(new java.awt.event.WindowAdapter() { 
@@ -69,28 +73,40 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 			AnchorLayout jPanel1Layout = new AnchorLayout();
 				getContentPane().add(jPanel1, BorderLayout.CENTER);
 				jPanel1.setLayout(jPanel1Layout);
-				jPanel1.setPreferredSize(new java.awt.Dimension(374, 266));
+				jPanel1.setPreferredSize(new java.awt.Dimension(527, 237));
 				{
-					jScrollPane1 = new JScrollPane();
-					jPanel1.add(jScrollPane1, new AnchorConstraint(55, 10, 23, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					jScrollPane1.setPreferredSize(new java.awt.Dimension(346, 154));
-					jScrollPane1.setMinimumSize(new java.awt.Dimension(346, 155));
+					txtIPRespaldo = new JTextField();
+					jPanel1.add(txtIPRespaldo, new AnchorConstraint(24, 12, 191, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					txtIPRespaldo.setPreferredSize(new java.awt.Dimension(88, 21));
+					txtIPRespaldo.setText("127.0.0.1");
+				}
+				{
+					lblIP = new JLabel();
+					jPanel1.add(lblIP, new AnchorConstraint(8, 111, 94, 606, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					lblIP.setText("IP Frontend:");
+					lblIP.setPreferredSize(new java.awt.Dimension(92, 14));
+				}
+				{
+					scpPanelLog = new JScrollPane();
+					jPanel1.add(scpPanelLog, new AnchorConstraint(55, 10, 23, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					scpPanelLog.setPreferredSize(new java.awt.Dimension(346, 154));
+					scpPanelLog.setMinimumSize(new java.awt.Dimension(346, 155));
 					{
-						textLog = new JTextArea();
-						jScrollPane1.setViewportView(textLog);
-						textLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
-						textLog.setEditable(false);
+						txtLog = new JTextArea();
+						scpPanelLog.setViewportView(txtLog);
+						txtLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
+						txtLog.setEditable(false);
 					}
 				}
 				{
 					labelBarraEstado = new JLabel();
-					jPanel1.add(labelBarraEstado, new AnchorConstraint(937, 10, 3, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					jPanel1.add(labelBarraEstado, new AnchorConstraint(937, 10, 5, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					labelBarraEstado.setText("Servidor desconectado.");
-					labelBarraEstado.setPreferredSize(new java.awt.Dimension(346, 14));
+					labelBarraEstado.setPreferredSize(new java.awt.Dimension(396, 14));
 				}
 				{
 					botonDesconectar = new JButton();
-					jPanel1.add(botonDesconectar, new AnchorConstraint(13, 643, 124, 140, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					jPanel1.add(botonDesconectar, new AnchorConstraint(13, 643, 124, 133, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					botonDesconectar.setText("Desconectar");
 					botonDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
 					botonDesconectar.setEnabled(false);
@@ -111,11 +127,23 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 						}
 					});
 				}
+				{
+					txtIPFrontend = new JTextField();
+					jPanel1.add(txtIPFrontend, new AnchorConstraint(24, 115, 191, 608, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					txtIPFrontend.setPreferredSize(new java.awt.Dimension(88, 21));
+					txtIPFrontend.setText("127.0.0.1");
+				}
+				{
+					jLabel1 = new JLabel();
+					jPanel1.add(jLabel1, new AnchorConstraint(8, 8, 94, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					jLabel1.setText("IP Respaldo:");
+					jLabel1.setPreferredSize(new java.awt.Dimension(92, 14));
+				}
 
 			pack();
 			
 		} catch (Exception e) {
-			textLog.setText(textLog.getText() + e.toString());
+			txtLog.setText(txtLog.getText() + e.toString());
 		}
 	}
 	
@@ -125,35 +153,41 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
 		try {
-			this.controlador.getServidor().conectar();
-			this.botonConectar.setEnabled(false);
-			this.botonDesconectar.setEnabled(true);
-			this.labelBarraEstado.setText("Servidor preparado.");
+			this.controlador.iniciarServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
+			// Cambiamos el estado de la ventana
+			botonConectar.setEnabled(false);
+			botonDesconectar.setEnabled(true);
+			txtIPFrontend.setEditable(false);
+			txtIPRespaldo.setEditable(false);
+			labelBarraEstado.setText("Servidor preparado.");
 		} catch (MalformedURLException e) {
-			textLog.setText(textLog.getText() + e.toString());
+			txtLog.setText(txtLog.getText() + e.toString());
 		} catch (RemoteException e) {
-			textLog.setText(textLog.getText() + e.toString());
+			txtLog.setText(txtLog.getText() + e.toString());
 		}
 	}
 	
 	private void botonDesconectarActionPerformed(ActionEvent evt) {
 		try {
-			this.controlador.getServidor().desconectar();
-			this.botonDesconectar.setEnabled(false);
-			this.botonConectar.setEnabled(true);
-			this.labelBarraEstado.setText("Servidor desconectado.");
+			this.controlador.iniciarServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
+			// Cambiamos el estado de la ventana
+			botonDesconectar.setEnabled(false);
+			botonConectar.setEnabled(true);
+			txtIPFrontend.setEditable(true);
+			txtIPRespaldo.setEditable(true);
+			labelBarraEstado.setText("Servidor desconectado.");
 		} catch (RemoteException e) {
-			textLog.setText(textLog.getText() + e.toString());
+			txtLog.setText(txtLog.getText() + e.toString());
 		} catch (MalformedURLException e) {
-			textLog.setText(textLog.getText() + e.toString());
+			txtLog.setText(txtLog.getText() + e.toString());
 		} catch (NotBoundException e) {
-			textLog.setText(textLog.getText() + e.toString());
+			txtLog.setText(txtLog.getText() + e.toString());
 		}
 	}
 
 	@Override
 	public void actualizarTexto(String mensaje) {
-		textLog.setText(textLog.getText() + mensaje);	
+		txtLog.setText(txtLog.getText() + mensaje);	
 	}
 
 }
