@@ -7,10 +7,9 @@ import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import persistencia.ComandoSQL;
-import persistencia.IConexion;
 
 /**
- * Proxy utilizado para conectarse con un agente remoto.
+ * Proxy utilizado para acceder a una conexión de base de datos remota.
  */
 public class ProxyAgenteRemoto implements IConexion {
 
@@ -19,12 +18,8 @@ public class ProxyAgenteRemoto implements IConexion {
 	public void conectar(String ip) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
-		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorRespaldo";
+		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorrespaldo";
         conexion = (IConexion)Naming.lookup(url);
-	}
-
-	public void cerrar() throws RemoteException, SQLException {
-		conexion.cerrar();
 	}
 
 	public void commit() throws RemoteException, SQLException {
@@ -42,5 +37,13 @@ public class ProxyAgenteRemoto implements IConexion {
 	public void rollback() throws RemoteException, SQLException {
 		conexion.rollback();
 	}
-	
+
+	public void abrir() throws RemoteException, SQLException {
+		conexion.abrir();
+	}
+
+	public void cerrar() throws RemoteException, SQLException {
+		conexion.cerrar();
+	}
+
 }

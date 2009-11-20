@@ -1,7 +1,7 @@
 package dominio;
 
 /**
- * Método principal del servidor frontend.
+ * Clase principal del servidor frontend.
  */
 public class Main {
 	

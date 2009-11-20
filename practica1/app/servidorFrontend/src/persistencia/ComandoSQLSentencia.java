@@ -6,10 +6,11 @@ import java.sql.SQLException;
 
 /**
  * Clase que representa una consulta o modificación sobre una base de
- * datos escrita como una sentencia SQL.
+ * datos escrita en forma de sentencia SQL.
  */
 public class ComandoSQLSentencia extends ComandoSQL {
 
+	private static final long serialVersionUID = 3132897363533160582L;
 
 	public ComandoSQLSentencia(String sentencia, Object... parametros) {
 		super(sentencia, parametros);

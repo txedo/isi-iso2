@@ -4,7 +4,7 @@ import javax.swing.JOptionPane;
 import dominio.ControladorLogin;
 
 /**
- * Método principal del cliente.
+ * Clase principal del cliente.
  */
 public class Main {
 

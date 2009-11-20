@@ -1,5 +1,5 @@
 package presentacion;
 
-public interface IVentana {
+public interface IVentanaLog {
 	public void actualizarTexto(String mensaje);
 }

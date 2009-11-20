@@ -1,7 +1,5 @@
 package persistencia;
 
-import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Agente de la base de datos local del servidor de respaldo.
+ * Agente de la base de datos del servidor de respaldo.
  */
 public class AgenteRespaldo {
 
@@ -22,28 +20,18 @@ public class AgenteRespaldo {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch(IllegalAccessException e) {
             e.printStackTrace();
-            System.exit(0);
 		} catch(InstantiationException e) {
             e.printStackTrace();
-            System.exit(0);
         } catch(ClassNotFoundException e) {
             e.printStackTrace();
-            System.exit(0);
         }
-		// Indicamos que las modificaciones de la base de datos
-		// no se deben aplicar hasta llamar al método 'commit'
-		conexion = DriverManager.getConnection(url);
-		conexion.setAutoCommit(false);
+        // Abrimos la conexión de forma predeterminada
+        abrir();
 	}
 	
-	public static AgenteRespaldo getAgente() throws RemoteException, SQLException {
+	public static AgenteRespaldo getAgente() throws SQLException {
 		if(instancia == null) {
 			instancia = new AgenteRespaldo();
-		}
-		if(instancia.conexion.isClosed()) {
-			// Reabrimos la base de datos
-			instancia.conexion = DriverManager.getConnection(instancia.url);
-			instancia.conexion.setAutoCommit(false); 
 		}
 		return instancia;
 	}
@@ -79,6 +67,15 @@ public class AgenteRespaldo {
 		conexion.rollback();
 	}
 
+	public void abrir() throws SQLException {
+		if(conexion == null || conexion.isClosed()) {
+			// Indicamos que las modificaciones de la base de datos
+			// no se deben aplicar hasta llamar al método 'commit'
+			conexion = DriverManager.getConnection(url);
+			conexion.setAutoCommit(false); 
+		}
+	}
+	
 	public void cerrar() throws SQLException {
 		conexion.close();
 	}

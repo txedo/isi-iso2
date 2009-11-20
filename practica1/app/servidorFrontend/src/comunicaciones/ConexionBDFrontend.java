@@ -5,10 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import persistencia.AgenteFrontend;
 import persistencia.ComandoSQL;
-import persistencia.IConexion;
 
 /**
- * Clase intermedia para conectarse con la base de datos del servidor frontend.
+ * Clase intermedia para conectarse con el agente de base de datos del
+ * servidor frontend.
  */
 public class ConexionBDFrontend implements IConexion {
 
@@ -17,15 +17,7 @@ public class ConexionBDFrontend implements IConexion {
 	public ConexionBDFrontend() throws SQLException {
 		agente = AgenteFrontend.getAgente();
 	}
-
-	public AgenteFrontend getAgente() {
-		return agente;
-	}
 	
-	public void cerrar() throws RemoteException, SQLException {
-		agente.cerrar();
-	}
-
 	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
 		return agente.consultar(comando);
 	}
@@ -41,5 +33,13 @@ public class ConexionBDFrontend implements IConexion {
 	public void rollback() throws RemoteException, SQLException {
 		agente.rollback();
 	}
-	
+
+	public void abrir() throws RemoteException, SQLException {
+		agente.abrir();
+	}
+
+	public void cerrar() throws RemoteException, SQLException {
+		agente.cerrar();
+	}
+
 }

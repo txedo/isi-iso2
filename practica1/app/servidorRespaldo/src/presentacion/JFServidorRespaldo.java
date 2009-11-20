@@ -2,16 +2,14 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import comunicaciones.ConexionBDRespaldo;
-
+import dominio.Controlador;
 import java.awt.BorderLayout;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,7 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
@@ -35,9 +32,11 @@ import javax.swing.border.BevelBorder;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
+public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLog {
 	
-	private ConexionBDRespaldo conexion;
+	private static final long serialVersionUID = -3739906711082199809L;
+	
+	private Controlador controlador;
 	private JPanel jPanel1;
 	private JScrollPane jScrollPane1;
 	private JLabel jlbIPRespaldo;
@@ -57,8 +56,8 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("Servidor Respaldo");
 			//this.setAlwaysOnTop(true);
-			this.setPreferredSize(new java.awt.Dimension(500, 266));
-			this.setMinimumSize(new java.awt.Dimension(374, 266));
+			this.setPreferredSize(new java.awt.Dimension(500, 320));
+			this.setMinimumSize(new java.awt.Dimension(400, 300));
 
 			this.addWindowListener(new java.awt.event.WindowAdapter() { 
 				public void windowClosing(java.awt.event.WindowEvent e) {    
@@ -109,7 +108,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 					btnDesconectar.setEnabled(false);
 					btnDesconectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
-							botonDesconectarActionPerformed(evt);
+							btnDesconectarActionPerformed(evt);
 						}
 					});
 				}
@@ -120,7 +119,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 					btnConectar.setPreferredSize(new java.awt.Dimension(110, 30));
 					btnConectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
-							botonConectarActionPerformed(evt);
+							btnConectarActionPerformed(evt);
 						}
 					});
 				}
@@ -132,41 +131,55 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentana {
 		}
 	}
 	
-	public void setConexion(ConexionBDRespaldo c) {
-		this.conexion = c;
+	public void setControlador(Controlador controlador) {
+		this.controlador = controlador;
 	}
 	
-	private void botonConectarActionPerformed(ActionEvent evt) {
+	private void btnConectarActionPerformed(ActionEvent evt) {
 		try {
 			// Iniciamos el servidor de respaldo
-			conexion.conectar(txtIPRespaldo.getText());
+			controlador.iniciarServidorRespaldo(txtIPRespaldo.getText());
 			// Cambiamos el estado de la ventana
 			btnConectar.setEnabled(false);
 			btnDesconectar.setEnabled(true);
 			txtIPRespaldo.setEditable(false);
 			lblBarraEstado.setText("Servidor preparado.");
-		} catch (MalformedURLException e) {
+		} catch(SQLException e) {
 			actualizarTexto("Error: " + e.toString());
-		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch(MalformedURLException e) {
 			actualizarTexto("Error: " + e.toString());
+			e.printStackTrace();
+		} catch(RemoteException e) {
+			actualizarTexto("Error: " + e.toString());
+			e.printStackTrace();
+		} catch(NotBoundException e) {
+			actualizarTexto("Error: " + e.toString());
+			e.printStackTrace();
 		}
 	}
 	
-	private void botonDesconectarActionPerformed(ActionEvent evt) {
+	private void btnDesconectarActionPerformed(ActionEvent evt) {
 		try {
 			// Detenemos el servidor de respaldo
-			conexion.desconectar(txtIPRespaldo.getText());
+			controlador.detenerServidorRespaldo(txtIPRespaldo.getText());
 			// Cambiamos el estado de la ventana
 			btnDesconectar.setEnabled(false);
 			btnConectar.setEnabled(true);
 			txtIPRespaldo.setEditable(true);
 			lblBarraEstado.setText("Servidor desconectado.");
-		} catch (RemoteException e) {
+		} catch(SQLException e) {
 			actualizarTexto("Error: " + e.toString());
-		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch(RemoteException e) {
 			actualizarTexto("Error: " + e.toString());
-		} catch (NotBoundException e) {
+			e.printStackTrace();
+		} catch(MalformedURLException e) {
 			actualizarTexto("Error: " + e.toString());
+			e.printStackTrace();
+		} catch(NotBoundException e) {
+			actualizarTexto("Error: " + e.toString());
+			e.printStackTrace();
 		}
 	}
 

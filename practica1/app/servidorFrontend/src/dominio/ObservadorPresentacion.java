@@ -3,23 +3,23 @@ package dominio;
 import java.util.ArrayList;
 import java.util.Date;
 
-import presentacion.IVentana;
+import presentacion.IVentanaLog;
 
 public class ObservadorPresentacion {
-	private ArrayList<IVentana> guis;
+	private ArrayList<IVentanaLog> guis;
 	
 	public ObservadorPresentacion () {
-		guis = new ArrayList<IVentana>();
+		guis = new ArrayList<IVentanaLog>();
 	}
 	
-	public void add(IVentana ventana){
+	public void add(IVentanaLog ventana){
 		guis.add(ventana);
 	}
 
 	public void actualizarVentanas(String mensaje) {
 		String fecha = (new Date()).toString();
-		for (IVentana v : guis) {
-			v.actualizarTexto(fecha + ": " + mensaje + '\n');
+		for (IVentanaLog v : guis) {
+			v.actualizarTexto(fecha + ": " + mensaje);
 		}
 	}
 }
