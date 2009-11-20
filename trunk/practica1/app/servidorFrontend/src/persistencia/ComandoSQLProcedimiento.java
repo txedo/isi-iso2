@@ -7,9 +7,11 @@ import java.sql.SQLException;
 
 /**
  * Clase que representa una consulta o modificación sobre una base de
- * datos escrita como un procedimiento almacenado.
+ * datos escrita en forma de procedimiento almacenado.
  */
 public class ComandoSQLProcedimiento extends ComandoSQL {
+
+	private static final long serialVersionUID = -6249425775295737777L;
 
 	public ComandoSQLProcedimiento(String sentencia, Object... parametros) {
 		super(sentencia, parametros);

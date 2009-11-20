@@ -32,7 +32,7 @@ import javax.swing.border.BevelBorder;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
+public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLog {
 	
 	private ControladorPresentacion controlador;
 	private JPanel jPanel1;
@@ -55,8 +55,8 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 		try {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("Servidor Front-End");
-			this.setPreferredSize(new java.awt.Dimension(500, 266));
-			this.setMinimumSize(new java.awt.Dimension(374, 266));
+			this.setPreferredSize(new java.awt.Dimension(550, 320));
+			this.setMinimumSize(new java.awt.Dimension(500, 300));
 
 			this.addWindowListener(new java.awt.event.WindowAdapter() { 
 				public void windowClosing(java.awt.event.WindowEvent e) {    
@@ -148,7 +148,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
 		try {
-			// Iniciamos el servidor frontend
+			// Iniciamos el servidor frontend y la conexión con el de respaldo
 			controlador.iniciarServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
 			// Cambiamos el estado de la ventana
 			btnConectar.setEnabled(false);
@@ -169,7 +169,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentana {
 	
 	private void botonDesconectarActionPerformed(ActionEvent evt) {
 		try {
-			// Detenemos el servidor frontend
+			// Detenemos el servidor frontend y la conexión con el de respaldo
 			controlador.detenerServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
 			// Cambiamos el estado de la ventana
 			btnDesconectar.setEnabled(false);

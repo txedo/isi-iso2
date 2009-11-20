@@ -4,9 +4,11 @@ import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import comunicaciones.IConexion;
 
 /**
- * Gestor que permite tener sincronizadas varias bases de datos.
+ * Gestor que permite acceder de forma sincronizada a varias bases de datos
+ * (locales o remotas)
  */
 public class GestorConexionesBD {
 

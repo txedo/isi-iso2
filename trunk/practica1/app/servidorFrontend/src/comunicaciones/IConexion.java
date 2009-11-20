@@ -1,13 +1,14 @@
-package persistencia;
+package comunicaciones;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import persistencia.ComandoSQL;
 
 /**
- * Interfaz de acceso a una base de datos, que es utilizada por el
- * gestor de conexiones.
+ * Interfaz que deben implementar las clases que proporcionen acceso a una
+ * base de datos para poder ser utilizadas por el gestor de conexiones.
  */
 public interface IConexion extends Remote {
 
@@ -20,6 +21,8 @@ public interface IConexion extends Remote {
 	public void commit() throws RemoteException, SQLException;
 	
 	public void rollback() throws RemoteException, SQLException;
+	
+	public void abrir() throws RemoteException, SQLException;
 	
 	public void cerrar() throws RemoteException, SQLException;
 	
