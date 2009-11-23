@@ -36,5 +36,32 @@ CREATE TABLE entradasLog (
        PRIMARY KEY (id)
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
+CREATE TABLE beneficiarios (
+       nif VARCHAR(255) NOT NULL,
+       nss VARCHAR(255) UNIQUE NOT NULL,
+       nombre VARCHAR(255) NOT NULL default '', 
+       apellidos VARCHAR(255) NOT NULL default '',
+       domicilio VARCHAR(255) NOT NULL default '',
+       correo VARCHAR(255) NOT NULL default '',
+       telefono INT NOT NULL default '-1',
+       movil INT NOT NULL default '-1',
+       dniMedico VARCHAR(255) default '',
+       PRIMARY KEY (nif),
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE SET NULL ON UPDATE CASCADE
+) TYPE=InnoDB;
+
+CREATE TABLE citas (
+       id INT NOT NULL AUTO_INCREMENT,
+       dniBeneficiario VARCHAR(255) NOT NULL,
+       fecha TIMESTAMP NOT NULL,
+       dniMedico VARCHAR(255) NOT NULL,
+       idVolante INT default '-1',
+       duracion INT,
+       PRIMARY KEY (id),
+       FOREIGN KEY (dniBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
+
 INSERT INTO centros (nombre,direccion) VALUES ("Centro de Pruebas", "Paseo de la Universidad, 4");
 INSERT INTO usuarios VALUES ("12345678", "admin" ,"admin", 0, "Foo", "Bar", 1);
