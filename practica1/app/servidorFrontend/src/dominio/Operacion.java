@@ -7,6 +7,8 @@ public enum Operacion {
 	TramitarCita,
 	EliminarCita,
 	RegistrarBeneficiario,
+	ConsultarBeneficiario,
+	ModificarBeneficiario,
 	ModificarCalendario,
 	EstablecerSustituto
 }

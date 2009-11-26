@@ -110,6 +110,48 @@ public class FPUsuario {
 		return usuario;
 	}
 	
+	public static Usuario consultarAleatorio(Roles rol) throws SQLException,  UsuarioIncorrectoException, CentroSaludIncorrectoException{
+		ComandoSQL comando;
+		ResultSet datos;
+		CentroSalud centro;
+		Usuario usuario = null;
+		
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_ROL + " = ?", rol.ordinal());
+		datos = GestorConexionesBD.consultar(comando);
+		datos.next();
+		
+		// Si no se obtienen datos, es porque el usuario es
+		// incorrecto (o no existe, pero se trata como incorrecto)
+		if(datos.getRow() == 0) {
+			throw new UsuarioIncorrectoException("No hay ningun usuario con el rol "+ rol +" en la base de datos");
+		} else {	
+			// Creamos un usuario del tipo adecuado
+			switch(rol) {
+			case Citador:
+				usuario = new Citador();
+				break;
+			case Administrador:
+				usuario = new Administrador();
+				break;
+			case Medico:
+				usuario = new Medico();
+				break;
+			}
+			// Buscamos el centro del usuario
+			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
+			// Establecemos los datos del usuario
+			usuario.setDni(datos.getString(COL_DNI));
+			usuario.setLogin(datos.getString(COL_LOGIN));
+			usuario.setPassword(datos.getString(COL_PASSWORD));
+			usuario.setNombre(datos.getString(COL_NOMBRE));
+			usuario.setApellidos(datos.getString(COL_APELLIDOS));
+			usuario.setCentroSalud(centro);
+		}
+		
+		return usuario;
+	}
+	
 	public static void insertar(Usuario usuario) throws SQLException {
 		ComandoSQL comando;
 
