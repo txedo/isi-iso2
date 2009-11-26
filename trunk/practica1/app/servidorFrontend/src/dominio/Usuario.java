@@ -40,6 +40,10 @@ public abstract class Usuario implements Serializable {
 		return FPUsuario.consultar(login, password);
 	}
 	
+	public static Usuario consultarAleatorio(Roles rol) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+		return FPUsuario.consultarAleatorio(rol);
+	}
+	
 	public void insertar() throws SQLException {
 		FPUsuario.insertar(this);
 	}

@@ -95,6 +95,12 @@ public class GestorSesiones {
 		case RegistrarBeneficiario:
 			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
 			break;
+		case ConsultarBeneficiario:
+			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
+			break;
+		case ModificarBeneficiario:
+			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
+			break;
 		case ModificarCalendario:
 			permitido = (s.getRol() == Roles.Administrador.ordinal()); 
 			break;
@@ -104,6 +110,10 @@ public class GestorSesiones {
 		}
 		
 		return permitido;
+	}
+
+	public static Sesion getSesion(long idSesion) {
+		return sesiones.get(idSesion);
 	}
 	
 }
