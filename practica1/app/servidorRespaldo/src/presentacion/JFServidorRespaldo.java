@@ -10,9 +10,12 @@ import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -136,27 +139,55 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 	}
 	
 	private void btnConectarActionPerformed(ActionEvent evt) {
-		try {
-			// Iniciamos el servidor de respaldo
-			controlador.iniciarServidorRespaldo(txtIPRespaldo.getText());
-			// Cambiamos el estado de la ventana
-			btnConectar.setEnabled(false);
-			btnDesconectar.setEnabled(true);
-			txtIPRespaldo.setEditable(false);
-			lblBarraEstado.setText("Servidor preparado.");
-		} catch(SQLException e) {
-			actualizarTexto("Error: " + e.toString());
-			e.printStackTrace();
-		} catch(MalformedURLException e) {
-			actualizarTexto("Error: " + e.toString());
-			e.printStackTrace();
-		} catch(RemoteException e) {
-			actualizarTexto("Error: " + e.toString());
-			e.printStackTrace();
-		} catch(NotBoundException e) {
-			actualizarTexto("Error: " + e.toString());
-			e.printStackTrace();
+		
+		Pattern pat = Pattern.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."+
+                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
+		
+		// Iniciamos el servidor de respaldo (si la IP es valida)
+		if (!pat.matcher(txtIPRespaldo.getText()).matches()) {
+			JOptionPane.showMessageDialog(null, "Formato de IP del servidor de respaldo incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+		else {
+			try {
+				// Iniciamos el servidor de respaldo
+				controlador.iniciarServidorRespaldo(txtIPRespaldo.getText());
+				// Cambiamos el estado de la ventana
+				btnConectar.setEnabled(false);
+				btnDesconectar.setEnabled(true);
+				txtIPRespaldo.setEditable(false);
+				lblBarraEstado.setText("Servidor preparado.");
+			} catch(SQLException e) {
+				actualizarTexto("Error: " + e.toString());
+				e.printStackTrace();
+			} catch(MalformedURLException e) {
+				actualizarTexto("Error: " + e.toString());
+				e.printStackTrace();
+			// Si hay fallo al conectar, se desconecta, para hacer el "unexport" y que se pueda conectar despues
+			} catch(RemoteException e) {
+				actualizarTexto("Error: " + e.toString());
+				e.printStackTrace();
+				try {
+					controlador.detenerServidorRespaldo(txtIPRespaldo.getText());
+				} catch (RemoteException e1) {
+					actualizarTexto("Error: " + e1.toString());
+					e1.printStackTrace();
+				} catch (MalformedURLException e1) {
+					actualizarTexto("Error: " + e1.toString());
+					e1.printStackTrace();
+				} catch (NotBoundException e1) {
+					actualizarTexto("Error: " + e1.toString());
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					actualizarTexto("Error: " + e1.toString());
+					e1.printStackTrace();
+				}
+			} catch(NotBoundException e) {
+				actualizarTexto("Error: " + e.toString());
+				e.printStackTrace();
+			}
+		}		
 	}
 	
 	private void btnDesconectarActionPerformed(ActionEvent evt) {

@@ -5,10 +5,15 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+
+import dominio.Beneficiario;
 import dominio.ISesion;
 import dominio.Medico;
+import excepciones.BeneficiarioInexistenteException;
+import excepciones.BeneficiarioYaExistenteException;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
+import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
@@ -44,5 +49,34 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 	public void modificar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
 		servidor.modificar(idSesion, medico);
 	}
+
+	public Beneficiario getBeneficiario(long idSesion, String nif) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		return servidor.getBeneficiario(idSesion, nif);
+	}
+
+	public Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		return servidor.getBeneficiarioPorNSS(idSesion, nss);
+	}
+	
+	public void liberar(long idSesion) throws RemoteException, Exception {
+		servidor.liberar(idSesion);
+		
+	}
+
+	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
+		servidor.registrar(cliente, idSesion);
+		
+	}
+
+	public void crear(long idSesion, Beneficiario bene) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
+		servidor.crear(idSesion, bene);
+		
+	}
+
+	public void modificar(long idSesion, Beneficiario bene) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		servidor.modificar(idSesion, bene);
+		
+	}
+
 		
 }

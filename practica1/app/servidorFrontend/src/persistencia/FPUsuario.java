@@ -160,7 +160,7 @@ public class FPUsuario {
 		GestorConexionesBD.ejecutar(comando);	
 	}
 	
-	public static void actualizar(Usuario usuario) throws SQLException {
+	public static void modificar(Usuario usuario) throws SQLException {
 		ComandoSQL comando;
 		
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_USUARIOS + " SET " + COL_LOGIN + " = ?, "+ COL_PASSWORD + " = ?, " + COL_ROL + " = ?, " + COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_ID_CENTRO + " = ? WHERE " + COL_DNI + " = ?",

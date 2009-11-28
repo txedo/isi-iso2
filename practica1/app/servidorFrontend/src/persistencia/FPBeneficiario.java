@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import dominio.Beneficiario;
 import dominio.Medico;
-import excepciones.BeneficiarioIncorrectoException;
+import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 
@@ -24,7 +24,7 @@ public class FPBeneficiario {
 	private static final String COL_MOVIL = "movil";
 	private static final String COL_DNI_MEDICO = "dniMedico";
 
-	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioIncorrectoException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Beneficiario bene = null;
@@ -38,7 +38,7 @@ public class FPBeneficiario {
 
 		// Si no se obtienen datos, es porque el beneficiario no existe
 		if (datos.getRow() == 0) {
-			throw new BeneficiarioIncorrectoException("El NIF introducido no es válido");
+			throw new BeneficiarioInexistenteException("El NIF introducido no es válido");
 		} else {
 			// Establecemos los datos del beneficiario
 			bene.setNif(datos.getString(COL_NIF));
@@ -56,7 +56,7 @@ public class FPBeneficiario {
 		return bene;
 	}
 	
-	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioIncorrectoException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Beneficiario bene = null;
@@ -70,7 +70,7 @@ public class FPBeneficiario {
 
 		// Si no se obtienen datos, es porque el beneficiario no existe
 		if (datos.getRow() == 0) {
-			throw new BeneficiarioIncorrectoException("El NSS introducido no es válido");
+			throw new BeneficiarioInexistenteException("El NSS introducido no es válido");
 		} else {
 			// Establecemos los datos del beneficiario
 			bene.setNif(datos.getString(COL_NIF));

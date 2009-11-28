@@ -4,6 +4,7 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.ControladorPresentacion;
 import java.awt.BorderLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
@@ -11,14 +12,21 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import javax.swing.BorderFactory;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
+
+import java.util.regex.*;
+
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -149,21 +157,63 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 	}
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
+		boolean respaldoValido=false;
+		boolean frontValido=true;
 		try {
-			// Iniciamos el servidor frontend y la conexión con el de respaldo
-			controlador.iniciarServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
-			// Cambiamos el estado de la ventana
-			btnConectar.setEnabled(false);
-			btnDesconectar.setEnabled(true);
-			txtIPFrontend.setEditable(false);
-			txtIPRespaldo.setEditable(false);
-			lblBarraEstado.setText("Servidor preparado.");
+			Pattern pat = Pattern.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."+
+                    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
+			
+			// Iniciamos el servidor frontend y la conexión con el de respaldo (si las IPs son validas)
+			if (!txtIPRespaldo.getText().equals("")) {
+				if (!pat.matcher(txtIPRespaldo.getText()).matches()) {
+					JOptionPane.showMessageDialog(null, "Formato de IP del servidor de respaldo incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
+					respaldoValido=false;
+				}
+				else
+					respaldoValido=true;
+			}
+			else
+				respaldoValido=true;
+			if (pat.matcher(txtIPFrontend.getText()).matches()) 
+				frontValido=true;
+			else {
+				JOptionPane.showMessageDialog(null, "Formato de IP del servidor frontend incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
+				frontValido=false;
+			}
+			if (respaldoValido && frontValido){
+				controlador.iniciarServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
+				// Cambiamos el estado de la ventana
+				btnConectar.setEnabled(false);
+				btnDesconectar.setEnabled(true);
+				txtIPFrontend.setEditable(false);
+				txtIPRespaldo.setEditable(false);
+				lblBarraEstado.setText("Servidor preparado.");
+			}
 		} catch (SQLException e) {
 			actualizarTexto("Error: " + e.toString());
 		} catch (MalformedURLException e) {
 			actualizarTexto("Error: " + e.toString());
-		} catch (RemoteException e) {
+		// Si da fallo al conectar, lo desconectamos para hacer el "unexport" y que funcione mas tarde
+		} catch(RemoteException e) {
 			actualizarTexto("Error: " + e.toString());
+			e.printStackTrace();
+			try {
+				controlador.detenerServidor(txtIPFrontend.getText(), txtIPRespaldo.getText());
+			} catch (RemoteException e1) {
+				actualizarTexto("Error: " + e1.toString());
+				e1.printStackTrace();
+			} catch (MalformedURLException e1) {
+				actualizarTexto("Error: " + e1.toString());
+				e1.printStackTrace();
+			} catch (NotBoundException e1) {
+				actualizarTexto("Error: " + e1.toString());
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				actualizarTexto("Error: " + e1.toString());
+				e1.printStackTrace();
+			}
 		} catch (NotBoundException e) {
 			actualizarTexto("Error: " + e.toString());
 		}

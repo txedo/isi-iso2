@@ -1,7 +1,8 @@
 package dominio;
 
 import java.sql.SQLException;
-import excepciones.BeneficiarioIncorrectoException;
+import excepciones.BeneficiarioInexistenteException;
+import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
@@ -13,45 +14,79 @@ import excepciones.UsuarioIncorrectoException;
  */
 public class GestorBeneficiarios {
 
-	public Beneficiario getBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioIncorrectoException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	/* Metodo que devuelve un beneficiario, consultando por su dni.
+	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
+	public static Beneficiario getBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, Exception {
 		Beneficiario bene = null;
+		EntradaLog entrada;
 		
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarBeneficiario);
 		bene = Beneficiario.consultarPorNIF(dni);
+		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se consultan los datos del beneficiario con NIF "+dni);
+		entrada.insertar();
 		
 		return bene;
 	}
 	
-	public Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioIncorrectoException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, Exception {
 		Beneficiario bene = null;
-		
+		EntradaLog entrada;
+
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarBeneficiario);
 		bene = Beneficiario.consultarPorNIF(nss);
+		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se consultan los datos del beneficiario con NSS "+nss);
+		entrada.insertar();
 
 		return bene;
 	}
 	
-	public void crear(long idSesion, Beneficiario beneficiario) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+
+	/* Metodo para registrar un nuevo beneficiario.
+	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
+	public static void crear(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+
 		Medico medico = null;
-		
+		EntradaLog entrada;
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.RegistrarBeneficiario);
-		// Si es un nuevo beneficiario, se le asigna un medico aleatorio
-		// Si ya existe, hay un fallo 
+		// Se consulta para comprobar si ese beneficiario ya existe.
+		// Si existe, se lanza una excepcion.
+		// Si no existe, se captura la BeneficiarioIncorrectoException y se registra
 		try {
 			Beneficiario.consultarPorNIF(beneficiario.getNif());
-			throw new SQLException("El beneficiario con NIF "+beneficiario.getNif()+ " ya existe en la base de datos. No se puede registrar de nuevo.");
+			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" ya existe y no se puede crear");
+			entrada.insertar();
+			throw new BeneficiarioYaExistenteException("El beneficiario con NIF "+beneficiario.getNif()+ " ya existe en la base de datos. No se puede registrar de nuevo.");
 		}
-		catch(BeneficiarioIncorrectoException e){
-			// Le asignamos un medico
+		catch(BeneficiarioInexistenteException e){
+			// Le asignamos un medico aleatorio al nuevo beneficiario
 			medico = (Medico) Usuario.consultarAleatorio(Roles.Medico);
 			beneficiario.setMedicoAsignado(medico);
 			beneficiario.insertar();
+			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" se ha registrado satisfactoriamente");
+			entrada.insertar();
 		}
+
 	}
 	
-	public void modificar(long idSesion, Beneficiario beneficiario) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	/* Metodo para modificar los datos de un beneficiario.
+	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
+	public static void modificar(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException{
+		EntradaLog entrada;
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.ModificarBeneficiario);
-		beneficiario.modificar();
+		// Se consulta para comprobar si ese beneficiario ya existe.
+		// Si no existe, se lanza una excepcion.
+		// Si existe, se actualiza
+		try {
+			Beneficiario.consultarPorNIF(beneficiario.getNif());
+			beneficiario.modificar();
+			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "update", "Se han actualizado los datos del beneficiario con NIF "+beneficiario.getNif());
+			entrada.insertar();
+		}
+		catch(BeneficiarioInexistenteException e){
+			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "update", "El beneficiario con NIF "+beneficiario.getNif()+" no existe y no se puede actualizar");
+			entrada.insertar();
+			throw e;
+		}
 	}
 	
 }

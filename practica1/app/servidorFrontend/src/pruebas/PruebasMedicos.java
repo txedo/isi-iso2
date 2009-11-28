@@ -70,8 +70,8 @@ public class PruebasMedicos extends TestCase {
 	protected void tearDown() {
 		// Cerramos la sesión y quitamos la conexión local con la base de datos
 		try {
-			GestorSesiones.cerrarSesion((Sesion)sesionCitador);
-			GestorSesiones.cerrarSesion((Sesion)sesionAdmin);
+			GestorSesiones.liberar(((Sesion)sesionCitador).getId());
+			GestorSesiones.liberar(((Sesion)sesionAdmin).getId());
 			GestorConexionesBD.quitarConexiones();
 		} catch(SQLException e) {
 			fail(e.toString());
