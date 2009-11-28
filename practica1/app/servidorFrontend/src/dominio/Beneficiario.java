@@ -20,8 +20,8 @@ public class Beneficiario implements Serializable {
 	private String correo;
 	private int telefono;
 	private int movil;
-//	ArrayList<Cita> citas;
-//	ArrayList<Volante> volantes;
+	ArrayList<Cita> citas;
+	ArrayList<Volante> volantes;
 	Medico medicoAsignado;
 
 	public Beneficiario() {
@@ -39,8 +39,8 @@ public class Beneficiario implements Serializable {
 		this.telefono = telefono;
 		this.movil = movil;
 		this.medicoAsignado = null;
-//		ArrayList<Cita> citas = new ArrayList<Cita>();
-//		ArrayList<Volante> volantes = new ArrayList<Volante>();
+		ArrayList<Cita> citas = new ArrayList<Cita>();
+		ArrayList<Volante> volantes = new ArrayList<Volante>();
 	}
 
 	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
@@ -123,7 +123,7 @@ public class Beneficiario implements Serializable {
 		this.movil = movil;
 	}
 
-/*	public ArrayList<Cita> getCitas() {
+	public ArrayList<Cita> getCitas() {
 		return citas;
 	}
 
@@ -137,7 +137,7 @@ public class Beneficiario implements Serializable {
 
 	public void setVolantes(ArrayList<Volante> volantes) {
 		this.volantes = volantes;
-	}*/
+	}
 
 	public Medico getMedicoAsignado() {
 		return medicoAsignado;
