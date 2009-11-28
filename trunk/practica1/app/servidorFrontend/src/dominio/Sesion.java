@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Sesion implements ISesion, Serializable {
+
+	private static final long serialVersionUID = 4617941634511694961L;
+	
 	private long idSesion;
 	private Date horaInicio;
 	private Usuario usuario;

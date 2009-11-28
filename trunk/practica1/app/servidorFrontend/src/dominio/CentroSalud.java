@@ -11,6 +11,8 @@ import persistencia.FPCentroSalud;
  */
 public class CentroSalud implements Serializable {
 	
+	private static final long serialVersionUID = 560876087738590995L;
+	
 	private int id;
 	private String nombre;
 	private String direccion;

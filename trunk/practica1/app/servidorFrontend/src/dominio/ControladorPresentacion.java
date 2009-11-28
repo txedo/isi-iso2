@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import persistencia.GestorConexionesBD;
 import presentacion.JFServidorFrontend;
 import comunicaciones.ConexionBDFrontend;
-import comunicaciones.ProxyAgenteRemoto;
+import comunicaciones.ProxyBDRespaldo;
 import comunicaciones.ServidorFrontend;
 
 /**
@@ -17,7 +17,7 @@ public class ControladorPresentacion {
 	
 	private ServidorFrontend servidor;
 	private ObservadorPresentacion observador;
-	private ProxyAgenteRemoto proxy;
+	private ProxyBDRespaldo proxy;
 	private ConexionBDFrontend basedatos;
 
 	public ControladorPresentacion() {
@@ -52,7 +52,7 @@ public class ControladorPresentacion {
 		// Establecemos conexión con el servidor de respaldo
 		respaldo = (ipRespaldo != null && !ipRespaldo.equals(""));
 		if(respaldo) {
-			proxy = new ProxyAgenteRemoto();
+			proxy = new ProxyBDRespaldo();
 			proxy.conectar(ipRespaldo);
 			proxy.abrir();
 			GestorConexionesBD.ponerConexion(proxy);

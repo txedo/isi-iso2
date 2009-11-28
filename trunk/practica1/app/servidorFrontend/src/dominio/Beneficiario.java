@@ -1,15 +1,17 @@
 package dominio;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import excepciones.BeneficiarioIncorrectoException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
-
 import persistencia.FPBeneficiario;
 
-public class Beneficiario {
+public class Beneficiario implements Serializable {
+	
+	private static final long serialVersionUID = 1938859991040689592L;
+	
 	private String nif;
 	private String nss;
 	private String nombre;
@@ -18,8 +20,8 @@ public class Beneficiario {
 	private String correo;
 	private int telefono;
 	private int movil;
-	ArrayList<Cita> citas;
-	ArrayList<Volante> volantes;
+//	ArrayList<Cita> citas;
+//	ArrayList<Volante> volantes;
 	Medico medicoAsignado;
 
 	public Beneficiario() {
@@ -37,8 +39,8 @@ public class Beneficiario {
 		this.telefono = telefono;
 		this.movil = movil;
 		this.medicoAsignado = null;
-		ArrayList<Cita> citas = new ArrayList<Cita>();
-		ArrayList<Volante> volantes = new ArrayList<Volante>();
+//		ArrayList<Cita> citas = new ArrayList<Cita>();
+//		ArrayList<Volante> volantes = new ArrayList<Volante>();
 	}
 
 	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioIncorrectoException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
@@ -121,7 +123,7 @@ public class Beneficiario {
 		this.movil = movil;
 	}
 
-	public ArrayList<Cita> getCitas() {
+/*	public ArrayList<Cita> getCitas() {
 		return citas;
 	}
 
@@ -135,7 +137,7 @@ public class Beneficiario {
 
 	public void setVolantes(ArrayList<Volante> volantes) {
 		this.volantes = volantes;
-	}
+	}*/
 
 	public Medico getMedicoAsignado() {
 		return medicoAsignado;

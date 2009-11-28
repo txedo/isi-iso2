@@ -2,27 +2,19 @@ package pruebas;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import comunicaciones.ConexionBDFrontend;
 import junit.framework.TestCase;
 import persistencia.AgenteFrontend;
 import persistencia.GestorConexionesBD;
 import dominio.Administrador;
 import dominio.CentroSalud;
-import dominio.Citador;
-import dominio.EntradaLog;
 import dominio.GestorSesiones;
 import dominio.ISesion;
 import dominio.Medico;
 import dominio.Roles;
-import dominio.Sesion;
-import dominio.Usuario;
-import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 
-public class PruebasSesiones extends TestCase{
+public class PruebasSesiones extends TestCase {
 	
 	CentroSalud centro1;
 	Medico medico1;
@@ -61,7 +53,7 @@ public class PruebasSesiones extends TestCase{
 	
 	protected void tearDown() {
 		// Quitamos la conexión local con la base de datos
-		GestorConexionesBD.quitarConexion(conexionF);
+		GestorConexionesBD.quitarConexiones();
 	}
 	
 	/** Prueba del escenario normal: se crea la sesion **/
@@ -95,7 +87,7 @@ public class PruebasSesiones extends TestCase{
 	/** Prueba de un escenario alternativo: no existe el usuario **/
 	public void testUsuarioIncorrecto() {	
 		try {
-			ISesion s = GestorSesiones.identificar("administrador", "nimda");
+			GestorSesiones.identificar("administrador", "nimda");
 			fail("Se esperaba UsusarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
 		} catch(Exception e) {
@@ -103,4 +95,3 @@ public class PruebasSesiones extends TestCase{
 		}
 	}
 }
-		

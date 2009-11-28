@@ -34,6 +34,8 @@ import javax.swing.border.BevelBorder;
 */
 public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLog {
 	
+	private static final long serialVersionUID = -113838536647924014L;
+	
 	private ControladorPresentacion controlador;
 	private JPanel jPanel1;
 	private JScrollPane scpPanelLog;
