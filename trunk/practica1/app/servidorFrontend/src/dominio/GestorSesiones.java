@@ -13,14 +13,15 @@ public class GestorSesiones {
 	// Tabla hash de sesiones. La clave es el idSesion y el valor es la Sesion con ese idSesion
 	private static Hashtable<Long,Sesion> sesiones = new Hashtable<Long,Sesion>();
 		
-	public static void cerrarSesion(Sesion sesion) throws SQLException {
+	// Metodo para cerrar una sesion y borrarla de la tabla de sesiones abiertas
+	public static void liberar(long idSesion) throws SQLException {
 		EntradaLog entrada;
-		
-		sesiones.remove(sesion.getId());
-		entrada = new EntradaLog(sesion.getUsuario().getLogin(), "read", "Se ha cerrado la sesion");
+		entrada = new EntradaLog(sesiones.get(idSesion).getUsuario().getLogin(), "read", "Se ha cerrado la sesion cuyo id era " +idSesion);
+		sesiones.remove(idSesion);
 		entrada.insertar();
 	}	
 	
+	// Metodo para identificar un cliente y crear una sesion
 	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, Exception {
 		Enumeration<Sesion> sesionesAbiertas; 
 		Sesion sesionAbierta = null;
@@ -47,7 +48,7 @@ public class GestorSesiones {
 			}
 			// Si el usuario ya tenía una sesion iniciada, se cierra
 			if(encontrado) {
-				cerrarSesion(sesionAbierta);
+				liberar(sesionAbierta.getId());
 			}
 
 			// Creamos un identificador único para la nueva sesión
@@ -61,7 +62,7 @@ public class GestorSesiones {
 			// abiertas y se escribe el log
 			sesion = new Sesion(idSesion, usuario);
 			sesiones.put(idSesion, sesion);
-			entrada = new EntradaLog(login, "read", "Se ha creado la sesion");
+			entrada = new EntradaLog(login, "read", "Se ha creado la sesion con id "+sesion.getId());
 			entrada.insertar();
 			
 		} catch(UsuarioIncorrectoException ex) {
@@ -73,9 +74,10 @@ public class GestorSesiones {
 		return (ISesion)sesion;
 	}
 	
-	public static void comprobarPermiso(long idSesion, Operacion operacion) throws SesionInvalidaException, OperacionIncorrectaException {
+	public static void comprobarPermiso(long idSesion, Operacion operacion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException {
 		Sesion sesion;
 		boolean permitido;
+		EntradaLog entrada;
 
 		// Obtenemos la sesión para el id indicado y comprobamos si existe
 		// (en teoría sí, porque primero el usuario ha tenido que hacer login)
@@ -124,6 +126,8 @@ public class GestorSesiones {
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		if(!permitido) {
+			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para consultar los datos de un beneficiario");
+			entrada.insertar();
 			throw new OperacionIncorrectaException("El rol " + Roles.values()[(int)sesion.getRol()] + " no puede realizar la operación solicitada");
 		}
 	}

@@ -48,8 +48,8 @@ public abstract class Usuario implements Serializable {
 		FPUsuario.insertar(this);
 	}
 	
-	public void actualizar() throws SQLException {
-		FPUsuario.actualizar(this);
+	public void modificar() throws SQLException {
+		FPUsuario.modificar(this);
 	}
 	
 	public void eliminar() throws SQLException {

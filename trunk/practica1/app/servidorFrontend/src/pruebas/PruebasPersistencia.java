@@ -239,7 +239,7 @@ public class PruebasPersistencia extends TestCase {
 			// Modificamos un usuario
 			citador1.setNombre("Ramón");
 			citador1.setApellidos("P. V.");
-			citador1.actualizar();
+			citador1.modificar();
 			// Comprobamos si los cambios han tenido efecto
 			usuario = Usuario.consultar(citador1.getDni());
 			assertEquals(citador1, usuario);
@@ -250,7 +250,7 @@ public class PruebasPersistencia extends TestCase {
 		try {
 			// Modificamos un usuario de forma incorrecta (login repetido)
 			medico1.setLogin("admin");
-			medico1.actualizar();
+			medico1.modificar();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {

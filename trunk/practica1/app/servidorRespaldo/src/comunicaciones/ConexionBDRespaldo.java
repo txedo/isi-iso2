@@ -41,7 +41,7 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
             Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_BASEDATOS, this);
         }
     }
-	
+		
 	public void desconectar(String ip) throws RemoteException, MalformedURLException, NotBoundException {		
 		unexportObject(this, false);
 		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_BASEDATOS);

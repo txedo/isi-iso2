@@ -3,7 +3,7 @@ package dominio;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import excepciones.BeneficiarioIncorrectoException;
+import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 import persistencia.FPBeneficiario;
@@ -43,11 +43,11 @@ public class Beneficiario implements Serializable {
 //		ArrayList<Volante> volantes = new ArrayList<Volante>();
 	}
 
-	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioIncorrectoException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		return FPBeneficiario.consultarPorNIF(nif);
 	}
 
-	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioIncorrectoException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		return FPBeneficiario.consultarPorNSS(nss);
 	}
 
