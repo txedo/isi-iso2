@@ -9,8 +9,12 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import dominio.ControladorPresentacion;
+import dominio.GestorMedicos;
 import dominio.GestorSesiones;
 import dominio.ISesion;
+import dominio.Medico;
+import excepciones.MedicoInexistenteException;
+import excepciones.MedicoYaExistenteException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
@@ -77,11 +81,11 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	public Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws RemoteException {
 		return GestorBeneficiarios.getBeneficiarioPorNSS(idSesion, nss);
 	}
-	
-	public Medico getMedico(long idSesion, String dni) throws RemoteException {
+	*/
+	public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception {
 		return GestorMedicos.getMedico(idSesion, dni);
 	}
-	
+	/*
 	public Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException {
 		return GestorCitas.pedirCita(idSesion, beneficiario, idMedico, fechaYHora, duracion);
 	}
@@ -105,19 +109,19 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	public void modificar(long idSesion, Beneficiario beneficiario) throws RemoteException {
 		GestorBeneficiarios.modificar(idSesion, beneficiario);
 	}
-	
-	public void crear(long idSesion, Medico medico) throws RemoteException {
-		GestorMedicos.crear(idSesion, medico);
+	*/
+	public void crear(long idSesion, Medico medico) throws RemoteException, MedicoYaExistenteException, SQLException, Exception {
+		GestorMedicos.crearMedico(idSesion, medico);
 	}
 	
-	public void modificar(long idSesion, Medico medico) throws RemoteException {
-		GestorMedicos.modificar(idSesion, medico);
+	public void modificar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		GestorMedicos.modificarMedico(idSesion, medico);
 	}
 	
-	public void eliminar(long idSesion, Medico medico) throws RemoteException {
-		GestorMedicos.eliminar(idSesion, medico);
+	public void eliminar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		GestorMedicos.eliminarMedico(idSesion, medico);
 	}
-	
+	/*
 	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException {
 		GestorMedicos.modificarCalendario(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
 	}

@@ -64,7 +64,7 @@ public class PruebasPersistencia extends TestCase {
 	
 	protected void tearDown() {
 		// Quitamos la conexión local con la base de datos
-		GestorConexionesBD.quitarConexion(conexionF);
+		GestorConexionesBD.quitarConexiones();
 	}
 	
 	/** Pruebas de la tabla de centros de salud */
@@ -75,16 +75,16 @@ public class PruebasPersistencia extends TestCase {
 			// Intentamos buscar un centro aleatorio sin haber uno
 			centro = CentroSalud.consultarAleatorio();
 			fail("Se esperaba una excepción CentroSaludIncorrectoException");
-		} catch(SQLException e) {
-			fail("Se esperaba una excepción CentroSaludIncorrectoException");
 		} catch(CentroSaludIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción CentroSaludIncorrectoException");
 		}
 		
 		try {
 			// Insertamos varios centros correctos
 			centro1.insertar();
 			centro3.insertar();
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
@@ -92,9 +92,7 @@ public class PruebasPersistencia extends TestCase {
 			// Comprobamos que los centros se han añadido correctamente
 			centro = CentroSalud.consultarAleatorio();
 			assertTrue(centro1.equals(centro) || centro3.equals(centro));
-		} catch(CentroSaludIncorrectoException e) {
-			fail(e.toString());
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
@@ -103,6 +101,8 @@ public class PruebasPersistencia extends TestCase {
 			centro2.insertar();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SQLException");
 		}
 		
 		try {
@@ -111,15 +111,17 @@ public class PruebasPersistencia extends TestCase {
 			centro1.insertar();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
+		} catch(Exception e) {
+			fail(e.toString());
 		}
 
 		try {
 			// Intentamos buscar un centro inexistente
 			centro = CentroSalud.consultar(1000);
 			fail("Se esperaba una excepción CentroSaludIncorrectoException");
-		} catch(SQLException e) {
-			fail("Se esperaba una excepción CentroSaludIncorrectoException");
 		} catch(CentroSaludIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción CentroSaludIncorrectoException");
 		}
 	}
 
@@ -131,7 +133,7 @@ public class PruebasPersistencia extends TestCase {
 			// Leemos las entradas para ver si devuelve una lista vacía
 			log = EntradaLog.consultarLog();
 			assertTrue(log != null && log.size() == 0);
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
@@ -140,7 +142,7 @@ public class PruebasPersistencia extends TestCase {
 			entrada1.insertar();
 			entrada2.insertar();
 			entrada1.insertar();
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
@@ -149,6 +151,8 @@ public class PruebasPersistencia extends TestCase {
 			entrada3.insertar();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SQLException");
 		}
 
 		try {
@@ -156,7 +160,7 @@ public class PruebasPersistencia extends TestCase {
 			log = EntradaLog.consultarLog();
 			assertTrue((log.get(0).equals(entrada1) && log.get(1).equals(entrada2)
 			           || (log.get(0).equals(entrada2) && log.get(1).equals(entrada1))));
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 	}
@@ -169,11 +173,9 @@ public class PruebasPersistencia extends TestCase {
 			// Intentamos buscar un usuario sin haber ninguno
 			usuario = Usuario.consultar("1234567");
 			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(SQLException e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(CentroSaludIncorrectoException e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		}
 		
 		try {
@@ -184,7 +186,7 @@ public class PruebasPersistencia extends TestCase {
 			medico1.insertar();
 			citador1.insertar();
 			administrador1.insertar();
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
@@ -193,6 +195,8 @@ public class PruebasPersistencia extends TestCase {
 			medico2.insertar();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SQLException");
 		}
 
 		try {
@@ -200,17 +204,17 @@ public class PruebasPersistencia extends TestCase {
 			citador2.insertar();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SQLException");
 		}
 		
 		try {
 			// Intentamos buscar un usuario que no existe
 			usuario = Usuario.consultar("login", "password");
 			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(SQLException e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(CentroSaludIncorrectoException e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		}
 		
 		try {
@@ -227,11 +231,7 @@ public class PruebasPersistencia extends TestCase {
 			assertEquals(citador1, usuario);
 			usuario = Usuario.consultar(administrador1.getLogin(), administrador1.getPassword());
 			assertEquals(administrador1, usuario);
-		} catch(UsuarioIncorrectoException e) {
-			fail(e.toString());
-		} catch(CentroSaludIncorrectoException e) {
-			fail(e.toString());
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
@@ -243,11 +243,7 @@ public class PruebasPersistencia extends TestCase {
 			// Comprobamos si los cambios han tenido efecto
 			usuario = Usuario.consultar(citador1.getDni());
 			assertEquals(citador1, usuario);
-		} catch(UsuarioIncorrectoException e) {
-			fail(e.toString());
-		} catch(CentroSaludIncorrectoException e) {
-			fail(e.toString());
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
@@ -257,6 +253,8 @@ public class PruebasPersistencia extends TestCase {
 			medico1.actualizar();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SQLException");
 		}
 		
 		try {
@@ -265,11 +263,9 @@ public class PruebasPersistencia extends TestCase {
 			// Comprobamos si los cambios han tenido efecto
 			usuario = Usuario.consultar(administrador1.getDni());
 			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(CentroSaludIncorrectoException e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(SQLException e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		}
 	}
 	

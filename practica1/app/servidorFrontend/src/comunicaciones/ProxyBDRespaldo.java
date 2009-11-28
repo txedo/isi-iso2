@@ -11,39 +11,39 @@ import persistencia.ComandoSQL;
 /**
  * Proxy utilizado para acceder a una conexión de base de datos remota.
  */
-public class ProxyAgenteRemoto implements IConexion {
+public class ProxyBDRespaldo implements IConexion {
 
-	private IConexion conexion;
+	private IConexion conexionRemota;
 	
 	public void conectar(String ip) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
 		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorrespaldo";
-        conexion = (IConexion)Naming.lookup(url);
+        conexionRemota = (IConexion)Naming.lookup(url);
 	}
 
 	public void commit() throws RemoteException, SQLException {
-		conexion.commit();
+		conexionRemota.commit();
 	}
 
 	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
-		return conexion.consultar(comando);
+		return conexionRemota.consultar(comando);
 	}
 
 	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException {
-		conexion.ejecutar(comando);
+		conexionRemota.ejecutar(comando);
 	}
 
 	public void rollback() throws RemoteException, SQLException {
-		conexion.rollback();
+		conexionRemota.rollback();
 	}
 
 	public void abrir() throws RemoteException, SQLException {
-		conexion.abrir();
+		conexionRemota.abrir();
 	}
 
 	public void cerrar() throws RemoteException, SQLException {
-		conexion.cerrar();
+		conexionRemota.cerrar();
 	}
 
 }

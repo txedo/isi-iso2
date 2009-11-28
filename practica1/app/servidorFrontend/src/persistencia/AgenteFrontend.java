@@ -5,12 +5,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import comunicaciones.IConexion;
 
 /**
  * Agente de la base de datos del servidor frontend.
  */
-public class AgenteFrontend implements IConexion {
+public class AgenteFrontend {
 
 	protected static AgenteFrontend instancia = null;
 	protected Connection conexion;

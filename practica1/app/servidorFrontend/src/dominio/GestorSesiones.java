@@ -5,6 +5,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.OperacionIncorrectaException;
+import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 
 public class GestorSesiones {
@@ -71,45 +73,59 @@ public class GestorSesiones {
 		return (ISesion)sesion;
 	}
 	
-	public static boolean comprobar(long idSesion, Operacion operacion) {
-		boolean permitido = false;
-		// Podrian hacerse comprobaciones si existe ese id. Se supone que si, porque primero se ha hecho el login
-		Sesion s = sesiones.get(idSesion);
-		 
-		switch(operacion) {
-		case CrearUsuario:
-			permitido = (s.getRol() == Roles.Administrador.ordinal());
-			break;
-		case ModificarUsuario:
-			permitido = (s.getRol() == Roles.Administrador.ordinal()); 
-			break;
-		case EliminarUsuario:
-			permitido = (s.getRol() == Roles.Administrador.ordinal()); 
-			break;
-		case TramitarCita:
-			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
-			break;
-		case EliminarCita:
-			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
-			break;
-		case RegistrarBeneficiario:
-			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
-			break;
-		case ConsultarBeneficiario:
-			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
-			break;
-		case ModificarBeneficiario:
-			permitido = (s.getRol() == Roles.Administrador.ordinal() || s.getRol() == Roles.Citador.ordinal()); 
-			break;
-		case ModificarCalendario:
-			permitido = (s.getRol() == Roles.Administrador.ordinal()); 
-			break;
-		case EstablecerSustituto:
-			permitido = (s.getRol() == Roles.Administrador.ordinal());
-			break;
+	public static void comprobarPermiso(long idSesion, Operacion operacion) throws SesionInvalidaException, OperacionIncorrectaException {
+		Sesion sesion;
+		boolean permitido;
+
+		// Obtenemos la sesión para el id indicado y comprobamos si existe
+		// (en teoría sí, porque primero el usuario ha tenido que hacer login)
+		sesion = sesiones.get(idSesion);
+		if(sesion == null) {
+			throw new SesionInvalidaException("El identificador de sesión es inválido");
 		}
 		
-		return permitido;
+		// Vemos cuál es la operación solicitada
+		switch(operacion) {
+		case CrearUsuario:
+			permitido = (sesion.getRol() == Roles.Administrador.ordinal());
+			break;
+		case ModificarUsuario:
+			permitido = (sesion.getRol() == Roles.Administrador.ordinal()); 
+			break;
+		case EliminarUsuario:
+			permitido = (sesion.getRol() == Roles.Administrador.ordinal()); 
+			break;
+		case TramitarCita:
+			permitido = (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()); 
+			break;
+		case EliminarCita:
+			permitido = (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()); 
+			break;
+		case RegistrarBeneficiario:
+			permitido = (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()); 
+			break;
+		case ModificarBeneficiario:
+			permitido = (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()); 
+			break;
+		case ModificarCalendario:
+			permitido = (sesion.getRol() == Roles.Administrador.ordinal()); 
+			break;
+		case EstablecerSustituto:
+			permitido = (sesion.getRol() == Roles.Administrador.ordinal());
+			break;
+		case ConsultarMedico:
+		case ConsultarBeneficiario:
+			// Estas operaciones siempre están permitidas
+			permitido = true;
+			break;
+		default:
+			permitido = false;
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		if(!permitido) {
+			throw new OperacionIncorrectaException("El rol " + Roles.values()[(int)sesion.getRol()] + " no puede realizar la operación solicitada");
+		}
 	}
 
 	public static Sesion getSesion(long idSesion) {
