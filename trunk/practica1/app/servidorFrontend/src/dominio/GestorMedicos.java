@@ -64,7 +64,7 @@ public class GestorMedicos {
 		}
 		
 		// Modificamos los datos del médico en la base de datos
-		medico.actualizar();
+		medico.modificar();
 	}
 
 	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {

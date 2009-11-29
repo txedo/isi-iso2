@@ -45,6 +45,10 @@ public class PruebasMedicos extends TestCase {
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
 			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM citas");
+			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
+			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
 			conexionF = new ConexionBDFrontend();
 			GestorConexionesBD.ponerConexion(conexionF);
