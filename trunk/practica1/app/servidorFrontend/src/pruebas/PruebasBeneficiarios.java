@@ -87,6 +87,7 @@ public class PruebasBeneficiarios extends TestCase {
 		try {
 			GestorSesiones.liberar(((Sesion)sesionCitador).getId());
 			GestorSesiones.liberar(((Sesion)sesionAdmin).getId());
+			GestorSesiones.liberar(((Sesion)sesionMedico).getId());
 			GestorConexionesBD.quitarConexiones();
 		} catch(SQLException e) {
 			fail(e.toString());
