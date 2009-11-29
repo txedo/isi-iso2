@@ -16,6 +16,7 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasPersistencia.class);
 		suite.addTestSuite(PruebasSesiones.class);
 		suite.addTestSuite(PruebasMedicos.class);
+		suite.addTestSuite(PruebasBeneficiarios.class);
 		return suite;
 	}
 	

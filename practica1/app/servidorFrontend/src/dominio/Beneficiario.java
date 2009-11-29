@@ -147,5 +147,17 @@ public class Beneficiario implements Serializable {
 		this.medicoAsignado = medicoAsignado;
 	}
 	
+	public boolean equals(Object o) {
+		Beneficiario b;
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof Beneficiario) {
+			b = (Beneficiario)o;
+			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && domicilio.equals(b.getDomicilio()) && correo.equals(b.getCorreo()) && telefono==b.getTelefono() && movil==b.getMovil();
+		}
+		return dev;
+	}
+	
 	
 }

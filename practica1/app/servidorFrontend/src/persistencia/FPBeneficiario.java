@@ -40,6 +40,7 @@ public class FPBeneficiario {
 		if (datos.getRow() == 0) {
 			throw new BeneficiarioInexistenteException("El NIF introducido no es válido");
 		} else {
+			bene = new Beneficiario();
 			// Establecemos los datos del beneficiario
 			bene.setNif(datos.getString(COL_NIF));
 			bene.setNss(datos.getString(COL_NSS));
@@ -64,7 +65,7 @@ public class FPBeneficiario {
 
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM "
-				+ TABLA_BENEFICIARIOS + " WHERE " + COL_NIF + " = ?", nss);
+				+ TABLA_BENEFICIARIOS + " WHERE " + COL_NSS + " = ?", nss);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 
@@ -72,6 +73,7 @@ public class FPBeneficiario {
 		if (datos.getRow() == 0) {
 			throw new BeneficiarioInexistenteException("El NSS introducido no es válido");
 		} else {
+			bene = new Beneficiario();
 			// Establecemos los datos del beneficiario
 			bene.setNif(datos.getString(COL_NIF));
 			bene.setNss(datos.getString(COL_NSS));
@@ -94,8 +96,8 @@ public class FPBeneficiario {
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_BENEFICIARIOS
 				+ " (" + COL_NIF + ", " + COL_NSS + ", " + COL_NOMBRE
 				+ ", " + COL_APELLIDOS + ", " + COL_DOMICILIO + ", " + COL_CORREO
-				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO + ", " + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				bene.getNif(),bene.getNss(), bene.getNombre(),
+				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				bene.getNif(), bene.getNss(), bene.getNombre(),
 				bene.getApellidos(), bene.getDomicilio(), bene.getCorreo(), bene.getTelefono(), bene.getMovil(), bene.getMedicoAsignado().getDni());
 		GestorConexionesBD.ejecutar(comando);
 	}

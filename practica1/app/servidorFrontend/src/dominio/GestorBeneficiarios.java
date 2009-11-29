@@ -33,7 +33,7 @@ public class GestorBeneficiarios {
 		EntradaLog entrada;
 
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarBeneficiario);
-		bene = Beneficiario.consultarPorNIF(nss);
+		bene = Beneficiario.consultarPorNSS(nss);
 		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se consultan los datos del beneficiario con NSS "+nss);
 		entrada.insertar();
 
