@@ -1,6 +1,7 @@
 package dominio;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
@@ -74,6 +75,38 @@ public class GestorSesiones {
 		return (ISesion)sesion;
 	}
 	
+	public static ArrayList<Operacion> operacionesDisponibles (long idSesion) throws SesionInvalidaException {
+		Sesion sesion;
+		ArrayList<Operacion> operaciones = new ArrayList<Operacion>();
+		
+		sesion = sesiones.get(idSesion);
+		if (sesion == null) {
+			throw new SesionInvalidaException("El identificador de sesión es inválido");
+		}
+		
+		// Se deben agregar al vector todas las operaciones declaradas en Operacion.java
+		// Agregamos al vector las operaciones de todos los usuarios (administrador, citador
+		operaciones.add(Operacion.ConsultarMedico);
+		operaciones.add(Operacion.ConsultarBeneficiario);
+		// Agregamos al vector las operaciones de citadores y administradores
+		if (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
+			operaciones.add(Operacion.TramitarCita);
+			operaciones.add(Operacion.EliminarCita);
+			operaciones.add(Operacion.RegistrarBeneficiario);
+			operaciones.add(Operacion.ModificarBeneficiario);
+		}
+		// Agregamos al vector las operaciones de administradores
+		if (sesion.getRol() == Roles.Administrador.ordinal()){
+			operaciones.add(Operacion.CrearUsuario);
+			operaciones.add(Operacion.ModificarUsuario);
+			operaciones.add(Operacion.EliminarUsuario);
+			operaciones.add(Operacion.ModificarCalendario);
+			operaciones.add(Operacion.EstablecerSustituto);
+		}
+		
+		return operaciones;
+	}
+	
 	public static void comprobarPermiso(long idSesion, Operacion operacion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException {
 		Sesion sesion;
 		boolean permitido;
@@ -86,6 +119,7 @@ public class GestorSesiones {
 			throw new SesionInvalidaException("El identificador de sesión es inválido");
 		}
 		
+		// TODO modificar este switch para que analice el arraylist devuelto por operacionesDisponibles()
 		// Vemos cuál es la operación solicitada
 		switch(operacion) {
 		case CrearUsuario:
@@ -116,19 +150,23 @@ public class GestorSesiones {
 			permitido = (sesion.getRol() == Roles.Administrador.ordinal());
 			break;
 		case ConsultarMedico:
+			// Estas operaciones siempre están permitidas
+			permitido = true;
+			break;
 		case ConsultarBeneficiario:
 			// Estas operaciones siempre están permitidas
 			permitido = true;
 			break;
 		default:
 			permitido = false;
+			break;
 		}
-		
+
 		// Comprobamos si se tienen permisos para realizar la operación
 		if(!permitido) {
-			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para consultar los datos de un beneficiario");
+			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para ejecutar la operacion " + operacion.toString());
 			entrada.insertar();
-			throw new OperacionIncorrectaException("El rol " + Roles.values()[(int)sesion.getRol()] + " no puede realizar la operación solicitada");
+			throw new OperacionIncorrectaException("El rol " + Roles.values()[(int)sesion.getRol()] + " no puede realizar la operación " + operacion.toString());
 		}
 	}
 

@@ -13,6 +13,7 @@ import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
+import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
 
@@ -78,5 +79,8 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 		
 	}
 
+	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException {
+		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
+	}
 		
 }
