@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
+import excepciones.BeneficiarioYaExistenteException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 import presentacion.JFLogin;
@@ -58,6 +59,7 @@ public class ControladorLogin {
 			ventana.dispose();
 			ventanaPrincipal = new JFPrincipal();
 			ventanaPrincipal.setControlador(this);
+			ventanaPrincipal.iniciar();
 			ventanaPrincipal.setVisible(true);
 			
 		} catch(UsuarioIncorrectoException e) {
@@ -73,6 +75,10 @@ public class ControladorLogin {
 		} catch(Exception e) {
 			JOptionPane.showMessageDialog(ventana, "Error general:\n" + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	public void crearBeneficiario(Beneficiario bene) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
+		servidor.crear(sesion.getId(), bene);
 	}
 	
 	public Object operacionesDisponibles () throws RemoteException, SesionInvalidaException {

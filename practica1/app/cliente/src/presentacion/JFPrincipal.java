@@ -7,6 +7,7 @@ import dominio.ControladorLogin;
 import dominio.Medico;
 import dominio.Operacion;
 import dominio.Usuario;
+import excepciones.BeneficiarioYaExistenteException;
 import excepciones.SesionInvalidaException;
 
 import java.awt.BorderLayout;
@@ -92,51 +93,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 	public JFPrincipal() {
 		super();
 		initGUI();
-		Object operaciones = null;
-		System.out.println("hola");
-		try {
-			operaciones = controlador.operacionesDisponibles();
-			System.out.println("adios");
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SesionInvalidaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.RegistrarBeneficiario))
-			jPanelRegistrarBeneficiario.setVisible(true);
-		else jPanelRegistrarBeneficiario.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ModificarBeneficiario))
-			jPanelModificarBeneficiario.setVisible(true);
-		else jPanelModificarBeneficiario.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ConsultarBeneficiario))
-			jPanelConsultarBeneficiario.setVisible(true);
-		else jPanelConsultarBeneficiario.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.TramitarCita))
-			jPanelTramitarCita.setVisible(true);
-		else jPanelTramitarCita.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.EliminarCita))
-			jPanelEliminarCita.setVisible(true);
-		else jPanelEliminarCita.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.CrearUsuario))
-			jPanelCrearUsuario.setVisible(true);
-		else jPanelCrearUsuario.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ModificarUsuario))
-			jPanelModificarUsuario.setVisible(true);
-		else jPanelModificarUsuario.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.EliminarUsuario))
-			jPanelEliminarUsuario.setVisible(true);
-		else jPanelEliminarUsuario.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ConsultarMedico))
-			jPanelConsultarMedico.setVisible(true);
-		else jPanelConsultarMedico.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ModificarCalendario))
-			jPanelModificarCalendario.setVisible(true);
-		else jPanelModificarCalendario.setVisible(false);
-		if (((ArrayList<Operacion>)operaciones).contains(Operacion.EstablecerSustituto))
-			jPanelEstablecerSustituto.setVisible(true);
-		else jPanelEstablecerSustituto.setVisible(false);
 	}
 	
 	private void initGUI() {
@@ -396,11 +352,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 
 		if (datosCorrectos) {
 			beneficiario = new Beneficiario();
-			medico = new Medico();
-			
-			// TEST
-			medico.setDni("12345678");
-			// FIN DE TEST
 			
 			beneficiario.setNif(txtNIF.getText());
 			beneficiario.setNss(txtNSS.getText());
@@ -410,18 +361,91 @@ public class JFPrincipal extends javax.swing.JFrame {
 			beneficiario.setCorreo(txtCorreo.getText());
 			beneficiario.setTelefono(Integer.parseInt(txtTelefonoFijo.getText()));
 			beneficiario.setMovil(Integer.parseInt(txtTelefonoMovil.getText()));
-			beneficiario.setMedicoAsignado((Medico)medico);
 			
 			try {
-				beneficiario.insertar();
+				controlador.crearBeneficiario(beneficiario);
+				JOptionPane.showMessageDialog(this, "Beneficiario creado", "No Error", JOptionPane.INFORMATION_MESSAGE);
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(this, "Error en la creacion del beneficiario:\n" + e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (BeneficiarioYaExistenteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
+		
 	}
 
 	public void setControlador(ControladorLogin controlador) {
 		this.controlador = controlador;
+	}
+	
+	public void iniciar() {
+		ArrayList<Operacion> operaciones = null;
+		System.out.println("hola");
+		try {
+			operaciones = (ArrayList<Operacion>)controlador.operacionesDisponibles();
+			System.out.println("adios");
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SesionInvalidaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (operaciones.contains(Operacion.RegistrarBeneficiario))
+			jPanelRegistrarBeneficiario.setVisible(true);
+		else jPanelRegistrarBeneficiario.setVisible(false);
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ModificarBeneficiario))
+			jPanelModificarBeneficiario.setVisible(true);
+		else jPanelModificarBeneficiario.setVisible(false);
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ConsultarBeneficiario))
+			jPanelConsultarBeneficiario.setVisible(true);
+		else jPanelConsultarBeneficiario.setVisible(false);
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.TramitarCita))
+			jPanelTramitarCita.setVisible(true);
+		else jPanelTramitarCita.setVisible(false);
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.EliminarCita))
+			jPanelEliminarCita.setVisible(true);
+		else jPanelEliminarCita.setVisible(false);
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.CrearUsuario))
+			jPanelCrearUsuario.setVisible(true);
+		else jPanelCrearUsuario.setVisible(false);
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ModificarUsuario))
+			jPanelModificarUsuario.setVisible(true);
+		else {
+			jPanelModificarUsuario.setVisible(false);
+			jTabbedPaneOperaciones.remove(jPanelModificarUsuario);
+		}
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.EliminarUsuario))
+			jPanelEliminarUsuario.setVisible(true);
+		else {
+			jPanelEliminarUsuario.setVisible(false);
+			jTabbedPaneOperaciones.remove(jPanelEliminarUsuario);
+		}
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ConsultarMedico))
+			jPanelConsultarMedico.setVisible(true);
+		else {
+			jPanelConsultarMedico.setVisible(false);
+			jTabbedPaneOperaciones.remove(jPanelConsultarMedico);
+		}
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.ModificarCalendario))
+			jPanelModificarCalendario.setVisible(true);
+		else {
+			jPanelModificarCalendario.setVisible(false);
+			jTabbedPaneOperaciones.remove(jPanelModificarCalendario);
+		}
+		if (((ArrayList<Operacion>)operaciones).contains(Operacion.EstablecerSustituto))
+			jPanelEstablecerSustituto.setVisible(true);
+		else {
+			jPanelEstablecerSustituto.setVisible(false);
+			jTabbedPaneOperaciones.remove(jPanelEstablecerSustituto);
+		}
 	}
 
 }
