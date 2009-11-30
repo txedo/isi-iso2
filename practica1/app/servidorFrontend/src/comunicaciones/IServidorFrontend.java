@@ -8,6 +8,7 @@ import dominio.Beneficiario;
 import dominio.ISesion;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
 import dominio.Medico;
 import excepciones.MedicoInexistenteException;
@@ -51,9 +52,9 @@ public interface IServidorFrontend extends Remote {
 	public void eliminar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception;
 
 /*	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException;
-	
-	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException;
-	
+*/
+	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException;
+/*	
 	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException; */
 	
 }

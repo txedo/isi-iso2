@@ -14,6 +14,7 @@ import dominio.Beneficiario;
 import dominio.ControladorPresentacion;
 import dominio.GestorBeneficiarios;
 import dominio.GestorMedicos;
+import dominio.GestorMensajes;
 import dominio.GestorSesiones;
 import dominio.ISesion;
 import excepciones.BeneficiarioInexistenteException;
@@ -265,11 +266,11 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException {
 		GestorMedicos.modificarCalendario(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
 	}
-	
-	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException {
+	*/
+	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException {
 		return GestorMensajes.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
-	
+	/*
 	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException {
 		return GestorMedicos.emitirVolante(idSesion, beneficiario, emisor, destino);
 	} */

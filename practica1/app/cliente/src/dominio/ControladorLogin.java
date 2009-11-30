@@ -4,11 +4,15 @@ import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
+import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 import presentacion.JFLogin;
+import presentacion.JFPrincipal;
 
 /**
  * Controlador que gestiona la identificación de los usuarios. 
@@ -18,6 +22,7 @@ public class ControladorLogin {
 	private ProxyServidorFrontend servidor;
 	private ISesion sesion;
 	private JFLogin ventana;
+	private JFPrincipal ventanaPrincipal;
 	
 	public ControladorLogin() {
 		servidor = null;
@@ -51,6 +56,10 @@ public class ControladorLogin {
 			// Ocultamos la ventana de login
 			ventana.setVisible(false);
 			ventana.dispose();
+			ventanaPrincipal = new JFPrincipal();
+			ventanaPrincipal.setControlador(this);
+			ventanaPrincipal.setVisible(true);
+			
 		} catch(UsuarioIncorrectoException e) {
 			JOptionPane.showMessageDialog(ventana, "Error en la identificación del usuario:\n" + e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
 		} catch (RemoteException e) {
@@ -66,4 +75,7 @@ public class ControladorLogin {
 		}
 	}
 	
+	public Object operacionesDisponibles () throws RemoteException, SesionInvalidaException {
+		return servidor.mensajeAuxiliar(sesion.getId(), 1000, null);
+	}
 }

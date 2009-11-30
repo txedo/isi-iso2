@@ -102,6 +102,7 @@ public class JFLogin extends javax.swing.JDialog {
 	}
 	
 	private void btnConectarActionPerformed(ActionEvent evt) {
+		System.out.println("btnConectar.actionPerformed, event="+evt);
 		controlador.iniciarSesion(txtUsuario.getText(), new String(txtPassword.getPassword()));
 	}
 
