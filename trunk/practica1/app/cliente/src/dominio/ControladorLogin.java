@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
+import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
@@ -33,7 +34,7 @@ public class ControladorLogin {
 		// Creamos la ventana de login y la mostramos
 		ventana = new JFLogin();
 		ventana.setControlador(this);
-		ventana.setModal(true);
+		//ventana.setModal(true);
 		ventana.setVisible(true);
 	}
 	
@@ -45,40 +46,33 @@ public class ControladorLogin {
 		return servidor;
 	}
 	
-	public void iniciarSesion(String login, String password) {
-		try {
-			// Intentamos conectarnos con el servidor frontend
-			if(servidor == null) {
-				servidor = new ProxyServidorFrontend();
-			}
-			servidor.conectar("127.0.0.1");
-			// Nos identificamos en el servidor
-			sesion = (ISesion)servidor.identificar(login, password);
-			// Ocultamos la ventana de login
-			ventana.setVisible(false);
-			ventana.dispose();
-			ventanaPrincipal = new JFPrincipal();
-			ventanaPrincipal.setControlador(this);
-			ventanaPrincipal.iniciar();
-			ventanaPrincipal.setVisible(true);
-			
-		} catch(UsuarioIncorrectoException e) {
-			JOptionPane.showMessageDialog(ventana, "Error en la identificación del usuario:\n" + e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
-		} catch (RemoteException e) {
-			JOptionPane.showMessageDialog(ventana, "Error en la conexión con el servidor:\n" + e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
-		} catch (NotBoundException e) {
-			JOptionPane.showMessageDialog(ventana, "Error en la conexión con el servidor:\n" + e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
-		} catch (MalformedURLException e) {
-			JOptionPane.showMessageDialog(ventana, "Error en la conexión con el servidor:\n" + e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
-		} catch(SQLException e) {
-			JOptionPane.showMessageDialog(ventana, "Error en el sistema:\n" + e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
-		} catch(Exception e) {
-			JOptionPane.showMessageDialog(ventana, "Error general:\n" + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+	public void iniciarSesion(String login, String password) throws SQLException, UsuarioIncorrectoException, Exception {
+		// Intentamos conectarnos con el servidor frontend
+		if(servidor == null) {
+			servidor = new ProxyServidorFrontend();
 		}
+		servidor.conectar("127.0.0.1");
+		// Nos identificamos en el servidor
+		sesion = (ISesion)servidor.identificar(login, password);
+		// Ocultamos la ventana de login
+		ventana.setVisible(false);
+		ventana.dispose();
+		ventanaPrincipal = new JFPrincipal();
+		ventanaPrincipal.setControlador(this);
+		ventanaPrincipal.iniciar();
+		ventanaPrincipal.setVisible(true);
 	}
 	
 	public void crearBeneficiario(Beneficiario bene) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
 		servidor.crear(sesion.getId(), bene);
+	}
+	
+	public Beneficiario getBeneficiario(String nif) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		return servidor.getBeneficiario(sesion.getId(), nif);
+	}
+	
+	public Beneficiario getBeneficiarioPorNSS(String nss) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		return servidor.getBeneficiarioPorNSS(sesion.getId(), nss);
 	}
 	
 	public Object operacionesDisponibles () throws RemoteException, SesionInvalidaException {
