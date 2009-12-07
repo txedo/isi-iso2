@@ -5,8 +5,11 @@ import com.cloudgarden.layout.AnchorLayout;
 import com.sun.org.apache.xerces.internal.impl.dtd.models.DFAContentModel;
 
 import dominio.ControladorLogin;
+import excepciones.UsuarioIncorrectoException;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -27,7 +30,7 @@ import javax.swing.WindowConstants;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JFLogin extends javax.swing.JDialog {
+public class JFLogin extends javax.swing.JFrame {
 	
 	private ControladorLogin controlador;
 	private JLabel jLabel1;
@@ -103,7 +106,15 @@ public class JFLogin extends javax.swing.JDialog {
 	
 	private void btnConectarActionPerformed(ActionEvent evt) {
 		System.out.println("btnConectar.actionPerformed, event="+evt);
-		controlador.iniciarSesion(txtUsuario.getText(), new String(txtPassword.getPassword()));
+		try {
+			controlador.iniciarSesion(txtUsuario.getText(), new String(txtPassword.getPassword()));
+		} catch (SQLException e) {
+			Utilidades.mostrarDialogoError(this, "Error en el sistema", e.getMessage());
+		} catch (UsuarioIncorrectoException e) {
+			Utilidades.mostrarDialogoError(this, "Error al autentificar", "El usuario o contraseña son incorrectos.");
+		} catch (Exception e) {
+			Utilidades.mostrarDialogoError(this, "Error", e.toString());
+		}
 	}
 
 }
