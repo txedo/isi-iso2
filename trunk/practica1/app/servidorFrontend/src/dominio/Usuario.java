@@ -1,10 +1,6 @@
 package dominio;
 
 import java.io.Serializable;
-import java.sql.SQLException;
-import excepciones.CentroSaludIncorrectoException;
-import excepciones.UsuarioIncorrectoException;
-import persistencia.FPUsuario;
 
 /**
  * Clase abstracta que representa un usuario del sistema.
@@ -32,30 +28,6 @@ public abstract class Usuario implements Serializable {
 
 	public abstract Roles getRol();
 	
-	public static Usuario consultar(String dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
-		return FPUsuario.consultar(dni);
-	}
-	
-	public static Usuario consultar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
-		return FPUsuario.consultar(login, password);
-	}
-	
-	public static Usuario consultarAleatorio(Roles rol) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
-		return FPUsuario.consultarAleatorio(rol);
-	}
-	
-	public void insertar() throws SQLException {
-		FPUsuario.insertar(this);
-	}
-	
-	public void modificar() throws SQLException {
-		FPUsuario.modificar(this);
-	}
-	
-	public void eliminar() throws SQLException {
-		FPUsuario.eliminar(this);
-	}
-
 	public String getDni() {
 		return dni;
 	}

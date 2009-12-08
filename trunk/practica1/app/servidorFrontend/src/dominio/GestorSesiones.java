@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
+
+import persistencia.FPUsuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
@@ -36,7 +38,7 @@ public class GestorSesiones {
 		try {
 			
 			// Comprobamos el login y el password del usuario
-			usuario = Usuario.consultar(login, password);
+			usuario = FPUsuario.consultar(login, password);
 			
 			// Se comprueba si el usuario ya tenía una sesion iniciada
 			sesionesAbiertas = sesiones.elements();

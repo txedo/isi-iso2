@@ -71,22 +71,19 @@ public class FPCentroSalud {
 		return centro;
 	}
 	
-	public static int insertar(CentroSalud centro) throws SQLException {
+	public static void insertar(CentroSalud centro) throws SQLException {
 		ComandoSQL comando;
 		ResultSet datos;
-		int id;
 		
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CENTROS + " (" + COL_NOMBRE + ", " + COL_DIRECCION + ") VALUES (?, ?)",
                                           centro.getNombre(), centro.getDireccion());
 		GestorConexionesBD.ejecutar(comando);
 		
-		// Devolvemos el id del nuevo centro de salud
+		// Cambiamos el id del nuevo centro de salud
 		comando = new ComandoSQLSentencia("SELECT LAST_INSERT_ID()");			
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
-		id = datos.getInt("LAST_INSERT_ID()");
-		
-		return id;
+		centro.setId(datos.getInt("LAST_INSERT_ID()"));
 	}
 
 }

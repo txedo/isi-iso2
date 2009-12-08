@@ -1,6 +1,9 @@
 package dominio;
 
 import java.sql.SQLException;
+
+import persistencia.FPBeneficiario;
+import persistencia.FPUsuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludIncorrectoException;
@@ -21,7 +24,7 @@ public class GestorBeneficiarios {
 		EntradaLog entrada;
 		
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarBeneficiario);
-		bene = Beneficiario.consultarPorNIF(dni);
+		bene = FPBeneficiario.consultarPorNIF(dni);
 		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se consultan los datos del beneficiario con NIF "+dni);
 		entrada.insertar();
 		
@@ -33,7 +36,7 @@ public class GestorBeneficiarios {
 		EntradaLog entrada;
 
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarBeneficiario);
-		bene = Beneficiario.consultarPorNSS(nss);
+		bene = FPBeneficiario.consultarPorNSS(nss);
 		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se consultan los datos del beneficiario con NSS "+nss);
 		entrada.insertar();
 
@@ -52,16 +55,16 @@ public class GestorBeneficiarios {
 		// Si existe, se lanza una excepcion.
 		// Si no existe, se captura la BeneficiarioIncorrectoException y se registra
 		try {
-			Beneficiario.consultarPorNIF(beneficiario.getNif());
+			FPBeneficiario.consultarPorNIF(beneficiario.getNif());
 			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" ya existe y no se puede crear");
 			entrada.insertar();
 			throw new BeneficiarioYaExistenteException("El beneficiario con NIF "+beneficiario.getNif()+ " ya existe en la base de datos. No se puede registrar de nuevo.");
 		}
 		catch(BeneficiarioInexistenteException e){
 			// Le asignamos un medico aleatorio al nuevo beneficiario
-			medico = (Medico) Usuario.consultarAleatorio(Roles.Medico);
+			medico = (Medico)FPUsuario.consultarAleatorio(Roles.Medico);
 			beneficiario.setMedicoAsignado(medico);
-			beneficiario.insertar();
+			FPBeneficiario.insertar(beneficiario);
 			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" se ha registrado satisfactoriamente");
 			entrada.insertar();
 		}
@@ -77,8 +80,8 @@ public class GestorBeneficiarios {
 		// Si no existe, se lanza una excepcion.
 		// Si existe, se actualiza
 		try {
-			Beneficiario.consultarPorNIF(beneficiario.getNif());
-			beneficiario.modificar();
+			FPBeneficiario.consultarPorNIF(beneficiario.getNif());
+			FPBeneficiario.modificar(beneficiario);
 			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "update", "Se han actualizado los datos del beneficiario con NIF "+beneficiario.getNif());
 			entrada.insertar();
 		}

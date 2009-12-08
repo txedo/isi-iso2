@@ -43,22 +43,6 @@ public class Beneficiario implements Serializable {
 		ArrayList<Volante> volantes = new ArrayList<Volante>();
 	}
 
-	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
-		return FPBeneficiario.consultarPorNIF(nif);
-	}
-
-	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
-		return FPBeneficiario.consultarPorNSS(nss);
-	}
-
-	public void insertar() throws SQLException {
-		FPBeneficiario.insertar(this);
-	}
-
-	public void modificar() throws SQLException {
-		FPBeneficiario.modificar(this);
-	}
-
 	public String getNif() {
 		return nif;
 	}

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import persistencia.AgenteFrontend;
+import persistencia.FPCentroSalud;
+import persistencia.FPUsuario;
 import persistencia.GestorConexionesBD;
 import comunicaciones.ConexionBDFrontend;
 import dominio.Administrador;
@@ -58,11 +60,11 @@ public class PruebasMedicos extends TestCase {
 			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", centro1);
 			citador1 = new Citador("11223344", "citador", "cit123", "Fernando", "G. P.", centro1);
 			admin1 = new Administrador("55667788", "admin", "nimda", "María", "L. F.", centro1);
-			centro1.insertar();
-			medico1.insertar();
-			medico2.insertar();
-			citador1.insertar();
-			admin1.insertar();
+			FPCentroSalud.insertar(centro1);
+			FPUsuario.insertar(medico1);
+			FPUsuario.insertar(medico2);
+			FPUsuario.insertar(citador1);
+			FPUsuario.insertar(admin1);
 			// Iniciamos dos sesiones con roles de citador y administrador
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), citador1.getPassword());
 			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), admin1.getPassword());
