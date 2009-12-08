@@ -15,6 +15,8 @@ import dominio.Usuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 import persistencia.AgenteFrontend;
+import persistencia.FPCentroSalud;
+import persistencia.FPUsuario;
 import persistencia.GestorConexionesBD;
 import junit.framework.TestCase;
 
@@ -77,7 +79,7 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Intentamos buscar un centro aleatorio sin haber uno
-			centro = CentroSalud.consultarAleatorio();
+			centro = FPCentroSalud.consultarAleatorio();
 			fail("Se esperaba una excepción CentroSaludIncorrectoException");
 		} catch(CentroSaludIncorrectoException e) {
 		} catch(Exception e) {
@@ -86,15 +88,15 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Insertamos varios centros correctos
-			centro1.insertar();
-			centro3.insertar();
+			FPCentroSalud.insertar(centro1);
+			FPCentroSalud.insertar(centro3);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
 		try {
 			// Comprobamos que los centros se han añadido correctamente
-			centro = CentroSalud.consultarAleatorio();
+			centro = FPCentroSalud.consultarAleatorio();
 			assertTrue(centro1.equals(centro) || centro3.equals(centro));
 		} catch(Exception e) {
 			fail(e.toString());
@@ -102,7 +104,7 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Insertamos un nuevo centro con errores
-			centro2.insertar();
+			FPCentroSalud.insertar(centro2);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {
@@ -112,7 +114,7 @@ public class PruebasPersistencia extends TestCase {
 		try {
 			// Intentamos insertar el mismo centro para ver si falla
 			// (no puede haber dos centros con el mismo nombre)
-			centro1.insertar();
+			FPCentroSalud.insertar(centro1);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {
@@ -121,7 +123,7 @@ public class PruebasPersistencia extends TestCase {
 
 		try {
 			// Intentamos buscar un centro inexistente
-			centro = CentroSalud.consultar(1000);
+			centro = FPCentroSalud.consultar(1000);
 			fail("Se esperaba una excepción CentroSaludIncorrectoException");
 		} catch(CentroSaludIncorrectoException e) {
 		} catch(Exception e) {
@@ -175,7 +177,7 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Intentamos buscar un usuario sin haber ninguno
-			usuario = Usuario.consultar("1234567");
+			usuario = FPUsuario.consultar("1234567");
 			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
 		} catch(Exception e) {
@@ -184,19 +186,19 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Añadimos los centros de salud asociados a los usuarios
-			centro1.insertar();
-			centro3.insertar();
+			FPCentroSalud.insertar(centro1);
+			FPCentroSalud.insertar(centro3);
 			// Insertamos varios usuarios correctos
-			medico1.insertar();
-			citador1.insertar();
-			administrador1.insertar();
+			FPUsuario.insertar(medico1);
+			FPUsuario.insertar(citador1);
+			FPUsuario.insertar(administrador1);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
 		try {
 			// Intentamos insertar un usuario con un DNI existente
-			medico2.insertar();
+			FPUsuario.insertar(medico2);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {
@@ -205,7 +207,7 @@ public class PruebasPersistencia extends TestCase {
 
 		try {
 			// Intentamos insertar un usuario con un login existente
-			citador2.insertar();
+			FPUsuario.insertar(citador2);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {
@@ -214,7 +216,7 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Intentamos buscar un usuario que no existe
-			usuario = Usuario.consultar("login", "password");
+			usuario = FPUsuario.consultar("login", "password");
 			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
 		} catch(Exception e) {
@@ -223,17 +225,17 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Recuperamos los usuarios insertados de las dos formas posibles
-			usuario = Usuario.consultar(medico1.getDni());
+			usuario = FPUsuario.consultar(medico1.getDni());
 			assertEquals(medico1, usuario);
-			usuario = Usuario.consultar(citador1.getDni());
+			usuario = FPUsuario.consultar(citador1.getDni());
 			assertEquals(citador1, usuario);
-			usuario = Usuario.consultar(administrador1.getDni());
+			usuario = FPUsuario.consultar(administrador1.getDni());
 			assertEquals(administrador1, usuario);
-			usuario = Usuario.consultar(medico1.getLogin(), medico1.getPassword());
+			usuario = FPUsuario.consultar(medico1.getLogin(), medico1.getPassword());
 			assertEquals(medico1, usuario);
-			usuario = Usuario.consultar(citador1.getLogin(), citador1.getPassword());
+			usuario = FPUsuario.consultar(citador1.getLogin(), citador1.getPassword());
 			assertEquals(citador1, usuario);
-			usuario = Usuario.consultar(administrador1.getLogin(), administrador1.getPassword());
+			usuario = FPUsuario.consultar(administrador1.getLogin(), administrador1.getPassword());
 			assertEquals(administrador1, usuario);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -243,9 +245,9 @@ public class PruebasPersistencia extends TestCase {
 			// Modificamos un usuario
 			citador1.setNombre("Ramón");
 			citador1.setApellidos("P. V.");
-			citador1.modificar();
+			FPUsuario.modificar(citador1);
 			// Comprobamos si los cambios han tenido efecto
-			usuario = Usuario.consultar(citador1.getDni());
+			usuario = FPUsuario.consultar(citador1.getDni());
 			assertEquals(citador1, usuario);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -254,7 +256,7 @@ public class PruebasPersistencia extends TestCase {
 		try {
 			// Modificamos un usuario de forma incorrecta (login repetido)
 			medico1.setLogin("admin");
-			medico1.modificar();
+			FPUsuario.modificar(medico1);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {
@@ -263,9 +265,9 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Eliminamos un usuario
-			administrador1.eliminar();
+			FPUsuario.eliminar(administrador1);
 			// Comprobamos si los cambios han tenido efecto
-			usuario = Usuario.consultar(administrador1.getDni());
+			usuario = FPUsuario.consultar(administrador1.getDni());
 			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
 		} catch(Exception e) {

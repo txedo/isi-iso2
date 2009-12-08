@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import comunicaciones.ConexionBDFrontend;
 import junit.framework.TestCase;
 import persistencia.AgenteFrontend;
+import persistencia.FPCentroSalud;
+import persistencia.FPUsuario;
 import persistencia.GestorConexionesBD;
 import dominio.Administrador;
 import dominio.CentroSalud;
@@ -16,10 +18,10 @@ import excepciones.UsuarioIncorrectoException;
 
 public class PruebasSesiones extends TestCase {
 	
-	CentroSalud centro1;
-	Medico medico1;
-	Administrador administrador1;
-	ConexionBDFrontend conexionF = null;
+	private CentroSalud centro1;
+	private Medico medico1;
+	private Administrador administrador1;
+	private ConexionBDFrontend conexionF = null;
 	
 	protected void setUp() {
 		Connection bd;
@@ -43,9 +45,9 @@ public class PruebasSesiones extends TestCase {
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
 			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1);
 			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "Apellidos", centro1);
-			centro1.insertar();
-			medico1.insertar();
-			administrador1.insertar();
+			FPCentroSalud.insertar(centro1);
+			FPUsuario.insertar(medico1);
+			FPUsuario.insertar(administrador1);
 		} catch(Exception e) {
 			fail(e.toString());
 		}

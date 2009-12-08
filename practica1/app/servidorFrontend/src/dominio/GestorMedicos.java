@@ -1,6 +1,8 @@
 package dominio;
 
 import java.sql.SQLException;
+
+import persistencia.FPUsuario;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -21,7 +23,7 @@ public class GestorMedicos {
 		
 		// Obtenemos el usuario del sistema con el DNI indicado
 		try {
-			usuario = Usuario.consultar(dni);
+			usuario = FPUsuario.consultar(dni);
 		} catch(UsuarioIncorrectoException e) {
 			// No existe un médico (ni un usuario) con ese DNI
 			throw new MedicoInexistenteException("No existe ningún usuario con el DNI introducido");
@@ -41,7 +43,7 @@ public class GestorMedicos {
 		
 		// Comprobamos si ya existe un usuario con el DNI del nuevo médico
 		try {
-			Usuario.consultar(medico.getDni());
+			FPUsuario.consultar(medico.getDni());
 			// Si no ha habido ningún error, es porque el usuario ya existe
 			throw new MedicoYaExistenteException("Ya existe un usuario con ese DNI");
 		} catch(UsuarioIncorrectoException e) {
@@ -49,7 +51,7 @@ public class GestorMedicos {
 		}
 		
 		// Insertamos el nuevo médico en la base de datos
-		medico.insertar();
+		FPUsuario.insertar(medico);
 	}
 	
 	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
@@ -64,7 +66,7 @@ public class GestorMedicos {
 		}
 		
 		// Modificamos los datos del médico en la base de datos
-		medico.modificar();
+		FPUsuario.modificar(medico);
 	}
 
 	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
@@ -79,7 +81,7 @@ public class GestorMedicos {
 		}
 		
 		// Borramos los datos del médico en la base de datos
-		medico.eliminar();
+		FPUsuario.eliminar(medico);
 	}
 	
 }
