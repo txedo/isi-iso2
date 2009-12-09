@@ -61,12 +61,14 @@ public class Utilidades {
 		boolean bAux = true;
 		
 		// El primer caracter debe ser una letra
-		if (Character.isLetter(cadena.charAt(0))) {
-			// El resto de caracteres pueden ser letra o espacio
-			for (int i = 1; i < cadena.length()-1 && bAux; i++) {
-				bAux = Character.isLetter(cadena.charAt(i)) || Character.isWhitespace(cadena.charAt(i));
+		if (cadena.length() > 0) {
+			if (Character.isLetter(cadena.charAt(0))) {
+				// El resto de caracteres pueden ser letra o espacio
+				for (int i = 1; i < cadena.length()-1 && bAux; i++) {
+					bAux = Character.isLetter(cadena.charAt(i)) || Character.isWhitespace(cadena.charAt(i));
+				}
+				bCorrecto = bAux;
 			}
-			bCorrecto = bAux;
 		}
 
 		return bCorrecto;
@@ -77,9 +79,9 @@ public class Utilidades {
 		boolean bAux = true;
 		
 		// Debe ser un solo caracter y debe ser una letra
-		if (cadena.length() == 1 && Character.isLetter(cadena.charAt(0))) {
-			bCorrecto = bAux;
-		}
+		if (cadena.length() == 1)
+			if (Character.isLetter(cadena.charAt(0)))
+				bCorrecto = bAux;
 
 		return bCorrecto;
 	}
@@ -103,22 +105,29 @@ public class Utilidades {
 		boolean bCorrecto = false;
 		boolean bAux = true;
 		
-		// Obtenemos la posicion del caracter @
-		int indexArroba = correo.indexOf("@");
-		// Obtenemos la posicion del "." separador de dominio. Debe ir despues de la @ y no consecutivo
-		int indexPunto = correo.indexOf(".", indexArroba+2);
-		
-		// El primer y ultimo caracter debe ser una letra
-		if (Character.isLetter(correo.charAt(0)) && Character.isLetter(correo.charAt(correo.length()-1))) {
-			// Si el correo tiene arroba y punto (despues de la arroba)
-			if (indexArroba != -1 && indexPunto != -1) {
-				// El resto de caracteres NO pueden ser espacios
-				for (int i = 1; i < correo.length()-1 && bAux; i++) {
-					bAux = !Character.isWhitespace(correo.charAt(i));
+		if (correo.length() > 0) {
+			// Obtenemos la posicion del caracter @
+			int indexArroba = correo.indexOf("@");
+			// Obtenemos la posicion del "." separador de dominio. Debe ir despues de la @ y no consecutivo
+			int indexPunto = correo.indexOf(".", indexArroba+2);
+			
+			// El primer y ultimo caracter debe ser una letra
+			if (Character.isLetter(correo.charAt(0)) && Character.isLetter(correo.charAt(correo.length()-1))) {
+				// Si el correo tiene arroba y punto (despues de la arroba)
+				if (indexArroba != -1 && indexPunto != -1) {
+					// El resto de caracteres NO pueden ser espacios
+					for (int i = 1; i < correo.length()-1 && bAux; i++) {
+						bAux = !Character.isWhitespace(correo.charAt(i));
+					}
+					bCorrecto = bAux;
 				}
-				bCorrecto = bAux;
 			}
 		}
+		else {
+			// Admitimos que el correo sea nulo ya que es opcional
+			bCorrecto = true;
+		}
+
 
 		return bCorrecto;
 	}
