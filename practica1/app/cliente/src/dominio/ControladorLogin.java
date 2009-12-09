@@ -11,6 +11,7 @@ import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.MedicoInexistenteException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 import presentacion.JFLogin;
@@ -75,7 +76,15 @@ public class ControladorLogin {
 		return servidor.getBeneficiarioPorNSS(sesion.getId(), nss);
 	}
 	
+	public void modificarBeneficiario(Beneficiario bene) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		servidor.modificar(sesion.getId(), bene);
+	}
+	
 	public Object operacionesDisponibles () throws RemoteException, SesionInvalidaException {
 		return servidor.mensajeAuxiliar(sesion.getId(), 1000, null);
+	}
+
+	public Medico consultarMedico(String dni) throws RemoteException, MedicoInexistenteException, Exception {
+		return servidor.getMedico(sesion.getId(), dni);
 	}
 }

@@ -76,7 +76,6 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 
 	public void modificar(long idSesion, Beneficiario bene) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		servidor.modificar(idSesion, bene);
-		
 	}
 
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException {
