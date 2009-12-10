@@ -268,9 +268,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 							}
 							{
 								checkboxEditarCB = new JCheckBox();
-								jPanelConsultarBeneficiario.add(checkboxEditarCB, new AnchorConstraint(807, 950, 855, 819, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+								jPanelConsultarBeneficiario.add(checkboxEditarCB, new AnchorConstraint(807, 1012, 854, 788, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 								checkboxEditarCB.setText("¿Editar?");
-								checkboxEditarCB.setPreferredSize(new java.awt.Dimension(56, 15));
+								checkboxEditarCB.setPreferredSize(new java.awt.Dimension(95, 14));
 								checkboxEditarCB.addActionListener(new ActionListener() {
 									public void actionPerformed(ActionEvent evt) {
 										checkboxEditarCBActionPerformed(evt);
@@ -298,9 +298,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 							}
 							{
 								jLabel21 = new JLabel();
-								jPanelConsultarBeneficiario.add(jLabel21, new AnchorConstraint(202, 318, 690, 2, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jPanelConsultarBeneficiario.add(jLabel21, new AnchorConstraint(202, 261, 690, 2, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 								jLabel21.setText("Correo electrónico");
-								jLabel21.setPreferredSize(new java.awt.Dimension(110, 15));
+								jLabel21.setPreferredSize(new java.awt.Dimension(161, 15));
 							}
 							{
 								jLabel20 = new JLabel();
@@ -967,7 +967,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 				throw new NombreIncorrectoException();
 			if (!Utilidades.comprobarCadena(txtApellidosCB.getText()))
 				throw new ApellidoIncorrectoException();
-			if (!Utilidades.comprobarCadena(txtDomicilioCB.getText()))
+			if (!Utilidades.comprobarDomicilio(txtDomicilioCB.getText()))
 				throw new DomicilioIncorrectoException();
 			if (!Utilidades.comprobarCorreoElectronico(txtCorreoElectronicoCB.getText()))
 				throw new CorreoElectronicoIncorrectoException();
