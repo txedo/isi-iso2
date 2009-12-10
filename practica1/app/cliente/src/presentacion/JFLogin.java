@@ -105,7 +105,6 @@ public class JFLogin extends javax.swing.JFrame {
 	}
 	
 	private void btnConectarActionPerformed(ActionEvent evt) {
-		System.out.println("btnConectar.actionPerformed, event="+evt);
 		try {
 			controlador.iniciarSesion(txtUsuario.getText(), new String(txtPassword.getPassword()));
 		} catch (SQLException e) {

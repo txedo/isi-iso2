@@ -832,7 +832,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 	
 	private void configurarInterfaz (ArrayList<Operacion> operaciones) {
-		System.out.println(operaciones.size());
 		// Inicializamos las pestañas
 		if (!operaciones.contains(Operacion.RegistrarBeneficiario)
 				&& !operaciones.contains(Operacion.ConsultarBeneficiario))
