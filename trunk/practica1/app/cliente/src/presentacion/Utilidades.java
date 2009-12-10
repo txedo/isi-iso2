@@ -74,6 +74,20 @@ public class Utilidades {
 		return bCorrecto;
 	}
 	
+	public static boolean comprobarDomicilio (String cadena) {
+		// Todos los caracteres de la cadena deben ser alfabeticos
+		boolean bCorrecto = false;
+		
+		// El primer caracter debe ser una letra
+		if (cadena.length() > 0) {
+			if (Character.isLetter(cadena.charAt(0))) {
+				bCorrecto = true;
+			}
+		}
+
+		return bCorrecto;
+	}
+	
 	public static boolean comprobarLetra (String cadena) {
 		boolean bCorrecto = false;
 		boolean bAux = true;
