@@ -1,11 +1,7 @@
 package dominio;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
-
-import persistencia.FPEntradaLog;
 
 /**
  * Clase que representa una entrada en el log del sistema.
@@ -32,14 +28,6 @@ public class EntradaLog {
 		this.fecha = new Timestamp((new Date()).getTime());
 		this.accion = accion;
 		this.mensaje = mensaje;
-	}
-	
-	public static ArrayList<EntradaLog> consultarLog() throws SQLException {
-		return FPEntradaLog.consultarLog();
-	}
-	
-	public void insertar() throws SQLException {
-		FPEntradaLog.insertar(this);
 	}
 
 	public String getUsuario() {

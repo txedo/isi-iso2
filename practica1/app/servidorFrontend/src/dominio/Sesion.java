@@ -11,19 +11,17 @@ public class Sesion implements ISesion, Serializable {
 	private Date horaInicio;
 	private Usuario usuario;
 	
-	public Sesion (long idSesion, Usuario usuario) {
+	public Sesion(long idSesion, Usuario usuario) {
 		this.idSesion = idSesion;
 		this.usuario = usuario;
 		//TODO Calcular hora para la hora de inicio
 		//this.horaInicio = Calcular la hora
 	}
 	
-	@Override
 	public long getId() {
 		return idSesion;
 	}
 
-	@Override
 	public long getRol() {
 		return usuario.getRol().ordinal();
 	}

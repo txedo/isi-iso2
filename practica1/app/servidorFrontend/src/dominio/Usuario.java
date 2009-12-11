@@ -26,7 +26,7 @@ public abstract class Usuario implements Serializable {
 		this.centro = centro;
 	}
 
-	public abstract Roles getRol();
+	public abstract Rol getRol();
 	
 	public String getDni() {
 		return dni;

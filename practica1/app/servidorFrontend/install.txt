@@ -5,7 +5,7 @@ CREATE TABLE centros (
        id INT NOT NULL AUTO_INCREMENT,
        nombre VARCHAR(255) UNIQUE NOT NULL default '', 
        direccion VARCHAR(255) NOT NULL default '', 
-       PRIMARY KEY (id )
+       PRIMARY KEY (id)
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE usuarios (
@@ -20,10 +20,20 @@ CREATE TABLE usuarios (
        FOREIGN KEY (id_centro) REFERENCES centros (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
-CREATE TABLE tipoMedico (
+CREATE TABLE tiposMedico (
        dni VARCHAR(255) NOT NULL,
        tipo INT NOT NULL,
        PRIMARY KEY (dni),
+       FOREIGN KEY (dni) REFERENCES usuarios (dni) ON DELETE NO ACTION ON UPDATE CASCADE
+) TYPE=InnoDB;
+
+CREATE TABLE periodosTrabajo (
+       id INT NOT NULL AUTO_INCREMENT,
+       dni VARCHAR(255) NOT NULL,
+       hora_inicio INT NOT NULL,
+       hora_final INT NOT NULL,
+       dia INT NOT NULL,
+       PRIMARY KEY (id),
        FOREIGN KEY (dni) REFERENCES usuarios (dni) ON DELETE NO ACTION ON UPDATE CASCADE
 ) TYPE=InnoDB;
 

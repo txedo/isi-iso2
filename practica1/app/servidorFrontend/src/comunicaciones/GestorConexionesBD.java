@@ -1,9 +1,11 @@
-package persistencia;
+package comunicaciones;
 
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import persistencia.ComandoSQL;
 import comunicaciones.IConexion;
 
 /**

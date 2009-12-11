@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
-
+import comunicaciones.GestorConexionesBD;
 import dominio.Beneficiario;
 import dominio.Cita;
 import dominio.Medico;
@@ -72,8 +72,7 @@ public class FPCita {
 	
 
 	public static Vector<Cita> consultarCitasMedico(String dniMedico) {
-
-
+		throw new UnsupportedOperationException();
 	}
 
 	public static void insertar(Cita c) {

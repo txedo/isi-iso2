@@ -4,9 +4,9 @@ import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import persistencia.GestorConexionesBD;
 import presentacion.JFServidorFrontend;
 import comunicaciones.ConexionBDFrontend;
+import comunicaciones.GestorConexionesBD;
 import comunicaciones.ProxyBDRespaldo;
 import comunicaciones.ServidorFrontend;
 

@@ -2,6 +2,7 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import comunicaciones.GestorConexionesBD;
 import dominio.Beneficiario;
 import dominio.Medico;
 import excepciones.BeneficiarioInexistenteException;
