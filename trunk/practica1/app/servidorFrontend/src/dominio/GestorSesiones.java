@@ -6,6 +6,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
 
+import persistencia.FPEntradaLog;
 import persistencia.FPUsuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.OperacionIncorrectaException;
@@ -21,7 +22,7 @@ public class GestorSesiones {
 		EntradaLog entrada;
 		entrada = new EntradaLog(sesiones.get(idSesion).getUsuario().getLogin(), "read", "Se ha cerrado la sesion cuyo id era " +idSesion);
 		sesiones.remove(idSesion);
-		entrada.insertar();
+		FPEntradaLog.insertar(entrada);
 	}	
 	
 	// Metodo para identificar un cliente y crear una sesion
@@ -66,11 +67,11 @@ public class GestorSesiones {
 			sesion = new Sesion(idSesion, usuario);
 			sesiones.put(idSesion, sesion);
 			entrada = new EntradaLog(login, "read", "Se ha creado la sesion con id "+sesion.getId());
-			entrada.insertar();
+			FPEntradaLog.insertar(entrada);
 			
 		} catch(UsuarioIncorrectoException ex) {
 			entrada = new EntradaLog(login, "read", "Intento de acceso al sistema fallido");
-			entrada.insertar();
+			FPEntradaLog.insertar(entrada);
 			throw ex;
 		}
 		
@@ -88,17 +89,17 @@ public class GestorSesiones {
 		
 		// Se deben agregar al vector todas las operaciones declaradas en Operacion.java
 		// Agregamos al vector las operaciones de todos los usuarios (administrador, citador
-		operaciones.add(Operacion.ConsultarMedico);
+		operaciones.add(Operacion.ConsultarUsuario);
 		operaciones.add(Operacion.ConsultarBeneficiario);
 		// Agregamos al vector las operaciones de citadores y administradores
-		if (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
+		if (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()) {
 			operaciones.add(Operacion.TramitarCita);
 			operaciones.add(Operacion.EliminarCita);
 			operaciones.add(Operacion.RegistrarBeneficiario);
 			operaciones.add(Operacion.ModificarBeneficiario);
 		}
 		// Agregamos al vector las operaciones de administradores
-		if (sesion.getRol() == Roles.Administrador.ordinal()){
+		if (sesion.getRol() == Rol.Administrador.ordinal()){
 			operaciones.add(Operacion.CrearUsuario);
 			operaciones.add(Operacion.ModificarUsuario);
 			operaciones.add(Operacion.EliminarUsuario);
@@ -125,33 +126,33 @@ public class GestorSesiones {
 		// Vemos cuál es la operación solicitada
 		switch(operacion) {
 		case CrearUsuario:
-			permitido = (sesion.getRol() == Roles.Administrador.ordinal());
+			permitido = (sesion.getRol() == Rol.Administrador.ordinal());
 			break;
 		case ModificarUsuario:
-			permitido = (sesion.getRol() == Roles.Administrador.ordinal()); 
+			permitido = (sesion.getRol() == Rol.Administrador.ordinal()); 
 			break;
 		case EliminarUsuario:
-			permitido = (sesion.getRol() == Roles.Administrador.ordinal()); 
+			permitido = (sesion.getRol() == Rol.Administrador.ordinal()); 
 			break;
 		case TramitarCita:
-			permitido = (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()); 
+			permitido = (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()); 
 			break;
 		case EliminarCita:
-			permitido = (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()); 
+			permitido = (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()); 
 			break;
 		case RegistrarBeneficiario:
-			permitido = (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()); 
+			permitido = (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()); 
 			break;
 		case ModificarBeneficiario:
-			permitido = (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()); 
+			permitido = (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()); 
 			break;
 		case ModificarCalendario:
-			permitido = (sesion.getRol() == Roles.Administrador.ordinal()); 
+			permitido = (sesion.getRol() == Rol.Administrador.ordinal()); 
 			break;
 		case EstablecerSustituto:
-			permitido = (sesion.getRol() == Roles.Administrador.ordinal());
+			permitido = (sesion.getRol() == Rol.Administrador.ordinal());
 			break;
-		case ConsultarMedico:
+		case ConsultarUsuario:
 			// Estas operaciones siempre están permitidas
 			permitido = true;
 			break;
@@ -167,8 +168,8 @@ public class GestorSesiones {
 		// Comprobamos si se tienen permisos para realizar la operación
 		if(!permitido) {
 			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para ejecutar la operacion " + operacion.toString());
-			entrada.insertar();
-			throw new OperacionIncorrectaException("El rol " + Roles.values()[(int)sesion.getRol()] + " no puede realizar la operación " + operacion.toString());
+			FPEntradaLog.insertar(entrada);
+			throw new OperacionIncorrectaException("El rol " + Rol.values()[(int)sesion.getRol()] + " no puede realizar la operación " + operacion.toString());
 		}
 	}
 

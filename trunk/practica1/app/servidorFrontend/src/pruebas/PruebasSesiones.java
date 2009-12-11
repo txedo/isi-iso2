@@ -3,17 +3,17 @@ package pruebas;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import comunicaciones.ConexionBDFrontend;
+import comunicaciones.GestorConexionesBD;
 import junit.framework.TestCase;
 import persistencia.AgenteFrontend;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
-import persistencia.GestorConexionesBD;
 import dominio.Administrador;
 import dominio.CentroSalud;
 import dominio.GestorSesiones;
 import dominio.ISesion;
 import dominio.Medico;
-import dominio.Roles;
+import dominio.Rol;
 import excepciones.UsuarioIncorrectoException;
 
 public class PruebasSesiones extends TestCase {
@@ -30,13 +30,19 @@ public class PruebasSesiones extends TestCase {
 		try {
 			// Borramos la base de datos
 			bd = AgenteFrontend.getAgente().getConexion();
-			sentencia = bd.prepareStatement("DELETE FROM centros");
+			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");
+			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM periodosTrabajo");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM usuarios");
 			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM tipoMedico");
-			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
+			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM citas");
+			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
+			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM centros");
 			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
 			conexionF = new ConexionBDFrontend();
@@ -64,7 +70,7 @@ public class PruebasSesiones extends TestCase {
 			ISesion s = GestorSesiones.identificar("admin", "nimda");
 			// Comprobamos que la sesion no es nula y que el rol es el que corresponde
 			assertNotNull(s);
-			assertEquals(Roles.Administrador.ordinal(), s.getRol());
+			assertEquals(Rol.Administrador.ordinal(), s.getRol());
 		} catch(Exception e) {
 			fail("No se esperaba ninguna excepcion " + e.getMessage());
 		}
@@ -75,12 +81,12 @@ public class PruebasSesiones extends TestCase {
 		try {
 			ISesion s = GestorSesiones.identificar("medPrueba", "abcdef");
 			assertNotNull(s);
-			assertEquals(Roles.Medico.ordinal(), s.getRol());
+			assertEquals(Rol.Medico.ordinal(), s.getRol());
 			ISesion ns = GestorSesiones.identificar("medPrueba", "abcdef");
 			assertNotNull(ns);
 			assertNotSame(s,ns);
 			//assertEquals(s,ns);
-			assertEquals(Roles.Medico.ordinal(), ns.getRol());
+			assertEquals(Rol.Medico.ordinal(), ns.getRol());
 		} catch(Exception e) {
 			fail("No se esperaba ninguna excepcion " + e.getMessage());
 		}

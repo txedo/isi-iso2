@@ -7,8 +7,8 @@ import persistencia.AgenteFrontend;
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
-import persistencia.GestorConexionesBD;
 import comunicaciones.ConexionBDFrontend;
+import comunicaciones.GestorConexionesBD;
 import dominio.Administrador;
 import dominio.Beneficiario;
 import dominio.CentroSalud;
@@ -43,17 +43,19 @@ public class PruebasBeneficiarios extends TestCase {
 		try {
 			// Borramos la base de datos
 			bd = AgenteFrontend.getAgente().getConexion();
-			sentencia = bd.prepareStatement("DELETE FROM centros");
+			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");
+			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM periodosTrabajo");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM usuarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM tipoMedico");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM citas");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
+			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM centros");
 			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
 			conexionF = new ConexionBDFrontend();

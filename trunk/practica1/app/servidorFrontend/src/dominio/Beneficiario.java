@@ -143,5 +143,4 @@ public class Beneficiario implements Serializable {
 		return dev;
 	}
 	
-	
 }

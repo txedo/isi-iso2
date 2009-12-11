@@ -1,6 +1,11 @@
 package dominio;
 
+/**
+ * Enumeración con todas las operaciones que puede realizar el servidor del
+ * sistema.
+ */
 public enum Operacion {
+	ConsultarUsuario,
 	CrearUsuario,
 	ModificarUsuario,
 	EliminarUsuario,
@@ -10,6 +15,5 @@ public enum Operacion {
 	ConsultarBeneficiario,
 	ModificarBeneficiario,
 	ModificarCalendario,
-	EstablecerSustituto,
-	ConsultarMedico,
+	EstablecerSustituto
 }

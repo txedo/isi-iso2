@@ -9,13 +9,12 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.Hashtable;
-
 import dominio.Beneficiario;
 import dominio.ControladorPresentacion;
 import dominio.GestorBeneficiarios;
-import dominio.GestorMedicos;
 import dominio.GestorMensajes;
 import dominio.GestorSesiones;
+import dominio.GestorUsuarios;
 import dominio.ISesion;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
@@ -235,7 +234,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	}
 	
 	public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception {
-		return GestorMedicos.getMedico(idSesion, dni);
+		return GestorUsuarios.getMedico(idSesion, dni);
 	}
 	
 	/*
@@ -264,15 +263,15 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	}
 	*/
 	public void crear(long idSesion, Medico medico) throws RemoteException, MedicoYaExistenteException, SQLException, Exception {
-		GestorMedicos.crearMedico(idSesion, medico);
+		GestorUsuarios.crearMedico(idSesion, medico);
 	}
 	
 	public void modificar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
-		GestorMedicos.modificarMedico(idSesion, medico);
+		GestorUsuarios.modificarMedico(idSesion, medico);
 	}
 	
 	public void eliminar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
-		GestorMedicos.eliminarMedico(idSesion, medico);
+		GestorUsuarios.eliminarMedico(idSesion, medico);
 	}
 	/*
 	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException {

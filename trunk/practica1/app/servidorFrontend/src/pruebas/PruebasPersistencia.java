@@ -6,28 +6,33 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import comunicaciones.ConexionBDFrontend;
+import comunicaciones.GestorConexionesBD;
 import dominio.Administrador;
 import dominio.CentroSalud;
 import dominio.Citador;
+import dominio.DiaSemana;
 import dominio.EntradaLog;
 import dominio.Medico;
+import dominio.PeriodoTrabajo;
 import dominio.Usuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 import persistencia.AgenteFrontend;
 import persistencia.FPCentroSalud;
+import persistencia.FPEntradaLog;
+import persistencia.FPPeriodoTrabajo;
 import persistencia.FPUsuario;
-import persistencia.GestorConexionesBD;
 import junit.framework.TestCase;
 
 public class PruebasPersistencia extends TestCase {
 
-	CentroSalud centro1, centro2, centro3;
-	EntradaLog entrada1, entrada2, entrada3;
-	Medico medico1, medico2;
-	Citador citador1, citador2;
-	Administrador administrador1;
-	ConexionBDFrontend conexionF = null;
+	private CentroSalud centro1, centro2, centro3;
+	private EntradaLog entrada1, entrada2, entrada3;
+	private Medico medico1, medico2;
+	private Citador citador1, citador2;
+	private Administrador administrador1;
+	private PeriodoTrabajo periodo1, periodo2;
+	private ConexionBDFrontend conexionF;
 	
 	protected void setUp() {
 		Connection bd;
@@ -36,17 +41,19 @@ public class PruebasPersistencia extends TestCase {
 		try {
 			// Borramos la base de datos
 			bd = AgenteFrontend.getAgente().getConexion();
-			sentencia = bd.prepareStatement("DELETE FROM centros");
+			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");
+			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM periodosTrabajo");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM usuarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM tipoMedico");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM citas");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
+			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM centros");
 			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
 			conexionF = new ConexionBDFrontend();
@@ -63,6 +70,8 @@ public class PruebasPersistencia extends TestCase {
 			citador1 = new Citador("1112223", "citador", "abcdef", "Luis", "E. G.", centro3);
 			citador2 = new Citador("9998887", "citador", "abcdef", "Ana", "B. E.", centro1);
 			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "", centro1);
+			periodo1 = new PeriodoTrabajo(10, 12, DiaSemana.Lunes);
+			periodo2 = new PeriodoTrabajo(16, 20, DiaSemana.Jueves);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -137,7 +146,7 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Leemos las entradas para ver si devuelve una lista vacía
-			log = EntradaLog.consultarLog();
+			log = FPEntradaLog.consultarLog();
 			assertTrue(log != null && log.size() == 0);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -145,16 +154,16 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Insertamos nuevas entradas válidas (y repetidas, que se permite)
-			entrada1.insertar();
-			entrada2.insertar();
-			entrada1.insertar();
+			FPEntradaLog.insertar(entrada1);
+			FPEntradaLog.insertar(entrada2);
+			FPEntradaLog.insertar(entrada1);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
 		try {
 			// Intentamos insertar una entrada con errores
-			entrada3.insertar();
+			FPEntradaLog.insertar(entrada3);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {
@@ -163,7 +172,7 @@ public class PruebasPersistencia extends TestCase {
 
 		try {
 			// Comprobamos que las entradas se hayan añadido bien
-			log = EntradaLog.consultarLog();
+			log = FPEntradaLog.consultarLog();
 			assertTrue((log.get(0).equals(entrada1) && log.get(1).equals(entrada2)
 			           || (log.get(0).equals(entrada2) && log.get(1).equals(entrada1))));
 		} catch(Exception e) {
@@ -272,6 +281,53 @@ public class PruebasPersistencia extends TestCase {
 		} catch(UsuarioIncorrectoException e) {
 		} catch(Exception e) {
 			fail("Se esperaba una excepción UsuarioIncorrectoException");
+		}
+	}
+	
+	/** Pruebas de la tabla de períodos de trabajo */
+	public void testPeriodosTrabajo() {
+		ArrayList<PeriodoTrabajo> periodos;
+			
+		try {
+			// Añadimos un médico a la base de datos
+			FPCentroSalud.insertar(centro1);
+			FPUsuario.insertar(medico1);
+			// Insertamos varios períodos de trabajo correctos
+			FPPeriodoTrabajo.insertar(medico1.getDni(), periodo1);
+			FPPeriodoTrabajo.insertar(medico1.getDni(), periodo2);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+
+		try {
+			// Modificamos un período de trabajo existente
+			periodo1.setHoraInicio(9);
+			periodo1.setHoraFinal(11);
+			FPPeriodoTrabajo.modificar(periodo1);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Recuperamos los períodos de trabajo almacenados
+			periodos = FPPeriodoTrabajo.consultarCalendario(medico1.getDni());
+			assertTrue((periodos.get(0).equals(periodo1) && periodos.get(1).equals(periodo2)
+			           || (periodos.get(0).equals(periodo2) && periodos.get(1).equals(periodo1))));
+			// Comprobamos si la modificación tuvo efecto
+			assertTrue(periodos.get(0).getHoraFinal() == 11 || periodos.get(1).getHoraFinal() == 11);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Eliminamos los períodos de trabajo
+			FPPeriodoTrabajo.eliminar(periodo1);
+			FPPeriodoTrabajo.eliminar(periodo2);
+			// Comprobamos si los cambios han tenido efecto
+			periodos = FPPeriodoTrabajo.consultarCalendario(medico1.getDni());
+			assertTrue(periodos.size() == 0);
+		} catch(Exception e) {
+			fail(e.toString());
 		}
 	}
 	

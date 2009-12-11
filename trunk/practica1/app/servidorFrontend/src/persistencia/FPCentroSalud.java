@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
+import comunicaciones.GestorConexionesBD;
 import dominio.CentroSalud;
 import excepciones.CentroSaludIncorrectoException;
 
