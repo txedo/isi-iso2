@@ -52,11 +52,11 @@ CREATE TABLE beneficiarios (
 
 CREATE TABLE citas (
        id INT NOT NULL AUTO_INCREMENT,
-       dniBeneficiario VARCHAR(255) NOT NULL,
        fecha TIMESTAMP NOT NULL,
+       duracion INT NOT NULL,
+       idVolante INT default '-1',       
+       dniBeneficiario VARCHAR(255) NOT NULL,
        dniMedico VARCHAR(255) NOT NULL,
-       idVolante INT default '-1',
-       duracion INT,
        PRIMARY KEY (id),
        FOREIGN KEY (dniBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
        FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE
