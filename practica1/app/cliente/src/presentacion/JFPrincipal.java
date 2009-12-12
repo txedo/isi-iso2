@@ -6,7 +6,6 @@ import dominio.Beneficiario;
 import dominio.ControladorLogin;
 import dominio.Medico;
 import dominio.Operacion;
-import dominio.Usuario;
 import excepciones.*;
 
 import java.awt.BorderLayout;
@@ -17,30 +16,32 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
+import javax.swing.DebugGraphics;
 import javax.swing.DefaultComboBoxModel;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.SwingUtilities;
@@ -60,7 +61,8 @@ import javax.swing.SwingUtilities;
 */
 public class JFPrincipal extends javax.swing.JFrame {
 	private ControladorLogin controlador;
-	private DefaultListModel listModelOperacionesBeneficiarios;
+	private DefaultListModel jListOperacionesBeneficiariosModel;
+	private DefaultListModel jListOperacionesUsuariosModel;
 	
 	private JPanel jPanelOperaciones;
 	private JPanel jPanelRegistrarBeneficiario;
@@ -82,6 +84,26 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JLabel jLabel16;
 	private JTextField txtTelefonoMovilCB;
 	private JTextField txtTelefonoFijoCB;
+	private JList jListTipoUsuario;
+	private JButton btnRestablecerCU;
+	private JButton btnCrearUsuarioCU;
+	private JLabel jLabel29;
+	private JPasswordField txtPasswordCU;
+	private JLabel jLabel30;
+	private JLabel jLabel28;
+	private JLabel jLabel27;
+	private JLabel jLabel26;
+	private JLabel jLabel25;
+	private JLabel jLabel14;
+	private JTextField txtApellidosCU;
+	private JTextField txtNombreCU;
+	private JPasswordField txtPassword2CU;
+	private JTextField txtLoginCU;
+	private JTextField txtDNICU;
+	private JList jListOperacionesUsuarios;
+	private JLabel jLabel9;
+	private JSeparator jSeparator3;
+	private JPanel jPanelListaOperacionesGestionarusuarios;
 	private JButton btnAplicarCB;
 	private JCheckBox checkboxEditarCB;
 	private JTextArea txtAreaBienvenida;
@@ -249,6 +271,161 @@ public class JFPrincipal extends javax.swing.JFrame {
 						jPanelGestionarBeneficiarios.setSize(565, 390);
 						jPanelGestionarBeneficiarios.setPreferredSize(new java.awt.Dimension(565, 390));
 						{
+							jPanelRegistrarBeneficiario = new JPanel();
+							jPanelGestionarBeneficiarios.add(jPanelRegistrarBeneficiario, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+							AnchorLayout jPanelRegistrarBeneficiarioLayout = new AnchorLayout();
+							jPanelRegistrarBeneficiario.setLayout(jPanelRegistrarBeneficiarioLayout);
+							jPanelRegistrarBeneficiario.setPreferredSize(new java.awt.Dimension(430, 296));
+							{
+								btnRestablecerRB = new JButton();
+								jPanelRegistrarBeneficiario.add(btnRestablecerRB, new AnchorConstraint(275, 182, 961, 549, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+								btnRestablecerRB.setText("Restablecer");
+								btnRestablecerRB.setPreferredSize(new java.awt.Dimension(154, 26));
+								btnRestablecerRB.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent evt) {
+										btnRestablecerRBActionPerformed(evt);
+									}
+								});
+							}
+							{
+								btnCrearBeneficiarioRB = new JButton();
+								jPanelRegistrarBeneficiario.add(btnCrearBeneficiarioRB, new AnchorConstraint(275, 17, 961, 765, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+								btnCrearBeneficiarioRB.setText("Crear beneficiario");
+								btnCrearBeneficiarioRB.setPreferredSize(new java.awt.Dimension(154, 26));
+								btnCrearBeneficiarioRB.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent evt) {
+										btnCrearBeneficiarioRBActionPerformed(evt);
+									}
+								});
+							}
+							{
+								txtTelefonoMovilRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtTelefonoMovilRB, new AnchorConstraint(229, 16, 805, 185, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtTelefonoMovilRB.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtTelefonoFijoRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtTelefonoFijoRB, new AnchorConstraint(200, 16, 710, 185, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtTelefonoFijoRB.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtCorreoElectronicoRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtCorreoElectronicoRB, new AnchorConstraint(172, 16, 612, 185, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtCorreoElectronicoRB.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtPuertaRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtPuertaRB, new AnchorConstraint(146, 961, 534, 388, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtPuertaRB.setPreferredSize(new java.awt.Dimension(25, 22));
+							}
+							{
+								txtPisoRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtPisoRB, new AnchorConstraint(146, 775, 534, 308, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtPisoRB.setPreferredSize(new java.awt.Dimension(25, 22));
+							}
+							{
+								txtNumeroRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtNumeroRB, new AnchorConstraint(146, 598, 534, 232, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtNumeroRB.setPreferredSize(new java.awt.Dimension(25, 22));
+							}
+							{
+								txtDomicilioRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtDomicilioRB, new AnchorConstraint(119, 17, 514, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtDomicilioRB.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtApellidosRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtApellidosRB, new AnchorConstraint(92, 17, 416, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtApellidosRB.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtNombreRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtNombreRB, new AnchorConstraint(65, 17, 318, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtNombreRB.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtNSSRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtNSSRB, new AnchorConstraint(39, 17, 223, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtNSSRB.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtNIFRB = new JTextField();
+								jPanelRegistrarBeneficiario.add(txtNIFRB, new AnchorConstraint(12, 17, 125, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtNIFRB.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								jLabel8 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel8, new AnchorConstraint(232, 249, 790, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel8.setText("Teléfono móvil");
+								jLabel8.setPreferredSize(new java.awt.Dimension(168, 18));
+							}
+							{
+								jLabel7 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel7, new AnchorConstraint(203, 247, 692, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel7.setText("Teléfono fijo");
+								jLabel7.setPreferredSize(new java.awt.Dimension(170, 13));
+							}
+							{
+								jLabel6 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel6, new AnchorConstraint(175, 245, 594, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel6.setText("Correo electrónico");
+								jLabel6.setPreferredSize(new java.awt.Dimension(172, 12));
+							}
+							{
+								jLabel13 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel13, new AnchorConstraint(152, 905, 519, 339, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel13.setText("Puerta");
+								jLabel13.setPreferredSize(new java.awt.Dimension(50, 11));
+							}
+							{
+								jLabel12 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel12, new AnchorConstraint(149, 717, 525, 270, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel12.setText("Piso");
+								jLabel12.setPreferredSize(new java.awt.Dimension(38, 16));
+							}
+							{
+								jLabel11 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel11, new AnchorConstraint(152, 540, 515, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel11.setText("Numero");
+								jLabel11.setPreferredSize(new java.awt.Dimension(48, 10));
+							}
+							{
+								jLabel5 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel5, new AnchorConstraint(122, 246, 496, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel5.setText("Domicilio");
+								jLabel5.setPreferredSize(new java.awt.Dimension(172, 14));
+								jLabel5.setBounds(12, 122, 172, 14);
+							}
+							{
+								jLabel4 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel4, new AnchorConstraint(95, 246, 398, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel4.setText("Apellidos");
+								jLabel4.setPreferredSize(new java.awt.Dimension(172, 14));
+								jLabel4.setBounds(12, 95, 172, 14);
+							}
+							{
+								jLabel3 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel3, new AnchorConstraint(68, 246, 303, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel3.setText("Nombre");
+								jLabel3.setPreferredSize(new java.awt.Dimension(172, 14));
+								jLabel3.setBounds(12, 68, 172, 14);
+							}
+							{
+								jLabel2 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel2, new AnchorConstraint(42, 246, 209, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel2.setText("Número de Seguridad Social");
+								jLabel2.setPreferredSize(new java.awt.Dimension(172, 15));
+								jLabel2.setBounds(12, 42, 172, 15);
+							}
+							{
+								jLabel1 = new JLabel();
+								jPanelRegistrarBeneficiario.add(jLabel1, new AnchorConstraint(15, 246, 110, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel1.setText("NIF");
+								jLabel1.setPreferredSize(new java.awt.Dimension(172, 14));
+								jLabel1.setBounds(12, 15, 172, 14);
+							}
+						}
+						{
 							jPanelConsultarBeneficiario = new JPanel();
 							jPanelGestionarBeneficiarios.add(jPanelConsultarBeneficiario, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 							AnchorLayout jPanelConsultarBeneficiarioLayout = new AnchorLayout();
@@ -256,7 +433,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 							jPanelConsultarBeneficiario.setPreferredSize(new java.awt.Dimension(430, 296));
 							{
 								btnAplicarCB = new JButton();
-								jPanelConsultarBeneficiario.add(btnAplicarCB, new AnchorConstraint(890, 973, 963, 794, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+								jPanelConsultarBeneficiario.add(btnAplicarCB, new AnchorConstraint(280, 12, 963, 794, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 								btnAplicarCB.setText("Aplicar");
 								btnAplicarCB.setPreferredSize(new java.awt.Dimension(77, 23));
 								btnAplicarCB.addActionListener(new ActionListener() {
@@ -268,7 +445,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 							}
 							{
 								checkboxEditarCB = new JCheckBox();
-								jPanelConsultarBeneficiario.add(checkboxEditarCB, new AnchorConstraint(807, 1012, 854, 788, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+								jPanelConsultarBeneficiario.add(checkboxEditarCB, new AnchorConstraint(255, 0, 854, 788, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 								checkboxEditarCB.setText("¿Editar?");
 								checkboxEditarCB.setPreferredSize(new java.awt.Dimension(95, 14));
 								checkboxEditarCB.addActionListener(new ActionListener() {
@@ -429,159 +606,12 @@ public class JFPrincipal extends javax.swing.JFrame {
 							}
 						}
 						{
-							jPanelRegistrarBeneficiario = new JPanel();
-							AnchorLayout jPanelRegistrarBeneficiarioLayout = new AnchorLayout();
-							jPanelGestionarBeneficiarios.add(jPanelRegistrarBeneficiario, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-							jPanelRegistrarBeneficiario.setLayout(jPanelRegistrarBeneficiarioLayout);
-							jPanelRegistrarBeneficiario.setPreferredSize(new java.awt.Dimension(430, 296));
-							{
-								btnRestablecerRB = new JButton();
-								jPanelRegistrarBeneficiario.add(btnRestablecerRB, new AnchorConstraint(275, 182, 961, 549, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-								btnRestablecerRB.setText("Restablecer");
-								btnRestablecerRB.setPreferredSize(new java.awt.Dimension(154, 26));
-								btnRestablecerRB.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent evt) {
-										btnRestablecerRBActionPerformed(evt);
-									}
-								});
-							}
-							{
-								btnCrearBeneficiarioRB = new JButton();
-								jPanelRegistrarBeneficiario.add(btnCrearBeneficiarioRB, new AnchorConstraint(275, 17, 961, 765, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-								btnCrearBeneficiarioRB.setText("Crear beneficiario");
-								btnCrearBeneficiarioRB.setPreferredSize(new java.awt.Dimension(154, 26));
-								btnCrearBeneficiarioRB.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent evt) {
-										btnCrearBeneficiarioRBActionPerformed(evt);
-									}
-								});
-							}
-							{
-								txtTelefonoMovilRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtTelefonoMovilRB, new AnchorConstraint(229, 16, 805, 185, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtTelefonoMovilRB.setPreferredSize(new java.awt.Dimension(229, 22));
-							}
-							{
-								txtTelefonoFijoRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtTelefonoFijoRB, new AnchorConstraint(200, 16, 710, 185, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtTelefonoFijoRB.setPreferredSize(new java.awt.Dimension(229, 22));
-							}
-							{
-								txtCorreoElectronicoRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtCorreoElectronicoRB, new AnchorConstraint(172, 16, 612, 185, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtCorreoElectronicoRB.setPreferredSize(new java.awt.Dimension(229, 22));
-							}
-							{
-								txtPuertaRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtPuertaRB, new AnchorConstraint(146, 961, 534, 388, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtPuertaRB.setPreferredSize(new java.awt.Dimension(25, 22));
-							}
-							{
-								txtPisoRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtPisoRB, new AnchorConstraint(146, 775, 534, 308, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtPisoRB.setPreferredSize(new java.awt.Dimension(25, 22));
-							}
-							{
-								txtNumeroRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtNumeroRB, new AnchorConstraint(146, 598, 534, 232, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtNumeroRB.setPreferredSize(new java.awt.Dimension(25, 22));
-							}
-							{
-								txtDomicilioRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtDomicilioRB, new AnchorConstraint(119, 17, 514, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtDomicilioRB.setPreferredSize(new java.awt.Dimension(229, 22));
-							}
-							{
-								txtApellidosRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtApellidosRB, new AnchorConstraint(92, 17, 416, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtApellidosRB.setPreferredSize(new java.awt.Dimension(229, 22));
-							}
-							{
-								txtNombreRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtNombreRB, new AnchorConstraint(65, 17, 318, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtNombreRB.setPreferredSize(new java.awt.Dimension(229, 22));
-							}
-							{
-								txtNSSRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtNSSRB, new AnchorConstraint(39, 17, 223, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtNSSRB.setPreferredSize(new java.awt.Dimension(229, 22));
-							}
-							{
-								txtNIFRB = new JTextField();
-								jPanelRegistrarBeneficiario.add(txtNIFRB, new AnchorConstraint(12, 17, 125, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								txtNIFRB.setPreferredSize(new java.awt.Dimension(229, 22));
-							}
-							{
-								jLabel8 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel8, new AnchorConstraint(232, 249, 790, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel8.setText("Teléfono móvil");
-								jLabel8.setPreferredSize(new java.awt.Dimension(168, 18));
-							}
-							{
-								jLabel7 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel7, new AnchorConstraint(203, 247, 692, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel7.setText("Teléfono fijo");
-								jLabel7.setPreferredSize(new java.awt.Dimension(170, 13));
-							}
-							{
-								jLabel6 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel6, new AnchorConstraint(175, 245, 594, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel6.setText("Correo electrónico");
-								jLabel6.setPreferredSize(new java.awt.Dimension(172, 12));
-							}
-							{
-								jLabel13 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel13, new AnchorConstraint(152, 905, 519, 339, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel13.setText("Puerta");
-								jLabel13.setPreferredSize(new java.awt.Dimension(50, 11));
-							}
-							{
-								jLabel12 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel12, new AnchorConstraint(149, 717, 525, 270, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel12.setText("Piso");
-								jLabel12.setPreferredSize(new java.awt.Dimension(38, 16));
-							}
-							{
-								jLabel11 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel11, new AnchorConstraint(152, 540, 515, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel11.setText("Numero");
-								jLabel11.setPreferredSize(new java.awt.Dimension(48, 10));
-							}
-							{
-								jLabel5 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel5, new AnchorConstraint(122, 246, 496, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel5.setText("Domicilio");
-								jLabel5.setPreferredSize(new java.awt.Dimension(172, 14));
-								jLabel5.setBounds(12, 122, 172, 14);
-							}
-							{
-								jLabel4 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel4, new AnchorConstraint(95, 246, 398, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel4.setText("Apellidos");
-								jLabel4.setPreferredSize(new java.awt.Dimension(172, 14));
-								jLabel4.setBounds(12, 95, 172, 14);
-							}
-							{
-								jLabel3 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel3, new AnchorConstraint(68, 246, 303, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel3.setText("Nombre");
-								jLabel3.setPreferredSize(new java.awt.Dimension(172, 14));
-								jLabel3.setBounds(12, 68, 172, 14);
-							}
-							{
-								jLabel2 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel2, new AnchorConstraint(42, 246, 209, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel2.setText("Número de Seguridad Social");
-								jLabel2.setPreferredSize(new java.awt.Dimension(172, 15));
-								jLabel2.setBounds(12, 42, 172, 15);
-							}
-							{
-								jLabel1 = new JLabel();
-								jPanelRegistrarBeneficiario.add(jLabel1, new AnchorConstraint(15, 246, 110, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-								jLabel1.setText("NIF");
-								jLabel1.setPreferredSize(new java.awt.Dimension(172, 14));
-								jLabel1.setBounds(12, 15, 172, 14);
-							}
+							jSeparator1 = new JSeparator();
+							jPanelGestionarBeneficiarios.add(jSeparator1, new AnchorConstraint(1, 237, 1001, 224, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+							AnchorLayout jSeparator1Layout = new AnchorLayout();
+							jSeparator1.setLayout(jSeparator1Layout);
+							jSeparator1.setPreferredSize(new java.awt.Dimension(7, 296));
+							jSeparator1.setOrientation(SwingConstants.VERTICAL);
 						}
 						{
 							jPanelListaOperacionesGestionarBeneficiarios = new JPanel();
@@ -596,11 +626,13 @@ public class JFPrincipal extends javax.swing.JFrame {
 								jLabel10.setPreferredSize(new java.awt.Dimension(107, 15));
 							}
 							{
-								jListOperacionesBeneficiarios = new JList(listModelOperacionesBeneficiarios);
+								jListOperacionesBeneficiarios = new JList(jListOperacionesBeneficiariosModel);
 								AnchorLayout jList1Layout = new AnchorLayout();
 								jPanelListaOperacionesGestionarBeneficiarios.add(jListOperacionesBeneficiarios, new AnchorConstraint(21, 1004, 11, 7, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 								jListOperacionesBeneficiarios.setPreferredSize(new java.awt.Dimension(107, 264));
 								jListOperacionesBeneficiarios.setLayout(null);
+								jListOperacionesBeneficiarios.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+								jListOperacionesBeneficiarios.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 								jListOperacionesBeneficiarios.addListSelectionListener(new ListSelectionListener() {
 									public void valueChanged(ListSelectionEvent evt) {
 										jListOperacionesBeneficiariosValueChanged(evt);
@@ -608,13 +640,161 @@ public class JFPrincipal extends javax.swing.JFrame {
 								});
 							}
 						}
+					}
+					{
+						jPanelGestionarUsuarios = new JPanel();
+						jTabbedPaneOperaciones.addTab("Gestionar Usuarios", null, jPanelGestionarUsuarios, null);
+						AnchorLayout jPanelGestionarUsuariosLayout = new AnchorLayout();
+						jPanelGestionarUsuarios.setLayout(jPanelGestionarUsuariosLayout);
 						{
-							jSeparator1 = new JSeparator();
-							jPanelGestionarBeneficiarios.add(jSeparator1, new AnchorConstraint(1, 237, 1001, 224, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-							AnchorLayout jSeparator1Layout = new AnchorLayout();
-							jSeparator1.setLayout(jSeparator1Layout);
-							jSeparator1.setPreferredSize(new java.awt.Dimension(7, 296));
-							jSeparator1.setOrientation(SwingConstants.VERTICAL);
+							jPanelCrearUsuario = new JPanel();
+							jPanelGestionarUsuarios.add(jPanelCrearUsuario, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+							AnchorLayout jPanelCrearUsuarioLayout = new AnchorLayout();
+							jPanelCrearUsuario.setLayout(jPanelCrearUsuarioLayout);
+							jPanelCrearUsuario.setPreferredSize(new java.awt.Dimension(430, 315));
+							{
+								btnRestablecerCU = new JButton();
+								jPanelCrearUsuario.add(btnRestablecerCU, new AnchorConstraint(275, 182, 957, 219, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+								btnRestablecerCU.setText("Restablecer");
+								btnRestablecerCU.setPreferredSize(new java.awt.Dimension(154, 26));
+							}
+							{
+								btnCrearUsuarioCU = new JButton();
+								jPanelCrearUsuario.add(btnCrearUsuarioCU, new AnchorConstraint(275, 17, 957, 603, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+								btnCrearUsuarioCU.setText("Crear usuario");
+								btnCrearUsuarioCU.setPreferredSize(new java.awt.Dimension(154, 26));
+							}
+							{
+								ListModel jListTipoUsuarioModel = 
+									new DefaultComboBoxModel(
+											new String[] { "Administrador", "Médico", "Citador" });
+								jListTipoUsuario = new JList();
+								jPanelCrearUsuario.add(jListTipoUsuario, new AnchorConstraint(180, 17, 773, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jListTipoUsuario.setModel(jListTipoUsuarioModel);
+								jListTipoUsuario.setPreferredSize(new java.awt.Dimension(229, 63));
+								jListTipoUsuario.setDebugGraphicsOptions(DebugGraphics.BUFFERED_OPTION);
+								jListTipoUsuario.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+								jListTipoUsuario.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+							}
+							{
+								txtPassword2CU = new JPasswordField();
+								jPanelCrearUsuario.add(txtPassword2CU, new AnchorConstraint(146, 17, 534, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtPassword2CU.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtPasswordCU = new JPasswordField();
+								jPanelCrearUsuario.add(txtPasswordCU, new AnchorConstraint(119, 17, 449, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtPasswordCU.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtLoginCU = new JTextField();
+								jPanelCrearUsuario.add(txtLoginCU, new AnchorConstraint(92, 17, 363, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtLoginCU.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtApellidosCU = new JTextField();
+								jPanelCrearUsuario.add(txtApellidosCU, new AnchorConstraint(65, 17, 277, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtApellidosCU.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtNombreCU = new JTextField();
+								jPanelCrearUsuario.add(txtNombreCU, new AnchorConstraint(39, 17, 195, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtNombreCU.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								txtDNICU = new JTextField();
+								jPanelCrearUsuario.add(txtDNICU, new AnchorConstraint(12, 17, 109, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								txtDNICU.setPreferredSize(new java.awt.Dimension(229, 22));
+							}
+							{
+								jLabel30 = new JLabel();
+								jPanelCrearUsuario.add(jLabel30, new AnchorConstraint(176, 246, 604, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel30.setText("Tipo de usuario");
+								jLabel30.setPreferredSize(new java.awt.Dimension(172, 14));
+							}
+							{
+								jLabel27 = new JLabel();
+								jPanelCrearUsuario.add(jLabel27, new AnchorConstraint(149, 246, 519, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel27.setText("Confirmar contraseña");
+								jLabel27.setPreferredSize(new java.awt.Dimension(172, 14));
+							}
+							{
+								jLabel26 = new JLabel();
+								jPanelCrearUsuario.add(jLabel26, new AnchorConstraint(122, 246, 433, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel26.setText("Contraseña");
+								jLabel26.setPreferredSize(new java.awt.Dimension(172, 14));
+							}
+							{
+								jLabel25 = new JLabel();
+								jPanelCrearUsuario.add(jLabel25, new AnchorConstraint(95, 246, 347, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel25.setText("Usuario");
+								jLabel25.setPreferredSize(new java.awt.Dimension(172, 14));
+							}
+							{
+								jLabel29 = new JLabel();
+								jPanelCrearUsuario.add(jLabel29, new AnchorConstraint(68, 246, 261, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel29.setText("Apellidos");
+								jLabel29.setPreferredSize(new java.awt.Dimension(172, 14));
+							}
+							{
+								jLabel28 = new JLabel();
+								jPanelCrearUsuario.add(jLabel28, new AnchorConstraint(42, 246, 182, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel28.setText("Nombre");
+								jLabel28.setPreferredSize(new java.awt.Dimension(172, 15));
+							}
+							{
+								jLabel14 = new JLabel();
+								jPanelCrearUsuario.add(jLabel14, new AnchorConstraint(15, 246, 93, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel14.setText("DNI");
+								jLabel14.setPreferredSize(new java.awt.Dimension(172, 14));
+							}
+						}
+						{
+							jPanelModificarUsuario = new JPanel();
+							jPanelGestionarUsuarios.add(jPanelModificarUsuario, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+							AnchorLayout jPanelModificarUsuarioLayout = new AnchorLayout();
+							jPanelModificarUsuario.setLayout(jPanelModificarUsuarioLayout);
+							jPanelModificarUsuario.setPreferredSize(new java.awt.Dimension(430, 315));
+						}
+						{
+							jPanelEliminarUsuario = new JPanel();
+							jPanelGestionarUsuarios.add(jPanelEliminarUsuario, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+							AnchorLayout jPanelEliminarUsuarioLayout = new AnchorLayout();
+							jPanelEliminarUsuario.setLayout(jPanelEliminarUsuarioLayout);
+							jPanelEliminarUsuario.setPreferredSize(new java.awt.Dimension(430, 315));
+						}
+						{
+							jSeparator3 = new JSeparator();
+							jPanelGestionarUsuarios.add(jSeparator3, new AnchorConstraint(1, 237, 1001, 224, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+							AnchorLayout jSeparator3Layout = new AnchorLayout();
+							jSeparator3.setLayout(null);
+							jSeparator3.setPreferredSize(new java.awt.Dimension(7, 315));
+							jSeparator3.setOrientation(SwingConstants.VERTICAL);
+						}
+						{
+							jPanelListaOperacionesGestionarusuarios = new JPanel();
+							jPanelGestionarUsuarios.add(jPanelListaOperacionesGestionarusuarios, new AnchorConstraint(5, 214, 0, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+							AnchorLayout jPanelListaOperacionesGestionarusuariosLayout = new AnchorLayout();
+							jPanelListaOperacionesGestionarusuarios.setLayout(jPanelListaOperacionesGestionarusuariosLayout);
+							jPanelListaOperacionesGestionarusuarios.setPreferredSize(new java.awt.Dimension(114, 310));
+							{
+								jLabel9 = new JLabel();
+								jPanelListaOperacionesGestionarusuarios.add(jLabel9, new AnchorConstraint(0, 1004, 50, 7, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel9.setText("Operaciones:");
+								jLabel9.setPreferredSize(new java.awt.Dimension(107, 15));
+							}
+							{
+								jListOperacionesUsuarios = new JList(jListOperacionesUsuariosModel);
+								jPanelListaOperacionesGestionarusuarios.add(jListOperacionesUsuarios, new AnchorConstraint(21, 1004, 11, 7, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+								jListOperacionesUsuarios.setPreferredSize(new java.awt.Dimension(107, 278));
+								jListOperacionesUsuarios.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+								jListOperacionesUsuarios.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+								jListOperacionesUsuarios.addListSelectionListener(new ListSelectionListener() {
+									public void valueChanged(ListSelectionEvent evt) {
+										jListOperacionesUsuariosValueChanged(evt);
+									}
+								});
+							}
 						}
 					}
 					{
@@ -636,33 +816,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 							AnchorLayout jPanelTramitarCitaLayout = new AnchorLayout();
 							jPanelTramitarCita.setLayout(jPanelTramitarCitaLayout);
 							jPanelTramitarCita.setPreferredSize(new java.awt.Dimension(563, 296));
-						}
-					}
-					{
-						jPanelGestionarUsuarios = new JPanel();
-						jTabbedPaneOperaciones.addTab("Gestionar Usuarios", null, jPanelGestionarUsuarios, null);
-						AnchorLayout jPanelGestionarUsuariosLayout = new AnchorLayout();
-						jPanelGestionarUsuarios.setLayout(jPanelGestionarUsuariosLayout);
-						{
-							jPanelCrearUsuario = new JPanel();
-							jPanelGestionarUsuarios.add(jPanelCrearUsuario, new AnchorConstraint(50, 1050, 1050, 50, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-							AnchorLayout jPanelCrearUsuarioLayout = new AnchorLayout();
-							jPanelCrearUsuario.setLayout(jPanelCrearUsuarioLayout);
-							jPanelCrearUsuario.setPreferredSize(new java.awt.Dimension(10, 10));
-						}
-						{
-							jPanelModificarUsuario = new JPanel();
-							jPanelGestionarUsuarios.add(jPanelModificarUsuario, new AnchorConstraint(5050, 57550, 34650, 1250, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-							AnchorLayout jPanelModificarUsuarioLayout = new AnchorLayout();
-							jPanelModificarUsuario.setLayout(jPanelModificarUsuarioLayout);
-							jPanelModificarUsuario.setPreferredSize(new java.awt.Dimension(563, 296));
-						}
-						{
-							jPanelEliminarUsuario = new JPanel();
-							jPanelGestionarUsuarios.add(jPanelEliminarUsuario, new AnchorConstraint(5050, 57550, 34650, 1250, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-							AnchorLayout jPanelEliminarUsuarioLayout = new AnchorLayout();
-							jPanelEliminarUsuario.setLayout(jPanelEliminarUsuarioLayout);
-							jPanelEliminarUsuario.setPreferredSize(new java.awt.Dimension(563, 296));
 						}
 					}
 					{
@@ -826,9 +979,14 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 	
 	private void iniciarModelosDeListas () {
-		listModelOperacionesBeneficiarios = new DefaultListModel();
-		listModelOperacionesBeneficiarios.addElement("Registrar beneficiario");
-		listModelOperacionesBeneficiarios.addElement("Consultar beneficiario");
+		jListOperacionesBeneficiariosModel = new DefaultListModel();
+		jListOperacionesBeneficiariosModel.addElement("Registrar beneficiario");
+		jListOperacionesBeneficiariosModel.addElement("Consultar beneficiario");
+		
+		jListOperacionesUsuariosModel = new DefaultListModel();
+		jListOperacionesUsuariosModel.addElement("Registrar usuario");
+		jListOperacionesUsuariosModel.addElement("Modificar usuario");
+		jListOperacionesUsuariosModel.addElement("Eliminar usuario");
 	}
 	
 	private void configurarInterfaz (ArrayList<Operacion> operaciones) {
@@ -852,12 +1010,20 @@ public class JFPrincipal extends javax.swing.JFrame {
 		
 		// Inicializamos el contenido de cada pestaña
 		if (!operaciones.contains(Operacion.RegistrarBeneficiario))
-			listModelOperacionesBeneficiarios.removeElement("Registrar beneficiario");
+			jListOperacionesBeneficiariosModel.removeElement("Registrar beneficiario");
 		if (!operaciones.contains(Operacion.ModificarBeneficiario))
-			listModelOperacionesBeneficiarios.removeElement("Modificar beneficiario");
+			jListOperacionesBeneficiariosModel.removeElement("Modificar beneficiario");
 		if (!operaciones.contains(Operacion.ConsultarBeneficiario))
-			listModelOperacionesBeneficiarios.removeElement("Consultar beneficiario");
+			jListOperacionesBeneficiariosModel.removeElement("Consultar beneficiario");
 		jListOperacionesBeneficiarios.setSelectedIndex(jListOperacionesBeneficiarios.getFirstVisibleIndex());
+		
+		if (!operaciones.contains(Operacion.CrearUsuario))
+			jListOperacionesUsuariosModel.removeElement("Registrar usuario");
+		if (!operaciones.contains(Operacion.ModificarUsuario))
+			jListOperacionesUsuariosModel.removeElement("Modificar usuario");
+		if (!operaciones.contains(Operacion.EliminarUsuario))
+			jListOperacionesUsuariosModel.removeElement("Eliminar usuario");
+		jListOperacionesUsuarios.setSelectedIndex(jListOperacionesUsuarios.getFirstVisibleIndex());
 		
 		jPanelBienvenida.repaint();
 	}
@@ -1047,6 +1213,24 @@ public class JFPrincipal extends javax.swing.JFrame {
 		txtMedicoAsignadoCB.setText("");
 		checkboxEditarCB.setSelected(false);
 		checkboxEditarCB.setEnabled(false);
+	}
+	
+	private void jListOperacionesUsuariosValueChanged(ListSelectionEvent evt) {
+		if (jPanelCrearUsuario.isValid()) jPanelCrearUsuario.setVisible(false);
+		if (jPanelModificarUsuario.isValid()) jPanelModificarUsuario.setVisible(false);
+		if (jPanelEliminarUsuario.isValid()) jPanelEliminarUsuario.setVisible(false);
+		if (jListOperacionesUsuarios.getSelectedValue().equals("Registrar usuario")) {
+			jPanelCrearUsuario.setVisible(true);
+			jPanelCrearUsuario.repaint();
+		}
+		if (jListOperacionesUsuarios.getSelectedValue().equals("Modificiar usuario")) {
+			jPanelModificarUsuario.setVisible(true);
+			jPanelModificarUsuario.repaint();
+		}
+		if (jListOperacionesUsuarios.getSelectedValue().equals("Elimiar usuario")) {
+			jPanelEliminarUsuario.setVisible(true);
+			jPanelEliminarUsuario.repaint();
+		}
 	}
 
 }
