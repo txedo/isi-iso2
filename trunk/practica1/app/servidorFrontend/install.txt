@@ -64,7 +64,6 @@ CREATE TABLE citas (
        id INT NOT NULL AUTO_INCREMENT,
        fecha TIMESTAMP NOT NULL,
        duracion INT NOT NULL,
-       idVolante INT default '-1',       
        dniBeneficiario VARCHAR(255) NOT NULL,
        dniMedico VARCHAR(255) NOT NULL,
        PRIMARY KEY (id),
