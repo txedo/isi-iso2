@@ -15,5 +15,6 @@ public enum Operacion {
 	ConsultarBeneficiario,
 	ModificarBeneficiario,
 	ModificarCalendario,
-	EstablecerSustituto
+	EstablecerSustituto,
+	ObtenerCitas
 }
