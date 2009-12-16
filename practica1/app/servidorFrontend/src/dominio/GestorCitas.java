@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
@@ -20,7 +21,7 @@ import persistencia.FPVolante;
 
 public class GestorCitas {
 
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException {
 		Cita c = new Cita();
 		Beneficiario bene = null;
 		Medico med = null; 
@@ -32,7 +33,10 @@ public class GestorCitas {
 		}catch (UsuarioIncorrectoException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
-		// ********** Algo para comprobar si la fecha es valida o no *************
+		
+		// Se comprueba que la fecha introducida sea valida para el medico dado
+		if (!med.fechaEnCalendario(fechaYhora, duracion))
+			throw new FechaNoValidaException("La fecha, hora y duracion dadas no son validas para concertar una cita con el medico con DNI "+med.getDni());
 		
 		// Si todo es valido, se actualiza la cita, se inserta y se devuelve
 		c.setBeneficiario(beneficiario);
@@ -47,7 +51,7 @@ public class GestorCitas {
 		return c;
 	}
 
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYhora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException, FechaNoValidaException {
 		Cita c = new Cita();
 		Beneficiario bene = null;
 		Volante vol = null;
@@ -61,7 +65,9 @@ public class GestorCitas {
 		if (!bene.equals(vol.getBeneficiario()))
 			throw new VolanteNoValidoException("El beneficiario incluido en el volante no coincide con el beneficiario que pide cita");
 		
-		// ********** Algo para comprobar si la fecha es valida o no *************
+		// Se comprueba que la fecha introducida sea valida para el medico dado
+		if (!vol.getReceptor().fechaEnCalendario(fechaYhora, duracion))
+			throw new FechaNoValidaException("La fecha, hora y duracion dadas no son validas para concertar una cita con el medico con DNI "+vol.getReceptor().getDni());
 		
 		// Si todo es valido, se actualiza la cita, se inserta y se devuelve
 		c.setBeneficiario(beneficiario);
