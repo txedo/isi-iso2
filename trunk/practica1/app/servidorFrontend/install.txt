@@ -71,6 +71,19 @@ CREATE TABLE citas (
        FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
+CREATE TABLE volantes (
+       id INT NOT NULL AUTO_INCREMENT,
+       dniBeneficiario VARCHAR(255) NOT NULL,
+       dniMedicoEmisor VARCHAR(255) NOT NULL,
+       dniMedicoReceptor VARCHAR(255) NOT NULL,
+       PRIMARY KEY (id),
+       FOREIGN KEY (dniBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (dniMedicoEmisor) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (dniMedicoReceptor) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
 
 INSERT INTO centros (nombre,direccion) VALUES ("Centro de Pruebas", "Paseo de la Universidad, 4");
 INSERT INTO usuarios VALUES ("12345678", "admin" ,"admin", 0, "Foo", "Bar", 1);
+INSERT INTO usuarios VALUES ("12345670", "citador" ,"citador", 1, "Foo", "Bar", 1);
+INSERT INTO usuarios VALUES ("12345679", "medico" ,"medico", 2, "Foo", "Bar", 1);
