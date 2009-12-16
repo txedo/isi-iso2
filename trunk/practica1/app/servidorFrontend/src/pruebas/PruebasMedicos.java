@@ -3,6 +3,8 @@ package pruebas;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
+
 import persistencia.AgenteFrontend;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
@@ -245,6 +247,38 @@ public class PruebasMedicos extends TestCase {
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
 			fail("Se esperaba una excepcion MedicoInexistenteException");
+		}
+	}
+	
+	/** Pruebas relacionadas con los calendarios de los médicos */
+	public void testCalendariosMedico() {
+		Date fecha;
+		
+		try {
+			// Comprobamos varias fechas válidas
+			// (el médico 1 tiene como horario de trabajo los miércoles
+			// de 10:00 a 14:00 y los viernes de 17:00 a 19:00)
+			fecha = new Date(2009 - 1900, 11, 2, 10, 0, 0); // Martes 10:00-10:10
+			assertTrue(medico1.fechaEnCalendario(fecha, 10));
+			fecha = new Date(2009 - 1900, 11, 2, 12, 30, 0); // Martes 12:30-12:40
+			assertTrue(medico1.fechaEnCalendario(fecha, 10));
+			fecha = new Date(2009 - 1900, 11, 2, 13, 50, 0); // Martes 13:50-14:00
+			assertTrue(medico1.fechaEnCalendario(fecha, 10));
+			fecha = new Date(2009 - 1900, 11, 4, 18, 20, 0); // Viernes 18:20-18:30
+			assertTrue(medico1.fechaEnCalendario(fecha, 10));
+			// Comprobamos varias fechas no válidas
+			fecha = new Date(2009 - 1900, 11, 2, 9, 50, 0); // Martes 9:50-10:00
+			assertFalse(medico1.fechaEnCalendario(fecha, 10));
+			fecha = new Date(2009 - 1900, 11, 2, 14, 00, 0); // Martes 14:00-14:10
+			assertFalse(medico1.fechaEnCalendario(fecha, 10));
+			fecha = new Date(2009 - 1900, 11, 2, 17, 30, 0); // Martes 17:30-17:40
+			assertFalse(medico1.fechaEnCalendario(fecha, 10));
+			fecha = new Date(2009 - 1900, 11, 4, 10, 00, 0); // Viernes 10:00-10:10
+			assertFalse(medico1.fechaEnCalendario(fecha, 10));
+			fecha = new Date(2009 - 1900, 11, 6, 12, 00, 0); // Domingo 12:00-12:10
+			assertFalse(medico1.fechaEnCalendario(fecha, 10));
+		} catch(Exception e) {
+			fail(e.toString());
 		}
 	}
 	
