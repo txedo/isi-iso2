@@ -31,11 +31,22 @@ import javax.swing.WindowConstants;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class JFLogin extends javax.swing.JFrame {
+
+	{
+		//Set Look & Feel
+		try {
+			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	
 	private ControladorLogin controlador;
 	private JLabel jLabel1;
 	private JLabel jLabel2;
 	private JTextField txtUsuario;
+	private JButton btnAvanzado;
 	private JButton btnConectar;
 	private JPasswordField txtPassword;
 	private JLabel jLabel3;
@@ -52,13 +63,28 @@ public class JFLogin extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("Identificación");
 			this.setPreferredSize(new java.awt.Dimension(383, 178));
-			this.setMinimumSize(new java.awt.Dimension(10, 178));
+			this.setMinimumSize(new java.awt.Dimension(383, 178));
 			this.setMaximumSize(new java.awt.Dimension(2147483647, 178));
+			this.setResizable(false);
+			{
+				btnAvanzado = new JButton();
+				getContentPane().add(btnAvanzado, new AnchorConstraint(748, 266, 16, 27, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+				btnAvanzado.setText("Avanzado >>");
+				btnAvanzado.setPreferredSize(new java.awt.Dimension(101, 23));
+				btnAvanzado.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnAvanzadoActionPerformed(evt);
+					}
+				});
+			}
 			{
 				btnConectar = new JButton();
-				getContentPane().add(btnConectar, new AnchorConstraint(109, 202, 440, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				btnConectar.setText("Conectar");
-				btnConectar.setPreferredSize(new java.awt.Dimension(87, 28));
+				getContentPane().add(btnConectar, new AnchorConstraint(735, 202, 18, 267, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				btnConectar.setDefaultCapable(true);
+				getRootPane().setDefaultButton(btnConectar);
+				btnConectar.setText("Iniciar sesión");
+				btnConectar.setPreferredSize(new java.awt.Dimension(101, 23));
+				btnConectar.setSelected(true);
 				btnConectar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnConectarActionPerformed(evt);
@@ -94,7 +120,6 @@ public class JFLogin extends javax.swing.JFrame {
 				jLabel1.setPreferredSize(new java.awt.Dimension(103, 14));
 			}
 			pack();
-			this.setSize(383, 178);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -106,13 +131,26 @@ public class JFLogin extends javax.swing.JFrame {
 	
 	private void btnConectarActionPerformed(ActionEvent evt) {
 		try {
-			controlador.iniciarSesion(txtUsuario.getText(), new String(txtPassword.getPassword()));
+			controlador.iniciarSesion("127.0.0.1", txtUsuario.getText(), new String(txtPassword.getPassword()));
 		} catch (SQLException e) {
 			Utilidades.mostrarDialogoError(this, "Error en el sistema", e.getMessage());
 		} catch (UsuarioIncorrectoException e) {
 			Utilidades.mostrarDialogoError(this, "Error al autentificar", "El usuario o contraseña son incorrectos.");
 		} catch (Exception e) {
 			Utilidades.mostrarDialogoError(this, "Error", e.toString());
+		}
+	}
+	
+	private void btnAvanzadoActionPerformed(ActionEvent evt) {
+		if (btnAvanzado.getText().equals("Avanzado >>")) {
+			btnAvanzado.setText("<< Avanzado");
+			this.setSize(new java.awt.Dimension(383, 250));
+		}
+		else {
+			if (btnAvanzado.getText().equals("<< Avanzado")) {
+				btnAvanzado.setText("Avanzado >>");
+				this.setSize(new java.awt.Dimension(383, 178));
+			}
 		}
 	}
 

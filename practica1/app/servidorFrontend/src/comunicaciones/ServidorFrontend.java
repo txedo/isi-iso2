@@ -88,8 +88,10 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 		try {
 			if (GestorSesiones.getSesion(idSesion)==null)
 				throw new SesionNoIniciadaException("No se puede registrar en el servidor el cliente con la sesion "+idSesion+" porque no existe esa sesion");
-			else
+			else {
 				clientesEscuchando.put(idSesion, cliente);
+				controlador.getObservador().actualizarVentanas("Usuario ICliente.cliente.getLogin() a la escucha.");
+			}
 		} catch (SesionNoIniciadaException snie) {
 			controlador.getObservador().actualizarVentanas(snie.getMessage());
 			throw snie;
@@ -106,6 +108,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 			else {
 				clientesEscuchando.remove(idSesion);
 				GestorSesiones.liberar(idSesion);
+				controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' desconectado.");
 			}
 		} catch (Exception e) {
 			controlador.getObservador().actualizarVentanas(e.getMessage());
@@ -116,6 +119,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		try { 
 			Beneficiario be = GestorBeneficiarios.getBeneficiario(idSesion, dni);
+			controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' consulta el beneficiario con NIF " + dni);
 			return be;
 		} catch (RemoteException re) {
 			controlador.getObservador().actualizarVentanas(re.getMessage());
@@ -147,6 +151,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	public Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		try {
 			Beneficiario be = GestorBeneficiarios.getBeneficiarioPorNSS(idSesion, nss);
+			controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' consulta el beneficiario con NSS " + nss);
 			return be;
 		} catch (RemoteException re) {
 			controlador.getObservador().actualizarVentanas(re.getMessage());
@@ -178,6 +183,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	public void crear(long idSesion, Beneficiario beneficiario) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
 		try {
 			GestorBeneficiarios.crear(idSesion, beneficiario);
+			controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' crea el beneficiario con NIF " + beneficiario.getNif());
 		} catch (RemoteException re) {
 			controlador.getObservador().actualizarVentanas(re.getMessage());
 			throw re;
@@ -209,6 +215,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	public void modificar(long idSesion, Beneficiario beneficiario) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		try {
 			GestorBeneficiarios.modificar(idSesion, beneficiario);
+			controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' modifica el beneficiario con NIF " + beneficiario.getNif());
 		} catch (SQLException se) {
 			controlador.getObservador().actualizarVentanas(se.getMessage());
 			throw se;
@@ -234,6 +241,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	}
 	
 	public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception {
+		controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' consulta el médico con NIF " + dni);
 		return GestorUsuarios.getMedico(idSesion, dni);
 	}
 	
@@ -263,14 +271,17 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	}
 	*/
 	public void crear(long idSesion, Medico medico) throws RemoteException, MedicoYaExistenteException, SQLException, Exception {
+		controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' crea el médico con NIF " + medico.getDni());
 		GestorUsuarios.crearMedico(idSesion, medico);
 	}
 	
 	public void modificar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' modifica el médico con NIF " + medico.getDni());
 		GestorUsuarios.modificarMedico(idSesion, medico);
 	}
 	
 	public void eliminar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' elimina el médico con NIF " + medico.getDni());
 		GestorUsuarios.eliminarMedico(idSesion, medico);
 	}
 	/*
@@ -279,6 +290,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	}
 	*/
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException {
+		controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
 		return GestorMensajes.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
 	/*

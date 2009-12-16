@@ -11,6 +11,8 @@ import excepciones.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -60,6 +62,16 @@ import javax.swing.SwingUtilities;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class JFPrincipal extends javax.swing.JFrame {
+
+	{
+		//Set Look & Feel
+		try {
+			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private ControladorLogin controlador;
 	private DefaultListModel jListOperacionesBeneficiariosModel;
 	private DefaultListModel jListOperacionesUsuariosModel;
@@ -187,6 +199,12 @@ public class JFPrincipal extends javax.swing.JFrame {
 		try {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setPreferredSize(new java.awt.Dimension(600, 425));
+			this.setTitle("SSCA - Unidad de Citación");
+			this.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent evt) {
+					thisWindowClosing(evt);
+				}
+			});
 			{
 				jMenuBar = new JMenuBar();
 				setJMenuBar(jMenuBar);
@@ -290,6 +308,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 							{
 								btnCrearBeneficiarioRB = new JButton();
 								jPanelRegistrarBeneficiario.add(btnCrearBeneficiarioRB, new AnchorConstraint(275, 17, 961, 765, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+								btnCrearBeneficiarioRB.setDefaultCapable(true);
+								jPanelRegistrarBeneficiario.getRootPane().setDefaultButton(btnCrearBeneficiarioRB);
 								btnCrearBeneficiarioRB.setText("Crear beneficiario");
 								btnCrearBeneficiarioRB.setPreferredSize(new java.awt.Dimension(154, 26));
 								btnCrearBeneficiarioRB.addActionListener(new ActionListener() {
@@ -581,6 +601,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 							{
 								btnBuscarCB = new JButton();
 								jPanelConsultarBeneficiario.add(btnBuscarCB, new AnchorConstraint(36, 13, 188, 791, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+								btnBuscarCB.setDefaultCapable(true);
+								jPanelConsultarBeneficiario.getRootPane().setDefaultButton(btnBuscarCB);
 								btnBuscarCB.setText("Buscar");
 								btnBuscarCB.setPreferredSize(new java.awt.Dimension(77, 23));
 								btnBuscarCB.addActionListener(new ActionListener() {
@@ -1230,6 +1252,17 @@ public class JFPrincipal extends javax.swing.JFrame {
 		if (jListOperacionesUsuarios.getSelectedValue().equals("Elimiar usuario")) {
 			jPanelEliminarUsuario.setVisible(true);
 			jPanelEliminarUsuario.repaint();
+		}
+	}
+	
+	private void thisWindowClosing(WindowEvent evt) {
+		try {
+			if (controlador != null)
+				controlador.cerrarSesion ();
+		} catch (RemoteException e) {
+			Utilidades.mostrarDialogoError(this, "Error", e.toString());
+		} catch (Exception e) {
+			Utilidades.mostrarDialogoError(this, "Error", e.toString());
 		}
 	}
 
