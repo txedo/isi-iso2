@@ -5,6 +5,7 @@ package dominio;
  * sistema.
  */
 public enum Operacion {
+	ConsultarMedico,
 	ConsultarUsuario,
 	CrearUsuario,
 	ModificarUsuario,

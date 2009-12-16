@@ -20,7 +20,7 @@ import presentacion.JFPrincipal;
 /**
  * Controlador que gestiona la identificación de los usuarios. 
  */
-public class ControladorLogin {
+public class ControladorLogin implements OperacionesAuxiliares {
 
 	private ProxyServidorFrontend servidor;
 	private ISesion sesion;
@@ -47,14 +47,15 @@ public class ControladorLogin {
 		return servidor;
 	}
 	
-	public void iniciarSesion(String login, String password) throws SQLException, UsuarioIncorrectoException, Exception {
+	public void iniciarSesion(String direccionIP, String login, String password) throws SQLException, UsuarioIncorrectoException, Exception {
 		// Intentamos conectarnos con el servidor frontend
 		if(servidor == null) {
 			servidor = new ProxyServidorFrontend();
 		}
-		servidor.conectar("127.0.0.1");
+		servidor.conectar(direccionIP);
 		// Nos identificamos en el servidor
 		sesion = (ISesion)servidor.identificar(login, password);
+		//servidor.registrar(cliente, sesion.getId());
 		// Ocultamos la ventana de login
 		ventana.setVisible(false);
 		ventana.dispose();
@@ -62,6 +63,10 @@ public class ControladorLogin {
 		ventanaPrincipal.setControlador(this);
 		ventanaPrincipal.iniciar();
 		ventanaPrincipal.setVisible(true);
+	}
+	
+	public void cerrarSesion() throws RemoteException, Exception {
+		servidor.liberar(sesion.getId());
 	}
 	
 	public void crearBeneficiario(Beneficiario bene) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
@@ -81,7 +86,7 @@ public class ControladorLogin {
 	}
 	
 	public Object operacionesDisponibles () throws RemoteException, SesionInvalidaException {
-		return servidor.mensajeAuxiliar(sesion.getId(), 1000, null);
+		return servidor.mensajeAuxiliar(sesion.getId(), OPERACIONES_DISPONIBLES, null);
 	}
 
 	public Medico consultarMedico(String dni) throws RemoteException, MedicoInexistenteException, Exception {

@@ -97,6 +97,7 @@ public class GestorSesiones {
 			operaciones.add(Operacion.EliminarCita);
 			operaciones.add(Operacion.RegistrarBeneficiario);
 			operaciones.add(Operacion.ModificarBeneficiario);
+			operaciones.add(Operacion.ConsultarMedico);
 		}
 		// Agregamos al vector las operaciones de administradores
 		if (sesion.getRol() == Rol.Administrador.ordinal()){
@@ -114,7 +115,9 @@ public class GestorSesiones {
 		Sesion sesion;
 		boolean permitido;
 		EntradaLog entrada;
-
+		boolean esAdministrador = false;
+		boolean esCitador = false;
+		
 		// Obtenemos la sesión para el id indicado y comprobamos si existe
 		// (en teoría sí, porque primero el usuario ha tenido que hacer login)
 		sesion = sesiones.get(idSesion);
@@ -122,35 +125,41 @@ public class GestorSesiones {
 			throw new SesionInvalidaException("El identificador de sesión es inválido");
 		}
 		
+		esAdministrador = (sesion.getRol() == Rol.Administrador.ordinal());
+		esCitador = (sesion.getRol() == Rol.Citador.ordinal());
+		
 		// TODO modificar este switch para que analice el arraylist devuelto por operacionesDisponibles()
 		// Vemos cuál es la operación solicitada
 		switch(operacion) {
 		case CrearUsuario:
-			permitido = (sesion.getRol() == Rol.Administrador.ordinal());
+			permitido = esAdministrador;
 			break;
 		case ModificarUsuario:
-			permitido = (sesion.getRol() == Rol.Administrador.ordinal()); 
+			permitido = esAdministrador; 
 			break;
 		case EliminarUsuario:
-			permitido = (sesion.getRol() == Rol.Administrador.ordinal()); 
+			permitido = esAdministrador; 
 			break;
 		case TramitarCita:
-			permitido = (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()); 
+			permitido = esAdministrador || esCitador;
 			break;
 		case EliminarCita:
-			permitido = (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()); 
+			permitido = esAdministrador || esCitador;
 			break;
 		case RegistrarBeneficiario:
-			permitido = (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()); 
+			permitido = esAdministrador || esCitador;
 			break;
 		case ModificarBeneficiario:
-			permitido = (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()); 
+			permitido = esAdministrador || esCitador;
+			break;
+		case ConsultarMedico:
+			permitido = esAdministrador || esCitador;
 			break;
 		case ModificarCalendario:
-			permitido = (sesion.getRol() == Rol.Administrador.ordinal()); 
+			permitido = esAdministrador;
 			break;
 		case EstablecerSustituto:
-			permitido = (sesion.getRol() == Rol.Administrador.ordinal());
+			permitido = esAdministrador;
 			break;
 		case ConsultarUsuario:
 			// Estas operaciones siempre están permitidas
