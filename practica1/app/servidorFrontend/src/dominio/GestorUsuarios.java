@@ -22,16 +22,28 @@ public class GestorUsuarios {
 	public static Medico getMedico(long idSesion, String dni) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
 		Usuario usuario;
 		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarMedico);
+		
 		try {
-			usuario = getUsuario(idSesion, dni, Rol.Medico);
+			usuario = getUsuario(idSesion, dni);
 		} catch(UsuarioInexistenteException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
+		
+		// Comprobamos si el usuario devuelto tiene el rol esperado
+		if(usuario.getRol() != Rol.Medico) {
+			throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
+		}
+
 		return (Medico)usuario;
 	}
 	
 	// Método para añadir un nuevo médico al sistema
 	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operacion.CrearMedico);
+		
 		try {
 			crearUsuario(idSesion, medico);
 		} catch(UsuarioYaExistenteException ex) {
@@ -41,6 +53,9 @@ public class GestorUsuarios {
 	
 	// Método para modificar un médico existente del sistema
 	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operacion.ModificarMedico);
+		
 		try {
 			modificarUsuario(idSesion, medico);
 		} catch(UsuarioInexistenteException ex) {
@@ -50,6 +65,9 @@ public class GestorUsuarios {
 	
 	// Método para eliminar un médico del sistema
 	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operacion.EliminarMedico);
+
 		try {
 			eliminarUsuario(idSesion, medico);
 		} catch(UsuarioInexistenteException ex) {
@@ -58,7 +76,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para consultar los datos de un usuario con un cierto rol
-	private static Usuario getUsuario(long idSesion, String dni, Rol rol) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static Usuario getUsuario(long idSesion, String dni) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
 		EntradaLog entrada;
 		Usuario usuario;
 		
@@ -71,21 +89,16 @@ public class GestorUsuarios {
 		} catch(UsuarioIncorrectoException ex) {
 			throw new UsuarioInexistenteException("No existe ningún usuario con el DNI introducido");
 		}
-		
-		// Comprobamos si el usuario devuelto tiene el rol esperado
-		if(usuario.getRol() != rol) {
-			throw new UsuarioInexistenteException("El DNI introducido no pertenece a un " + rol.toString().toLowerCase());
-		}
 
 		// Añadimos una entrada al log
-		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se han consultado los datos del usuario (" + rol.toString().toLowerCase() + ") con DNI " + dni.toString() + ".");
+		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se han consultado los datos del usuario con DNI " + dni.toString() + ".");
 		FPEntradaLog.insertar(entrada);
 		
 		return usuario;
 	}
 	
 	// Método para añadir un nuevo usuario al sistema
-	private static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -111,7 +124,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para modificar un usuario existente del sistema
-	private static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -135,7 +148,7 @@ public class GestorUsuarios {
 	}
 
 	// Método para eliminar un usuario del sistema
-	private static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
