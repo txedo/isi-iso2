@@ -10,11 +10,13 @@ import excepciones.MedicoInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
+import excepciones.VolanteNoValidoException;
 
 import persistencia.FPBeneficiario;
 import persistencia.FPCita;
 import persistencia.FPEntradaLog;
 import persistencia.FPUsuario;
+import persistencia.FPVolante;
 
 public class GestorCitas {
 
@@ -32,31 +34,42 @@ public class GestorCitas {
 		}
 		// ********** Algo para comprobar si la fecha es valida o no *************
 		
-		// Si todo es valido, se actualiza la cita y se devuelve
+		// Si todo es valido, se actualiza la cita, se inserta y se devuelve
 		c.setBeneficiario(beneficiario);
 		c.setMedico(med);
 		c.setDuracion(duracion);
 		c.setFechaYhora(fechaYhora);
+		FPCita.insertar(c);
+		// Creamos la entrada del log
+		EntradaLog entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "Se almacena la cita del beneficiario con DNI "+ beneficiario.getNif() + " con el medico con DNI "+med.getDni()+".");
+		FPEntradaLog.insertar(entrada);
 		
 		return c;
 	}
 
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException {
 		Cita c = new Cita();
 		Beneficiario bene = null;
-		Medico med = null; 
-		// Se comprueba que exista el beneficiario
+		Volante vol = null;
+		
+		// Se comprueba que exista el volante en la base de datos
+		vol = FPVolante.consultarPorID(idVolante);
+		
+		// Se comprueba que exista el beneficiario que se pasa por parametro
 		bene = FPBeneficiario.consultarPorNIF(beneficiario.getNif());
+		// Se comprueba que el beneficiario que se pasa por parametro y el que esta en el volante sean los mismos
+		if (!bene.equals(vol.getBeneficiario()))
+			throw new VolanteNoValidoException("El beneficiario incluido en el volante no coincide con el beneficiario que pide cita");
 		
 		// ********** Algo para comprobar si la fecha es valida o no *************
 		
-		// Si todo es valido, se actualiza la cita y se devuelve
+		// Si todo es valido, se actualiza la cita, se inserta y se devuelve
 		c.setBeneficiario(beneficiario);
-		c.setMedico(med);
+		c.setMedico(vol.getReceptor());
 		c.setDuracion(duracion);
-		// ****** ¿Que se hace con el volante *****?
-		
-		
+		FPCita.insertar(c);	
+		EntradaLog entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "Se almacena la cita del beneficiario con DNI "+ beneficiario.getNif() + " con el medico con DNI "+vol.getReceptor().getDni()+".");
+		FPEntradaLog.insertar(entrada);
 		return c; 
 	}
 
@@ -64,7 +77,7 @@ public class GestorCitas {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.ObtenerCitas);
 		// Añadimos una entrada al log
-		EntradaLog entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se han consultado las citas del beneficiario con DNI "+ dni.toString() + ".");
+		EntradaLog entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "Se han consultado las citas del beneficiario con DNI "+ dni.toString() + ".");
 		FPEntradaLog.insertar(entrada);
 		return FPCita.consultarTodo(dni);
 	}

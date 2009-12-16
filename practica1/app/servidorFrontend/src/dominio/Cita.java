@@ -3,9 +3,7 @@ package dominio;
 import java.sql.Date;
 
 public class Cita {
-	
-	// *** ¿Tienen asociado volante? *** //
-	
+		
 	private Date fechaYhora;
 	private long duracion;
 	Beneficiario beneficiario;
