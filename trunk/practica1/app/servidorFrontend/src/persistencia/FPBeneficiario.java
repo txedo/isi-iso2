@@ -9,12 +9,13 @@ import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 
+/**
+ * Clase dedicada a consultar y modificar beneficiarios en la base de datos.
+ */
 public class FPBeneficiario {
 
-	/**
-	 * Clase dedicada a consultar y modificar beneficiarios en la base de datos.
-	 */
 	private static final String TABLA_BENEFICIARIOS = "beneficiarios";
+	
 	private static final String COL_NIF = "nif";
 	private static final String COL_NSS = "nss";
 	private static final String COL_NOMBRE = "nombre";
@@ -103,10 +104,10 @@ public class FPBeneficiario {
 		GestorConexionesBD.ejecutar(comando);
 	}
 
-	// EL NIF y el NSS no se pueden cambiar
 	public static void modificar(Beneficiario bene) throws SQLException {
 		ComandoSQL comando;
 
+		// EL NIF y el NSS no se pueden cambiar
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_BENEFICIARIOS + " SET "
 				+ COL_NOMBRE + "=?, " + COL_APELLIDOS + "=?, " + COL_DOMICILIO + "=?, " + COL_CORREO
 				+ "=?, " + COL_TELEFONO + "=?, " + COL_MOVIL + "=?, " + COL_DNI_MEDICO + "=? WHERE " + COL_NIF + "=? ", 
