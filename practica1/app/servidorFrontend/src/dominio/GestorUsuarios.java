@@ -18,64 +18,7 @@ import excepciones.UsuarioYaExistenteException;
  */
 public class GestorUsuarios {
 
-	// Método para consultar los datos de un médico
-	public static Medico getMedico(long idSesion, String dni) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
-		Usuario usuario;
-		
-		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarMedico);
-		
-		try {
-			usuario = getUsuario(idSesion, dni);
-		} catch(UsuarioInexistenteException ex) {
-			throw new MedicoInexistenteException(ex.getMessage());
-		}
-		
-		// Comprobamos si el usuario devuelto tiene el rol esperado
-		if(usuario.getRol() != Rol.Medico) {
-			throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
-		}
-
-		return (Medico)usuario;
-	}
-	
-	// Método para añadir un nuevo médico al sistema
-	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
-		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.CrearMedico);
-		
-		try {
-			crearUsuario(idSesion, medico);
-		} catch(UsuarioYaExistenteException ex) {
-			throw new MedicoYaExistenteException(ex.getMessage());
-		}
-	}
-	
-	// Método para modificar un médico existente del sistema
-	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
-		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ModificarMedico);
-		
-		try {
-			modificarUsuario(idSesion, medico);
-		} catch(UsuarioInexistenteException ex) {
-			throw new MedicoInexistenteException(ex.getMessage());
-		}
-	}
-	
-	// Método para eliminar un médico del sistema
-	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
-		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.EliminarMedico);
-
-		try {
-			eliminarUsuario(idSesion, medico);
-		} catch(UsuarioInexistenteException ex) {
-			throw new MedicoInexistenteException(ex.getMessage());
-		}
-	}
-	
-	// Método para consultar los datos de un usuario con un cierto rol
+	// Método para consultar los datos de un usuario
 	public static Usuario getUsuario(long idSesion, String dni) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
 		EntradaLog entrada;
 		Usuario usuario;
@@ -170,5 +113,67 @@ public class GestorUsuarios {
 		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "delete", "El usuario con DNI " + usuario.getDni() + " se ha eliminado correctamente.");
 		FPEntradaLog.insertar(entrada);
 	}
+
+	// Los siguientes métodos son específicos para usuarios con rol de médico,
+	// por lo que no sirven para citadores y administradores. Se han creado
+	// para ser llamados desde la interfaz del servidor frontend, donde no hay
+	// métodos para manipular usuarios, sino sólo médicos.
 	
+	// Método para consultar los datos de un médico
+	public static Medico getMedico(long idSesion, String dni) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+		Usuario usuario;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarMedico);
+		
+		try {
+			usuario = getUsuario(idSesion, dni);
+		} catch(UsuarioInexistenteException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		// Comprobamos si el usuario devuelto tiene el rol esperado
+		if(usuario.getRol() != Rol.Medico) {
+			throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
+		}
+
+		return (Medico)usuario;
+	}
+	
+	// Método para añadir un nuevo médico al sistema
+	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operacion.CrearMedico);
+		
+		try {
+			crearUsuario(idSesion, medico);
+		} catch(UsuarioYaExistenteException ex) {
+			throw new MedicoYaExistenteException(ex.getMessage());
+		}
+	}
+	
+	// Método para modificar un médico existente del sistema
+	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operacion.ModificarMedico);
+		
+		try {
+			modificarUsuario(idSesion, medico);
+		} catch(UsuarioInexistenteException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+	}
+	
+	// Método para eliminar un médico del sistema
+	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operacion.EliminarMedico);
+
+		try {
+			eliminarUsuario(idSesion, medico);
+		} catch(UsuarioInexistenteException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+	}
+		
 }

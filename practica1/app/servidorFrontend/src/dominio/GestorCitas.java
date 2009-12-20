@@ -19,36 +19,54 @@ import persistencia.FPEntradaLog;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
 
+/**
+ * Clase encargada de solicitar, recuperar y eliminar citas que tienen los
+ * beneficiarios para acudir a la consulta de los médicos.
+ */
 public class GestorCitas {
 
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException {
-		Cita c = new Cita();
-		Beneficiario bene = null;
-		Medico med = null; 
-		// Se comprueba que exista el beneficiario
-		bene = FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-		// Se comprueba que exista el medico
+	// Método para pedir una nueva cita para un cierto beneficiario y médico
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException, SesionInvalidaException, OperacionIncorrectaException {
+		Cita cita;
+		EntradaLog entrada;
+		Usuario usuario;
+		Medico medico;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operacion.TramitarCita);
+		
+		// Comprobamos que exista el beneficiario
+		FPBeneficiario.consultarPorNIF(beneficiario.getNif());
+		
+		// Comprobamos que exista el médico
 		try {
-			med = (Medico) FPUsuario.consultar(idMedico);
-		}catch (UsuarioIncorrectoException ex) {
+			usuario = FPUsuario.consultar(idMedico);
+			if(usuario.getRol() != Rol.Medico) {
+				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
+			}
+		} catch(UsuarioIncorrectoException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
 		
-		// Se comprueba que la fecha introducida sea valida para el medico dado
-		if (!med.fechaEnCalendario(fechaYhora, duracion))
-			throw new FechaNoValidaException("La fecha, hora y duracion dadas no son validas para concertar una cita con el medico con DNI "+med.getDni());
+		// Comprobamos que la fecha introducida sea válida para el medico dado
+		medico = (Medico)usuario;
+		if(!medico.fechaEnCalendario(fechaYhora, duracion)) {
+			throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + idMedico);
+		}
 		
 		// Si todo es valido, se actualiza la cita, se inserta y se devuelve
-		c.setBeneficiario(beneficiario);
-		c.setMedico(med);
-		c.setDuracion(duracion);
-		c.setFechaYhora(fechaYhora);
-		FPCita.insertar(c);
-		// Creamos la entrada del log
-		EntradaLog entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "Se almacena la cita del beneficiario con DNI "+ beneficiario.getNif() + " con el medico con DNI "+med.getDni()+".");
+		cita = new Cita();
+		cita.setBeneficiario(beneficiario);
+		cita.setMedico(medico);
+		cita.setDuracion(duracion);
+		cita.setFechaYhora(fechaYhora);
+		FPCita.insertar(cita);
+		
+		// Añadimos una entrada al log
+		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "La cita del beneficiario con DNI " + beneficiario.getNif() + " con el medico con DNI " + idMedico + " se ha creado correctamente.");
 		FPEntradaLog.insertar(entrada);
 		
-		return c;
+		return cita;
 	}
 
 	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYhora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException, FechaNoValidaException {
