@@ -1,13 +1,22 @@
 package dominio;
 
-public class Volante {
+import java.io.Serializable;
 
-	long id;
-	Medico emisor;
-	Medico receptor;
-	Beneficiario beneficiario;
+/**
+ * Clase que representa un volante que relaciona un beneficiario, un médico
+ * emisor y un médico receptor.
+ */
+public class Volante implements Serializable {
+
+	private static final long serialVersionUID = -8633666128386005254L;
 	
-	public Volante () {}
+	private long id;
+	private Medico emisor;
+	private Medico receptor;
+	private Beneficiario beneficiario;
+	
+	public Volante() {
+	}
 	
 	public Volante(long id, Medico emisor, Medico receptor, Beneficiario beneficiario) {
 		this.id = id;
@@ -48,6 +57,16 @@ public class Volante {
 		this.id = id;
 	}
 
-	
+	public boolean equals(Object o) {
+		Volante v;
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof Volante) {
+			v = (Volante)o;
+			dev = receptor.equals(v.getReceptor()) && emisor.equals(v.getEmisor()) && beneficiario.equals(v.getBeneficiario());
+		}
+		return dev;
+	}
 
 }

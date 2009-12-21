@@ -45,7 +45,7 @@ public class FPUsuario {
 		// Si no se obtienen datos, es porque el usuario es
 		// incorrecto (o no existe, pero se trata como incorrecto)
 		if(datos.getRow() == 0) {
-			throw new UsuarioIncorrectoException("El DNI introducido no es válido");
+			throw new UsuarioIncorrectoException("No existe ningún usuario con el DNI " + dni);
 		} else {
 			// Creamos un usuario del tipo adecuado
 			switch(Rol.values()[datos.getInt(COL_ROL)]) {

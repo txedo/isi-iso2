@@ -20,7 +20,7 @@ public class GestorBeneficiarios {
 
 	/* Metodo que devuelve un beneficiario, consultando por su dni.
 	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
-	public static Beneficiario getBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static Beneficiario getBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException {
 		Beneficiario bene = null;
 		EntradaLog entrada;
 		
@@ -32,7 +32,7 @@ public class GestorBeneficiarios {
 		return bene;
 	}
 	
-	public static Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException {
 		Beneficiario bene = null;
 		EntradaLog entrada;
 
@@ -47,7 +47,7 @@ public class GestorBeneficiarios {
 
 	/* Metodo para registrar un nuevo beneficiario.
 	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
-	public static void crear(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void crear(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException {
 
 		Medico medico = null;
 		EntradaLog entrada;
@@ -74,7 +74,7 @@ public class GestorBeneficiarios {
 	
 	/* Metodo para modificar los datos de un beneficiario.
 	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
-	public static void modificar(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException{
+	public static void modificar(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		EntradaLog entrada;
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.ModificarBeneficiario);
 		// Se consulta para comprobar si ese beneficiario ya existe.

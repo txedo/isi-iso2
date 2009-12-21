@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import persistencia.FPEntradaLog;
 import persistencia.FPUsuario;
+import excepciones.CentroSaludIncorrectoException;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -19,7 +20,7 @@ import excepciones.UsuarioYaExistenteException;
 public class GestorUsuarios {
 
 	// Método para consultar los datos de un usuario
-	public static Usuario getUsuario(long idSesion, String dni) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static Usuario getUsuario(long idSesion, String dni) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		EntradaLog entrada;
 		Usuario usuario;
 		
@@ -41,7 +42,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para añadir un nuevo usuario al sistema
-	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -67,7 +68,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para modificar un usuario existente del sistema
-	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -91,7 +92,7 @@ public class GestorUsuarios {
 	}
 
 	// Método para eliminar un usuario del sistema
-	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -120,7 +121,7 @@ public class GestorUsuarios {
 	// métodos para manipular usuarios, sino sólo médicos.
 	
 	// Método para consultar los datos de un médico
-	public static Medico getMedico(long idSesion, String dni) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static Medico getMedico(long idSesion, String dni) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		Usuario usuario;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -141,7 +142,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para añadir un nuevo médico al sistema
-	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.CrearMedico);
 		
@@ -153,7 +154,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para modificar un médico existente del sistema
-	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.ModificarMedico);
 		
@@ -165,7 +166,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para eliminar un médico del sistema
-	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, Exception {
+	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.EliminarMedico);
 

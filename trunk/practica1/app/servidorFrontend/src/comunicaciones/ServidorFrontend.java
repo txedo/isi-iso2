@@ -28,14 +28,15 @@ import excepciones.MedicoYaExistenteException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
- * Fachada del servidor frontend utilizada por el cliente.
+ * Fachada del servidor frontend utilizada por el cliente que da acceso a
+ * las clases gestoras que implementan la funcionalidad del sistema.
  */
 public class ServidorFrontend extends UnicastRemoteObject implements IServidorFrontend {
 	
 	private static final long serialVersionUID = 7497297325860652078L;
 	
 	private ControladorPresentacion controlador;
-	private Hashtable<Long,ICliente> clientesEscuchando = new Hashtable<Long,ICliente>();
+	private Hashtable<Long, ICliente> clientesEscuchando = new Hashtable<Long, ICliente>();
 	
 	public ServidorFrontend() throws RemoteException {
 		super();
@@ -64,27 +65,32 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
     	Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
     }
 	
+    // --- Métodos del Gestor de Sesiones ---
+    
 	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+		ISesion sesion;
+		
 		try {
-			ISesion s = GestorSesiones.identificar(login, password);
+			sesion = GestorSesiones.identificar(login, password);
 			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' autenticado.");
-			return s;
-		} catch (RemoteException re) {
+		} catch(RemoteException re) {
 			controlador.getObservador().actualizarVentanas(re.getMessage());
 			throw re;
-		} catch (SQLException se) {
+		} catch(SQLException se) {
 			controlador.getObservador().actualizarVentanas(se.getMessage());
 			throw se;
-		} catch (UsuarioIncorrectoException uie) {
+		} catch(UsuarioIncorrectoException uie) {
 			controlador.getObservador().actualizarVentanas(uie.getMessage());
 			throw uie;
-		} catch (Exception e) {
+		} catch(Exception e) {
 			controlador.getObservador().actualizarVentanas(e.getMessage());
 			throw e;
 		}
+		
+		return sesion;
 	}
 	
-	public void registrar (ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
+	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
 		try {
 			if (GestorSesiones.getSesion(idSesion)==null)
 				throw new SesionNoIniciadaException("No se puede registrar en el servidor el cliente con la sesion "+idSesion+" porque no existe esa sesion");
@@ -116,133 +122,253 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 		}
 	}
 	
-	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
-		try { 
-			Beneficiario be = GestorBeneficiarios.getBeneficiario(idSesion, dni);
-			controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' consulta el beneficiario con NIF " + dni);
-			return be;
-		} catch (RemoteException re) {
-			controlador.getObservador().actualizarVentanas(re.getMessage());
-			throw re;
-		} catch (SQLException se) {
-			controlador.getObservador().actualizarVentanas(se.getMessage());
-			throw se;
-		} catch (UsuarioIncorrectoException uie) {
-			controlador.getObservador().actualizarVentanas("Error al obtener el medico asociado al beneficiario.\n "+uie.getMessage());
-			throw uie;
-		} catch (CentroSaludIncorrectoException csie) {
-			controlador.getObservador().actualizarVentanas("Error al obtener el centro de salud del medico asociado al beneficiario.\n "+csie.getMessage());
-			throw csie;
-		} catch (BeneficiarioInexistenteException bie) {
-			controlador.getObservador().actualizarVentanas(bie.getMessage());
-			throw bie;
-		} catch (OperacionIncorrectaException oie) {
-			controlador.getObservador().actualizarVentanas(oie.getMessage());
-			throw oie;
-		} catch (SesionInvalidaException sie) {
-			controlador.getObservador().actualizarVentanas(sie.getMessage());
-			throw sie;
-		} catch (Exception e) {
-			controlador.getObservador().actualizarVentanas(e.getMessage());
-			throw e;
-		}
-	}
+	// --- Métodos del Gestor de Beneficiarios ---
 	
-	public Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
-		try {
-			Beneficiario be = GestorBeneficiarios.getBeneficiarioPorNSS(idSesion, nss);
-			controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' consulta el beneficiario con NSS " + nss);
-			return be;
-		} catch (RemoteException re) {
-			controlador.getObservador().actualizarVentanas(re.getMessage());
-			throw re;
-		} catch (SQLException se) {
+	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		Beneficiario beneficiario;
+		String login;
+		
+		try { 
+			beneficiario = GestorBeneficiarios.getBeneficiario(idSesion, dni);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' consulta el beneficiario con NIF " + dni);
+		} catch(SQLException se) {
 			controlador.getObservador().actualizarVentanas(se.getMessage());
 			throw se;
-		} catch (UsuarioIncorrectoException uie) {
+		} catch(UsuarioIncorrectoException uie) {
 			controlador.getObservador().actualizarVentanas("Error al obtener el medico asociado al beneficiario.\n "+uie.getMessage());
 			throw uie;
-		} catch (CentroSaludIncorrectoException csie) {
+		} catch(CentroSaludIncorrectoException csie) {
 			controlador.getObservador().actualizarVentanas("Error al obtener el centro de salud del medico asociado al beneficiario.\n "+csie.getMessage());
 			throw csie;
-		} catch (BeneficiarioInexistenteException bie) {
+		} catch(BeneficiarioInexistenteException bie) {
 			controlador.getObservador().actualizarVentanas(bie.getMessage());
 			throw bie;
-		} catch (OperacionIncorrectaException oie) {
+		} catch(OperacionIncorrectaException oie) {
 			controlador.getObservador().actualizarVentanas(oie.getMessage());
 			throw oie;
-		} catch (SesionInvalidaException sie) {
+		} catch(SesionInvalidaException sie) {
 			controlador.getObservador().actualizarVentanas(sie.getMessage());
 			throw sie;
-		} catch (Exception e) {
-			controlador.getObservador().actualizarVentanas(e.getMessage());
-			throw e;
-		}
-	}
-
-	public void crear(long idSesion, Beneficiario beneficiario) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
-		try {
-			GestorBeneficiarios.crear(idSesion, beneficiario);
-			controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' crea el beneficiario con NIF " + beneficiario.getNif());
-		} catch (RemoteException re) {
-			controlador.getObservador().actualizarVentanas(re.getMessage());
-			throw re;
-		} catch (SQLException se) {
-			controlador.getObservador().actualizarVentanas(se.getMessage());
-			throw se;
-		} catch (UsuarioIncorrectoException uie) {
-			controlador.getObservador().actualizarVentanas("Error al obtener el medico asociado al beneficiario.\n "+uie.getMessage());
-			throw uie;
-		} catch (CentroSaludIncorrectoException csie) {
-			controlador.getObservador().actualizarVentanas("Error al obtener el centro de salud del medico asociado al beneficiario.\n "+csie.getMessage());
-			throw csie;
-		} catch (BeneficiarioYaExistenteException bye) {
-			controlador.getObservador().actualizarVentanas(bye.getMessage());
-			throw bye;
-		} catch (OperacionIncorrectaException oie) {
-			controlador.getObservador().actualizarVentanas(oie.getMessage());
-			throw oie;
-		} catch (SesionInvalidaException sie) {
-			controlador.getObservador().actualizarVentanas(sie.getMessage());
-			throw sie;
-		} catch (Exception e) {
+		} catch(Exception e) {
 			controlador.getObservador().actualizarVentanas(e.getMessage());
 			throw e;
 		}
 		
+		return beneficiario;
+	}
+	
+	public Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		Beneficiario beneficiario;
+		String login;
+		
+		try {
+			beneficiario = GestorBeneficiarios.getBeneficiarioPorNSS(idSesion, nss);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' consulta el beneficiario con NSS " + nss);
+		} catch(SQLException se) {
+			controlador.getObservador().actualizarVentanas(se.getMessage());
+			throw se;
+		} catch(UsuarioIncorrectoException uie) {
+			controlador.getObservador().actualizarVentanas("Error al obtener el medico asociado al beneficiario.\n "+uie.getMessage());
+			throw uie;
+		} catch(CentroSaludIncorrectoException csie) {
+			controlador.getObservador().actualizarVentanas("Error al obtener el centro de salud del medico asociado al beneficiario.\n "+csie.getMessage());
+			throw csie;
+		} catch(BeneficiarioInexistenteException bie) {
+			controlador.getObservador().actualizarVentanas(bie.getMessage());
+			throw bie;
+		} catch(OperacionIncorrectaException oie) {
+			controlador.getObservador().actualizarVentanas(oie.getMessage());
+			throw oie;
+		} catch(SesionInvalidaException sie) {
+			controlador.getObservador().actualizarVentanas(sie.getMessage());
+			throw sie;
+		} catch(Exception e) {
+			controlador.getObservador().actualizarVentanas(e.getMessage());
+			throw e;
+		}
+		
+		return beneficiario;
+	}
+
+	public void crear(long idSesion, Beneficiario beneficiario) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
+		String login;
+		
+		try {
+			GestorBeneficiarios.crear(idSesion, beneficiario);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' crea el beneficiario con NIF " + beneficiario.getNif());
+		} catch(SQLException se) {
+			controlador.getObservador().actualizarVentanas(se.getMessage());
+			throw se;
+		} catch(UsuarioIncorrectoException uie) {
+			controlador.getObservador().actualizarVentanas("Error al obtener el medico asociado al beneficiario.\n "+uie.getMessage());
+			throw uie;
+		} catch(CentroSaludIncorrectoException csie) {
+			controlador.getObservador().actualizarVentanas("Error al obtener el centro de salud del medico asociado al beneficiario.\n "+csie.getMessage());
+			throw csie;
+		} catch(BeneficiarioYaExistenteException bye) {
+			controlador.getObservador().actualizarVentanas(bye.getMessage());
+			throw bye;
+		} catch(OperacionIncorrectaException oie) {
+			controlador.getObservador().actualizarVentanas(oie.getMessage());
+			throw oie;
+		} catch(SesionInvalidaException sie) {
+			controlador.getObservador().actualizarVentanas(sie.getMessage());
+			throw sie;
+		} catch(Exception e) {
+			controlador.getObservador().actualizarVentanas(e.getMessage());
+			throw e;
+		}
 	}
 
 	public void modificar(long idSesion, Beneficiario beneficiario) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		String login;
+		
 		try {
 			GestorBeneficiarios.modificar(idSesion, beneficiario);
-			controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' modifica el beneficiario con NIF " + beneficiario.getNif());
-		} catch (SQLException se) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' modifica el beneficiario con NIF " + beneficiario.getNif());
+		} catch(SQLException se) {
 			controlador.getObservador().actualizarVentanas(se.getMessage());
 			throw se;
-		} catch (UsuarioIncorrectoException uie) {
+		} catch(UsuarioIncorrectoException uie) {
 			controlador.getObservador().actualizarVentanas("Error al obtener el medico asociado al beneficiario.\n "+uie.getMessage());
 			throw uie;
-		} catch (CentroSaludIncorrectoException csie) {
+		} catch(CentroSaludIncorrectoException csie) {
 			controlador.getObservador().actualizarVentanas("Error al obtener el centro de salud del medico asociado al beneficiario.\n "+csie.getMessage());
 			throw csie;
-		} catch (BeneficiarioInexistenteException bie) {
+		} catch(BeneficiarioInexistenteException bie) {
 			controlador.getObservador().actualizarVentanas(bie.getMessage());
 			throw bie;
-		} catch (OperacionIncorrectaException oie) {
+		} catch(OperacionIncorrectaException oie) {
 			controlador.getObservador().actualizarVentanas(oie.getMessage());
 			throw oie;
-		} catch (SesionInvalidaException sie) {
+		} catch(SesionInvalidaException sie) {
 			controlador.getObservador().actualizarVentanas(sie.getMessage());
 			throw sie;
-		} catch (Exception e) {
+		} catch(Exception e) {
 			controlador.getObservador().actualizarVentanas(e.getMessage());
 			throw e;
 		}
 	}
 	
+	// --- Métodos del Gestor de Usuarios/Médicos ---
+	
 	public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception {
-		controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' consulta el médico con NIF " + dni);
-		return GestorUsuarios.getMedico(idSesion, dni);
+		Medico medico;
+		String login;
+		
+		try {
+			medico = GestorUsuarios.getMedico(idSesion, dni);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' consulta el médico con DNI " + dni);
+		} catch(SQLException se) {
+			controlador.getObservador().actualizarVentanas(se.getMessage());
+			throw se;
+		} catch(MedicoInexistenteException mie) {
+			controlador.getObservador().actualizarVentanas(mie.getMessage());
+			throw mie;
+		} catch(SesionInvalidaException sie) {
+			controlador.getObservador().actualizarVentanas(sie.getMessage());
+			throw sie;
+		} catch(OperacionIncorrectaException oie) {
+			controlador.getObservador().actualizarVentanas(oie.getMessage());
+			throw oie;
+		} catch(CentroSaludIncorrectoException csie) {
+			controlador.getObservador().actualizarVentanas(csie.getMessage());
+			throw csie;
+		} catch(Exception e) {
+			controlador.getObservador().actualizarVentanas(e.getMessage());
+			throw e;			
+		}
+		
+		return medico;
+	}
+	
+	public void crear(long idSesion, Medico medico) throws RemoteException, MedicoYaExistenteException, SQLException, Exception {
+		String login;
+		
+		try {
+			GestorUsuarios.crearMedico(idSesion, medico);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' crea el médico con DNI " + medico.getDni());
+		} catch(SQLException se) {
+			controlador.getObservador().actualizarVentanas(se.getMessage());
+			throw se;
+		} catch(MedicoYaExistenteException myee) {
+			controlador.getObservador().actualizarVentanas(myee.getMessage());
+			throw myee;
+		} catch(SesionInvalidaException sie) {
+			controlador.getObservador().actualizarVentanas(sie.getMessage());
+			throw sie;
+		} catch(OperacionIncorrectaException oie) {
+			controlador.getObservador().actualizarVentanas(oie.getMessage());
+			throw oie;
+		} catch(CentroSaludIncorrectoException csie) {
+			controlador.getObservador().actualizarVentanas(csie.getMessage());
+			throw csie;
+		} catch(Exception e) {
+			controlador.getObservador().actualizarVentanas(e.getMessage());
+			throw e;
+		}
+	}
+	
+	public void modificar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		String login;
+		
+		try {
+			GestorUsuarios.modificarMedico(idSesion, medico);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' modifica el médico con DNI " + medico.getDni());
+		} catch(SQLException se) {
+			controlador.getObservador().actualizarVentanas(se.getMessage());
+			throw se;
+		} catch(MedicoInexistenteException mie) {
+			controlador.getObservador().actualizarVentanas(mie.getMessage());
+			throw mie;
+		} catch(SesionInvalidaException sie) {
+			controlador.getObservador().actualizarVentanas(sie.getMessage());
+			throw sie;
+		} catch(OperacionIncorrectaException oie) {
+			controlador.getObservador().actualizarVentanas(oie.getMessage());
+			throw oie;
+		} catch(CentroSaludIncorrectoException csie) {
+			controlador.getObservador().actualizarVentanas(csie.getMessage());
+			throw csie;
+		} catch(Exception e) {
+			controlador.getObservador().actualizarVentanas(e.getMessage());
+			throw e;
+		}
+	}
+	
+	public void eliminar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		String login;
+		
+		try {
+			GestorUsuarios.eliminarMedico(idSesion, medico);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			controlador.getObservador().actualizarVentanas("Usuario '" + login + "' elimina el médico con DNI " + medico.getDni());
+		} catch(SQLException se) {
+			controlador.getObservador().actualizarVentanas(se.getMessage());
+			throw se;
+		} catch(MedicoInexistenteException mie) {
+			controlador.getObservador().actualizarVentanas(mie.getMessage());
+			throw mie;
+		} catch(SesionInvalidaException sie) {
+			controlador.getObservador().actualizarVentanas(sie.getMessage());
+			throw sie;
+		} catch(OperacionIncorrectaException oie) {
+			controlador.getObservador().actualizarVentanas(oie.getMessage());
+			throw oie;
+		} catch(CentroSaludIncorrectoException csie) {
+			controlador.getObservador().actualizarVentanas(csie.getMessage());
+			throw csie;
+		} catch(Exception e) {
+			controlador.getObservador().actualizarVentanas(e.getMessage());
+			throw e;
+		}
 	}
 	
 	/*
@@ -270,20 +396,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 		GestorBeneficiarios.modificar(idSesion, beneficiario);
 	}
 	*/
-	public void crear(long idSesion, Medico medico) throws RemoteException, MedicoYaExistenteException, SQLException, Exception {
-		controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' crea el médico con NIF " + medico.getDni());
-		GestorUsuarios.crearMedico(idSesion, medico);
-	}
-	
-	public void modificar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
-		controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' modifica el médico con NIF " + medico.getDni());
-		GestorUsuarios.modificarMedico(idSesion, medico);
-	}
-	
-	public void eliminar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
-		controlador.getObservador().actualizarVentanas("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' elimina el médico con NIF " + medico.getDni());
-		GestorUsuarios.eliminarMedico(idSesion, medico);
-	}
+
 	/*
 	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException {
 		GestorMedicos.modificarCalendario(idSesion, medico, dias, horaDesde, horaHasta, sustituto);

@@ -1,13 +1,10 @@
 package dominio;
 
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import excepciones.BeneficiarioInexistenteException;
-import excepciones.CentroSaludIncorrectoException;
-import excepciones.UsuarioIncorrectoException;
-import persistencia.FPBeneficiario;
 
+/**
+ * Clase que representa un beneficiario del sistema de salud.
+ */
 public class Beneficiario implements Serializable {
 	
 	private static final long serialVersionUID = 1938859991040689592L;
@@ -20,9 +17,7 @@ public class Beneficiario implements Serializable {
 	private String correo;
 	private int telefono;
 	private int movil;
-	ArrayList<Cita> citas;
-	ArrayList<Volante> volantes;
-	Medico medicoAsignado;
+	private Medico medicoAsignado;
 
 	public Beneficiario() {
 	}
@@ -39,8 +34,6 @@ public class Beneficiario implements Serializable {
 		this.telefono = telefono;
 		this.movil = movil;
 		this.medicoAsignado = null;
-		ArrayList<Cita> citas = new ArrayList<Cita>();
-		ArrayList<Volante> volantes = new ArrayList<Volante>();
 	}
 
 	public String getNif() {
@@ -107,22 +100,6 @@ public class Beneficiario implements Serializable {
 		this.movil = movil;
 	}
 
-	public ArrayList<Cita> getCitas() {
-		return citas;
-	}
-
-	public void setCitas(ArrayList<Cita> citas) {
-		this.citas = citas;
-	}
-
-	public ArrayList<Volante> getVolantes() {
-		return volantes;
-	}
-
-	public void setVolantes(ArrayList<Volante> volantes) {
-		this.volantes = volantes;
-	}
-
 	public Medico getMedicoAsignado() {
 		return medicoAsignado;
 	}
@@ -138,7 +115,7 @@ public class Beneficiario implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Beneficiario) {
 			b = (Beneficiario)o;
-			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && domicilio.equals(b.getDomicilio()) && correo.equals(b.getCorreo()) && telefono==b.getTelefono() && movil==b.getMovil();
+			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && domicilio.equals(b.getDomicilio()) && correo.equals(b.getCorreo()) && telefono == b.getTelefono() && movil == b.getMovil() && medicoAsignado.equals(b.getMedicoAsignado());
 		}
 		return dev;
 	}

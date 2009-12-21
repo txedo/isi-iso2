@@ -29,21 +29,20 @@ public class FPBeneficiario {
 	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
 		ResultSet datos;
-		Beneficiario bene = null;
-		Medico med = null;
+		Beneficiario bene;
+		Medico med;
 
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM "
-				+ TABLA_BENEFICIARIOS + " WHERE " + COL_NIF + " = ?", nif);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS + " WHERE " + COL_NIF + " = ?", nif);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 
 		// Si no se obtienen datos, es porque el beneficiario no existe
-		if (datos.getRow() == 0) {
-			throw new BeneficiarioInexistenteException("El NIF introducido no es válido");
+		if(datos.getRow() == 0) {
+			throw new BeneficiarioInexistenteException("No existe ningún beneficiario con el NIF " + nif);
 		} else {
-			bene = new Beneficiario();
 			// Establecemos los datos del beneficiario
+			bene = new Beneficiario();
 			bene.setNif(datos.getString(COL_NIF));
 			bene.setNss(datos.getString(COL_NSS));
 			bene.setNombre(datos.getString(COL_NOMBRE));
@@ -52,7 +51,7 @@ public class FPBeneficiario {
 			bene.setCorreo(datos.getString(COL_CORREO));
 			bene.setTelefono(datos.getInt(COL_TELEFONO));
 			bene.setMovil(datos.getInt(COL_MOVIL));
-			med = (Medico) FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			med = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 			bene.setMedicoAsignado(med);
 		}
 
@@ -66,17 +65,16 @@ public class FPBeneficiario {
 		Medico med = null;
 
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM "
-				+ TABLA_BENEFICIARIOS + " WHERE " + COL_NSS + " = ?", nss);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS + " WHERE " + COL_NSS + " = ?", nss);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 
 		// Si no se obtienen datos, es porque el beneficiario no existe
 		if (datos.getRow() == 0) {
-			throw new BeneficiarioInexistenteException("El NSS introducido no es válido");
+			throw new BeneficiarioInexistenteException("No existe ningún beneficiario con el NSS " + nss);
 		} else {
-			bene = new Beneficiario();
 			// Establecemos los datos del beneficiario
+			bene = new Beneficiario();
 			bene.setNif(datos.getString(COL_NIF));
 			bene.setNss(datos.getString(COL_NSS));
 			bene.setNombre(datos.getString(COL_NOMBRE));
@@ -85,7 +83,7 @@ public class FPBeneficiario {
 			bene.setCorreo(datos.getString(COL_CORREO));
 			bene.setTelefono(datos.getInt(COL_TELEFONO));
 			bene.setMovil(datos.getInt(COL_MOVIL));
-			med = (Medico) FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			med = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 			bene.setMedicoAsignado(med);
 		}
 
@@ -116,5 +114,3 @@ public class FPBeneficiario {
 	}
 
 }
-
-

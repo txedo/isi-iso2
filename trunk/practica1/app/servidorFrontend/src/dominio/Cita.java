@@ -1,19 +1,24 @@
 package dominio;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Cita {
+/**
+ * Clase que representa una cita solicitada por un beneficiario para un médico.
+ */
+public class Cita implements Serializable {
 		
+	private static final long serialVersionUID = 590630882906518367L;
+	
 	private Date fechaYhora;
 	private long duracion;
-	Beneficiario beneficiario;
-	Medico medico;
+	private Beneficiario beneficiario;
+	private Medico medico;
 	
-	public Cita () { }
+	public Cita() {
+	}
 	
-	public Cita(Date fechaYhora, long duracion, Beneficiario beneficiario,
-			Medico medico) {
-		super();
+	public Cita(Date fechaYhora, long duracion, Beneficiario beneficiario, Medico medico) {
 		this.fechaYhora = fechaYhora;
 		this.duracion = duracion;
 		this.beneficiario = beneficiario;
@@ -52,6 +57,16 @@ public class Cita {
 		this.medico = medico;
 	}
 
-
+	public boolean equals(Object o) {
+		Cita c;
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof Cita) {
+			c = (Cita)o;
+			dev = fechaYhora.equals(c.getFechaYhora()) && duracion == c.getDuracion() && beneficiario.equals(c.getBeneficiario()) && medico.equals(c.getMedico());
+		}
+		return dev;
+	}
 
 }

@@ -12,26 +12,24 @@ import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 
+/**
+ * Clase dedicada a consultar y modificar citas en la base de datos.
+ */
 public class FPCita {
-	
-	/**
-	 * Clase dedicada a consultar y modificar citas en la base de datos.
-	 */
 
 	private static final String TABLA_CITAS = "citas";
+	
 	private static final String COL_FECHA = "fecha";
 	private static final String COL_DURACION = "duracion";
-	private static final String COL_VOLANTE = "idVolante";
 	private static final String COL_DNI_BENEFICIARIO = "dniBeneficiario";
 	private static final String COL_DNI_MEDICO = "dniMedico";
 	
-	
-	public static Vector<Cita> consultarTodo(String dniBeneficiario) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Vector<Cita> consultarPorBeneficiario(String dniBeneficiario) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<Cita> citas = new Vector<Cita>();
 		Date fecha;
-		int duracion, idVolante;
+		int duracion;
 		Beneficiario bene = null;
 		Medico med = null;
 		Cita cita = null;
@@ -62,12 +60,12 @@ public class FPCita {
 	}
 	
 
-	public static Vector<Cita> consultarCitasMedico(String dniMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Vector<Cita> consultarPorMedico(String dniMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<Cita> citas = new Vector<Cita>();
 		Date fecha;
-		int duracion, idVolante;
+		int duracion;
 		Beneficiario bene = null;
 		Medico med = null;
 		Cita cita = null;
