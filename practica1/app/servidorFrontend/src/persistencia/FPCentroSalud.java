@@ -32,7 +32,7 @@ public class FPCentroSalud {
 		// Si no se obtienen datos, es porque el usuario es
 		// incorrecto (o no existe, pero se trata como incorrecto)
 		if(datos.getRow() == 0) {
-			throw new CentroSaludIncorrectoException("El id del centro de salud no es válido");
+			throw new CentroSaludIncorrectoException("No existe ningún centro de salud con el id " + String.valueOf(id));
 		} else {
 			// Creamos el centro de salud
 			centro = new CentroSalud();
