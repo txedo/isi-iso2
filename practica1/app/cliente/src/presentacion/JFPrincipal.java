@@ -46,6 +46,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.SwingUtilities;
 
 
@@ -75,6 +77,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private ControladorLogin controlador;
 	private DefaultListModel jListOperacionesBeneficiariosModel;
 	private DefaultListModel jListOperacionesUsuariosModel;
+	private DefaultListModel jListOperacionesCitasModel;
 	
 	private JPanel jPanelOperaciones;
 	private JPanel jPanelRegistrarBeneficiario;
@@ -101,6 +104,10 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JButton btnCrearUsuarioCU;
 	private JLabel jLabel29;
 	private JPasswordField txtPasswordCU;
+	private JList jListOperacionesCitas;
+	private JLabel jLabel31;
+	private JPanel jPanelListaOperacionesGestionarCitas;
+	private JSeparator jSeparator4;
 	private JLabel jLabel30;
 	private JLabel jLabel28;
 	private JLabel jLabel27;
@@ -200,6 +207,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setPreferredSize(new java.awt.Dimension(600, 425));
 			this.setTitle("SSCA - Unidad de Citación");
+			this.setMinimumSize(new java.awt.Dimension(600, 425));
 			this.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent evt) {
 					thisWindowClosing(evt);
@@ -674,6 +682,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 							AnchorLayout jPanelCrearUsuarioLayout = new AnchorLayout();
 							jPanelCrearUsuario.setLayout(jPanelCrearUsuarioLayout);
 							jPanelCrearUsuario.setPreferredSize(new java.awt.Dimension(430, 315));
+							jPanelCrearUsuario.setSize(430, 315);
 							{
 								btnRestablecerCU = new JButton();
 								jPanelCrearUsuario.add(btnRestablecerCU, new AnchorConstraint(275, 182, 957, 219, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
@@ -824,20 +833,51 @@ public class JFPrincipal extends javax.swing.JFrame {
 						jTabbedPaneOperaciones.addTab("Gestionar Citas", null, jPanelGestionarCitas, null);
 						AnchorLayout jPanelGestionarCitasLayout = new AnchorLayout();
 						jPanelGestionarCitas.setLayout(jPanelGestionarCitasLayout);
-						jPanelGestionarCitas.setPreferredSize(new java.awt.Dimension(563, 296));
+						jPanelGestionarCitas.setPreferredSize(new java.awt.Dimension(565, 390));
+						jPanelGestionarCitas.setSize(565, 390);
 						{
 							jPanelEliminarCita = new JPanel();
-							jPanelGestionarCitas.add(jPanelEliminarCita, new AnchorConstraint(5050, 57550, 34650, 1250, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+							jPanelGestionarCitas.add(jPanelEliminarCita, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 							AnchorLayout jPanelEliminarCitaLayout = new AnchorLayout();
 							jPanelEliminarCita.setLayout(jPanelEliminarCitaLayout);
-							jPanelEliminarCita.setPreferredSize(new java.awt.Dimension(563, 296));
+							jPanelEliminarCita.setPreferredSize(new java.awt.Dimension(430, 322));
 						}
 						{
 							jPanelTramitarCita = new JPanel();
-							jPanelGestionarCitas.add(jPanelTramitarCita, new AnchorConstraint(5050, 57550, 34650, 1250, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+							jPanelGestionarCitas.add(jPanelTramitarCita, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 							AnchorLayout jPanelTramitarCitaLayout = new AnchorLayout();
 							jPanelTramitarCita.setLayout(jPanelTramitarCitaLayout);
-							jPanelTramitarCita.setPreferredSize(new java.awt.Dimension(563, 296));
+							jPanelTramitarCita.setPreferredSize(new java.awt.Dimension(430, 322));
+						}
+						{
+							jSeparator4 = new JSeparator();
+							jPanelGestionarCitas.add(jSeparator4, new AnchorConstraint(1, 237, 1001, 224, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+							jSeparator4.setPreferredSize(new java.awt.Dimension(7, 322));
+							jSeparator4.setOrientation(SwingConstants.VERTICAL);
+						}
+						{
+							jPanelListaOperacionesGestionarCitas = new JPanel();
+							AnchorLayout jPanelListaOperacionesGestionarCitasLayout = new AnchorLayout();
+							jPanelListaOperacionesGestionarCitas.setLayout(jPanelListaOperacionesGestionarCitasLayout);
+							jPanelGestionarCitas.add(jPanelListaOperacionesGestionarCitas, new AnchorConstraint(5, 214, 0, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+							jPanelListaOperacionesGestionarCitas.setPreferredSize(new java.awt.Dimension(114, 317));
+							{
+								jLabel31 = new JLabel();
+								jPanelListaOperacionesGestionarCitas.add(jLabel31, new AnchorConstraint(0, 1004, 48, 7, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+								jLabel31.setText("Operaciones:");
+								jLabel31.setPreferredSize(new java.awt.Dimension(107, 15));
+							}
+							{
+								jListOperacionesCitas = new JList(jListOperacionesCitasModel);
+								jPanelListaOperacionesGestionarCitas.add(jListOperacionesCitas, new AnchorConstraint(21, 1004, 11, 7, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+								jListOperacionesCitas.setModel(jListOperacionesCitasModel);
+								jListOperacionesCitas.setPreferredSize(new java.awt.Dimension(107, 285));
+								jListOperacionesCitas.addListSelectionListener(new ListSelectionListener() {
+									public void valueChanged(ListSelectionEvent evt) {
+										jListOperacionesCitasValueChanged(evt);
+									}
+								});
+							}
 						}
 					}
 					{
@@ -861,6 +901,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 				}
 			}
 			pack();
+			this.setSize(600, 425);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1009,6 +1050,10 @@ public class JFPrincipal extends javax.swing.JFrame {
 		jListOperacionesUsuariosModel.addElement("Registrar usuario");
 		jListOperacionesUsuariosModel.addElement("Modificar usuario");
 		jListOperacionesUsuariosModel.addElement("Eliminar usuario");
+		
+		jListOperacionesCitasModel = new DefaultListModel();
+		jListOperacionesCitasModel.addElement("Tramitar cita");
+		jListOperacionesCitasModel.addElement("Eliminar cita");
 	}
 	
 	private void configurarInterfaz (ArrayList<Operacion> operaciones) {
@@ -1046,6 +1091,12 @@ public class JFPrincipal extends javax.swing.JFrame {
 		if (!operaciones.contains(Operacion.EliminarUsuario))
 			jListOperacionesUsuariosModel.removeElement("Eliminar usuario");
 		jListOperacionesUsuarios.setSelectedIndex(jListOperacionesUsuarios.getFirstVisibleIndex());
+		
+		if (!operaciones.contains(Operacion.TramitarCita))
+			jListOperacionesCitasModel.removeElement("Tramitar cita");
+		if (!operaciones.contains(Operacion.EliminarCita))
+			jListOperacionesCitasModel.removeElement("Eliminar cita");
+		jListOperacionesCitas.setSelectedIndex(jListOperacionesCitas.getFirstVisibleIndex());
 		
 		jPanelBienvenida.repaint();
 	}
@@ -1263,6 +1314,19 @@ public class JFPrincipal extends javax.swing.JFrame {
 			Utilidades.mostrarDialogoError(this, "Error", e.toString());
 		} catch (Exception e) {
 			Utilidades.mostrarDialogoError(this, "Error", e.toString());
+		}
+	}
+	
+	private void jListOperacionesCitasValueChanged(ListSelectionEvent evt) {
+		if (jPanelTramitarCita.isValid()) jPanelTramitarCita.setVisible(false);
+		if (jPanelEliminarCita.isValid()) jPanelEliminarCita.setVisible(false);
+		if (jListOperacionesCitas.getSelectedValue().equals("Tramitar cita")) {
+			jPanelTramitarCita.setVisible(true);
+			jPanelTramitarCita.repaint();
+		}
+		if (jListOperacionesCitas.getSelectedValue().equals("Eliminar cita")) {
+			jPanelEliminarCita.setVisible(true);
+			jPanelEliminarCita.repaint();
 		}
 	}
 
