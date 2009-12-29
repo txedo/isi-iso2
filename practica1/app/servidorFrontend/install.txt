@@ -21,10 +21,10 @@ CREATE TABLE usuarios (
 ) TYPE=InnoDB;
 
 CREATE TABLE tiposMedico (
-       dni VARCHAR(255) NOT NULL,
-       tipo INT NOT NULL,
-       PRIMARY KEY (dni),
-       FOREIGN KEY (dni) REFERENCES usuarios (dni) ON DELETE NO ACTION ON UPDATE CASCADE
+       dniMedico VARCHAR(255) NOT NULL,
+       tipo ENUM ('Cabecera', 'Pediatra', 'Especialista') NOT NULL,
+       PRIMARY KEY (dniMedico),
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE NO ACTION ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE periodosTrabajo (
@@ -55,6 +55,7 @@ CREATE TABLE beneficiarios (
        correo VARCHAR(255) NOT NULL default '',
        telefono INT NOT NULL default '-1',
        movil INT NOT NULL default '-1',
+       edad INT NOT NULL default '-1',
        dniMedico VARCHAR(255) default '',
        PRIMARY KEY (nif),
        FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE SET NULL ON UPDATE CASCADE

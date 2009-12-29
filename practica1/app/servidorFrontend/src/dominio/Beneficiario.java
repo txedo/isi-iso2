@@ -17,13 +17,14 @@ public class Beneficiario implements Serializable {
 	private String correo;
 	private int telefono;
 	private int movil;
-	private Medico medicoAsignado;
+	private int edad;
+	private Medico medicoAsignado;	
 
 	public Beneficiario() {
 	}
 	
 	public Beneficiario(String nif, String nss, String nombre,
-			String apellidos, String domicilio, String correo, int telefono,
+			String apellidos, String domicilio, String correo, int edad, int telefono,
 			int movil) {
 		this.nif = nif;
 		this.nss = nss;
@@ -33,6 +34,7 @@ public class Beneficiario implements Serializable {
 		this.correo = correo;
 		this.telefono = telefono;
 		this.movil = movil;
+		this.edad=edad;
 		this.medicoAsignado = null;
 	}
 
@@ -118,6 +120,14 @@ public class Beneficiario implements Serializable {
 			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && domicilio.equals(b.getDomicilio()) && correo.equals(b.getCorreo()) && telefono == b.getTelefono() && movil == b.getMovil() && medicoAsignado.equals(b.getMedicoAsignado());
 		}
 		return dev;
+	}
+
+	public int getEdad() {
+		return edad;
+	}
+
+	public void setEdad(int edad) {
+		this.edad = edad;
 	}
 	
 }
