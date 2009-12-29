@@ -14,7 +14,6 @@ import dominio.Cabecera;
 import dominio.Pediatra;
 import dominio.PeriodoTrabajo;
 import dominio.TipoMedico;
-import dominio.TiposMedicos;
 import dominio.Usuario;
 import dominio.Roles;
 import excepciones.CentroSaludIncorrectoException;
