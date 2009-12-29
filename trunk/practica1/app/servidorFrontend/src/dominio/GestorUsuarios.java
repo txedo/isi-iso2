@@ -134,7 +134,7 @@ public class GestorUsuarios {
 		}
 		
 		// Comprobamos si el usuario devuelto tiene el rol esperado
-		if(usuario.getRol() != Rol.Medico) {
+		if(usuario.getRol() != Roles.Medico) {
 			throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
 		}
 

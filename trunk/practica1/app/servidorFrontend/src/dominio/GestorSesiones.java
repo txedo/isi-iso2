@@ -92,7 +92,7 @@ public class GestorSesiones {
 		operaciones.add(Operacion.ConsultarUsuario);
 		operaciones.add(Operacion.ConsultarBeneficiario);
 		// Agregamos al vector las operaciones de citadores y administradores
-		if (sesion.getRol() == Rol.Administrador.ordinal() || sesion.getRol() == Rol.Citador.ordinal()) {
+		if (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
 			operaciones.add(Operacion.TramitarCita);
 			operaciones.add(Operacion.EliminarCita);
 			operaciones.add(Operacion.RegistrarBeneficiario);
@@ -100,7 +100,7 @@ public class GestorSesiones {
 			operaciones.add(Operacion.ConsultarMedico);
 		}
 		// Agregamos al vector las operaciones de administradores
-		if (sesion.getRol() == Rol.Administrador.ordinal()){
+		if (sesion.getRol() == Roles.Administrador.ordinal()){
 			operaciones.add(Operacion.CrearUsuario);
 			operaciones.add(Operacion.ModificarUsuario);
 			operaciones.add(Operacion.EliminarUsuario);
@@ -125,8 +125,8 @@ public class GestorSesiones {
 			throw new SesionInvalidaException("El identificador de sesión es inválido");
 		}
 		
-		esAdministrador = (sesion.getRol() == Rol.Administrador.ordinal());
-		esCitador = (sesion.getRol() == Rol.Citador.ordinal());
+		esAdministrador = (sesion.getRol() == Roles.Administrador.ordinal());
+		esCitador = (sesion.getRol() == Roles.Citador.ordinal());
 		
 		// TODO modificar este switch para que analice el arraylist devuelto por operacionesDisponibles()
 		// Vemos cuál es la operación solicitada
@@ -178,7 +178,7 @@ public class GestorSesiones {
 		if(!permitido) {
 			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para ejecutar la operacion " + operacion.toString());
 			FPEntradaLog.insertar(entrada);
-			throw new OperacionIncorrectaException("El rol " + Rol.values()[(int)sesion.getRol()] + " no puede realizar la operación " + operacion.toString());
+			throw new OperacionIncorrectaException("El rol " + Roles.values()[(int)sesion.getRol()] + " no puede realizar la operación " + operacion.toString());
 		}
 	}
 

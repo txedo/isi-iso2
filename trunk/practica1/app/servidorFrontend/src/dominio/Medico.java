@@ -13,18 +13,20 @@ public class Medico extends Usuario implements Serializable {
 	private static final long serialVersionUID = -8629345838800810415L;
 
 	private ArrayList<PeriodoTrabajo> calendario;
+	private TipoMedico tipoMedico;
 	
-	public Medico(String dni, String login, String password, String nombre, String apellidos, CentroSalud centro) {
+	public Medico(String dni, String login, String password, String nombre, String apellidos, CentroSalud centro, TipoMedico tipo) {
 		super(dni, login, password, nombre, apellidos, centro);
 		calendario = new ArrayList<PeriodoTrabajo>();
+		tipoMedico=tipo;
 	}
 
 	public Medico() {
 		super(); 
 	}
 	
-	public Rol getRol() {
-		return Rol.Medico;
+	public Roles getRol() {
+		return Roles.Medico;
 	}
 	
 	public ArrayList<PeriodoTrabajo> getCalendario() {
@@ -111,6 +113,14 @@ public class Medico extends Usuario implements Serializable {
 			}
 		}
 		return dev;
+	}
+
+	public TipoMedico getTipoMedico() {
+		return tipoMedico;
+	}
+
+	public void setTipoMedico(TipoMedico tipoMedico) {
+		this.tipoMedico = tipoMedico;
 	}
 	
 }

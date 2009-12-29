@@ -17,8 +17,8 @@ public class Administrador extends Citador implements Serializable {
 		super();
 	}
 	
-	public Rol getRol() {
-		return Rol.Administrador;
+	public Roles getRol() {
+		return Roles.Administrador;
 	}
 	
 }

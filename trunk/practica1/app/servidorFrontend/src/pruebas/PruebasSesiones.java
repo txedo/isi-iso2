@@ -13,7 +13,7 @@ import dominio.CentroSalud;
 import dominio.GestorSesiones;
 import dominio.ISesion;
 import dominio.Medico;
-import dominio.Rol;
+import dominio.Roles;
 import excepciones.UsuarioIncorrectoException;
 
 public class PruebasSesiones extends TestCase {
@@ -70,7 +70,7 @@ public class PruebasSesiones extends TestCase {
 			ISesion s = GestorSesiones.identificar("admin", "nimda");
 			// Comprobamos que la sesion no es nula y que el rol es el que corresponde
 			assertNotNull(s);
-			assertEquals(Rol.Administrador.ordinal(), s.getRol());
+			assertEquals(Roles.Administrador.ordinal(), s.getRol());
 		} catch(Exception e) {
 			fail("No se esperaba ninguna excepcion " + e.getMessage());
 		}
@@ -81,12 +81,12 @@ public class PruebasSesiones extends TestCase {
 		try {
 			ISesion s = GestorSesiones.identificar("medPrueba", "abcdef");
 			assertNotNull(s);
-			assertEquals(Rol.Medico.ordinal(), s.getRol());
+			assertEquals(Roles.Medico.ordinal(), s.getRol());
 			ISesion ns = GestorSesiones.identificar("medPrueba", "abcdef");
 			assertNotNull(ns);
 			assertNotSame(s,ns);
 			//assertEquals(s,ns);
-			assertEquals(Rol.Medico.ordinal(), ns.getRol());
+			assertEquals(Roles.Medico.ordinal(), ns.getRol());
 		} catch(Exception e) {
 			fail("No se esperaba ninguna excepcion " + e.getMessage());
 		}

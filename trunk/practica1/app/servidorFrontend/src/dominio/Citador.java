@@ -17,8 +17,8 @@ public class Citador extends Usuario implements Serializable {
 		super();
 	}
 	
-	public Rol getRol(){
-		return Rol.Citador;
+	public Roles getRol(){
+		return Roles.Citador;
 	}
 	
 }

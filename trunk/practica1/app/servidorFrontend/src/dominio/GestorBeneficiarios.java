@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import persistencia.FPBeneficiario;
 import persistencia.FPEntradaLog;
+import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
@@ -51,10 +52,11 @@ public class GestorBeneficiarios {
 
 		Medico medico = null;
 		EntradaLog entrada;
+		
 		GestorSesiones.comprobarPermiso(idSesion, Operacion.RegistrarBeneficiario);
 		// Se consulta para comprobar si ese beneficiario ya existe.
 		// Si existe, se lanza una excepcion.
-		// Si no existe, se captura la BeneficiarioIncorrectoException y se registra
+		// Si no existe, se captura la BeneficiarioIncorrectoException y se registra el nuevo beneficiario
 		try {
 			FPBeneficiario.consultarPorNIF(beneficiario.getNif());
 			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" ya existe y no se puede crear");
@@ -62,8 +64,11 @@ public class GestorBeneficiarios {
 			throw new BeneficiarioYaExistenteException("El beneficiario con NIF "+beneficiario.getNif()+ " ya existe en la base de datos. No se puede registrar de nuevo.");
 		}
 		catch(BeneficiarioInexistenteException e){
-			// Le asignamos un medico aleatorio al nuevo beneficiario
-			medico = (Medico)FPUsuario.consultarAleatorio(Rol.Medico);
+			// Se asigna un medico de cabecera o un pediatra, segun la edad
+			if (beneficiario.getEdad()<14)
+				medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Pediatra());
+			else
+				medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Cabecera());
 			beneficiario.setMedicoAsignado(medico);
 			FPBeneficiario.insertar(beneficiario);
 			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" se ha registrado satisfactoriamente");

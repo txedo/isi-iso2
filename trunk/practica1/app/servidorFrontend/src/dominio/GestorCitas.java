@@ -41,7 +41,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(idMedico);
-			if(usuario.getRol() != Rol.Medico) {
+			if(usuario.getRol() != Roles.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
 			}
 		} catch(UsuarioIncorrectoException ex) {
