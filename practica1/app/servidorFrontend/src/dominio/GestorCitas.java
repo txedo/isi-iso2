@@ -33,7 +33,7 @@ public class GestorCitas {
 		Medico medico;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.TramitarCita);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.TramitarCita);
 		
 		// Comprobamos que exista el beneficiario
 		FPBeneficiario.consultarPorNIF(beneficiario.getNif());
@@ -80,7 +80,7 @@ public class GestorCitas {
 		Volante volante;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.TramitarCita);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.TramitarCita);
 		
 		// Obtenemos los datos del volante con el id indicado
 		volante = FPVolante.consultar(idVolante);
@@ -121,7 +121,7 @@ public class GestorCitas {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ObtenerCitas);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ObtenerCitas);
 		
 		// Obtenemos las citas del beneficiario
 		citas = FPCita.consultarPorBeneficiario(dni);
@@ -138,7 +138,7 @@ public class GestorCitas {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.EliminarCita);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarCita);
 
 		// Eliminamos la cita de la base de datos
 		FPCita.eliminar(cita);

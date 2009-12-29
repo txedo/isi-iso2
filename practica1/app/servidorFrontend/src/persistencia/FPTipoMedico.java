@@ -78,5 +78,10 @@ public class FPTipoMedico {
 		ComandoSQL comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_TIPO_MEDICO + " VALUES (?,?)", usuario.getDni(), ((Medico)usuario).getTipoMedico().getClass().getSimpleName());
 		GestorConexionesBD.ejecutar(comando);
 	}
+	
+	public static void eliminar(Usuario usuario) throws SQLException{
+		ComandoSQL comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_TIPO_MEDICO + " WHERE " + COL_DNI_TIPO_MEDICO + " = ?", usuario.getDni());
+		GestorConexionesBD.ejecutar(comando);
+	}
 
 }

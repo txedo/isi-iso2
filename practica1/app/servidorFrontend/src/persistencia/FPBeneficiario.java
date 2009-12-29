@@ -2,6 +2,9 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
+
 import comunicaciones.GestorConexionesBD;
 import dominio.Beneficiario;
 import dominio.Medico;
@@ -22,6 +25,7 @@ public class FPBeneficiario {
 	private static final String COL_APELLIDOS = "apellidos";
 	private static final String COL_DOMICILIO = "domicilio";
 	private static final String COL_CORREO = "correo";
+	private static final String COL_FECHA_NACIMIENTO = "fechaNacimiento";
 	private static final String COL_TELEFONO = "telefono";
 	private static final String COL_MOVIL = "movil";
 	private static final String COL_DNI_MEDICO = "dniMedico";
@@ -49,6 +53,8 @@ public class FPBeneficiario {
 			bene.setApellidos(datos.getString(COL_APELLIDOS));
 			bene.setDomicilio(datos.getString(COL_DOMICILIO));
 			bene.setCorreo(datos.getString(COL_CORREO));
+			// Se transforma el timestamp de la base de datos a un Date
+			bene.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
 			bene.setTelefono(datos.getInt(COL_TELEFONO));
 			bene.setMovil(datos.getInt(COL_MOVIL));
 			med = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
@@ -81,6 +87,8 @@ public class FPBeneficiario {
 			bene.setApellidos(datos.getString(COL_APELLIDOS));
 			bene.setDomicilio(datos.getString(COL_DOMICILIO));
 			bene.setCorreo(datos.getString(COL_CORREO));
+			// Se transforma el timestamp de la base de datos a un Date
+			bene.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
 			bene.setTelefono(datos.getInt(COL_TELEFONO));
 			bene.setMovil(datos.getInt(COL_MOVIL));
 			med = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
@@ -96,16 +104,16 @@ public class FPBeneficiario {
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_BENEFICIARIOS
 				+ " (" + COL_NIF + ", " + COL_NSS + ", " + COL_NOMBRE
 				+ ", " + COL_APELLIDOS + ", " + COL_DOMICILIO + ", " + COL_CORREO
-				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				+ ", " + COL_FECHA_NACIMIENTO + ", " +COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				bene.getNif(), bene.getNss(), bene.getNombre(),
-				bene.getApellidos(), bene.getDomicilio(), bene.getCorreo(), bene.getTelefono(), bene.getMovil(), bene.getMedicoAsignado().getDni());
+				bene.getApellidos(), bene.getDomicilio(), bene.getCorreo(), new Timestamp(bene.getFechaNacimiento().getTime()), bene.getTelefono(), bene.getMovil(), bene.getMedicoAsignado().getDni());
 		GestorConexionesBD.ejecutar(comando);
 	}
 
 	public static void modificar(Beneficiario bene) throws SQLException {
 		ComandoSQL comando;
 
-		// EL NIF y el NSS no se pueden cambiar
+		// EL NIF, el NSS y la fecha de nacimiento no se pueden cambiar
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_BENEFICIARIOS + " SET "
 				+ COL_NOMBRE + "=?, " + COL_APELLIDOS + "=?, " + COL_DOMICILIO + "=?, " + COL_CORREO
 				+ "=?, " + COL_TELEFONO + "=?, " + COL_MOVIL + "=?, " + COL_DNI_MEDICO + "=? WHERE " + COL_NIF + "=? ", 

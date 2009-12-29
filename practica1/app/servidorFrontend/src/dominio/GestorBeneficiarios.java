@@ -25,7 +25,7 @@ public class GestorBeneficiarios {
 		Beneficiario bene = null;
 		EntradaLog entrada;
 		
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarBeneficiario);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiario);
 		bene = FPBeneficiario.consultarPorNIF(dni);
 		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se consultan los datos del beneficiario con NIF "+dni);
 		FPEntradaLog.insertar(entrada);
@@ -37,7 +37,7 @@ public class GestorBeneficiarios {
 		Beneficiario bene = null;
 		EntradaLog entrada;
 
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarBeneficiario);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiario);
 		bene = FPBeneficiario.consultarPorNSS(nss);
 		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se consultan los datos del beneficiario con NSS "+nss);
 		FPEntradaLog.insertar(entrada);
@@ -53,7 +53,7 @@ public class GestorBeneficiarios {
 		Medico medico = null;
 		EntradaLog entrada;
 		
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.RegistrarBeneficiario);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.RegistrarBeneficiario);
 		// Se consulta para comprobar si ese beneficiario ya existe.
 		// Si existe, se lanza una excepcion.
 		// Si no existe, se captura la BeneficiarioIncorrectoException y se registra el nuevo beneficiario
@@ -81,7 +81,7 @@ public class GestorBeneficiarios {
 	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
 	public static void modificar(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		EntradaLog entrada;
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ModificarBeneficiario);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ModificarBeneficiario);
 		// Se consulta para comprobar si ese beneficiario ya existe.
 		// Si no existe, se lanza una excepcion.
 		// Si existe, se actualiza

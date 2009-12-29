@@ -25,7 +25,7 @@ public class GestorUsuarios {
 		Usuario usuario;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarUsuario);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarUsuario);
 		
 		// Obtenemos el usuario del sistema con el DNI indicado
 		try {
@@ -46,7 +46,7 @@ public class GestorUsuarios {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.CrearUsuario);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.CrearUsuario);
 		
 		// Comprobamos si ya existe un usuario con el DNI especificado
 		try {
@@ -72,7 +72,7 @@ public class GestorUsuarios {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ModificarUsuario);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ModificarUsuario);
 		
 		// Comprobamos si realmente existe el usuario que se quiere modificar
 		try {
@@ -96,7 +96,7 @@ public class GestorUsuarios {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.EliminarUsuario);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarUsuario);
 		
 		// Comprobamos si realmente existe el usuario que se quiere borrar
 		try {
@@ -125,7 +125,7 @@ public class GestorUsuarios {
 		Usuario usuario;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ConsultarMedico);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedico);
 		
 		try {
 			usuario = getUsuario(idSesion, dni);
@@ -144,7 +144,7 @@ public class GestorUsuarios {
 	// Método para añadir un nuevo médico al sistema
 	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.CrearMedico);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.RegistrarMedico);
 		
 		try {
 			crearUsuario(idSesion, medico);
@@ -156,7 +156,7 @@ public class GestorUsuarios {
 	// Método para modificar un médico existente del sistema
 	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.ModificarMedico);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ModificarMedico);
 		
 		try {
 			modificarUsuario(idSesion, medico);
@@ -168,7 +168,7 @@ public class GestorUsuarios {
 	// Método para eliminar un médico del sistema
 	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operacion.EliminarMedico);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarMedico);
 
 		try {
 			eliminarUsuario(idSesion, medico);

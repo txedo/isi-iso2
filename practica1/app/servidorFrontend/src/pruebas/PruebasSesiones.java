@@ -13,6 +13,7 @@ import dominio.CentroSalud;
 import dominio.GestorSesiones;
 import dominio.ISesion;
 import dominio.Medico;
+import dominio.Pediatra;
 import dominio.Roles;
 import excepciones.UsuarioIncorrectoException;
 
@@ -22,6 +23,7 @@ public class PruebasSesiones extends TestCase {
 	private Medico medico1;
 	private Administrador administrador1;
 	private ConexionBDFrontend conexionF = null;
+	private Pediatra pediatra;
 	
 	protected void setUp() {
 		Connection bd;
@@ -47,9 +49,11 @@ public class PruebasSesiones extends TestCase {
 			// Ponemos la conexión local con la base de datos
 			conexionF = new ConexionBDFrontend();
 			GestorConexionesBD.ponerConexion(conexionF);
+			//Inicializamos los tipos de medicos
+			pediatra = new Pediatra();
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
-			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1);
+			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1, pediatra);
 			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "Apellidos", centro1);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);

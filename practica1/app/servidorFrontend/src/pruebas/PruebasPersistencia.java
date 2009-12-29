@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import comunicaciones.ConexionBDFrontend;
 import comunicaciones.GestorConexionesBD;
 import dominio.Administrador;
+import dominio.Cabecera;
 import dominio.CentroSalud;
 import dominio.Citador;
 import dominio.DiaSemana;
 import dominio.EntradaLog;
 import dominio.Medico;
+import dominio.Pediatra;
 import dominio.PeriodoTrabajo;
 import dominio.Usuario;
 import excepciones.CentroSaludIncorrectoException;
@@ -33,6 +35,8 @@ public class PruebasPersistencia extends TestCase {
 	private Administrador administrador1;
 	private PeriodoTrabajo periodo1, periodo2;
 	private ConexionBDFrontend conexionF;
+	private Pediatra pediatra;
+	private Cabecera cabecera;
 	
 	protected void setUp() {
 		Connection bd;
@@ -58,6 +62,9 @@ public class PruebasPersistencia extends TestCase {
 			// Ponemos la conexión local con la base de datos
 			conexionF = new ConexionBDFrontend();
 			GestorConexionesBD.ponerConexion(conexionF);
+			//Inicializamos los tipos de medicos
+			pediatra = new Pediatra();
+			cabecera = new Cabecera();
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
 			centro2 = new CentroSalud("Centro B", null);
@@ -65,8 +72,8 @@ public class PruebasPersistencia extends TestCase {
 			entrada1 = new EntradaLog("juan", new Timestamp(109, 11, 1, 10, 10, 10, 0), "create", "Entrada de prueba 1.");
 			entrada2 = new EntradaLog("luis", new Timestamp(109, 5, 25, 7, 30, 0, 0), "update", "Entrada de prueba 2.");
 			entrada3 = new EntradaLog("mal", new Timestamp(109, 9, 10, 8, 0, 0, 0), "mal", "Entrada con errores.");
-			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1);
-			medico2 = new Medico("12345678", "medYaExisto", "abcdef", "Eduardo", "P. C", centro1);
+			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1, pediatra);
+			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", centro1, cabecera);
 			citador1 = new Citador("1112223", "citador", "abcdef", "Luis", "E. G.", centro3);
 			citador2 = new Citador("9998887", "citador", "abcdef", "Ana", "B. E.", centro1);
 			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "", centro1);
@@ -207,7 +214,7 @@ public class PruebasPersistencia extends TestCase {
 		
 		try {
 			// Intentamos insertar un usuario con un DNI existente
-			FPUsuario.insertar(medico2);
+			FPUsuario.insertar(medico1);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {
