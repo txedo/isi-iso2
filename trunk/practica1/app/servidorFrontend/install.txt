@@ -53,9 +53,9 @@ CREATE TABLE beneficiarios (
        apellidos VARCHAR(255) NOT NULL default '',
        domicilio VARCHAR(255) NOT NULL default '',
        correo VARCHAR(255) NOT NULL default '',
+       fechaNacimiento TIMESTAMP NOT NULL,
        telefono INT NOT NULL default '-1',
        movil INT NOT NULL default '-1',
-       edad INT NOT NULL default '-1',
        dniMedico VARCHAR(255) default '',
        PRIMARY KEY (nif),
        FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE SET NULL ON UPDATE CASCADE

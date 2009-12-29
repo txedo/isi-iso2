@@ -4,13 +4,13 @@ package dominio;
  * Enumeración con todas las operaciones que puede realizar el servidor del
  * sistema.
  */
-public enum Operacion {
+public enum Operaciones {
 	ConsultarMedico,
+	EliminarMedico,
+	RegistrarMedico,
+	ModificarMedico,
 	ConsultarUsuario,
 	CrearUsuario,
-	CrearMedico,
-	ModificarMedico,
-	EliminarMedico,
 	ModificarUsuario,
 	EliminarUsuario,
 	TramitarCita,

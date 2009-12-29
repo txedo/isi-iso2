@@ -78,9 +78,9 @@ public class GestorSesiones {
 		return (ISesion)sesion;
 	}
 	
-	public static ArrayList<Operacion> operacionesDisponibles (long idSesion) throws SesionInvalidaException {
+	public static ArrayList<Operaciones> operacionesDisponibles (long idSesion) throws SesionInvalidaException {
 		Sesion sesion;
-		ArrayList<Operacion> operaciones = new ArrayList<Operacion>();
+		ArrayList<Operaciones> operaciones = new ArrayList<Operaciones>();
 		
 		sesion = sesiones.get(idSesion);
 		if (sesion == null) {
@@ -89,29 +89,29 @@ public class GestorSesiones {
 		
 		// Se deben agregar al vector todas las operaciones declaradas en Operacion.java
 		// Agregamos al vector las operaciones de todos los usuarios (administrador, citador
-		operaciones.add(Operacion.ConsultarUsuario);
-		operaciones.add(Operacion.ConsultarBeneficiario);
+		operaciones.add(Operaciones.ConsultarUsuario);
+		operaciones.add(Operaciones.ConsultarBeneficiario);
 		// Agregamos al vector las operaciones de citadores y administradores
 		if (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
-			operaciones.add(Operacion.TramitarCita);
-			operaciones.add(Operacion.EliminarCita);
-			operaciones.add(Operacion.RegistrarBeneficiario);
-			operaciones.add(Operacion.ModificarBeneficiario);
-			operaciones.add(Operacion.ConsultarMedico);
+			operaciones.add(Operaciones.TramitarCita);
+			operaciones.add(Operaciones.EliminarCita);
+			operaciones.add(Operaciones.RegistrarBeneficiario);
+			operaciones.add(Operaciones.ModificarBeneficiario);
+			operaciones.add(Operaciones.ConsultarMedico);
 		}
 		// Agregamos al vector las operaciones de administradores
 		if (sesion.getRol() == Roles.Administrador.ordinal()){
-			operaciones.add(Operacion.CrearUsuario);
-			operaciones.add(Operacion.ModificarUsuario);
-			operaciones.add(Operacion.EliminarUsuario);
-			operaciones.add(Operacion.ModificarCalendario);
-			operaciones.add(Operacion.EstablecerSustituto);
+			operaciones.add(Operaciones.CrearUsuario);
+			operaciones.add(Operaciones.ModificarUsuario);
+			operaciones.add(Operaciones.EliminarUsuario);
+			operaciones.add(Operaciones.ModificarCalendario);
+			operaciones.add(Operaciones.EstablecerSustituto);
 		}
 		
 		return operaciones;
 	}
 	
-	public static void comprobarPermiso(long idSesion, Operacion operacion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException {
+	public static void comprobarPermiso(long idSesion, Operaciones operacion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException {
 		Sesion sesion;
 		boolean permitido;
 		EntradaLog entrada;
@@ -154,6 +154,15 @@ public class GestorSesiones {
 			break;
 		case ConsultarMedico:
 			permitido = esAdministrador || esCitador;
+			break;
+		case RegistrarMedico:
+			permitido = esAdministrador ;
+			break;
+		case ModificarMedico:
+			permitido = esAdministrador ;
+			break;
+		case EliminarMedico:
+			permitido = esAdministrador ;
 			break;
 		case ModificarCalendario:
 			permitido = esAdministrador;

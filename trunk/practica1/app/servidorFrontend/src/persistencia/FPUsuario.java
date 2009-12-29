@@ -226,11 +226,14 @@ public class FPUsuario {
 		ArrayList<PeriodoTrabajo> calendario;
 		
 		// Si el usuario es un médico, borramos su calendario
+		//Al eliminar un usuario, si es medico, tb debe eliminarse de la tabla "TiposMedico"
 		if(usuario.getRol() == Roles.Medico) {
 			calendario = ((Medico)usuario).getCalendario();
 			for(PeriodoTrabajo periodo : calendario) {
 				FPPeriodoTrabajo.eliminar(periodo);
 			}
+			FPTipoMedico.eliminar(usuario);
+			
 		}
 		
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_USUARIOS + " WHERE " + COL_DNI + " = ?" , usuario.getDni());

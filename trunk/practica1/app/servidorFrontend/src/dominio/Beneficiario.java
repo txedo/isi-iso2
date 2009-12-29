@@ -1,6 +1,10 @@
 package dominio;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Clase que representa un beneficiario del sistema de salud.
@@ -17,14 +21,14 @@ public class Beneficiario implements Serializable {
 	private String correo;
 	private int telefono;
 	private int movil;
-	private int edad;
+	private Date fechaNacimiento;
 	private Medico medicoAsignado;	
 
 	public Beneficiario() {
 	}
 	
 	public Beneficiario(String nif, String nss, String nombre,
-			String apellidos, String domicilio, String correo, int edad, int telefono,
+			String apellidos, String domicilio, String correo, Date fecha, int telefono,
 			int movil) {
 		this.nif = nif;
 		this.nss = nss;
@@ -34,7 +38,7 @@ public class Beneficiario implements Serializable {
 		this.correo = correo;
 		this.telefono = telefono;
 		this.movil = movil;
-		this.edad=edad;
+		this.fechaNacimiento=fecha;
 		this.medicoAsignado = null;
 	}
 
@@ -110,6 +114,14 @@ public class Beneficiario implements Serializable {
 		this.medicoAsignado = medicoAsignado;
 	}
 	
+	public Date getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(Date fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
+	}
+	
 	public boolean equals(Object o) {
 		Beneficiario b;
 		boolean dev;
@@ -121,13 +133,19 @@ public class Beneficiario implements Serializable {
 		}
 		return dev;
 	}
-
+	
 	public int getEdad() {
+		int edad = -1;
+		
+		// Se obtienen milisegundos de las fechas
+		long fechaInicialMs = fechaNacimiento.getTime();
+		long fechaFinalMs = new Date().getTime();
+		long diferencia = fechaFinalMs - fechaInicialMs;
+		// Se divide por el numero de milisegundos de un dia
+		double dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+		// Para la edad, los dias se dividen por los dias que tiene un año
+		edad = (int)(dias / 365);
+	
 		return edad;
 	}
-
-	public void setEdad(int edad) {
-		this.edad = edad;
-	}
-	
 }
