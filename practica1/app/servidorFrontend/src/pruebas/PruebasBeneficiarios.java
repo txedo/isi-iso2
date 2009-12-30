@@ -3,10 +3,8 @@ package pruebas;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import persistencia.AgenteFrontend;
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
@@ -18,7 +16,6 @@ import dominio.Administrador;
 import dominio.Beneficiario;
 import dominio.CentroSalud;
 import dominio.Citador;
-import dominio.Especialista;
 import dominio.GestorBeneficiarios;
 import dominio.GestorSesiones;
 import dominio.ISesion;
@@ -79,7 +76,7 @@ public class PruebasBeneficiarios extends TestCase {
 			cabecera = new Cabecera();
 			// Inicializamos fechas de nacimiento para los beneficiarios
 			SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
-			fecha1 = formatoDelTexto.parse("1/8/1987");
+			fecha1 = formatoDelTexto.parse("1/8/1981");
 			fecha2 = formatoDelTexto.parse("23/2/2002");
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");

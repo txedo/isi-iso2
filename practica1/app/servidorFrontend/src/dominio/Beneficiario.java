@@ -1,9 +1,6 @@
 package dominio;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -122,18 +119,6 @@ public class Beneficiario implements Serializable {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 	
-	public boolean equals(Object o) {
-		Beneficiario b;
-		boolean dev;
-		
-		dev = false;
-		if(o != null && o instanceof Beneficiario) {
-			b = (Beneficiario)o;
-			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && domicilio.equals(b.getDomicilio()) && correo.equals(b.getCorreo()) && telefono == b.getTelefono() && movil == b.getMovil() && medicoAsignado.equals(b.getMedicoAsignado());
-		}
-		return dev;
-	}
-	
 	public int getEdad() {
 		int edad = -1;
 		
@@ -148,4 +133,17 @@ public class Beneficiario implements Serializable {
 	
 		return edad;
 	}
+	
+	public boolean equals(Object o) {
+		Beneficiario b;
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof Beneficiario) {
+			b = (Beneficiario)o;
+			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && domicilio.equals(b.getDomicilio()) && correo.equals(b.getCorreo()) && telefono == b.getTelefono() && movil == b.getMovil() && medicoAsignado.equals(b.getMedicoAsignado());
+		}
+		return dev;
+	}
+	
 }

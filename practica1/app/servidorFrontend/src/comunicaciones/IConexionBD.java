@@ -10,7 +10,7 @@ import persistencia.ComandoSQL;
  * Interfaz que deben implementar las clases que proporcionen acceso a una
  * base de datos para poder ser utilizadas por el gestor de conexiones.
  */
-public interface IConexion extends Remote {
+public interface IConexionBD extends Remote {
 
 	public final int PUERTO_CONEXION = 1099;
 	

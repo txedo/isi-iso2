@@ -1,11 +1,9 @@
 package dominio;
 
 import java.sql.SQLException;
-
 import persistencia.FPBeneficiario;
 import persistencia.FPEntradaLog;
 import persistencia.FPTipoMedico;
-import persistencia.FPUsuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludIncorrectoException;
