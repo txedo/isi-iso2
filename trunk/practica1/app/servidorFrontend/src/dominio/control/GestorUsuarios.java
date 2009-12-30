@@ -1,6 +1,12 @@
-package dominio;
+package dominio.control;
 
 import java.sql.SQLException;
+
+import dominio.conocimiento.EntradaLog;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.Roles;
+import dominio.conocimiento.Usuario;
 
 import persistencia.FPEntradaLog;
 import persistencia.FPUsuario;

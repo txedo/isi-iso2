@@ -1,10 +1,17 @@
-package dominio;
+package dominio.control;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
+
+import dominio.conocimiento.EntradaLog;
+import dominio.conocimiento.ISesion;
+import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.Roles;
+import dominio.conocimiento.Sesion;
+import dominio.conocimiento.Usuario;
 
 import persistencia.FPEntradaLog;
 import persistencia.FPUsuario;

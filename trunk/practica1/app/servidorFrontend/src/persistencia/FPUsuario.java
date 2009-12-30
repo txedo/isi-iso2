@@ -5,17 +5,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import comunicaciones.GestorConexionesBD;
-import dominio.Administrador;
-import dominio.CentroSalud;
-import dominio.Citador;
-import dominio.Especialista;
-import dominio.Medico;
-import dominio.Cabecera;
-import dominio.Pediatra;
-import dominio.PeriodoTrabajo;
-import dominio.TipoMedico;
-import dominio.Usuario;
-import dominio.Roles;
+import dominio.conocimiento.Administrador;
+import dominio.conocimiento.Cabecera;
+import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Citador;
+import dominio.conocimiento.Especialista;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Pediatra;
+import dominio.conocimiento.PeriodoTrabajo;
+import dominio.conocimiento.Roles;
+import dominio.conocimiento.TipoMedico;
+import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 

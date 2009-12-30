@@ -1,5 +1,6 @@
-package dominio;
+package dominio.control;
 
+import dominio.conocimiento.OperacionesAuxiliares;
 import excepciones.SesionInvalidaException;
 
 public class GestorMensajes implements OperacionesAuxiliares {

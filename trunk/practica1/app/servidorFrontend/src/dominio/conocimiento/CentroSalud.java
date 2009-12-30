@@ -1,4 +1,4 @@
-package dominio;
+package dominio.conocimiento;
 
 import java.io.Serializable;
 

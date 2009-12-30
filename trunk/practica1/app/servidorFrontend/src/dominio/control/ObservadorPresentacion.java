@@ -1,4 +1,4 @@
-package dominio;
+package dominio.control;
 
 import java.util.ArrayList;
 import java.util.Date;

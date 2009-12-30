@@ -40,7 +40,7 @@ CREATE TABLE periodosTrabajo (
 CREATE TABLE entradasLog (
        id INT NOT NULL AUTO_INCREMENT,
        usuario VARCHAR(255) NOT NULL,
-       fecha TIMESTAMP NOT NULL,
+       fecha DATETIME NOT NULL,
        accion ENUM ('create', 'read', 'update', 'delete') NOT NULL,
        mensaje VARCHAR(255) NOT NULL,
        PRIMARY KEY (id)
@@ -53,7 +53,7 @@ CREATE TABLE beneficiarios (
        apellidos VARCHAR(255) NOT NULL default '',
        domicilio VARCHAR(255) NOT NULL default '',
        correo VARCHAR(255) NOT NULL default '',
-       fechaNacimiento TIMESTAMP NOT NULL,
+       fechaNacimiento DATETIME NOT NULL,
        telefono INT NOT NULL default '-1',
        movil INT NOT NULL default '-1',
        dniMedico VARCHAR(255) default '',

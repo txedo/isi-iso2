@@ -1,4 +1,4 @@
-package dominio;
+package dominio.conocimiento;
 
 public class Pediatra extends TipoMedico{
 

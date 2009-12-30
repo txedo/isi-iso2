@@ -4,8 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import comunicaciones.GestorConexionesBD;
-import dominio.DiaSemana;
-import dominio.PeriodoTrabajo;
+import dominio.conocimiento.DiaSemana;
+import dominio.conocimiento.PeriodoTrabajo;
 
 /**
  * Clase dedicada a consultar y modificar períodos de trabajo de los

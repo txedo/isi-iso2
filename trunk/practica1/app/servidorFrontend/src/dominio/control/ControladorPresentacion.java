@@ -1,4 +1,4 @@
-package dominio;
+package dominio.control;
 
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;

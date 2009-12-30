@@ -2,6 +2,7 @@ package dominio;
 
 import javax.swing.JOptionPane;
 import dominio.ControladorLogin;
+import dominio.conocimiento.ISesion;
 
 /**
  * Clase principal del cliente.
