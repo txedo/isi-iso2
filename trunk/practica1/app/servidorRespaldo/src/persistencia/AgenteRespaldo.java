@@ -19,11 +19,11 @@ public class AgenteRespaldo {
 		try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch(IllegalAccessException e) {
-            e.printStackTrace();
+			System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
 		} catch(InstantiationException e) {
-            e.printStackTrace();
+			System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
         } catch(ClassNotFoundException e) {
-            e.printStackTrace();
+        	System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
         }
         // Abrimos la conexión de forma predeterminada
         abrir();

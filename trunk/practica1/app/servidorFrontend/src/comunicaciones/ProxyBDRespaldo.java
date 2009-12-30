@@ -11,15 +11,15 @@ import persistencia.ComandoSQL;
 /**
  * Proxy utilizado para acceder a una conexión de base de datos remota.
  */
-public class ProxyBDRespaldo implements IConexion {
+public class ProxyBDRespaldo implements IConexionBD {
 
-	private IConexion conexionRemota;
+	private IConexionBD conexionRemota;
 	
 	public void conectar(String ip) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
 		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorrespaldo";
-        conexionRemota = (IConexion)Naming.lookup(url);
+        conexionRemota = (IConexionBD)Naming.lookup(url);
 	}
 
 	public void commit() throws RemoteException, SQLException {

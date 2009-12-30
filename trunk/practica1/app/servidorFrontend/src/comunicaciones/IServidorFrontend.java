@@ -3,14 +3,19 @@ package comunicaciones;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-
+import java.util.Date;
+import java.util.Vector;
 import dominio.Beneficiario;
+import dominio.Cita;
 import dominio.ISesion;
+import dominio.Medico;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.CitaNoValidaException;
+import excepciones.FechaNoValidaException;
 import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
-import dominio.Medico;
+import excepciones.VolanteNoValidoException;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
 import excepciones.UsuarioIncorrectoException;
@@ -36,15 +41,14 @@ public interface IServidorFrontend extends Remote {
 	
     public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception;
 	
-	/*public Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException;
+	public Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception;
 	
-	public Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws RemoteException;
+	public Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, VolanteNoValidoException, SQLException, Exception;
 	
-	public Vector<Cita> getCitas(long idSesion, String dni) throws RemoteException;
+	public Vector<Cita> getCitas(long idSesion, String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception;
 
-	public void anularCita(long idSesion, Cita cita) throws RemoteException;
+	public void anularCita(long idSesion, Cita cita) throws RemoteException, CitaNoValidaException, SQLException, Exception;
 	
-	*/
 	public void crear(long idSesion, Medico medico) throws RemoteException, MedicoYaExistenteException, SQLException, Exception;
 
 	public void modificar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception;

@@ -1,18 +1,17 @@
 package dominio;
 
-import java.sql.Date;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Vector;
-
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.CitaNoValidaException;
 import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
-
 import persistencia.FPBeneficiario;
 import persistencia.FPCita;
 import persistencia.FPEntradaLog;
@@ -47,6 +46,8 @@ public class GestorCitas {
 		} catch(UsuarioIncorrectoException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
+		
+		// TODO: ¿Un beneficiario sólo debería pedir cita para su médico asignado?
 		
 		// Comprobamos que la fecha introducida sea válida para el medico dado
 		medico = (Medico)usuario;
@@ -134,12 +135,15 @@ public class GestorCitas {
 	}
 
 	// Método para eliminar una cita existente
-	public static void anularCita(long idSesion, Cita cita) throws SQLException, SesionInvalidaException, OperacionIncorrectaException {
+	public static void anularCita(long idSesion, Cita cita) throws SQLException, CitaNoValidaException, SesionInvalidaException, OperacionIncorrectaException {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarCita);
 
+		// TODO: Comprobar si la cita existe, y si no lanzar una CitaNoValidaException
+		if(false) throw new CitaNoValidaException("---");
+		
 		// Eliminamos la cita de la base de datos
 		FPCita.eliminar(cita);
 

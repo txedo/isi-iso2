@@ -5,7 +5,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.Beneficiario;
 import dominio.ControladorLogin;
 import dominio.Medico;
-import dominio.Operacion;
+import dominio.Operaciones;
 import excepciones.*;
 
 import java.awt.BorderLayout;
@@ -1029,10 +1029,10 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 	
 	public void iniciar() {
-		ArrayList<Operacion> operaciones = null;
+		ArrayList<Operaciones> operaciones = null;
 
 		try {
-			operaciones = (ArrayList<Operacion>)controlador.operacionesDisponibles();
+			operaciones = (ArrayList<Operaciones>)controlador.operacionesDisponibles();
 			this.configurarInterfaz(operaciones);
 		} catch (RemoteException e) {
 			Utilidades.mostrarDialogoError(this, "Error", e.toString());
@@ -1056,45 +1056,45 @@ public class JFPrincipal extends javax.swing.JFrame {
 		jListOperacionesCitasModel.addElement("Eliminar cita");
 	}
 	
-	private void configurarInterfaz (ArrayList<Operacion> operaciones) {
+	private void configurarInterfaz (ArrayList<Operaciones> operaciones) {
 		// Inicializamos las pestañas
-		if (!operaciones.contains(Operacion.RegistrarBeneficiario)
-				&& !operaciones.contains(Operacion.ConsultarBeneficiario))
+		if (!operaciones.contains(Operaciones.RegistrarBeneficiario)
+				&& !operaciones.contains(Operaciones.ConsultarBeneficiario))
 			jTabbedPaneOperaciones.remove(jPanelGestionarBeneficiarios);
-		if (!operaciones.contains(Operacion.TramitarCita)
-				&& !operaciones.contains(Operacion.EliminarCita))
+		if (!operaciones.contains(Operaciones.TramitarCita)
+				&& !operaciones.contains(Operaciones.EliminarCita))
 			jTabbedPaneOperaciones.remove(jPanelGestionarCitas);
-		if (!operaciones.contains(Operacion.CrearUsuario)
-				&& !operaciones.contains(Operacion.ModificarUsuario)
-				&& !operaciones.contains(Operacion.EliminarUsuario))
+		if (!operaciones.contains(Operaciones.CrearUsuario)
+				&& !operaciones.contains(Operaciones.ModificarUsuario)
+				&& !operaciones.contains(Operaciones.EliminarUsuario))
 			jTabbedPaneOperaciones.remove(jPanelGestionarUsuarios);
-		if (!operaciones.contains(Operacion.ConsultarMedico))
+		if (!operaciones.contains(Operaciones.ConsultarMedico))
 			jTabbedPaneOperaciones.remove(jPanelConsultarMedico);
-		if (!operaciones.contains(Operacion.ModificarCalendario))
+		if (!operaciones.contains(Operaciones.ModificarCalendario))
 			jTabbedPaneOperaciones.remove(jPanelModificarCalendario);
-		if (!operaciones.contains(Operacion.EstablecerSustituto))
+		if (!operaciones.contains(Operaciones.EstablecerSustituto))
 			jTabbedPaneOperaciones.remove(jPanelEstablecerSustituto);
 		
 		// Inicializamos el contenido de cada pestaña
-		if (!operaciones.contains(Operacion.RegistrarBeneficiario))
+		if (!operaciones.contains(Operaciones.RegistrarBeneficiario))
 			jListOperacionesBeneficiariosModel.removeElement("Registrar beneficiario");
-		if (!operaciones.contains(Operacion.ModificarBeneficiario))
+		if (!operaciones.contains(Operaciones.ModificarBeneficiario))
 			jListOperacionesBeneficiariosModel.removeElement("Modificar beneficiario");
-		if (!operaciones.contains(Operacion.ConsultarBeneficiario))
+		if (!operaciones.contains(Operaciones.ConsultarBeneficiario))
 			jListOperacionesBeneficiariosModel.removeElement("Consultar beneficiario");
 		jListOperacionesBeneficiarios.setSelectedIndex(jListOperacionesBeneficiarios.getFirstVisibleIndex());
 		
-		if (!operaciones.contains(Operacion.CrearUsuario))
+		if (!operaciones.contains(Operaciones.CrearUsuario))
 			jListOperacionesUsuariosModel.removeElement("Registrar usuario");
-		if (!operaciones.contains(Operacion.ModificarUsuario))
+		if (!operaciones.contains(Operaciones.ModificarUsuario))
 			jListOperacionesUsuariosModel.removeElement("Modificar usuario");
-		if (!operaciones.contains(Operacion.EliminarUsuario))
+		if (!operaciones.contains(Operaciones.EliminarUsuario))
 			jListOperacionesUsuariosModel.removeElement("Eliminar usuario");
 		jListOperacionesUsuarios.setSelectedIndex(jListOperacionesUsuarios.getFirstVisibleIndex());
 		
-		if (!operaciones.contains(Operacion.TramitarCita))
+		if (!operaciones.contains(Operaciones.TramitarCita))
 			jListOperacionesCitasModel.removeElement("Tramitar cita");
-		if (!operaciones.contains(Operacion.EliminarCita))
+		if (!operaciones.contains(Operaciones.EliminarCita))
 			jListOperacionesCitasModel.removeElement("Eliminar cita");
 		jListOperacionesCitas.setSelectedIndex(jListOperacionesCitas.getFirstVisibleIndex());
 		

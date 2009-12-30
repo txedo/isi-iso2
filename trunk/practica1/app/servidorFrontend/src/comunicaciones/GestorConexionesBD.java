@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import persistencia.ComandoSQL;
-import comunicaciones.IConexion;
+import comunicaciones.IConexionBD;
 
 /**
  * Gestor que permite acceder de forma sincronizada a varias bases de datos
@@ -14,15 +14,15 @@ import comunicaciones.IConexion;
  */
 public class GestorConexionesBD {
 
-	private static ArrayList<IConexion> conexiones = new ArrayList<IConexion>();
+	private static ArrayList<IConexionBD> conexiones = new ArrayList<IConexionBD>();
 	
-	public static void ponerConexion(IConexion conexion) {
+	public static void ponerConexion(IConexionBD conexion) {
 		if(!conexiones.contains(conexion)) {
 			conexiones.add(conexion);
 		}
 	}
 	
-	public static void quitarConexion(IConexion conexion) {
+	public static void quitarConexion(IConexionBD conexion) {
 		if(conexiones.contains(conexion)) {
 			conexiones.remove(conexion);
 		}
@@ -48,7 +48,7 @@ public class GestorConexionesBD {
 	}
 	
 	public static void ejecutar(ComandoSQL comando) throws SQLException {
-		ArrayList<IConexion> conexionesUsadas;
+		ArrayList<IConexionBD> conexionesUsadas;
 		
 		try {
 			// Para hacer una modificación accedemos a todas las bases de
@@ -56,21 +56,21 @@ public class GestorConexionesBD {
 			if(conexiones.size() == 0) {
 				throw new SQLException("La lista de conexiones esta vacía");
 			}
-			conexionesUsadas = new ArrayList<IConexion>();
-			for(IConexion conexion : conexiones) {
+			conexionesUsadas = new ArrayList<IConexionBD>();
+			for(IConexionBD conexion : conexiones) {
 				try {
 					conexion.ejecutar(comando);
 					conexionesUsadas.add(conexion);
 				} catch(Exception ex) {
 					// Deshacemos los cambios en las conexiones
-					for(IConexion conexionUsada : conexionesUsadas) {
+					for(IConexionBD conexionUsada : conexionesUsadas) {
 						conexionUsada.rollback();
 					}
 					throw new SQLException("Error en el acceso a las bases de datos", ex);
 				}
 			}
 			// Aplicamos los cambios en todas las conexiones
-			for(IConexion conexion : conexiones) {
+			for(IConexionBD conexion : conexiones) {
 				conexion.commit();
 			}
 		} catch(RemoteException ex) {
@@ -81,7 +81,7 @@ public class GestorConexionesBD {
 	public static void cerrarConexiones() throws SQLException {
 		try {
 			// Cerramos todas las conexiones con bases de datos
-			for(IConexion conexion : conexiones) {
+			for(IConexionBD conexion : conexiones) {
 				conexion.cerrar();
 			}
 		} catch(RemoteException ex) {

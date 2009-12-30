@@ -10,7 +10,7 @@ import persistencia.ComandoSQL;
  * Clase intermedia para conectarse con el agente de base de datos del
  * servidor frontend.
  */
-public class ConexionBDFrontend implements IConexion {
+public class ConexionBDFrontend implements IConexionBD {
 
 	private AgenteFrontend agente = null;
 	

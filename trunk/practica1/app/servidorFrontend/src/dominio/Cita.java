@@ -1,7 +1,7 @@
 package dominio;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Clase que representa una cita solicitada por un beneficiario para un médico.
