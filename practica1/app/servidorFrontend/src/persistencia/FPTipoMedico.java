@@ -6,12 +6,12 @@ import java.util.ArrayList;
 
 import comunicaciones.GestorConexionesBD;
 
-import dominio.CentroSalud;
-import dominio.Medico;
-import dominio.PeriodoTrabajo;
-import dominio.Roles;
-import dominio.TipoMedico;
-import dominio.Usuario;
+import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.PeriodoTrabajo;
+import dominio.conocimiento.Roles;
+import dominio.conocimiento.TipoMedico;
+import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
 

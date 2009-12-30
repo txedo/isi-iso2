@@ -8,13 +8,13 @@ import junit.framework.TestCase;
 import persistencia.AgenteFrontend;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
-import dominio.Administrador;
-import dominio.CentroSalud;
-import dominio.GestorSesiones;
-import dominio.ISesion;
-import dominio.Medico;
-import dominio.Pediatra;
-import dominio.Roles;
+import dominio.conocimiento.Administrador;
+import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.ISesion;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Pediatra;
+import dominio.conocimiento.Roles;
+import dominio.control.GestorSesiones;
 import excepciones.UsuarioIncorrectoException;
 
 public class PruebasSesiones extends TestCase {

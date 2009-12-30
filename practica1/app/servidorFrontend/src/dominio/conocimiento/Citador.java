@@ -1,6 +1,7 @@
-package dominio;
+package dominio.conocimiento;
 
 import java.io.Serializable;
+
 
 /**
  * Clase que representa un usuario del sistema con rol de citador.

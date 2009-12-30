@@ -1,7 +1,8 @@
-package dominio;
+package dominio.conocimiento;
 
 import java.io.Serializable;
 import java.util.Date;
+
 
 public class Sesion implements ISesion, Serializable {
 

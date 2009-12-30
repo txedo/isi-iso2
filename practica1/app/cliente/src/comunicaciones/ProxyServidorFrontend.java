@@ -5,17 +5,23 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.Vector;
 
-import dominio.Beneficiario;
-import dominio.ISesion;
-import dominio.Medico;
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cita;
+import dominio.conocimiento.ISesion;
+import dominio.conocimiento.Medico;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.CitaNoValidaException;
+import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
 import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
+import excepciones.VolanteNoValidoException;
 
 /**
  * Proxy utilizado para conectarse con el servidor frontend.
@@ -80,6 +86,40 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException {
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
+	}
+
+	@Override
+	public void anularCita(long arg0, Cita arg1) throws RemoteException,
+			CitaNoValidaException, SQLException, Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Vector<Cita> getCitas(long arg0, String arg1)
+			throws RemoteException, BeneficiarioInexistenteException,
+			SQLException, Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Cita pedirCita(long arg0, Beneficiario arg1, String arg2, Date arg3,
+			long arg4) throws RemoteException,
+			BeneficiarioInexistenteException, MedicoInexistenteException,
+			FechaNoValidaException, SQLException, Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Cita pedirCita(long arg0, Beneficiario arg1, long arg2, Date arg3,
+			long arg4) throws RemoteException,
+			BeneficiarioInexistenteException, MedicoInexistenteException,
+			FechaNoValidaException, VolanteNoValidoException, SQLException,
+			Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 		
 }

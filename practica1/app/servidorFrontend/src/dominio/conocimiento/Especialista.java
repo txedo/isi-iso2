@@ -1,4 +1,5 @@
-package dominio;
+package dominio.conocimiento;
+
 
 public class Especialista extends TipoMedico{
 

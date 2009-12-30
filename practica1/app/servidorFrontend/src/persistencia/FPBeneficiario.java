@@ -6,8 +6,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import comunicaciones.GestorConexionesBD;
-import dominio.Beneficiario;
-import dominio.Medico;
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Medico;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;

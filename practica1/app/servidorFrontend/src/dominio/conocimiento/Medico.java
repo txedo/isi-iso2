@@ -1,9 +1,10 @@
-package dominio;
+package dominio.conocimiento;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 
 /**
  * Clase que representa un usuario del sistema con rol de médico.

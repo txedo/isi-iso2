@@ -1,4 +1,4 @@
-package dominio;
+package dominio.conocimiento;
 
 import java.sql.Timestamp;
 import java.util.Date;

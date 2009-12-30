@@ -12,17 +12,17 @@ import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import comunicaciones.ConexionBDFrontend;
 import comunicaciones.GestorConexionesBD;
-import dominio.Administrador;
-import dominio.Beneficiario;
-import dominio.CentroSalud;
-import dominio.Citador;
-import dominio.GestorBeneficiarios;
-import dominio.GestorSesiones;
-import dominio.ISesion;
-import dominio.Medico;
-import dominio.Cabecera;
-import dominio.Pediatra;
-import dominio.Sesion;
+import dominio.conocimiento.Administrador;
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cabecera;
+import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Citador;
+import dominio.conocimiento.ISesion;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Pediatra;
+import dominio.conocimiento.Sesion;
+import dominio.control.GestorBeneficiarios;
+import dominio.control.GestorSesiones;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -76,7 +76,7 @@ public class PruebasBeneficiarios extends TestCase {
 			cabecera = new Cabecera();
 			// Inicializamos fechas de nacimiento para los beneficiarios
 			SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
-			fecha1 = formatoDelTexto.parse("1/8/1981");
+			fecha1 = formatoDelTexto.parse("1/8/1951");
 			fecha2 = formatoDelTexto.parse("23/2/2002");
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");

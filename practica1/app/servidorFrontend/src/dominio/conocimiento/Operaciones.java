@@ -1,4 +1,4 @@
-package dominio;
+package dominio.conocimiento;
 
 /**
  * Enumeración con todas las operaciones que puede realizar el servidor del

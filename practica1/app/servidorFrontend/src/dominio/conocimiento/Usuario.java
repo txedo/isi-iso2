@@ -1,6 +1,7 @@
-package dominio;
+package dominio.conocimiento;
 
 import java.io.Serializable;
+
 
 /**
  * Clase abstracta que representa un usuario del sistema.

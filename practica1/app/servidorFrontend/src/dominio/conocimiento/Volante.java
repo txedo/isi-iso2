@@ -1,6 +1,7 @@
-package dominio;
+package dominio.conocimiento;
 
 import java.io.Serializable;
+
 
 /**
  * Clase que representa un volante que relaciona un beneficiario, un médico

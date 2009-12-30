@@ -16,7 +16,7 @@ import persistencia.ComandoSQL;
  * Clase intermedia para conectarse con el agente de base de datos del
  * servidor de respaldo.
  */
-public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion {
+public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexionBD {
 
 	private static final long serialVersionUID = -6996855286696746774L;
 	private final String NOMBRE_BASEDATOS = "servidorrespaldo";

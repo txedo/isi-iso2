@@ -1,8 +1,17 @@
-package dominio;
+package dominio.control;
 
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
+
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cita;
+import dominio.conocimiento.EntradaLog;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.Roles;
+import dominio.conocimiento.Usuario;
+import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.CitaNoValidaException;

@@ -1,4 +1,4 @@
-package dominio;
+package dominio.conocimiento;
 
 public interface ISesion {
 	public long getId();

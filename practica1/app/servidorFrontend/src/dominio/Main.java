@@ -1,5 +1,7 @@
 package dominio;
 
+import dominio.control.ControladorPresentacion;
+
 /**
  * Clase principal del servidor frontend.
  */

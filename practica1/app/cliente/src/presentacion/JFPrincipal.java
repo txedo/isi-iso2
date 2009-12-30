@@ -2,10 +2,10 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 
-import dominio.Beneficiario;
+import dominio.conocimiento.Beneficiario;
 import dominio.ControladorLogin;
-import dominio.Medico;
-import dominio.Operaciones;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Operaciones;
 import excepciones.*;
 
 import java.awt.BorderLayout;

@@ -1,7 +1,8 @@
-package dominio;
+package dominio.conocimiento;
 
 import java.io.Serializable;
 import java.util.Date;
+
 
 /**
  * Clase que representa un beneficiario del sistema de salud.

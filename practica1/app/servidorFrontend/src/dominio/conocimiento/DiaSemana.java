@@ -1,4 +1,4 @@
-package dominio;
+package dominio.conocimiento;
 
 /**
  * Enumeración con los días de la semana en los que puede trabajar un médico.

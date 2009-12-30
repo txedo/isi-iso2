@@ -1,4 +1,4 @@
-package dominio;
+package dominio.conocimiento;
 
 /**
  * Enumeración con los roles que pueden tener los usuarios del sistema.
