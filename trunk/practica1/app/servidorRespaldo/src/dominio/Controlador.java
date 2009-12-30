@@ -5,6 +5,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import comunicaciones.ConexionBDRespaldo;
+import comunicaciones.ConexionLogRespaldo;
 import presentacion.JFServidorRespaldo;
 
 /**
@@ -13,14 +14,14 @@ import presentacion.JFServidorRespaldo;
 public class Controlador {
 
 	private ConexionBDRespaldo conexionBD;
+	private ConexionLogRespaldo conexionLog;
+	private JFServidorRespaldo vent;
 
 	public Controlador() {
 		conexionBD = null;
 	}
 	
 	public void mostrarVentana() {
-		JFServidorRespaldo vent;
-		
 		// Mostramos la ventana principal del servidor
 		vent = new JFServidorRespaldo();
 		vent.setControlador(this);
@@ -33,11 +34,18 @@ public class Controlador {
 			conexionBD = new ConexionBDRespaldo();
 		}
 		conexionBD.conectar(ipRespaldo);
+		// Activamos la clase remota para mostrar los mensajes del servidor
+		if(conexionLog == null) {
+			conexionLog = new ConexionLogRespaldo();
+			conexionLog.ponerVentana(vent);
+		}
+		conexionLog.conectar(ipRespaldo);
 	}
 	
 	public void detenerServidorRespaldo(String ipRespaldo) throws RemoteException, MalformedURLException, NotBoundException, SQLException {
-		// Desactivamos la clase remota para conectarse con la base de datos
+		// Desactivamos las clases remotas del servidor de respaldo
 		conexionBD.desconectar(ipRespaldo);
+		conexionLog.desconectar(ipRespaldo);
 	}
 	
 }
