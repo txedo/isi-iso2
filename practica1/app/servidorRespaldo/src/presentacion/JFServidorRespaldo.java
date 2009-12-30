@@ -37,6 +37,15 @@ import javax.swing.border.BevelBorder;
 */
 public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLog {
 	
+	{
+		//Set Look & Feel
+		try {
+			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private static final long serialVersionUID = -3739906711082199809L;
 	
 	private Controlador controlador;
@@ -95,6 +104,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 						jScrollPane1.setViewportView(textLog);
 						textLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
 						textLog.setEditable(false);
+						textLog.setFont(new java.awt.Font("Tahoma",0,12));
 					}
 				}
 				{
@@ -200,17 +210,13 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 			txtIPRespaldo.setEditable(true);
 			lblBarraEstado.setText("Servidor desconectado.");
 		} catch(SQLException e) {
-			actualizarTexto("Error: " + e.toString());
-			e.printStackTrace();
+			actualizarTexto("Error al desconectar el servidor: " + e.toString());
 		} catch(RemoteException e) {
-			actualizarTexto("Error: " + e.toString());
-			e.printStackTrace();
+			actualizarTexto("Error al desconectar el servidor: " + e.toString());
 		} catch(MalformedURLException e) {
-			actualizarTexto("Error: " + e.toString());
-			e.printStackTrace();
+			actualizarTexto("Error al desconectar el servidor: " + e.toString());
 		} catch(NotBoundException e) {
-			actualizarTexto("Error: " + e.toString());
-			e.printStackTrace();
+			actualizarTexto("Error al desconectar el servidor: " + e.toString());
 		}
 	}
 

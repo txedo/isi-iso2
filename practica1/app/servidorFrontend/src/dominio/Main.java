@@ -1,6 +1,6 @@
 package dominio;
 
-import dominio.control.ControladorPresentacion;
+import dominio.control.ControladorPrincipal;
 
 /**
  * Clase principal del servidor frontend.
@@ -8,10 +8,10 @@ import dominio.control.ControladorPresentacion;
 public class Main {
 	
 	public static void main(String[] args) {
-		ControladorPresentacion cont;
+		ControladorPrincipal cont;
 		
 		// Mostramos la única ventana del servidor
-		cont = new ControladorPresentacion();
+		cont = new ControladorPrincipal();
 		cont.mostrarVentana();
 	}
 	

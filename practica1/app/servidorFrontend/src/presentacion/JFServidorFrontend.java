@@ -2,9 +2,7 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
-import dominio.control.ControladorPresentacion;
-
+import dominio.control.ControladorPrincipal;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,9 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-
 import java.util.regex.*;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -40,9 +36,18 @@ import java.util.regex.*;
 */
 public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLog {
 	
+	{
+		//Set Look & Feel
+		try {
+			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private static final long serialVersionUID = -113838536647924014L;
 	
-	private ControladorPresentacion controlador;
+	private ControladorPrincipal controlador;
 	private JPanel jPanel1;
 	private JScrollPane scpPanelLog;
 	private JLabel jLabel1;
@@ -99,6 +104,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 						scpPanelLog.setViewportView(txtLog);
 						txtLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
 						txtLog.setEditable(false);
+						txtLog.setFont(new java.awt.Font("Tahoma",0,12));
 					}
 				}
 				{
@@ -150,7 +156,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 		}
 	}
 	
-	public void setControladorPresentacion(ControladorPresentacion controlador) {
+	public void setControladorPresentacion(ControladorPrincipal controlador) {
 		this.controlador = controlador;
 	}
 	
