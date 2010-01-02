@@ -53,7 +53,7 @@ public class FPVolante {
 		return volante;
 	}
 		
-	public void insertar(Volante volante) throws SQLException {
+	public static void insertar(Volante volante) throws SQLException {
 		ComandoSQL comando;
 		ResultSet datos;
 
