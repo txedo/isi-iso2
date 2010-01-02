@@ -63,7 +63,7 @@ CREATE TABLE beneficiarios (
 
 CREATE TABLE citas (
        id INT NOT NULL AUTO_INCREMENT,
-       fecha TIMESTAMP NOT NULL,
+       fecha DATETIME NOT NULL,
        duracion INT NOT NULL,
        dniBeneficiario VARCHAR(255) NOT NULL,
        dniMedico VARCHAR(255) NOT NULL,

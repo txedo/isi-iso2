@@ -1,5 +1,6 @@
 package dominio.control;
 
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
@@ -7,6 +8,7 @@ import java.util.Vector;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.EntradaLog;
+import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Roles;
@@ -34,11 +36,12 @@ import persistencia.FPVolante;
 public class GestorCitas {
 
 	// Método para pedir una nueva cita para un cierto beneficiario y médico
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException, SesionInvalidaException, OperacionIncorrectaException {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws Exception {
 		Cita cita;
 		EntradaLog entrada;
 		Usuario usuario;
 		Medico medico;
+		Vector<Cita> citas;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.TramitarCita);
@@ -56,7 +59,9 @@ public class GestorCitas {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
 		
-		// TODO: ¿Un beneficiario sólo debería pedir cita para su médico asignado?
+		// Comprobamos que el DNI introducido del medico corresponda al medico que el beneficiario tiene asignado
+		if (!((Medico)usuario).equals(beneficiario.getMedicoAsignado()))
+			throw new Exception("El médico con el que se desea pedir cita no corresponde con el médico asignado al beneficiario con DNI " + beneficiario.getNif());
 		
 		// Comprobamos que la fecha introducida sea válida para el medico dado
 		medico = (Medico)usuario;
@@ -64,7 +69,12 @@ public class GestorCitas {
 			throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + idMedico);
 		}
 		
-		// TODO: Falta por comoprobar si el médico no tiene ya una cita a esa hora
+		// Recuperamos las citas del médico para comprobar si no tiene ya una cita en esa fecha y hora
+		citas = FPCita.consultarPorMedico(idMedico);	
+		for (Cita c : citas) {
+			if (c.getFechaYhora().equals(fechaYhora))
+				throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + idMedico);
+		}
 		
 		// Si todo es válido, se crea la cita, se inserta y se devuelve
 		cita = new Cita();
@@ -88,6 +98,7 @@ public class GestorCitas {
 		Beneficiario bene;
 		Medico medico;
 		Volante volante;
+		Vector<Cita> citas;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.TramitarCita);
@@ -97,6 +108,7 @@ public class GestorCitas {
 		
 		// Se comprueba que exista el beneficiario que se pasa por parametro
 		bene = FPBeneficiario.consultarPorNIF(beneficiario.getNif());
+		
 		// Se comprueba que el beneficiario que se pasa por parámetro y
 		// el que tiene asociado el volante sean los mismos
 		if(!bene.equals(volante.getBeneficiario())) {
@@ -109,7 +121,12 @@ public class GestorCitas {
 			throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + medico.getDni());
 		}
 		
-		// TODO: Falta por comoprobar si el médico no tiene ya una cita a esa hora
+		// Recuperamos las citas del médico para comprobar si no tiene ya una cita en esa fecha y hora
+		citas = FPCita.consultarPorMedico(medico.getDni());	
+		for (Cita c : citas) {
+			if (c.getFechaYhora().equals(fechaYhora))
+				throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + medico.getDni());
+		}
 		
 		// Si todo es válido, se crea la cita, se inserta y se devuelve
 		cita = new Cita();
@@ -150,8 +167,9 @@ public class GestorCitas {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarCita);
 
-		// TODO: Comprobar si la cita existe, y si no lanzar una CitaNoValidaException
-		if(false) throw new CitaNoValidaException("---");
+		// Se comprueba si la cita existe
+		if (!FPCita.existe(cita))
+			throw new CitaNoValidaException("No existe la cita del beneficiario " + cita.getBeneficiario().getNif()+ " con el medico " + cita.getMedico().getDni()+ " para poder anularla");
 		
 		// Eliminamos la cita de la base de datos
 		FPCita.eliminar(cita);
@@ -161,4 +179,51 @@ public class GestorCitas {
 		FPEntradaLog.insertar(entrada);
 	}
 
+	public static long emitirVolante(long idSesion, Beneficiario b, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+		EntradaLog entrada;
+		Usuario usuario;
+		Volante volante;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarCita);
+		
+		// Se comprueba que existe el beneficiario dado por parámetro
+		FPBeneficiario.consultarPorNIF(b.getNif());
+		
+		// Se comprueba que existen los médicos, tanto emisor como receptor
+		try {
+			usuario = FPUsuario.consultar(emisor.getDni());
+			if(usuario.getRol() != Roles.Medico) {
+				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
+			}
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		try {
+			usuario = FPUsuario.consultar(destino.getDni());
+			if(usuario.getRol() != Roles.Medico) {
+				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
+			}
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		// Comprobamos que el medico receptor sea un especialista
+		if (!(destino.getTipoMedico() instanceof Especialista))
+			throw new VolanteNoValidoException("Solo se puede emitir un volante para acudir a un especialista");
+		
+		// Si todo es correcto, se crea el volante, se escribe en el log y se devuelve el identificador del volante
+		volante = new Volante();
+		volante.setBeneficiario(b);
+		volante.setEmisor(emisor);
+		volante.setReceptor(destino);
+		FPVolante.insertar(volante);
+		
+		// Añadimos una entrada al log
+		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "Se ha emitido un volante para el beneficiario "+volante.getBeneficiario().getNif()+", emitido por el medico "+volante.getEmisor().getNombre() +" para el especialista "+volante.getReceptor().getNombre());
+		FPEntradaLog.insertar(entrada);
+		
+		return volante.getId();
+	}
 }

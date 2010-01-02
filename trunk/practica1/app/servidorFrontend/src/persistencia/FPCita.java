@@ -83,9 +83,8 @@ public class FPCita {
 		if (datos.getRow() > 0) {
 			// Se recorren las filas, para ir guardando todas las citas que pueda tener ese médico
 			while (datos.next()){
-				fecha = new Date(datos.getTimestamp(COL_FECHA).getTime());
+				fecha = new Date((datos.getDate(COL_FECHA)).getTime());
 				duracion = datos.getInt(COL_DURACION);
-				//idVolante = datos.getInt(COL_VOLANTE);
 				bene = FPBeneficiario.consultarPorNIF(datos.getString(COL_DNI_BENEFICIARIO));
 				cita = new Cita(fecha, duracion, bene, med);
 				citas.add(cita);
@@ -93,6 +92,25 @@ public class FPCita {
 		}
 
 		return citas;
+	}
+	
+	// Este metodo comprueba si existe una cita dada en la base de datos
+	public static boolean existe(Cita c) throws SQLException{
+		ComandoSQL comando;
+		ResultSet datos;
+		boolean existe = true;
+		
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT * FROM "
+				+ TABLA_CITAS + " WHERE " + COL_FECHA + " = ? AND " + COL_DURACION + " = ? AND " + COL_DNI_MEDICO + " = ? AND " + COL_DNI_BENEFICIARIO + " = ?", c.getFechaYhora(), c.getDuracion(), c.getMedico().getDni(), c.getBeneficiario().getNif());
+		datos = GestorConexionesBD.consultar(comando);
+		datos.next();
+		
+		// Si no se obtienen datos, es porque la cita no existe
+		if (datos.getRow() == 0) 
+			existe = false;
+		
+		return existe;
 	}
 
 	public static void insertar(Cita c) throws SQLException {
