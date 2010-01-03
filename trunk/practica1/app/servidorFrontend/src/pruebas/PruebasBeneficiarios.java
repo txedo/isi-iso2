@@ -17,9 +17,11 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
+import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
+import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Sesion;
 import dominio.control.GestorBeneficiarios;
 import dominio.control.GestorSesiones;
@@ -33,6 +35,7 @@ public class PruebasBeneficiarios extends TestCase {
 
 	private CentroSalud centro1;
 	private Medico medico1, medico2;
+	private PeriodoTrabajo periodo1, periodo2, periodo3;
 	private Beneficiario bene1, bene2;
 	private Citador citador1;
 	private Administrador admin1;
@@ -82,6 +85,12 @@ public class PruebasBeneficiarios extends TestCase {
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
 			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1, pediatra);
 			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", centro1, cabecera);
+			periodo1 = new PeriodoTrabajo(10, 14, DiaSemana.Miercoles);
+			periodo2 = new PeriodoTrabajo(17, 19, DiaSemana.Viernes);
+			periodo3 = new PeriodoTrabajo(16, 17, DiaSemana.Lunes);
+			medico1.getCalendario().add(periodo1);
+			medico1.getCalendario().add(periodo2);
+			medico2.getCalendario().add(periodo3);
 			citador1 = new Citador("11223344", "citador", "cit123", "Fernando", "G. P.", centro1);
 			admin1 = new Administrador("55667788", "admin", "nimda", "María", "L. F.", centro1);
 			bene1 = new Beneficiario("12345678","123456-ab","bene1","asdfg","alguno","uno@gmail.com",fecha1,123456789,987654321);

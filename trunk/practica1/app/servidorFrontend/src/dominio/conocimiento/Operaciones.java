@@ -5,20 +5,20 @@ package dominio.conocimiento;
  * sistema.
  */
 public enum Operaciones {
-	ConsultarMedico,
-	EliminarMedico,
-	RegistrarMedico,
-	ModificarMedico,
-	ConsultarUsuario,
 	CrearUsuario,
 	ModificarUsuario,
 	EliminarUsuario,
 	TramitarCita,
 	EliminarCita,
+	ObtenerCitas,
 	RegistrarBeneficiario,
 	ConsultarBeneficiario,
 	ModificarBeneficiario,
+	ConsultarMedico,
+	EliminarMedico,
+	RegistrarMedico,
+	ModificarMedico,
 	ModificarCalendario,
 	EstablecerSustituto,
-	ObtenerCitas
+	ConsultarUsuario	
 }

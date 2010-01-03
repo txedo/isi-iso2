@@ -1,8 +1,10 @@
 package persistencia;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Vector;
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Beneficiario;
@@ -33,6 +35,8 @@ public class FPCita {
 		Beneficiario bene = null;
 		Medico med = null;
 		Cita cita = null;
+		GregorianCalendar fechaAux;
+		Timestamp fechaTimeStamp;
 
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM "
@@ -46,14 +50,16 @@ public class FPCita {
 		// Si no se obtienen datos, y lo anterior no produjo excepcion, se devuelve el vector vacio porque no hay ctas
 		if (datos.getRow() > 0) {
 			// Se recorren las filas, para ir guardando todas las citas que pueda tener ese beneficiario
-			while (datos.next()){
-				fecha = new Date(datos.getTimestamp(COL_FECHA).getTime());
+			do {
+				fechaTimeStamp = datos.getTimestamp(COL_FECHA);
+				fechaAux = new GregorianCalendar(fechaTimeStamp.getYear()+1900, fechaTimeStamp.getMonth(), fechaTimeStamp.getDate(), fechaTimeStamp.getHours(), fechaTimeStamp.getMinutes());
+				fecha = fechaAux.getTime();
 				duracion = datos.getInt(COL_DURACION);
 				//idVolante = datos.getInt(COL_VOLANTE);
 				med = (Medico) FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 				cita = new Cita(fecha, duracion, bene, med);
 				citas.add(cita);
-			}
+			}while(datos.next());
 		}
 
 		return citas;
@@ -69,6 +75,8 @@ public class FPCita {
 		Beneficiario bene = null;
 		Medico med = null;
 		Cita cita = null;
+		GregorianCalendar fechaAux;
+		Timestamp fechaTimeStamp;
 
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM "
@@ -82,13 +90,18 @@ public class FPCita {
 		// Si no se obtienen datos, y lo anterior no produjo excepcion, se devuelve el vector vacio porque no hay ctas
 		if (datos.getRow() > 0) {
 			// Se recorren las filas, para ir guardando todas las citas que pueda tener ese médico
-			while (datos.next()){
-				fecha = new Date((datos.getDate(COL_FECHA)).getTime());
+			do {
+				// Se recupera la fecha de la base de datos como TimeStamp y se convierte a GregorianCalendar, componente a componente
+				// Se tiene que hacer asi para no perder la hora, que es importante para comparar luego las horas de las citas
+				// Al año se suma 1900
+				fechaTimeStamp = datos.getTimestamp(COL_FECHA);
+				fechaAux = new GregorianCalendar(fechaTimeStamp.getYear()+1900, fechaTimeStamp.getMonth(), fechaTimeStamp.getDate(), fechaTimeStamp.getHours(), fechaTimeStamp.getMinutes());
+				fecha = fechaAux.getTime();
 				duracion = datos.getInt(COL_DURACION);
 				bene = FPBeneficiario.consultarPorNIF(datos.getString(COL_DNI_BENEFICIARIO));
 				cita = new Cita(fecha, duracion, bene, med);
 				citas.add(cita);
-			}
+			}while(datos.next());
 		}
 
 		return citas;

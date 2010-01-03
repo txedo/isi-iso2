@@ -36,7 +36,7 @@ import persistencia.FPVolante;
 public class GestorCitas {
 
 	// Método para pedir una nueva cita para un cierto beneficiario y médico
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws Exception {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException, Exception {
 		Cita cita;
 		EntradaLog entrada;
 		Usuario usuario;
@@ -72,6 +72,8 @@ public class GestorCitas {
 		// Recuperamos las citas del médico para comprobar si no tiene ya una cita en esa fecha y hora
 		citas = FPCita.consultarPorMedico(idMedico);	
 		for (Cita c : citas) {
+			System.out.println(c.getFechaYhora());
+			System.out.println(fechaYhora);
 			if (c.getFechaYhora().equals(fechaYhora))
 				throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + idMedico);
 		}
@@ -92,7 +94,7 @@ public class GestorCitas {
 	}
 
 	// Método para pedir una nueva cita para un cierto beneficiario a partir de un volante
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYhora, long duracion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException, FechaNoValidaException, SesionInvalidaException, OperacionIncorrectaException {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYhora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException, FechaNoValidaException {
 		Cita cita;
 		EntradaLog entrada;
 		Beneficiario bene;
@@ -108,14 +110,14 @@ public class GestorCitas {
 		
 		// Se comprueba que exista el beneficiario que se pasa por parametro
 		bene = FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-		
+				
 		// Se comprueba que el beneficiario que se pasa por parámetro y
 		// el que tiene asociado el volante sean los mismos
 		if(!bene.equals(volante.getBeneficiario())) {
 			throw new VolanteNoValidoException("El beneficiario asociado al volante con id " + String.valueOf(idVolante) + " no coincide con el beneficiario que pide la cita");
 		}
 		
-		// Comprobamos que la fecha introducida sea válida para el medico dado
+		// Comprobamos que la fecha introducida sea válida para el medico receptor
 		medico = volante.getReceptor();
 		if(!medico.fechaEnCalendario(fechaYhora, duracion)) {
 			throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + medico.getDni());
@@ -133,6 +135,7 @@ public class GestorCitas {
 		cita.setBeneficiario(beneficiario);
 		cita.setMedico(medico);
 		cita.setDuracion(duracion);
+		cita.setFechaYhora(fechaYhora);
 		FPCita.insertar(cita);	
 		
 		// Añadimos una entrada al log

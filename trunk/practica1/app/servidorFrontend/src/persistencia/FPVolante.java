@@ -42,9 +42,9 @@ public class FPVolante {
 		} else {
 			// Establecemos los datos del volante
 			volante = new Volante();
-			bene = FPBeneficiario.consultarPorNIF(COL_DNI_BENEFICIARIO);
-			medEmisor = (Medico)FPUsuario.consultar(COL_DNI_MEDICO_EMISOR);
-			medReceptor = (Medico)FPUsuario.consultar(COL_DNI_MEDICO_RECEPTOR);
+			bene = FPBeneficiario.consultarPorNIF(datos.getString(COL_DNI_BENEFICIARIO));
+			medEmisor = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO_EMISOR));
+			medReceptor = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO_RECEPTOR));
 			volante.setId(id);
 			volante.setBeneficiario(bene);
 			volante.setEmisor(medEmisor);
