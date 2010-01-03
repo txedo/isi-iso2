@@ -153,10 +153,16 @@ public class GestorSesiones {
 		case EliminarCita:
 			permitido = esAdministrador || esCitador;
 			break;
+		case ObtenerCitas:
+			permitido = esAdministrador || esCitador;
+			break;
 		case RegistrarBeneficiario:
 			permitido = esAdministrador || esCitador;
 			break;
 		case ModificarBeneficiario:
+			permitido = esAdministrador || esCitador;
+			break;
+		case ConsultarBeneficiario:
 			permitido = esAdministrador || esCitador;
 			break;
 		case ConsultarMedico:
@@ -178,10 +184,6 @@ public class GestorSesiones {
 			permitido = esAdministrador;
 			break;
 		case ConsultarUsuario:
-			// Estas operaciones siempre están permitidas
-			permitido = true;
-			break;
-		case ConsultarBeneficiario:
 			// Estas operaciones siempre están permitidas
 			permitido = true;
 			break;

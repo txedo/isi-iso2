@@ -19,8 +19,7 @@ public class Volante implements Serializable {
 	public Volante() {
 	}
 	
-	public Volante(long id, Medico emisor, Medico receptor, Beneficiario beneficiario) {
-		this.id = id;
+	public Volante(Medico emisor, Medico receptor, Beneficiario beneficiario) {
 		this.emisor = emisor;
 		this.receptor = receptor;
 		this.beneficiario = beneficiario;
