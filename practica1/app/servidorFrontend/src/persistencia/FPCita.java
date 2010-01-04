@@ -140,8 +140,8 @@ public class FPCita {
 		ComandoSQL comando;
 
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_CITAS
-				+ " WHERE " + COL_FECHA + "=?, AND " + COL_DURACION + "=?, AND " + COL_DNI_BENEFICIARIO
-				+ "=?, AND " + COL_DNI_MEDICO + "=?",
+				+ " WHERE " + COL_FECHA + "=? AND " + COL_DURACION + "=? AND " + COL_DNI_BENEFICIARIO
+				+ "=? AND " + COL_DNI_MEDICO + "=?",
 				c.getFechaYhora(), c.getDuracion(), c.getBeneficiario().getNif(), c.getMedico().getDni());
 		GestorConexionesBD.ejecutar(comando);
 	}

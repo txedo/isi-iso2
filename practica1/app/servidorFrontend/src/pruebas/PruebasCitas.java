@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import persistencia.AgenteFrontend;
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
+import persistencia.FPCita;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
 
@@ -32,6 +33,7 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Sesion;
+import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Volante;
 import dominio.control.GestorCitas;
 import dominio.control.GestorSesiones;
@@ -49,6 +51,7 @@ public class PruebasCitas extends TestCase{
 	private Citador citador1;
 	private Administrador admin1;
 	private Beneficiario bene1, bene2;
+	private Usuario usu1;
 	private PeriodoTrabajo periodo1, periodo2, periodo3;
 	private ConexionBDFrontend conexionF;
 	private ISesion sesionCitador;
@@ -128,6 +131,7 @@ public class PruebasCitas extends TestCase{
 			medico1.getCalendario().add(periodo2);
 			medico2.getCalendario().add(periodo3);
 			medico3.getCalendario().add(periodo3);
+			usu1 = new Administrador("04328172", "usuario", "f", "O", "C", centro1);
 			bene1 = new Beneficiario("12345679","123456-ab","bene1","asdfg","alguno","uno@gmail.com",fecha1,123456789,987654321);
 			bene1.setMedicoAsignado(medico2);
 			bene2 = new Beneficiario("46208746","164028-de","bene2","asadasdfg","algun otro","dos@gmail.com",fecha2,923456789,687654322);
@@ -138,6 +142,7 @@ public class PruebasCitas extends TestCase{
 			FPUsuario.insertar(medico3);
 			FPUsuario.insertar(citador1);
 			FPUsuario.insertar(admin1);
+			FPUsuario.insertar(usu1);
 			FPBeneficiario.insertar(bene1);
 			// Iniciamos tres sesiones con roles de citador, administrador y medico
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), citador1.getPassword());
@@ -169,7 +174,7 @@ public class PruebasCitas extends TestCase{
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			cita = GestorCitas.pedirCita(sesionCitador.getId() + 1, bene1, medico1.getDni(), fecha1, DURACION);
+			cita = GestorCitas.pedirCita(sesionCitador.getId() + 1, bene1, bene1.getMedicoAsignado().getDni(), fecha1, DURACION);
 			fail("Se esperaba una excepcion SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -178,7 +183,7 @@ public class PruebasCitas extends TestCase{
 		
 		try {
 			// Intentamos dar cita con un rol que no sea citador ni administrador
-			cita = GestorCitas.pedirCita(sesionMedico.getId(), bene1, medico1.getDni(), fecha1, DURACION);
+			cita = GestorCitas.pedirCita(sesionMedico.getId(), bene1, bene1.getMedicoAsignado().getDni(), fecha1, DURACION);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -297,7 +302,7 @@ public class PruebasCitas extends TestCase{
 		
 	}
 
-	/** Prueba para pedir una cita con volante **/
+	/** Pruebas para pedir una cita con volante **/
 	public void testPedirCitaConVolante() {	
 		Cita cita;
 		Vector<Cita> citas;
@@ -371,8 +376,7 @@ public class PruebasCitas extends TestCase{
 			citas = GestorCitas.getCitas(sesionCitador.getId(), bene1.getNif());
 			// Como se ha limpiado la base de datos antes de ejecutar este caso de prueba, solo se obtendrá una cita
 			assertEquals(cita, citas.get(0));
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(Exception e) {			
 			fail("No se esperaba excepcion al registrar la cita con el volante");
 		}
 		
@@ -384,6 +388,109 @@ public class PruebasCitas extends TestCase{
 		} catch(Exception e) {
 			fail("Se esperaba FechaNoValidaException");
 		}
+	}
+	
+	/** Pruebas para emitir un volante **/
+	public void testEmitirVolante() {	
+		Volante volanteRecuperado = null;
+		long idVolante = -1;
+		
+		try {
+			// Intentamos acceder al servidor con un id de sesión erróneo
+			idVolante = GestorCitas.emitirVolante(sesionCitador.getId() + 1, bene1, medico1, medico3);
+			fail("Se esperaba una excepcion SesionInvalidaException");
+		} catch(SesionInvalidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion SesionInvalidaException");
+		}
+		
+		try {
+			// Intentamos emitir un volante como un administrador
+			idVolante = GestorCitas.emitirVolante(sesionAdmin.getId(), bene1, medico1, medico3);
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		} catch(OperacionIncorrectaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		}
+		
+		try {
+			// Intentamos emitir un volante para un beneficiario no registrado 
+			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene2, medico1, medico3);
+			fail("Se esperaba una excepcion BeneficiarioInexistenteException");
+		} catch(BeneficiarioInexistenteException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion BeneficiarioInexistenteException");
+		}
+		
+		try {
+			// Intentamos emitir un volante para un medico no registrado
+			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico4, medico4);
+			fail("Se esperaba una excepcion MedicoInexistenteException");
+		} catch(MedicoInexistenteException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion MedicoInexistenteException");
+		}
+			
+		try {
+			// Intentamos emitir un volante para un medico receptor que no es especialista
+			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico1, medico2);
+			fail("Se esperaba una excepcion VolanteNoValidoException");
+		} catch(VolanteNoValidoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion VolanteNoValidoException");
+		}
+		
+		try {
+			// Intentamos emitir un volante correcto
+			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico1, medico3);
+			assertTrue(idVolante != -1);
+			volanteRecuperado = FPVolante.consultar(idVolante);
+			assertEquals(volanteRecuperado.getId(), idVolante);
+		} catch(Exception e) { 
+			fail("No se esperaba ninguna excepción al crear el volante");
+		}
+		
+		try {
+			// Intentamos emitir un volante correcto, en este caso, del especialista para si mismo
+			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico3, medico3);
+			assertTrue(idVolante != -1);
+			volanteRecuperado = FPVolante.consultar(idVolante);
+			assertEquals(volanteRecuperado.getId(), idVolante);
+		} catch(Exception e) { 
+			fail("No se esperaba ninguna excepción al crear el volante");
+		}
+	}
+	
+	/** Pruebas para anular una cita **/
+	public void testAnularCita() {	
+		Medico medicoAsignado;
+		Date fechaCita;
+		Cita cita;
+		Vector<Cita> citas;
+		
+		try {
+			medicoAsignado = bene1.getMedicoAsignado();
+			if (medicoAsignado.getDni().equals(medico1.getDni()))
+				fechaCita = fechaCita1;
+			else
+				fechaCita = fechaCita2;
+			
+			// Creamos una cita correcta
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita, DURACION);
+			// Se recuperan las citas del beneficiario1 para ver si realmente existe
+			citas = GestorCitas.getCitas(sesionCitador.getId(), bene1.getNif());
+			// Como se ha limpiado la base de datos antes de ejecutar este caso de prueba, solo se obtendrá una cita
+			assertEquals(cita, citas.get(0));
+			// Anulamos esa cita 
+			GestorCitas.anularCita(sesionCitador.getId(), cita);
+			// Si se ha anulado correctamente, se puede volver a concertar la scita con los mismos datos
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita, DURACION);
+			citas = GestorCitas.getCitas(sesionCitador.getId(), bene1.getNif());
+			assertEquals(cita, citas.get(0));
+		} catch(Exception e) {
+			fail("No se esperaba ninguna excepcion al anular la cita");
+		}
+
 	}
 	
 }

@@ -11,6 +11,7 @@ public enum Operaciones {
 	TramitarCita,
 	EliminarCita,
 	ObtenerCitas,
+	EmitirVolante,
 	RegistrarBeneficiario,
 	ConsultarBeneficiario,
 	ModificarBeneficiario,

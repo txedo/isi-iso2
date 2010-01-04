@@ -124,6 +124,7 @@ public class GestorSesiones {
 		EntradaLog entrada;
 		boolean esAdministrador = false;
 		boolean esCitador = false;
+		boolean esMedico = false;
 		
 		// Obtenemos la sesión para el id indicado y comprobamos si existe
 		// (en teoría sí, porque primero el usuario ha tenido que hacer login)
@@ -134,6 +135,7 @@ public class GestorSesiones {
 		
 		esAdministrador = (sesion.getRol() == Roles.Administrador.ordinal());
 		esCitador = (sesion.getRol() == Roles.Citador.ordinal());
+		esMedico = (sesion.getRol() == Roles.Medico.ordinal());
 		
 		// TODO modificar este switch para que analice el arraylist devuelto por operacionesDisponibles()
 		// Vemos cuál es la operación solicitada
@@ -155,6 +157,9 @@ public class GestorSesiones {
 			break;
 		case ObtenerCitas:
 			permitido = esAdministrador || esCitador;
+			break;
+		case EmitirVolante:
+			permitido = esMedico;
 			break;
 		case RegistrarBeneficiario:
 			permitido = esAdministrador || esCitador;

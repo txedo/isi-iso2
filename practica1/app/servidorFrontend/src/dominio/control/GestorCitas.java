@@ -144,6 +144,56 @@ public class GestorCitas {
 		
 		return cita; 
 	}
+	
+	public static long emitirVolante(long idSesion, Beneficiario b, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+		EntradaLog entrada;
+		Usuario usuario;
+		Volante volante;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EmitirVolante);
+		
+		// Se comprueba que existe el beneficiario dado por parámetro
+		FPBeneficiario.consultarPorNIF(b.getNif());
+		
+		// Se comprueba que existen los médicos, tanto emisor como receptor
+		// No haria falta comprobar que los parametros introducidos sean medicos,
+		// pues se obliga poniendo que su tipo sea de la clase "Medico"
+		try {
+			usuario = FPUsuario.consultar(emisor.getDni());
+			if(usuario.getRol() != Roles.Medico) {
+				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
+			}
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		try {
+			usuario = FPUsuario.consultar(destino.getDni());
+			if(usuario.getRol() != Roles.Medico) {
+				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
+			}
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		// Comprobamos que el medico receptor sea un especialista
+		if (!(destino.getTipoMedico() instanceof Especialista))
+			throw new VolanteNoValidoException("Solo se puede emitir un volante para acudir a un especialista");
+		
+		// Si todo es correcto, se crea el volante, se escribe en el log y se devuelve el identificador del volante
+		volante = new Volante();
+		volante.setBeneficiario(b);
+		volante.setEmisor(emisor);
+		volante.setReceptor(destino);
+		FPVolante.insertar(volante);
+		
+		// Añadimos una entrada al log
+		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "Se ha emitido un volante para el beneficiario "+volante.getBeneficiario().getNif()+", emitido por el medico "+volante.getEmisor().getNombre() +" para el especialista "+volante.getReceptor().getNombre());
+		FPEntradaLog.insertar(entrada);
+		
+		return volante.getId();
+	}
 
 	// Método para obtener todas las citas de un beneficiario
 	public static Vector<Cita> getCitas(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException {
@@ -182,51 +232,5 @@ public class GestorCitas {
 		FPEntradaLog.insertar(entrada);
 	}
 
-	public static long emitirVolante(long idSesion, Beneficiario b, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
-		EntradaLog entrada;
-		Usuario usuario;
-		Volante volante;
-		
-		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarCita);
-		
-		// Se comprueba que existe el beneficiario dado por parámetro
-		FPBeneficiario.consultarPorNIF(b.getNif());
-		
-		// Se comprueba que existen los médicos, tanto emisor como receptor
-		try {
-			usuario = FPUsuario.consultar(emisor.getDni());
-			if(usuario.getRol() != Roles.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
-			}
-		} catch(UsuarioIncorrectoException ex) {
-			throw new MedicoInexistenteException(ex.getMessage());
-		}
-		
-		try {
-			usuario = FPUsuario.consultar(destino.getDni());
-			if(usuario.getRol() != Roles.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
-			}
-		} catch(UsuarioIncorrectoException ex) {
-			throw new MedicoInexistenteException(ex.getMessage());
-		}
-		
-		// Comprobamos que el medico receptor sea un especialista
-		if (!(destino.getTipoMedico() instanceof Especialista))
-			throw new VolanteNoValidoException("Solo se puede emitir un volante para acudir a un especialista");
-		
-		// Si todo es correcto, se crea el volante, se escribe en el log y se devuelve el identificador del volante
-		volante = new Volante();
-		volante.setBeneficiario(b);
-		volante.setEmisor(emisor);
-		volante.setReceptor(destino);
-		FPVolante.insertar(volante);
-		
-		// Añadimos una entrada al log
-		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "Se ha emitido un volante para el beneficiario "+volante.getBeneficiario().getNif()+", emitido por el medico "+volante.getEmisor().getNombre() +" para el especialista "+volante.getReceptor().getNombre());
-		FPEntradaLog.insertar(entrada);
-		
-		return volante.getId();
-	}
+	
 }
