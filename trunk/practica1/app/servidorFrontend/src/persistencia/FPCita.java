@@ -23,7 +23,7 @@ public class FPCita {
 	
 	private static final String COL_FECHA = "fecha";
 	private static final String COL_DURACION = "duracion";
-	private static final String COL_DNI_BENEFICIARIO = "dniBeneficiario";
+	private static final String COL_NIF_BENEFICIARIO = "nifBeneficiario";
 	private static final String COL_DNI_MEDICO = "dniMedico";
 	
 	public static Vector<Cita> consultarPorBeneficiario(String dniBeneficiario) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
@@ -40,7 +40,7 @@ public class FPCita {
 
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM "
-				+ TABLA_CITAS + " WHERE " + COL_DNI_BENEFICIARIO + " = ?", dniBeneficiario);
+				+ TABLA_CITAS + " WHERE " + COL_NIF_BENEFICIARIO + " = ?", dniBeneficiario);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 
@@ -98,7 +98,7 @@ public class FPCita {
 				fechaAux = new GregorianCalendar(fechaTimeStamp.getYear()+1900, fechaTimeStamp.getMonth(), fechaTimeStamp.getDate(), fechaTimeStamp.getHours(), fechaTimeStamp.getMinutes());
 				fecha = fechaAux.getTime();
 				duracion = datos.getInt(COL_DURACION);
-				bene = FPBeneficiario.consultarPorNIF(datos.getString(COL_DNI_BENEFICIARIO));
+				bene = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
 				cita = new Cita(fecha, duracion, bene, med);
 				citas.add(cita);
 			}while(datos.next());
@@ -115,7 +115,7 @@ public class FPCita {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM "
-				+ TABLA_CITAS + " WHERE " + COL_FECHA + " = ? AND " + COL_DURACION + " = ? AND " + COL_DNI_MEDICO + " = ? AND " + COL_DNI_BENEFICIARIO + " = ?", c.getFechaYhora(), c.getDuracion(), c.getMedico().getDni(), c.getBeneficiario().getNif());
+				+ TABLA_CITAS + " WHERE " + COL_FECHA + " = ? AND " + COL_DURACION + " = ? AND " + COL_DNI_MEDICO + " = ? AND " + COL_NIF_BENEFICIARIO + " = ?", c.getFechaYhora(), c.getDuracion(), c.getMedico().getDni(), c.getBeneficiario().getNif());
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
@@ -130,7 +130,7 @@ public class FPCita {
 		ComandoSQL comando;
 
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CITAS
-				+ " (" + COL_FECHA + ", " + COL_DURACION + ", " + COL_DNI_BENEFICIARIO
+				+ " (" + COL_FECHA + ", " + COL_DURACION + ", " + COL_NIF_BENEFICIARIO
 				+ ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?)",
 				c.getFechaYhora(), c.getDuracion(), c.getBeneficiario().getNif(), c.getMedico().getDni());
 		GestorConexionesBD.ejecutar(comando);
@@ -140,7 +140,7 @@ public class FPCita {
 		ComandoSQL comando;
 
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_CITAS
-				+ " WHERE " + COL_FECHA + "=? AND " + COL_DURACION + "=? AND " + COL_DNI_BENEFICIARIO
+				+ " WHERE " + COL_FECHA + "=? AND " + COL_DURACION + "=? AND " + COL_NIF_BENEFICIARIO
 				+ "=? AND " + COL_DNI_MEDICO + "=?",
 				c.getFechaYhora(), c.getDuracion(), c.getBeneficiario().getNif(), c.getMedico().getDni());
 		GestorConexionesBD.ejecutar(comando);

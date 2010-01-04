@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-
 /**
  * Clase que representa un usuario del sistema con rol de médico.
  */
@@ -23,7 +22,7 @@ public class Medico extends Usuario implements Serializable {
 	}
 
 	public Medico() {
-		super(); 
+		super();
 	}
 	
 	public Roles getRol() {
@@ -36,6 +35,14 @@ public class Medico extends Usuario implements Serializable {
 
 	public void setCalendario(ArrayList<PeriodoTrabajo> calendario) {
 		this.calendario = calendario;
+	}
+	
+	public TipoMedico getTipoMedico() {
+		return tipoMedico;
+	}
+
+	public void setTipoMedico(TipoMedico tipoMedico) {
+		this.tipoMedico = tipoMedico;
 	}
 	
 	public boolean fechaEnCalendario(Date fecha, long duracion) {
@@ -93,6 +100,65 @@ public class Medico extends Usuario implements Serializable {
 		return fechaOk;
 	}
 	
+	public boolean calendariosDiferentes(Medico medico, Date fecha) {
+		ArrayList<PeriodoTrabajo> otroCalendario;
+		Calendar calend;
+		DiaSemana dia;
+		int diaNum;
+		boolean diaOk, diferente;
+		
+		// Obtenemos los períodos de trabajo del otro médico
+		otroCalendario = medico.getCalendario();
+		
+		// Obtenemos el día de la semana asociado a la fecha pasada
+		diaOk = true;
+		calend = Calendar.getInstance();
+		calend.setTime(fecha);
+		diaNum = calend.get(Calendar.DAY_OF_WEEK);
+		switch(diaNum) {
+			case Calendar.MONDAY:
+				dia = DiaSemana.Lunes;
+				break;
+			case Calendar.TUESDAY:
+				dia = DiaSemana.Martes;
+				break;
+			case Calendar.WEDNESDAY:
+				dia = DiaSemana.Miercoles;
+				break;
+			case Calendar.THURSDAY:
+				dia = DiaSemana.Jueves;
+				break;
+			case Calendar.FRIDAY:
+				dia = DiaSemana.Viernes;
+				break;
+			default:
+				// Este día de la semana no es válido
+				diaOk = false;
+				dia = DiaSemana.Lunes;
+				break;
+		}
+		
+		// Comprobamos si los períodos de trabajo de los dos médicos para el
+		// día indicado son excluyentes, es decir, no se solapa ninguna hora
+		if(diaOk) {
+			diferente = true;
+			for(PeriodoTrabajo otroPeriodo : otroCalendario) {
+				for(PeriodoTrabajo periodo : calendario) {
+					if(otroPeriodo.getDia() == dia && periodo.getDia() == dia) {
+						if(!((periodo.getHoraInicio() < otroPeriodo.getHoraInicio() && periodo.getHoraFinal() < otroPeriodo.getHoraInicio())
+						   || (periodo.getHoraInicio() > otroPeriodo.getHoraFinal() && periodo.getHoraFinal() > otroPeriodo.getHoraFinal()))) {
+							diferente = false;
+						}						
+					}
+				}
+			}
+		} else {
+			diferente = false;
+		}
+		
+		return diferente;
+	}
+	
 	public boolean equals(Object o) {
 		Medico m;
 		boolean dev;
@@ -114,14 +180,6 @@ public class Medico extends Usuario implements Serializable {
 			}
 		}
 		return dev;
-	}
-
-	public TipoMedico getTipoMedico() {
-		return tipoMedico;
-	}
-
-	public void setTipoMedico(TipoMedico tipoMedico) {
-		this.tipoMedico = tipoMedico;
 	}
 	
 }

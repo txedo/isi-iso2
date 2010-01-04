@@ -2,13 +2,8 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-
 import comunicaciones.GestorConexionesBD;
-
-import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;

@@ -569,6 +569,8 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 		try {
 			// Eliminamos una cita existente
 			GestorCitas.anularCita(idSesion, cita);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Anulada una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, "Error SQL al anular una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + se.getLocalizedMessage());
@@ -589,6 +591,54 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 			throw e;
 		}
 	}
+	
+	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception {
+		long idVolante;
+		String login;
+		
+		try {
+			// Solicitamos un volante para un cierto beneficiario y médico
+			idVolante = GestorCitas.emitirVolante(idSesion, beneficiario, emisor, destino);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Emitido un volante para el médico con DNI " + destino.getDni() + " y el beneficiario con NIF " + beneficiario.getNif() + ".");
+		} catch(SQLException se) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error SQL al emitir un volante para el médico con DNI " + destino.getDni() + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
+			throw se;
+		} catch(BeneficiarioInexistenteException bie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al solicitar un volante para un beneficiario inexistente con NIF " + beneficiario.getNif() + ": " + bie.getLocalizedMessage());
+			throw bie;
+		} catch(MedicoInexistenteException mie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al solicitar un volante para un médico inexistente con DNI " + emisor.getDni() + " o " + destino.getDni() + ": " + mie.getLocalizedMessage());
+			throw mie;
+		} catch(VolanteNoValidoException vnve) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al solicitar un volante para un médico no especialista con DNI " + destino.getDni() + ": " + vnve.getLocalizedMessage());
+			throw vnve;
+		} catch(UsuarioIncorrectoException uie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a emitir un volante: " + uie.getLocalizedMessage());
+			throw uie;
+		} catch(CentroSaludIncorrectoException csie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a emitir un volante: " + csie.getLocalizedMessage());
+			throw csie;
+		} catch(OperacionIncorrectaException oie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al realizar una operación no permitida de emisión de un volante para el beneficiario con NIF " + beneficiario.getNif() + ": " + oie.getLocalizedMessage());
+			throw oie;
+		} catch(SesionInvalidaException sie) {
+			GestorConexionesLog.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para emitir un volante para el beneficiario con NIF " + beneficiario.getNif() + ": " + sie.getLocalizedMessage());
+			throw sie;
+		} catch(Exception e) {
+			GestorConexionesLog.ponerMensaje("Error inesperado al emitir un volante: " + e.toString());
+			throw e;
+		}
+		
+		return idVolante;
+	}
 		
 	// ------------------------------
 	// Métodos del Gestor de Mensajes
@@ -602,9 +652,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	// Métodos aún no implementados
 
 	/*
-	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException {
-		return GestorMedicos.emitirVolante(idSesion, beneficiario, emisor, destino);
-	}
+
 	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException {
 		GestorMedicos.modificarCalendario(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
 	}

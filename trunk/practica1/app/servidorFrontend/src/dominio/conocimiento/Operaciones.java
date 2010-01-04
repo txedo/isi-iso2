@@ -21,5 +21,5 @@ public enum Operaciones {
 	ModificarMedico,
 	ModificarCalendario,
 	EstablecerSustituto,
-	ConsultarUsuario	
+	ConsultarUsuario
 }

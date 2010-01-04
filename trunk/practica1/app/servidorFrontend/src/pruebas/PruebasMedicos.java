@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
-
+import java.util.Vector;
 import persistencia.AgenteFrontend;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
@@ -27,15 +27,18 @@ import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
+import excepciones.SustitucionInvalidaException;
 import junit.framework.TestCase;
 
 public class PruebasMedicos extends TestCase {
 
 	private CentroSalud centro1;
-	private Medico medico1, medico2;
+	private Medico medico1, medico2, medico3, medico4;
 	private Citador citador1;
 	private Administrador admin1;
-	private PeriodoTrabajo periodo1, periodo2, periodo3;
+	private PeriodoTrabajo periodo11, periodo12;
+	private PeriodoTrabajo periodo21;
+	private PeriodoTrabajo periodo31, periodo32;
 	private ConexionBDFrontend conexionF;
 	private ISesion sesionCitador;
 	private ISesion sesionAdmin;
@@ -77,17 +80,25 @@ public class PruebasMedicos extends TestCase {
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
 			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1, pediatra);
 			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", centro1, cabecera);
+			medico3 = new Medico("58782350", "jjj", "jjj", "Juan", "P. F.", centro1, cabecera);
+			medico4 = new Medico("91295016", "otro", "otro", "Ana", "R. M.", centro1, cabecera);
 			citador1 = new Citador("11223344", "citador", "cit123", "Fernando", "G. P.", centro1);
 			admin1 = new Administrador("55667788", "admin", "nimda", "María", "L. F.", centro1);
-			periodo1 = new PeriodoTrabajo(10, 14, DiaSemana.Miercoles);
-			periodo2 = new PeriodoTrabajo(17, 19, DiaSemana.Viernes);
-			periodo3 = new PeriodoTrabajo(16, 17, DiaSemana.Lunes);
-			medico1.getCalendario().add(periodo1);
-			medico1.getCalendario().add(periodo2);
-			medico2.getCalendario().add(periodo3);
+			periodo11 = new PeriodoTrabajo(10, 14, DiaSemana.Miercoles);
+			periodo12 = new PeriodoTrabajo(17, 19, DiaSemana.Viernes);
+			periodo21 = new PeriodoTrabajo(16, 17, DiaSemana.Lunes);
+			periodo31 = new PeriodoTrabajo(9, 13, DiaSemana.Martes);
+			periodo32 = new PeriodoTrabajo(16, 18, DiaSemana.Viernes);
+			medico1.getCalendario().add(periodo11);
+			medico1.getCalendario().add(periodo12);
+			medico2.getCalendario().add(periodo21);
+			medico3.getCalendario().add(periodo31);
+			medico3.getCalendario().add(periodo32);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);
 			FPUsuario.insertar(medico2);
+			FPUsuario.insertar(medico3);
+			FPUsuario.insertar(medico4);
 			FPUsuario.insertar(citador1);
 			FPUsuario.insertar(admin1);
 			// Iniciamos dos sesiones con roles de citador y administrador
@@ -271,20 +282,20 @@ public class PruebasMedicos extends TestCase {
 			// Comprobamos varias fechas válidas
 			// (el médico 1 tiene como horario de trabajo los miércoles
 			// de 10:00 a 14:00 y los viernes de 17:00 a 19:00)
-			fecha = new Date(2009 - 1900, 11, 2, 10, 0, 0); // Martes 10:00-10:10
+			fecha = new Date(2009 - 1900, 11, 2, 10, 0, 0); // Miércoles 10:00-10:10
 			assertTrue(medico1.fechaEnCalendario(fecha, 10));
-			fecha = new Date(2009 - 1900, 11, 2, 12, 30, 0); // Martes 12:30-12:40
+			fecha = new Date(2009 - 1900, 11, 2, 12, 30, 0); // Miércoles 12:30-12:40
 			assertTrue(medico1.fechaEnCalendario(fecha, 10));
-			fecha = new Date(2009 - 1900, 11, 2, 13, 50, 0); // Martes 13:50-14:00
+			fecha = new Date(2009 - 1900, 11, 2, 13, 50, 0); // Miércoles 13:50-14:00
 			assertTrue(medico1.fechaEnCalendario(fecha, 10));
 			fecha = new Date(2009 - 1900, 11, 4, 18, 20, 0); // Viernes 18:20-18:30
 			assertTrue(medico1.fechaEnCalendario(fecha, 10));
 			// Comprobamos varias fechas no válidas
-			fecha = new Date(2009 - 1900, 11, 2, 9, 50, 0); // Martes 9:50-10:00
+			fecha = new Date(2009 - 1900, 11, 2, 9, 50, 0); // Miércoles 9:50-10:00
 			assertFalse(medico1.fechaEnCalendario(fecha, 10));
-			fecha = new Date(2009 - 1900, 11, 2, 14, 00, 0); // Martes 14:00-14:10
+			fecha = new Date(2009 - 1900, 11, 2, 14, 00, 0); // Miércoles 14:00-14:10
 			assertFalse(medico1.fechaEnCalendario(fecha, 10));
-			fecha = new Date(2009 - 1900, 11, 2, 17, 30, 0); // Martes 17:30-17:40
+			fecha = new Date(2009 - 1900, 11, 2, 17, 30, 0); // Miércoles 17:30-17:40
 			assertFalse(medico1.fechaEnCalendario(fecha, 10));
 			fecha = new Date(2009 - 1900, 11, 4, 10, 00, 0); // Viernes 10:00-10:10
 			assertFalse(medico1.fechaEnCalendario(fecha, 10));
@@ -294,5 +305,62 @@ public class PruebasMedicos extends TestCase {
 			fail(e.toString());
 		}
 	}
+	
+	/** Pruebas relacionadas con las sustituciones de médicos */
+	public void testSustituciones() {
+		Vector<Date> dias;
+		
+		try {
+			// Intentamos añadir una sustitución válida (el médico 2
+			// sustituye al médico 1 el 2/12/2009 y el 4/12/2009)
+			dias = new Vector<Date>();
+			dias.add(new Date(2009 - 1900, 11, 2)); // Miércoles 2/12/2009
+			dias.add(new Date(2009 - 1900, 11, 4)); // Viernes 4/12/2009
+			GestorUsuarios.modificarCalendario(sesionAdmin.getId(), medico1, dias, medico2);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Intentamos añadir una sustitución inválida porque el médico
+			// que se va a sustituir ya tiene una sustitución (el médico 1
+			// ya va a ser sustituido el día 4/12/2009) 
+			dias = new Vector<Date>();
+			dias.add(new Date(2009 - 1900, 11, 3)); // Jueves 3/12/2009
+			dias.add(new Date(2009 - 1900, 11, 4)); // Viernes 4/12/2009
+			GestorUsuarios.modificarCalendario(sesionAdmin.getId(), medico1, dias, medico4);
+			fail("Se esperaba una excepción SustitucionInvalidaException");
+		} catch(SustitucionInvalidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SustitucionInvalidaException");
+		}
+		
+		try {
+			// Intentamos añadir una sustitución inválida porque el médico
+			// que va a hacer la sustitución ya tiene otra sustitución
+			// (el médico 2 va a hacer una sustitución el día 4/12/2009)
+			dias = new Vector<Date>();
+			dias.add(new Date(2009 - 1900, 11, 3)); // Jueves 3/12/2009
+			dias.add(new Date(2009 - 1900, 11, 4)); // Viernes 4/12/2009
+			GestorUsuarios.modificarCalendario(sesionAdmin.getId(), medico3, dias, medico2);
+			fail("Se esperaba una excepción SustitucionInvalidaException");
+		} catch(SustitucionInvalidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SustitucionInvalidaException");
+		}
+		
+		try {
+			// Intentamos añadir una sustitución entre dos médicos cuyos
+			// calendarios se solapan el día que se va a sustituir
+			// (los viernes el médico 1 y 3 trabajan de 17:00 a 18:00)
+			dias = new Vector<Date>();
+			dias.add(new Date(2009 - 1900, 11, 11)); // Viernes 11/12/2009
+			GestorUsuarios.modificarCalendario(sesionAdmin.getId(), medico1, dias, medico3);
+			fail("Se esperaba una excepción SustitucionInvalidaException");
+		} catch(SustitucionInvalidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SustitucionInvalidaException");
+		}
+	}	
 	
 }
