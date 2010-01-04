@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+
 import comunicaciones.ConexionBDFrontend;
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Administrador;
@@ -16,6 +18,7 @@ import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
+import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
@@ -23,6 +26,7 @@ import persistencia.AgenteFrontend;
 import persistencia.FPCentroSalud;
 import persistencia.FPEntradaLog;
 import persistencia.FPPeriodoTrabajo;
+import persistencia.FPSustitucion;
 import persistencia.FPUsuario;
 import junit.framework.TestCase;
 
@@ -34,6 +38,7 @@ public class PruebasPersistencia extends TestCase {
 	private Citador citador1, citador2;
 	private Administrador administrador1;
 	private PeriodoTrabajo periodo1, periodo2;
+	private Sustitucion sustitucion1, sustitucion2;
 	private ConexionBDFrontend conexionF;
 	private Pediatra pediatra;
 	private Cabecera cabecera;
@@ -79,6 +84,8 @@ public class PruebasPersistencia extends TestCase {
 			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "", centro1);
 			periodo1 = new PeriodoTrabajo(10, 12, DiaSemana.Lunes);
 			periodo2 = new PeriodoTrabajo(16, 20, DiaSemana.Jueves);
+			sustitucion1 = new Sustitucion(new Date(2009 - 1900, 11, 1), medico1, medico2);
+			sustitucion2 = new Sustitucion(new Date(2009 - 1900, 11, 2), medico1, medico2);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -333,6 +340,35 @@ public class PruebasPersistencia extends TestCase {
 			// Comprobamos si los cambios han tenido efecto
 			periodos = FPPeriodoTrabajo.consultarCalendario(medico1.getDni());
 			assertTrue(periodos.size() == 0);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de la tabla de sustituciones */
+	public void testSustituciones() {
+		ArrayList<Sustitucion> sustituciones;
+			
+		try {
+			// Añadimos varios médicos a la base de datos
+			FPCentroSalud.insertar(centro1);
+			FPUsuario.insertar(medico1);
+			FPUsuario.insertar(medico2);
+			// Insertamos una sustitución correcta
+			FPSustitucion.insertar(sustitucion1);
+			FPSustitucion.insertar(sustitucion2);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+
+		try {
+			// Recuperamos las sustituciones almacenadas
+			sustituciones = FPSustitucion.consultarMedico(medico1.getDni());
+			assertTrue((sustituciones.get(0).equals(sustitucion1) && sustituciones.get(1).equals(sustitucion2)
+			           || (sustituciones.get(0).equals(sustitucion2) && sustituciones.get(1).equals(sustitucion1))));
+			sustituciones = FPSustitucion.consultarSustituto(medico2.getDni());
+			assertTrue((sustituciones.get(0).equals(sustitucion1) && sustituciones.get(1).equals(sustitucion2)
+			           || (sustituciones.get(0).equals(sustitucion2) && sustituciones.get(1).equals(sustitucion1))));
 		} catch(Exception e) {
 			fail(e.toString());
 		}

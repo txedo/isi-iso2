@@ -16,9 +16,9 @@ public class FPPeriodoTrabajo {
 	private static final String TABLA_PERIODOS = "periodosTrabajo";
 	
 	private static final String COL_ID = "id";
-	private static final String COL_DNI = "dni";
-	private static final String COL_HORA_INICIO = "hora_inicio";
-	private static final String COL_HORA_FINAL = "hora_final";
+	private static final String COL_DNI_MEDICO = "dniMedico";
+	private static final String COL_HORA_INICIO = "horaInicio";
+	private static final String COL_HORA_FINAL = "horaFinal";
 	private static final String COL_DIA = "dia";
 	
 	public static ArrayList<PeriodoTrabajo> consultarCalendario(String dni) throws SQLException {
@@ -28,7 +28,7 @@ public class FPPeriodoTrabajo {
 		PeriodoTrabajo periodo;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_PERIODOS + " WHERE " + COL_DNI + " = ?", dni);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_PERIODOS + " WHERE " + COL_DNI_MEDICO + " = ?", dni);
 		datos = GestorConexionesBD.consultar(comando);
 		
 		// Devolvemos la lista de períodos de trabajo del médico
@@ -49,7 +49,7 @@ public class FPPeriodoTrabajo {
 		ComandoSQL comando;
 		ResultSet datos;
 
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_PERIODOS + " (" + COL_DNI + ", " + COL_HORA_INICIO + ", " + COL_HORA_FINAL + ", " + COL_DIA + ") VALUES (?, ?, ?, ?)",
+		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_PERIODOS + " (" + COL_DNI_MEDICO + ", " + COL_HORA_INICIO + ", " + COL_HORA_FINAL + ", " + COL_DIA + ") VALUES (?, ?, ?, ?)",
 		                                  dni, periodo.getHoraInicio(), periodo.getHoraFinal(), periodo.getDia().ordinal());
 		GestorConexionesBD.ejecutar(comando);
 		

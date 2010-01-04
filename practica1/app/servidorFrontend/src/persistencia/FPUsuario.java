@@ -3,18 +3,13 @@ package persistencia;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Administrador;
-import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
-import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Roles;
-import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
@@ -32,7 +27,7 @@ public class FPUsuario {
 	private static final String COL_ROL = "rol";
 	private static final String COL_NOMBRE = "nombre";
 	private static final String COL_APELLIDOS = "apellidos";
-	private static final String COL_ID_CENTRO = "id_centro";
+	private static final String COL_ID_CENTRO = "idCentro";
 
 	public static Usuario consultar(String dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
@@ -179,6 +174,55 @@ public class FPUsuario {
 		}
 		
 		return usuario;
+	}
+	
+	public static ArrayList<Usuario> consultarTodo(Roles rol) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+		ComandoSQL comando;
+		ResultSet datos;
+		ArrayList<Usuario> usuarios;
+		ArrayList<PeriodoTrabajo> calendario;
+		CentroSalud centro;
+		Usuario usuario = null;
+		
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_ROL + " = ?", rol.ordinal());
+		datos = GestorConexionesBD.consultar(comando);
+		
+		// Recorremos la lista de usuarios con el rol indicado
+		usuarios = new ArrayList<Usuario>();
+		while(datos.next()) {
+			// Creamos un usuario del tipo adecuado
+			switch(rol) {
+			case Citador:
+				usuario = new Citador();
+				break;
+			case Administrador:
+				usuario = new Administrador();
+				break;
+			case Medico:
+				usuario = new Medico();
+				break;
+			}
+			// Buscamos el centro del usuario
+			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
+			// Establecemos los datos del usuario
+			usuario.setDni(datos.getString(COL_DNI));
+			usuario.setLogin(datos.getString(COL_LOGIN));
+			usuario.setPassword(datos.getString(COL_PASSWORD));
+			usuario.setNombre(datos.getString(COL_NOMBRE));
+			usuario.setApellidos(datos.getString(COL_APELLIDOS));
+			usuario.setCentroSalud(centro);
+			// Establecemos datos adicionales de los usuarios
+			if(usuario.getRol() == Roles.Medico) {
+				// Obtenemos el calendario del médico
+				calendario = FPPeriodoTrabajo.consultarCalendario(usuario.getDni());
+				((Medico)usuario).setCalendario(calendario);
+			}
+			// Añadimos el usuario a la lista que se va a devolver
+			usuarios.add(usuario);
+		}
+		
+		return usuarios;
 	}
 	
 	public static void insertar(Usuario usuario) throws SQLException {

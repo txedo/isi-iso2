@@ -19,7 +19,7 @@ public class FPVolante {
 	private static final String TABLA_VOLANTES = "volantes";
 	
 	private static final String COL_ID_VOLANTE = "id";
-	private static final String COL_DNI_BENEFICIARIO = "dniBeneficiario";
+	private static final String COL_NIF_BENEFICIARIO = "nifBeneficiario";
 	private static final String COL_DNI_MEDICO_EMISOR = "dniMedicoEmisor";
 	private static final String COL_DNI_MEDICO_RECEPTOR = "dniMedicoReceptor";
 	
@@ -42,7 +42,7 @@ public class FPVolante {
 		} else {
 			// Establecemos los datos del volante
 			volante = new Volante();
-			bene = FPBeneficiario.consultarPorNIF(datos.getString(COL_DNI_BENEFICIARIO));
+			bene = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
 			medEmisor = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO_EMISOR));
 			medReceptor = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO_RECEPTOR));
 			volante.setId(id);
@@ -57,7 +57,7 @@ public class FPVolante {
 		ComandoSQL comando;
 		ResultSet datos;
 
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_VOLANTES + " (" + COL_DNI_BENEFICIARIO + ", " + COL_DNI_MEDICO_EMISOR + ", " + COL_DNI_MEDICO_RECEPTOR + ") VALUES (?, ?, ?)",
+		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_VOLANTES + " (" + COL_NIF_BENEFICIARIO + ", " + COL_DNI_MEDICO_EMISOR + ", " + COL_DNI_MEDICO_RECEPTOR + ") VALUES (?, ?, ?)",
 		                                  volante.getBeneficiario().getNif(), volante.getEmisor().getDni(), volante.getReceptor().getDni());
 		GestorConexionesBD.ejecutar(comando);
 		
