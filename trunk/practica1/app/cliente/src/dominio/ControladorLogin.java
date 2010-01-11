@@ -1,12 +1,10 @@
 package dominio;
 
-import java.net.MalformedURLException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
+import comunicaciones.ICliente;
+import comunicaciones.Cliente;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
 import dominio.conocimiento.Beneficiario;
@@ -27,6 +25,7 @@ import presentacion.JFPrincipal;
 public class ControladorLogin implements OperacionesAuxiliares {
 
 	private ProxyServidorFrontend servidor;
+	private Cliente cliente;
 	private ISesion sesion;
 	private JFLogin ventana;
 	private JFPrincipal ventanaPrincipal;
@@ -59,7 +58,10 @@ public class ControladorLogin implements OperacionesAuxiliares {
 		servidor.conectar(direccionIP);
 		// Nos identificamos en el servidor
 		sesion = (ISesion)servidor.identificar(login, password);
-		//servidor.registrar(cliente, sesion.getId());
+		// Una vez que el cliente se ha identificado correctamente, registramos el cliente en el servidor
+		cliente = new Cliente();
+		cliente.conectar();
+		servidor.registrar((ICliente)cliente, sesion.getId());
 		// Ocultamos la ventana de login
 		ventana.setVisible(false);
 		ventana.dispose();

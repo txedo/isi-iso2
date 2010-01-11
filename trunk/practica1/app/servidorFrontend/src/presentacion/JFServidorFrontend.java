@@ -6,6 +6,8 @@ import dominio.control.ControladorPrincipal;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -56,6 +58,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 	private JLabel lblIP;
 	private JLabel lblBarraEstado;
 	private JButton btnDesconectar;
+	private JLabel lblClientesConectados;
 	private JButton btnConectar;
 	private JTextArea txtLog;
 	
@@ -71,8 +74,8 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 			this.setPreferredSize(new java.awt.Dimension(550, 320));
 			this.setMinimumSize(new java.awt.Dimension(500, 300));
 
-			this.addWindowListener(new java.awt.event.WindowAdapter() { 
-				public void windowClosing(java.awt.event.WindowEvent e) {    
+			this.addWindowListener(new WindowAdapter() { 
+				public void windowClosing(WindowEvent e) {    
 					System.exit(0);
 				}
 			});
@@ -81,7 +84,13 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 			AnchorLayout jPanel1Layout = new AnchorLayout();
 				getContentPane().add(jPanel1, BorderLayout.CENTER);
 				jPanel1.setLayout(jPanel1Layout);
-				jPanel1.setPreferredSize(new java.awt.Dimension(527, 237));
+				jPanel1.setPreferredSize(new java.awt.Dimension(542, 327));
+				{
+					lblClientesConectados = new JLabel();
+					jPanel1.add(lblClientesConectados, new AnchorConstraint(855, 10, 31, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					lblClientesConectados.setText("0 clientes conectados.");
+					lblClientesConectados.setPreferredSize(new java.awt.Dimension(522, 16));
+				}
 				{
 					txtIPRespaldo = new JTextField();
 					jPanel1.add(txtIPRespaldo, new AnchorConstraint(24, 12, 191, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
@@ -96,8 +105,8 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 				}
 				{
 					scpPanelLog = new JScrollPane();
-					jPanel1.add(scpPanelLog, new AnchorConstraint(55, 10, 23, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					scpPanelLog.setPreferredSize(new java.awt.Dimension(346, 154));
+					jPanel1.add(scpPanelLog, new AnchorConstraint(55, 10, 54, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					scpPanelLog.setPreferredSize(new java.awt.Dimension(522, 212));
 					scpPanelLog.setMinimumSize(new java.awt.Dimension(346, 155));
 					{
 						txtLog = new JTextArea();
@@ -105,13 +114,14 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 						txtLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
 						txtLog.setEditable(false);
 						txtLog.setFont(new java.awt.Font("Tahoma",0,12));
+						txtLog.setPreferredSize(new java.awt.Dimension(523, 184));
 					}
 				}
 				{
 					lblBarraEstado = new JLabel();
-					jPanel1.add(lblBarraEstado, new AnchorConstraint(937, 10, 5, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					jPanel1.add(lblBarraEstado, new AnchorConstraint(937, 10, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblBarraEstado.setText("Servidor desconectado.");
-					lblBarraEstado.setPreferredSize(new java.awt.Dimension(396, 14));
+					lblBarraEstado.setPreferredSize(new java.awt.Dimension(522, 14));
 				}
 				{
 					btnDesconectar = new JButton();

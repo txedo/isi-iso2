@@ -67,12 +67,10 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 	
 	public void liberar(long idSesion) throws RemoteException, Exception {
 		servidor.liberar(idSesion);
-		
 	}
 
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
 		servidor.registrar(cliente, idSesion);
-		
 	}
 
 	public void crear(long idSesion, Beneficiario bene) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
@@ -120,6 +118,15 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 			Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public long emitirVolante(long arg0, Beneficiario arg1, Medico arg2,
+			Medico arg3) throws RemoteException,
+			BeneficiarioInexistenteException, MedicoInexistenteException,
+			SQLException, Exception {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 		
 }
