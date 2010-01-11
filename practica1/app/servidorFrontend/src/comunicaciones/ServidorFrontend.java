@@ -99,8 +99,11 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 			if (GestorSesiones.getSesion(idSesion)==null)
 				throw new SesionNoIniciadaException("No se puede registrar en el servidor el cliente con la sesion "+idSesion+" porque no existe esa sesion");
 			else {
-				clientesEscuchando.put(idSesion, cliente);
-				GestorConexionesLog.ponerMensaje("Usuario ICliente.cliente.getLogin() a la escucha.");
+				String url;
+				url = "rmi://" + cliente.getDireccionIP() + ":" + String.valueOf(cliente.getPuerto()) + "/" + ICliente.NOMBRE_CLIENTE;
+		        ICliente terminal = (ICliente)Naming.lookup(url);
+		        clientesEscuchando.put(idSesion, terminal);
+				GestorConexionesLog.ponerMensaje("Nuevo cliente a la escucha. ID de sesion " + idSesion);
 			}
 		} catch (SesionNoIniciadaException snie) {
 			GestorConexionesLog.ponerMensaje(snie.getMessage());
@@ -113,12 +116,17 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 	
 	public void liberar(long idSesion) throws RemoteException, Exception {
 		try {
-			if (GestorSesiones.getSesion(idSesion)==null)
+			ISesion sesion = GestorSesiones.getSesion(idSesion);
+			if (sesion == null) {
 				throw new Exception("No se puede liberar en el servidor el cliente con la sesion "+idSesion+" porque no existe esa sesion");
+			}
 			else {
+				ICliente cliente = clientesEscuchando.get(idSesion);
+				cliente.desconectar();
 				clientesEscuchando.remove(idSesion);
+				String mensajeLog = "Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' desconectado.";
 				GestorSesiones.liberar(idSesion);
-				GestorConexionesLog.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' desconectado.");
+				GestorConexionesLog.ponerMensaje(mensajeLog);
 			}
 		} catch (Exception e) {
 			GestorConexionesLog.ponerMensaje(e.getMessage());
