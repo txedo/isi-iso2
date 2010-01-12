@@ -9,7 +9,7 @@ public enum Operaciones {
 	ModificarUsuario,
 	EliminarUsuario,
 	TramitarCita,
-	EliminarCita,
+	AnularCita,
 	ObtenerCitas,
 	EmitirVolante,
 	RegistrarBeneficiario,

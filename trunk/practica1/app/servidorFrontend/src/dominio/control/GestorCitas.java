@@ -218,7 +218,7 @@ public class GestorCitas {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarCita);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.AnularCita);
 
 		// Se comprueba si la cita existe
 		if (!FPCita.existe(cita))
