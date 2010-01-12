@@ -2,17 +2,12 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import com.sun.org.apache.xerces.internal.impl.dtd.models.DFAContentModel;
-
 import dominio.ControladorLogin;
 import excepciones.UsuarioIncorrectoException;
 import java.awt.BorderLayout;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,6 +38,7 @@ public class JFLogin extends javax.swing.JFrame {
 		}
 	}
 
+	private static final long serialVersionUID = -8335773788689456763L;
 	
 	private ControladorLogin controlador;
 	private JLabel jLabel2;
@@ -165,6 +161,7 @@ public class JFLogin extends javax.swing.JFrame {
 			Utilidades.mostrarDialogoError(this, "Error al autentificar", "El usuario o contraseña son incorrectos.");
 		} catch (Exception e) {
 			Utilidades.mostrarDialogoError(this, "Error", e.toString());
+			e.printStackTrace();
 		}
 	}
 	

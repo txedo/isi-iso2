@@ -1,17 +1,16 @@
 package presentacion;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import excepciones.*;
 
 public class Utilidades {
-	final static int NIF_LENGTH = 9;
-	final static int NSS_LENGTH = 12;
-	final static int TELEFONO_LENGTH = 9;
+	
+	private final static int NIF_LENGTH = 9;
+	private final static int NSS_LENGTH = 12;
+	private final static int TELEFONO_LENGTH = 9;
 	
 	public static void mostrarDialogoInformacion (JFrame ventanaPadre, String titulo, String mensaje) {
 		JOptionPane.showMessageDialog(ventanaPadre, mensaje, titulo, JOptionPane.INFORMATION_MESSAGE);
@@ -231,10 +230,9 @@ public class Utilidades {
 	}
 	
 	public static void comprobarFecha(Date date) throws FechaNacimientoIncorrectaException, FormatoFechaIncorrectoException {
-		String fecha = "";
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		try {
-			fecha = sdf.format(date);
+			sdf.format(date);
 		} catch (Exception e) {
 			throw new FormatoFechaIncorrectoException();
 		}

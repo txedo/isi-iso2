@@ -101,7 +101,7 @@ public class GestorSesiones {
 		// Agregamos al vector las operaciones de citadores y administradores
 		if (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
 			operaciones.add(Operaciones.TramitarCita);
-			operaciones.add(Operaciones.EliminarCita);
+			operaciones.add(Operaciones.AnularCita);
 			operaciones.add(Operaciones.RegistrarBeneficiario);
 			operaciones.add(Operaciones.ModificarBeneficiario);
 			operaciones.add(Operaciones.ConsultarMedico);
@@ -152,7 +152,7 @@ public class GestorSesiones {
 		case TramitarCita:
 			permitido = esAdministrador || esCitador;
 			break;
-		case EliminarCita:
+		case AnularCita:
 			permitido = esAdministrador || esCitador;
 			break;
 		case ObtenerCitas:
