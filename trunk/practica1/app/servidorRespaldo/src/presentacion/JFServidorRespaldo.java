@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -67,25 +68,23 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 		try {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("Servidor Respaldo");
-			//this.setAlwaysOnTop(true);
-			this.setPreferredSize(new java.awt.Dimension(500, 320));
-			this.setMinimumSize(new java.awt.Dimension(400, 300));
-
+			this.setPreferredSize(new java.awt.Dimension(550, 400));
+			this.setMinimumSize(new java.awt.Dimension(500, 300));
 			this.addWindowListener(new java.awt.event.WindowAdapter() { 
 				public void windowClosing(java.awt.event.WindowEvent e) {    
 					System.exit(0);
 				}
 			});
-
-			jPanel1 = new JPanel();
-			AnchorLayout jPanel1Layout = new AnchorLayout();
+			{
+				jPanel1 = new JPanel();
+				AnchorLayout jPanel1Layout = new AnchorLayout();
 				getContentPane().add(jPanel1, BorderLayout.CENTER);
 				jPanel1.setLayout(jPanel1Layout);
 				jPanel1.setPreferredSize(new java.awt.Dimension(374, 266));
 				{
 					jlbIPRespaldo = new JLabel();
 					jPanel1.add(jlbIPRespaldo, new AnchorConstraint(8, 8, 94, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-					jlbIPRespaldo.setText("IP Respaldo:");
+					jlbIPRespaldo.setText("IP BD respaldo:");
 					jlbIPRespaldo.setPreferredSize(new java.awt.Dimension(92, 14));
 				}
 				{
@@ -136,9 +135,8 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 						}
 					});
 				}
-
+			}
 			pack();
-			
 		} catch (Exception e) {
 			this.actualizarTexto(e.toString());
 		}
@@ -174,12 +172,15 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 			} catch(MalformedURLException e) {
 				actualizarTexto("Error: " + e.toString());
 				e.printStackTrace();
+			} catch(UnknownHostException e) {
+				actualizarTexto("Error: " + e.toString());
+				e.printStackTrace();
 			// Si hay fallo al conectar, se desconecta, para hacer el "unexport" y que se pueda conectar despues
 			} catch(RemoteException e) {
 				actualizarTexto("Error: " + e.toString());
 				e.printStackTrace();
 				try {
-					controlador.detenerServidorRespaldo(txtIPRespaldo.getText());
+					controlador.detenerServidorRespaldo();
 				} catch (RemoteException e1) {
 					actualizarTexto("Error: " + e1.toString());
 					e1.printStackTrace();
@@ -190,6 +191,9 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 					actualizarTexto("Error: " + e1.toString());
 					e1.printStackTrace();
 				} catch (SQLException e1) {
+					actualizarTexto("Error: " + e1.toString());
+					e1.printStackTrace();
+				} catch (UnknownHostException e1) {
 					actualizarTexto("Error: " + e1.toString());
 					e1.printStackTrace();
 				}
@@ -203,7 +207,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 	private void btnDesconectarActionPerformed(ActionEvent evt) {
 		try {
 			// Detenemos el servidor de respaldo
-			controlador.detenerServidorRespaldo(txtIPRespaldo.getText());
+			controlador.detenerServidorRespaldo();
 			// Cambiamos el estado de la ventana
 			btnDesconectar.setEnabled(false);
 			btnConectar.setEnabled(true);
@@ -216,6 +220,8 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 		} catch(MalformedURLException e) {
 			actualizarTexto("Error al desconectar el servidor: " + e.toString());
 		} catch(NotBoundException e) {
+			actualizarTexto("Error al desconectar el servidor: " + e.toString());
+		} catch(UnknownHostException e) {
 			actualizarTexto("Error al desconectar el servidor: " + e.toString());
 		}
 	}

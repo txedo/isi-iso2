@@ -52,7 +52,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 		LocateRegistry.createRegistry(PUERTO_SERVIDOR);
 	}
 	
-    public void conectar(String ip) throws MalformedURLException, RemoteException {
+    public void activar(String ip) throws MalformedURLException, RemoteException {
         exportObject(this, PUERTO_SERVIDOR);
         try {
             Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
@@ -61,7 +61,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
         }
     }
     
-    public void desconectar(String ip) throws RemoteException, MalformedURLException, NotBoundException {
+    public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {
         unexportObject(this, false);
     	Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
     }
@@ -122,7 +122,7 @@ public class ServidorFrontend extends UnicastRemoteObject implements IServidorFr
 			}
 			else {
 				ICliente cliente = clientesEscuchando.get(idSesion);
-				cliente.desconectar();
+				cliente.desactivar();
 				clientesEscuchando.remove(idSesion);
 				String mensajeLog = "Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' desconectado.";
 				GestorSesiones.liberar(idSesion);

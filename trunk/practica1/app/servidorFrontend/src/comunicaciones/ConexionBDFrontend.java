@@ -12,12 +12,24 @@ import persistencia.ComandoSQL;
  */
 public class ConexionBDFrontend implements IConexionBD {
 
-	private AgenteFrontend agente = null;
+	private AgenteFrontend agente;
 	
 	public ConexionBDFrontend() throws SQLException {
 		agente = AgenteFrontend.getAgente();
 	}
 	
+	public AgenteFrontend getAgente() {
+		return agente;
+	}
+	
+	public void abrir() throws RemoteException, SQLException {
+		agente.abrir();
+	}
+
+	public void cerrar() throws RemoteException, SQLException {
+		agente.cerrar();
+	}
+
 	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
 		return agente.consultar(comando);
 	}
@@ -32,14 +44,6 @@ public class ConexionBDFrontend implements IConexionBD {
 
 	public void rollback() throws RemoteException, SQLException {
 		agente.rollback();
-	}
-
-	public void abrir() throws RemoteException, SQLException {
-		agente.abrir();
-	}
-
-	public void cerrar() throws RemoteException, SQLException {
-		agente.cerrar();
 	}
 
 }

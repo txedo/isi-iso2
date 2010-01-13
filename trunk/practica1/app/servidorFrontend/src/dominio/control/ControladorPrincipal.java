@@ -1,6 +1,8 @@
 package dominio.control;
 
+import java.net.Inet4Address;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -34,11 +36,15 @@ public class ControladorPrincipal {
 		vent.setVisible(true);
 	}
 	
-	public void iniciarServidor(String ipFrontend, String ipRespaldo) throws MalformedURLException, RemoteException, NotBoundException, SQLException {
+	public void iniciarServidor(String ipBDPrincipal, String ipRespaldo) throws RemoteException, MalformedURLException, UnknownHostException, NotBoundException, SQLException {
 		ConexionLogFrontend logsFrontend;
 		ProxyLogRespaldo logsRespaldo;
+		String ipLocal;
 		boolean respaldo;
 
+		// Obtenemos la IP de la máquina local
+		ipLocal = Inet4Address.getLocalHost().getHostAddress();
+		
 		// Cerramos las conexiones que pudiera haber abiertas
 		// (ignoramos los errores que pudieran producirse)
 		try {
@@ -47,12 +53,13 @@ public class ControladorPrincipal {
 		}
 		GestorConexionesBD.quitarConexiones();
 		GestorConexionesLog.quitarConexiones();
-
+		
 		// Comprobamos si se va a usar el servidor de respaldo
 		respaldo = (ipRespaldo != null && !ipRespaldo.equals(""));
 
 		// Creamos una conexión con la base de datos local
 		basedatos = new ConexionBDFrontend();
+		basedatos.getAgente().setIP(ipBDPrincipal);
 		basedatos.abrir();
 		GestorConexionesBD.ponerConexion(basedatos);
 		// Establecemos conexión con la base de datos del servidor de respaldo
@@ -78,7 +85,7 @@ public class ControladorPrincipal {
 		if(servidor == null) {
 			servidor = new ServidorFrontend();
 		}
-		servidor.conectar(ipFrontend);
+		servidor.activar(ipLocal);
 		// Mostramos un mensaje indicando que el servidor está activo
 		if(respaldo) {
 			GestorConexionesLog.ponerMensaje("=== Servidor iniciado ===");
@@ -87,7 +94,7 @@ public class ControladorPrincipal {
 		}
 	}
 	
-	public void detenerServidor(String ipFrontend, String ipRespaldo) throws RemoteException, MalformedURLException, NotBoundException, SQLException {
+	public void detenerServidor(String ipRespaldo) throws RemoteException, MalformedURLException, UnknownHostException, NotBoundException, SQLException {
 		// Cerramos las conexiones con las BD y vaciamos la lista
 		// (ignoramos los errores que pudieran producirse)
 		try {
@@ -96,7 +103,7 @@ public class ControladorPrincipal {
 		}
 		GestorConexionesBD.quitarConexiones();
 		// Desconectamos el servidor
-		servidor.desconectar(ipFrontend);
+		servidor.desactivar(Inet4Address.getLocalHost().getHostAddress());
 		// Mostramos un mensaje indicando que el servidor está inactivo
 		GestorConexionesLog.ponerMensaje("=== Servidor detenido ===");
 	}

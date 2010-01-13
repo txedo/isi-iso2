@@ -11,9 +11,10 @@ import java.sql.SQLException;
  */
 public class AgenteFrontend {
 
-	protected static AgenteFrontend instancia = null;
-	protected Connection conexion;
-	protected String url = "jdbc:mysql://localhost:3306/bdssca?user=iso&password=osi";
+	private static AgenteFrontend instancia = null;
+	private Connection conexion;
+	private String url = "jdbc:mysql://<IP>:3306/bdssca?user=iso&password=osi";
+	private String ip;
 	
 	protected AgenteFrontend() throws SQLException {
 		try {
@@ -25,8 +26,8 @@ public class AgenteFrontend {
         } catch(ClassNotFoundException e) {
         	System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
         }
-        // Abrimos la conexión de forma predeterminada
-        abrir();
+        // La conexión no se abre de forma predeterminada
+        // porque se necesita establecer la IP
 	}
 	
 	public static AgenteFrontend getAgente() throws SQLException {
@@ -34,6 +35,26 @@ public class AgenteFrontend {
 			instancia = new AgenteFrontend();
 		}
 		return instancia;
+	}
+
+	public void setIP(String ip) {
+		this.ip = ip;
+	}
+	
+	public void abrir() throws SQLException {
+		String urlCompleta;
+		
+		if(conexion == null || conexion.isClosed()) {
+			// Indicamos que las modificaciones de la base de datos
+			// no se deben aplicar hasta llamar al método 'commit'
+			urlCompleta = url.replaceFirst("<IP>", ip);
+			conexion = DriverManager.getConnection(urlCompleta);
+			conexion.setAutoCommit(false); 
+		}
+	}
+	
+	public void cerrar() throws SQLException {
+		conexion.close();
 	}
 	
 	public Connection getConexion() {
@@ -65,19 +86,6 @@ public class AgenteFrontend {
 
 	public void rollback() throws SQLException {
 		conexion.rollback();
-	}
-
-	public void abrir() throws SQLException {
-		if(conexion == null || conexion.isClosed()) {
-			// Indicamos que las modificaciones de la base de datos
-			// no se deben aplicar hasta llamar al método 'commit'
-			conexion = DriverManager.getConnection(url);
-			conexion.setAutoCommit(false); 
-		}
-	}
-	
-	public void cerrar() throws SQLException {
-		conexion.close();
 	}
 	
 }
