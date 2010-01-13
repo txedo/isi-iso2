@@ -60,7 +60,7 @@ public class ControladorLogin implements OperacionesAuxiliares {
 		sesion = (ISesion)servidor.identificar(login, password);
 		// Una vez que el cliente se ha identificado correctamente, registramos el cliente en el servidor
 		cliente = new Cliente();
-		cliente.conectar();
+		cliente.activar();
 		servidor.registrar((ICliente)cliente, sesion.getId());
 		// Ocultamos la ventana de login
 		ventana.setVisible(false);

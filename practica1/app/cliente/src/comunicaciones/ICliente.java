@@ -11,8 +11,8 @@ public interface ICliente extends Remote {
 	
 	public String getDireccionIP () throws RemoteException;
 	public int getPuerto() throws RemoteException;
-	public void conectar() throws MalformedURLException, RemoteException;
-    public void desconectar() throws RemoteException, MalformedURLException, NotBoundException;
+	public void activar() throws MalformedURLException, RemoteException;
+    public void desactivar() throws RemoteException, MalformedURLException, NotBoundException;
 	public void actualizarVentanas () throws RemoteException;
 	
 }

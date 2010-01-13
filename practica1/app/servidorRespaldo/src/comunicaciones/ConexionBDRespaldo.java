@@ -33,7 +33,7 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
 		agente = AgenteRespaldo.getAgente();
 	}
 
-	public void conectar(String ip) throws MalformedURLException, RemoteException, SQLException {
+	public void activar(String ip) throws MalformedURLException, RemoteException, SQLException {
         exportObject(this, PUERTO_CONEXION);
         try {
             Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_BASEDATOS, this);
@@ -42,10 +42,22 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
         }
     }
 		
-	public void desconectar(String ip) throws RemoteException, MalformedURLException, NotBoundException {		
+	public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {		
 		unexportObject(this, false);
 		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_BASEDATOS);
     }
+	
+	public AgenteRespaldo getAgente() {
+		return agente;
+	}
+	
+	public void abrir() throws RemoteException, SQLException {
+		agente.abrir();
+	}
+	
+	public void cerrar() throws RemoteException, SQLException {
+		agente.cerrar();
+	}
 	
 	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
 		return agente.consultar(comando);
@@ -61,14 +73,6 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
 
 	public void rollback() throws RemoteException, SQLException {
 		agente.rollback();
-	}
-
-	public void abrir() throws RemoteException, SQLException {
-		agente.abrir();
-	}
-	
-	public void cerrar() throws RemoteException, SQLException {
-		agente.cerrar();
 	}
 
 }

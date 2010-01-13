@@ -32,7 +32,7 @@ public class ConexionLogRespaldo extends UnicastRemoteObject implements IConexio
 		ventanas = new ArrayList<IVentanaLog>();
 	}
 
-	public void conectar(String ip) throws MalformedURLException, RemoteException, SQLException {
+	public void activar(String ip) throws MalformedURLException, RemoteException, SQLException {
         exportObject(this, PUERTO_CONEXION);
         try {
             Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_LOG, this);
@@ -41,7 +41,7 @@ public class ConexionLogRespaldo extends UnicastRemoteObject implements IConexio
         }
     }
 		
-	public void desconectar(String ip) throws RemoteException, MalformedURLException, NotBoundException {		
+	public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {		
 		unexportObject(this, false);
 		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_LOG);
     }

@@ -1,6 +1,8 @@
 package dominio;
 
+import java.net.Inet4Address;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -28,24 +30,35 @@ public class Controlador {
 		vent.setVisible(true);
 	}
 	
-	public void iniciarServidorRespaldo(String ipRespaldo) throws MalformedURLException, RemoteException, NotBoundException, SQLException {
+	public void iniciarServidorRespaldo(String ipBDRespaldo) throws MalformedURLException, RemoteException, NotBoundException, SQLException, UnknownHostException {
+		String ipLocal;
+
+		// Obtenemos la IP de la máquina local
+		ipLocal = Inet4Address.getLocalHost().getHostAddress();
+		
 		// Activamos la clase remota para conectarse con la base de datos
 		if(conexionBD == null) {
 			conexionBD = new ConexionBDRespaldo();
+			conexionBD.getAgente().setIP(ipBDRespaldo);
 		}
-		conexionBD.conectar(ipRespaldo);
+		conexionBD.activar(ipLocal);
 		// Activamos la clase remota para mostrar los mensajes del servidor
 		if(conexionLog == null) {
 			conexionLog = new ConexionLogRespaldo();
 			conexionLog.ponerVentana(vent);
 		}
-		conexionLog.conectar(ipRespaldo);
+		conexionLog.activar(ipLocal);
 	}
 	
-	public void detenerServidorRespaldo(String ipRespaldo) throws RemoteException, MalformedURLException, NotBoundException, SQLException {
+	public void detenerServidorRespaldo() throws RemoteException, MalformedURLException, NotBoundException, SQLException, UnknownHostException {
+		String ipLocal;
+
+		// Obtenemos la IP de la máquina local
+		ipLocal = Inet4Address.getLocalHost().getHostAddress();
+		
 		// Desactivamos las clases remotas del servidor de respaldo
-		conexionBD.desconectar(ipRespaldo);
-		conexionLog.desconectar(ipRespaldo);
+		conexionBD.desactivar(ipLocal);
+		conexionLog.desactivar(ipLocal);
 	}
 	
 }

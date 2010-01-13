@@ -41,11 +41,11 @@ public class Cliente extends UnicastRemoteObject implements ICliente {
 		return direccionIP;
 	}
 	
-	public int getPuerto () throws RemoteException {
+	public int getPuerto() throws RemoteException {
 		return puerto;
 	}
 	
-    public void conectar() throws RemoteException, MalformedURLException {
+    public void activar() throws RemoteException, MalformedURLException {
         exportObject(this, puerto);
         try {
             Naming.bind("rmi://" + direccionIP + ":" + String.valueOf(puerto) + "/" + NOMBRE_CLIENTE, this);
@@ -54,7 +54,7 @@ public class Cliente extends UnicastRemoteObject implements ICliente {
         }
     }
     
-    public void desconectar() throws RemoteException, MalformedURLException, NotBoundException {
+    public void desactivar() throws RemoteException, MalformedURLException, NotBoundException {
         unexportObject(this, false);
     	Naming.unbind("rmi://" + direccionIP + ":" + String.valueOf(puerto) + "/" + NOMBRE_CLIENTE);
     }
