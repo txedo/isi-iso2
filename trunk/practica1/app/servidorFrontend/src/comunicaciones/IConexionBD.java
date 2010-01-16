@@ -12,7 +12,7 @@ import persistencia.ComandoSQL;
  */
 public interface IConexionBD extends Remote {
 
-	public final int PUERTO_CONEXION = 1099;
+	public final int PUERTO_CONEXION_BD = 1099;
 	
 	public void abrir() throws RemoteException, SQLException;
 	
