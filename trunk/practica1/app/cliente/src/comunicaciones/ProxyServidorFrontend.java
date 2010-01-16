@@ -26,7 +26,7 @@ import excepciones.VolanteNoValidoException;
 /**
  * Proxy utilizado para conectarse con el servidor frontend.
  */
-public class ProxyServidorFrontend implements IServidorFrontend {
+public class ProxyServidorFrontend implements IServidorFrontend{
 	
 	private IServidorFrontend servidor;
 	
@@ -86,47 +86,25 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
 
-	@Override
-	public void anularCita(long arg0, Cita arg1) throws RemoteException,
-			CitaNoValidaException, SQLException, Exception {
-		// TODO Auto-generated method stub
+	public void anularCita(long idSesion, Cita cita) throws RemoteException, CitaNoValidaException, SQLException, Exception {
+		servidor.anularCita(idSesion, cita);
 		
 	}
 
-	@Override
-	public Vector<Cita> getCitas(long arg0, String arg1)
-			throws RemoteException, BeneficiarioInexistenteException,
-			SQLException, Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Vector<Cita> getCitas(long idSesion, String dniBeneficiario) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
+		return servidor.getCitas(idSesion, dniBeneficiario);
 	}
 
-	@Override
-	public Cita pedirCita(long arg0, Beneficiario arg1, String arg2, Date arg3,
-			long arg4) throws RemoteException,
-			BeneficiarioInexistenteException, MedicoInexistenteException,
-			FechaNoValidaException, SQLException, Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Cita pedirCita(long idSesion, Beneficiario bene, String dniMedico, Date fechaYhora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception {
+		return servidor.pedirCita(idSesion, bene, dniMedico, fechaYhora, duracion);
 	}
 
-	@Override
-	public Cita pedirCita(long arg0, Beneficiario arg1, long arg2, Date arg3,
-			long arg4) throws RemoteException,
-			BeneficiarioInexistenteException, MedicoInexistenteException,
-			FechaNoValidaException, VolanteNoValidoException, SQLException,
-			Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Cita pedirCita(long dniBeneficiario, Beneficiario bene, long idVolante, Date fechaYhora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, VolanteNoValidoException, SQLException, Exception {
+		return servidor.pedirCita(dniBeneficiario, bene, idVolante, fechaYhora, duracion);
 	}
 
-	@Override
-	public long emitirVolante(long arg0, Beneficiario arg1, Medico arg2,
-			Medico arg3) throws RemoteException,
-			BeneficiarioInexistenteException, MedicoInexistenteException,
-			SQLException, Exception {
-		// TODO Auto-generated method stub
-		return 0;
+	public long emitirVolante(long idSesion, Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception {
+		return servidor.emitirVolante(idSesion, bene, emisor, receptor);
 	}
 		
 }

@@ -1,16 +1,12 @@
 package comunicaciones;
 
-import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.ISesion;
@@ -25,11 +21,11 @@ import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.CitaNoValidaException;
 import excepciones.FechaNoValidaException;
+import excepciones.MedicoInexistenteException;
+import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
-import excepciones.MedicoInexistenteException;
-import excepciones.MedicoYaExistenteException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
 
@@ -37,34 +33,9 @@ import excepciones.VolanteNoValidoException;
  * Fachada del servidor frontend utilizada por el cliente que da acceso a
  * las clases gestoras que implementan la funcionalidad del sistema.
  */
-public class ServidorFrontend extends UnicastRemoteObject implements IServidorFrontend {
-	
-	private static final long serialVersionUID = 7497297325860652078L;
+public class ServidorFrontend implements IServidorFrontend {
 	
 	private Hashtable<Long, ICliente> clientesEscuchando = new Hashtable<Long, ICliente>();
-	
-	public ServidorFrontend() throws RemoteException {
-		super();
-		// El constructor de 'UnicastRemoteObject' exporta automáticamente
-		// este objeto; aquí cancelamos la exportación porque ya llamamos
-		// manualmente a 'exportObject' en el método 'conectar'
-		unexportObject(this, false);
-		LocateRegistry.createRegistry(PUERTO_SERVIDOR);
-	}
-	
-    public void activar(String ip) throws MalformedURLException, RemoteException {
-        exportObject(this, PUERTO_SERVIDOR);
-        try {
-            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
-        } catch(AlreadyBoundException ex) {
-            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
-        }
-    }
-    
-    public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {
-        unexportObject(this, false);
-    	Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
-    }
 	
     // ------------------------------
     // Métodos del Gestor de Sesiones

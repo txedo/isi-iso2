@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import presentacion.JFServidorFrontend;
 import comunicaciones.ConexionBDFrontend;
 import comunicaciones.ConexionLogFrontend;
+import comunicaciones.ConexionServidorFrontEnd;
 import comunicaciones.GestorConexionesBD;
 import comunicaciones.GestorConexionesLog;
 import comunicaciones.ProxyBDRespaldo;
@@ -22,11 +23,13 @@ public class ControladorPrincipal {
 	
 	private ServidorFrontend servidor;
 	private ProxyBDRespaldo proxy;
+	private ConexionServidorFrontEnd conexionServidor;
 	private ConexionBDFrontend basedatos;
 	private JFServidorFrontend vent;
 
 	public ControladorPrincipal() {
 		servidor = null;
+		conexionServidor = null; 
 	}
 	
 	public void mostrarVentana() {
@@ -85,7 +88,10 @@ public class ControladorPrincipal {
 		if(servidor == null) {
 			servidor = new ServidorFrontend();
 		}
-		servidor.activar(ipLocal);
+		if(conexionServidor == null)
+			conexionServidor = new ConexionServidorFrontEnd();
+		
+		conexionServidor.activar(ipLocal);
 		// Mostramos un mensaje indicando que el servidor está activo
 		if(respaldo) {
 			GestorConexionesLog.ponerMensaje("=== Servidor iniciado ===");
@@ -103,7 +109,7 @@ public class ControladorPrincipal {
 		}
 		GestorConexionesBD.quitarConexiones();
 		// Desconectamos el servidor
-		servidor.desactivar(Inet4Address.getLocalHost().getHostAddress());
+		conexionServidor.desactivar(Inet4Address.getLocalHost().getHostAddress());
 		// Mostramos un mensaje indicando que el servidor está inactivo
 		GestorConexionesLog.ponerMensaje("=== Servidor detenido ===");
 	}

@@ -29,22 +29,22 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
 		// este objeto; aquí cancelamos la exportación porque ya llamamos
 		// manualmente a 'exportObject' en el método 'conectar'
 		unexportObject(this, false);
-		LocateRegistry.createRegistry(PUERTO_CONEXION);
+		LocateRegistry.createRegistry(PUERTO_CONEXION_BD);
 		agente = AgenteRespaldo.getAgente();
 	}
 
 	public void activar(String ip) throws MalformedURLException, RemoteException, SQLException {
-        exportObject(this, PUERTO_CONEXION);
+        exportObject(this, PUERTO_CONEXION_BD);
         try {
-            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_BASEDATOS, this);
+            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/" + NOMBRE_BASEDATOS, this);
         } catch(AlreadyBoundException ex) {
-            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_BASEDATOS, this);
+            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/" + NOMBRE_BASEDATOS, this);
         }
     }
 		
 	public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {		
 		unexportObject(this, false);
-		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_BASEDATOS);
+		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/" + NOMBRE_BASEDATOS);
     }
 	
 	public AgenteRespaldo getAgente() {
