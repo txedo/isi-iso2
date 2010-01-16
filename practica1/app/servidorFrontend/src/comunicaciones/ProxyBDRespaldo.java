@@ -18,7 +18,7 @@ public class ProxyBDRespaldo implements IConexionBD {
 	public void conectar(String ip) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
-		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorrespaldo";
+		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/servidorrespaldo";
         conexionRemota = (IConexionBD)Naming.lookup(url);
 	}
 
