@@ -3,7 +3,6 @@ package dominio.conocimiento;
 import java.io.Serializable;
 import java.util.Date;
 
-
 /**
  * Clase que representa una cita solicitada por un beneficiario para un médico.
  */

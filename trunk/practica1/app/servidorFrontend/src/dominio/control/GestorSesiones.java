@@ -20,9 +20,14 @@ import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 
+/**
+ * Clase encargada de iniciar y finalizar sesiones con los clientes
+ * del sistema.
+ */
 public class GestorSesiones {
+	
 	// Tabla hash de sesiones. La clave es el idSesion y el valor es la Sesion con ese idSesion
-	private static Hashtable<Long,Sesion> sesiones = new Hashtable<Long,Sesion>();
+	private static Hashtable<Long, Sesion> sesiones = new Hashtable<Long, Sesion>();
 		
 	// Metodo para cerrar una sesion y borrarla de la tabla de sesiones abiertas
 	public static void liberar(long idSesion) throws SQLException {

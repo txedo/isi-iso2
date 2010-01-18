@@ -2,7 +2,6 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 
-
 /**
  * Clase que representa un período de tiempo en el que un médico puede
  * atender pacientes.

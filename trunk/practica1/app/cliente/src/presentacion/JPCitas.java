@@ -6,8 +6,8 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.ControladorLogin;
 import dominio.conocimiento.Operaciones;
+import dominio.control.ControladorPrincipal;
 
 /**
 * Panel que agrupa todas las operaciones sobre citas.
@@ -65,7 +65,7 @@ public class JPCitas extends JPBase {
 	
 	// $hide>>$
 	
-	public void setControlador(ControladorLogin controlador) {
+	public void setControlador(ControladorPrincipal controlador) {
 		super.setControlador(controlador);
 		jPanelTramitar.setControlador(controlador);
 		jPanelAnular.setControlador(controlador);

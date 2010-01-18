@@ -5,8 +5,8 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 
 /**
-* Panel que permite anular citas existentes.
-*/
+ * Panel que permite anular citas existentes.
+ */
 public class JPCitaAnular extends JPBase {
 
 	private static final long serialVersionUID = 117161427277876393L;

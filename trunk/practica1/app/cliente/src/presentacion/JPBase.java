@@ -2,7 +2,8 @@ package presentacion;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import dominio.ControladorLogin;
+
+import dominio.control.ControladorPrincipal;
 
 /**
  * Panel base que contiene una referencia a un JFrame y al controlador
@@ -12,14 +13,14 @@ public class JPBase extends JPanel {
 
 	private static final long serialVersionUID = -8138352814844589253L;
 	
-	private ControladorLogin controlador;
+	private ControladorPrincipal controlador;
 	private JFrame frame;
 	
-	public void setControlador(ControladorLogin controlador) {
+	public void setControlador(ControladorPrincipal controlador) {
 		this.controlador = controlador;
 	}
 	
-	public ControladorLogin getControlador() {
+	public ControladorPrincipal getControlador() {
 		return controlador;
 	}
 

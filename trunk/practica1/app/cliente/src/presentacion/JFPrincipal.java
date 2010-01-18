@@ -2,8 +2,8 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.ControladorLogin;
 import dominio.conocimiento.Operaciones;
+import dominio.control.ControladorPrincipal;
 import excepciones.SesionInvalidaException;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
@@ -20,17 +20,9 @@ import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
 
 /**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
+ * Ventana principal del cliente, en la que se muestran todos los
+ * paneles con las operaciones disponibles.
+ */
 public class JFPrincipal extends javax.swing.JFrame {
 
 	{
@@ -44,7 +36,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = 1155264551580232934L;
 
-	private ControladorLogin controlador;
+	private ControladorPrincipal controlador;
 	
 	private JPUsuarios jPanelGestionarUsuarios;
 	private JPCitas jPanelGestionarCitas;
@@ -196,9 +188,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 		}
 	}
 	
-	// $hide>>$
+	//$hide>>$
 	
-	public void setControlador(ControladorLogin controlador) {
+	public void setControlador(ControladorPrincipal controlador) {
 		this.controlador = controlador;
 		jPanelGestionarUsuarios.setControlador(controlador);
 		jPanelGestionarBeneficiarios.setControlador(controlador);
@@ -211,9 +203,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 			operaciones = (ArrayList<Operaciones>)controlador.operacionesDisponibles();
 			this.configurarInterfaz(operaciones);
 		} catch (RemoteException e) {
-			Utilidades.mostrarDialogoError(this, "Error", e.toString());
+			Dialogos.mostrarDialogoError(this, "Error", e.toString());
 		} catch (SesionInvalidaException e) {
-			Utilidades.mostrarDialogoError(this, "Error", "Sesión inválida.");
+			Dialogos.mostrarDialogoError(this, "Error", "Sesión inválida.");
 		}
 	}
 	
@@ -270,12 +262,12 @@ public class JFPrincipal extends javax.swing.JFrame {
 			if (controlador != null)
 				controlador.cerrarSesion ();
 		} catch (RemoteException e) {
-			Utilidades.mostrarDialogoError(this, "Error", e.toString());
+			Dialogos.mostrarDialogoError(this, "Error", e.toString());
 		} catch (Exception e) {
-			Utilidades.mostrarDialogoError(this, "Error", e.toString());
+			Dialogos.mostrarDialogoError(this, "Error", e.toString());
 		}
 	}
 
-	// $hide<<$
+	//$hide<<$
 	
 }

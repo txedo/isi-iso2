@@ -2,7 +2,8 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.ControladorLogin;
+
+import dominio.control.ControladorPrincipal;
 import excepciones.UsuarioIncorrectoException;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -16,17 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 /**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
+ * Ventana de identificación de usuarios.
+ */
 public class JFLogin extends javax.swing.JFrame {
 
 	{
@@ -40,7 +32,7 @@ public class JFLogin extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -8335773788689456763L;
 	
-	private ControladorLogin controlador;
+	private ControladorPrincipal controlador;
 	private JLabel jLabel2;
 	private JTextField txtUsuario;
 	private JLabel jLabel4;
@@ -148,7 +140,9 @@ public class JFLogin extends javax.swing.JFrame {
 		}
 	}
 
-	public void setControlador(ControladorLogin controlador) {
+	//$hide>>$
+	
+	public void setControlador(ControladorPrincipal controlador) {
 		this.controlador = controlador;
 	}
 	
@@ -156,11 +150,11 @@ public class JFLogin extends javax.swing.JFrame {
 		try {
 			controlador.iniciarSesion(txtIPServidor.getText(), txtUsuario.getText(), new String(txtPassword.getPassword()));
 		} catch (SQLException e) {
-			Utilidades.mostrarDialogoError(this, "Error en el sistema", e.getMessage());
+			Dialogos.mostrarDialogoError(this, "Error en el sistema", e.getMessage());
 		} catch (UsuarioIncorrectoException e) {
-			Utilidades.mostrarDialogoError(this, "Error al autentificar", "El usuario o contraseña son incorrectos.");
+			Dialogos.mostrarDialogoError(this, "Error al autentificar", "El usuario o contraseña son incorrectos.");
 		} catch (Exception e) {
-			Utilidades.mostrarDialogoError(this, "Error", e.toString());
+			Dialogos.mostrarDialogoError(this, "Error", e.toString());
 			e.printStackTrace();
 		}
 	}
@@ -186,4 +180,6 @@ public class JFLogin extends javax.swing.JFrame {
 		}
 	}
 
+	//$hide<<$
+	
 }

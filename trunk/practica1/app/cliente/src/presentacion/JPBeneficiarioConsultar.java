@@ -282,7 +282,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 
 			// Mostramos los datos del beneficiario encontrado
-			Utilidades.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Beneficiario encontrado.");
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Beneficiario encontrado.");
 			txtIdentificacion.setText("");
 			txtNIF.setText(beneficiario.getNif());
 			txtNSS.setText(beneficiario.getNss());
@@ -296,28 +296,28 @@ public class JPBeneficiarioConsultar extends JPBase {
 			chkEditar.setEnabled(true);
 
 		} catch(SQLException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(RemoteException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(BeneficiarioInexistenteException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El beneficiario no se encuentra dado de alta en el sistema.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario no se encuentra dado de alta en el sistema.");
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();
 			
 		} catch(CadenaVaciaException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NIF o NSS.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NIF o NSS.");
 			txtIdentificacion.grabFocus();
 		} catch(NIFIncorrectoException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "Debe introducir NIF válido.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir NIF válido.");
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();
 		} catch(NSSIncorrectoException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NSS válido.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NSS válido.");
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();
 			
 		} catch(Exception e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
 	}
 	
@@ -354,54 +354,54 @@ public class JPBeneficiarioConsultar extends JPBase {
 			getControlador().modificarBeneficiario(beneficiario);
 			
 			// El beneficiario se ha modificado correctamente
-			Utilidades.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente.");
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente.");
 			limpiarCamposConsultar();
 			configurarFormularioConsultar(false);
 			
 		} catch(SQLException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(RemoteException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(BeneficiarioInexistenteException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El beneficiario no se encuentra dado de alta en el sistema.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario no se encuentra dado de alta en el sistema.");
 		} catch(MedicoInexistenteException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El médico del beneficiario no se encuentra dado de alta en el sistema.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El médico del beneficiario no se encuentra dado de alta en el sistema.");
 
 		} catch(NIFIncorrectoException e) {
 			txtNIF.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El NIF debe ser el número de DNI (incluyendo el 0) y la letra sin guión.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El NIF debe ser el número de DNI (incluyendo el 0) y la letra sin guión.");
 			txtNIF.grabFocus();
 		} catch(NSSIncorrectoException e) {
 			txtNSS.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El NSS debe contener 12 dígitos.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El NSS debe contener 12 dígitos.");
 			txtNSS.grabFocus();
 		} catch(NombreIncorrectoException e) {
 			txtNombre.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El nombre del beneficiario sólo puede contener letras y espacios.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El nombre del beneficiario sólo puede contener letras y espacios.");
 			txtNombre.grabFocus();
 		} catch(ApellidoIncorrectoException e) {
 			txtApellidos.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "Los apellidos del beneficiario sólo pueden contener letras y espacios.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Los apellidos del beneficiario sólo pueden contener letras y espacios.");
 			txtApellidos.grabFocus();
 		} catch(DomicilioIncorrectoException e) {
 			txtDomicilio.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El domicilio sólo puede contener caracteres alfanuméricos.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El domicilio sólo puede contener caracteres alfanuméricos.");
 			txtDomicilio.grabFocus();
 		} catch(CorreoElectronicoIncorrectoException e) {
 			txtCorreoElectronico.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El formato del correo electrónico es incorrecto.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El formato del correo electrónico es incorrecto.");
 			txtCorreoElectronico.grabFocus();
 		} catch(TelefonoFijoIncorrectoException e) {
 			txtTelefonoFijo.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El teléfono fijo deben ser 9 dígitos sin separadores y debe comenzar por 9.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El teléfono fijo deben ser 9 dígitos sin separadores y debe comenzar por 9.");
 			txtTelefonoFijo.grabFocus();
 		} catch(TelefonoMovilIncorrectoException e) {
 			txtTelefonoMovil.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El teléfono móvil deben ser 9 dígitos sin separadores y debe comenzar por 6.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El teléfono móvil deben ser 9 dígitos sin separadores y debe comenzar por 6.");
 			txtTelefonoMovil.grabFocus();
 
 		} catch(Exception e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
 	}
 	

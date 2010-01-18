@@ -22,6 +22,8 @@ public class ConexionBDFrontend implements IConexionBD {
 		return agente;
 	}
 	
+	// Métodos del agente
+	
 	public void abrir() throws RemoteException, SQLException {
 		agente.abrir();
 	}

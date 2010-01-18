@@ -14,7 +14,6 @@ import comunicaciones.GestorConexionesBD;
 import comunicaciones.GestorConexionesLog;
 import comunicaciones.ProxyBDRespaldo;
 import comunicaciones.ProxyLogRespaldo;
-import comunicaciones.ServidorFrontend;
 
 /**
  * Controlador principal de la funcionalidad del servidor frontend.

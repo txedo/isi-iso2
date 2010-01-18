@@ -1,8 +1,6 @@
 package dominio;
 
-import javax.swing.JOptionPane;
-import dominio.ControladorLogin;
-import dominio.conocimiento.ISesion;
+import dominio.control.ControladorPrincipal;
 
 /**
  * Clase principal del cliente.
@@ -10,16 +8,11 @@ import dominio.conocimiento.ISesion;
 public class Main {
 
 	public static void main(String args[]) {
-		ControladorLogin cont;
-		ISesion sesion;
+		ControladorPrincipal cont;
 		
 		// Mostramos la ventana de identificación
-		cont = new ControladorLogin();
+		cont = new ControladorPrincipal();
 		cont.identificarse();
-		sesion = cont.getSesion();
-		if(sesion != null) {
-			JOptionPane.showMessageDialog(null, "Sesión iniciada correctamente:\nId: " + String.valueOf(sesion.getId()) + "\nRol: " + String.valueOf(sesion.getRol()));
-		}
 	}
 	
 }
