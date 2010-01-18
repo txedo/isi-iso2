@@ -8,4 +8,8 @@ public interface OperacionesAuxiliares {
 	
 	public final int OPERACIONES_DISPONIBLES = 1000;
 	
+	public final int CREAR_USUARIO = 1001;
+	public final int MODIFICAR_USUARIO = 1002;
+	public final int ELIMINAR_USUARIO = 1003;
+	
 }

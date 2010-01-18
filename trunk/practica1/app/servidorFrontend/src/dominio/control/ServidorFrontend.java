@@ -633,8 +633,17 @@ public class ServidorFrontend implements IServidorFrontend {
 	// ------------------------------
 	
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException {
+		Object resultado;
+		
+		resultado = null;
 		GestorConexionesLog.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
-		return GestorMensajes.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
+		try {
+			resultado = GestorMensajes.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
+		} catch(Exception e) {
+			// TODO: Quitar este catch!
+		}
+		
+		return resultado;
 	}
 
 	// Métodos aún no implementados
