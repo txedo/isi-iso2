@@ -282,12 +282,14 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema.");
 			limpiarCamposRegistro();
 			
+		} catch(BeneficiarioYaExistenteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());			
 		} catch(SQLException e) {
+			System.out.println("Entra");
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch(BeneficiarioYaExistenteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "El usuario ya se encuentra dado de alta en el sistema.");
+		
 			
 		} catch(NIFIncorrectoException e) {
 			txtNIF.selectAll();
@@ -356,6 +358,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		txtNumero.setText("");
 		txtPiso.setText("");
 		txtPuerta.setText("");
+		dtcFechaNacimiento.setDate(null);
 		txtCorreoElectronico.setText("");
 		txtTelefonoFijo.setText("");
 		txtTelefonoMovil.setText("");

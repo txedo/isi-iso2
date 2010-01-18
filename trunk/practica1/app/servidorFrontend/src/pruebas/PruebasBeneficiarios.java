@@ -51,10 +51,14 @@ public class PruebasBeneficiarios extends TestCase {
 	protected void setUp() {
 		Connection bd;
 		PreparedStatement sentencia;
+		AgenteFrontend agente;
 		
 		try {
 			// Borramos la base de datos
-			bd = AgenteFrontend.getAgente().getConexion();
+			agente = AgenteFrontend.getAgente();
+			agente.setIP("127.0.0.1");
+			agente.abrir();
+			bd = agente.getConexion();
 			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM periodosTrabajo");
@@ -212,6 +216,17 @@ public class PruebasBeneficiarios extends TestCase {
 		} catch(Exception e) {
 			fail("Se esperaba una excepcion BeneficiarioYaExistenteException");
 		}
+		
+		try {
+			// Intentamos añadir un beneficiario con un NSS que ya existe en la BD
+			bene = new Beneficiario("10239184", bene1.getNss(), "error", "error", "", "", fecha1, 123456789, 987654321);
+			GestorBeneficiarios.crear(sesionAdmin.getId(), bene);
+			fail("Se esperaba una excepcion BeneficiarioYaExistenteException");
+		} catch(BeneficiarioYaExistenteException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion BeneficiarioYaExistenteException");
+		}
+		
 	}
 
 	/** Pruebas de la operación que modifica beneficiarios existentes **/
