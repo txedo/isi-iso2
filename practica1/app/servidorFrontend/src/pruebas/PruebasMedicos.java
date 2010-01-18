@@ -49,10 +49,14 @@ public class PruebasMedicos extends TestCase {
 	protected void setUp() {
 		Connection bd;
 		PreparedStatement sentencia;
+		AgenteFrontend agente;
 		
 		try {
 			// Borramos la base de datos
-			bd = AgenteFrontend.getAgente().getConexion();
+			agente = AgenteFrontend.getAgente();
+			agente.setIP("127.0.0.1");
+			agente.abrir();
+			bd = agente.getConexion();
 			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM periodosTrabajo");
