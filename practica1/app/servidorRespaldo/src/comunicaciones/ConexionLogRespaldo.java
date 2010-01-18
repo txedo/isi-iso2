@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import presentacion.IVentanaLog;
 
 /**
- * Clase que recibe los mensajes generados por el servidor y los
- * muestra en la ventana principal del servidor de respaldo.
+ * Clase que exporta la instancia que será utilizada por el servidor
+ * front-end para mostrar los mensajes generados en la ventana
+ * principal del servidor de respaldo.
  */
 public class ConexionLogRespaldo extends UnicastRemoteObject implements IConexionLog {
 

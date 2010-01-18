@@ -5,8 +5,8 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 
 /**
-* Panel que permite modificar beneficiarios existentes.
-*/
+ * Panel que permite modificar beneficiarios existentes.
+ */
 public class JPBeneficiarioModificar extends JPBase {
 
 	private static final long serialVersionUID = -1005024006111092815L;

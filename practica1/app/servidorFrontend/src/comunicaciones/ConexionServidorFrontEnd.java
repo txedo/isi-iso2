@@ -16,6 +16,7 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.control.GestorSesiones;
+import dominio.control.ServidorFrontend;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CitaNoValidaException;
@@ -27,23 +28,25 @@ import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
 
-// Esta clase actua como proxy de la clase ServidorFrontend, que es la fachada del servidor front-end
+/**
+ * Clase que exporta la instancia que será utilizada por los clientes
+ * para ejecutar operaciones de la fachada del servidor front-end.
+ */
 public class ConexionServidorFrontEnd extends UnicastRemoteObject implements IServidorFrontend{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7735848879217866237L;
-	private ServidorFrontend fachada;
+	
+	private IServidorFrontend servidor;
 
 	public ConexionServidorFrontEnd() throws RemoteException {
 		super();
-		fachada = new ServidorFrontend();
 		// El constructor de 'UnicastRemoteObject' exporta automáticamente
 		// este objeto; aquí cancelamos la exportación porque ya llamamos
 		// manualmente a 'exportObject' en el método 'conectar'
 		unexportObject(this, false);
 		LocateRegistry.createRegistry(PUERTO_SERVIDOR);
+		// Recuperamos la instancia del servidor singleton
+		servidor = ServidorFrontend.getServidor();
 	}
 	
     public void activar(String ip) throws MalformedURLException, RemoteException {
@@ -60,93 +63,83 @@ public class ConexionServidorFrontEnd extends UnicastRemoteObject implements ISe
     	Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
     }
     
-    // ------------------------------
-    // Métodos del Gestor de Sesiones
-    // ------------------------------
+    // Métodos de gestión de sesiones
     
 	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		return fachada.identificar(login, password);
+		return servidor.identificar(login, password);
 	}
 	
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
-		fachada.registrar(cliente, idSesion);
+		servidor.registrar(cliente, idSesion);
 	}
 	
 	public void liberar(long idSesion) throws RemoteException, Exception {
-		fachada.liberar(idSesion);
+		servidor.liberar(idSesion);
 	}
 
-	// -----------------------------------
-	// Métodos del Gestor de Beneficiarios
-	// -----------------------------------
+    // Métodos de gestión de beneficiarios
 	
 	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
-		return fachada.getBeneficiario(idSesion, dni);
+		return servidor.getBeneficiario(idSesion, dni);
 	}
 	
 	public Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
-		return fachada.getBeneficiarioPorNSS(idSesion, nss);
+		return servidor.getBeneficiarioPorNSS(idSesion, nss);
 	}
 
 	public void crear(long idSesion, Beneficiario beneficiario) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
-		fachada.crear(idSesion, beneficiario);
+		servidor.crear(idSesion, beneficiario);
 	}
 
 	public void modificar(long idSesion, Beneficiario beneficiario) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
-		fachada.modificar(idSesion, beneficiario);
+		servidor.modificar(idSesion, beneficiario);
 	}
 	
-	// --------------------------------------
-	// Métodos del Gestor de Usuarios/Médicos
-	// --------------------------------------
+    // Métodos de gestión de médicos
 	
 	public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception {
-		return fachada.getMedico(idSesion, dni);
+		return servidor.getMedico(idSesion, dni);
 	}
 	
 	public void crear(long idSesion, Medico medico) throws RemoteException, MedicoYaExistenteException, SQLException, Exception {
-		fachada.crear(idSesion, medico);
+		servidor.crear(idSesion, medico);
 	}
 	
 	public void modificar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
-		fachada.modificar(idSesion, medico);
+		servidor.modificar(idSesion, medico);
 	}
 	
 	public void eliminar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
-		fachada.eliminar(idSesion, medico);
+		servidor.eliminar(idSesion, medico);
 	}
 	
-	// ---------------------------
-	// Métodos del Gestor de Citas
-	// ---------------------------
+    // Métodos de gestión de citas
 	
 	public Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception {
-		return fachada.pedirCita(idSesion, beneficiario, idMedico, fechaYHora, duracion);
+		return servidor.pedirCita(idSesion, beneficiario, idMedico, fechaYHora, duracion);
 	}
 	
 	public Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, VolanteNoValidoException, SQLException, Exception {
-		return fachada.pedirCita(idSesion, beneficiario, idVolante, fechaYHora, duracion);
+		return servidor.pedirCita(idSesion, beneficiario, idVolante, fechaYHora, duracion);
 	}
 	
 	public Vector<Cita> getCitas(long idSesion, String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
-		return fachada.getCitas(idSesion, dni);
+		return servidor.getCitas(idSesion, dni);
 	}
 	
 	public void anularCita(long idSesion, Cita cita) throws RemoteException, CitaNoValidaException, SQLException, Exception {
-		fachada.anularCita(idSesion, cita);
+		servidor.anularCita(idSesion, cita);
 	}
 	
 	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception {
-		return fachada.emitirVolante(idSesion, beneficiario, emisor, destino);
+		return servidor.emitirVolante(idSesion, beneficiario, emisor, destino);
 	}
 		
-	// ------------------------------
-	// Métodos del Gestor de Mensajes
-	// ------------------------------
+    // Método auxiliar
 	
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException {
 		GestorConexionesLog.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
-		return fachada.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
+		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
 
 	// Métodos aún no implementados

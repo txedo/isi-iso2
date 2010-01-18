@@ -278,67 +278,67 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			getControlador().crearBeneficiario(beneficiario);
 			
 			// El beneficiario se ha creado correctamente
-			Utilidades.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema.");
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema.");
 			limpiarCamposRegistro();
 			
 		} catch(SQLException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(RemoteException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(BeneficiarioYaExistenteException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El usuario ya se encuentra dado de alta en el sistema.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El usuario ya se encuentra dado de alta en el sistema.");
 			
 		} catch(NIFIncorrectoException e) {
 			txtNIF.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El NIF debe ser el número de DNI (incluyendo el 0) y la letra sin guión.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El NIF debe ser el número de DNI (incluyendo el 0) y la letra sin guión.");
 			txtNIF.grabFocus();
 		} catch(NSSIncorrectoException e) {
 			txtNSS.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El NSS debe contener 12 dígitos.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El NSS debe contener 12 dígitos.");
 			txtNSS.grabFocus();
 		} catch(NombreIncorrectoException e) {
 			txtNombre.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El nombre del beneficiario sólo puede contener letras y espacios.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El nombre del beneficiario sólo puede contener letras y espacios.");
 			txtNombre.grabFocus();
 		} catch(ApellidoIncorrectoException e) {
 			txtApellidos.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "Los apellidos del beneficiario sólo pueden contener letras y espacios.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Los apellidos del beneficiario sólo pueden contener letras y espacios.");
 			txtApellidos.grabFocus();
 		} catch(FormatoFechaIncorrectoException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "La fecha de nacimiento no está escrita en un formato válido (dd/MM/yyyy).");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "La fecha de nacimiento no está escrita en un formato válido (dd/MM/yyyy).");
 		} catch(FechaNacimientoIncorrectaException e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "La fecha de nacimiento no es válida.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "La fecha de nacimiento no es válida.");
 		} catch(DomicilioIncorrectoException e) {
 			txtDomicilio.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El domicilio sólo puede contener caracteres alfanuméricos.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El domicilio sólo puede contener caracteres alfanuméricos.");
 			txtDomicilio.grabFocus();
 		} catch(NumeroDomicilioIncorrectoException e) {
 			txtNumero.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El número del domicilio debe ser un número entero.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El número del domicilio debe ser un número entero.");
 			txtNumero.grabFocus();
 		} catch(PisoDomicilioIncorrectoException e) {
 			txtPiso.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El piso del domicilio debe ser un número entero.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El piso del domicilio debe ser un número entero.");
 			txtPiso.grabFocus();
 		} catch(PuertaDomicilioIncorrectoException e) {
 			txtPuerta.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "La letra del domicilio debe ser un carácter alfabético.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "La letra del domicilio debe ser un carácter alfabético.");
 			txtPuerta.grabFocus();
 		} catch(CorreoElectronicoIncorrectoException e) {
 			txtCorreoElectronico.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El formato del correo electrónico es incorrecto.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El formato del correo electrónico es incorrecto.");
 			txtCorreoElectronico.grabFocus();
 		} catch(TelefonoFijoIncorrectoException e) {
 			txtTelefonoFijo.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El teléfono fijo deben ser 9 digitos sin separadores y debe comenzar por 9.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El teléfono fijo deben ser 9 digitos sin separadores y debe comenzar por 9.");
 			txtTelefonoFijo.grabFocus();
 		} catch(TelefonoMovilIncorrectoException e) {
 			txtTelefonoMovil.selectAll();
-			Utilidades.mostrarDialogoError(getFrame(), "Error", "El teléfono móvil deben ser 9 dígitos sin separadores y debe comenzar por 6.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El teléfono móvil deben ser 9 dígitos sin separadores y debe comenzar por 6.");
 			txtTelefonoMovil.grabFocus();
 			
 		} catch(Exception e) {
-			Utilidades.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
 	}
 

@@ -13,8 +13,9 @@ import persistencia.AgenteRespaldo;
 import persistencia.ComandoSQL;
 
 /**
- * Clase intermedia para conectarse con el agente de base de datos del
- * servidor de respaldo.
+ * Clase que exporta la instancia que será utilizada por el servidor
+ * front-end para acceder al agente de base de datos del servidor de
+ * respaldo.
  */
 public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexionBD {
 
@@ -50,6 +51,8 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
 	public AgenteRespaldo getAgente() {
 		return agente;
 	}
+	
+	// Métodos del agente
 	
 	public void abrir() throws RemoteException, SQLException {
 		agente.abrir();

@@ -19,6 +19,8 @@ public class ConexionLogFrontend implements IConexionLog {
 		ventanas.add(ventana);
 	}
 	
+	// Métodos de las ventanas
+	
 	public void ponerMensaje(String mensaje) {
 		for(IVentanaLog ventana : ventanas) {
 			ventana.actualizarTexto(mensaje);

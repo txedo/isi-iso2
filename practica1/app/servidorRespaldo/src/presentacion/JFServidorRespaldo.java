@@ -2,7 +2,9 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.Controlador;
+
+import dominio.control.ControladorPrincipal;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,7 +51,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 	
 	private static final long serialVersionUID = -3739906711082199809L;
 	
-	private Controlador controlador;
+	private ControladorPrincipal controlador;
 	private JPanel jPanel1;
 	private JScrollPane jScrollPane1;
 	private JLabel jlbIPRespaldo;
@@ -142,7 +144,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 		}
 	}
 	
-	public void setControlador(Controlador controlador) {
+	public void setControlador(ControladorPrincipal controlador) {
 		this.controlador = controlador;
 	}
 	
@@ -204,6 +206,8 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 		}		
 	}
 	
+	//$hide>>$
+	
 	private void btnDesconectarActionPerformed(ActionEvent evt) {
 		try {
 			// Detenemos el servidor de respaldo
@@ -230,4 +234,6 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaLo
 		textLog.setText(textLog.getText() + mensaje + "\n");	
 	}
 
+	//$hide<<$
+	
 }
