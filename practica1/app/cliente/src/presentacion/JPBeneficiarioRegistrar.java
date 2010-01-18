@@ -12,6 +12,7 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Utilidades;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CorreoElectronicoIncorrectoException;
