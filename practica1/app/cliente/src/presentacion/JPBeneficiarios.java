@@ -19,10 +19,10 @@ public class JPBeneficiarios extends JPBase {
 
 	private JPBeneficiarioRegistrar jPanelRegistrar;
 	private JPBeneficiarioConsultar jPanelConsultar;
-	private JPBeneficiarioModificar jPanelModificar;
+	//private JPBeneficiarioModificar jPanelModificar;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
-
+	
 	public JPBeneficiarios() {
 		super();
 		initGUI();
@@ -60,10 +60,11 @@ public class JPBeneficiarios extends JPBase {
 				jPanelRegistrar = new JPBeneficiarioRegistrar();
 				this.add(jPanelRegistrar, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 			}
-			{
+			/*{
 				jPanelModificar = new JPBeneficiarioModificar();
 				this.add(jPanelModificar, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-			}
+			}*/
+						
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -75,27 +76,31 @@ public class JPBeneficiarios extends JPBase {
 		super.setControlador(controlador);
 		jPanelRegistrar.setControlador(controlador);
 		jPanelConsultar.setControlador(controlador);
-		jPanelModificar.setControlador(controlador);
+		//jPanelModificar.setControlador(controlador);
+	}
+	
+	public void setDesactivarModificacion(){
+		jPanelConsultar.setDesactivarModificacion();
 	}
 	
 	public void setFrame(JFrame frame) {
 		super.setFrame(frame);
 		jPanelRegistrar.setFrame(frame);
 		jPanelConsultar.setFrame(frame);
-		jPanelModificar.setFrame(frame);
+		//jPanelModificar.setFrame(frame);
 	}
 	
 	private void inicializarOperaciones() {
 		jPanelListaOperaciones.ponerOperacion(Operaciones.RegistrarBeneficiario);
 		jPanelListaOperaciones.ponerOperacion(Operaciones.ConsultarBeneficiario);
-		jPanelListaOperaciones.ponerOperacion(Operaciones.ModificarBeneficiario);
+		//jPanelListaOperaciones.ponerOperacion(Operaciones.ModificarBeneficiario);
 	}
 	
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(Operaciones.RegistrarBeneficiario);
 		jPanelRegistrar.setVisible(true);
 		jPanelConsultar.setVisible(false);
-		jPanelModificar.setVisible(false);
+		//jPanelModificar.setVisible(false);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(EventObject evt) {
@@ -113,10 +118,10 @@ public class JPBeneficiarios extends JPBase {
 			jPanelConsultar.setVisible(true);
 			jPanelConsultar.repaint();
 		}
-		if(jPanelListaOperaciones.getOperacion() == Operaciones.ModificarBeneficiario) {
+		/*if(jPanelListaOperaciones.getOperacion() == Operaciones.ModificarBeneficiario) {
 			jPanelModificar.setVisible(true);
 			jPanelModificar.repaint();
-		}
+		}*/
 	}
 	
 	public void desactivarRegistrarBeneficiario() {

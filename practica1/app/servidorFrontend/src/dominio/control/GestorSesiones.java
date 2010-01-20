@@ -100,8 +100,7 @@ public class GestorSesiones {
 		}
 		
 		// Se deben agregar al vector todas las operaciones declaradas en Operacion.java
-		// Agregamos al vector las operaciones de todos los usuarios (administrador, citador
-		operaciones.add(Operaciones.ConsultarUsuario);
+		// Agregamos al vector las operaciones de todos los usuarios (administrador, citador y medico)
 		operaciones.add(Operaciones.ConsultarBeneficiario);
 		// Agregamos al vector las operaciones de citadores y administradores
 		if (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
@@ -109,7 +108,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.AnularCita);
 			operaciones.add(Operaciones.RegistrarBeneficiario);
 			operaciones.add(Operaciones.ModificarBeneficiario);
-			operaciones.add(Operaciones.ConsultarMedico);
+			operaciones.add(Operaciones.ConsultarUsuario);
 		}
 		// Agregamos al vector las operaciones de administradores
 		if (sesion.getRol() == Roles.Administrador.ordinal()){
@@ -118,6 +117,10 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.EliminarUsuario);
 			operaciones.add(Operaciones.ModificarCalendario);
 			operaciones.add(Operaciones.EstablecerSustituto);
+		}
+		// Agregamos al vector las operaciones de médicos
+		if (sesion.getRol() == Roles.Medico.ordinal()){
+			operaciones.add(Operaciones.EmitirVolante);
 		}
 		
 		return operaciones;
