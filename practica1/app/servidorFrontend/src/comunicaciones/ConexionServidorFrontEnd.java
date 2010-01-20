@@ -137,7 +137,7 @@ public class ConexionServidorFrontEnd extends UnicastRemoteObject implements ISe
 		
     // Método auxiliar
 	
-	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException {
+	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception {
 		GestorConexionesLog.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}

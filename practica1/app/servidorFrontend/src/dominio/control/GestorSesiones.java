@@ -108,10 +108,10 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.AnularCita);
 			operaciones.add(Operaciones.RegistrarBeneficiario);
 			operaciones.add(Operaciones.ModificarBeneficiario);
-			operaciones.add(Operaciones.ConsultarUsuario);
 		}
 		// Agregamos al vector las operaciones de administradores
 		if (sesion.getRol() == Roles.Administrador.ordinal()){
+			operaciones.add(Operaciones.ConsultarUsuario);
 			operaciones.add(Operaciones.CrearUsuario);
 			operaciones.add(Operaciones.ModificarUsuario);
 			operaciones.add(Operaciones.EliminarUsuario);

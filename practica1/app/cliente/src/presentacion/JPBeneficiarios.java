@@ -79,8 +79,8 @@ public class JPBeneficiarios extends JPBase {
 		//jPanelModificar.setControlador(controlador);
 	}
 	
-	public void setDesactivarModificacion(){
-		jPanelConsultar.setDesactivarModificacion();
+	public void desactivarModificacion(){
+		jPanelConsultar.desactivarModificacion();
 	}
 	
 	public void setFrame(JFrame frame) {
@@ -132,9 +132,9 @@ public class JPBeneficiarios extends JPBase {
 		jPanelListaOperaciones.quitarOperacion(Operaciones.ConsultarBeneficiario);
 	}
 
-	public void desactivarModificarBeneficiario() {
+	/*public void desactivarModificarBeneficiario() {
 		jPanelListaOperaciones.quitarOperacion(Operaciones.ModificarBeneficiario);
-	}
+	}*/
 
 	//$hide<<$
 	
