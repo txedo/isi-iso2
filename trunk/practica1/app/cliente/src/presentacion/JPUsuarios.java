@@ -16,9 +16,10 @@ public class JPUsuarios extends JPBase {
 
 	private static final long serialVersionUID = -3062194232916521414L;
 
-	private JPUsuarioModificar jPanelModificar;
-	private JPUsuarioEliminar jPanelEliminar;
+	//private JPUsuarioModificar jPanelModificar;
+	//private JPUsuarioEliminar jPanelEliminar;
 	private JPUsuarioCrear jPanelCrear;
+	private JPUsuarioConsultar jPanelConsultar;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
 
@@ -55,13 +56,17 @@ public class JPUsuarios extends JPBase {
 				jPanelCrear = new JPUsuarioCrear();
 				this.add(jPanelCrear, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 			}
-			{
+			/*{
 				jPanelModificar = new JPUsuarioModificar();
 				this.add(jPanelModificar, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 			}
 			{
 				jPanelEliminar = new JPUsuarioEliminar();
 				this.add(jPanelEliminar, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+			}*/
+			{
+				jPanelConsultar = new JPUsuarioConsultar();
+				this.add(jPanelConsultar, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -73,65 +78,81 @@ public class JPUsuarios extends JPBase {
 	public void setControlador(ControladorPrincipal controlador) {
 		super.setControlador(controlador);
 		jPanelCrear.setControlador(controlador);
-		jPanelModificar.setControlador(controlador);
-		jPanelEliminar.setControlador(controlador);
+		jPanelConsultar.setControlador(controlador);
+		//jPanelModificar.setControlador(controlador);
+		//jPanelEliminar.setControlador(controlador);
 	}
 	
 	public void setFrame(JFrame frame) {
 		super.setFrame(frame);
 		jPanelCrear.setFrame(frame);
-		jPanelModificar.setFrame(frame);
-		jPanelEliminar.setFrame(frame);
+		jPanelConsultar.setFrame(frame);
+		//jPanelModificar.setFrame(frame);
+		//jPanelEliminar.setFrame(frame);
 	}
 	
 	private void inicializarOperaciones() {
 		jPanelListaOperaciones.ponerOperacion(Operaciones.CrearUsuario);
-		jPanelListaOperaciones.ponerOperacion(Operaciones.ModificarUsuario);
-		jPanelListaOperaciones.ponerOperacion(Operaciones.EliminarUsuario);
+		jPanelListaOperaciones.ponerOperacion(Operaciones.ConsultarUsuario);
+		//jPanelListaOperaciones.ponerOperacion(Operaciones.ModificarUsuario);
+		//jPanelListaOperaciones.ponerOperacion(Operaciones.EliminarUsuario);
 	}
 
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(Operaciones.CrearUsuario);
 		jPanelCrear.setVisible(true);
-		jPanelModificar.setVisible(false);
-		jPanelEliminar.setVisible(false);
+		jPanelConsultar.setVisible(false);
+		//jPanelModificar.setVisible(false);
+		//jPanelEliminar.setVisible(false);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(EventObject evt) {
 		if(jPanelCrear.isValid()) {
 			jPanelCrear.setVisible(false);
 		}
-		if(jPanelModificar.isValid()) {
+		
+		if(jPanelConsultar.isValid()) {
+			jPanelConsultar.setVisible(false);
+		}
+		
+		/*if(jPanelModificar.isValid()) {
 			jPanelModificar.setVisible(false);
 		}
 		if(jPanelEliminar.isValid()) {
 			jPanelEliminar.setVisible(false);
-		}
+		}*/
+		
 		if(jPanelListaOperaciones.getOperacion() == Operaciones.CrearUsuario) {
 			jPanelCrear.setVisible(true);
 			jPanelCrear.repaint();
 		}
-		if(jPanelListaOperaciones.getOperacion() == Operaciones.ModificarUsuario) {
+		
+		if(jPanelListaOperaciones.getOperacion() == Operaciones.ConsultarUsuario) {
+			jPanelConsultar.setVisible(true);
+			jPanelConsultar.repaint();
+		}
+		
+		/*if(jPanelListaOperaciones.getOperacion() == Operaciones.ModificarUsuario) {
 			jPanelModificar.setVisible(true);
 			jPanelModificar.repaint();
 		}
 		if(jPanelListaOperaciones.getOperacion() == Operaciones.EliminarUsuario) {
 			jPanelEliminar.setVisible(true);
 			jPanelEliminar.repaint();
-		}
+		}*/
 	}
 
 	public void desactivarCrearUsuario() {
 		jPanelListaOperaciones.quitarOperacion(Operaciones.CrearUsuario);
 	}
 
-	public void desactivarModificarUsuario() {
+	/*public void desactivarModificarUsuario() {
 		jPanelListaOperaciones.quitarOperacion(Operaciones.ModificarUsuario);
 	}
 
 	public void desactivarEliminarUsuario() {
 		jPanelListaOperaciones.quitarOperacion(Operaciones.EliminarUsuario);
-	}
+	}*/
 
 	//$hide<<$
 	

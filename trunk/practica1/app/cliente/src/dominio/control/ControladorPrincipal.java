@@ -11,6 +11,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.OperacionesAuxiliares;
+import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.MedicoInexistenteException;
@@ -91,8 +92,20 @@ public class ControladorPrincipal implements OperacionesAuxiliares {
 		servidor.modificar(sesion.getId(), bene);
 	}
 	
-	public Object operacionesDisponibles () throws RemoteException, SesionInvalidaException {
+	public Object operacionesDisponibles () throws RemoteException, Exception {
 		return servidor.mensajeAuxiliar(sesion.getId(), OPERACIONES_DISPONIBLES, null);
+	}
+	
+	public Object consultarUsuario (String dni) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), CONSULTAR_USUARIO, dni);
+	}
+	
+	public Object modificarUsuario (Usuario usu) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), MODIFICAR_USUARIO, usu);
+	}
+	
+	public Object eliminarUsuario (Usuario usu) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), ELIMINAR_USUARIO, usu);
 	}
 
 	public Medico consultarMedico(String dni) throws RemoteException, MedicoInexistenteException, Exception {

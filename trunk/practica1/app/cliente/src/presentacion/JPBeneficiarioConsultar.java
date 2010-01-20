@@ -292,7 +292,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		cmbIdentificacion.setModel(cmbIdentificacionModel);
 	}
 	
-	public void setDesactivarModificacion(){
+	public void desactivarModificacion(){
 		chkEditar.setVisible(false);
 		btnAplicar.setVisible(false);
 	}

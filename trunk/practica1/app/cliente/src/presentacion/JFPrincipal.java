@@ -206,6 +206,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 			Dialogos.mostrarDialogoError(this, "Error", e.toString());
 		} catch (SesionInvalidaException e) {
 			Dialogos.mostrarDialogoError(this, "Error", "Sesión inválida.");
+		} catch (Exception e) {
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
 		}
 	}
 	
@@ -237,25 +239,29 @@ public class JFPrincipal extends javax.swing.JFrame {
 		// Inicializamos el contenido de cada pestaña
 		if(!operaciones.contains(Operaciones.RegistrarBeneficiario))
 			jPanelGestionarBeneficiarios.desactivarRegistrarBeneficiario();
-		if(!operaciones.contains(Operaciones.ModificarBeneficiario))
-			jPanelGestionarBeneficiarios.desactivarModificarBeneficiario();
+		/*if(!operaciones.contains(Operaciones.ModificarBeneficiario))
+			jPanelGestionarBeneficiarios.desactivarModificarBeneficiario();*/
 		if(!operaciones.contains(Operaciones.ConsultarBeneficiario))
 			jPanelGestionarBeneficiarios.desactivarConsultarBeneficiario();
 
 		if(!operaciones.contains(Operaciones.CrearUsuario))
 			jPanelGestionarUsuarios.desactivarCrearUsuario();
-		if(!operaciones.contains(Operaciones.ModificarUsuario))
+		/*if(!operaciones.contains(Operaciones.ModificarUsuario))
 			jPanelGestionarUsuarios.desactivarModificarUsuario();
 		if(!operaciones.contains(Operaciones.EliminarUsuario))
-			jPanelGestionarUsuarios.desactivarEliminarUsuario();
+			jPanelGestionarUsuarios.desactivarEliminarUsuario();*/
 		
 		if(!operaciones.contains(Operaciones.TramitarCita))
 			jPanelGestionarCitas.desactivarTramitarCita();
 		if(!operaciones.contains(Operaciones.AnularCita))
 			jPanelGestionarCitas.desactivarAnularCita();
 		
-		if (!operaciones.contains(Operaciones.ModificarBeneficiario))
-			jPanelGestionarBeneficiarios.setDesactivarModificacion();
+		// Controlamos si, en los paneles de consultar, se puede o no también modificar/eliminar datos,
+		// según los permisos de cada rol
+		if (!operaciones.contains(Operaciones.ModificarBeneficiario)
+				&& operaciones.contains(Operaciones.ConsultarBeneficiario))
+			jPanelGestionarBeneficiarios.desactivarModificacion();
+		
 		jPanelBienvenida.repaint();
 	}
 	

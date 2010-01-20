@@ -73,6 +73,6 @@ public interface IServidorFrontend extends Remote {
 	
 	// Método auxiliar
 	
-	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException;
+	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception;
 	
 }

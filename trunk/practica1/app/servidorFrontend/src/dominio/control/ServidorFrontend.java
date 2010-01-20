@@ -13,6 +13,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludIncorrectoException;
@@ -24,6 +25,8 @@ import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
+import excepciones.UsuarioInexistenteException;
+import excepciones.UsuarioYaExistenteException;
 import excepciones.VolanteNoValidoException;
 
 /**
@@ -632,15 +635,40 @@ public class ServidorFrontend implements IServidorFrontend {
 	// Métodos del Gestor de Mensajes
 	// ------------------------------
 	
-	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, SesionInvalidaException {
+	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception {
 		Object resultado;
-		
+
+		String login;
 		resultado = null;
 		GestorConexionesLog.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
 		try {
 			resultado = GestorMensajes.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
-		} catch(Exception e) {
-			// TODO: Quitar este catch!
+		} catch (SQLException se) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error SQL al ejecutar la operación " + codigoMensaje);
+			throw se;
+		} catch (CentroSaludIncorrectoException csie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al ejecutar la operación " + codigoMensaje + ". No se puede recuperar el centro de salud del usuario ");
+			throw csie;
+		} catch (UsuarioYaExistenteException uyee) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al ejecutar la operación " + codigoMensaje + ". No se puede crear el usuario porque ya existe");
+			throw uyee;
+		} catch (UsuarioInexistenteException uie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al ejecutar la operación " + codigoMensaje + ". No se puede recuperar el usuario porque no existe en la base de datos");
+			throw uie;
+		} catch (OperacionIncorrectaException oie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, "Error al realizar una operación no permitida " + codigoMensaje);
+			throw oie;
+		} catch (SesionInvalidaException sie) {
+			GestorConexionesLog.ponerMensaje("Error al comprobar la sesión con id " + idSesion 	+ " para la operación " + codigoMensaje);
+			throw sie;
+		} catch (Exception e) {
+			GestorConexionesLog.ponerMensaje("Error inesperado: " + e.toString());
+			throw e;
 		}
 		
 		return resultado;

@@ -23,6 +23,9 @@ public class GestorMensajes implements OperacionesAuxiliares {
 			case OPERACIONES_DISPONIBLES:
 				res = GestorSesiones.operacionesDisponibles(idSesion);
 				break;
+			case CONSULTAR_USUARIO:
+				res = GestorUsuarios.getUsuario(idSesion, (String)informacion);
+				break;
 			case CREAR_USUARIO:
 				GestorUsuarios.crearUsuario(idSesion, (Usuario)informacion);
 				break;
