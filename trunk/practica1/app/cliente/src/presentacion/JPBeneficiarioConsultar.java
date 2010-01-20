@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.ComboBoxModel;
@@ -18,6 +19,7 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Utilidades;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioInexistenteException;
@@ -277,6 +279,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 				this.add(cmbIdentificacion, new AnchorConstraint(37, 236, 188, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				cmbIdentificacion.setPreferredSize(new java.awt.Dimension(100, 22));
 			}
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -289,11 +292,16 @@ public class JPBeneficiarioConsultar extends JPBase {
 		cmbIdentificacion.setModel(cmbIdentificacionModel);
 	}
 	
+	public void setDesactivarModificacion(){
+		chkEditar.setVisible(false);
+		btnAplicar.setVisible(false);
+	}
+	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
 		Beneficiario beneficiario = null;
 		String sIdentificacion;
 		String sTipo;
-		
+					
 		try {
 
 			// Obtenemos el identificador para buscar el beneficiario

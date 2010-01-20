@@ -254,6 +254,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 		if(!operaciones.contains(Operaciones.AnularCita))
 			jPanelGestionarCitas.desactivarAnularCita();
 		
+		if (!operaciones.contains(Operaciones.ModificarBeneficiario))
+			jPanelGestionarBeneficiarios.setDesactivarModificacion();
 		jPanelBienvenida.repaint();
 	}
 	
