@@ -22,5 +22,10 @@ public class ProxyEstadoRespaldo implements IConexionEstado {
 	public void ponerMensaje(String mensaje) throws RemoteException {
 		conexionRemota.ponerMensaje(mensaje);
 	}
+
+	public void actualizarClientesEscuchando(int numeroClientes)
+			throws RemoteException {
+		conexionRemota.actualizarClientesEscuchando(numeroClientes);		
+	}
 	
 }

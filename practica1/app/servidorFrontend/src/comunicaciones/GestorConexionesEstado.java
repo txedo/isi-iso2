@@ -57,4 +57,13 @@ public class GestorConexionesEstado {
 		}
 	}
 	
+	public static void actualizarClientesEscuchando (int numeroClientes) {
+		for(IConexionEstado log : conexiones) {
+			try {
+				log.actualizarClientesEscuchando(numeroClientes);
+			} catch(RemoteException e) {
+				// Ignoramos el error
+			}
+		}
+	}
 }

@@ -299,6 +299,14 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	public void actualizarTexto(String mensaje) {
 		txtLog.setText(txtLog.getText() + mensaje + "\n");	
 	}
+
+
+	public void actualizarClientesEscuchando(int numeroClientes) {
+		if (numeroClientes == 1)
+			lblClientesConectados.setText(numeroClientes + " cliente conectado.");
+		else
+			lblClientesConectados.setText(numeroClientes + " clientes conectados.");
+	}
 	
 	//$hide<<$
 	

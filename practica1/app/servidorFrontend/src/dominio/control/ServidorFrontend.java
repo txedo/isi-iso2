@@ -86,6 +86,7 @@ public class ServidorFrontend implements IServidorFrontend {
 		        ICliente terminal = (ICliente)Naming.lookup(url);
 		        clientesEscuchando.put(idSesion, terminal);
 				GestorConexionesEstado.ponerMensaje("Nuevo cliente a la escucha. ID de sesion " + idSesion);
+				GestorConexionesEstado.actualizarClientesEscuchando(clientesEscuchando.size());
 			}
 		} catch (SesionNoIniciadaException snie) {
 			GestorConexionesEstado.ponerMensaje(snie.getMessage());
@@ -109,6 +110,7 @@ public class ServidorFrontend implements IServidorFrontend {
 				String mensajeLog = "Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' desconectado.";
 				GestorSesiones.liberar(idSesion);
 				GestorConexionesEstado.ponerMensaje(mensajeLog);
+				GestorConexionesEstado.actualizarClientesEscuchando(clientesEscuchando.size());
 			}
 		} catch (Exception e) {
 			GestorConexionesEstado.ponerMensaje(e.getMessage());
