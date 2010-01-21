@@ -6,5 +6,6 @@ package presentacion;
 public interface IVentanaEstado {
 	
 	public void actualizarTexto(String mensaje);
+	public void actualizarClientesEscuchando (int numeroClientes);
 	
 }

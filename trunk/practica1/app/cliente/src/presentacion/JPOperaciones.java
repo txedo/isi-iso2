@@ -107,7 +107,10 @@ public class JPOperaciones extends JPanel {
 		}
 		lstOperaciones.setModel(lstOperacionesModel);
 		if(operaciones.size() != 0) {
-			lstOperaciones.setSelectedIndex(lstOperaciones.getFirstVisibleIndex());
+			lstOperaciones.setSelectedIndex(0);
+		}
+		else {
+			lstOperaciones.setSelectedIndex(-1);
 		}
 		lstOperaciones.repaint();
 	}
