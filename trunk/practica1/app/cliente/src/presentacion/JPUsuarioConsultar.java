@@ -47,6 +47,7 @@ import excepciones.UsuarioYaExistenteException;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class JPUsuarioConsultar extends JPBase {
+
 	private JLabel lblDniMedico;
 	private JLabel lblLogin;
 	private JLabel lblPass;

@@ -55,6 +55,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JPanel jPanelEstablecerSustituto;
 	private JPanel jPanelModificarCalendario;
 	private JPanel jPanelConsultarMedico;
+	private JPEmitirVolante jPanelEmitirVolante;
 	private JPBienvenida jPanelBienvenida;
 	private JTabbedPane jTabbedPaneOperaciones;
 
@@ -179,6 +180,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 						jTabbedPaneOperaciones.addTab("Establecer Sustituto", null, jPanelEstablecerSustituto, null);
 						jPanelEstablecerSustituto.setLayout(jPanelEstablecerSustitutoLayout);
 					}
+					
+					{
+						jPanelEmitirVolante = new JPEmitirVolante();
+						jTabbedPaneOperaciones.addTab("Emitir Volante", null, jPanelEmitirVolante, null);
+					}
 				}
 			}
 			pack();
@@ -218,12 +224,15 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jTabbedPaneOperaciones.remove(jPanelGestionarBeneficiarios);
 		}
 		if(!operaciones.contains(Operaciones.TramitarCita)
-				&& !operaciones.contains(Operaciones.AnularCita)) {
+				&& !operaciones.contains(Operaciones.AnularCita)){
 			jTabbedPaneOperaciones.remove(jPanelGestionarCitas);
 		}
+		
+		if (!operaciones.contains(Operaciones.EmitirVolante))
+			jTabbedPaneOperaciones.remove(jPanelEmitirVolante);
+		
 		if(!operaciones.contains(Operaciones.CrearUsuario)
-				&& !operaciones.contains(Operaciones.ModificarUsuario)
-				&& !operaciones.contains(Operaciones.EliminarUsuario)) {
+				&& !operaciones.contains(Operaciones.ConsultarUsuario)) {
 			jTabbedPaneOperaciones.remove(jPanelGestionarUsuarios);
 		}
 		if(!operaciones.contains(Operaciones.ConsultarMedico)) {
@@ -250,6 +259,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jPanelGestionarUsuarios.desactivarModificarUsuario();
 		if(!operaciones.contains(Operaciones.EliminarUsuario))
 			jPanelGestionarUsuarios.desactivarEliminarUsuario();*/
+		if(!operaciones.contains(Operaciones.ConsultarUsuario))
+			jPanelGestionarUsuarios.desactivarConsultarUsuario();
 		
 		if(!operaciones.contains(Operaciones.TramitarCita))
 			jPanelGestionarCitas.desactivarTramitarCita();
