@@ -10,7 +10,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.ISesion;
@@ -23,7 +22,6 @@ import excepciones.CitaNoValidaException;
 import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
-import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
@@ -32,13 +30,13 @@ import excepciones.VolanteNoValidoException;
  * Clase que exporta la instancia que será utilizada por los clientes
  * para ejecutar operaciones de la fachada del servidor front-end.
  */
-public class ConexionServidorFrontEnd extends UnicastRemoteObject implements IServidorFrontend{
+public class ConexionServidorFrontend extends UnicastRemoteObject implements IServidorFrontend{
 
 	private static final long serialVersionUID = 7735848879217866237L;
 	
 	private IServidorFrontend servidor;
 
-	public ConexionServidorFrontEnd() throws RemoteException {
+	public ConexionServidorFrontend() throws RemoteException {
 		super();
 		// El constructor de 'UnicastRemoteObject' exporta automáticamente
 		// este objeto; aquí cancelamos la exportación porque ya llamamos
@@ -138,7 +136,7 @@ public class ConexionServidorFrontEnd extends UnicastRemoteObject implements ISe
     // Método auxiliar
 	
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception {
-		GestorConexionesLog.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
+		GestorConexionesEstado.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
 

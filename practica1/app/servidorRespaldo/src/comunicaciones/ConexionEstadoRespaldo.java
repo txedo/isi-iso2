@@ -9,50 +9,50 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import presentacion.IVentanaLog;
+import presentacion.IVentanaEstado;
 
 /**
  * Clase que exporta la instancia que será utilizada por el servidor
  * front-end para mostrar los mensajes generados en la ventana
  * principal del servidor de respaldo.
  */
-public class ConexionLogRespaldo extends UnicastRemoteObject implements IConexionLog {
+public class ConexionEstadoRespaldo extends UnicastRemoteObject implements IConexionEstado {
 
 	private static final long serialVersionUID = 8245499027365521538L;
 	private final String NOMBRE_LOG = "servidorrespaldo";
 	
-	private ArrayList<IVentanaLog> ventanas;
+	private ArrayList<IVentanaEstado> ventanas;
 	
-	public ConexionLogRespaldo() throws SQLException, RemoteException {
+	public ConexionEstadoRespaldo() throws SQLException, RemoteException {
 		super();
 		// El constructor de 'UnicastRemoteObject' exporta automáticamente
 		// este objeto; aquí cancelamos la exportación porque ya llamamos
 		// manualmente a 'exportObject' en el método 'conectar'
 		unexportObject(this, false);
-		LocateRegistry.createRegistry(PUERTO_CONEXION);
-		ventanas = new ArrayList<IVentanaLog>();
+		LocateRegistry.createRegistry(PUERTO_CONEXION_ESTADO);
+		ventanas = new ArrayList<IVentanaEstado>();
 	}
 
 	public void activar(String ip) throws MalformedURLException, RemoteException, SQLException {
-        exportObject(this, PUERTO_CONEXION);
+        exportObject(this, PUERTO_CONEXION_ESTADO);
         try {
-            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_LOG, this);
+            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/" + NOMBRE_LOG, this);
         } catch(AlreadyBoundException ex) {
-            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_LOG, this);
+            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/" + NOMBRE_LOG, this);
         }
     }
 		
 	public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {		
 		unexportObject(this, false);
-		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/" + NOMBRE_LOG);
+		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/" + NOMBRE_LOG);
     }
 	
-	public void ponerVentana(IVentanaLog ventana) {
+	public void ponerVentana(IVentanaEstado ventana) {
 		ventanas.add(ventana);
 	}
 	
 	public void ponerMensaje(String mensaje) {
-		for(IVentanaLog ventana : ventanas) {
+		for(IVentanaEstado ventana : ventanas) {
 			ventana.actualizarTexto(mensaje);
 		}
 	}

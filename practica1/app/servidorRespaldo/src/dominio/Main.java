@@ -1,6 +1,6 @@
 package dominio;
 
-import dominio.control.ControladorPrincipal;
+import dominio.control.ControladorRespaldo;
 
 /**
  * Clase principal del servidor de respaldo.
@@ -8,10 +8,10 @@ import dominio.control.ControladorPrincipal;
 public class Main {
 	
 	public static void main(String[] args) {
-		ControladorPrincipal cont;
+		ControladorRespaldo cont;
 		
 		// Mostramos la única ventana del servidor
-		cont = new ControladorPrincipal();
+		cont = new ControladorRespaldo();
 		cont.mostrarVentana();	
 	}
 

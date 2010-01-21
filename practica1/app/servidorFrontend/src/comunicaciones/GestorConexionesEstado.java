@@ -4,24 +4,24 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import comunicaciones.IConexionLog;
+import comunicaciones.IConexionEstado;
 
 /**
  * Gestor que permite enviar los mensajes generados por el servidor a
- * varios logs (locales o remotos).
+ * varias ventanas (locales o remotas).
  */
-public class GestorConexionesLog {
+public class GestorConexionesEstado {
 
-	private static ArrayList<IConexionLog> conexiones = new ArrayList<IConexionLog>();
+	private static ArrayList<IConexionEstado> conexiones = new ArrayList<IConexionEstado>();
 	private static SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	
-	public static void ponerConexion(IConexionLog conexion) {
+	public static void ponerConexion(IConexionEstado conexion) {
 		if(!conexiones.contains(conexion)) {
 			conexiones.add(conexion);
 		}
 	}
 	
-	public static void quitarConexion(IConexionLog conexion) {
+	public static void quitarConexion(IConexionEstado conexion) {
 		if(conexiones.contains(conexion)) {
 			conexiones.remove(conexion);
 		}
@@ -35,7 +35,7 @@ public class GestorConexionesLog {
 		String fecha;
 		
 		fecha = formatoFecha.format(new Date());
-		for(IConexionLog log : conexiones) {
+		for(IConexionEstado log : conexiones) {
 			try {
 				log.ponerMensaje(fecha + ": " + mensaje);
 			} catch(RemoteException e) {
@@ -48,7 +48,7 @@ public class GestorConexionesLog {
 		String fecha;
 		
 		fecha = formatoFecha.format(new Date());
-		for(IConexionLog log : conexiones) {
+		for(IConexionEstado log : conexiones) {
 			try {
 				log.ponerMensaje(fecha + " (" + login + "): " + mensaje);
 			} catch(RemoteException e) {
