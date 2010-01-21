@@ -3,7 +3,7 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Operaciones;
-import dominio.control.ControladorPrincipal;
+import dominio.control.ControladorCliente;
 import excepciones.SesionInvalidaException;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
@@ -36,7 +36,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = 1155264551580232934L;
 
-	private ControladorPrincipal controlador;
+	private ControladorCliente controlador;
 	
 	private JPUsuarios jPanelGestionarUsuarios;
 	private JPCitas jPanelGestionarCitas;
@@ -190,7 +190,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	
 	//$hide>>$
 	
-	public void setControlador(ControladorPrincipal controlador) {
+	public void setControlador(ControladorCliente controlador) {
 		this.controlador = controlador;
 		jPanelGestionarUsuarios.setControlador(controlador);
 		jPanelGestionarBeneficiarios.setControlador(controlador);

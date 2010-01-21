@@ -13,7 +13,6 @@ import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CitaNoValidaException;
 import excepciones.FechaNoValidaException;
-import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
 import excepciones.VolanteNoValidoException;
 import excepciones.MedicoInexistenteException;

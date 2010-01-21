@@ -1,6 +1,6 @@
 package dominio;
 
-import dominio.control.ControladorPrincipal;
+import dominio.control.ControladorCliente;
 
 /**
  * Clase principal del cliente.
@@ -8,10 +8,10 @@ import dominio.control.ControladorPrincipal;
 public class Main {
 
 	public static void main(String args[]) {
-		ControladorPrincipal cont;
+		ControladorCliente cont;
 		
 		// Mostramos la ventana de identificación
-		cont = new ControladorPrincipal();
+		cont = new ControladorCliente();
 		cont.identificarse();
 	}
 	

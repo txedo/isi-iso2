@@ -23,7 +23,7 @@ import presentacion.JFPrincipal;
 /**
  * Controlador principal de la funcionalidad de los clientes. 
  */
-public class ControladorPrincipal implements OperacionesAuxiliares {
+public class ControladorCliente implements OperacionesAuxiliares {
 
 	private ProxyServidorFrontend servidor;
 	private ConexionCliente cliente;
@@ -31,7 +31,7 @@ public class ControladorPrincipal implements OperacionesAuxiliares {
 	private JFLogin ventana;
 	private JFPrincipal ventanaPrincipal;
 	
-	public ControladorPrincipal() {
+	public ControladorCliente() {
 		servidor = null;
 	}
 	

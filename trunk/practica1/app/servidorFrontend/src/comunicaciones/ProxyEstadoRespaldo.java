@@ -5,15 +5,18 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-public class ProxyLogRespaldo implements IConexionLog {
+/**
+ * Proxy utilizado para acceder a una ventana de estado remota.
+ */
+public class ProxyEstadoRespaldo implements IConexionEstado {
 
-	private IConexionLog conexionRemota;
+	private IConexionEstado conexionRemota;
 	
 	public void conectar(String ip) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
-		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION) + "/servidorrespaldo";
-        conexionRemota = (IConexionLog)Naming.lookup(url);
+		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/servidorrespaldo";
+        conexionRemota = (IConexionEstado)Naming.lookup(url);
 	}
 
 	public void ponerMensaje(String mensaje) throws RemoteException {

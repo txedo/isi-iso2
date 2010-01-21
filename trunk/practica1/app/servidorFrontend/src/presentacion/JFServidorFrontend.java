@@ -2,7 +2,7 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.control.ControladorPrincipal;
+import dominio.control.ControladorFrontend;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -37,7 +36,7 @@ import java.util.regex.*;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLog {
+public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEstado {
 	
 	{
 		//Set Look & Feel
@@ -50,7 +49,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 	
 	private static final long serialVersionUID = -113838536647924014L;
 	
-	private ControladorPrincipal controlador;
+	private ControladorFrontend controlador;
 	private JPanel jPanel;
 	private JScrollPane scpPanelLog;
 	private JLabel lblIPRespaldo;
@@ -70,13 +69,13 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 	
 	private void initGUI() {
 		try {
-			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			this.setTitle("Servidor Front-End");
 			this.setPreferredSize(new java.awt.Dimension(550, 400));
 			this.setMinimumSize(new java.awt.Dimension(500, 300));
 			this.addWindowListener(new WindowAdapter() { 
-				public void windowClosing(WindowEvent e) {    
-					System.exit(0);
+				public void windowClosing(WindowEvent evt) {    
+					thisWindowClosing(evt);
 				}
 			});
 			{
@@ -114,7 +113,6 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 						txtLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
 						txtLog.setEditable(false);
 						txtLog.setFont(new java.awt.Font("Tahoma",0,12));
-						txtLog.setPreferredSize(new java.awt.Dimension(523, 184));
 					}
 				}
 				{
@@ -161,85 +159,120 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 			}
 			pack();
 		} catch(Exception e) {
-			txtLog.setText(txtLog.getText() + e.toString());
+			e.printStackTrace();
 		}
 	}
 	
 	//$hide>>$
 	
-	public void setControladorPresentacion(ControladorPrincipal controlador) {
+	public void setControladorPresentacion(ControladorFrontend controlador) {
 		this.controlador = controlador;
 	}
 	
 	private void botonConectarActionPerformed(ActionEvent evt) {
-		boolean respaldoValido=false;
-		boolean frontValido=true;
-		try {
-			Pattern pat = Pattern.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."+
-                    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-                    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-                    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
-			
-			// Iniciamos el servidor frontend y la conexión con el de respaldo (si las IPs son validas)
-			if (!txtIPRespaldo.getText().equals("")) {
-				if (!pat.matcher(txtIPRespaldo.getText()).matches()) {
-					JOptionPane.showMessageDialog(null, "Formato de IP del servidor de respaldo incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
-					respaldoValido=false;
-				}
-				else
-					respaldoValido=true;
+		Pattern patronIP;
+		boolean ipBaseDatosValida, ipRespaldoValida;
+		
+		// Creamos un patrón que define las IPs válidas
+		patronIP = Pattern.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + 
+				"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
+		
+		// Comprobamos si la IP del servidor de respaldo es válida
+		if(!txtIPRespaldo.getText().equals("")) {
+			if(!patronIP.matcher(txtIPRespaldo.getText()).matches()) {
+				Dialogos.mostrarDialogoError(this, "Error", "El formato de la IP del servidor de respaldo es incorrecto.");
+				txtIPRespaldo.selectAll();
+				txtIPRespaldo.grabFocus();
+				ipRespaldoValida = false;
+			} else {
+				ipRespaldoValida = true;
 			}
-			else
-				respaldoValido=true;
-			if (pat.matcher(txtIPBDPrincipal.getText()).matches()) 
-				frontValido=true;
-			else {
-				JOptionPane.showMessageDialog(null, "Formato de IP del servidor frontend incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
-				frontValido=false;
-			}
-			if (respaldoValido && frontValido){
-				controlador.iniciarServidor(txtIPBDPrincipal.getText(), txtIPRespaldo.getText());
-				// Cambiamos el estado de la ventana
-				btnConectar.setEnabled(false);
-				btnDesconectar.setEnabled(true);
-				txtIPBDPrincipal.setEditable(false);
-				txtIPRespaldo.setEditable(false);
-				lblBarraEstado.setText("Servidor preparado.");
-			}
-		} catch (SQLException e) {
-			actualizarTexto("Error: " + e.toString());
-		} catch (MalformedURLException e) {
-			actualizarTexto("Error: " + e.toString());
-		} catch (UnknownHostException e) {
-			actualizarTexto("Error: " + e.toString());
-		// Si da fallo al conectar, lo desconectamos para hacer el "unexport" y que funcione mas tarde
-		} catch(RemoteException e) {
-			actualizarTexto("Error: " + e.toString());
-			e.printStackTrace();
-			try {
-				controlador.detenerServidor(txtIPRespaldo.getText());
-			} catch (RemoteException e1) {
-				actualizarTexto("Error: " + e1.toString());
-				e1.printStackTrace();
-			} catch (UnknownHostException e1) {
-				actualizarTexto("Error: " + e1.toString());
-				e1.printStackTrace();
-			} catch (MalformedURLException e1) {
-				actualizarTexto("Error: " + e1.toString());
-				e1.printStackTrace();
-			} catch (NotBoundException e1) {
-				actualizarTexto("Error: " + e1.toString());
-				e1.printStackTrace();
-			} catch (SQLException e1) {
-				actualizarTexto("Error: " + e1.toString());
-				e1.printStackTrace();
-			}
-		} catch (NotBoundException e) {
-			actualizarTexto("Error: " + e.toString());
+		} else {
+			// El servidor de respaldo no se utilizará
+			ipRespaldoValida = true;
+		}
+		
+		// Comprobamos si la IP de la BD principal es válida
+		if(patronIP.matcher(txtIPBDPrincipal.getText()).matches()) { 
+			ipBaseDatosValida = true;
+		} else {
+			Dialogos.mostrarDialogoError(this, "Error", "El formato de la IP del servidor de base de datos principal es incorrecto.");
+			txtIPBDPrincipal.selectAll();
+			txtIPBDPrincipal.grabFocus();
+			ipBaseDatosValida = false;
+		}
+		
+		// Si las IPs son correctas, activamos el servidor
+		if(ipRespaldoValida && ipBaseDatosValida) {
+			activarServidor();
 		}
 	}
 	
 	private void botonDesconectarActionPerformed(ActionEvent evt) {
+		desactivarServidor();
+	}
+
+	private void thisWindowClosing(WindowEvent evt) {
+		boolean salir;
+		
+		// Si el servidor está activo, preguntamos antes de salir
+		salir = false;
+		if(controlador.getServidorActivo()) {
+			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierras el servidor front-end, se desconectará automáticamente. ¿Realmente quieres salir?")) {
+				if(desactivarServidor()) {
+					salir = true;
+				}
+			}
+		} else {
+			salir = true;
+		}
+		
+		if(salir) {
+			setVisible(false);
+			dispose();
+			System.exit(0);
+		}
+	}
+	
+	private boolean activarServidor() {
+		boolean ok;
+		
+		ok = false;
+		try {
+			// Iniciamos el servidor frontend y la conexión con el de respaldo
+			controlador.iniciarServidor(txtIPBDPrincipal.getText(), txtIPRespaldo.getText());
+			// Cambiamos el estado de la ventana
+			btnConectar.setEnabled(false);
+			btnDesconectar.setEnabled(true);
+			txtIPBDPrincipal.setEditable(false);
+			txtIPRespaldo.setEditable(false);
+			lblBarraEstado.setText("Servidor preparado.");
+			ok = true;
+		} catch(SQLException e) {
+			actualizarTexto("Error: " + e.getLocalizedMessage());
+		} catch(MalformedURLException e) {
+			actualizarTexto("Error: " + e.getLocalizedMessage());
+		} catch(UnknownHostException e) {
+			actualizarTexto("Error: " + e.getLocalizedMessage());
+		} catch (NotBoundException e) {
+			actualizarTexto("Error: " + e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			actualizarTexto("Error: " + e.getLocalizedMessage());
+			// Si se produce un fallo de RMI al conectar el
+			// servidor, lo desconectamos para hacer el "unexport"
+			// y que se pueda conectar de nuevo más tarde
+			desactivarServidor();
+		}
+		
+		return ok;
+	}
+	
+	private boolean desactivarServidor() {
+		boolean ok;
+		
+		ok = false;
 		try {
 			// Detenemos el servidor frontend y la conexión con el de respaldo
 			controlador.detenerServidor(txtIPRespaldo.getText());
@@ -249,23 +282,24 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaLo
 			txtIPBDPrincipal.setEditable(true);
 			txtIPRespaldo.setEditable(true);
 			lblBarraEstado.setText("Servidor desconectado.");
+			ok = true;
 		} catch(SQLException e) {
-			actualizarTexto("Error: " + e.toString());
+			actualizarTexto("Error: " + e.getLocalizedMessage());
 		} catch(RemoteException e) {
-			actualizarTexto("Error: " + e.toString());
+			actualizarTexto("Error: " + e.getLocalizedMessage());
 		} catch(MalformedURLException e) {
-			actualizarTexto("Error: " + e.toString());
+			actualizarTexto("Error: " + e.getLocalizedMessage());
 		} catch(UnknownHostException e) {
-			actualizarTexto("Error: " + e.toString());
-		} catch(NotBoundException e) {
-			actualizarTexto("Error: " + e.toString());
+			actualizarTexto("Error: " + e.getLocalizedMessage());
 		}
+		
+		return ok;
 	}
-
+	
 	public void actualizarTexto(String mensaje) {
 		txtLog.setText(txtLog.getText() + mensaje + "\n");	
 	}
-
+	
 	//$hide<<$
 	
 }

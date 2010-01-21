@@ -7,7 +7,7 @@ import javax.swing.SwingConstants;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Operaciones;
-import dominio.control.ControladorPrincipal;
+import dominio.control.ControladorCliente;
 
 /**
 * Panel que agrupa todas las operaciones sobre usuarios.
@@ -75,7 +75,7 @@ public class JPUsuarios extends JPBase {
 
 	//$hide>>$
 	
-	public void setControlador(ControladorPrincipal controlador) {
+	public void setControlador(ControladorCliente controlador) {
 		super.setControlador(controlador);
 		jPanelCrear.setControlador(controlador);
 		jPanelConsultar.setControlador(controlador);

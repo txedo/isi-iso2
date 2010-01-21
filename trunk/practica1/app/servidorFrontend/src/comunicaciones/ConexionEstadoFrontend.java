@@ -1,28 +1,28 @@
 package comunicaciones;
 
 import java.util.ArrayList;
-import presentacion.IVentanaLog;
+import presentacion.IVentanaEstado;
 
 /**
  * Clase que recibe los mensajes generados por el servidor y los
  * muestra en la ventana principal del servidor frontend.
  */
-public class ConexionLogFrontend implements IConexionLog {
+public class ConexionEstadoFrontend implements IConexionEstado {
 
-	private ArrayList<IVentanaLog> ventanas;
+	private ArrayList<IVentanaEstado> ventanas;
 	
-	public ConexionLogFrontend() {
-		ventanas = new ArrayList<IVentanaLog>();
+	public ConexionEstadoFrontend() {
+		ventanas = new ArrayList<IVentanaEstado>();
 	}
 	
-	public void ponerVentana(IVentanaLog ventana) {
+	public void ponerVentana(IVentanaEstado ventana) {
 		ventanas.add(ventana);
 	}
 	
 	// Métodos de las ventanas
 	
 	public void ponerMensaje(String mensaje) {
-		for(IVentanaLog ventana : ventanas) {
+		for(IVentanaEstado ventana : ventanas) {
 			ventana.actualizarTexto(mensaje);
 		}
 	}

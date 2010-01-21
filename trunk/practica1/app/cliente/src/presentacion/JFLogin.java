@@ -3,7 +3,7 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 
-import dominio.control.ControladorPrincipal;
+import dominio.control.ControladorCliente;
 import excepciones.UsuarioIncorrectoException;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -32,7 +32,7 @@ public class JFLogin extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -8335773788689456763L;
 	
-	private ControladorPrincipal controlador;
+	private ControladorCliente controlador;
 	private JLabel jLabel2;
 	private JTextField txtUsuario;
 	private JLabel jLabel4;
@@ -142,7 +142,7 @@ public class JFLogin extends javax.swing.JFrame {
 
 	//$hide>>$
 	
-	public void setControlador(ControladorPrincipal controlador) {
+	public void setControlador(ControladorCliente controlador) {
 		this.controlador = controlador;
 	}
 	

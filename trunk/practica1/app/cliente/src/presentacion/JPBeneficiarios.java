@@ -6,7 +6,7 @@ import javax.swing.SwingConstants;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Operaciones;
-import dominio.control.ControladorPrincipal;
+import dominio.control.ControladorCliente;
 
 import java.util.EventObject;
 
@@ -72,7 +72,7 @@ public class JPBeneficiarios extends JPBase {
 	
 	//$hide>>$
 	
-	public void setControlador(ControladorPrincipal controlador) {
+	public void setControlador(ControladorCliente controlador) {
 		super.setControlador(controlador);
 		jPanelRegistrar.setControlador(controlador);
 		jPanelConsultar.setControlador(controlador);
