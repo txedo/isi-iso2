@@ -154,6 +154,10 @@ public class JPUsuarios extends JPBase {
 		jPanelListaOperaciones.quitarOperacion(Operaciones.EliminarUsuario);
 	}*/
 
+	public void desactivarConsultarUsuario() {
+		jPanelListaOperaciones.quitarOperacion(Operaciones.ConsultarUsuario);
+	}
+	
 	//$hide<<$
 	
 }

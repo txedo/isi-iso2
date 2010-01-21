@@ -482,6 +482,28 @@ public class JPBeneficiarioConsultar extends JPBase {
 		txtTelefonoMovil.setFocusable(estado);
 		btnAplicar.setEnabled(estado);
 	}
+	
+	/* 
+	 * Este metodo permite ocultar ciertos controles de la interfaz
+	 * Se utiliza para reutilizar este panel desde el panel "JPEmitirVolante", pero
+	 * sin mostrar ciertos elementos en dicho panel.
+	*/
+	public void ocultarControles() {
+		lblFechaNacimiento.setVisible(false);
+		lblDomicilio.setVisible(false);
+		lblCorreoElectronico.setVisible(false);
+		lblTelefonoFijo.setVisible(false);
+		lblTelefonoMovil.setVisible(false);
+		lblMedicoAsignado.setVisible(false);
+		txtFechaNacimiento.setVisible(false);
+		txtDomicilio.setVisible(false);
+		txtCorreoElectronico.setVisible(false);
+		txtTelefonoFijo.setVisible(false);
+		txtTelefonoMovil.setVisible(false);
+		txtMedicoAsignado.setVisible(false);
+		btnAplicar.setVisible(false);
+		chkEditar.setVisible(false);
+	}
 
 	//$hide<<$
 	
