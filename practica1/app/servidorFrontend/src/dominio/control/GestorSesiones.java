@@ -121,6 +121,7 @@ public class GestorSesiones {
 		// Agregamos al vector las operaciones de médicos
 		if (sesion.getRol() == Roles.Medico.ordinal()){
 			operaciones.add(Operaciones.EmitirVolante);
+			operaciones.add(Operaciones.ConsultarMedicosTipo);
 		}
 		
 		return operaciones;
@@ -176,7 +177,7 @@ public class GestorSesiones {
 			permitido = esAdministrador || esCitador;
 			break;
 		case ConsultarBeneficiario:
-			permitido = esAdministrador || esCitador;
+			permitido = true;
 			break;
 		case ConsultarMedico:
 			permitido = esAdministrador || esCitador;
@@ -199,6 +200,10 @@ public class GestorSesiones {
 		case ConsultarUsuario:
 			// Estas operaciones siempre están permitidas
 			permitido = true;
+			break;
+		case ConsultarMedicosTipo:
+			// Estas operaciones siempre están permitidas
+			permitido = esMedico;
 			break;
 		default:
 			permitido = false;

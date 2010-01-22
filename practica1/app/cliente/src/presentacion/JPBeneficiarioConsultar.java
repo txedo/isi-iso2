@@ -83,7 +83,9 @@ public class JPBeneficiarioConsultar extends JPBase {
 	private JButton btnBuscar;
 	private JLabel lblBuscar;
 	private JComboBox cmbIdentificacion;
-
+	
+	private Beneficiario beneficiario;
+	
 	public JPBeneficiarioConsultar() {
 		super();
 		initGUI();
@@ -298,7 +300,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
-		Beneficiario beneficiario = null;
 		String sIdentificacion;
 		String sTipo;
 					
@@ -321,7 +322,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 
 			// Mostramos los datos del beneficiario encontrado
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Beneficiario encontrado.");
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Beneficiario encontrado.");			
+			
 			txtIdentificacion.setText("");
 			txtNIF.setText(beneficiario.getNif());
 			txtNSS.setText(beneficiario.getNss());
@@ -336,21 +338,27 @@ public class JPBeneficiarioConsultar extends JPBase {
 			chkEditar.setEnabled(true);
 
 		} catch(SQLException e) {
+			limpiarCamposConsultar();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(RemoteException e) {
+			limpiarCamposConsultar();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(BeneficiarioInexistenteException e) {
+			limpiarCamposConsultar();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario no se encuentra dado de alta en el sistema.");
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();			
 		} catch(CadenaVaciaException e) {
+			limpiarCamposConsultar();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NIF o NSS.");
 			txtIdentificacion.grabFocus();
 		} catch(NIFIncorrectoException e) {
+			limpiarCamposConsultar();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir NIF válido.");
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();
 		} catch(NSSIncorrectoException e) {
+			limpiarCamposConsultar();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NSS válido.");
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();
@@ -361,7 +369,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	private void btnAplicarActionPerformed(ActionEvent evt) {
-		Beneficiario beneficiario = null;
 		Medico medico = null;
 		
 		try {
@@ -445,7 +452,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		}
 	}
 	
-	private void limpiarCamposConsultar() {
+	public void limpiarCamposConsultar() {
 		txtNIF.setText("");
 		txtNSS.setText("");
 		txtNombre.setText("");
@@ -503,6 +510,14 @@ public class JPBeneficiarioConsultar extends JPBase {
 		txtMedicoAsignado.setVisible(false);
 		btnAplicar.setVisible(false);
 		chkEditar.setVisible(false);
+	}
+	
+	public String getNif() {
+		return txtNIF.getText();
+	}
+	
+	public Beneficiario getBeneficiario() {
+		return beneficiario;
 	}
 
 	//$hide<<$

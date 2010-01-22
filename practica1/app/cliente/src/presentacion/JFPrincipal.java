@@ -213,6 +213,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 		this.controlador = controlador;
 		jPanelGestionarUsuarios.setControlador(controlador);
 		jPanelGestionarBeneficiarios.setControlador(controlador);
+		jPanelEmitirVolante.setControlador(controlador);
+		jPanelEmitirVolante.inicializarEspecialistas();
 	}
 	
 	public void iniciar() {
@@ -257,7 +259,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		if(!operaciones.contains(Operaciones.EstablecerSustituto)) {
 			jTabbedPaneOperaciones.remove(jPanelEstablecerSustituto);
 		}
-		
+
 		// Inicializamos el contenido de cada pestaña
 		if(!operaciones.contains(Operaciones.RegistrarBeneficiario))
 			jPanelGestionarBeneficiarios.desactivarRegistrarBeneficiario();

@@ -9,9 +9,11 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.Sustitucion;
+import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import persistencia.FPEntradaLog;
 import persistencia.FPSustitucion;
+import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.MedicoInexistenteException;
@@ -228,6 +230,14 @@ public class GestorUsuarios {
 			sustitucion.setSustituto(sustituto);
 			FPSustitucion.insertar(sustitucion);
 		}
+	}
+	
+	public static ArrayList<Medico> obtenerMedicos (long idSesion, String tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException {
+		ArrayList<Medico> medicos = null;
+		// Comprobamos si se tienen permisos para realizar la operación
+		//GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
+		medicos = FPTipoMedico.consultarTodo(tipo);
+		return medicos;
 	}
 		
 }

@@ -2,10 +2,13 @@ package dominio.control;
 
 import java.sql.SQLException;
 import dominio.conocimiento.OperacionesAuxiliares;
+import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.MedicoInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
+import excepciones.UsuarioIncorrectoException;
 import excepciones.UsuarioInexistenteException;
 import excepciones.UsuarioYaExistenteException;
 
@@ -15,7 +18,7 @@ import excepciones.UsuarioYaExistenteException;
  */
 public class GestorMensajes implements OperacionesAuxiliares {
 	
-	public static Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws SesionInvalidaException, SQLException, UsuarioYaExistenteException, OperacionIncorrectaException, CentroSaludIncorrectoException, UsuarioInexistenteException {
+	public static Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, UsuarioYaExistenteException, MedicoInexistenteException, UsuarioIncorrectoException {
 		Object res;
 		
 		res = null;
@@ -34,6 +37,9 @@ public class GestorMensajes implements OperacionesAuxiliares {
 				break;
 			case ELIMINAR_USUARIO:
 				GestorUsuarios.eliminarUsuario(idSesion, (Usuario)informacion);
+				break;
+			case OBTENER_MEDICOS_TIPO:
+				res = GestorUsuarios.obtenerMedicos(idSesion, (String)informacion);
 				break;
 		}
 		return res;
