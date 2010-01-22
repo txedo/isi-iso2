@@ -56,5 +56,10 @@ public class ConexionEstadoRespaldo extends UnicastRemoteObject implements ICone
 			ventana.actualizarTexto(mensaje);
 		}
 	}
+
+	public void actualizarClientesEscuchando(int arg0) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

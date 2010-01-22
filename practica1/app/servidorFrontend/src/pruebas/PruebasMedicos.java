@@ -78,7 +78,7 @@ public class PruebasMedicos extends TestCase {
 			GestorConexionesBD.ponerConexion(conexionF);
 			//Inicializamos los tipos de medicos
 			pediatra = new Pediatra();
-			especialista = new Especialista();
+			especialista = new Especialista("Ginecologia");
 			cabecera = new Cabecera();
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
