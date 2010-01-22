@@ -3,6 +3,9 @@ package pruebas;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+/**
+ * Suite de pruebas para el servidor frontend.
+ */
 public class SuitePruebas {
 	
 	public static void main(String[] args) {

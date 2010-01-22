@@ -8,7 +8,6 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import comunicaciones.ConexionBDRespaldo;
 import comunicaciones.ConexionEstadoRespaldo;
 import comunicaciones.IConexionBD;
@@ -42,6 +41,11 @@ public class ControladorRespaldo {
 		vent.setVisible(true);
 	}
 	
+	public void ocultarVentana() {
+		// Ocultamos la ventana principal del servidor
+		vent.setVisible(false);
+	}
+	
 	public void iniciarServidorRespaldo(String ipBDRespaldo) throws MalformedURLException, RemoteException, NotBoundException, SQLException, UnknownHostException {
 		SimpleDateFormat formatoFecha;
 		String ipLocal;
@@ -51,10 +55,8 @@ public class ControladorRespaldo {
 		
 		// Activamos la clase remota para conectarse con la base de datos
 		try {
-			if(conexionBD == null) {
-				conexionBD = new ConexionBDRespaldo();
-				conexionBD.getAgente().setIP(ipBDRespaldo);
-			}
+			conexionBD = ConexionBDRespaldo.getConexion();
+			conexionBD.getAgente().setIP(ipBDRespaldo);
 			conexionBD.activar(ipLocal);
 		} catch(RemoteException e) {
 			throw new RemoteException("No se puede poner a la escucha el servidor de respaldo en la dirección IP " + ipLocal + ":" + IConexionBD.PUERTO_CONEXION_BD + ".");
@@ -62,10 +64,8 @@ public class ControladorRespaldo {
 
 		// Activamos la clase remota para mostrar los mensajes del servidor
 		try {
-			if(conexionEstado == null) {
-				conexionEstado = new ConexionEstadoRespaldo();
-				conexionEstado.ponerVentana(vent);
-			}
+			conexionEstado = ConexionEstadoRespaldo.getConexion();
+			conexionEstado.ponerVentana(vent);
 			conexionEstado.activar(ipLocal);
 		} catch(RemoteException e) {
 			throw new RemoteException("No se puede poner a la escucha el servidor de respaldo en la dirección IP " + ipLocal + ":" + IConexionEstado.PUERTO_CONEXION_ESTADO + ".");
@@ -73,7 +73,7 @@ public class ControladorRespaldo {
 		
 		// Mostramos un mensaje indicando que el servidor está activo
 		formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		vent.actualizarTexto(formatoFecha.format(new Date()) + ": === Servidor de respaldo iniciado ===");
+		vent.ponerMensaje(formatoFecha.format(new Date()) + ": === Servidor de respaldo iniciado ===");
 
 		// El servidor está activo
 		servidorActivo = true;
@@ -87,19 +87,16 @@ public class ControladorRespaldo {
 		ipLocal = Inet4Address.getLocalHost().getHostAddress();
 		
 		// Desactivamos las clases remotas del servidor de respaldo
-		// (si ya estaban activas, ignoramos el error que se produce)
-		try {
+		if(conexionBD != null) {
 			conexionBD.desactivar(ipLocal);
-		} catch(NotBoundException e) {
 		}
-		try {
+		if(conexionEstado != null) {
 			conexionEstado.desactivar(ipLocal);
-		} catch(NotBoundException e) {
 		}
 
 		// Mostramos un mensaje indicando que el servidor está inactivo
 		formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		vent.actualizarTexto(formatoFecha.format(new Date()) + ": === Servidor de respaldo detenido ===");
+		vent.ponerMensaje(formatoFecha.format(new Date()) + ": === Servidor de respaldo detenido ===");
 		
 		// El servidor no está activo
 		servidorActivo = false;

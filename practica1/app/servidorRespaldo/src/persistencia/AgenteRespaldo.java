@@ -16,7 +16,7 @@ public class AgenteRespaldo {
 	private String url = "jdbc:mysql://<IP>:3306/bdsscarespaldo?user=isor&password=rosi";
 	private String ip;
 	
-	protected AgenteRespaldo() throws SQLException {
+	protected AgenteRespaldo() {
 		try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch(IllegalAccessException e) {
@@ -30,7 +30,7 @@ public class AgenteRespaldo {
         // porque se necesita establecer la IP
 	}
 	
-	public static AgenteRespaldo getAgente() throws SQLException {
+	public static AgenteRespaldo getAgente() {
 		if(instancia == null) {
 			instancia = new AgenteRespaldo();
 		}

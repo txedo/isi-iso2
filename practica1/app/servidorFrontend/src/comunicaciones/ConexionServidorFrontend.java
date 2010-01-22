@@ -3,9 +3,11 @@ package comunicaciones;
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.Date;
@@ -35,20 +37,32 @@ public class ConexionServidorFrontend extends UnicastRemoteObject implements ISe
 	private static final long serialVersionUID = 7735848879217866237L;
 	
 	private IServidorFrontend servidor;
+	
+	private static ConexionServidorFrontend instancia;
 
-	public ConexionServidorFrontend() throws RemoteException {
+	protected ConexionServidorFrontend() throws RemoteException {
 		super();
-		// El constructor de 'UnicastRemoteObject' exporta automáticamente
-		// este objeto; aquí cancelamos la exportación porque ya llamamos
-		// manualmente a 'exportObject' en el método 'conectar'
-		unexportObject(this, false);
 		LocateRegistry.createRegistry(PUERTO_SERVIDOR);
-		// Recuperamos la instancia del servidor singleton
 		servidor = ServidorFrontend.getServidor();
 	}
 	
+	public static ConexionServidorFrontend getConexion() throws RemoteException {
+		if(instancia == null) {
+			instancia = new ConexionServidorFrontend();
+		}
+		return instancia;
+	}
+	
     public void activar(String ip) throws MalformedURLException, RemoteException {
-        exportObject(this, PUERTO_SERVIDOR);
+		// Si el objeto ya estaba exportado, controlamos las
+		// excepciones y no las lanzamos hacia arriba
+    	try {
+    		exportObject(this, PUERTO_SERVIDOR);
+        } catch(ExportException ex) {
+        	if(!ex.getMessage().toLowerCase().equals("object already exported")) {
+        		throw ex;
+        	}
+        }
         try {
             Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
         } catch(AlreadyBoundException ex) {
@@ -56,9 +70,17 @@ public class ConexionServidorFrontend extends UnicastRemoteObject implements ISe
         }
     }
     
-    public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {
-        unexportObject(this, false);
-    	Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
+    public void desactivar(String ip) throws RemoteException, MalformedURLException {
+		// Si el objeto no estaba exportado, controlamos las
+		// excepciones y no las lanzamos hacia arriba
+    	try {
+    		unexportObject(this, false);
+    	} catch(NoSuchObjectException ex) {
+    	}
+    	try {
+    		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
+    	} catch(NotBoundException ex) {
+    	}
     }
     
     // Métodos de gestión de sesiones

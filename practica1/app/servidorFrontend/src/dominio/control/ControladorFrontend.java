@@ -43,8 +43,8 @@ public class ControladorFrontend {
 	}
 	
 	public void iniciarServidor(String ipBDPrincipal, String ipRespaldo) throws RemoteException, MalformedURLException, UnknownHostException, NotBoundException, SQLException {
-		ConexionEstadoFrontend logsFrontend;
-		ProxyEstadoRespaldo logsRespaldo;
+		ConexionEstadoFrontend estadoFrontend;
+		ProxyEstadoRespaldo estadoRespaldo;
 		String ipLocal;
 		boolean respaldo;
 
@@ -90,27 +90,25 @@ public class ControladorFrontend {
 		}
 		
 		// Añadimos la ventana del servidor frontend a la lista de logs
-		logsFrontend = new ConexionEstadoFrontend();
-		logsFrontend.ponerVentana(vent);
-		GestorConexionesEstado.ponerConexion(logsFrontend);
+		estadoFrontend = new ConexionEstadoFrontend();
+		estadoFrontend.ponerVentana(vent);
+		GestorConexionesEstado.ponerConexion(estadoFrontend);
 		// Establecemos conexión con la ventana del servidor de respaldo
 		if(respaldo) {
 			try {
-				logsRespaldo = new ProxyEstadoRespaldo();
-				logsRespaldo.conectar(ipRespaldo);
+				estadoRespaldo = new ProxyEstadoRespaldo();
+				estadoRespaldo.conectar(ipRespaldo);
 			} catch(NotBoundException e) {
 				throw new NotBoundException("No se puede conectar con el servidor de respaldo porque está desactivado (" + ipRespaldo + ").");
 			} catch(RemoteException e) {
 				throw new RemoteException("No se puede conectar con el servidor de respaldo (" + ipRespaldo + ").");
 			}
-			GestorConexionesEstado.ponerConexion(logsRespaldo);
+			GestorConexionesEstado.ponerConexion(estadoRespaldo);
 		}
 		
 		// Creamos el servidor y lo ponemos a la escucha
 		try {
-			if(conexionServidor == null) {
-				conexionServidor = new ConexionServidorFrontend();
-			}
+			conexionServidor = ConexionServidorFrontend.getConexion();
 			conexionServidor.activar(ipLocal);
 		} catch(RemoteException e) {
 			throw new RemoteException("No se puede poner a la escucha el servidor front-end en la dirección IP " + ipLocal + ":" + ServidorFrontend.PUERTO_SERVIDOR + ".");
@@ -136,13 +134,9 @@ public class ControladorFrontend {
 		}
 		GestorConexionesBD.quitarConexiones();
 		
-		// Desconectamos el servidor (si ya estaba desactivado
-		// ignoramos el error que se lanza)
+		// Desconectamos el servidor
 		if(conexionServidor != null) {
-			try {
-				conexionServidor.desactivar(Inet4Address.getLocalHost().getHostAddress());
-			} catch(NotBoundException e) {
-			}
+			conexionServidor.desactivar(Inet4Address.getLocalHost().getHostAddress());
 		}
 		
 		// Mostramos un mensaje indicando que el servidor está inactivo

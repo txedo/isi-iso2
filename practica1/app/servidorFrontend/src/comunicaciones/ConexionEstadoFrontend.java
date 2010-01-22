@@ -1,6 +1,5 @@
 package comunicaciones;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import presentacion.IVentanaEstado;
 
@@ -24,16 +23,14 @@ public class ConexionEstadoFrontend implements IConexionEstado {
 	
 	public void ponerMensaje(String mensaje) {
 		for(IVentanaEstado ventana : ventanas) {
-			ventana.actualizarTexto(mensaje);
+			ventana.ponerMensaje(mensaje);
 		}
 	}
 
-	public void actualizarClientesEscuchando(int numeroClientes)
-			throws RemoteException {
+	public void actualizarClientesEscuchando(int numeroClientes) {
 		for(IVentanaEstado ventana : ventanas) {
 			ventana.actualizarClientesEscuchando(numeroClientes);
 		}
-		
 	}
 	
 }

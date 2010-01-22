@@ -3,17 +3,19 @@ package comunicaciones;
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import presentacion.IVentanaEstado;
 
 /**
- * Clase que exporta la instancia que será utilizada por el servidor
- * front-end para mostrar los mensajes generados en la ventana
+ * Clase que exporta el objeto que será utilizado por el servidor
+ * front-end para mostrar el estado del servidor en la ventana
  * principal del servidor de respaldo.
  */
 public class ConexionEstadoRespaldo extends UnicastRemoteObject implements IConexionEstado {
@@ -23,18 +25,31 @@ public class ConexionEstadoRespaldo extends UnicastRemoteObject implements ICone
 	
 	private ArrayList<IVentanaEstado> ventanas;
 	
-	public ConexionEstadoRespaldo() throws SQLException, RemoteException {
+	private static ConexionEstadoRespaldo instancia;
+	
+	protected ConexionEstadoRespaldo() throws RemoteException {
 		super();
-		// El constructor de 'UnicastRemoteObject' exporta automáticamente
-		// este objeto; aquí cancelamos la exportación porque ya llamamos
-		// manualmente a 'exportObject' en el método 'conectar'
-		unexportObject(this, false);
 		LocateRegistry.createRegistry(PUERTO_CONEXION_ESTADO);
 		ventanas = new ArrayList<IVentanaEstado>();
 	}
 
+	public static ConexionEstadoRespaldo getConexion() throws RemoteException {
+		if(instancia == null) {
+			instancia = new ConexionEstadoRespaldo();
+		}
+		return instancia;
+	}
+	
 	public void activar(String ip) throws MalformedURLException, RemoteException, SQLException {
-        exportObject(this, PUERTO_CONEXION_ESTADO);
+		// Si el objeto ya estaba exportado, controlamos las
+		// excepciones y no las lanzamos hacia arriba
+		try {
+			exportObject(this, PUERTO_CONEXION_ESTADO);
+        } catch(ExportException ex) {
+        	if(!ex.getMessage().toLowerCase().equals("object already exported")) {
+        		throw ex;
+        	}
+        }
         try {
             Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/" + NOMBRE_LOG, this);
         } catch(AlreadyBoundException ex) {
@@ -42,10 +57,18 @@ public class ConexionEstadoRespaldo extends UnicastRemoteObject implements ICone
         }
     }
 		
-	public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {		
-		unexportObject(this, false);
-		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/" + NOMBRE_LOG);
-    }
+	public void desactivar(String ip) throws RemoteException, MalformedURLException {
+		// Si el objeto no estaba exportado, controlamos las
+		// excepciones y no las lanzamos hacia arriba
+		try {
+			unexportObject(this, false);
+		} catch(NoSuchObjectException ex) {
+		}
+		try {
+			Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/" + NOMBRE_LOG);
+		} catch(NotBoundException ex) {
+		}
+	}
 	
 	public void ponerVentana(IVentanaEstado ventana) {
 		ventanas.add(ventana);
@@ -53,13 +76,14 @@ public class ConexionEstadoRespaldo extends UnicastRemoteObject implements ICone
 	
 	public void ponerMensaje(String mensaje) {
 		for(IVentanaEstado ventana : ventanas) {
-			ventana.actualizarTexto(mensaje);
+			ventana.ponerMensaje(mensaje);
 		}
 	}
 
-	public void actualizarClientesEscuchando(int arg0) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+	public void actualizarClientesEscuchando(int numeroClientes) {
+		for(IVentanaEstado ventana : ventanas) {
+			ventana.actualizarClientesEscuchando(numeroClientes);
+		}
 	}
 	
 }

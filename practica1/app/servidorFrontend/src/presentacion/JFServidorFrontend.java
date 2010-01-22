@@ -251,15 +251,15 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 			lblBarraEstado.setText("Servidor preparado.");
 			ok = true;
 		} catch(SQLException e) {
-			actualizarTexto("Error: " + e.getLocalizedMessage());
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(MalformedURLException e) {
-			actualizarTexto("Error: " + e.getLocalizedMessage());
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(UnknownHostException e) {
-			actualizarTexto("Error: " + e.getLocalizedMessage());
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch (NotBoundException e) {
-			actualizarTexto("Error: " + e.getLocalizedMessage());
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(RemoteException e) {
-			actualizarTexto("Error: " + e.getLocalizedMessage());
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 			// Si se produce un fallo de RMI al conectar el
 			// servidor, lo desconectamos para hacer el "unexport"
 			// y que se pueda conectar de nuevo más tarde
@@ -284,28 +284,28 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 			lblBarraEstado.setText("Servidor desconectado.");
 			ok = true;
 		} catch(SQLException e) {
-			actualizarTexto("Error: " + e.getLocalizedMessage());
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(RemoteException e) {
-			actualizarTexto("Error: " + e.getLocalizedMessage());
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(MalformedURLException e) {
-			actualizarTexto("Error: " + e.getLocalizedMessage());
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(UnknownHostException e) {
-			actualizarTexto("Error: " + e.getLocalizedMessage());
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 		}
 		
 		return ok;
 	}
 	
-	public void actualizarTexto(String mensaje) {
+	public void ponerMensaje(String mensaje) {
 		txtLog.setText(txtLog.getText() + mensaje + "\n");	
 	}
 
-
 	public void actualizarClientesEscuchando(int numeroClientes) {
-		if (numeroClientes == 1)
+		if(numeroClientes == 1) {
 			lblClientesConectados.setText(numeroClientes + " cliente conectado.");
-		else
+		} else {
 			lblClientesConectados.setText(numeroClientes + " clientes conectados.");
+		}
 	}
 	
 	//$hide<<$
