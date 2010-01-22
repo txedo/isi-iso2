@@ -19,6 +19,19 @@ import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 /**
  * Ventana principal del cliente, en la que se muestran todos los
  * paneles con las operaciones disponibles.
@@ -53,7 +66,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar;
 	private JPanel jPanelEstablecerSustituto;
-	private JPanel jPanelModificarCalendario;
+	private JPanel jPanelConsultarCalendario;
 	private JPanel jPanelConsultarMedico;
 	private JPEmitirVolante jPanelEmitirVolante;
 	private JPBienvenida jPanelBienvenida;
@@ -169,10 +182,10 @@ public class JFPrincipal extends javax.swing.JFrame {
 						jPanelConsultarMedico.setLayout(jPanelConsultarMedicoLayout);
 					}
 					{
-						jPanelModificarCalendario = new JPanel();
+						jPanelConsultarCalendario = new JPCalendarioConsultar();
+						jTabbedPaneOperaciones.addTab("Consultar Calendario", null, jPanelConsultarCalendario, null);
 						AnchorLayout jPanelModificarCalendarioLayout = new AnchorLayout();
-						jTabbedPaneOperaciones.addTab("Modificar Calendario", null, jPanelModificarCalendario, null);
-						jPanelModificarCalendario.setLayout(jPanelModificarCalendarioLayout);
+						jPanelConsultarCalendario.setLayout(jPanelModificarCalendarioLayout);
 					}
 					{
 						jPanelEstablecerSustituto = new JPanel();
@@ -239,7 +252,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jTabbedPaneOperaciones.remove(jPanelConsultarMedico);
 		}
 		if(!operaciones.contains(Operaciones.ModificarCalendario)) {
-			jTabbedPaneOperaciones.remove(jPanelModificarCalendario);
+			jTabbedPaneOperaciones.remove(jPanelConsultarCalendario);
 		}
 		if(!operaciones.contains(Operaciones.EstablecerSustituto)) {
 			jTabbedPaneOperaciones.remove(jPanelEstablecerSustituto);
