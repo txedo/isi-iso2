@@ -3,9 +3,11 @@ package comunicaciones;
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,9 +15,8 @@ import persistencia.AgenteRespaldo;
 import persistencia.ComandoSQL;
 
 /**
- * Clase que exporta la instancia que será utilizada por el servidor
- * front-end para acceder al agente de base de datos del servidor de
- * respaldo.
+ * Clase que exporta el objeto que será utilizado por el servidor
+ * front-end para acceder al agente de la base de datos de respaldo.
  */
 public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexionBD {
 
@@ -24,18 +25,31 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
 
 	private AgenteRespaldo agente;
 
-	public ConexionBDRespaldo() throws SQLException, RemoteException {
+	private static ConexionBDRespaldo instancia;
+	
+	protected ConexionBDRespaldo() throws RemoteException {
 		super();
-		// El constructor de 'UnicastRemoteObject' exporta automáticamente
-		// este objeto; aquí cancelamos la exportación porque ya llamamos
-		// manualmente a 'exportObject' en el método 'conectar'
-		unexportObject(this, false);
 		LocateRegistry.createRegistry(PUERTO_CONEXION_BD);
 		agente = AgenteRespaldo.getAgente();
 	}
+	
+	public static ConexionBDRespaldo getConexion() throws RemoteException {
+		if(instancia == null) {
+			instancia = new ConexionBDRespaldo();
+		}
+		return instancia;
+	}
 
 	public void activar(String ip) throws MalformedURLException, RemoteException, SQLException {
-        exportObject(this, PUERTO_CONEXION_BD);
+		// Si el objeto ya estaba exportado, controlamos las
+		// excepciones y no las lanzamos hacia arriba
+        try {
+        	exportObject(this, PUERTO_CONEXION_BD);
+        } catch(ExportException ex) {
+        	if(!ex.getMessage().toLowerCase().equals("object already exported")) {
+        		throw ex;
+        	}
+        }
         try {
             Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/" + NOMBRE_BASEDATOS, this);
         } catch(AlreadyBoundException ex) {
@@ -43,9 +57,17 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
         }
     }
 		
-	public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {		
-		unexportObject(this, false);
-		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/" + NOMBRE_BASEDATOS);
+	public void desactivar(String ip) throws RemoteException, MalformedURLException {
+		// Si el objeto no estaba exportado, controlamos las
+		// excepciones y no las lanzamos hacia arriba
+		try {
+			unexportObject(this, false);
+		} catch(NoSuchObjectException ex) {
+		}
+		try {
+			Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/" + NOMBRE_BASEDATOS);
+		} catch(NotBoundException ex) {
+		}
     }
 	
 	public AgenteRespaldo getAgente() {

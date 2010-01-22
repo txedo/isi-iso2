@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -24,10 +25,7 @@ public class ConexionCliente extends UnicastRemoteObject implements ICliente {
 	
 	public ConexionCliente() throws RemoteException, UnknownHostException {
 		super();
-		// El constructor de 'UnicastRemoteObject' exporta automáticamente
-		// este objeto; aquí cancelamos la exportación porque ya llamamos
-		// manualmente a 'exportObject' en el método 'conectar'
-		unexportObject(this, false);
+
 
 		boolean puertoUsado;
 		int puerto;
@@ -51,7 +49,15 @@ public class ConexionCliente extends UnicastRemoteObject implements ICliente {
 	}
 	
     public void activar() throws RemoteException, MalformedURLException {
-        exportObject(cliente, cliente.getPuerto());
+		// Si el objeto ya estaba exportado, controlamos las
+		// excepciones y no las lanzamos hacia arriba
+    	try {
+    		exportObject(cliente, cliente.getPuerto());
+        } catch(ExportException ex) {
+        	if(!ex.getMessage().toLowerCase().equals("object already exported")) {
+        		throw ex;
+        	}
+        }
         try {
             Naming.bind("rmi://" + cliente.getDireccionIP() + ":" + String.valueOf(cliente.getPuerto()) + "/" + NOMBRE_CLIENTE, cliente);
         } catch(AlreadyBoundException ex) {
@@ -60,8 +66,16 @@ public class ConexionCliente extends UnicastRemoteObject implements ICliente {
     }
     
     public void desactivar() throws RemoteException, MalformedURLException, NotBoundException {
-        unexportObject(this, false);
-    	Naming.unbind("rmi://" + cliente.getDireccionIP() + ":" + String.valueOf(cliente.getPuerto()) + "/" + NOMBRE_CLIENTE);
+		// Si el objeto no estaba exportado, controlamos las
+		// excepciones y no las lanzamos hacia arriba
+    	try {
+    		unexportObject(this, false);
+    	} catch(NoSuchObjectException ex) {
+    	}
+    	try {
+    		Naming.unbind("rmi://" + cliente.getDireccionIP() + ":" + String.valueOf(cliente.getPuerto()) + "/" + NOMBRE_CLIENTE);
+    	} catch(NotBoundException ex) {
+    	}
     }
 
     // Métodos del cliente
