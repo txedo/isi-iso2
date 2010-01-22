@@ -269,6 +269,10 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		textLog.setText(textLog.getText() + mensaje + "\n");	
 	}
 
+	public void actualizarClientesEscuchando(int arg0) {
+		// TODO Auto-generated method stub		
+	}
+
 	//$hide<<$
 	
 }

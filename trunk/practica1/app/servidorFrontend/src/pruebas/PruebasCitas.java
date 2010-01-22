@@ -118,7 +118,7 @@ public class PruebasCitas extends TestCase{
 			
 			//Inicializamos los tipos de medicos
 			pediatra = new Pediatra();
-			especialista = new Especialista();
+			especialista = new Especialista("Traumatologia");
 			cabecera = new Cabecera();
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");

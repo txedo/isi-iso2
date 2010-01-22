@@ -3,6 +3,7 @@ package persistencia;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import comunicaciones.GestorConexionesBD;
+import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.TipoMedico;
@@ -70,7 +71,12 @@ public class FPTipoMedico {
 	}
 	
 	public static void insertar(Usuario usuario) throws SQLException{
-		ComandoSQL comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_TIPO_MEDICO + " VALUES (?,?)", usuario.getDni(), ((Medico)usuario).getTipoMedico().getClass().getSimpleName());
+		ComandoSQL comando;
+		if (((Medico)usuario).getTipoMedico() instanceof Especialista)
+			comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_TIPO_MEDICO + " VALUES (?,?,?)", usuario.getDni(), ((Medico)usuario).getTipoMedico().getClass().getSimpleName(),((Especialista)(((Medico)usuario).getTipoMedico())).getEspecialidad());
+		else
+			comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_TIPO_MEDICO + " (dniMedico, tipo) VALUES (?,?)", usuario.getDni(), ((Medico)usuario).getTipoMedico().getClass().getSimpleName());
+		
 		GestorConexionesBD.ejecutar(comando);
 	}
 	
