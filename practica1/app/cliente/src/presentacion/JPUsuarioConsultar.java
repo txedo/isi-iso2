@@ -48,7 +48,7 @@ import excepciones.UsuarioYaExistenteException;
 */
 public class JPUsuarioConsultar extends JPBase {
 
-	private JLabel lblDniMedico;
+	private JLabel lblNIFUsuario;
 	private JLabel lblLogin;
 	private JLabel lblPass;
 	private JTextField txtNombre;
@@ -177,10 +177,10 @@ public class JPUsuarioConsultar extends JPBase {
 				lblLogin.setPreferredSize(new java.awt.Dimension(51, 16));
 			}
 			{
-				lblDniMedico = new JLabel();
-				this.add(lblDniMedico, new AnchorConstraint(15, 368, 73, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblDniMedico.setText("DNI");
-				lblDniMedico.setPreferredSize(new java.awt.Dimension(50, 16));
+				lblNIFUsuario = new JLabel();
+				this.add(lblNIFUsuario, new AnchorConstraint(15, 368, 73, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblNIFUsuario.setText("NIF");
+				lblNIFUsuario.setPreferredSize(new java.awt.Dimension(50, 16));
 			}
 			{
 				buttonGroup = new ButtonGroup();

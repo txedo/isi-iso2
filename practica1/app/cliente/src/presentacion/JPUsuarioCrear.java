@@ -15,6 +15,19 @@ import javax.swing.event.ListSelectionListener;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 /**
 * Panel que permite registrar nuevos usuarios en el sistema.
 */
@@ -42,7 +55,7 @@ public class JPUsuarioCrear extends JPBase {
 	private JLabel lblPassword2;
 	private JLabel lblPassword;
 	private JLabel lblLogin;
-	private JLabel lblDNI;
+	private JLabel lblNIF;
 	private JTextField txtApellidos;
 	private JTextField txtNombre;
 	private JPasswordField txtPassword2;
@@ -75,15 +88,15 @@ public class JPUsuarioCrear extends JPBase {
 			}
 			{
 				lstTipoMedico = new JList();
-				this.add(lstTipoMedico, new AnchorConstraint(518, 954, 674, 729, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				lstTipoMedico.setPreferredSize(new java.awt.Dimension(97, 54));
+				this.add(lstTipoMedico, new AnchorConstraint(180, 961, 601, 303, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lstTipoMedico.setPreferredSize(new java.awt.Dimension(110, 54));
 				lstTipoMedico.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 				lstTipoMedico.setVisible(false);
 			}
 			{
 				lstTipoUsuario = new JList();
-				this.add(lstTipoUsuario, new AnchorConstraint(180, 127, 773, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lstTipoUsuario.setPreferredSize(new java.awt.Dimension(119, 54));
+				this.add(lstTipoUsuario, new AnchorConstraint(180, 684, 773, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lstTipoUsuario.setPreferredSize(new java.awt.Dimension(110, 54));
 				lstTipoUsuario.setDebugGraphicsOptions(DebugGraphics.BUFFERED_OPTION);
 				lstTipoUsuario.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				lstTipoUsuario.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
@@ -160,10 +173,10 @@ public class JPUsuarioCrear extends JPBase {
 				lblNombre.setPreferredSize(new java.awt.Dimension(172, 15));
 			}
 			{
-				lblDNI = new JLabel();
-				this.add(lblDNI, new AnchorConstraint(15, 246, 93, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblDNI.setText("DNI");
-				lblDNI.setPreferredSize(new java.awt.Dimension(172, 14));
+				lblNIF = new JLabel();
+				this.add(lblNIF, new AnchorConstraint(15, 246, 93, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblNIF.setText("NIF");
+				lblNIF.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
