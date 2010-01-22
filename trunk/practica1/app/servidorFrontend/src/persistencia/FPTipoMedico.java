@@ -2,24 +2,34 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 import comunicaciones.GestorConexionesBD;
+import dominio.conocimiento.Administrador;
+import dominio.conocimiento.Cabecera;
+import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Citador;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Pediatra;
+import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.MedicoInexistenteException;
 import excepciones.UsuarioIncorrectoException;
 
 public class FPTipoMedico {
 	
-	private static final String TABLA_TIPO_MEDICO = "tiposMedico";
+	private static final String TABLA_TIPO_MEDICO = "tiposmedico";
 	private static final String TABLA_USUARIOS = "usuarios";
 	
 	private static final String COL_DNI_TIPO_MEDICO = "dniMedico";
 	private static final String COL_TIPO_MEDICO = "tipo";
 	private static final String COL_DNI = "dni";
 	private static final String COL_ROL = "rol";
+	private static final String COL_ESPECIALIDAD = "especialidad";
 	
 	public static Medico consultarTipoMedicoAleatorio(TipoMedico tipoMedico) throws SQLException, CentroSaludIncorrectoException, UsuarioIncorrectoException {
 		ComandoSQL comando;
@@ -68,6 +78,41 @@ public class FPTipoMedico {
 		
 		return tipo;		
 		
+	}
+	
+	public static ArrayList<Medico> consultarTodo (String tipoMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException {
+		ComandoSQL comando;
+		ResultSet datos;
+		ArrayList<Medico> medicos;
+		Medico medico = null;
+		TipoMedico tipoM = null;
+	
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_TIPO_MEDICO + " WHERE " + COL_TIPO_MEDICO + " = ?", tipoMedico);
+		datos = GestorConexionesBD.consultar(comando);
+		datos.next();
+		
+		// Recorremos la lista de medicos con el tipo indicado
+		medicos = new ArrayList<Medico>();
+		if(datos.getRow() == 0) 
+			throw new MedicoInexistenteException("No existe ningún médico de tipo " + tipoMedico + " registrado en el sistema");
+		do {
+			// Creamos el tipo de medico adecuado
+			if (tipoMedico.equals("Especialista")) 
+				tipoM = new Especialista(datos.getString(COL_ESPECIALIDAD));
+			else if (tipoMedico.equals("Cabecera")) 
+				tipoM = new Cabecera();
+			else  
+				tipoM = new Pediatra();
+		
+			medico = (Medico) FPUsuario.consultar(datos.getString(COL_DNI_TIPO_MEDICO));		
+			medico.setTipoMedico(tipoM);
+			// Añadimos el medico a la lista que se va a devolver
+			medicos.add(medico);
+		} while (datos.next());
+	
+		return medicos;
+
 	}
 	
 	public static void insertar(Usuario usuario) throws SQLException{

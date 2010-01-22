@@ -51,6 +51,8 @@ public class JPUsuarioCrear extends JPBase {
 	private JPasswordField txtPassword;
 	private JList lstTipoMedico;
 	private JLabel lblTipoUsuario;
+	private JLabel lblEspecialidad;
+	private JTextField txtEspecialidad;
 	private JLabel lblNombre;
 	private JLabel lblPassword2;
 	private JLabel lblPassword;
@@ -75,14 +77,25 @@ public class JPUsuarioCrear extends JPBase {
 			this.setSize(430, 390);
 			this.setPreferredSize(new java.awt.Dimension(430, 390));
 			{
+				lblEspecialidad = new JLabel();
+				this.add(lblEspecialidad, new AnchorConstraint(249, 347, 680, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblEspecialidad.setText("Especialidad");
+				lblEspecialidad.setPreferredSize(new java.awt.Dimension(71, 16));
+			}
+			{
+				txtEspecialidad = new JTextField();
+				this.add(txtEspecialidad, new AnchorConstraint(246, 17, 691, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtEspecialidad.setPreferredSize(new java.awt.Dimension(229, 23));
+			}
+			{
 				btnRestablecer = new JButton();
-				this.add(btnRestablecer, new AnchorConstraint(275, 182, 957, 219, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnRestablecer, new AnchorConstraint(309, 182, 957, 219, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(154, 26));
 			}
 			{
 				btnCrearUsuario = new JButton();
-				this.add(btnCrearUsuario, new AnchorConstraint(275, 17, 957, 603, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnCrearUsuario, new AnchorConstraint(309, 17, 957, 603, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnCrearUsuario.setText("Crear usuario");
 				btnCrearUsuario.setPreferredSize(new java.awt.Dimension(154, 26));
 			}
@@ -92,6 +105,11 @@ public class JPUsuarioCrear extends JPBase {
 				lstTipoMedico.setPreferredSize(new java.awt.Dimension(110, 54));
 				lstTipoMedico.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 				lstTipoMedico.setVisible(false);
+				lstTipoMedico.addListSelectionListener(new ListSelectionListener() {
+					public void valueChanged(ListSelectionEvent evt) {
+						lstTipoMedicoValueChanged(evt);
+					}
+				});
 			}
 			{
 				lstTipoUsuario = new JList();
@@ -178,6 +196,7 @@ public class JPUsuarioCrear extends JPBase {
 				lblNIF.setText("NIF");
 				lblNIF.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
+			cambiarEstadoEspecialidad(false);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -197,6 +216,13 @@ public class JPUsuarioCrear extends JPBase {
 		lstTipoMedicoModel.addElement(MED_ESPECIALISTA);
 		lstTipoMedico.setModel(lstTipoMedicoModel);
 	}
+
+	private void cambiarEstadoEspecialidad(boolean estado) {
+		lblEspecialidad.setVisible(estado);
+		txtEspecialidad.setVisible(estado);
+		if (!estado)
+			txtEspecialidad.setText("");
+	}
 	
 	private void lstTipoUsuarioValueChanged(ListSelectionEvent evt) {
 		if (lstTipoUsuario.getSelectedValue().equals(USU_MEDICO)) {
@@ -205,6 +231,14 @@ public class JPUsuarioCrear extends JPBase {
 		} else {
 			lstTipoMedico.setSelectedIndex(-1);
 			lstTipoMedico.setVisible(false);
+		}
+	}
+	
+	private void lstTipoMedicoValueChanged(ListSelectionEvent evt) {
+		if (lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA)) {
+			cambiarEstadoEspecialidad(true);
+		} else {
+			cambiarEstadoEspecialidad(false);
 		}
 	}
 	

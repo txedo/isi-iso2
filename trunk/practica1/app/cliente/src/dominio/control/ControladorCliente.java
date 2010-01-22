@@ -11,6 +11,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.OperacionesAuxiliares;
+import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
@@ -110,6 +111,10 @@ public class ControladorCliente implements OperacionesAuxiliares {
 
 	public Medico consultarMedico(String dni) throws RemoteException, MedicoInexistenteException, Exception {
 		return servidor.getMedico(sesion.getId(), dni);
+	}
+	
+	public Object obtenerMedicos (String tipo) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), OBTENER_MEDICOS_TIPO, tipo);
 	}
 	
 	public long emitirVolante (Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception { 
