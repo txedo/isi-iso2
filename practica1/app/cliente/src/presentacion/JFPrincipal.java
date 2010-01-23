@@ -3,6 +3,7 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.Roles;
 import dominio.control.ControladorCliente;
 import excepciones.SesionInvalidaException;
 import java.awt.BorderLayout;
@@ -214,7 +215,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 		jPanelGestionarUsuarios.setControlador(controlador);
 		jPanelGestionarBeneficiarios.setControlador(controlador);
 		jPanelEmitirVolante.setControlador(controlador);
-		jPanelEmitirVolante.inicializarEspecialistas();
+		if (controlador.getSesion().getRol() == Roles.Medico.ordinal())
+			jPanelEmitirVolante.inicializarEspecialistas();
 	}
 	
 	public void iniciar() {

@@ -2,9 +2,13 @@ package dominio.conocimiento;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaIncorrectaException;
 import excepciones.CadenaVaciaException;
+import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.DomicilioIncorrectoException;
 import excepciones.FechaNacimientoIncorrectaException;
@@ -67,7 +71,7 @@ public class Utilidades {
 			throw new NSSIncorrectoException();
 	}
 	
-	private static void comprobarCadena (String cadena) throws CadenaIncorrectaException, CadenaVaciaException {
+	public static void comprobarCadena (String cadena) throws CadenaIncorrectaException, CadenaVaciaException {
 		// Todos los caracteres de la cadena deben ser alfabeticos
 		boolean bCorrecto = false;
 		boolean bAux = true;
@@ -252,6 +256,18 @@ public class Utilidades {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		fecha = sdf.format(date);
 		return fecha;
+	}
+	
+	public static void comprobarContraseña (String pass) throws ContraseñaIncorrectaException {
+		boolean valido = false;
+		// Contraseña alfanumérica de mínimo 8 caracteres
+		Pattern p = Pattern.compile("[a-zA-Z0-9]+");
+	    Matcher m = p.matcher(pass);
+	    if (m.matches())
+	    	if (pass.length() > 7)
+	    		valido = true;
+	    if (!valido)
+	    	throw new ContraseñaIncorrectaException("La contraseña debe ser alfnumerica y tener como minimo 8 caracteres");
 	}
 	
 }

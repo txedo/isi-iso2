@@ -79,22 +79,11 @@ public class JPEmitirVolante extends JPBase {
 			this.setSize(565, 390);
 			this.setPreferredSize(new java.awt.Dimension(565, 390));
 			{
-				btnAceptar = new JButton();
-				this.add(btnAceptar, new AnchorConstraint(356, 11, 973, 868, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-				btnAceptar.setText("Aceptar");
-				btnAceptar.setPreferredSize(new java.awt.Dimension(64, 23));
-				btnAceptar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						btnAceptarActionPerformed(evt);
-					}
-				});
-			}
-			{
 				jPanelMedico = new JPanel();
 				AnchorLayout jPanelMedicoLayout = new AnchorLayout();
 				jPanelMedico.setLayout(jPanelMedicoLayout);
 				this.add(jPanelMedico, new AnchorConstraint(200, 5, 885, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jPanelMedico.setPreferredSize(new java.awt.Dimension(554, 147));
+				jPanelMedico.setPreferredSize(new java.awt.Dimension(554, 185));
 				{
 					lblEspecialidad = new JLabel();
 					jPanelMedico.add(lblEspecialidad, new AnchorConstraint(107, 245, 807, 226, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
@@ -143,6 +132,17 @@ public class JPEmitirVolante extends JPBase {
 					lstEspecialistas.addListSelectionListener(new ListSelectionListener() {
 						public void valueChanged(ListSelectionEvent evt) {
 							lstEspecialistasValueChanged(evt);
+						}
+					});
+				}
+				{
+					btnAceptar = new JButton();
+					jPanelMedico.add(btnAceptar, new AnchorConstraint(156, 11, 996, 479, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					btnAceptar.setText("Aceptar");
+					btnAceptar.setPreferredSize(new java.awt.Dimension(64, 23));
+					btnAceptar.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							btnAceptarActionPerformed(evt);
 						}
 					});
 				}

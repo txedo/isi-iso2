@@ -15,8 +15,8 @@ public class Medico extends Usuario implements Serializable {
 	private ArrayList<PeriodoTrabajo> calendario;
 	private TipoMedico tipoMedico;
 	
-	public Medico(String dni, String login, String password, String nombre, String apellidos, CentroSalud centro, TipoMedico tipo) {
-		super(dni, login, password, nombre, apellidos, centro);
+	public Medico(String dni, String login, String password, String nombre, String apellidos, TipoMedico tipo) {
+		super(dni, login, password, nombre, apellidos);
 		calendario = new ArrayList<PeriodoTrabajo>();
 		tipoMedico=tipo;
 	}

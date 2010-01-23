@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
+
+import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
@@ -11,6 +13,7 @@ import dominio.conocimiento.Roles;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
+import persistencia.FPCentroSalud;
 import persistencia.FPEntradaLog;
 import persistencia.FPSustitucion;
 import persistencia.FPTipoMedico;
@@ -56,6 +59,7 @@ public class GestorUsuarios {
 	// Método para añadir un nuevo usuario al sistema
 	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		EntradaLog entrada;
+		CentroSalud centro;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.CrearUsuario);
@@ -71,7 +75,17 @@ public class GestorUsuarios {
 			// No hay ningún usuario con ese DNI
 		}
 		
-		// Insertamos el nuevo usuario en la base de datos
+		// Insertamos el nuevo usuario en la base de datos, asignándole un centro de salud aleatorio. 
+		// Si no hay ningún centro, se lanza una excepción.
+		try {
+			centro = FPCentroSalud.consultarAleatorio();
+		}
+		catch (CentroSaludIncorrectoException ex) {
+			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "No se puede registrar el usuario con NIF " + usuario.getDni() + " porque no existe un centro de salud en el sistema para asignárselo");
+			FPEntradaLog.insertar(entrada);
+			throw new SQLException("No se puede registrar el usuario con NIF " + usuario.getDni() + " porque no existe un centro de salud en el sistema para asignárselo");
+		}
+		usuario.setCentroSalud(centro);
 		FPUsuario.insertar(usuario);
 		
 		// Añadimos una entrada al log
@@ -235,7 +249,7 @@ public class GestorUsuarios {
 	public static ArrayList<Medico> obtenerMedicos (long idSesion, String tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException {
 		ArrayList<Medico> medicos = null;
 		// Comprobamos si se tienen permisos para realizar la operación
-		//GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
 		medicos = FPTipoMedico.consultarTodo(tipo);
 		return medicos;
 	}

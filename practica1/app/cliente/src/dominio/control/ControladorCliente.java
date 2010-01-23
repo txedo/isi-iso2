@@ -97,6 +97,10 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		return servidor.mensajeAuxiliar(sesion.getId(), OPERACIONES_DISPONIBLES, null);
 	}
 	
+	public Object crearUsuario (Usuario usu) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), CREAR_USUARIO, usu);
+	}
+	
 	public Object consultarUsuario (String dni) throws RemoteException, Exception {
 		return servidor.mensajeAuxiliar(sesion.getId(), CONSULTAR_USUARIO, dni);
 	}

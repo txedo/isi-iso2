@@ -1,5 +1,10 @@
 package presentacion;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+
 import javax.swing.BorderFactory;
 import javax.swing.DebugGraphics;
 import javax.swing.DefaultListModel;
@@ -12,9 +17,27 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 
+import dominio.conocimiento.Administrador;
+import dominio.conocimiento.Cabecera;
+import dominio.conocimiento.Citador;
+import dominio.conocimiento.Especialista;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Pediatra;
+import dominio.conocimiento.Roles;
+import dominio.conocimiento.TipoMedico;
+import dominio.conocimiento.Usuario;
+import dominio.conocimiento.Utilidades;
+import excepciones.ApellidoIncorrectoException;
+import excepciones.CentroSaludIncorrectoException;
+import excepciones.ContraseñaIncorrectaException;
+import excepciones.NIFIncorrectoException;
+import excepciones.NombreIncorrectoException;
+import excepciones.UsuarioNoSeleccionadoException;
+import excepciones.UsuarioYaExistenteException;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -36,7 +59,7 @@ public class JPUsuarioCrear extends JPBase {
 	private static final long serialVersionUID = 4857739286462180783L;
 	
 	private final String USU_ADMINISTRADOR = "Administrador";
-	private final String USU_MEDICO = "Médico";
+	private final String USU_MEDICO = "Medico";
 	private final String USU_CITADOR = "Citador";
 	private final String MED_CABECERA = "Cabecera";
 	private final String MED_PEDIATRA = "Pediatra";
@@ -92,12 +115,22 @@ public class JPUsuarioCrear extends JPBase {
 				this.add(btnRestablecer, new AnchorConstraint(309, 182, 957, 219, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(154, 26));
+				btnRestablecer.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnRestablecerActionPerformed(evt);
+					}
+				});
 			}
 			{
 				btnCrearUsuario = new JButton();
 				this.add(btnCrearUsuario, new AnchorConstraint(309, 17, 957, 603, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnCrearUsuario.setText("Crear usuario");
 				btnCrearUsuario.setPreferredSize(new java.awt.Dimension(154, 26));
+				btnCrearUsuario.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnCrearUsuarioActionPerformed(evt);
+					}
+				});
 			}
 			{
 				lstTipoMedico = new JList();
@@ -202,6 +235,102 @@ public class JPUsuarioCrear extends JPBase {
 		}
 	}
 	
+	private void btnRestablecerActionPerformed(ActionEvent evt) {
+		limpiarCamposRegistro();
+	}
+	
+	private void btnCrearUsuarioActionPerformed(ActionEvent evt) {
+		Usuario usu = null;
+		TipoMedico tipo = null;
+		boolean esMedico = false;
+		
+		try {
+			
+			// Comprobamos todos los campos
+			Utilidades.comprobarNIF(txtDNI.getText());
+			Utilidades.comprobarNombre(txtNombre.getText());
+			Utilidades.comprobarApellidos(txtApellidos.getText());
+			Utilidades.comprobarContraseña(txtPassword.getText());	
+			if (!txtPassword.getText().equals(txtPassword2.getText()))
+					throw new ContraseñaIncorrectaException("Las contraseñas no coinciden");
+			if (lstTipoUsuario.getSelectedIndex()==-1)
+				throw new UsuarioNoSeleccionadoException();
+			else if (lstTipoMedico.getSelectedIndex()==-1 && lstTipoUsuario.getSelectedValue().equals(USU_MEDICO))
+				throw new UsuarioNoSeleccionadoException();
+			if (lstTipoUsuario.getSelectedValue().equals(USU_MEDICO) && lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA))
+				Utilidades.comprobarCadena(txtEspecialidad.getText());				
+
+			// Creamos un nuevo usuario con los datos introducidos
+			switch (Roles.valueOf(lstTipoUsuario.getSelectedValue().toString())) {
+				case Administrador:
+					usu = new Administrador();
+					break;
+				case Citador:
+					usu = new Citador();
+					break;
+				case Medico:
+					esMedico = true;
+					usu = new Medico();
+					break;
+			}
+			usu.setDni(txtDNI.getText());
+			usu.setNombre(txtNombre.getText());
+			usu.setApellidos(txtApellidos.getText());
+			usu.setLogin(txtLogin.getText());
+			usu.setPassword(txtPassword.getText());
+			
+			if (esMedico) {
+				if (lstTipoMedico.getSelectedValue().equals(MED_CABECERA))
+					tipo = new Cabecera();
+				else if (lstTipoMedico.getSelectedValue().equals(MED_PEDIATRA))
+					tipo = new Pediatra();
+				else
+					tipo = new Especialista(txtEspecialidad.getText());
+				
+				// TODO: mostrar la ventana para crear el calendario y asignarselo al medico
+				
+				// calendario = .....
+				// ((Medico)usu).setCalendario(calendario);
+			}
+			
+			// Solicitamos al servidor que se cree el usuario
+			getControlador().crearUsuario(usu);
+			
+			// El usuario se ha creado correctamente
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido dado de alta en el sistema.");
+			limpiarCamposRegistro();
+			
+		} catch(UsuarioYaExistenteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());	
+		} catch(CentroSaludIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());		
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		
+		} catch(UsuarioNoSeleccionadoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe seleccionar un tipo de usuario y, si es el caso, un tipo de médico");
+		} catch(NIFIncorrectoException e) {
+			txtDNI.selectAll();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El NIF debe ser el número de DNI (incluyendo el 0) y la letra sin guión.");
+			txtDNI.grabFocus();
+		} catch(NombreIncorrectoException e) {
+			txtNombre.selectAll();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El nombre del usuario sólo puede contener letras y espacios.");
+			txtNombre.grabFocus();
+		} catch(ApellidoIncorrectoException e) {
+			txtApellidos.selectAll();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Los apellidos del usuario sólo pueden contener letras y espacios.");
+			txtApellidos.grabFocus();
+		} catch(ContraseñaIncorrectaException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		}
+	}
+
 	// $hide>>$
 	
 	private void crearModelos() {
@@ -225,21 +354,36 @@ public class JPUsuarioCrear extends JPBase {
 	}
 	
 	private void lstTipoUsuarioValueChanged(ListSelectionEvent evt) {
-		if (lstTipoUsuario.getSelectedValue().equals(USU_MEDICO)) {
-			lstTipoMedico.setSelectedIndex(0);
-			lstTipoMedico.setVisible(true);
-		} else {
-			lstTipoMedico.setSelectedIndex(-1);
-			lstTipoMedico.setVisible(false);
-		}
+		cambiarEstadoEspecialidad(false);
+		if (lstTipoUsuario.getSelectedIndex()!=-1)
+			if (lstTipoUsuario.getSelectedValue().equals(USU_MEDICO)) {
+				lstTipoMedico.setSelectedIndex(0);
+				lstTipoMedico.setVisible(true);
+			} else {
+				lstTipoMedico.setSelectedIndex(-1);
+				lstTipoMedico.setVisible(false);
+			}
 	}
 	
 	private void lstTipoMedicoValueChanged(ListSelectionEvent evt) {
-		if (lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA)) {
-			cambiarEstadoEspecialidad(true);
-		} else {
-			cambiarEstadoEspecialidad(false);
-		}
+		if (lstTipoUsuario.getSelectedIndex()!=-1)
+			if (lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA)) {
+				cambiarEstadoEspecialidad(true);
+			} else {
+				cambiarEstadoEspecialidad(false);
+			}
+	}
+	
+	private void limpiarCamposRegistro() {
+		txtDNI.setText("");
+		txtNombre.setText("");
+		txtApellidos.setText("");
+		txtLogin.setText("");
+		txtPassword.setText("");
+		txtPassword2.setText("");
+		lstTipoUsuario.clearSelection();
+		lstTipoMedico.clearSelection();
+		lstTipoMedico.setVisible(false);
 	}
 	
 	// $hide<<$

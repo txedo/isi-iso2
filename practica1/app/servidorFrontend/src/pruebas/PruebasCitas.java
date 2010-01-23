@@ -122,12 +122,18 @@ public class PruebasCitas extends TestCase{
 			cabecera = new Cabecera();
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
-			medico1 = new Medico("12345678", "medico1", "abcdef", "Eduardo", "P. C.", centro1, pediatra);
-			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", centro1, cabecera);
-			medico3 = new Medico("34581732", "medico3", "pass", "nombre", "apellido", centro1, especialista);
-			medico4 = new Medico("09761231", "medNoRegistrado", "asas", "E", "P", centro1, cabecera);
-			citador1 = new Citador("11223344", "citador", "cit123", "Fernando", "G. P.", centro1);
-			admin1 = new Administrador("55667788", "admin", "nimda", "María", "L. F.", centro1);
+			medico1 = new Medico("12345678", "medico1", "abcdef", "Eduardo", "P. C.", pediatra);
+			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", cabecera);
+			medico3 = new Medico("34581732", "medico3", "pass", "nombre", "apellido", especialista);
+			medico4 = new Medico("09761231", "medNoRegistrado", "asas", "E", "P", cabecera);
+			citador1 = new Citador("11223344", "citador", "cit123", "Fernando", "G. P.");
+			admin1 = new Administrador("55667788", "admin", "nimda", "María", "L. F.");
+			medico1.setCentroSalud(centro1);
+			medico2.setCentroSalud(centro1);
+			medico3.setCentroSalud(centro1);
+			medico4.setCentroSalud(centro1);
+			citador1.setCentroSalud(centro1);
+			admin1.setCentroSalud(centro1);
 			periodo1 = new PeriodoTrabajo(10, 14, DiaSemana.Miercoles);
 			periodo2 = new PeriodoTrabajo(17, 19, DiaSemana.Viernes);
 			periodo3 = new PeriodoTrabajo(16, 17, DiaSemana.Lunes);
@@ -135,7 +141,8 @@ public class PruebasCitas extends TestCase{
 			medico1.getCalendario().add(periodo2);
 			medico2.getCalendario().add(periodo3);
 			medico3.getCalendario().add(periodo3);
-			usu1 = new Administrador("04328172", "usuario", "f", "O", "C", centro1);
+			usu1 = new Administrador("04328172", "usuario", "f", "O", "C");
+			usu1.setCentroSalud(centro1);
 			bene1 = new Beneficiario("12345679","123456-ab","bene1","asdfg","alguno","uno@gmail.com",fecha1,123456789,987654321);
 			bene1.setMedicoAsignado(medico2);
 			bene2 = new Beneficiario("46208746","164028-de","bene2","asadasdfg","algun otro","dos@gmail.com",fecha2,923456789,687654322);
