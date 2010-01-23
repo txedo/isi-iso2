@@ -18,13 +18,12 @@ public abstract class Usuario implements Serializable {
 	public Usuario() {
 	}
 	
-	public Usuario(String dni, String login, String password, String nombre, String apellidos, CentroSalud centro) {
+	public Usuario(String dni, String login, String password, String nombre, String apellidos) {
 		this.dni = dni;
 		this.login = login;
 		this.password = password;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
-		this.centro = centro;
 	}
 
 	public abstract Roles getRol();

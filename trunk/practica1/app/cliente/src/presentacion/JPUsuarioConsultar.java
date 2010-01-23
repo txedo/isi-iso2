@@ -167,13 +167,13 @@ public class JPUsuarioConsultar extends JPBase {
 			{
 				lblPass = new JLabel();
 				this.add(lblPass, new AnchorConstraint(71, 361, 229, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblPass.setText("Password");
+				lblPass.setText("Contraseña");
 				lblPass.setPreferredSize(new java.awt.Dimension(57, 16));
 			}
 			{
 				lblLogin = new JLabel();
 				this.add(lblLogin, new AnchorConstraint(43, 367, 144, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblLogin.setText("Login");
+				lblLogin.setText("Usuario");
 				lblLogin.setPreferredSize(new java.awt.Dimension(51, 16));
 			}
 			{

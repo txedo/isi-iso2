@@ -57,8 +57,10 @@ public class PruebasSesiones extends TestCase {
 			pediatra = new Pediatra();
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
-			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", centro1, pediatra);
-			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "Apellidos", centro1);
+			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", pediatra);
+			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "Apellidos");
+			medico1.setCentroSalud(centro1);
+			administrador1.setCentroSalud(centro1);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);
 			FPUsuario.insertar(administrador1);
