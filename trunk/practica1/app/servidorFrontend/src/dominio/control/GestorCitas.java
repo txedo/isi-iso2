@@ -2,15 +2,20 @@ package dominio.control;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Volante;
@@ -26,6 +31,7 @@ import excepciones.VolanteNoValidoException;
 import persistencia.FPBeneficiario;
 import persistencia.FPCita;
 import persistencia.FPEntradaLog;
+import persistencia.FPPeriodoTrabajo;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
 
@@ -34,6 +40,8 @@ import persistencia.FPVolante;
  * beneficiarios para acudir a la consulta de los médicos.
  */
 public class GestorCitas {
+	
+	private final static long DURACION = 15;
 
 	// Método para pedir una nueva cita para un cierto beneficiario y médico
 	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException, Exception {
@@ -231,6 +239,85 @@ public class GestorCitas {
 		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "delete", "Se ha eliminado la cita del beneficiario con DNI "+cita.getBeneficiario().getNif()+" con el medico "+cita.getMedico().getNombre() +" del dia "+cita.getFechaYhora());
 		FPEntradaLog.insertar(entrada);
 	}
-
 	
+	public static Object[] calcularCitasMedico (long idSesion, String dniMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, BeneficiarioInexistenteException {
+		/* 
+		 * Se devuelve una matriz con dos elementos, de diferente naturaleza.
+		 * El primer elemento es una tabla donde se indica los días en los que un médico trabaja, 
+		 * junto con todas las horas posibles para dar cita esos días, según la jornada de dicho médico.
+		 * El segundo elemento es una tabla donde se indica la fecha donde ya hay asignadas citas, 
+		 * junto con todas las horas ya ocupadas de esa fecha.
+		 */
+		Object [] informacion = new Object [2];
+		
+		Hashtable<DiaSemana, ArrayList<String>> horasPosiblesMedico = new Hashtable<DiaSemana,ArrayList<String>>();
+		Hashtable<String, ArrayList<String>> citasOcupadasMedico = new Hashtable<String, ArrayList<String>>();
+		
+		ArrayList<String> horasTrabajo;
+		ArrayList<String> horasOcupadas;
+		ArrayList<PeriodoTrabajo> calendario;
+		EntradaLog entrada;
+		Vector <Cita> citas;
+		int intervalos, hora;
+		SimpleDateFormat formatoDeFecha = new SimpleDateFormat("dd/MM/yyyy");
+		Date fecha;
+		String dia;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ObtenerCitas);
+		
+		// Obtenemos las citas que ya tiene asignadas el médico
+		citas = FPCita.consultarPorMedico(dniMedico);
+		
+		// Añadimos una entrada al log
+		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "Se han consultado las citas del médico con DNI "+ dniMedico + ".");
+		FPEntradaLog.insertar(entrada);
+		
+		// Obtenemos el calendario del medico
+		calendario = FPPeriodoTrabajo.consultarCalendario(dniMedico);
+		
+		/* 
+		 * Con este bucle obtenemos una tabla donde se indican las horas de trabajo disponibles
+		 * para cada uno de los dias de trabajo del médico.
+		 * También obtenemos las horas que ya están ocupadas esos días de trabajo
+		 */
+		for(PeriodoTrabajo p: calendario) {
+			horasTrabajo = new ArrayList<String> ();
+			hora = 0;
+			intervalos = (int) ((((p.getHoraFinal() - p.getHoraInicio()) * 60) / DURACION) - 1);
+			
+			// Primera hora en la que se podría pedir cita
+			horasTrabajo.add(p.getHoraInicio()+":00");
+			
+			for (int i=(int) DURACION; i <= (intervalos*DURACION); i += DURACION) {
+				if ((i % 60) == 0) {
+					hora += 1;
+					horasTrabajo.add((p.getHoraInicio()+hora)+":00");
+				}
+				else
+					horasTrabajo.add((p.getHoraInicio()+hora)+":"+(i%60));
+			}
+			horasPosiblesMedico.put(p.getDia(), horasTrabajo);
+		}
+		
+		// Con este bucle obtenemos los dias y horas en los que el médico ya tiene citas asignadas		
+		for (Cita c: citas) {
+			horasOcupadas = new ArrayList<String> ();
+			fecha = c.getFechaYhora();
+			dia = formatoDeFecha.format(fecha);
+			
+			// Si para ese día aun no se han incluido las horas ocupadas, se añaden
+			if (citasOcupadasMedico.get(dia) == null) {
+				horasOcupadas.add(fecha.getHours()+":"+fecha.getMinutes());
+				citasOcupadasMedico.put(dia, horasOcupadas);
+			}
+			// Si ya existian horas ocupadas para ese día, se añade la nueva hora
+			else
+				citasOcupadasMedico.get(dia).add(fecha.getHours()+":"+fecha.getMinutes());
+		}		
+		
+		informacion[0] = horasPosiblesMedico;
+		informacion[1] = citasOcupadasMedico;
+		return informacion;
+	}	
 }
