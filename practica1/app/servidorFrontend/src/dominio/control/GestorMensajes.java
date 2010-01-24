@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import dominio.conocimiento.OperacionesAuxiliares;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
+import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.MedicoInexistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -18,7 +19,7 @@ import excepciones.UsuarioYaExistenteException;
  */
 public class GestorMensajes implements OperacionesAuxiliares {
 	
-	public static Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, UsuarioYaExistenteException, MedicoInexistenteException, UsuarioIncorrectoException {
+	public static Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, UsuarioYaExistenteException, MedicoInexistenteException, UsuarioIncorrectoException, BeneficiarioInexistenteException {
 		Object res;
 		
 		res = null;
@@ -40,6 +41,9 @@ public class GestorMensajes implements OperacionesAuxiliares {
 				break;
 			case OBTENER_MEDICOS_TIPO:
 				res = GestorUsuarios.obtenerMedicos(idSesion, (String)informacion);
+				break;
+			case CONSULTAR_CITAS_MEDICO:
+				res = GestorCitas.calcularCitasMedico(idSesion, (String)informacion);
 				break;
 		}
 		return res;

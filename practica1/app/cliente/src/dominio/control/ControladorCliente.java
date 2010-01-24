@@ -117,6 +117,10 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		return servidor.getMedico(sesion.getId(), dni);
 	}
 	
+	public Object obtenerHorasMedico (String dniMedico) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), CONSULTAR_CITAS_MEDICO, dniMedico);
+	}
+	
 	public Object obtenerMedicos (String tipo) throws RemoteException, Exception {
 		return servidor.mensajeAuxiliar(sesion.getId(), OBTENER_MEDICOS_TIPO, tipo);
 	}

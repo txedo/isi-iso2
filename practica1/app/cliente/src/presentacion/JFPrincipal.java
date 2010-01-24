@@ -214,6 +214,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		this.controlador = controlador;
 		jPanelGestionarUsuarios.setControlador(controlador);
 		jPanelGestionarBeneficiarios.setControlador(controlador);
+		jPanelGestionarCitas.setControlador(controlador);
 		jPanelEmitirVolante.setControlador(controlador);
 		if (controlador.getSesion().getRol() == Roles.Medico.ordinal())
 			jPanelEmitirVolante.inicializarEspecialistas();
