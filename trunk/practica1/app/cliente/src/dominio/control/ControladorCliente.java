@@ -3,6 +3,7 @@ package dominio.control;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Vector;
 
 import comunicaciones.ConexionCliente;
 import comunicaciones.ICliente;
@@ -44,6 +45,7 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		// Creamos la ventana de login y la mostramos
 		ventana = new JFLogin();
 		ventana.setControlador(this);
+		
 		//ventana.setModal(true);
 		ventana.setVisible(true);
 	}
@@ -139,5 +141,9 @@ public class ControladorCliente implements OperacionesAuxiliares {
 	
 	 public Cita pedirCita(Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, VolanteNoValidoException, SQLException, Exception {
 		 return servidor.pedirCita(sesion.getId(), beneficiario, idVolante, fechaYHora, duracion);
+	 }
+	 
+	 public Vector<Cita> obtenerCitas(String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
+		 return servidor.getCitas(sesion.getId(), dni);
 	 }
 }

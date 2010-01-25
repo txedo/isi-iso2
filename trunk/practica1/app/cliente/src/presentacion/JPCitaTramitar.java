@@ -19,19 +19,21 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import persistencia.FPUsuario;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
 
-import excepciones.*;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Utilidades;
-import dominio.control.ControladorCliente;
+import excepciones.BeneficiarioInexistenteException;
+import excepciones.CadenaVaciaException;
+import excepciones.FechaNoValidaException;
+import excepciones.MedicoInexistenteException;
+import excepciones.NIFIncorrectoException;
+import excepciones.NSSIncorrectoException;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -53,6 +55,8 @@ public class JPCitaTramitar extends JPBase {
 	private static final long serialVersionUID = 8297107492599580450L;
 	
 	private final long DURACION = 15;
+	private final int SABADO = 6;
+	private final int DOMINGO = 0;
 	private final String ID_NIF = "NIF";
 	private final String ID_NSS = "NSS";
 	
@@ -83,7 +87,7 @@ public class JPCitaTramitar extends JPBase {
 	private JComboBox cmbIdentificacion;
 	
 	private Beneficiario beneficiario;
-
+    private String horaSeleccionada = "";
 
 	public JPCitaTramitar() {
 		super();
@@ -94,6 +98,7 @@ public class JPCitaTramitar extends JPBase {
 	private void crearModelos(String [] elementos) {
 		ComboBoxModel cbHorasCitasModel = new DefaultComboBoxModel(elementos);
 		cbHorasCitas.setModel(cbHorasCitasModel);
+		cbHorasCitas.setSelectedIndex(0);
 	}
 	
 	private void initGUI() {
@@ -337,8 +342,8 @@ public class JPCitaTramitar extends JPBase {
 		txtApellidos.setText("");
 		txtMedico.setText("");
 		txtIdVolante.setText("");
-		cambiarEstado(false);
 		dtcDiaCita.setDate(null);
+		cambiarEstado(false);
 		crearModelos(new String [] {""});
 	}
 	
@@ -367,24 +372,29 @@ public class JPCitaTramitar extends JPBase {
 		Date fecha = dtcDiaCita.getDate();
 		if (fecha != null) {
 			try {
-				informacion = (Object[]) getControlador().obtenerHorasMedico(txtMedico.getText());
-				// Obtenemos las horas en las que trabaja ese médico para el día seleccionado en el JDateChooser
-				horasTrabajoDia = ((Hashtable<DiaSemana, ArrayList<String>>)informacion[0]).get(DiaSemana.values()[fecha.getDay()-1]);
-				// Si el día seleccionado es laboral para el medico, se muestran todas las horas de trabajo
-				if (horasTrabajoDia != null){
-					horas = new String[horasTrabajoDia.size()];
-					for (int i=0; i<horas.length; i++) {
-						horas[i] = horasTrabajoDia.get(i);
+				// No se consideran sabados ni domingos
+				if (fecha.getDay() != DOMINGO && fecha.getDay() != SABADO) {
+					informacion = (Object[]) getControlador().obtenerHorasMedico(txtMedico.getText());
+					// Obtenemos las horas en las que trabaja ese médico para el día seleccionado en el JDateChooser
+					horasTrabajoDia = ((Hashtable<DiaSemana, ArrayList<String>>)informacion[0]).get(DiaSemana.values()[fecha.getDay()-1]);
+					// Si el día seleccionado es laboral para el medico, se muestran todas las horas de trabajo
+					if (horasTrabajoDia != null){
+						horas = new String[horasTrabajoDia.size()];
+						for (int i=0; i<horas.length; i++) {
+							horas[i] = horasTrabajoDia.get(i);
+						}
+						// Asignamos esas horas al combobox
+						crearModelos(horas);
+						// Si el día introducido coincide con algún día donde el médico ya tiene citas asignadas, 
+						// se pasa al render del comboBox las horas ya ocupadas, para mostrarlas en rojo
+						if (((Hashtable<String, ArrayList<String>>)informacion[1]).containsKey(formatoDeFecha.format(dtcDiaCita.getDate()))) {
+							horasOcupadasDia = ((Hashtable<String, ArrayList<String>>)informacion[1]).get(formatoDeFecha.format(dtcDiaCita.getDate()));
+							cbHorasCitas.setRenderer(new RenderJComboBox(horasOcupadasDia));
+						}
+						
 					}
-					// Asignamos esas horas al combobox
-					crearModelos(horas);
-					// Si el día introducido coincide con algún día donde el médico ya tiene citas asignadas, 
-					// se pasa al render del comboBox las horas ya ocupadas, para mostrarlas en rojo
-					if (((Hashtable<String, ArrayList<String>>)informacion[1]).containsKey(formatoDeFecha.format(dtcDiaCita.getDate()))) {
-						horasOcupadasDia = ((Hashtable<String, ArrayList<String>>)informacion[1]).get(formatoDeFecha.format(dtcDiaCita.getDate()));
-						cbHorasCitas.setRenderer(new RenderJComboBox(horasOcupadasDia));
-					}
-					
+					else
+						crearModelos(new String [] {"El día introducido no es laboral para ese médico"});
 				}
 				else
 					crearModelos(new String [] {"El día introducido no es laboral para ese médico"});
@@ -401,16 +411,23 @@ public class JPCitaTramitar extends JPBase {
 	
 	
 	private void cbHorasCitasActionPerformed(ActionEvent evt) {
-		// Si se selecciona una hora en rojo, se pone como indice el -1
+		comprobarValidezHora();
+	}
+	
+	private boolean comprobarValidezHora () {
+		// No se puede seleccionar una hora en rojo
 		if (cbHorasCitas.getSelectedIndex() != -1) {
 			// Esto es para evitar que se seleccione el item si el día no es laboral
 			if (!cbHorasCitas.getSelectedItem().toString().equals("El día introducido no es laboral para ese médico")) {
 				if (horasOcupadasDia != null)
 					if (horasOcupadasDia.contains(cbHorasCitas.getSelectedItem().toString()))
-						cbHorasCitas.setSelectedIndex(-1);
+						horaSeleccionada = "";
+					else
+						horaSeleccionada = cbHorasCitas.getSelectedItem().toString();
 			} else
-				cbHorasCitas.setSelectedIndex(-1);
+				horaSeleccionada = "";
 		}
+		return !horaSeleccionada.equals("");
 	}
 		
 	private void btnAceptarActionPerformed(ActionEvent evt) {
@@ -420,16 +437,21 @@ public class JPCitaTramitar extends JPBase {
 		Date fecha = dtcDiaCita.getDate();
 		Cita c;
 		try {
-			Date fechaAux = formatoDeFecha.parse(cbHorasCitas.getSelectedItem().toString());
-			med = getControlador().consultarMedico(txtMedico.getText());
-			if (med.fechaEnCalendario(fecha, DURACION)){
+			horaSeleccionada = cbHorasCitas.getSelectedItem().toString();
+			// Si es laboral ese dia y la hora no está ocupada, se pide la cita, con o sin volante.
+			if (comprobarValidezHora()) {
+				Date fechaAux = formatoDeFecha.parse(cbHorasCitas.getSelectedItem().toString());
+				med = getControlador().consultarMedico(txtMedico.getText());
 				if (txtIdVolante.getText().equals(""))
 					c = getControlador().pedirCita(beneficiario, med.getDni(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), fechaAux.getHours(), fechaAux.getMinutes()), DURACION);
 				else
 					c = getControlador().pedirCita(beneficiario, Long.parseLong(txtIdVolante.getText()), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), fechaAux.getHours(), fechaAux.getMinutes()), DURACION);
 				
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "Cita registrada.");
+				limpiarCamposConsultar();
 			}
+			else
+				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo)");
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
