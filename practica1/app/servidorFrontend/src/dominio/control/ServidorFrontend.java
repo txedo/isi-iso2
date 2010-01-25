@@ -1,4 +1,4 @@
-package dominio.control;
+ package dominio.control;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;

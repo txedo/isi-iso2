@@ -308,7 +308,7 @@ public class GestorCitas {
 		int intervalos, hora;
 		SimpleDateFormat formatoDeFecha = new SimpleDateFormat("dd/MM/yyyy");
 		Date fecha;
-		String dia;
+		String dia, minutos;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ObtenerCitas);
@@ -355,12 +355,22 @@ public class GestorCitas {
 			
 			// Si para ese día aun no se han incluido las horas ocupadas, se añaden
 			if (citasOcupadasMedico.get(dia) == null) {
-				horasOcupadas.add(fecha.getHours()+":"+fecha.getMinutes());
+				if (fecha.getMinutes() == 0)
+					minutos = "00";
+				else
+					minutos = Integer.toString(fecha.getMinutes());
+				horasOcupadas.add(fecha.getHours()+":"+minutos);
 				citasOcupadasMedico.put(dia, horasOcupadas);
+				
 			}
 			// Si ya existian horas ocupadas para ese día, se añade la nueva hora
-			else
-				citasOcupadasMedico.get(dia).add(fecha.getHours()+":"+fecha.getMinutes());
+			else {
+				if (fecha.getMinutes() == 0)
+					minutos = "00";
+				else
+					minutos = Integer.toString(fecha.getMinutes());
+				citasOcupadasMedico.get(dia).add(fecha.getHours()+":"+minutos);
+			}
 		}		
 		
 		informacion[0] = horasPosiblesMedico;
