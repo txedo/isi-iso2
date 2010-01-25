@@ -58,6 +58,18 @@ public class ServidorFrontend implements IServidorFrontend {
 		try {
 			// Nos identificamos en el sistema con el login y la password
 			sesion = GestorSesiones.identificar(login, password);
+			/* 
+			 * Si se ha cerrado la sesión y se ha vuelto a abrir, se elimina 
+			 * el antiguo cliente que estaba a la escucha, para poder registrar al nuevo
+			*/
+			if (sesion.isModificada()) {
+				//ICliente cliente = clientesEscuchando.get(GestorSesiones.getSesionAbierta().getId());
+				//cliente.desactivar();
+				clientesEscuchando.remove(GestorSesiones.getSesionAbierta().getId());			
+				String mensajeLog = "Usuario '" + GestorSesiones.getSesion(sesion.getId()).getUsuario().getLogin() + "' desconectado.";
+				GestorConexionesEstado.ponerMensaje(mensajeLog);
+				GestorConexionesEstado.actualizarClientesEscuchando(clientesEscuchando.size());
+			}
 			GestorConexionesEstado.ponerMensaje("Usuario '" + login + "' autenticado.");
 		} catch(RemoteException re) {
 			GestorConexionesEstado.ponerMensaje("Error de conexión al autenticar el usuario '" + login + "': " + re.getLocalizedMessage());

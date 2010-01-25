@@ -79,8 +79,8 @@ public class GestorBeneficiarios {
 			catch(BeneficiarioInexistenteException bie) {
 				// Se asigna un medico de cabecera o un pediatra, segun la edad
 				// Se captura la excepcion por si no existe médicos registrados del tipo adecuado
-				if (beneficiario.getEdad()<14)
-					try {
+				if (beneficiario.getEdad() < 14)
+					try { 
 						medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Pediatra());
 					} catch (UsuarioIncorrectoException uie) {
 						entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "No se puede registrar el beneficiario con NIF " +beneficiario.getNif() + " porque no existe un pediatra en el sistema para asignárselo");
@@ -99,6 +99,7 @@ public class GestorBeneficiarios {
 				FPBeneficiario.insertar(beneficiario);
 				entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" se ha registrado satisfactoriamente");
 				FPEntradaLog.insertar(entrada);
+				
 			}
 		}
 

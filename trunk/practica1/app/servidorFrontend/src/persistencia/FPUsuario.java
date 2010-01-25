@@ -10,6 +10,7 @@ import dominio.conocimiento.Citador;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Roles;
+import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.UsuarioIncorrectoException;
@@ -35,6 +36,7 @@ public class FPUsuario {
 		ArrayList<PeriodoTrabajo> calendario;
 		CentroSalud centro;
 		Usuario usuario = null;
+		TipoMedico tipo;
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_DNI + " = ?", dni);
@@ -67,11 +69,13 @@ public class FPUsuario {
 			usuario.setNombre(datos.getString(COL_NOMBRE));
 			usuario.setApellidos(datos.getString(COL_APELLIDOS));
 			usuario.setCentroSalud(centro);
-			// Establecemos datos adicionales de los usuarios
+			// Establecemos datos adicionales de los medicos
 			if(usuario.getRol() == Roles.Medico) {
 				// Obtenemos el calendario del médico
 				calendario = FPPeriodoTrabajo.consultarCalendario(usuario.getDni());
 				((Medico)usuario).setCalendario(calendario);
+				tipo = FPTipoMedico.consultar(((Medico)usuario).getDni());
+				((Medico)usuario).setTipoMedico(tipo);
 			}
 		}
 		
@@ -84,6 +88,7 @@ public class FPUsuario {
 		ArrayList<PeriodoTrabajo> calendario;
 		CentroSalud centro;
 		Usuario usuario = null;
+		TipoMedico tipo;
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_LOGIN + " = ? AND " + COL_PASSWORD + " = ?", login, password);
@@ -121,6 +126,8 @@ public class FPUsuario {
 				// Obtenemos el calendario del médico
 				calendario = FPPeriodoTrabajo.consultarCalendario(usuario.getDni());
 				((Medico)usuario).setCalendario(calendario);
+				tipo = FPTipoMedico.consultar(((Medico)usuario).getDni());
+				((Medico)usuario).setTipoMedico(tipo);
 			}
 		}
 		
@@ -183,6 +190,7 @@ public class FPUsuario {
 		ArrayList<PeriodoTrabajo> calendario;
 		CentroSalud centro;
 		Usuario usuario = null;
+		TipoMedico tipo;
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_ROL + " = ?", rol.ordinal());
@@ -217,6 +225,8 @@ public class FPUsuario {
 				// Obtenemos el calendario del médico
 				calendario = FPPeriodoTrabajo.consultarCalendario(usuario.getDni());
 				((Medico)usuario).setCalendario(calendario);
+				tipo = FPTipoMedico.consultar(((Medico)usuario).getDni());
+				((Medico)usuario).setTipoMedico(tipo);
 			}
 			// Añadimos el usuario a la lista que se va a devolver
 			usuarios.add(usuario);
