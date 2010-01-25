@@ -31,6 +31,32 @@ public class FPTipoMedico {
 	private static final String COL_ROL = "rol";
 	private static final String COL_ESPECIALIDAD = "especialidad";
 	
+	public static TipoMedico consultar (String dniMedico) throws SQLException, UsuarioIncorrectoException {
+		ComandoSQL comando;
+		ResultSet datos;
+		TipoMedico tipo = null;
+		
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_TIPO_MEDICO + " WHERE " + COL_DNI_TIPO_MEDICO + " = ?", dniMedico);
+		datos = GestorConexionesBD.consultar(comando);
+		datos.next();
+		
+		// Si no se obtienen datos, es porque el usuario es
+		// incorrecto (o no existe, pero se trata como incorrecto)
+		if(datos.getRow() == 0) {
+			throw new UsuarioIncorrectoException("No existe el médico con DNI '" + dniMedico +"'");  
+		} else {		
+			// Establecemos el tipo del medico
+			if (datos.getString(COL_TIPO_MEDICO).equals("Especialista"))
+				tipo = new Especialista(datos.getString(COL_ESPECIALIDAD));
+			else if (datos.getString(COL_TIPO_MEDICO).equals("Cabecera"))
+				tipo = new Cabecera();
+			else
+				tipo = new Pediatra();
+		}
+		return tipo;
+	}
+	
 	public static Medico consultarTipoMedicoAleatorio(TipoMedico tipoMedico) throws SQLException, CentroSaludIncorrectoException, UsuarioIncorrectoException {
 		ComandoSQL comando;
 		ResultSet datos;

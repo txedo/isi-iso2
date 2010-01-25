@@ -9,12 +9,14 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.Usuario;
@@ -32,6 +34,7 @@ import persistencia.FPBeneficiario;
 import persistencia.FPCita;
 import persistencia.FPEntradaLog;
 import persistencia.FPPeriodoTrabajo;
+import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
 
@@ -48,8 +51,10 @@ public class GestorCitas {
 		Cita cita;
 		EntradaLog entrada;
 		Usuario usuario;
-		Medico medico;
+		Medico medico = null;
+		Medico medicoAsignado = null;
 		Vector<Cita> citas;
+		boolean cambioMedico = false;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.TramitarCita);
@@ -57,9 +62,22 @@ public class GestorCitas {
 		// Comprobamos que exista el beneficiario
 		FPBeneficiario.consultarPorNIF(beneficiario.getNif());
 		
-		// Comprobamos que exista el médico
+		// Se comprueba si el beneficiario tiene más de 14 años. En ese caso, si tenía asignado un pediatra, se le asigna un médico de cabecera
+		if (beneficiario.getEdad() >= 14) {
+			if (beneficiario.getMedicoAsignado().getTipoMedico() instanceof Pediatra) {
+				medicoAsignado = FPTipoMedico.consultarTipoMedicoAleatorio(new Cabecera());
+				beneficiario.setMedicoAsignado(medicoAsignado);
+				cambioMedico = true;
+			}
+		}
+			
+		// Comprobamos que exista el médico (el que se pasa como argumento si no se cambia de médico, o el recién asignado)
 		try {
-			usuario = FPUsuario.consultar(idMedico);
+			if (!cambioMedico)
+				usuario = FPUsuario.consultar(idMedico);
+			else
+				usuario = medicoAsignado;
+			
 			if(usuario.getRol() != Roles.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
 			}
@@ -80,8 +98,6 @@ public class GestorCitas {
 		// Recuperamos las citas del médico para comprobar si no tiene ya una cita en esa fecha y hora
 		citas = FPCita.consultarPorMedico(idMedico);	
 		for (Cita c : citas) {
-			System.out.println(c.getFechaYhora());
-			System.out.println(fechaYhora);
 			if (c.getFechaYhora().equals(fechaYhora))
 				throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + idMedico);
 		}
@@ -97,6 +113,13 @@ public class GestorCitas {
 		// Añadimos una entrada al log
 		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "La cita del beneficiario con NIF " + beneficiario.getNif() + " con el medico con DNI " + idMedico + " se ha creado correctamente.");
 		FPEntradaLog.insertar(entrada);
+		
+		// Si se ha cambiado el médico, actualizamos el beneficiario en la base de datos
+		if (cambioMedico) {
+			FPBeneficiario.modificar(beneficiario);
+			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "update", "Se ha modificado el médico asignado al beneficiario con NIF " + beneficiario.getNif() + ". Pasa a tener un médico de cabecera, cuyo NIF es " + medicoAsignado.getDni() +".");
+			FPEntradaLog.insertar(entrada);
+		}
 		
 		return cita;
 	}
@@ -157,6 +180,8 @@ public class GestorCitas {
 		EntradaLog entrada;
 		Usuario usuario;
 		Volante volante;
+		Medico medicoAsignado = null;
+		boolean cambioMedico = false;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EmitirVolante);
@@ -164,11 +189,23 @@ public class GestorCitas {
 		// Se comprueba que existe el beneficiario dado por parámetro
 		FPBeneficiario.consultarPorNIF(b.getNif());
 		
+		// Se comprueba si el beneficiario tiene más de 14 años. En ese caso, si tenía asignado un pediatra, se le asigna un médico de cabecera
+		if (b.getEdad() >= 14) {
+			if (b.getMedicoAsignado().getTipoMedico() instanceof Pediatra) {
+				medicoAsignado = FPTipoMedico.consultarTipoMedicoAleatorio(new Cabecera());
+				b.setMedicoAsignado(medicoAsignado);
+				cambioMedico = true;
+			}
+		}
+		
 		// Se comprueba que existen los médicos, tanto emisor como receptor
 		// No haria falta comprobar que los parametros introducidos sean medicos,
 		// pues se obliga poniendo que su tipo sea de la clase "Medico"
 		try {
-			usuario = FPUsuario.consultar(emisor.getDni());
+			if (!cambioMedico)
+				usuario = FPUsuario.consultar(emisor.getDni());
+			else
+				usuario = medicoAsignado;
 			if(usuario.getRol() != Roles.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
 			}
@@ -192,13 +229,23 @@ public class GestorCitas {
 		// Si todo es correcto, se crea el volante, se escribe en el log y se devuelve el identificador del volante
 		volante = new Volante();
 		volante.setBeneficiario(b);
-		volante.setEmisor(emisor);
+		if (!cambioMedico)
+			volante.setEmisor(emisor);
+		else
+			volante.setEmisor(medicoAsignado);
 		volante.setReceptor(destino);
 		FPVolante.insertar(volante);
 		
 		// Añadimos una entrada al log
 		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "Se ha emitido un volante para el beneficiario "+volante.getBeneficiario().getNif()+", emitido por el medico "+volante.getEmisor().getNombre() +" para el especialista "+volante.getReceptor().getNombre());
 		FPEntradaLog.insertar(entrada);
+		
+		// Si se ha cambiado el médico, actualizamos el beneficiario en la base de datos
+		if (cambioMedico) {
+			FPBeneficiario.modificar(b);
+			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "update", "Se ha modificado el médico asignado al beneficiario con NIF " + b.getNif() + ". Pasa a tener un médico de cabecera, cuyo NIF es " + medicoAsignado.getDni() +".");
+			FPEntradaLog.insertar(entrada);
+		}
 		
 		return volante.getId();
 	}

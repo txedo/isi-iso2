@@ -21,11 +21,11 @@ import javax.swing.event.ListSelectionListener;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 
+import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Sesion;
 import dominio.control.ControladorCliente;
-import excepciones.BeneficiarioInexistenteException;
 import excepciones.MedicoInexistenteException;
 
 
@@ -211,13 +211,19 @@ public class JPEmitirVolante extends JPBase {
 	}
 	
 	private void lstEspecialistasValueChanged(ListSelectionEvent evt) {
-		txtNombre.setText(especialistas.get(lstEspecialistas.getSelectedIndex()).getNombre());
-		txtApellidos.setText(especialistas.get(lstEspecialistas.getSelectedIndex()).getApellidos());
-		txtEspecialidad.setText(((Especialista)(especialistas.get(lstEspecialistas.getSelectedIndex()).getTipoMedico())).getEspecialidad());
+		if (lstEspecialistas.getSelectedIndex() != -1) {
+			txtNombre.setText(especialistas.get(lstEspecialistas.getSelectedIndex()).getNombre());
+			txtApellidos.setText(especialistas.get(lstEspecialistas.getSelectedIndex()).getApellidos());
+			txtEspecialidad.setText(((Especialista)(especialistas.get(lstEspecialistas.getSelectedIndex()).getTipoMedico())).getEspecialidad());
+		}
 	}
 	
 	private void btnAceptarActionPerformed(ActionEvent evt) {
 		boolean valido = true;
+		Medico medico = null;
+		Medico nuevoMedico = null;
+		Beneficiario bene;
+		
 		if (jPanelBeneficiario.getNif().equals("")) { 
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Advertencia", "Debe introducir un beneficiario");
 			valido = false;
@@ -228,8 +234,14 @@ public class JPEmitirVolante extends JPBase {
 		}
 		if (valido)
 			try {
-				idVolante = getControlador().emitirVolante(jPanelBeneficiario.getBeneficiario(), ((Medico)((Sesion)(getControlador().getSesion())).getUsuario()), especialistas.get(lstEspecialistas.getSelectedIndex()));
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante se ha emitido para el beneficiario. El identificador de dicho volante es " + idVolante);
+				bene = jPanelBeneficiario.getBeneficiario();
+				medico = bene.getMedicoAsignado();
+				idVolante = getControlador().emitirVolante(bene, ((Medico)((Sesion)(getControlador().getSesion())).getUsuario()), especialistas.get(lstEspecialistas.getSelectedIndex()));
+				nuevoMedico = getControlador().getBeneficiario(bene.getNif()).getMedicoAsignado();
+				if (!medico.equals(nuevoMedico))
+					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante se ha emitido para el beneficiario. El identificador de dicho volante es " + idVolante+"\nTambién se ha asignado un médico de cabecera al beneficiario. El DNI del nuevo médico es "+nuevoMedico.getDni());
+				else
+					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante se ha emitido para el beneficiario. El identificador de dicho volante es " + idVolante);
 				jPanelBeneficiario.limpiarCamposConsultar();
 				limpiarPanelMedico();
 			} catch (RemoteException e) {
@@ -245,6 +257,7 @@ public class JPEmitirVolante extends JPBase {
 		txtNombre.setText("");
 		txtApellidos.setText("");
 		txtEspecialidad.setText("");
+		lstEspecialistas.clearSelection();
 	}
 
 }

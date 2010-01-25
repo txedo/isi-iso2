@@ -11,10 +11,12 @@ public class Sesion implements ISesion, Serializable {
 	private long idSesion;
 	private Date horaInicio;
 	private Usuario usuario;
+	private boolean modificada;
 	
 	public Sesion(long idSesion, Usuario usuario) {
 		this.idSesion = idSesion;
 		this.usuario = usuario;
+		modificada = false;
 		//TODO Calcular hora para la hora de inicio
 		//this.horaInicio = Calcular la hora
 	}
@@ -57,6 +59,14 @@ public class Sesion implements ISesion, Serializable {
 			dev = idSesion==u.getId() && usuario.equals(u.getUsuario());
 		}
 		return dev;
+	}
+
+	public void setModificada(boolean modificada) {
+		this.modificada = modificada;
+	}
+
+	public boolean isModificada() {
+		return modificada;
 	}
 
 }

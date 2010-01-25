@@ -28,6 +28,8 @@ public class GestorSesiones {
 	
 	// Tabla hash de sesiones. La clave es el idSesion y el valor es la Sesion con ese idSesion
 	private static Hashtable<Long, Sesion> sesiones = new Hashtable<Long, Sesion>();
+	// Se almacena la sesion que ya estaba abierta, para que el servidor pueda consultarla y desconectar ese cliente
+	private static Sesion sesionAbierta;
 		
 	// Metodo para cerrar una sesion y borrarla de la tabla de sesiones abiertas
 	public static void liberar(long idSesion) throws SQLException {
@@ -40,7 +42,6 @@ public class GestorSesiones {
 	// Metodo para identificar un cliente y crear una sesion
 	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, Exception {
 		Enumeration<Sesion> sesionesAbiertas; 
-		Sesion sesionAbierta = null;
 		Sesion sesion = null;
 		EntradaLog entrada;
 		Usuario usuario;
@@ -78,6 +79,9 @@ public class GestorSesiones {
 			// abiertas y se escribe el log
 			sesion = new Sesion(idSesion, usuario);
 			sesiones.put(idSesion, sesion);
+			if (encontrado)
+				sesion.setModificada(true);
+			
 			entrada = new EntradaLog(login, "read", "Se ha creado la sesion con id "+sesion.getId());
 			FPEntradaLog.insertar(entrada);
 			
@@ -220,6 +224,10 @@ public class GestorSesiones {
 
 	public static Sesion getSesion(long idSesion) {
 		return sesiones.get(idSesion);
+	}
+
+	public static Sesion getSesionAbierta() {
+		return sesionAbierta;
 	}
 	
 }
