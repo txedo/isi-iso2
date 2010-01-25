@@ -2,12 +2,14 @@ package dominio.control;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.Date;
 
 import comunicaciones.ConexionCliente;
 import comunicaciones.ICliente;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cita;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.OperacionesAuxiliares;
@@ -15,9 +17,11 @@ import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
+import excepciones.VolanteNoValidoException;
 import presentacion.JFLogin;
 import presentacion.JFPrincipal;
 
@@ -128,4 +132,12 @@ public class ControladorCliente implements OperacionesAuxiliares {
 	public long emitirVolante (Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception { 
 		return servidor.emitirVolante(sesion.getId(), bene, emisor, receptor);
 	}
+	
+	public Cita pedirCita(Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception { 
+		return servidor.pedirCita(sesion.getId(), beneficiario, idMedico, fechaYHora, duracion);
+	}
+	
+	 public Cita pedirCita(Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, VolanteNoValidoException, SQLException, Exception {
+		 return servidor.pedirCita(sesion.getId(), beneficiario, idVolante, fechaYHora, duracion);
+	 }
 }
