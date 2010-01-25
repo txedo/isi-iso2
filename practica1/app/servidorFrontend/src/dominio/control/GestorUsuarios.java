@@ -186,6 +186,10 @@ public class GestorUsuarios {
 		
 		try {
 			modificarUsuario(idSesion, medico);
+			// TODO Borramos su calendario viejo de periodos de trabajo
+			
+			// TODO Creamos el nuevo calendario de periodos de trabajo
+			
 		} catch(UsuarioInexistenteException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
