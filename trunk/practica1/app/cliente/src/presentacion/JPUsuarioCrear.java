@@ -4,11 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.DebugGraphics;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPasswordField;
@@ -27,11 +29,13 @@ import dominio.conocimiento.Citador;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
+import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Utilidades;
 import excepciones.ApellidoIncorrectoException;
+import excepciones.CalendarioNoCreadoException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.NIFIncorrectoException;
@@ -86,6 +90,8 @@ public class JPUsuarioCrear extends JPBase {
 	private JPasswordField txtPassword2;
 	private JTextField txtLogin;
 	private JTextField txtDNI;
+	private JPCalendarioConsultar jPanelConsultarCalendario;
+	private ArrayList<PeriodoTrabajo> periodos = new ArrayList<PeriodoTrabajo>();
 	
 	public JPUsuarioCrear() {
 		super();
@@ -288,13 +294,23 @@ public class JPUsuarioCrear extends JPBase {
 					tipo = new Especialista(txtEspecialidad.getText());
 				
 				// TODO: mostrar la ventana para crear el calendario y asignarselo al medico
-				
-				// calendario = .....
-				// ((Medico)usu).setCalendario(calendario);
+				JDialog calendario = new JDialog();
+				jPanelConsultarCalendario = new JPCalendarioConsultar(this, txtDNI.getText());
+				calendario.add(jPanelConsultarCalendario);
+				calendario.setModal(true);
+				calendario.setTitle("Configuración de calendario");
+				calendario.setBounds(jPanelConsultarCalendario.getBounds());
+				calendario.setVisible(true);
+				// Cuando se cierre la ventana...
+				((Medico)usu).setCalendario(periodos);
 			}
-			
-			// Solicitamos al servidor que se cree el usuario
-			getControlador().crearUsuario(usu);
+			if (periodos.size() != 0) {
+				// Solicitamos al servidor que se cree el usuario
+				getControlador().crearUsuario(usu);
+			}
+			else {
+				throw new CalendarioNoCreadoException();
+			}
 			
 			// El usuario se ha creado correctamente
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido dado de alta en el sistema.");
@@ -325,7 +341,8 @@ public class JPUsuarioCrear extends JPBase {
 			txtApellidos.grabFocus();
 		} catch(ContraseñaIncorrectaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
-			
+		} catch (CalendarioNoCreadoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Para poder crear un médico, es obligatorio crear su calendario.");
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
@@ -384,6 +401,11 @@ public class JPUsuarioCrear extends JPBase {
 		lstTipoUsuario.clearSelection();
 		lstTipoMedico.clearSelection();
 		lstTipoMedico.setVisible(false);
+	}
+	
+	public void setPeriodos (ArrayList<PeriodoTrabajo> p) {
+		periodos = new ArrayList<PeriodoTrabajo>();
+		periodos.addAll(p);
 	}
 	
 	// $hide<<$

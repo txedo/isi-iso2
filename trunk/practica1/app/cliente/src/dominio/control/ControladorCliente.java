@@ -131,6 +131,10 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		return servidor.mensajeAuxiliar(sesion.getId(), OBTENER_MEDICOS_TIPO, tipo);
 	}
 	
+	public void modificarMedico(Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		servidor.modificar(sesion.getId(), medico);
+	}
+	
 	public long emitirVolante (Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception { 
 		return servidor.emitirVolante(sesion.getId(), bene, emisor, receptor);
 	}

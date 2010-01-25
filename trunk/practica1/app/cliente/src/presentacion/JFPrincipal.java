@@ -67,7 +67,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar;
 	private JPanel jPanelEstablecerSustituto;
-	private JPanel jPanelConsultarCalendario;
+	private JPCalendarioConsultar jPanelConsultarCalendario;
 	private JPanel jPanelConsultarMedico;
 	private JPEmitirVolante jPanelEmitirVolante;
 	private JPBienvenida jPanelBienvenida;
@@ -185,8 +185,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 					{
 						jPanelConsultarCalendario = new JPCalendarioConsultar();
 						jTabbedPaneOperaciones.addTab("Consultar Calendario", null, jPanelConsultarCalendario, null);
-						AnchorLayout jPanelModificarCalendarioLayout = new AnchorLayout();
-						jPanelConsultarCalendario.setLayout(jPanelModificarCalendarioLayout);
 					}
 					{
 						jPanelEstablecerSustituto = new JPanel();
@@ -215,6 +213,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		jPanelGestionarUsuarios.setControlador(controlador);
 		jPanelGestionarBeneficiarios.setControlador(controlador);
 		jPanelGestionarCitas.setControlador(controlador);
+		jPanelConsultarCalendario.setControlador(controlador);
 		jPanelEmitirVolante.setControlador(controlador);
 		if (controlador.getSesion().getRol() == Roles.Medico.ordinal())
 			jPanelEmitirVolante.inicializarEspecialistas();
