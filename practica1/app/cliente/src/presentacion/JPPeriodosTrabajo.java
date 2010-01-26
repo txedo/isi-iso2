@@ -5,6 +5,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.control.ControladorCliente;
+import excepciones.HorasJornadaIncorrectasException;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -76,6 +77,11 @@ public class JPPeriodosTrabajo extends JPBase {
 			}
 			this.add(getLblHorasRestantes(), new AnchorConstraint(641, 378, 708, 31, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 			this.add(getLblHorasJornada(), new AnchorConstraint(581, 386, 641, 31, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+			try {
+				actualizarHorasRestantes();
+			} catch (HorasJornadaIncorrectasException e) {
+
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -125,25 +131,29 @@ public class JPPeriodosTrabajo extends JPBase {
 	private JLabel getLblHorasRestantes() {
 		if(lblHorasRestantes == null) {
 			lblHorasRestantes = new JLabel();
-			actualizarHorasRestantes(MAX_HORAS_JORNADA);
 			lblHorasRestantes.setPreferredSize(new java.awt.Dimension(139, 20));
 		}
 		return lblHorasRestantes;
 	}
 	
-	private void actualizarHorasRestantes (int horas) {
-		lblHorasRestantes.setText("Horas por seleccionar: " + horas);
-	}
-
-	private void chbPeriodoTrabajoActionPerformed(ActionEvent evt) {
+	private void actualizarHorasRestantes () throws HorasJornadaIncorrectasException {
 		int contador = 0;
 		for (JCheckBox p : chbPeriodos) {
 			if (p.isSelected()) contador++;
 		}
 		if (contador <= MAX_HORAS_JORNADA) {
-			actualizarHorasRestantes(MAX_HORAS_JORNADA - contador);
+			lblHorasRestantes.setText("Horas por seleccionar: " + (MAX_HORAS_JORNADA - contador));
 		}
 		else {
+			throw new HorasJornadaIncorrectasException();
+		}
+		
+	}
+
+	private void chbPeriodoTrabajoActionPerformed(ActionEvent evt) {
+		try {
+			actualizarHorasRestantes();
+		} catch (HorasJornadaIncorrectasException e) {
 			((JCheckBox)evt.getSource()).setSelected(false);
 			Dialogos.mostrarDialogoError(null, "Error", "Ha sobrepasado el máximo de horas configurado para una jornada laboral.");
 		}
@@ -174,9 +184,12 @@ public class JPPeriodosTrabajo extends JPBase {
 				p.setSelected(true);
 			}
 		}
+		try {
+			actualizarHorasRestantes();
+		} catch (HorasJornadaIncorrectasException e) {
+
+		}
 	}
-	
-	
 	
 	public ArrayList<PeriodoTrabajo> getPeriodosTrabajo () {
 		periodos = new ArrayList<PeriodoTrabajo>();

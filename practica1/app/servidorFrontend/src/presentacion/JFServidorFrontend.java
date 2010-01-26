@@ -297,7 +297,8 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	}
 	
 	public void ponerMensaje(String mensaje) {
-		txtLog.setText(txtLog.getText() + mensaje + "\n");	
+		txtLog.setText(txtLog.getText() + mensaje + "\n");
+		txtLog.setCaretPosition(txtLog.getDocument().getLength());
 	}
 
 	public void actualizarClientesEscuchando(int numeroClientes) {
