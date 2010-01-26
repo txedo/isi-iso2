@@ -17,7 +17,7 @@ public class JPCitas extends JPBase {
 	private static final long serialVersionUID = 3597203747113684691L;
 		
 	private JPCitaTramitar jPanelTramitar;
-	private JPCitaAnular jPanelAnular;
+	private JPCitaConsultar jPanelConsultar;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
 	
@@ -55,8 +55,8 @@ public class JPCitas extends JPBase {
 				this.add(jPanelTramitar, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 			}
 			{
-				jPanelAnular = new JPCitaAnular();
-				this.add(jPanelAnular, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				jPanelConsultar = new JPCitaConsultar();
+				this.add(jPanelConsultar, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -68,40 +68,40 @@ public class JPCitas extends JPBase {
 	public void setControlador(ControladorCliente controlador) {
 		super.setControlador(controlador);
 		jPanelTramitar.setControlador(controlador);
-		jPanelAnular.setControlador(controlador);
+		jPanelConsultar.setControlador(controlador);
 	}
 	
 	public void setFrame(JFrame frame) {
 		super.setFrame(frame);
 		jPanelTramitar.setFrame(frame);
-		jPanelAnular.setFrame(frame);
+		jPanelConsultar.setFrame(frame);
 	}
 	
 	private void inicializarOperaciones() {
 		jPanelListaOperaciones.ponerOperacion(Operaciones.TramitarCita);
-		jPanelListaOperaciones.ponerOperacion(Operaciones.AnularCita);
+		jPanelListaOperaciones.ponerOperacion(Operaciones.ConsultarCitas);
 	}
 	
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(Operaciones.TramitarCita);
 		jPanelTramitar.setVisible(true);
-		jPanelAnular.setVisible(true);
+		jPanelConsultar.setVisible(false);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(EventObject evt) {
 		if(jPanelTramitar.isValid()) {
 			jPanelTramitar.setVisible(false);
 		}
-		if(jPanelAnular.isValid()) {
-			jPanelAnular.setVisible(false);
+		if(jPanelConsultar.isValid()) {
+			jPanelConsultar.setVisible(false);
 		}
 		if(jPanelListaOperaciones.getOperacion() == Operaciones.TramitarCita) {
 			jPanelTramitar.setVisible(true);
 			jPanelTramitar.repaint();
 		}
-		if(jPanelListaOperaciones.getOperacion() == Operaciones.AnularCita) {
-			jPanelAnular.setVisible(true);
-			jPanelAnular.repaint();
+		if(jPanelListaOperaciones.getOperacion() == Operaciones.ConsultarCitas) {
+			jPanelConsultar.setVisible(true);
+			jPanelConsultar.repaint();
 		}
 	}
 
@@ -109,8 +109,8 @@ public class JPCitas extends JPBase {
 		jPanelListaOperaciones.quitarOperacion(Operaciones.TramitarCita);
 	}
 
-	public void desactivarAnularCita() {
-		jPanelListaOperaciones.quitarOperacion(Operaciones.AnularCita);
+	public void desactivarConsultarCita() {
+		jPanelListaOperaciones.quitarOperacion(Operaciones.ConsultarCitas);
 	}
 
 	// $hide<<$

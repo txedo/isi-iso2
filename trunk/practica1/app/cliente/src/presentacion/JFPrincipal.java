@@ -241,7 +241,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jTabbedPaneOperaciones.remove(jPanelGestionarBeneficiarios);
 		}
 		if(!operaciones.contains(Operaciones.TramitarCita)
-				&& !operaciones.contains(Operaciones.AnularCita)){
+				&& !operaciones.contains(Operaciones.ConsultarCitas)){
 			jTabbedPaneOperaciones.remove(jPanelGestionarCitas);
 		}
 		
@@ -281,8 +281,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 		
 		if(!operaciones.contains(Operaciones.TramitarCita))
 			jPanelGestionarCitas.desactivarTramitarCita();
-		if(!operaciones.contains(Operaciones.AnularCita))
-			jPanelGestionarCitas.desactivarAnularCita();
+		if(!operaciones.contains(Operaciones.ConsultarCitas))
+			jPanelGestionarCitas.desactivarConsultarCita();
 		
 		// Controlamos si, en los paneles de consultar, se puede o no también modificar/eliminar datos,
 		// según los permisos de cada rol

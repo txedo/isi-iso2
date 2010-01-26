@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import comunicaciones.IConstantes;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Cita;
@@ -42,9 +44,7 @@ import persistencia.FPVolante;
  * Clase encargada de solicitar, recuperar y eliminar citas que tienen los
  * beneficiarios para acudir a la consulta de los médicos.
  */
-public class GestorCitas {
-	
-	private final static long DURACION = 15;
+public class GestorCitas implements IConstantes {
 
 	// Método para pedir una nueva cita para un cierto beneficiario y médico
 	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException, Exception {
@@ -256,7 +256,7 @@ public class GestorCitas {
 		EntradaLog entrada;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ObtenerCitas);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
 		
 		// Obtenemos las citas del beneficiario
 		citas = FPCita.consultarPorBeneficiario(dni);
@@ -311,7 +311,7 @@ public class GestorCitas {
 		String dia, minutos;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ObtenerCitas);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
 		
 		// Obtenemos las citas que ya tiene asignadas el médico
 		citas = FPCita.consultarPorMedico(dniMedico);
@@ -331,12 +331,12 @@ public class GestorCitas {
 		for(PeriodoTrabajo p: calendario) {
 			horasTrabajo = new ArrayList<String> ();
 			hora = 0;
-			intervalos = (int) ((((p.getHoraFinal() - p.getHoraInicio()) * 60) / DURACION) - 1);
+			intervalos = (int) ((((p.getHoraFinal() - p.getHoraInicio()) * 60) / DURACION_CITA) - 1);
 			
 			// Primera hora en la que se podría pedir cita
 			horasTrabajo.add(p.getHoraInicio()+":00");
 			
-			for (int i=(int) DURACION; i <= (intervalos*DURACION); i += DURACION) {
+			for (int i=(int) DURACION_CITA; i <= (intervalos*DURACION_CITA); i += DURACION_CITA) {
 				if ((i % 60) == 0) {
 					hora += 1;
 					horasTrabajo.add((p.getHoraInicio()+hora)+":00");

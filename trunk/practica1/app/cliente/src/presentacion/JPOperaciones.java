@@ -95,7 +95,7 @@ public class JPOperaciones extends JPanel {
 		if(lstOperaciones.getSelectedIndex() != -1) {
 			operacionSel = operaciones.get(lstOperaciones.getSelectedIndex());
 		} else {
-			operacionSel = Operaciones.ObtenerCitas; //TODO:Crear operación inválida?
+			operacionSel = Operaciones.ConsultarCitas; //TODO:Crear operación inválida?
 		}
 		return operacionSel;
 	}
@@ -179,8 +179,8 @@ public class JPOperaciones extends JPanel {
 		case ModificarUsuario:
 			nombre = "Modificar usuario";
 			break;
-		case ObtenerCitas:
-			nombre = "Recuperar citas";
+		case ConsultarCitas:
+			nombre = "Consultar citas";
 			break;
 		case RegistrarBeneficiario:
 			nombre = "Registrar beneficiario";
