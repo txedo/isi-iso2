@@ -16,12 +16,14 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
+import comunicaciones.IConstantes;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
@@ -50,11 +52,10 @@ import excepciones.NSSIncorrectoException;
 /**
 * Panel que permite tramitar citas para beneficiarios del sistema.
 */
-public class JPCitaTramitar extends JPBase {
+public class JPCitaTramitar extends JPBase implements IConstantes {
 
 	private static final long serialVersionUID = 8297107492599580450L;
 	
-	private final long DURACION = 15;
 	private final int SABADO = 6;
 	private final int DOMINGO = 0;
 	private final String ID_NIF = "NIF";
@@ -314,7 +315,7 @@ public class JPCitaTramitar extends JPBase {
 			limpiarCamposConsultar();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario no se encuentra dado de alta en el sistema.");
 			txtIdentificacion.selectAll();
-			txtIdentificacion.grabFocus();			
+			txtIdentificacion.grabFocus();	
 		} catch(CadenaVaciaException e) {
 			limpiarCamposConsultar();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NIF o NSS.");
@@ -398,12 +399,16 @@ public class JPCitaTramitar extends JPBase {
 				}
 				else
 					crearModelos(new String [] {"El día introducido no es laboral para ese médico"});
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+			} catch(SQLException e) {
+				limpiarCamposConsultar();
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			} catch(RemoteException e) {
+				limpiarCamposConsultar();
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				limpiarCamposConsultar();
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 			}
 		}
 	}
@@ -443,9 +448,9 @@ public class JPCitaTramitar extends JPBase {
 				Date fechaAux = formatoDeFecha.parse(cbHorasCitas.getSelectedItem().toString());
 				med = getControlador().consultarMedico(txtMedico.getText());
 				if (txtIdVolante.getText().equals(""))
-					c = getControlador().pedirCita(beneficiario, med.getDni(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), fechaAux.getHours(), fechaAux.getMinutes()), DURACION);
+					c = getControlador().pedirCita(beneficiario, med.getDni(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), fechaAux.getHours(), fechaAux.getMinutes()), DURACION_CITA);
 				else
-					c = getControlador().pedirCita(beneficiario, Long.parseLong(txtIdVolante.getText()), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), fechaAux.getHours(), fechaAux.getMinutes()), DURACION);
+					c = getControlador().pedirCita(beneficiario, Long.parseLong(txtIdVolante.getText()), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), fechaAux.getHours(), fechaAux.getMinutes()), DURACION_CITA);
 				
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "Cita registrada.");
 				limpiarCamposConsultar();
@@ -453,26 +458,26 @@ public class JPCitaTramitar extends JPBase {
 			else
 				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo)");
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			limpiarCamposConsultar();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch (MedicoInexistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			limpiarCamposConsultar();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "No existe el médico solicitado");
+		} catch (ParseException e) {
+			limpiarCamposConsultar();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch (BeneficiarioInexistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			limpiarCamposConsultar();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario no está dado de alta en el sistema");
 		} catch (FechaNoValidaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			limpiarCamposConsultar();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "La fecha y hora seleccionada no es válida para ese médico");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			limpiarCamposConsultar();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			limpiarCamposConsultar();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
 	}
 

@@ -6,21 +6,21 @@ package dominio.conocimiento;
  */
 public enum Operaciones {
 	CrearUsuario,
+	ConsultarUsuario,
 	ModificarUsuario,
 	EliminarUsuario,
 	TramitarCita,
+	ConsultarCitas,
 	AnularCita,
-	ObtenerCitas,
 	EmitirVolante,
 	RegistrarBeneficiario,
 	ConsultarBeneficiario,
 	ModificarBeneficiario,
+	RegistrarMedico,
 	ConsultarMedico,
 	EliminarMedico,
-	RegistrarMedico,
 	ModificarMedico,
 	ModificarCalendario,
 	EstablecerSustituto,
-	ConsultarUsuario,
-	ConsultarMedicosTipo,
+	ConsultarMedicosTipo
 }

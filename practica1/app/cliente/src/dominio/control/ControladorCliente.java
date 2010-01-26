@@ -5,26 +5,27 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
 
+import presentacion.JFLogin;
+import presentacion.JFPrincipal;
+
 import comunicaciones.ConexionCliente;
 import comunicaciones.ICliente;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.OperacionesAuxiliares;
-import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.CitaNoValidaException;
 import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
-import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
-import presentacion.JFLogin;
-import presentacion.JFPrincipal;
 
 /**
  * Controlador principal de la funcionalidad de los clientes. 
@@ -145,6 +146,10 @@ public class ControladorCliente implements OperacionesAuxiliares {
 	
 	 public Cita pedirCita(Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, VolanteNoValidoException, SQLException, Exception {
 		 return servidor.pedirCita(sesion.getId(), beneficiario, idVolante, fechaYHora, duracion);
+	 }
+	 
+	 public void anularCita (Cita cita) throws RemoteException, CitaNoValidaException, SQLException, Exception {
+		 servidor.anularCita(sesion.getId(), cita);
 	 }
 	 
 	 public Vector<Cita> obtenerCitas(String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {

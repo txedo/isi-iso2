@@ -102,12 +102,13 @@ public class GestorSesiones {
 		if (sesion == null) {
 			throw new SesionInvalidaException("El identificador de sesión es inválido");
 		}
-		
-		// Se deben agregar al vector todas las operaciones declaradas en Operacion.java
+				
 		// Agregamos al vector las operaciones de todos los usuarios (administrador, citador y medico)
 		operaciones.add(Operaciones.ConsultarBeneficiario);
+		
 		// Agregamos al vector las operaciones de citadores y administradores
 		if (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
+			operaciones.add(Operaciones.ConsultarCitas);
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.AnularCita);
 			operaciones.add(Operaciones.RegistrarBeneficiario);
@@ -115,10 +116,14 @@ public class GestorSesiones {
 		}
 		// Agregamos al vector las operaciones de administradores
 		if (sesion.getRol() == Roles.Administrador.ordinal()){
-			operaciones.add(Operaciones.ConsultarUsuario);
 			operaciones.add(Operaciones.CrearUsuario);
 			operaciones.add(Operaciones.ModificarUsuario);
 			operaciones.add(Operaciones.EliminarUsuario);
+			operaciones.add(Operaciones.ConsultarUsuario);
+			operaciones.add(Operaciones.RegistrarMedico);
+			operaciones.add(Operaciones.ConsultarMedico);
+			operaciones.add(Operaciones.ModificarMedico);
+			operaciones.add(Operaciones.EliminarMedico);
 			operaciones.add(Operaciones.ModificarCalendario);
 			operaciones.add(Operaciones.EstablecerSustituto);
 		}
@@ -133,11 +138,12 @@ public class GestorSesiones {
 	
 	public static void comprobarPermiso(long idSesion, Operaciones operacion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException {
 		Sesion sesion;
-		boolean permitido;
+		boolean permitido = false;
 		EntradaLog entrada;
 		boolean esAdministrador = false;
 		boolean esCitador = false;
 		boolean esMedico = false;
+		ArrayList<Operaciones> operaciones;
 		
 		// Obtenemos la sesión para el id indicado y comprobamos si existe
 		// (en teoría sí, porque primero el usuario ha tenido que hacer login)
@@ -151,8 +157,11 @@ public class GestorSesiones {
 		esMedico = (sesion.getRol() == Roles.Medico.ordinal());
 		
 		// TODO modificar este switch para que analice el arraylist devuelto por operacionesDisponibles()
+		operaciones = operacionesDisponibles(idSesion);
+		permitido = operaciones.contains(operacion);
+		
 		// Vemos cuál es la operación solicitada
-		switch(operacion) {
+		/*switch(operacion) {
 		case CrearUsuario:
 			permitido = esAdministrador;
 			break;
@@ -168,7 +177,7 @@ public class GestorSesiones {
 		case AnularCita:
 			permitido = esAdministrador || esCitador;
 			break;
-		case ObtenerCitas:
+		case ConsultarCitas:
 			permitido = esAdministrador || esCitador;
 			break;
 		case EmitirVolante:
@@ -212,7 +221,7 @@ public class GestorSesiones {
 		default:
 			permitido = false;
 			break;
-		}
+		}*/
 
 		// Comprobamos si se tienen permisos para realizar la operación
 		if(!permitido) {
