@@ -49,7 +49,7 @@ import javax.swing.event.ListSelectionListener;
 public class JPCalendarioConsultar extends JPBase {
 	
 	private static final long serialVersionUID = -8579214415627504678L;
-	private ArrayList<JPPeriodosTrabajo> periodos = new ArrayList<JPPeriodosTrabajo>();
+	private ArrayList<JPPeriodosTrabajo> periodos = null;
 	private ArrayList<PeriodoTrabajo> periodosTrabajo;
 	private JPPeriodosTrabajo pTrabajo;
 	private int lastSelectedIndex = -1;
@@ -89,6 +89,14 @@ public class JPCalendarioConsultar extends JPBase {
 	}
 	
 	private void inicializarPanel() {
+		if (periodos == null) {
+			periodos = new ArrayList<JPPeriodosTrabajo>();
+			for (DiaSemana s : DiaSemana.values()) {
+				crearPanelPeriodosTrabajo(s);
+			}
+			// Creamos un panel más para "propagar" a todos los dias
+			crearPanelPeriodosTrabajo(null);
+		}
 		cbModificar.setEnabled(true);
 		jListDiaSemana.setEnabled(true);
 		jListDiaSemana.setSelectedIndex(0);
@@ -102,9 +110,9 @@ public class JPCalendarioConsultar extends JPBase {
 			this.setSize(565, 390);
 			{
 				btnGuardar = new JButton();
-				this.add(btnGuardar, new AnchorConstraint(919, 981, 970, 765, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				this.add(btnGuardar, new AnchorConstraint(911, 11, 9, 779, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnGuardar.setText("Guardar calendario");
-				btnGuardar.setPreferredSize(new java.awt.Dimension(122, 20));
+				btnGuardar.setPreferredSize(new java.awt.Dimension(114, 26));
 				btnGuardar.setEnabled(false);
 				btnGuardar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
@@ -133,6 +141,7 @@ public class JPCalendarioConsultar extends JPBase {
 					// Tambien se crea un JPPeriodosTrabajo para cada dia (inicialmente NO visibles)
 					// El índice de ambos arrays coincide
 					ArrayList<String> dias = new ArrayList<String>();
+					periodos = new ArrayList<JPPeriodosTrabajo>();
 					for (DiaSemana s : DiaSemana.values()) {
 						dias.add(s.toString());
 						crearPanelPeriodosTrabajo(s);
@@ -210,8 +219,8 @@ public class JPCalendarioConsultar extends JPBase {
 			Utilidades.comprobarNIF(txtNIF.getText());
 			mMedico = getControlador().consultarMedico(txtNIF.getText());
 			periodos = mMedico.getCalendario();
-			actualizarPeriodosTrabajo(periodos);
 			inicializarPanel();
+			actualizarPeriodosTrabajo(periodos);
 		} catch (NIFIncorrectoException e) {
 			txtNIF.selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "El NIF debe ser el número de DNI (incluyendo el 0) y la letra sin guión.");
@@ -248,17 +257,19 @@ public class JPCalendarioConsultar extends JPBase {
 	}
 
 	private void jListDiaSemanaValueChanged(ListSelectionEvent evt) {
-		JPPeriodosTrabajo pe;
-		for (JPPeriodosTrabajo p: periodos) p.setVisible(false);
-		int index = jListDiaSemana.getSelectedIndex();
-		// Si se desean aplicar cambios a todos los dias, cogemos el último Panel ya que está reservado para este propósito
-		if (jListDiaSemana.getSelectionMode() == ListSelectionModel.MULTIPLE_INTERVAL_SELECTION) {
-			pe = periodos.get(periodos.size()-1);
+		if (jListDiaSemana.getSelectedIndex() != -1) {
+			JPPeriodosTrabajo pe;
+			for (JPPeriodosTrabajo p: periodos) p.setVisible(false);
+			int index = jListDiaSemana.getSelectedIndex();
+			// Si se desean aplicar cambios a todos los dias, cogemos el último Panel ya que está reservado para este propósito
+			if (jListDiaSemana.getSelectionMode() == ListSelectionModel.MULTIPLE_INTERVAL_SELECTION) {
+				pe = periodos.get(periodos.size()-1);
+			}
+			else {
+				pe = periodos.get(index);
+			}
+			pe.setVisible(true);
 		}
-		else {
-			pe = periodos.get(index);
-		}
-		pe.setVisible(true);
 	}
 	
 	private void cbModificarActionPerformed(ActionEvent evt) {
@@ -306,10 +317,15 @@ public class JPCalendarioConsultar extends JPBase {
 			// Si hay que propagar cambios como un calendario base cogemos el útimo panel
 			else {
 				// Iteraremos una vez por cada dia de la semana guardando sus valores
-				for (DiaSemana s : DiaSemana.values()) {
-					JPPeriodosTrabajo pt = periodos.get(periodos.size()-1);
-					pt.setDiaSemana(s);
-					periodosTrabajo.addAll(pt.getPeriodosTrabajo());
+				JPPeriodosTrabajo pt = periodos.get(periodos.size()-1);
+				if (pt.esJornadaLaboralCompleta()) {
+					for (DiaSemana s : DiaSemana.values()) {
+						pt.setDiaSemana(s);
+						periodosTrabajo.addAll(pt.getPeriodosTrabajo());
+					}
+				}
+				else {
+					throw new JornadaIncompletaException();
 				}
 			}
 			if (esCreacion ()) {
@@ -322,6 +338,8 @@ public class JPCalendarioConsultar extends JPBase {
 				// Borrar y guardar en la BD
 				mMedico.setCalendario(periodosTrabajo);
 				getControlador().modificarMedico(mMedico);
+				Dialogos.mostrarDialogoInformacion(null, "Operación satisfactoria", "El calendario ha sido actualizado correctamente.");
+				restablecerFormulario();
 			}
 		} catch (JornadaIncompletaException e) {
 			Dialogos.mostrarDialogoError(null, "Error", "La jornada de trabajo está incompleta.");
@@ -334,5 +352,21 @@ public class JPCalendarioConsultar extends JPBase {
 		} catch (Exception e) {
 			Dialogos.mostrarDialogoError(null, "Error", e.getMessage());
 		}
+	}
+
+	private void restablecerFormulario() {
+		for (JPPeriodosTrabajo pt : periodos) {
+			pt.setVisible(false);
+			pt.setEnabled(false);
+		}
+		jListDiaSemana.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		jListDiaSemana.clearSelection();
+		jListDiaSemana.setEnabled(false);
+		periodos = null;
+		txtNIF.setText("");
+		cbModificar.setSelected(false);
+		cbModificar.setEnabled(false);
+		cbModificarTodos.setSelected(false);
+		cbModificarTodos.setEnabled(false);
 	}
 }

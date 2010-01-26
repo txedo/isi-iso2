@@ -290,9 +290,9 @@ public class JPUsuarioCrear extends JPBase {
 					tipo = new Cabecera();
 				else if (lstTipoMedico.getSelectedValue().equals(MED_PEDIATRA))
 					tipo = new Pediatra();
-				else
+				else if (lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA))
 					tipo = new Especialista(txtEspecialidad.getText());
-				
+				((Medico)usu).setTipoMedico(tipo);
 				// TODO: mostrar la ventana para crear el calendario y asignarselo al medico
 				JDialog calendario = new JDialog();
 				jPanelConsultarCalendario = new JPCalendarioConsultar(this, txtDNI.getText());

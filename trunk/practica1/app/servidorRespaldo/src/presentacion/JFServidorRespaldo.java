@@ -111,6 +111,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 						textLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
 						textLog.setEditable(false);
 						textLog.setFont(new java.awt.Font("Tahoma",0,12));
+						textLog.setPreferredSize(new java.awt.Dimension(524, 263));
 					}
 				}
 				{
