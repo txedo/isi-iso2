@@ -30,10 +30,10 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 	
 	private IServidorFrontend servidor;
 	
-	public void conectar(String ip) throws MalformedURLException, RemoteException, NotBoundException {
+	public void conectar(String ip, int puerto) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
-		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR;
+		url = "rmi://" + ip + ":" + puerto + "/" + NOMBRE_SERVIDOR;
         servidor = (IServidorFrontend)Naming.lookup(url);
 	}
 	

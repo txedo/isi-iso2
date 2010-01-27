@@ -11,14 +11,15 @@ import excepciones.CadenaVaciaException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.DomicilioIncorrectoException;
+import excepciones.EnteroIncorrectoException;
 import excepciones.FechaNacimientoIncorrectaException;
 import excepciones.FormatoFechaIncorrectoException;
+import excepciones.IPInvalidaException;
 import excepciones.LetraIncorrectaException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.NombreIncorrectoException;
 import excepciones.NumeroDomicilioIncorrectoException;
-import excepciones.NumeroIncorrectoException;
 import excepciones.PisoDomicilioIncorrectoException;
 import excepciones.PuertaDomicilioIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
@@ -140,7 +141,7 @@ public class Utilidades {
 			throw new LetraIncorrectaException();
 	}
 
-	private static void comprobarNumeroEntero (String numero) throws NumeroIncorrectoException {
+	public static void comprobarEntero (String numero) throws EnteroIncorrectoException {
 		// Todos los caracteres del numero deben ser digitos
 		boolean bCorrecto = false;
 		boolean bAux = true;
@@ -153,7 +154,7 @@ public class Utilidades {
 		}
 
 		if (!bCorrecto)
-			throw new NumeroIncorrectoException();
+			throw new EnteroIncorrectoException();
 	}
 	
 	public static void comprobarCorreoElectronico (String correo) throws CorreoElectronicoIncorrectoException {
@@ -217,16 +218,16 @@ public class Utilidades {
 
 	public static void comprobarNumero(String text) throws NumeroDomicilioIncorrectoException {
 		try {
-			comprobarNumeroEntero(text);
-		} catch (NumeroIncorrectoException e) {
+			comprobarEntero(text);
+		} catch (EnteroIncorrectoException e) {
 			throw new NumeroDomicilioIncorrectoException ();
 		}		
 	}
 
 	public static void comprobarPiso(String text) throws PisoDomicilioIncorrectoException {
 		try {
-			comprobarNumeroEntero(text);
-		} catch (NumeroIncorrectoException e) {
+			comprobarEntero(text);
+		} catch (EnteroIncorrectoException e) {
 			throw new PisoDomicilioIncorrectoException ();
 		}	
 	}
@@ -268,6 +269,20 @@ public class Utilidades {
 	    		valido = true;
 	    if (!valido)
 	    	throw new ContraseñaIncorrectaException("La contraseña debe ser alfnumerica y tener como minimo 8 caracteres");
+	}
+	
+	public static void comprobarDireccionIP (String ip) throws IPInvalidaException, CadenaVaciaException {
+		Pattern patronIP;
+		patronIP = Pattern.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + 
+				"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
+		
+		if(ip.equals("")) {
+			throw new CadenaVaciaException("La direccion IP no puede ser nula.");
+		} else if(!patronIP.matcher(ip).matches()) {
+				throw new IPInvalidaException();
+		}
 	}
 	
 }

@@ -71,6 +71,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JMenuBar jMenuBar;
 	private JPanel jPanelEstablecerSustituto;
 	private JPCalendarioConsultar jPanelConsultarCalendario;
+	private JLabel lblPuertoEscucha;
 	private JButton btnCerrarSesion;
 	private JButton btnCerrarAplicacion;
 	private JLabel lblBarraEstado;
@@ -158,6 +159,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 				jPanelOperaciones.setLayout(jPanelOperacionesLayout);
 				jPanelOperaciones.setPreferredSize(new java.awt.Dimension(692, 479));
 				{
+					lblPuertoEscucha = new JLabel();
+					jPanelOperaciones.add(lblPuertoEscucha, new AnchorConstraint(961, 567, 998, 15, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					lblPuertoEscucha.setPreferredSize(new java.awt.Dimension(382, 17));
+				}
+				{
 					btnCerrarSesion = new JButton();
 					jPanelOperaciones.add(btnCerrarSesion, new AnchorConstraint(930, 160, 11, 590, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnCerrarSesion.setText("Cerrar sesión");
@@ -181,8 +187,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 				}
 				{
 					lblBarraEstado = new JLabel();
-					jPanelOperaciones.add(lblBarraEstado, new AnchorConstraint(942, 571, 986, 16, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-					lblBarraEstado.setPreferredSize(new java.awt.Dimension(384, 21));
+					jPanelOperaciones.add(lblBarraEstado, new AnchorConstraint(928, 568, 961, 15, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					lblBarraEstado.setPreferredSize(new java.awt.Dimension(383, 15));
 				}
 				{
 					jTabbedPaneOperaciones = new JTabbedPane();
@@ -235,7 +241,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 	
 	private void btnCerrarAplicacionActionPerformed(ActionEvent evt) {
-		thisWindowClosing(null);
+		cerrarAplicacion();
 	}
 
 	//$hide>>$
@@ -270,6 +276,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private void configurarInterfaz(ArrayList<Operaciones> operaciones) {
 		// Inicializamos la barra de estado
 		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + Roles.values()[(int)controlador.getSesion().getRol()]);
+		lblPuertoEscucha.setText("Puerto de escucha: " + controlador.getPuertoEscucha());
 		// Inicializamos las pestañas
 		if(!operaciones.contains(Operaciones.RegistrarBeneficiario)
 				&& !operaciones.contains(Operaciones.ConsultarBeneficiario)) {
@@ -329,6 +336,10 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 	
 	private void thisWindowClosing(WindowEvent evt) {
+		cerrarAplicacion();
+	}
+	
+	private void cerrarAplicacion() {
 		if (Dialogos.mostrarDialogoPregunta(null, "Confirmar cierre de la aplicación", "¿Está seguro de querer cerrar la aplicación? En caso afirmativo, la sesión finalizará automáticamente.")) {
 			cerrarSesion();
 			try {
@@ -342,12 +353,13 @@ public class JFPrincipal extends javax.swing.JFrame {
 			}
 		}
 	}
-	
+
 	private void cerrarSesion () {
 		try {
 			if (controlador != null)
 				controlador.cerrarSesion ();
 				lblBarraEstado.setText("La sesión ha finalizado con éxito.");
+				lblPuertoEscucha.setText("");
 		} catch (RemoteException e) {
 			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		} catch (Exception e) {
