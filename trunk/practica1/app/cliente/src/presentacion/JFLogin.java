@@ -83,6 +83,7 @@ public class JFLogin extends javax.swing.JFrame {
 			this.setMinimumSize(new java.awt.Dimension(296, 140));
 			this.setMaximumSize(new java.awt.Dimension(2147483647, 178));
 			this.setResizable(false);
+			setLocationRelativeTo(null);
 			{
 				jPanel1 = new JPanel();
 				AnchorLayout jPanel1Layout = new AnchorLayout();

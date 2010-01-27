@@ -84,6 +84,8 @@ public class JFConfiguracion extends javax.swing.JFrame {
 					btnAceptar.setText("Aceptar");
 					btnAceptar.setBounds(13, 180, 80, 28);
 					btnAceptar.setName("btnAceptar");
+					btnAceptar.setDefaultCapable(true);
+					getRootPane().setDefaultButton(btnAceptar);
 					btnAceptar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnAceptarActionPerformed(evt);
