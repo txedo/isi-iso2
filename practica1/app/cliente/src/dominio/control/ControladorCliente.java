@@ -87,12 +87,21 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		return usuarioAutenticado;
 	}
 	
-	public void iniciarSesion(String direccionIP, String login, String password) throws SQLException, UsuarioIncorrectoException, Exception {
+	public int getPuertoEscucha () {
+		int puerto = cliente.PUERTO_INICIAL_CLIENTE;
+		try {
+			puerto = cliente.getPuerto();
+		} catch (RemoteException e) {
+		}
+		return puerto;
+	}
+	
+	public void iniciarSesion(String direccionIP, int puerto, String login, String password) throws SQLException, UsuarioIncorrectoException, Exception {
 		// Intentamos conectarnos con el servidor frontend
 		if(servidor == null) {
 			servidor = new ProxyServidorFrontend();
 		}
-		servidor.conectar(direccionIP);
+		servidor.conectar(direccionIP, puerto);
 		// Nos identificamos en el servidor
 		sesion = (ISesion)servidor.identificar(login, password);
 		usuarioAutenticado = login;
