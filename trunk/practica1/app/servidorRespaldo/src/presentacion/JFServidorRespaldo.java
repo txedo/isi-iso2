@@ -2,6 +2,7 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+import dominio.conocimiento.ConfiguracionRespaldo;
 import dominio.control.ControladorRespaldo;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -13,14 +14,16 @@ import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.regex.Pattern;
+import java.util.EventObject;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
@@ -49,20 +52,32 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	
 	private static final long serialVersionUID = -3739906711082199809L;
 	
+	private int numeroClientes;
+	
 	private ControladorRespaldo controlador;
+	private ConfiguracionRespaldo configuracion;
+	private JFConfiguracion frmConfiguracion;
+	
 	private JPanel jPanel;
 	private JScrollPane scpPanelLog;
-	private JLabel lblIPBDRespaldo;
-	private JTextField txtIPBDRespaldo;
 	private JLabel lblBarraEstado;
 	private JButton btnDesconectar;
+	private JMenuBar mnbMenus;
 	private JButton btnConectar;
 	private JTextArea textLog;
+	private JMenuItem mniAcercaDe;
+	private JMenuItem mniConfigurar;
+	private JMenuItem mniSalir;
+	private JMenu mnuArchivo;
+	private JMenu mnuAyuda;
+	private JMenu mnuOpciones;
 	private JLabel lblClientesConectados;
 	
-	public JFServidorRespaldo() {
+	public JFServidorRespaldo(ControladorRespaldo controlador) {
 		super();
 		initGUI();
+		this.controlador = controlador;
+		configuracion = frmConfiguracion.getConfiguracion();
 	}
 	
 	private void initGUI() {
@@ -77,6 +92,46 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 				}
 			});
 			{
+				mnbMenus = new JMenuBar();
+				setJMenuBar(mnbMenus);
+				{
+					mnuArchivo = new JMenu();
+					mnbMenus.add(mnuArchivo);
+					mnuArchivo.setText("Archivo");
+					{
+						mniSalir = new JMenuItem();
+						mnuArchivo.add(mniSalir);
+						mniSalir.setText("Salir");
+					}
+				}
+				{
+					mnuOpciones = new JMenu();
+					mnbMenus.add(mnuOpciones);
+					mnuOpciones.setText("Opciones");
+					{
+						mniConfigurar = new JMenuItem();
+						mnuOpciones.add(mniConfigurar);
+						mniConfigurar.setText("Configurar...");
+						mniConfigurar.setName("mniConfigurar");
+						mniConfigurar.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								mniConfigurarActionPerformed(evt);
+							}
+						});
+					}
+				}
+				{
+					mnuAyuda = new JMenu();
+					mnbMenus.add(mnuAyuda);
+					mnuAyuda.setText("Ayuda");
+					{
+						mniAcercaDe = new JMenuItem();
+						mnuAyuda.add(mniAcercaDe);
+						mniAcercaDe.setText("Acerca de...");
+					}
+				}
+			}
+			{
 				jPanel = new JPanel();
 				AnchorLayout jPanel1Layout = new AnchorLayout();
 				getContentPane().add(jPanel, BorderLayout.CENTER);
@@ -89,18 +144,6 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 					lblClientesConectados.setPreferredSize(new java.awt.Dimension(522, 16));
 				}
 				{
-					lblIPBDRespaldo = new JLabel();
-					jPanel.add(lblIPBDRespaldo, new AnchorConstraint(8, 8, 94, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-					lblIPBDRespaldo.setText("IP BD respaldo:");
-					lblIPBDRespaldo.setPreferredSize(new java.awt.Dimension(92, 14));
-				}
-				{
-					txtIPBDRespaldo = new JTextField();
-					jPanel.add(txtIPBDRespaldo, new AnchorConstraint(24, 12, 191, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-					txtIPBDRespaldo.setPreferredSize(new java.awt.Dimension(88, 21));
-					txtIPBDRespaldo.setText("127.0.0.1");
-				}
-				{
 					scpPanelLog = new JScrollPane();
 					jPanel.add(scpPanelLog, new AnchorConstraint(55, 10, 54, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					scpPanelLog.setPreferredSize(new java.awt.Dimension(522, 212));
@@ -111,7 +154,6 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 						textLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
 						textLog.setEditable(false);
 						textLog.setFont(new java.awt.Font("Tahoma",0,12));
-						textLog.setPreferredSize(new java.awt.Dimension(524, 263));
 					}
 				}
 				{
@@ -119,6 +161,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 					jPanel.add(lblBarraEstado, new AnchorConstraint(937, 10, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblBarraEstado.setText("Servidor desconectado.");
 					lblBarraEstado.setPreferredSize(new java.awt.Dimension(522, 14));
+					lblBarraEstado.setName("lblBarraEstado");
 				}
 				{
 					btnDesconectar = new JButton();
@@ -126,6 +169,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 					btnDesconectar.setText("Desconectar");
 					btnDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
 					btnDesconectar.setEnabled(false);
+					btnDesconectar.setName("btnDesconectar");
 					btnDesconectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnDesconectarActionPerformed(evt);
@@ -137,6 +181,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 					jPanel.add(btnConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					btnConectar.setText("Conectar");
 					btnConectar.setPreferredSize(new java.awt.Dimension(110, 30));
+					btnConectar.setName("btnConectar");
 					btnConectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnConectarActionPerformed(evt);
@@ -144,6 +189,12 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 					});
 				}
 			}
+			frmConfiguracion = new JFConfiguracion();
+			frmConfiguracion.addVentanaCerradaListener(new VentanaCerradaListener() {
+				public void ventanaCerrada(EventObject evt) {    
+					frmConfiguracionVentanaCerrada(evt);
+				}
+			});
 			pack();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -152,34 +203,23 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	
 	//$hide>>$
 	
-	public void setControlador(ControladorRespaldo controlador) {
-		this.controlador = controlador;
+	private void mniConfigurarActionPerformed(ActionEvent evt) {
+		// Desactivamos la ventana hasta aceptar o cancelar la configuración
+		setEnabled(false);
+		frmConfiguracion.setConfiguracion(configuracion);
+		frmConfiguracion.setLocationRelativeTo(this);
+		frmConfiguracion.setVisible(true);
 	}
-	
+
+	private void frmConfiguracionVentanaCerrada(EventObject evt) {
+		// Reactivamos la ventana 
+		setEnabled(true);
+		frmConfiguracion.setVisible(false);
+		configuracion = frmConfiguracion.getConfiguracion();
+	}
+
 	private void btnConectarActionPerformed(ActionEvent evt) {
-		Pattern patronIP;
-		boolean ipValida;
-		
-		// Creamos un patrón que define las IPs válidas
-		patronIP = Pattern.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + 
-				"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
-		
-		// Comprobamos si la IP de la BD de respaldo es válida
-		if(!patronIP.matcher(txtIPBDRespaldo.getText()).matches()) {
-			Dialogos.mostrarDialogoError(this, "Error", "El formato de la IP del servidor de respaldo es incorrecto.");
-			txtIPBDRespaldo.selectAll();
-			txtIPBDRespaldo.grabFocus();
-			ipValida = false;
-		} else {
-			ipValida = true;
-		}
-		
-		// Si la IP es válida, conectamos el servidor de respaldo
-		if(ipValida) {
-			activarServidor();
-		}	
+		activarServidor();
 	}
 	
 	private void btnDesconectarActionPerformed(ActionEvent evt) {
@@ -214,11 +254,10 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		ok = false;
 		try {
 			// Iniciamos el servidor frontend y la conexión con el de respaldo
-			controlador.iniciarServidorRespaldo(txtIPBDRespaldo.getText());
+			controlador.iniciarServidorRespaldo(configuracion);
 			// Cambiamos el estado de la ventana
 			btnConectar.setEnabled(false);
 			btnDesconectar.setEnabled(true);
-			txtIPBDRespaldo.setEditable(false);
 			lblBarraEstado.setText("Servidor preparado.");
 			ok = true;
 		} catch(SQLException e) {
@@ -246,11 +285,10 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		ok = false;
 		try {
 			// Detenemos el servidor de respaldo
-			controlador.detenerServidorRespaldo();
+			controlador.detenerServidorRespaldo(configuracion);
 			// Cambiamos el estado de la ventana
 			btnDesconectar.setEnabled(false);
 			btnConectar.setEnabled(true);
-			txtIPBDRespaldo.setEditable(true);
 			lblBarraEstado.setText("Servidor desconectado.");
 			ok = true;
 		} catch(SQLException e) {
@@ -269,13 +307,22 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	public void ponerMensaje(String mensaje) {
 		textLog.setText(textLog.getText() + mensaje + "\n");	
 	}
+	
+	public String getMensajes() {
+		return textLog.getText();
+	}
 
 	public void actualizarClientesEscuchando(int numeroClientes) {
+		this.numeroClientes = numeroClientes;
 		if(numeroClientes == 1) {
 			lblClientesConectados.setText(numeroClientes + " cliente conectado.");
 		} else {
 			lblClientesConectados.setText(numeroClientes + " clientes conectados.");
 		}
+	}
+	
+	public int getClientesEscuchando() {
+		return numeroClientes;
 	}
 	
 	//$hide<<$

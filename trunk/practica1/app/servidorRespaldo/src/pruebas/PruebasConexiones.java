@@ -32,10 +32,11 @@ public class PruebasConexiones extends TestCase {
 			// Activamos la conexión a la base de datos de respaldo
 			// varias veces para ver si no hay fallos 
 			conexionBD = ConexionBDRespaldo.getConexion();
-			conexionBD.activar("127.0.0.1");
-			conexionBD.activar("127.0.0.1");
+			conexionBD.activar("127.0.0.1", 1098);
+			conexionBD.activar("127.0.0.1", 1098);
 			// Abrimos la base de datos
 			conexionBD.getAgente().setIP("127.0.0.1");
+			conexionBD.getAgente().setPuerto(3306);
 			conexionBD.abrir();
 		} catch(Exception e) {
 			fail(e.toString());
@@ -75,8 +76,8 @@ public class PruebasConexiones extends TestCase {
 			// Cerramos la base de datos
 			conexionBD.cerrar();
 			// Desactivamos la conexión varias veces para ver si no hay fallos
-			conexionBD.desactivar("127.0.0.1");
-			conexionBD.desactivar("127.0.0.1");
+			conexionBD.desactivar("127.0.0.1", 1098);
+			conexionBD.desactivar("127.0.0.1", 1098);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -89,12 +90,12 @@ public class PruebasConexiones extends TestCase {
 		
 		try {
 			// Creamos la ventana de estado
-			ventana = new JFServidorRespaldo();
+			ventana = new JFServidorRespaldo(null);
 			// Activamos la conexión a la ventana de estado varias
 			// veces para ver si no hay fallos
 			conexionEstado = ConexionEstadoRespaldo.getConexion();
-			conexionEstado.activar("127.0.0.1");
-			conexionEstado.activar("127.0.0.1");
+			conexionEstado.activar("127.0.0.1", 1099);
+			conexionEstado.activar("127.0.0.1", 1099);
 			// Añadimos la ventana a la conexión
 			conexionEstado.ponerVentana(ventana);
 		} catch(Exception e) {
@@ -104,15 +105,17 @@ public class PruebasConexiones extends TestCase {
 		try {
 			// Actualizamos el estado de la ventana
 			conexionEstado.ponerMensaje("Mensaje de prueba");
+			assertEquals(ventana.getMensajes(), "Mensaje de prueba\n");
 			conexionEstado.actualizarClientesEscuchando(2);
+			assertEquals(ventana.getClientesEscuchando(), 2);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
 		try {
 			// Desactivamos la conexión para ver si no hay fallos
-			conexionEstado.desactivar("127.0.0.1");
-			conexionEstado.desactivar("127.0.0.1");
+			conexionEstado.desactivar("127.0.0.1", 1099);
+			conexionEstado.desactivar("127.0.0.1", 1099);
 			// Cerramos la ventana
 			ventana.dispose();
 		} catch(Exception e) {

@@ -77,7 +77,8 @@ public class ControladorFrontend {
 		if(respaldo) {
 			try {
 				proxy = new ProxyBDRespaldo();
-				proxy.conectar(ipRespaldo);
+//TODO::				poner ip
+				proxy.conectar(ipRespaldo, 1099);
 				proxy.abrir();
 			} catch(NotBoundException e) {
 				throw new NotBoundException("No se puede conectar con el servidor de respaldo porque está desactivado (" + ipRespaldo + ").");
