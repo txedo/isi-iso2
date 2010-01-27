@@ -7,10 +7,16 @@ import dominio.conocimiento.Roles;
 import dominio.control.ControladorCliente;
 import excepciones.SesionInvalidaException;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -56,19 +62,20 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JPCitas jPanelGestionarCitas;
 	private JPBeneficiarios jPanelGestionarBeneficiarios;
 	private JPanel jPanelOperaciones;
-	private JMenuItem menuitemConfiguracion;
 	private JMenuItem menuitemAcercaDe;
 	private JSeparator jSeparator2;
 	private JMenuItem menuitemCerrarSesion;
-	private JMenuItem menuitemIniciarSesion;
 	private JMenuItem menuitemSalir;
 	private JMenu jMenu4;
-	private JMenu jMenu3;
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar;
 	private JPanel jPanelEstablecerSustituto;
 	private JPCalendarioConsultar jPanelConsultarCalendario;
-	private JPanel jPanelConsultarMedico;
+	private JButton btnCerrarSesion;
+	private JButton btnCerrarAplicacion;
+	private JLabel lblBarraEstado;
+	private JSeparator jSeparator1;
+	private JMenuItem menuitemContenidoAyuda;
 	private JPEmitirVolante jPanelEmitirVolante;
 	private JPBienvenida jPanelBienvenida;
 	private JTabbedPane jTabbedPaneOperaciones;
@@ -93,7 +100,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	
 	private void initGUI() {
 		try {
-			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			this.setPreferredSize(new java.awt.Dimension(700, 500));
 			this.setTitle("SSCA - Unidad de Citación");
 			this.setMinimumSize(new java.awt.Dimension(600, 450));
@@ -110,11 +117,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 					jMenuBar.add(jMenu1);
 					jMenu1.setText("Archivo");
 					{
-						menuitemIniciarSesion = new JMenuItem();
-						jMenu1.add(menuitemIniciarSesion);
-						menuitemIniciarSesion.setText("Iniciar Sesion...");
-					}
-					{
 						menuitemCerrarSesion = new JMenuItem();
 						jMenu1.add(menuitemCerrarSesion);
 						menuitemCerrarSesion.setText("Cerrar Sesión");
@@ -130,19 +132,18 @@ public class JFPrincipal extends javax.swing.JFrame {
 					}
 				}
 				{
-					jMenu3 = new JMenu();
-					jMenuBar.add(jMenu3);
-					jMenu3.setText("Opciones");
-					{
-						menuitemConfiguracion = new JMenuItem();
-						jMenu3.add(menuitemConfiguracion);
-						menuitemConfiguracion.setText("Configuración...");
-					}
-				}
-				{
 					jMenu4 = new JMenu();
 					jMenuBar.add(jMenu4);
 					jMenu4.setText("Ayuda");
+					{
+						menuitemContenidoAyuda = new JMenuItem();
+						jMenu4.add(menuitemContenidoAyuda);
+						menuitemContenidoAyuda.setText("Contenido de la ayuda");
+					}
+					{
+						jSeparator1 = new JSeparator();
+						jMenu4.add(jSeparator1);
+					}
 					{
 						menuitemAcercaDe = new JMenuItem();
 						jMenu4.add(menuitemAcercaDe);
@@ -155,11 +156,38 @@ public class JFPrincipal extends javax.swing.JFrame {
 				AnchorLayout jPanelOperacionesLayout = new AnchorLayout();
 				getContentPane().add(jPanelOperaciones, BorderLayout.CENTER);
 				jPanelOperaciones.setLayout(jPanelOperacionesLayout);
-				jPanelOperaciones.setPreferredSize(new java.awt.Dimension(589, 391));
+				jPanelOperaciones.setPreferredSize(new java.awt.Dimension(692, 479));
+				{
+					btnCerrarSesion = new JButton();
+					jPanelOperaciones.add(btnCerrarSesion, new AnchorConstraint(930, 160, 11, 590, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+					btnCerrarSesion.setText("Cerrar sesión");
+					btnCerrarSesion.setPreferredSize(new java.awt.Dimension(124, 22));
+					btnCerrarSesion.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							btnCerrarSesionActionPerformed(evt);
+						}
+					});
+				}
+				{
+					btnCerrarAplicacion = new JButton();
+					jPanelOperaciones.add(btnCerrarAplicacion, new AnchorConstraint(930, 16, 11, 799, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+					btnCerrarAplicacion.setText("Cerrar aplicación");
+					btnCerrarAplicacion.setPreferredSize(new java.awt.Dimension(123, 22));
+					btnCerrarAplicacion.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							btnCerrarAplicacionActionPerformed(evt);
+						}
+					});
+				}
+				{
+					lblBarraEstado = new JLabel();
+					jPanelOperaciones.add(lblBarraEstado, new AnchorConstraint(942, 571, 986, 16, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					lblBarraEstado.setPreferredSize(new java.awt.Dimension(384, 21));
+				}
 				{
 					jTabbedPaneOperaciones = new JTabbedPane();
-					jPanelOperaciones.add(jTabbedPaneOperaciones, new AnchorConstraint(1, 979, 962, 20, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-					jTabbedPaneOperaciones.setPreferredSize(new java.awt.Dimension(578, 292));
+					jPanelOperaciones.add(jTabbedPaneOperaciones, new AnchorConstraint(1, 979, 903, 19, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					jTabbedPaneOperaciones.setPreferredSize(new java.awt.Dimension(664, 434));
 					{
 						jPanelBienvenida = new JPBienvenida();
 						jTabbedPaneOperaciones.addTab("Inicio", null, jPanelBienvenida, null);
@@ -175,12 +203,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 					{
 						jPanelGestionarCitas = new JPCitas();
 						jTabbedPaneOperaciones.addTab("Gestionar Citas", null, jPanelGestionarCitas, null);
-					}
-					{
-						jPanelConsultarMedico = new JPanel();
-						AnchorLayout jPanelConsultarMedicoLayout = new AnchorLayout();
-						jTabbedPaneOperaciones.addTab("Consultar Medico", null, jPanelConsultarMedico, null);
-						jPanelConsultarMedico.setLayout(jPanelConsultarMedicoLayout);
 					}
 					{
 						jPanelConsultarCalendario = new JPCalendarioConsultar();
@@ -200,12 +222,22 @@ public class JFPrincipal extends javax.swing.JFrame {
 				}
 			}
 			pack();
-			this.setSize(700, 500);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	private void btnCerrarSesionActionPerformed(ActionEvent evt) {
+		if (Dialogos.mostrarDialogoPregunta(null, "Confirmar cierre de sesión", "¿Está seguro de querer cerrar la sesión?")) {
+			cerrarSesion();
+			controlador.identificarse();
+		}
+	}
+	
+	private void btnCerrarAplicacionActionPerformed(ActionEvent evt) {
+		thisWindowClosing(null);
+	}
+
 	//$hide>>$
 	
 	public void setControlador(ControladorCliente controlador) {
@@ -219,6 +251,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jPanelEmitirVolante.inicializarEspecialistas();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void iniciar() {
 		ArrayList<Operaciones> operaciones = null;
 
@@ -226,7 +259,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			operaciones = (ArrayList<Operaciones>)controlador.operacionesDisponibles();
 			this.configurarInterfaz(operaciones);
 		} catch (RemoteException e) {
-			Dialogos.mostrarDialogoError(this, "Error", e.toString());
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
 		} catch (SesionInvalidaException e) {
 			Dialogos.mostrarDialogoError(this, "Error", "Sesión inválida.");
 		} catch (Exception e) {
@@ -235,6 +268,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 	
 	private void configurarInterfaz(ArrayList<Operaciones> operaciones) {
+		// Inicializamos la barra de estado
+		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + Roles.values()[(int)controlador.getSesion().getRol()]);
 		// Inicializamos las pestañas
 		if(!operaciones.contains(Operaciones.RegistrarBeneficiario)
 				&& !operaciones.contains(Operaciones.ConsultarBeneficiario)) {
@@ -253,7 +288,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jTabbedPaneOperaciones.remove(jPanelGestionarUsuarios);
 		}
 		if(!operaciones.contains(Operaciones.ConsultarMedico)) {
-			jTabbedPaneOperaciones.remove(jPanelConsultarMedico);
+			//TODO Permitir ver el calendario del médico
 		}
 		if(!operaciones.contains(Operaciones.ModificarCalendario)) {
 			jTabbedPaneOperaciones.remove(jPanelConsultarCalendario);
@@ -294,13 +329,29 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 	
 	private void thisWindowClosing(WindowEvent evt) {
+		if (Dialogos.mostrarDialogoPregunta(null, "Confirmar cierre de la aplicación", "¿Está seguro de querer cerrar la aplicación? En caso afirmativo, la sesión finalizará automáticamente.")) {
+			cerrarSesion();
+			try {
+				controlador.cerrarControlador();
+			} catch (RemoteException e) {
+				Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
+			} catch (MalformedURLException e) {
+				Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
+			} catch (NotBoundException e) {
+				Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
+			}
+		}
+	}
+	
+	private void cerrarSesion () {
 		try {
 			if (controlador != null)
 				controlador.cerrarSesion ();
+				lblBarraEstado.setText("La sesión ha finalizado con éxito.");
 		} catch (RemoteException e) {
-			Dialogos.mostrarDialogoError(this, "Error", e.toString());
+			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		} catch (Exception e) {
-			Dialogos.mostrarDialogoError(this, "Error", e.toString());
+			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		}
 	}
 
