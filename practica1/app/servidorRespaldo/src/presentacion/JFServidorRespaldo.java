@@ -86,6 +86,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			this.setTitle("Servidor Respaldo");
 			this.setPreferredSize(new java.awt.Dimension(550, 400));
 			this.setMinimumSize(new java.awt.Dimension(500, 300));
+			setLocationRelativeTo(null);
 			this.addWindowListener(new WindowAdapter() { 
 				public void windowClosing(WindowEvent evt) {    
 					thisWindowClosing(evt);
