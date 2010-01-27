@@ -24,13 +24,14 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
 	private final String NOMBRE_BASEDATOS = "servidorrespaldo";
 
 	private AgenteRespaldo agente;
+	private boolean registro;
 
 	private static ConexionBDRespaldo instancia;
 	
 	protected ConexionBDRespaldo() throws RemoteException {
 		super();
-		LocateRegistry.createRegistry(PUERTO_CONEXION_BD);
 		agente = AgenteRespaldo.getAgente();
+		registro = false;
 	}
 	
 	public static ConexionBDRespaldo getConexion() throws RemoteException {
@@ -39,25 +40,29 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
 		}
 		return instancia;
 	}
-
-	public void activar(String ip) throws MalformedURLException, RemoteException, SQLException {
+	
+	public void activar(String ip, int puerto) throws MalformedURLException, RemoteException, SQLException {
 		// Si el objeto ya estaba exportado, controlamos las
 		// excepciones y no las lanzamos hacia arriba
         try {
-        	exportObject(this, PUERTO_CONEXION_BD);
+        	if(!registro) {
+        		LocateRegistry.createRegistry(puerto);
+        		registro = true;
+        	}
+        	exportObject(this, puerto);
         } catch(ExportException ex) {
         	if(!ex.getMessage().toLowerCase().equals("object already exported")) {
         		throw ex;
         	}
         }
         try {
-            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/" + NOMBRE_BASEDATOS, this);
+            Naming.bind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_BASEDATOS, this);
         } catch(AlreadyBoundException ex) {
-            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/" + NOMBRE_BASEDATOS, this);
+            Naming.rebind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_BASEDATOS, this);
         }
     }
 		
-	public void desactivar(String ip) throws RemoteException, MalformedURLException {
+	public void desactivar(String ip, int puerto) throws RemoteException, MalformedURLException {
 		// Si el objeto no estaba exportado, controlamos las
 		// excepciones y no las lanzamos hacia arriba
 		try {
@@ -65,7 +70,7 @@ public class ConexionBDRespaldo extends UnicastRemoteObject implements IConexion
 		} catch(NoSuchObjectException ex) {
 		}
 		try {
-			Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_BD) + "/" + NOMBRE_BASEDATOS);
+			Naming.unbind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_BASEDATOS);
 		} catch(NotBoundException ex) {
 		}
     }

@@ -1,5 +1,11 @@
 package pruebas;
 
+import java.rmi.RemoteException;
+
+import org.uispec4j.Trigger;
+import org.uispec4j.interception.WindowInterceptor;
+
+import dominio.conocimiento.ConfiguracionRespaldo;
 import dominio.control.ControladorRespaldo;
 import junit.framework.TestCase;
 
@@ -8,8 +14,15 @@ import junit.framework.TestCase;
  */
 public class PruebasControlador extends TestCase {
 
+	private ControladorRespaldo controlador;
+	
 	protected void setUp() {
-		// No se necesita código de inicialización
+		try {
+			// Inicializamos el controlador y la ventana de estado
+			controlador = new ControladorRespaldo();
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 	}
 	
 	protected void tearDown() {
@@ -17,30 +30,47 @@ public class PruebasControlador extends TestCase {
 	}
 	
 	public void testConectarDesconectar() {
-		ControladorRespaldo controlador = null;
+		ConfiguracionRespaldo configuracion = null;
 		
 		try {
-			// Inicializamos el controlador y la ventana de estado
-			controlador = new ControladorRespaldo();
-			controlador.mostrarVentana();
+			// Mostramos y ocultamos la ventana
+			WindowInterceptor.run(new Trigger() {
+				public void run() {
+					controlador.mostrarVentana();
+				}
+			});
+			assertTrue(controlador.getVentana().isVisible());
 			controlador.ocultarVentana();
+			assertFalse(controlador.getVentana().isVisible());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
 		try {
 			// Activamos el servidor varias veces para ver si no hay fallos
-			controlador.iniciarServidorRespaldo("127.0.0.1");
-			controlador.iniciarServidorRespaldo("127.0.0.1");
+			configuracion = new ConfiguracionRespaldo("127.0.0.1", 3306, 1098);
+			controlador.iniciarServidorRespaldo(configuracion);
+			controlador.iniciarServidorRespaldo(configuracion);
 			assertTrue(controlador.getServidorActivo());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
 		try {
+			// Intentamos activar el servidor en un puerto diferente
+			configuracion = new ConfiguracionRespaldo("127.0.0.1", 3306, 1298);
+			controlador.iniciarServidorRespaldo(configuracion);
+			fail("Se esperaba una RemoteException");
+		} catch(RemoteException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una RemoteException");
+		}
+		
+		try {
 			// Desactivamos el servidor dos veces para ver si no hay fallos
-			controlador.detenerServidorRespaldo();
-			controlador.detenerServidorRespaldo();
+			configuracion = new ConfiguracionRespaldo("127.0.0.1", 3306, 1098);
+			controlador.detenerServidorRespaldo(configuracion);
+			controlador.detenerServidorRespaldo(configuracion);
 			assertFalse(controlador.getServidorActivo());
 		} catch(Exception e) {
 			fail(e.toString());

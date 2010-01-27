@@ -18,6 +18,8 @@ public class SuitePruebas {
 		suite = new TestSuite("Pruebas completas para el servidor de respaldo");
 		suite.addTestSuite(PruebasConexiones.class);
 		suite.addTestSuite(PruebasControlador.class);
+		suite.addTestSuite(PruebasJFServidorRespaldo.class);
+		suite.addTestSuite(PruebasJFConfiguracion.class);
 		return suite;
 	}
 	

@@ -24,13 +24,14 @@ public class ConexionEstadoRespaldo extends UnicastRemoteObject implements ICone
 	private final String NOMBRE_LOG = "servidorrespaldo";
 	
 	private ArrayList<IVentanaEstado> ventanas;
+	private boolean registro;
 	
 	private static ConexionEstadoRespaldo instancia;
 	
 	protected ConexionEstadoRespaldo() throws RemoteException {
 		super();
-		LocateRegistry.createRegistry(PUERTO_CONEXION_ESTADO);
 		ventanas = new ArrayList<IVentanaEstado>();
+		registro = false;
 	}
 
 	public static ConexionEstadoRespaldo getConexion() throws RemoteException {
@@ -40,24 +41,28 @@ public class ConexionEstadoRespaldo extends UnicastRemoteObject implements ICone
 		return instancia;
 	}
 	
-	public void activar(String ip) throws MalformedURLException, RemoteException, SQLException {
+	public void activar(String ip, int puerto) throws MalformedURLException, RemoteException, SQLException {
 		// Si el objeto ya estaba exportado, controlamos las
 		// excepciones y no las lanzamos hacia arriba
 		try {
-			exportObject(this, PUERTO_CONEXION_ESTADO);
+        	if(!registro) {
+        		LocateRegistry.createRegistry(puerto);
+        		registro = true;
+        	}
+			exportObject(this, puerto);
         } catch(ExportException ex) {
         	if(!ex.getMessage().toLowerCase().equals("object already exported")) {
         		throw ex;
         	}
         }
         try {
-            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/" + NOMBRE_LOG, this);
+            Naming.bind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_LOG, this);
         } catch(AlreadyBoundException ex) {
-            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/" + NOMBRE_LOG, this);
+            Naming.rebind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_LOG, this);
         }
     }
 		
-	public void desactivar(String ip) throws RemoteException, MalformedURLException {
+	public void desactivar(String ip, int puerto) throws RemoteException, MalformedURLException {
 		// Si el objeto no estaba exportado, controlamos las
 		// excepciones y no las lanzamos hacia arriba
 		try {
@@ -65,7 +70,7 @@ public class ConexionEstadoRespaldo extends UnicastRemoteObject implements ICone
 		} catch(NoSuchObjectException ex) {
 		}
 		try {
-			Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/" + NOMBRE_LOG);
+			Naming.unbind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_LOG);
 		} catch(NotBoundException ex) {
 		}
 	}

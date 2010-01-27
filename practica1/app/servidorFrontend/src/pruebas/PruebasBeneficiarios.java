@@ -117,9 +117,7 @@ public class PruebasBeneficiarios extends TestCase {
 			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), admin1.getPassword());
 			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), medico1.getPassword());
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
-			
 		}
 	}
 	

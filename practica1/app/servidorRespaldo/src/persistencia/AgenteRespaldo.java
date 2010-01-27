@@ -13,8 +13,8 @@ public class AgenteRespaldo {
 
 	private static AgenteRespaldo instancia = null;
 	private Connection conexion;
-	private String url = "jdbc:mysql://<IP>:3306/bdsscarespaldo?user=isor&password=rosi";
 	private String ip;
+	private int puerto;
 	
 	protected AgenteRespaldo() {
 		try {
@@ -41,13 +41,17 @@ public class AgenteRespaldo {
 		this.ip = ip;
 	}
 	
+	public void setPuerto(int puerto) {
+		this.puerto = puerto;
+	}
+	
 	public void abrir() throws SQLException {
 		String urlCompleta;
 		
 		if(conexion == null || conexion.isClosed()) {
 			// Indicamos que las modificaciones de la base de datos
 			// no se deben aplicar hasta llamar al método 'commit'
-			urlCompleta = url.replaceFirst("<IP>", ip);
+			urlCompleta = "jdbc:mysql://" + ip + ":" + String.valueOf(puerto) + "/bdsscarespaldo?user=isor&password=rosi";
 			conexion = DriverManager.getConnection(urlCompleta);
 			conexion.setAutoCommit(false); 
 		}
