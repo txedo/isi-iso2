@@ -1,5 +1,7 @@
 package dominio.control;
 
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
@@ -37,17 +39,39 @@ public class ControladorCliente implements OperacionesAuxiliares {
 	private ISesion sesion;
 	private JFLogin ventana;
 	private JFPrincipal ventanaPrincipal;
+	private String usuarioAutenticado;
 	
 	public ControladorCliente() {
 		servidor = null;
 	}
 	
+	public void cerrarControlador () throws RemoteException, MalformedURLException, NotBoundException {
+		if (cliente != null) {
+			cliente.desactivar();
+		}
+		if (ventana != null) {
+			ventana.setVisible(false);
+			ventana.dispose();
+		}
+		if (ventanaPrincipal != null) {
+			ventanaPrincipal.setVisible(false);
+			ventanaPrincipal.dispose();
+		}
+		System.exit(0);
+	}
+	
 	public void identificarse() {
+		if (ventana != null) {
+			ventana.setVisible(false);
+			ventana.dispose();
+		}
+		if (ventanaPrincipal != null) {
+			ventana.setVisible(false);
+			ventanaPrincipal.dispose();
+		}
 		// Creamos la ventana de login y la mostramos
 		ventana = new JFLogin();
 		ventana.setControlador(this);
-		
-		//ventana.setModal(true);
 		ventana.setVisible(true);
 	}
 	
@@ -59,6 +83,10 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		return servidor;
 	}
 	
+	public String getUsuarioAutenticado () {
+		return usuarioAutenticado;
+	}
+	
 	public void iniciarSesion(String direccionIP, String login, String password) throws SQLException, UsuarioIncorrectoException, Exception {
 		// Intentamos conectarnos con el servidor frontend
 		if(servidor == null) {
@@ -67,6 +95,7 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		servidor.conectar(direccionIP);
 		// Nos identificamos en el servidor
 		sesion = (ISesion)servidor.identificar(login, password);
+		usuarioAutenticado = login;
 		// Una vez que el cliente se ha identificado correctamente, registramos el cliente en el servidor
 		cliente = new ConexionCliente();
 		cliente.activar();
@@ -74,6 +103,9 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		// Ocultamos la ventana de login
 		ventana.setVisible(false);
 		ventana.dispose();
+		if (ventanaPrincipal != null) {
+			ventanaPrincipal.dispose();
+		}
 		ventanaPrincipal = new JFPrincipal();
 		ventanaPrincipal.setControlador(this);
 		ventanaPrincipal.iniciar();
