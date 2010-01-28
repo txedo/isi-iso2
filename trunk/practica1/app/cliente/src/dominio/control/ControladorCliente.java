@@ -88,7 +88,7 @@ public class ControladorCliente implements OperacionesAuxiliares {
 	}
 	
 	public int getPuertoEscucha () {
-		int puerto = cliente.PUERTO_INICIAL_CLIENTE;
+		int puerto = ICliente.PUERTO_INICIAL_CLIENTE;
 		try {
 			puerto = cliente.getPuerto();
 		} catch (RemoteException e) {

@@ -1,4 +1,6 @@
 package presentacion;
+import com.cloudgarden.layout.AnchorConstraint;
+import com.cloudgarden.layout.AnchorLayout;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -76,15 +78,17 @@ public class JFConfiguracion extends javax.swing.JFrame {
 			});
 			{
 				pnlPanel = new JPanel();
+				AnchorLayout pnlPanelLayout = new AnchorLayout();
 				getContentPane().add(pnlPanel, BorderLayout.CENTER);
-				pnlPanel.setLayout(null);
+				pnlPanel.setLayout(pnlPanelLayout);
+				pnlPanel.setPreferredSize(new java.awt.Dimension(229, 193));
 				{
 					btnAceptar = new JButton();
-					pnlPanel.add(btnAceptar);
+					pnlPanel.add(btnAceptar, new AnchorConstraint(151, 139, 803, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					btnAceptar.setText("Aceptar");
-					btnAceptar.setBounds(13, 180, 80, 28);
 					btnAceptar.setName("btnAceptar");
 					btnAceptar.setDefaultCapable(true);
+					btnAceptar.setPreferredSize(new java.awt.Dimension(80, 30));
 					getRootPane().setDefaultButton(btnAceptar);
 					btnAceptar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
@@ -94,10 +98,10 @@ public class JFConfiguracion extends javax.swing.JFrame {
 				}
 				{
 					btnCancelar = new JButton();
-					pnlPanel.add(btnCancelar);
+					pnlPanel.add(btnCancelar, new AnchorConstraint(152, 15, 807, 134, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					btnCancelar.setText("Cancelar");
-					btnCancelar.setBounds(134, 180, 80, 28);
 					btnCancelar.setName("btnCancelar");
+					btnCancelar.setPreferredSize(new java.awt.Dimension(80, 30));
 					btnCancelar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnCancelarActionPerformed(evt);
@@ -106,58 +110,58 @@ public class JFConfiguracion extends javax.swing.JFrame {
 				}
 				{
 					pnlBDRespaldo = new JPanel();
-					pnlPanel.add(pnlBDRespaldo);
-					pnlBDRespaldo.setBounds(13, 12, 201, 85);
-					pnlBDRespaldo.setBorder(BorderFactory.createTitledBorder(null, "Base de datos de respaldo", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma",1,11)));
-					pnlBDRespaldo.setLayout(null);
+					AnchorLayout pnlBDRespaldoLayout = new AnchorLayout();
+					pnlPanel.add(pnlBDRespaldo, new AnchorConstraint(12, 10, 431, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlBDRespaldo.setBorder(BorderFactory.createTitledBorder(null, "Base de datos de respaldo", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma",0,11)));
+					pnlBDRespaldo.setLayout(pnlBDRespaldoLayout);
+					pnlBDRespaldo.setPreferredSize(new java.awt.Dimension(209, 73));
 					{
 						txtPuertoBDRespaldo = new JTextField();
-						pnlBDRespaldo.add(txtPuertoBDRespaldo);
-						txtPuertoBDRespaldo.setBounds(57, 52, 52, 20);
+						pnlBDRespaldo.add(txtPuertoBDRespaldo, new AnchorConstraint(595, 935, 869, 413, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtPuertoBDRespaldo.setName("txtPuertoBDRespaldo");
+						txtPuertoBDRespaldo.setPreferredSize(new java.awt.Dimension(109, 20));
 					}
 					{
 						txtIPBDRespaldo = new JTextField();
-						pnlBDRespaldo.add(txtIPBDRespaldo);
-						txtIPBDRespaldo.setBounds(80, 24, 106, 20);
+						pnlBDRespaldo.add(txtIPBDRespaldo, new AnchorConstraint(253, 935, 527, 413, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtIPBDRespaldo.setName("txtIPBDRespaldo");
+						txtIPBDRespaldo.setPreferredSize(new java.awt.Dimension(109, 20));
 					}
 					{
 						lblPuertoBDRespaldo = new JLabel();
-						pnlBDRespaldo.add(lblPuertoBDRespaldo);
-						lblPuertoBDRespaldo.setText("Puerto:");
-						lblPuertoBDRespaldo.setBounds(13, 56, 36, 14);
+						pnlBDRespaldo.add(lblPuertoBDRespaldo, new AnchorConstraint(609, 366, 801, 55, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						lblPuertoBDRespaldo.setText("Puerto");
+						lblPuertoBDRespaldo.setPreferredSize(new java.awt.Dimension(65, 14));
 					}
 					{
 						lblIPBDRespaldo = new JLabel();
-						pnlBDRespaldo.add(lblIPBDRespaldo);
-						lblIPBDRespaldo.setText("Dirección IP:");
-						lblIPBDRespaldo.setBounds(13, 28, 60, 14);
+						pnlBDRespaldo.add(lblIPBDRespaldo, new AnchorConstraint(294, 366, 486, 55, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						lblIPBDRespaldo.setText("Dirección IP");
+						lblIPBDRespaldo.setPreferredSize(new java.awt.Dimension(65, 14));
 					}
 				}
 				{
 					pnlRespaldo = new JPanel();
-					pnlPanel.add(pnlRespaldo);
-					pnlRespaldo.setBounds(13, 105, 201, 64);
-					pnlRespaldo.setBorder(BorderFactory.createTitledBorder(null, "Servidor de respaldo", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma",1,11)));
+					pnlPanel.add(pnlRespaldo, new AnchorConstraint(91, 10, 750, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlRespaldo.setBorder(BorderFactory.createTitledBorder(null, "Servidor de respaldo", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma",0,11)));
 					pnlRespaldo.setLayout(null);
 					pnlRespaldo.setFont(new java.awt.Font("Tahoma",1,11));
+					pnlRespaldo.setPreferredSize(new java.awt.Dimension(209, 49));
 					{
 						txtPuertoRespaldo = new JTextField();
 						pnlRespaldo.add(txtPuertoRespaldo);
-						txtPuertoRespaldo.setBounds(114, 27, 55, 20);
+						txtPuertoRespaldo.setBounds(114, 18, 79, 20);
 						txtPuertoRespaldo.setName("txtPuertoRespaldo");
 					}
 					{
 						lblPuertoRespaldo = new JLabel();
 						pnlRespaldo.add(lblPuertoRespaldo);
-						lblPuertoRespaldo.setText("Puerto de escucha:");
-						lblPuertoRespaldo.setBounds(13, 31, 93, 14);
+						lblPuertoRespaldo.setText("Puerto de escucha");
+						lblPuertoRespaldo.setBounds(11, 21, 97, 14);
 					}
 				}
 			}
 			pack();
-			this.setSize(235, 251);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
