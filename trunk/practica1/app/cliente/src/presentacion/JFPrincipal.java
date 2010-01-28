@@ -121,7 +121,12 @@ public class JFPrincipal extends javax.swing.JFrame {
 					{
 						menuitemCerrarSesion = new JMenuItem();
 						jMenu1.add(menuitemCerrarSesion);
-						menuitemCerrarSesion.setText("Cerrar Sesión");
+						menuitemCerrarSesion.setText("Cerrar sesión");
+						menuitemCerrarSesion.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								menuitemCerrarSesionActionPerformed(evt);
+							}
+						});
 					}
 					{
 						jSeparator2 = new JSeparator();
@@ -235,14 +240,15 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 	
 	private void btnCerrarSesionActionPerformed(ActionEvent evt) {
-		if (Dialogos.mostrarDialogoPregunta(null, "Confirmar cierre de sesión", "¿Está seguro de querer cerrar la sesión?")) {
-			cerrarSesion();
-			controlador.identificarse();
-		}
+		confirmarCerrarSesion();
 	}
 	
 	private void btnCerrarAplicacionActionPerformed(ActionEvent evt) {
 		cerrarAplicacion();
+	}
+	
+	private void menuitemCerrarSesionActionPerformed(ActionEvent evt) {
+		confirmarCerrarSesion();
 	}
 
 	//$hide>>$
@@ -352,6 +358,13 @@ public class JFPrincipal extends javax.swing.JFrame {
 			} catch (NotBoundException e) {
 				Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
 			}
+		}
+	}
+	
+	private void confirmarCerrarSesion () {
+		if (Dialogos.mostrarDialogoPregunta(null, "Confirmar cierre de sesión", "¿Está seguro de querer cerrar la sesión?")) {
+			cerrarSesion();
+			controlador.identificarse();
 		}
 	}
 
