@@ -12,6 +12,11 @@ import excepciones.UsuarioIncorrectoException;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -84,6 +89,11 @@ public class JFLogin extends javax.swing.JFrame {
 			this.setMaximumSize(new java.awt.Dimension(2147483647, 178));
 			this.setResizable(false);
 			setLocationRelativeTo(null);
+			this.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent evt) {
+					thisWindowClosing(evt);
+				}
+			});
 			{
 				jPanel1 = new JPanel();
 				AnchorLayout jPanel1Layout = new AnchorLayout();
@@ -183,6 +193,18 @@ public class JFLogin extends javax.swing.JFrame {
 			this.setSize(296, 140);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void thisWindowClosing(WindowEvent evt) {
+		try {
+			controlador.cerrarControlador();
+		} catch (RemoteException e) {
+			Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
+		} catch (MalformedURLException e) {
+			Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
+		} catch (NotBoundException e) {
+			Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
 		}
 	}
 
