@@ -136,6 +136,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 						menuitemSalir = new JMenuItem();
 						jMenu1.add(menuitemSalir);
 						menuitemSalir.setText("Salir");
+						menuitemSalir.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								menuitemSalirActionPerformed(evt);
+							}
+						});
 					}
 				}
 				{
@@ -249,6 +254,10 @@ public class JFPrincipal extends javax.swing.JFrame {
 	
 	private void menuitemCerrarSesionActionPerformed(ActionEvent evt) {
 		confirmarCerrarSesion();
+	}
+	
+	private void menuitemSalirActionPerformed(ActionEvent evt) {
+		cerrarAplicacion();
 	}
 
 	//$hide>>$
