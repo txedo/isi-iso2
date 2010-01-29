@@ -3,15 +3,16 @@ package pruebas;
 import org.uispec4j.Button;
 import org.uispec4j.TextBox;
 import org.uispec4j.Window;
+
 import dominio.conocimiento.ConfiguracionRespaldo;
-import presentacion.JFConfiguracion;
+import presentacion.JFConfigRespaldo;
 
 /**
  * Pruebas de la ventana de configuración del servidor de respaldo. 
  */
-public class PruebasJFConfiguracion extends org.uispec4j.UISpecTestCase {
+public class PruebasJFConfigRespaldo extends org.uispec4j.UISpecTestCase {
 
-	private JFConfiguracion ventana;
+	private JFConfigRespaldo ventana;
 	private Window winVentana;
 	private Button btnAceptar;
 	private Button btnCancelar;
@@ -22,7 +23,7 @@ public class PruebasJFConfiguracion extends org.uispec4j.UISpecTestCase {
 	public void setUp() {
 		try {
 			// Creamos la ventana de configuración
-			ventana = new JFConfiguracion();
+			ventana = new JFConfigRespaldo();
 			// Obtenemos los componentes de la ventana
 			winVentana = new Window(ventana);
 			btnAceptar = winVentana.getButton("btnAceptar");
@@ -44,17 +45,21 @@ public class PruebasJFConfiguracion extends org.uispec4j.UISpecTestCase {
 		}
 	}
 	
-	public void testVentana() {
+	/** Pruebas con configuraciones no válidas */
+	public void testConfiguracionesInvalidas() {
 		ConfiguracionRespaldo configOriginal;
 
 		try {
 			// Obtenemos la configuración por defecto
 			configOriginal = new ConfiguracionRespaldo();
-			// Ponemos una IP de BD incorrecta para ver que no se acepta
+			// Ponemos IPs de BD incorrectas para ver que no se aceptan
 			txtIPBDRespaldo.setText("300.0.0.300");
 			btnAceptar.click();
 			assertEquals(configOriginal, ventana.getConfiguracion());
-			// Ponemos puertos de BD incorrecto para ver que no se aceptan
+			txtIPBDRespaldo.setText("");
+			btnAceptar.click();
+			assertEquals(configOriginal, ventana.getConfiguracion());
+			// Ponemos puertos de BD incorrectos para ver que no se aceptan
 			txtIPBDRespaldo.setText("127.0.0.1");
 			txtPuertoBDRespaldo.setText("1234567");
 			btnAceptar.click();
@@ -62,7 +67,7 @@ public class PruebasJFConfiguracion extends org.uispec4j.UISpecTestCase {
 			txtPuertoBDRespaldo.setText("abcdefg");
 			btnAceptar.click();
 			assertEquals(configOriginal, ventana.getConfiguracion());
-			// Ponemos puertos de escucha para ver que no se aceptan
+			// Ponemos puertos de escucha inválidos para ver que no se aceptan
 			txtPuertoBDRespaldo.setText("1990");
 			txtPuertoRespaldo.setText("1234567");
 			btnAceptar.click();
@@ -73,7 +78,12 @@ public class PruebasJFConfiguracion extends org.uispec4j.UISpecTestCase {
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+	}
 
+	/** Pruebas con configuraciones válidas */
+	public void testConfiguracionesValidas() {
+		ConfiguracionRespaldo configOriginal;
+		
 		try {
 			// Obtenemos la configuración por defecto
 			configOriginal = new ConfiguracionRespaldo();

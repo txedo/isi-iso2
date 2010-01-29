@@ -19,7 +19,7 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasConexiones.class);
 		suite.addTestSuite(PruebasControlador.class);
 		suite.addTestSuite(PruebasJFServidorRespaldo.class);
-		suite.addTestSuite(PruebasJFConfiguracion.class);
+		suite.addTestSuite(PruebasJFConfigRespaldo.class);
 		return suite;
 	}
 	

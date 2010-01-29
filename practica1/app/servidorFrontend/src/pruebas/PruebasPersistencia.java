@@ -52,6 +52,7 @@ public class PruebasPersistencia extends TestCase {
 			// Borramos la base de datos
 			agente = AgenteFrontend.getAgente();
 			agente.setIP("127.0.0.1");
+			agente.setPuerto(3306);
 			agente.abrir();
 			bd = agente.getConexion();
 			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");

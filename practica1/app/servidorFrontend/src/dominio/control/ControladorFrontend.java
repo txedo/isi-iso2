@@ -14,6 +14,7 @@ import comunicaciones.GestorConexionesBD;
 import comunicaciones.GestorConexionesEstado;
 import comunicaciones.ProxyBDRespaldo;
 import comunicaciones.ProxyEstadoRespaldo;
+import dominio.conocimiento.ConfiguracionFrontend;
 
 /**
  * Controlador principal de la funcionalidad del servidor front-end.
@@ -23,30 +24,36 @@ public class ControladorFrontend {
 	private ProxyBDRespaldo proxy;
 	private ConexionServidorFrontend conexionServidor;
 	private ConexionBDFrontend basedatos;
-	private JFServidorFrontend vent;
+	private JFServidorFrontend ventana;
 	private boolean servidorActivo;
 
 	public ControladorFrontend() {
 		conexionServidor = null;
 		servidorActivo = false;
+		ventana = new JFServidorFrontend(this);
 	}
 	
-	public boolean getServidorActivo() {
+	public JFServidorFrontend getVentana() {
+		return ventana;
+	}
+	
+	public boolean isServidorActivo() {
 		return servidorActivo;
 	}
 	
 	public void mostrarVentana() {
-		// Mostramos la ventana principal del servidor
-		vent = new JFServidorFrontend();
-		vent.setControladorPresentacion(this);
-		vent.setVisible(true);
+		ventana.setLocationRelativeTo(null);
+		ventana.setVisible(true);
 	}
-	
-	public void iniciarServidor(String ipBDPrincipal, String ipRespaldo) throws RemoteException, MalformedURLException, UnknownHostException, NotBoundException, SQLException {
+
+	public void ocultarVentana() {
+		ventana.setVisible(false);
+	}
+
+	public void iniciarServidor(ConfiguracionFrontend configuracion) throws RemoteException, MalformedURLException, UnknownHostException, NotBoundException, SQLException {
 		ConexionEstadoFrontend estadoFrontend;
 		ProxyEstadoRespaldo estadoRespaldo;
 		String ipLocal;
-		boolean respaldo;
 
 		// Obtenemos la IP de la máquina local
 		ipLocal = Inet4Address.getLocalHost().getHostAddress();
@@ -60,49 +67,46 @@ public class ControladorFrontend {
 		GestorConexionesBD.quitarConexiones();
 		GestorConexionesEstado.quitarConexiones();
 		
-		// Comprobamos si se va a usar el servidor de respaldo
-		respaldo = (ipRespaldo != null && !ipRespaldo.equals(""));
-
 		// Creamos una conexión con la base de datos local
 		try {
 			basedatos = new ConexionBDFrontend();
-			basedatos.getAgente().setIP(ipBDPrincipal);
+			basedatos.getAgente().setIP(configuracion.getIPBDPrincipal());
+			basedatos.getAgente().setPuerto(configuracion.getPuertoBDPrincipal());
 			basedatos.abrir();
 		} catch(SQLException e) {
-			throw new SQLException("No se puede establecer una conexión con el servidor de la base de datos principal (" + ipBDPrincipal + ").");
+			throw new SQLException("No se puede establecer una conexión con el servidor de la base de datos principal (IP " + configuracion.getIPBDPrincipal() + ", puerto " + String.valueOf(configuracion.getPuertoBDPrincipal()) + ").");
 		}
 		GestorConexionesBD.ponerConexion(basedatos);
 		
 		// Establecemos conexión con la base de datos del servidor de respaldo
-		if(respaldo) {
+		if(configuracion.isRespaldoActivado()) {
 			try {
 				proxy = new ProxyBDRespaldo();
-//TODO::				poner ip
-				proxy.conectar(ipRespaldo, 1099);
+				proxy.conectar(configuracion.getIPRespaldo(), configuracion.getPuertoRespaldo());
 				proxy.abrir();
 			} catch(NotBoundException e) {
-				throw new NotBoundException("No se puede conectar con el servidor de respaldo porque está desactivado (" + ipRespaldo + ").");
+				throw new NotBoundException("No se puede conectar con el servidor de respaldo porque está desactivado (IP " + configuracion.getIPRespaldo() + ", puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 			} catch(RemoteException e) {
-				throw new RemoteException("No se puede conectar con el servidor de respaldo (" + ipRespaldo + ").");
+				throw new RemoteException("No se puede conectar con el servidor de respaldo (IP " + configuracion.getIPRespaldo() + ", puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 			} catch(SQLException e) {
-				throw new SQLException("No se puede establecer una conexión con el servidor de base de datos de respaldo.");
+				throw new SQLException("No se puede establecer una conexión con el servidor de la base de datos de respaldo.");
 			}
 			GestorConexionesBD.ponerConexion(proxy);
 		}
 		
 		// Añadimos la ventana del servidor frontend a la lista de logs
 		estadoFrontend = new ConexionEstadoFrontend();
-		estadoFrontend.ponerVentana(vent);
+		estadoFrontend.ponerVentana(ventana);
 		GestorConexionesEstado.ponerConexion(estadoFrontend);
 		// Establecemos conexión con la ventana del servidor de respaldo
-		if(respaldo) {
+		if(configuracion.isRespaldoActivado()) {
 			try {
 				estadoRespaldo = new ProxyEstadoRespaldo();
-				estadoRespaldo.conectar(ipRespaldo);
+				estadoRespaldo.conectar(configuracion.getIPRespaldo(), configuracion.getPuertoRespaldo() + 1);
 			} catch(NotBoundException e) {
-				throw new NotBoundException("No se puede conectar con el servidor de respaldo porque está desactivado (" + ipRespaldo + ").");
+				throw new NotBoundException("No se puede conectar con el servidor de respaldo porque está desactivado (IP " + configuracion.getIPRespaldo() + ", puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 			} catch(RemoteException e) {
-				throw new RemoteException("No se puede conectar con el servidor de respaldo (" + ipRespaldo + ").");
+				throw new RemoteException("No se puede conectar con el servidor de respaldo (IP " + configuracion.getIPRespaldo() + ", puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 			}
 			GestorConexionesEstado.ponerConexion(estadoRespaldo);
 		}
@@ -110,13 +114,13 @@ public class ControladorFrontend {
 		// Creamos el servidor y lo ponemos a la escucha
 		try {
 			conexionServidor = ConexionServidorFrontend.getConexion();
-			conexionServidor.activar(ipLocal);
+			conexionServidor.activar(ipLocal, configuracion.getPuertoFrontend());
 		} catch(RemoteException e) {
-			throw new RemoteException("No se puede poner a la escucha el servidor front-end en la dirección IP " + ipLocal + ":" + ServidorFrontend.PUERTO_SERVIDOR + ".");
+			throw new RemoteException("No se puede poner a la escucha el servidor front-end en la dirección IP " + ipLocal + " y el puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ".");
 		}
 		
 		// Mostramos un mensaje indicando que el servidor está activo
-		if(respaldo) {
+		if(configuracion.isRespaldoActivado()) {
 			GestorConexionesEstado.ponerMensaje("=== Servidor iniciado ===");
 		} else {
 			GestorConexionesEstado.ponerMensaje("=== Servidor iniciado (servidor de respaldo deshabilitado) ===");
@@ -126,7 +130,7 @@ public class ControladorFrontend {
 		servidorActivo = true;
 	}
 	
-	public void detenerServidor(String ipRespaldo) throws RemoteException, MalformedURLException, UnknownHostException, SQLException {
+	public void detenerServidor(ConfiguracionFrontend configuracion) throws RemoteException, MalformedURLException, UnknownHostException, SQLException {
 		// Cerramos las conexiones con las BD y vaciamos la lista
 		// (ignoramos los errores que pudieran producirse)
 		try {
@@ -137,7 +141,7 @@ public class ControladorFrontend {
 		
 		// Desconectamos el servidor
 		if(conexionServidor != null) {
-			conexionServidor.desactivar(Inet4Address.getLocalHost().getHostAddress());
+			conexionServidor.desactivar(Inet4Address.getLocalHost().getHostAddress(), configuracion.getPuertoFrontend());
 		}
 		
 		// Mostramos un mensaje indicando que el servidor está inactivo

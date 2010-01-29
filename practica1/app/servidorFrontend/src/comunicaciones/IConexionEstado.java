@@ -9,8 +9,8 @@ import java.rmi.RemoteException;
  */
 public interface IConexionEstado extends Remote {
 
-	public final int PUERTO_CONEXION_ESTADO = 1098;
-	
 	public void ponerMensaje(String mensaje) throws RemoteException;
+	
 	public void actualizarClientesEscuchando (int numeroClientes) throws RemoteException;
+	
 }

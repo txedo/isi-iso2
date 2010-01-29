@@ -26,7 +26,6 @@ import excepciones.UsuarioIncorrectoException;
 public interface IServidorFrontend extends Remote {
 	
 	public final String NOMBRE_SERVIDOR = "servidorfrontend";
-	public final int PUERTO_SERVIDOR = 2995;
 	
 	// Métodos de gestión de sesiones
 	

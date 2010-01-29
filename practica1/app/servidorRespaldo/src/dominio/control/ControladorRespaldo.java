@@ -34,11 +34,12 @@ public class ControladorRespaldo {
 		return ventana;
 	}
 	
-	public boolean getServidorActivo() {
+	public boolean isServidorActivo() {
 		return servidorActivo;
 	}
 	
 	public void mostrarVentana() {
+		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
 	}
 	

@@ -12,10 +12,10 @@ public class ProxyEstadoRespaldo implements IConexionEstado {
 
 	private IConexionEstado conexionRemota;
 	
-	public void conectar(String ip) throws MalformedURLException, RemoteException, NotBoundException {
+	public void conectar(String ip, int puerto) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
-		url = "rmi://" + ip + ":" + String.valueOf(PUERTO_CONEXION_ESTADO) + "/servidorrespaldo";
+		url = "rmi://" + ip + ":" + String.valueOf(puerto) + "/servidorrespaldo";
         conexionRemota = (IConexionEstado)Naming.lookup(url);
 	}
 

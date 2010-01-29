@@ -46,13 +46,13 @@ public class AgenteRespaldo {
 	}
 	
 	public void abrir() throws SQLException {
-		String urlCompleta;
+		String url;
 		
 		if(conexion == null || conexion.isClosed()) {
 			// Indicamos que las modificaciones de la base de datos
 			// no se deben aplicar hasta llamar al método 'commit'
-			urlCompleta = "jdbc:mysql://" + ip + ":" + String.valueOf(puerto) + "/bdsscarespaldo?user=isor&password=rosi";
-			conexion = DriverManager.getConnection(urlCompleta);
+			url = "jdbc:mysql://" + ip + ":" + String.valueOf(puerto) + "/bdsscarespaldo?user=isor&password=rosi";
+			conexion = DriverManager.getConnection(url);
 			conexion.setAutoCommit(false); 
 		}
 	}

@@ -2,6 +2,8 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.ConfiguracionFrontend;
 import dominio.control.ControladorFrontend;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -16,13 +18,17 @@ import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-import java.util.regex.*;
+import java.util.EventObject;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -50,21 +56,36 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	private static final long serialVersionUID = -113838536647924014L;
 	
 	private ControladorFrontend controlador;
-	private JPanel jPanel;
+	private ConfiguracionFrontend configuracion;
+	private JFConfigFrontend frmConfiguracion;
+	
+	private JLabel lblConfigRespaldo;
+	private JLabel lblConfigBD;
+	private JMenuItem mniDesconectar;
+	private JMenuItem mniConectar;
+	private JPanel pnlPanel;
 	private JScrollPane scpPanelLog;
-	private JLabel lblIPRespaldo;
-	private JTextField txtIPBDPrincipal;
-	private JTextField txtIPRespaldo;
-	private JLabel lblIPBDPrincipal;
 	private JLabel lblBarraEstado;
 	private JButton btnDesconectar;
 	private JLabel lblClientesConectados;
 	private JButton btnConectar;
+	private JButton btnSalir;
+	private JMenuBar mnbMenus;
 	private JTextArea txtLog;
+	private JMenuItem mniAcercaDe;
+	private JMenuItem mniConfigurar;
+	private JMenuItem mniSalir;
+	private JSeparator sepSeparador;
+	private JMenu mnuArchivo;
+	private JMenu mnuAyuda;
+	private JMenu mnuOpciones;
 	
-	public JFServidorFrontend() {
+	public JFServidorFrontend(ControladorFrontend controlador) {
 		super();
 		initGUI();
+		this.controlador = controlador;
+		configuracion = frmConfiguracion.getConfiguracion();
+		actualizarConfiguracion();
 	}
 	
 	private void initGUI() {
@@ -80,32 +101,90 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 				}
 			});
 			{
-				jPanel = new JPanel();
+				mnbMenus = new JMenuBar();
+				setJMenuBar(mnbMenus);
+				{
+					mnuArchivo = new JMenu();
+					mnbMenus.add(mnuArchivo);
+					mnuArchivo.setText("Archivo");
+					{
+						mniConectar = new JMenuItem();
+						mnuArchivo.add(mniConectar);
+						mniConectar.setText("Conectar");
+						mniConectar.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								mniConectarActionPerformed(evt);
+							}
+						});
+					}
+					{
+						mniDesconectar = new JMenuItem();
+						mnuArchivo.add(mniDesconectar);
+						mniDesconectar.setText("Desconectar");
+						mniDesconectar.setEnabled(false);
+						mniDesconectar.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								mniDesconectarActionPerformed(evt);
+							}
+						});
+					}
+					{
+						sepSeparador = new JSeparator();
+						mnuArchivo.add(sepSeparador);
+					}
+					{
+						mniSalir = new JMenuItem();
+						mnuArchivo.add(mniSalir);
+						mniSalir.setText("Salir");
+						mniSalir.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								mniSalirActionPerformed(evt);
+							}
+						});
+					}
+				}
+				{
+					mnuOpciones = new JMenu();
+					mnbMenus.add(mnuOpciones);
+					mnuOpciones.setText("Opciones");
+					{
+						mniConfigurar = new JMenuItem();
+						mnuOpciones.add(mniConfigurar);
+						mniConfigurar.setText("Configurar...");
+						mniConfigurar.setName("mniConfigurar");
+						mniConfigurar.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								mniConfigurarActionPerformed(evt);
+							}
+						});
+					}
+				}
+				{
+					mnuAyuda = new JMenu();
+					mnbMenus.add(mnuAyuda);
+					mnuAyuda.setText("Ayuda");
+					{
+						mniAcercaDe = new JMenuItem();
+						mnuAyuda.add(mniAcercaDe);
+						mniAcercaDe.setText("Acerca de...");
+					}
+				}
+			}
+			{
+				pnlPanel = new JPanel();
 				AnchorLayout jPanel1Layout = new AnchorLayout();
-				getContentPane().add(jPanel, BorderLayout.CENTER);
-				jPanel.setLayout(jPanel1Layout);
-				jPanel.setPreferredSize(new java.awt.Dimension(542, 327));
+				getContentPane().add(pnlPanel, BorderLayout.CENTER);
+				pnlPanel.setLayout(jPanel1Layout);
+				pnlPanel.setPreferredSize(new java.awt.Dimension(542, 327));
 				{
 					lblClientesConectados = new JLabel();
-					jPanel.add(lblClientesConectados, new AnchorConstraint(855, 10, 30, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(lblClientesConectados, new AnchorConstraint(855, 285, 30, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblClientesConectados.setText("0 clientes conectados.");
-					lblClientesConectados.setPreferredSize(new java.awt.Dimension(522, 16));
-				}
-				{
-					txtIPRespaldo = new JTextField();
-					jPanel.add(txtIPRespaldo, new AnchorConstraint(24, 12, 191, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-					txtIPRespaldo.setPreferredSize(new java.awt.Dimension(88, 21));
-					txtIPRespaldo.setText("127.0.0.1");
-				}
-				{
-					lblIPBDPrincipal = new JLabel();
-					jPanel.add(lblIPBDPrincipal, new AnchorConstraint(8, 111, 94, 606, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-					lblIPBDPrincipal.setText("IP BD principal:");
-					lblIPBDPrincipal.setPreferredSize(new java.awt.Dimension(92, 14));
+					lblClientesConectados.setPreferredSize(new java.awt.Dimension(239, 16));
 				}
 				{
 					scpPanelLog = new JScrollPane();
-					jPanel.add(scpPanelLog, new AnchorConstraint(55, 10, 54, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(scpPanelLog, new AnchorConstraint(55, 10, 54, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					scpPanelLog.setPreferredSize(new java.awt.Dimension(522, 212));
 					scpPanelLog.setMinimumSize(new java.awt.Dimension(346, 155));
 					{
@@ -118,46 +197,68 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 				}
 				{
 					lblBarraEstado = new JLabel();
-					jPanel.add(lblBarraEstado, new AnchorConstraint(937, 10, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(lblBarraEstado, new AnchorConstraint(937, 285, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblBarraEstado.setText("Servidor desconectado.");
-					lblBarraEstado.setPreferredSize(new java.awt.Dimension(522, 14));
+					lblBarraEstado.setPreferredSize(new java.awt.Dimension(239, 14));
 				}
 				{
 					btnDesconectar = new JButton();
-					jPanel.add(btnDesconectar, new AnchorConstraint(13, 643, 124, 133, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(btnDesconectar, new AnchorConstraint(13, 643, 124, 133, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					btnDesconectar.setText("Desconectar");
 					btnDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
 					btnDesconectar.setEnabled(false);
 					btnDesconectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
-							botonDesconectarActionPerformed(evt);
+							btnDesconectarActionPerformed(evt);
 						}
 					});
 				}
 				{
 					btnConectar = new JButton();
-					jPanel.add(btnConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(btnConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					btnConectar.setText("Conectar");
 					btnConectar.setPreferredSize(new java.awt.Dimension(110, 30));
 					btnConectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
-							botonConectarActionPerformed(evt);
+							btnConectarActionPerformed(evt);
 						}
 					});
 				}
 				{
-					txtIPBDPrincipal = new JTextField();
-					jPanel.add(txtIPBDPrincipal, new AnchorConstraint(24, 115, 191, 608, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-					txtIPBDPrincipal.setPreferredSize(new java.awt.Dimension(88, 21));
-					txtIPBDPrincipal.setText("127.0.0.1");
+					btnSalir = new JButton();
+					pnlPanel.add(btnSalir, new AnchorConstraint(13, 10, 127, 851, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					btnSalir.setText("Salir");
+					btnSalir.setPreferredSize(new java.awt.Dimension(63, 30));
+					btnSalir.setName("btnSalir");
+					btnSalir.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							btnSalirActionPerformed(evt);
+						}
+					});
 				}
 				{
-					lblIPRespaldo = new JLabel();
-					jPanel.add(lblIPRespaldo, new AnchorConstraint(8, 8, 94, 805, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-					lblIPRespaldo.setText("IP Serv. respaldo:");
-					lblIPRespaldo.setPreferredSize(new java.awt.Dimension(92, 14));
+					lblConfigBD = new JLabel();
+					pnlPanel.add(lblConfigBD, new AnchorConstraint(872, 10, 30, 463, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+					lblConfigBD.setText("BD Principal: IP XXX.XXX.XXX.XXX, puerto XXXXX");
+					lblConfigBD.setPreferredSize(new java.awt.Dimension(277, 14));
+					lblConfigBD.setHorizontalAlignment(SwingConstants.TRAILING);
+					lblConfigBD.setName("lblConfiguracionBD");
+				}
+				{
+					lblConfigRespaldo = new JLabel();
+					pnlPanel.add(lblConfigRespaldo, new AnchorConstraint(925, 10, 11, 463, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+					lblConfigRespaldo.setText("Servidor Respaldo: IP XXX.XXX.XXX.XXX, puerto XXXXX");
+					lblConfigRespaldo.setPreferredSize(new java.awt.Dimension(277, 15));
+					lblConfigRespaldo.setHorizontalAlignment(SwingConstants.TRAILING);
+					lblConfigRespaldo.setName("lblConfiguracionRespaldo");
 				}
 			}
+			frmConfiguracion = new JFConfigFrontend();
+			frmConfiguracion.addVentanaCerradaListener(new VentanaCerradaListener() {
+				public void ventanaCerrada(EventObject evt) {    
+					frmConfiguracionVentanaCerrada(evt);
+				}
+			});
 			pack();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -166,74 +267,61 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	
 	//$hide>>$
 	
-	public void setControladorPresentacion(ControladorFrontend controlador) {
-		this.controlador = controlador;
+	private void mniConfigurarActionPerformed(ActionEvent evt) {
+		// Desactivamos la ventana hasta aceptar o cancelar la configuración
+		setEnabled(false);
+		frmConfiguracion.setConfiguracion(configuracion);
+		frmConfiguracion.setLocationRelativeTo(this);
+		frmConfiguracion.setVisible(true);
+	}
+
+	private void frmConfiguracionVentanaCerrada(EventObject evt) {
+		// Reactivamos la ventana 
+		setEnabled(true);
+		frmConfiguracion.setVisible(false);
+		configuracion = frmConfiguracion.getConfiguracion();
+		actualizarConfiguracion();
 	}
 	
-	private void botonConectarActionPerformed(ActionEvent evt) {
-		Pattern patronIP;
-		boolean ipBaseDatosValida, ipRespaldoValida;
-		
-		// Creamos un patrón que define las IPs válidas
-		patronIP = Pattern.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + 
-				"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
-		
-		// Comprobamos si la IP del servidor de respaldo es válida
-		if(!txtIPRespaldo.getText().equals("")) {
-			if(!patronIP.matcher(txtIPRespaldo.getText()).matches()) {
-				Dialogos.mostrarDialogoError(this, "Error", "El formato de la IP del servidor de respaldo es incorrecto.");
-				txtIPRespaldo.selectAll();
-				txtIPRespaldo.grabFocus();
-				ipRespaldoValida = false;
-			} else {
-				ipRespaldoValida = true;
-			}
-		} else {
-			// El servidor de respaldo no se utilizará
-			ipRespaldoValida = true;
-		}
-		
-		// Comprobamos si la IP de la BD principal es válida
-		if(patronIP.matcher(txtIPBDPrincipal.getText()).matches()) { 
-			ipBaseDatosValida = true;
-		} else {
-			Dialogos.mostrarDialogoError(this, "Error", "El formato de la IP del servidor de base de datos principal es incorrecto.");
-			txtIPBDPrincipal.selectAll();
-			txtIPBDPrincipal.grabFocus();
-			ipBaseDatosValida = false;
-		}
-		
-		// Si las IPs son correctas, activamos el servidor
-		if(ipRespaldoValida && ipBaseDatosValida) {
-			activarServidor();
-		}
+	private void btnConectarActionPerformed(ActionEvent evt) {
+		activarServidor();
 	}
 	
-	private void botonDesconectarActionPerformed(ActionEvent evt) {
+	private void btnDesconectarActionPerformed(ActionEvent evt) {
 		desactivarServidor();
 	}
 
 	private void thisWindowClosing(WindowEvent evt) {
-		boolean salir;
-		
-		// Si el servidor está activo, preguntamos antes de salir
-		salir = false;
-		if(controlador.getServidorActivo()) {
-			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierras el servidor front-end, se desconectará automáticamente. ¿Realmente quieres salir?")) {
-				if(desactivarServidor()) {
-					salir = true;
-				}
-			}
+		cerrarServidor();
+	}
+	
+	private void mniConectarActionPerformed(ActionEvent evt) {
+		activarServidor();
+	}
+	
+	private void mniDesconectarActionPerformed(ActionEvent evt) {
+		desactivarServidor();
+	}
+
+	private void mniSalirActionPerformed(ActionEvent evt) {
+		cerrarServidor();
+	}
+	
+	private void btnSalirActionPerformed(ActionEvent evt) {
+		cerrarServidor();
+	}
+	
+	private void actualizarConfiguracion() {
+		if(controlador != null && controlador.isServidorActivo()) {
+			lblBarraEstado.setText("Servidor preparado (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 		} else {
-			salir = true;
+			lblBarraEstado.setText("Servidor desconectado (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 		}
-		
-		if(salir) {
-			setVisible(false);
-			dispose();
-			System.exit(0);
+		lblConfigBD.setText("BD Principal: IP " + configuracion.getIPBDPrincipal() + ", puerto " + String.valueOf(configuracion.getPuertoBDPrincipal()));
+		if(configuracion.isRespaldoActivado()) {
+			lblConfigRespaldo.setText("Servidor Respaldo: IP " + configuracion.getIPRespaldo() + ", puerto " + String.valueOf(configuracion.getPuertoRespaldo()));
+		} else {
+			lblConfigRespaldo.setText("Servidor Respaldo: (desactivado)");
 		}
 	}
 	
@@ -243,13 +331,14 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		ok = false;
 		try {
 			// Iniciamos el servidor frontend y la conexión con el de respaldo
-			controlador.iniciarServidor(txtIPBDPrincipal.getText(), txtIPRespaldo.getText());
+			controlador.iniciarServidor(configuracion);
 			// Cambiamos el estado de la ventana
 			btnConectar.setEnabled(false);
+			mniConectar.setEnabled(false);
+			mniConfigurar.setEnabled(false);
 			btnDesconectar.setEnabled(true);
-			txtIPBDPrincipal.setEditable(false);
-			txtIPRespaldo.setEditable(false);
-			lblBarraEstado.setText("Servidor preparado.");
+			mniDesconectar.setEnabled(true);
+			lblBarraEstado.setText("Servidor preparado (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 			ok = true;
 		} catch(SQLException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
@@ -276,13 +365,14 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		ok = false;
 		try {
 			// Detenemos el servidor frontend y la conexión con el de respaldo
-			controlador.detenerServidor(txtIPRespaldo.getText());
+			controlador.detenerServidor(configuracion);
 			// Cambiamos el estado de la ventana
 			btnDesconectar.setEnabled(false);
+			mniDesconectar.setEnabled(false);
 			btnConectar.setEnabled(true);
-			txtIPBDPrincipal.setEditable(true);
-			txtIPRespaldo.setEditable(true);
-			lblBarraEstado.setText("Servidor desconectado.");
+			mniConectar.setEnabled(true);
+			mniConfigurar.setEnabled(true);
+			lblBarraEstado.setText("Servidor desconectado (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 			ok = true;
 		} catch(SQLException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
@@ -295,6 +385,28 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		}
 		
 		return ok;
+	}
+	
+	private void cerrarServidor() {
+		boolean salir;
+		
+		// Si el servidor está activo, preguntamos antes de salir
+		salir = false;
+		if(controlador.isServidorActivo()) {
+			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierras el servidor front-end, se desconectará automáticamente. ¿Realmente quieres salir?")) {
+				if(desactivarServidor()) {
+					salir = true;
+				}
+			}
+		} else {
+			salir = true;
+		}
+		
+		if(salir) {
+			setVisible(false);
+			dispose();
+			System.exit(0);
+		}
 	}
 	
 	public void ponerMensaje(String mensaje) {
