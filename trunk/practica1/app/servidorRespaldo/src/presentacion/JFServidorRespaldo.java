@@ -2,6 +2,7 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
 import dominio.conocimiento.ConfiguracionRespaldo;
 import dominio.control.ControladorRespaldo;
 import java.awt.BorderLayout;
@@ -23,7 +24,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
@@ -53,12 +56,16 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	private static final long serialVersionUID = -3739906711082199809L;
 	
 	private int numeroClientes;
-	
 	private ControladorRespaldo controlador;
 	private ConfiguracionRespaldo configuracion;
-	private JFConfiguracion frmConfiguracion;
+	private JFConfigRespaldo frmConfiguracion;
 	
-	private JPanel jPanel;
+	private JButton btnSalir;
+	private JLabel lblConfigBD;
+	private JSeparator sepSeparador;
+	private JMenuItem mniDesconectar;
+	private JMenuItem mniConectar;
+	private JPanel pnlPanel;
 	private JScrollPane scpPanelLog;
 	private JLabel lblBarraEstado;
 	private JButton btnDesconectar;
@@ -78,12 +85,13 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		initGUI();
 		this.controlador = controlador;
 		configuracion = frmConfiguracion.getConfiguracion();
+		actualizarConfiguracion();
 	}
 	
 	private void initGUI() {
 		try {
 			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-			this.setTitle("Servidor Respaldo");
+			this.setTitle("Servidor de Respaldo");
 			this.setPreferredSize(new java.awt.Dimension(550, 400));
 			this.setMinimumSize(new java.awt.Dimension(500, 300));
 			setLocationRelativeTo(null);
@@ -100,9 +108,39 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 					mnbMenus.add(mnuArchivo);
 					mnuArchivo.setText("Archivo");
 					{
+						mniConectar = new JMenuItem();
+						mnuArchivo.add(mniConectar);
+						mniConectar.setText("Conectar");
+						mniConectar.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								mniConectarActionPerformed(evt);
+							}
+						});
+					}
+					{
+						mniDesconectar = new JMenuItem();
+						mnuArchivo.add(mniDesconectar);
+						mniDesconectar.setText("Desconectar");
+						mniDesconectar.setEnabled(false);
+						mniDesconectar.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								mniDesconectarActionPerformed(evt);
+							}
+						});
+					}
+					{
+						sepSeparador = new JSeparator();
+						mnuArchivo.add(sepSeparador);
+					}
+					{
 						mniSalir = new JMenuItem();
 						mnuArchivo.add(mniSalir);
 						mniSalir.setText("Salir");
+						mniSalir.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								mniSalirActionPerformed(evt);
+							}
+						});
 					}
 				}
 				{
@@ -133,20 +171,28 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 				}
 			}
 			{
-				jPanel = new JPanel();
+				pnlPanel = new JPanel();
 				AnchorLayout jPanel1Layout = new AnchorLayout();
-				getContentPane().add(jPanel, BorderLayout.CENTER);
-				jPanel.setLayout(jPanel1Layout);
-				jPanel.setPreferredSize(new java.awt.Dimension(542, 327));
+				getContentPane().add(pnlPanel, BorderLayout.CENTER);
+				pnlPanel.setLayout(jPanel1Layout);
+				pnlPanel.setPreferredSize(new java.awt.Dimension(542, 327));
+				{
+					lblConfigBD = new JLabel();
+					pnlPanel.add(lblConfigBD, new AnchorConstraint(872, 10, 30, 463, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+					lblConfigBD.setText("BD Respaldo: IP XXX.XXX.XXX.XXX, puerto XXXXX");
+					lblConfigBD.setPreferredSize(new java.awt.Dimension(277, 14));
+					lblConfigBD.setHorizontalAlignment(SwingConstants.TRAILING);
+					lblConfigBD.setName("lblConfigBD");
+				}
 				{
 					lblClientesConectados = new JLabel();
-					jPanel.add(lblClientesConectados, new AnchorConstraint(855, 10, 30, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(lblClientesConectados, new AnchorConstraint(855, 287, 30, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblClientesConectados.setText("0 clientes conectados.");
-					lblClientesConectados.setPreferredSize(new java.awt.Dimension(522, 16));
+					lblClientesConectados.setPreferredSize(new java.awt.Dimension(237, 16));
 				}
 				{
 					scpPanelLog = new JScrollPane();
-					jPanel.add(scpPanelLog, new AnchorConstraint(55, 10, 54, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(scpPanelLog, new AnchorConstraint(55, 10, 54, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					scpPanelLog.setPreferredSize(new java.awt.Dimension(522, 212));
 					scpPanelLog.setMinimumSize(new java.awt.Dimension(346, 155));
 					{
@@ -159,14 +205,14 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 				}
 				{
 					lblBarraEstado = new JLabel();
-					jPanel.add(lblBarraEstado, new AnchorConstraint(937, 10, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					lblBarraEstado.setText("Servidor desconectado.");
-					lblBarraEstado.setPreferredSize(new java.awt.Dimension(522, 14));
+					pnlPanel.add(lblBarraEstado, new AnchorConstraint(937, 287, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					lblBarraEstado.setText("Servidor desconectado (puerto XXXXX).");
+					lblBarraEstado.setPreferredSize(new java.awt.Dimension(237, 14));
 					lblBarraEstado.setName("lblBarraEstado");
 				}
 				{
 					btnDesconectar = new JButton();
-					jPanel.add(btnDesconectar, new AnchorConstraint(13, 643, 124, 133, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(btnDesconectar, new AnchorConstraint(13, 643, 124, 133, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					btnDesconectar.setText("Desconectar");
 					btnDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
 					btnDesconectar.setEnabled(false);
@@ -179,7 +225,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 				}
 				{
 					btnConectar = new JButton();
-					jPanel.add(btnConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(btnConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					btnConectar.setText("Conectar");
 					btnConectar.setPreferredSize(new java.awt.Dimension(110, 30));
 					btnConectar.setName("btnConectar");
@@ -189,8 +235,20 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 						}
 					});
 				}
+				{
+					btnSalir = new JButton();
+					pnlPanel.add(btnSalir, new AnchorConstraint(13, 10, 127, 851, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					btnSalir.setText("Salir");
+					btnSalir.setPreferredSize(new java.awt.Dimension(63, 30));
+					btnSalir.setName("btnSalir");
+					btnSalir.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							btnSalirActionPerformed(evt);
+						}
+					});
+				}
 			}
-			frmConfiguracion = new JFConfiguracion();
+			frmConfiguracion = new JFConfigRespaldo();
 			frmConfiguracion.addVentanaCerradaListener(new VentanaCerradaListener() {
 				public void ventanaCerrada(EventObject evt) {    
 					frmConfiguracionVentanaCerrada(evt);
@@ -217,6 +275,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		setEnabled(true);
 		frmConfiguracion.setVisible(false);
 		configuracion = frmConfiguracion.getConfiguracion();
+		actualizarConfiguracion();
 	}
 
 	private void btnConectarActionPerformed(ActionEvent evt) {
@@ -228,25 +287,32 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	}
 
 	private void thisWindowClosing(WindowEvent evt) {
-		boolean salir;
-		
-		// Si el servidor está activo, preguntamos antes de salir
-		salir = false;
-		if(controlador.getServidorActivo()) {
-			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierras el servidor de respaldo, se desconectará automáticamente. ¿Realmente quieres salir?")) {
-				if(desactivarServidor()) {
-					salir = true;
-				}
-			}
+		cerrarServidor();
+	}
+	
+	private void mniConectarActionPerformed(ActionEvent evt) {
+		activarServidor();
+	}
+	
+	private void mniDesconectarActionPerformed(ActionEvent evt) {
+		desactivarServidor();
+	}
+
+	private void mniSalirActionPerformed(ActionEvent evt) {
+		cerrarServidor();
+	}
+	
+	private void btnSalirActionPerformed(ActionEvent evt) {
+		cerrarServidor();
+	}
+
+	private void actualizarConfiguracion() {
+		if(controlador != null && controlador.isServidorActivo()) {
+			lblBarraEstado.setText("Servidor preparado (puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 		} else {
-			salir = true;
+			lblBarraEstado.setText("Servidor desconectado (puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 		}
-		
-		if(salir) {
-			setVisible(false);
-			dispose();
-			System.exit(0);
-		}
+		lblConfigBD.setText("BD Respaldo: IP " + configuracion.getIPBDRespaldo() + ", puerto " + String.valueOf(configuracion.getPuertoBDRespaldo()));
 	}
 	
 	private boolean activarServidor() {
@@ -258,8 +324,11 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			controlador.iniciarServidorRespaldo(configuracion);
 			// Cambiamos el estado de la ventana
 			btnConectar.setEnabled(false);
+			mniConectar.setEnabled(false);
+			mniConfigurar.setEnabled(false);
 			btnDesconectar.setEnabled(true);
-			lblBarraEstado.setText("Servidor preparado.");
+			mniDesconectar.setEnabled(true);
+			lblBarraEstado.setText("Servidor preparado (puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 			ok = true;
 		} catch(SQLException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
@@ -289,8 +358,11 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			controlador.detenerServidorRespaldo(configuracion);
 			// Cambiamos el estado de la ventana
 			btnDesconectar.setEnabled(false);
+			mniDesconectar.setEnabled(false);
 			btnConectar.setEnabled(true);
-			lblBarraEstado.setText("Servidor desconectado.");
+			mniConectar.setEnabled(true);
+			mniConfigurar.setEnabled(true);
+			lblBarraEstado.setText("Servidor desconectado (puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 			ok = true;
 		} catch(SQLException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
@@ -303,6 +375,28 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		}
 		
 		return ok;
+	}
+	
+	private void cerrarServidor() {
+		boolean salir;
+		
+		// Si el servidor está activo, preguntamos antes de salir
+		salir = false;
+		if(controlador.isServidorActivo()) {
+			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierras el servidor de respaldo, se desconectará automáticamente. ¿Realmente quieres salir?")) {
+				if(desactivarServidor()) {
+					salir = true;
+				}
+			}
+		} else {
+			salir = true;
+		}
+		
+		if(salir) {
+			setVisible(false);
+			dispose();
+			System.exit(0);
+		}
 	}
 	
 	public void ponerMensaje(String mensaje) {

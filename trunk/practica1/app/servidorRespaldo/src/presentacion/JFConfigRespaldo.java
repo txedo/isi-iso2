@@ -1,6 +1,4 @@
 package presentacion;
-import com.cloudgarden.layout.AnchorConstraint;
-import com.cloudgarden.layout.AnchorLayout;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -8,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.EventObject;
-import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -18,6 +15,10 @@ import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.EventListenerList;
 import dominio.conocimiento.ConfiguracionRespaldo;
+import dominio.conocimiento.Validacion;
+import excepciones.CadenaVaciaException;
+import excepciones.IPInvalidaException;
+import excepciones.PuertoInvalidoException;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -31,7 +32,7 @@ import dominio.conocimiento.ConfiguracionRespaldo;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JFConfiguracion extends javax.swing.JFrame {
+public class JFConfigRespaldo extends javax.swing.JFrame {
 
 	{
 		//Set Look & Feel
@@ -59,7 +60,7 @@ public class JFConfiguracion extends javax.swing.JFrame {
 	private JLabel lblPuertoBDRespaldo;
 	private JLabel lblIPBDRespaldo;
 
-	public JFConfiguracion() {
+	public JFConfigRespaldo() {
 		super();
 		initGUI();
 		setConfiguracion(new ConfiguracionRespaldo());
@@ -78,17 +79,15 @@ public class JFConfiguracion extends javax.swing.JFrame {
 			});
 			{
 				pnlPanel = new JPanel();
-				AnchorLayout pnlPanelLayout = new AnchorLayout();
 				getContentPane().add(pnlPanel, BorderLayout.CENTER);
-				pnlPanel.setLayout(pnlPanelLayout);
-				pnlPanel.setPreferredSize(new java.awt.Dimension(229, 193));
+				pnlPanel.setLayout(null);
 				{
 					btnAceptar = new JButton();
-					pnlPanel.add(btnAceptar, new AnchorConstraint(151, 139, 803, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(btnAceptar);
 					btnAceptar.setText("Aceptar");
 					btnAceptar.setName("btnAceptar");
 					btnAceptar.setDefaultCapable(true);
-					btnAceptar.setPreferredSize(new java.awt.Dimension(80, 30));
+					btnAceptar.setBounds(10, 164, 82, 30);
 					getRootPane().setDefaultButton(btnAceptar);
 					btnAceptar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
@@ -98,10 +97,10 @@ public class JFConfiguracion extends javax.swing.JFrame {
 				}
 				{
 					btnCancelar = new JButton();
-					pnlPanel.add(btnCancelar, new AnchorConstraint(152, 15, 807, 134, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(btnCancelar);
 					btnCancelar.setText("Cancelar");
 					btnCancelar.setName("btnCancelar");
-					btnCancelar.setPreferredSize(new java.awt.Dimension(80, 30));
+					btnCancelar.setBounds(137, 164, 82, 30);
 					btnCancelar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnCancelarActionPerformed(evt);
@@ -110,58 +109,58 @@ public class JFConfiguracion extends javax.swing.JFrame {
 				}
 				{
 					pnlBDRespaldo = new JPanel();
-					AnchorLayout pnlBDRespaldoLayout = new AnchorLayout();
-					pnlPanel.add(pnlBDRespaldo, new AnchorConstraint(12, 10, 431, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(pnlBDRespaldo);
 					pnlBDRespaldo.setBorder(BorderFactory.createTitledBorder(null, "Base de datos de respaldo", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma",0,11)));
-					pnlBDRespaldo.setLayout(pnlBDRespaldoLayout);
-					pnlBDRespaldo.setPreferredSize(new java.awt.Dimension(209, 73));
+					pnlBDRespaldo.setLayout(null);
+					pnlBDRespaldo.setBounds(10, 10, 209, 84);
 					{
 						txtPuertoBDRespaldo = new JTextField();
-						pnlBDRespaldo.add(txtPuertoBDRespaldo, new AnchorConstraint(595, 935, 869, 413, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlBDRespaldo.add(txtPuertoBDRespaldo);
 						txtPuertoBDRespaldo.setName("txtPuertoBDRespaldo");
-						txtPuertoBDRespaldo.setPreferredSize(new java.awt.Dimension(109, 20));
+						txtPuertoBDRespaldo.setBounds(90, 51, 103, 20);
 					}
 					{
 						txtIPBDRespaldo = new JTextField();
-						pnlBDRespaldo.add(txtIPBDRespaldo, new AnchorConstraint(253, 935, 527, 413, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlBDRespaldo.add(txtIPBDRespaldo);
 						txtIPBDRespaldo.setName("txtIPBDRespaldo");
-						txtIPBDRespaldo.setPreferredSize(new java.awt.Dimension(109, 20));
+						txtIPBDRespaldo.setBounds(90, 22, 103, 20);
 					}
 					{
 						lblPuertoBDRespaldo = new JLabel();
-						pnlBDRespaldo.add(lblPuertoBDRespaldo, new AnchorConstraint(609, 366, 801, 55, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlBDRespaldo.add(lblPuertoBDRespaldo);
 						lblPuertoBDRespaldo.setText("Puerto");
-						lblPuertoBDRespaldo.setPreferredSize(new java.awt.Dimension(65, 14));
+						lblPuertoBDRespaldo.setBounds(12, 54, 68, 14);
 					}
 					{
 						lblIPBDRespaldo = new JLabel();
-						pnlBDRespaldo.add(lblIPBDRespaldo, new AnchorConstraint(294, 366, 486, 55, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlBDRespaldo.add(lblIPBDRespaldo);
 						lblIPBDRespaldo.setText("Dirección IP");
-						lblIPBDRespaldo.setPreferredSize(new java.awt.Dimension(65, 14));
+						lblIPBDRespaldo.setBounds(12, 25, 68, 14);
 					}
 				}
 				{
 					pnlRespaldo = new JPanel();
-					pnlPanel.add(pnlRespaldo, new AnchorConstraint(91, 10, 750, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(pnlRespaldo);
 					pnlRespaldo.setBorder(BorderFactory.createTitledBorder(null, "Servidor de respaldo", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma",0,11)));
 					pnlRespaldo.setLayout(null);
 					pnlRespaldo.setFont(new java.awt.Font("Tahoma",1,11));
-					pnlRespaldo.setPreferredSize(new java.awt.Dimension(209, 49));
+					pnlRespaldo.setBounds(10, 100, 209, 55);
 					{
 						txtPuertoRespaldo = new JTextField();
 						pnlRespaldo.add(txtPuertoRespaldo);
-						txtPuertoRespaldo.setBounds(114, 18, 79, 20);
+						txtPuertoRespaldo.setBounds(114, 20, 79, 20);
 						txtPuertoRespaldo.setName("txtPuertoRespaldo");
 					}
 					{
 						lblPuertoRespaldo = new JLabel();
 						pnlRespaldo.add(lblPuertoRespaldo);
 						lblPuertoRespaldo.setText("Puerto de escucha");
-						lblPuertoRespaldo.setBounds(11, 21, 97, 14);
+						lblPuertoRespaldo.setBounds(11, 23, 97, 14);
 					}
 				}
 			}
 			pack();
+			this.setSize(237, 237);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -176,6 +175,7 @@ public class JFConfiguracion extends javax.swing.JFrame {
 	}
 	
 	public void setConfiguracion(ConfiguracionRespaldo configuracion) {
+		// Cambia la configuración aceptada y mostrada en la ventana
 		this.configuracion = configuracion;
 		txtIPBDRespaldo.setText(configuracion.getIPBDRespaldo());
 		txtPuertoBDRespaldo.setText(String.valueOf(configuracion.getPuertoBDRespaldo()));
@@ -195,50 +195,49 @@ public class JFConfiguracion extends javax.swing.JFrame {
 	}
 
 	private void btnAceptarActionPerformed(ActionEvent evt) {
-		Pattern patronIP;
-		int puerto;
 		boolean valido;
-		
-		// Creamos un patrón que define las IPs válidas
-		patronIP = Pattern.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + 
-				"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-                "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
 		
 		// Comprobamos los datos de la BD de respaldo
 		valido = true;
-		if(!patronIP.matcher(txtIPBDRespaldo.getText()).matches()) {
-			Dialogos.mostrarDialogoError(this, "Error", "La IP de la base de datos de respaldo tiene un formato incorrecto.");
+		try {
+			Validacion.comprobarDireccionIP(txtIPBDRespaldo.getText());
+			Validacion.comprobarPuerto(Integer.parseInt(txtPuertoBDRespaldo.getText()));
+		} catch(CadenaVaciaException ex) {
+			Dialogos.mostrarDialogoError(this, "Error", "La dirección IP de la base de datos de respaldo no puede ser nula.");
 			txtIPBDRespaldo.selectAll();
 			txtIPBDRespaldo.grabFocus();
 			valido = false;
+		} catch(IPInvalidaException ex) {
+			Dialogos.mostrarDialogoError(this, "Error", "La dirección IP de la base de datos de respaldo tiene un formato incorrecto.");
+			txtIPBDRespaldo.selectAll();
+			txtIPBDRespaldo.grabFocus();
+			valido = false;
+		} catch(PuertoInvalidoException ex) {
+			Dialogos.mostrarDialogoError(this, "Error", "El puerto de la base de datos de respaldo debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
+			txtPuertoBDRespaldo.selectAll();
+			txtPuertoBDRespaldo.grabFocus();
+			valido = false;
+		} catch(NumberFormatException ex) {
+			Dialogos.mostrarDialogoError(this, "Error", "El puerto de la base de datos de respaldo debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
+			txtPuertoBDRespaldo.selectAll();
+			txtPuertoBDRespaldo.grabFocus();
+			valido = false;
 		}
-		if(valido) {
-			try {
-				puerto = Integer.parseInt(txtPuertoBDRespaldo.getText());
-			} catch(NumberFormatException e) {
-				puerto = -1;
-			}
-			if(puerto < 0 || puerto > 65535) {
-				Dialogos.mostrarDialogoError(this, "Error", "El puerto de la base de datos de respaldo debe ser un número entre 0 y 65535.");
-				txtPuertoBDRespaldo.selectAll();
-				txtPuertoBDRespaldo.grabFocus();
-				valido = false;				
-			}
-		}
-		
+
 		// Comprobamos los datos del servidor de respaldo
 		if(valido) {
 			try {
-				puerto = Integer.parseInt(txtPuertoRespaldo.getText());
-			} catch(NumberFormatException e) {
-				puerto = -1;
-			}
-			if(puerto < 0 || puerto > 65535) {
-				Dialogos.mostrarDialogoError(this, "Error", "El puerto de escucha del servidor de respaldo debe ser un número entre 0 y 65535.");
+				Validacion.comprobarPuerto(Integer.parseInt(txtPuertoRespaldo.getText()));
+			} catch(PuertoInvalidoException ex) {
+				Dialogos.mostrarDialogoError(this, "Error", "El puerto de escucha del servidor de respaldo debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
 				txtPuertoRespaldo.selectAll();
 				txtPuertoRespaldo.grabFocus();
-				valido = false;				
+				valido = false;
+			} catch(NumberFormatException ex) {
+				Dialogos.mostrarDialogoError(this, "Error", "El puerto de escucha del servidor de respaldo debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
+				txtPuertoRespaldo.selectAll();
+				txtPuertoRespaldo.grabFocus();
+				valido = false;
 			}
 		}
 		

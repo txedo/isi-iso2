@@ -1,10 +1,8 @@
 package pruebas;
 
 import java.rmi.RemoteException;
-
 import org.uispec4j.Trigger;
 import org.uispec4j.interception.WindowInterceptor;
-
 import dominio.conocimiento.ConfiguracionRespaldo;
 import dominio.control.ControladorRespaldo;
 import junit.framework.TestCase;
@@ -29,11 +27,12 @@ public class PruebasControlador extends TestCase {
 		// No se necesita código de finalización 
 	}
 	
+	/** Pruebas de conexión y desconexión del servidor */
 	public void testConectarDesconectar() {
 		ConfiguracionRespaldo configuracion = null;
 		
 		try {
-			// Mostramos y ocultamos la ventana
+			// Mostramos y ocultamos la ventana principal
 			WindowInterceptor.run(new Trigger() {
 				public void run() {
 					controlador.mostrarVentana();
@@ -51,7 +50,7 @@ public class PruebasControlador extends TestCase {
 			configuracion = new ConfiguracionRespaldo("127.0.0.1", 3306, 1098);
 			controlador.iniciarServidorRespaldo(configuracion);
 			controlador.iniciarServidorRespaldo(configuracion);
-			assertTrue(controlador.getServidorActivo());
+			assertTrue(controlador.isServidorActivo());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -71,7 +70,7 @@ public class PruebasControlador extends TestCase {
 			configuracion = new ConfiguracionRespaldo("127.0.0.1", 3306, 1098);
 			controlador.detenerServidorRespaldo(configuracion);
 			controlador.detenerServidorRespaldo(configuracion);
-			assertFalse(controlador.getServidorActivo());
+			assertFalse(controlador.isServidorActivo());
 		} catch(Exception e) {
 			fail(e.toString());
 		}

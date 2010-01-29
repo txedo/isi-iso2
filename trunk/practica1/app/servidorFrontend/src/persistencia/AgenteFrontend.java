@@ -13,8 +13,8 @@ public class AgenteFrontend {
 
 	private static AgenteFrontend instancia = null;
 	private Connection conexion;
-	private String url = "jdbc:mysql://<IP>:3306/bdssca?user=iso&password=osi";
 	private String ip;
+	private int puerto;
 	
 	protected AgenteFrontend() throws SQLException {
 		try {
@@ -40,15 +40,19 @@ public class AgenteFrontend {
 	public void setIP(String ip) {
 		this.ip = ip;
 	}
+
+	public void setPuerto(int puerto) {
+		this.puerto = puerto;
+	}
 	
 	public void abrir() throws SQLException {
-		String urlCompleta;
+		String url;
 		
 		if(conexion == null || conexion.isClosed()) {
 			// Indicamos que las modificaciones de la base de datos
 			// no se deben aplicar hasta llamar al método 'commit'
-			urlCompleta = url.replaceFirst("<IP>", ip);
-			conexion = DriverManager.getConnection(urlCompleta);
+			url = "jdbc:mysql://" + ip + ":" + String.valueOf(puerto) + "/bdssca?user=iso&password=osi";
+			conexion = DriverManager.getConnection(url);
 			conexion.setAutoCommit(false); 
 		}
 	}

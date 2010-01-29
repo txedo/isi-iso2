@@ -21,6 +21,7 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasMedicos.class);
 		suite.addTestSuite(PruebasBeneficiarios.class);
 		suite.addTestSuite(PruebasCitas.class);
+		suite.addTestSuite(PruebasJFConfigFrontend.class);
 		return suite;
 	}
 	

@@ -37,13 +37,14 @@ public class ConexionServidorFrontend extends UnicastRemoteObject implements ISe
 	private static final long serialVersionUID = 7735848879217866237L;
 	
 	private IServidorFrontend servidor;
+	private boolean registro;
 	
 	private static ConexionServidorFrontend instancia;
 
 	protected ConexionServidorFrontend() throws RemoteException {
 		super();
-		LocateRegistry.createRegistry(PUERTO_SERVIDOR);
 		servidor = ServidorFrontend.getServidor();
+		registro = false;
 	}
 	
 	public static ConexionServidorFrontend getConexion() throws RemoteException {
@@ -53,24 +54,28 @@ public class ConexionServidorFrontend extends UnicastRemoteObject implements ISe
 		return instancia;
 	}
 	
-    public void activar(String ip) throws MalformedURLException, RemoteException {
+    public void activar(String ip, int puerto) throws MalformedURLException, RemoteException {
 		// Si el objeto ya estaba exportado, controlamos las
 		// excepciones y no las lanzamos hacia arriba
     	try {
-    		exportObject(this, PUERTO_SERVIDOR);
+    		if(!registro) {
+    			LocateRegistry.createRegistry(puerto);
+    			registro = true;
+    		}
+    		exportObject(this, puerto);
         } catch(ExportException ex) {
         	if(!ex.getMessage().toLowerCase().equals("object already exported")) {
         		throw ex;
         	}
         }
         try {
-            Naming.bind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
+            Naming.bind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR, this);
         } catch(AlreadyBoundException ex) {
-            Naming.rebind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR, this);
+            Naming.rebind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR, this);
         }
     }
     
-    public void desactivar(String ip) throws RemoteException, MalformedURLException {
+    public void desactivar(String ip, int puerto) throws RemoteException, MalformedURLException {
 		// Si el objeto no estaba exportado, controlamos las
 		// excepciones y no las lanzamos hacia arriba
     	try {
@@ -78,7 +83,7 @@ public class ConexionServidorFrontend extends UnicastRemoteObject implements ISe
     	} catch(NoSuchObjectException ex) {
     	}
     	try {
-    		Naming.unbind("rmi://" + ip + ":" + String.valueOf(PUERTO_SERVIDOR) + "/" + NOMBRE_SERVIDOR);
+    		Naming.unbind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR);
     	} catch(NotBoundException ex) {
     	}
     }
