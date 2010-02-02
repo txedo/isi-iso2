@@ -7,7 +7,6 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.ISesion;
@@ -18,7 +17,6 @@ import excepciones.CitaNoValidaException;
 import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
-import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;

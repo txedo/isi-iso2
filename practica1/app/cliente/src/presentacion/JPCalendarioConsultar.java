@@ -65,13 +65,13 @@ public class JPCalendarioConsultar extends JPBase {
 	private boolean creacion = false;
 	private JPanel parent = null;
 	
-	public JPCalendarioConsultar() {
-		super();
+	public JPCalendarioConsultar(JFrame frame, ControladorCliente controlador) {
+		super(frame, controlador);
 		initGUI();
 	}
 	
-	public JPCalendarioConsultar(JPanel parent, String NIF) {
-		super();
+	public JPCalendarioConsultar(JFrame frame, ControladorCliente controlador, JPanel parent, String NIF) {
+		super(frame, controlador);
 		initGUI();
 		txtNIF.setText(NIF);
 		txtNIF.setEnabled(false);
@@ -205,14 +205,6 @@ public class JPCalendarioConsultar extends JPBase {
 		}
 	}
 	
-	public void setControlador(ControladorCliente controlador) {
-		super.setControlador(controlador);
-	}
-	
-	public void setFrame(JFrame frame) {
-		super.setFrame(frame);
-	}
-	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
 		ArrayList<PeriodoTrabajo> periodos;
 		try {
@@ -238,7 +230,7 @@ public class JPCalendarioConsultar extends JPBase {
 	}
 	
 	private void crearPanelPeriodosTrabajo (DiaSemana s) {
-		pTrabajo = new JPPeriodosTrabajo(s);
+		pTrabajo = new JPPeriodosTrabajo(getFrame(), getControlador(), s);
 		this.add(pTrabajo, new AnchorConstraint(42, 951, 878, 160, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 		pTrabajo.setPreferredSize(new java.awt.Dimension(400, 300));
 		pTrabajo.activarPeriodos(false);
@@ -330,7 +322,7 @@ public class JPCalendarioConsultar extends JPBase {
 			}
 			if (esCreacion ()) {
 				// No guardar en la BD. Devolver la lista a la ventana que crea esto
-				((JPUsuarioCrear)parent).setPeriodos(periodosTrabajo);
+				((JPUsuarioRegistrar)parent).setPeriodos(periodosTrabajo);
 				((JDialog)this.getRootPane().getParent()).dispose();
 			}
 			else {

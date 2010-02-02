@@ -1,10 +1,10 @@
 package presentacion;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,17 +17,14 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Sesion;
 import dominio.control.ControladorCliente;
 import excepciones.MedicoInexistenteException;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -43,9 +40,6 @@ import excepciones.MedicoInexistenteException;
 */
 public class JPEmitirVolante extends JPBase {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2491308165795545454L;
 	
 	private JPBeneficiarioConsultar jPanelBeneficiario;
@@ -65,9 +59,9 @@ public class JPEmitirVolante extends JPBase {
 	private ArrayList<Medico> especialistas;
 	private long idVolante;
 
-	public JPEmitirVolante() {
-		super();
-		jPanelBeneficiario = new JPBeneficiarioConsultar();
+	public JPEmitirVolante(JFrame frame, ControladorCliente controlador) {
+		super(frame, controlador);
+		jPanelBeneficiario = new JPBeneficiarioConsultar(frame, controlador);
 		jPanelBeneficiario.ocultarControles();
 		initGUI();
 	}
@@ -198,16 +192,6 @@ public class JPEmitirVolante extends JPBase {
 			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
-	}
-	
-	public void setControlador(ControladorCliente controlador) {
-		super.setControlador(controlador);
-		jPanelBeneficiario.setControlador(controlador);
-	}
-	
-	public void setFrame(JFrame frame) {
-		super.setFrame(frame);
-		this.setFrame(frame);
 	}
 	
 	private void lstEspecialistasValueChanged(ListSelectionEvent evt) {

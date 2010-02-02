@@ -11,6 +11,7 @@ import javax.swing.DebugGraphics;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPasswordField;
@@ -34,6 +35,7 @@ import dominio.conocimiento.Roles;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Utilidades;
+import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CalendarioNoCreadoException;
 import excepciones.CentroSaludIncorrectoException;
@@ -58,7 +60,7 @@ import excepciones.UsuarioYaExistenteException;
 /**
 * Panel que permite registrar nuevos usuarios en el sistema.
 */
-public class JPUsuarioCrear extends JPBase {
+public class JPUsuarioRegistrar extends JPBase {
 
 	private static final long serialVersionUID = 4857739286462180783L;
 	
@@ -93,8 +95,8 @@ public class JPUsuarioCrear extends JPBase {
 	private JPCalendarioConsultar jPanelConsultarCalendario;
 	private ArrayList<PeriodoTrabajo> periodos = new ArrayList<PeriodoTrabajo>();
 	
-	public JPUsuarioCrear() {
-		super();
+	public JPUsuarioRegistrar(JFrame frame, ControladorCliente controlador) {
+		super(frame, controlador);
 		initGUI();
 		crearModelos();
 	}
@@ -295,7 +297,7 @@ public class JPUsuarioCrear extends JPBase {
 				((Medico)usu).setTipoMedico(tipo);
 				// TODO: mostrar la ventana para crear el calendario y asignarselo al medico
 				JDialog calendario = new JDialog();
-				jPanelConsultarCalendario = new JPCalendarioConsultar(this, txtDNI.getText());
+				jPanelConsultarCalendario = new JPCalendarioConsultar(getFrame(), getControlador(), this, txtDNI.getText());
 				calendario.add(jPanelConsultarCalendario);
 				calendario.setModal(true);
 				calendario.setTitle("Configuración de calendario");

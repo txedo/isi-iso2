@@ -115,8 +115,7 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		if (ventanaPrincipal != null) {
 			ventanaPrincipal.dispose();
 		}
-		ventanaPrincipal = new JFPrincipal();
-		ventanaPrincipal.setControlador(this);
+		ventanaPrincipal = new JFPrincipal(this);
 		ventanaPrincipal.iniciar();
 		ventanaPrincipal.setVisible(true);
 	}

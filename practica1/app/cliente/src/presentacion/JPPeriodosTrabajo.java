@@ -1,17 +1,15 @@
 package presentacion;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.control.ControladorCliente;
 import excepciones.HorasJornadaIncorrectasException;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,10 +27,9 @@ import javax.swing.JLabel;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class JPPeriodosTrabajo extends JPBase {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = -8549178364759642024L;
+	
 	//TODO definir las constantes en un interface para poderlas configurar desde la UI
 	private static final int MAX_HORAS_JORNADA = 6;
 	private static final int HORA_INICIO_JORNADA = 9;
@@ -52,8 +49,8 @@ public class JPPeriodosTrabajo extends JPBase {
 	private ArrayList<PeriodoTrabajo> periodos;
 	private DiaSemana diaSemana;
 	
-	public JPPeriodosTrabajo(DiaSemana d) {
-		super();
+	public JPPeriodosTrabajo(JFrame frame, ControladorCliente controlador, DiaSemana d) {
+		super(frame, controlador);
 		diaSemana = d;
 		initGUI();
 	}

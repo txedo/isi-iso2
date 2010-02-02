@@ -13,23 +13,20 @@ public class JPBase extends JPanel {
 
 	private static final long serialVersionUID = -8138352814844589253L;
 	
-	private ControladorCliente controlador;
 	private JFrame frame;
+	private ControladorCliente controlador;
 	
-	public void setControlador(ControladorCliente controlador) {
+	public JPBase(JFrame frame, ControladorCliente controlador) {
+		this.frame = frame;
 		this.controlador = controlador;
 	}
-	
-	public ControladorCliente getControlador() {
-		return controlador;
-	}
 
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
-	}
-		
 	public JFrame getFrame() {
 		return frame;
+	}
+
+	public ControladorCliente getControlador() {
+		return controlador;
 	}
 	
 }

@@ -12,6 +12,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import com.cloudgarden.layout.AnchorConstraint;
@@ -19,6 +20,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Utilidades;
+import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CadenaVaciaException;
@@ -30,7 +32,6 @@ import excepciones.NSSIncorrectoException;
 import excepciones.NombreIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -54,6 +55,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 	private final String ID_NIF = "NIF";
 	private final String ID_NSS = "NSS";
 	
+	private Beneficiario beneficiario;
+
 	private ComboBoxModel cmbIdentificacionModel;
 	private JLabel lblMedicoAsignado;
 	private JTextField txtMedicoAsignado;
@@ -81,11 +84,9 @@ public class JPBeneficiarioConsultar extends JPBase {
 	private JButton btnBuscar;
 	private JLabel lblBuscar;
 	private JComboBox cmbIdentificacion;
-	
-	private Beneficiario beneficiario;
-	
-	public JPBeneficiarioConsultar() {
-		super();
+		
+	public JPBeneficiarioConsultar(JFrame frame, ControladorCliente controlador) {
+		super(frame, controlador);
 		initGUI();
 		crearModelos();
 	}

@@ -21,8 +21,8 @@ public class JPCitas extends JPBase {
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
 	
-	public JPCitas() {
-		super();
+	public JPCitas(JFrame frame, ControladorCliente controlador) {
+		super(frame, controlador);
 		initGUI();
 		inicializarOperaciones();
 		ocultarPaneles();
@@ -36,7 +36,8 @@ public class JPCitas extends JPBase {
 			this.setPreferredSize(new java.awt.Dimension(565, 390));
 			{
 				jPanelListaOperaciones = new JPOperaciones();
-				this.add(jPanelListaOperaciones, new AnchorConstraint(5, 214, 0, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				this.add(jPanelListaOperaciones, new AnchorConstraint(6, 214, 0, 4, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jPanelListaOperaciones.setPreferredSize(new java.awt.Dimension(139, 384));
 				jPanelListaOperaciones.addOperacionCambiadaListener(new OperacionCambiadaListener() {
 					public void operacionCambiada(EventObject evt) {
 						jPanelListaOperacionesOperacionCambiada(evt);
@@ -45,18 +46,20 @@ public class JPCitas extends JPBase {
 			}
 			{
 				jSeparator = new JSeparator();
-				this.add(jSeparator, new AnchorConstraint(1, 237, 1001, 224, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				this.add(jSeparator, new AnchorConstraint(0, 268, 0, 149, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 				jSeparator.setLayout(null);
-				jSeparator.setPreferredSize(new java.awt.Dimension(7, 296));
 				jSeparator.setOrientation(SwingConstants.VERTICAL);
+				jSeparator.setPreferredSize(new java.awt.Dimension(5, 390));
 			}
 			{
-				jPanelTramitar = new JPCitaTramitar();
-				this.add(jPanelTramitar, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				jPanelTramitar = new JPCitaTramitar(this.getFrame(), this.getControlador());
+				this.add(jPanelTramitar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jPanelTramitar.setPreferredSize(new java.awt.Dimension(406, 390));
 			}
 			{
-				jPanelConsultar = new JPCitaConsultar();
-				this.add(jPanelConsultar, new AnchorConstraint(1, 1000, 1001, 237, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+				jPanelConsultar = new JPCitaConsultar(this.getFrame(), this.getControlador());
+				this.add(jPanelConsultar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jPanelConsultar.setPreferredSize(new java.awt.Dimension(406, 390));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -65,25 +68,13 @@ public class JPCitas extends JPBase {
 	
 	// $hide>>$
 	
-	public void setControlador(ControladorCliente controlador) {
-		super.setControlador(controlador);
-		jPanelTramitar.setControlador(controlador);
-		jPanelConsultar.setControlador(controlador);
-	}
-	
-	public void setFrame(JFrame frame) {
-		super.setFrame(frame);
-		jPanelTramitar.setFrame(frame);
-		jPanelConsultar.setFrame(frame);
-	}
-	
 	private void inicializarOperaciones() {
-		jPanelListaOperaciones.ponerOperacion(Operaciones.TramitarCita);
-		jPanelListaOperaciones.ponerOperacion(Operaciones.ConsultarCitas);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCita);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarAnularCita);
 	}
 	
 	private void ocultarPaneles() {
-		jPanelListaOperaciones.setOperacion(Operaciones.TramitarCita);
+		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.TramitarCita);
 		jPanelTramitar.setVisible(true);
 		jPanelConsultar.setVisible(false);
 	}
@@ -95,22 +86,22 @@ public class JPCitas extends JPBase {
 		if(jPanelConsultar.isValid()) {
 			jPanelConsultar.setVisible(false);
 		}
-		if(jPanelListaOperaciones.getOperacion() == Operaciones.TramitarCita) {
+		if(jPanelListaOperaciones.getOperacion() == OperacionesInterfaz.TramitarCita) {
 			jPanelTramitar.setVisible(true);
 			jPanelTramitar.repaint();
 		}
-		if(jPanelListaOperaciones.getOperacion() == Operaciones.ConsultarCitas) {
+		if(jPanelListaOperaciones.getOperacion() == OperacionesInterfaz.ConsultarAnularCita) {
 			jPanelConsultar.setVisible(true);
 			jPanelConsultar.repaint();
 		}
 	}
 
 	public void desactivarTramitarCita() {
-		jPanelListaOperaciones.quitarOperacion(Operaciones.TramitarCita);
+		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.TramitarCita);
 	}
 
-	public void desactivarConsultarCita() {
-		jPanelListaOperaciones.quitarOperacion(Operaciones.ConsultarCitas);
+	public void desactivarConsultarAnularCita() {
+		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarAnularCita);
 	}
 
 	// $hide<<$

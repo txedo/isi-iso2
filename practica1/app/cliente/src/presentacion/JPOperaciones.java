@@ -2,11 +2,14 @@ package presentacion;
 
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
@@ -15,6 +18,19 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Operaciones;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 /**
 * Panel que muestra una serie de operaciones y permite seleccionar una.
 */
@@ -24,17 +40,21 @@ public class JPOperaciones extends JPanel {
 	
 	private EventListenerList listenerList;
 	
-	private ArrayList<Operaciones> operaciones;
+	private ArrayList<OperacionesInterfaz> operaciones;
 	
 	private DefaultListModel lstOperacionesModel;
+	private DefaultListCellRenderer lstOperacionesRenderer;
 	private JLabel lblOperaciones;
 	private JList lstOperaciones;
 
 	public JPOperaciones() {
 		super();
 		initGUI();
-		operaciones = new ArrayList<Operaciones>();
+		operaciones = new ArrayList<OperacionesInterfaz>();
 		listenerList = new EventListenerList();
+		lstOperacionesRenderer = new DefaultListCellRenderer();
+		lstOperacionesRenderer.setHorizontalAlignment(JLabel.CENTER);
+		lstOperaciones.setCellRenderer(lstOperacionesRenderer);
 	}
 	
 	private void initGUI() {
@@ -45,17 +65,19 @@ public class JPOperaciones extends JPanel {
 			this.setPreferredSize(new java.awt.Dimension(130, 310));
 			{
 				lblOperaciones = new JLabel();
-				this.add(lblOperaciones, new AnchorConstraint(0, 1004, 89, 7, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblOperaciones.setText("Operaciones:");
-				lblOperaciones.setPreferredSize(new java.awt.Dimension(107, 15));
+				this.add(lblOperaciones, new AnchorConstraint(2, 1004, 89, 7, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblOperaciones.setText("Operaciones");
+				lblOperaciones.setPreferredSize(new java.awt.Dimension(123, 15));
+				lblOperaciones.setHorizontalAlignment(SwingConstants.CENTER);
 			}
 			{
 				lstOperaciones = new JList();
-				this.add(lstOperaciones, new AnchorConstraint(21, 1004, 11, 7, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				lstOperaciones.setPreferredSize(new java.awt.Dimension(107, 264));
+				this.add(lstOperaciones, new AnchorConstraint(21, 965, 11, 7, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				lstOperaciones.setPreferredSize(new java.awt.Dimension(118, 278));
 				lstOperaciones.setLayout(null);
 				lstOperaciones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				lstOperaciones.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+				lstOperaciones.setFixedCellHeight(35);
 				lstOperaciones.addListSelectionListener(new ListSelectionListener() {
 					public void valueChanged(ListSelectionEvent evt) {
 						lstOperacionesValueChanged(evt);
@@ -69,41 +91,41 @@ public class JPOperaciones extends JPanel {
 	
 	//$hide>>$
 	
-	public void ponerOperacion(Operaciones operacion) {
+	public void ponerOperacion(OperacionesInterfaz operacion) {
 		if(!operaciones.contains(operacion)) {
 			operaciones.add(operacion);
 			actualizarListaOperaciones();
 		}
 	}
 	
-	public void quitarOperacion(Operaciones operacion) {
+	public void quitarOperacion(OperacionesInterfaz operacion) {
 		if(operaciones.contains(operacion)) {
 			operaciones.remove(operacion);
 			actualizarListaOperaciones();
 		}		
 	}
 	
-	public void setOperacion(Operaciones operacion) {
+	public void setOperacion(OperacionesInterfaz operacion) {
 		if(operaciones.contains(operacion)) {
 			lstOperaciones.setSelectedValue(operaciones.indexOf(operacion), true);
 		}
 	}
 
-	public Operaciones getOperacion() {
-		Operaciones operacionSel;
+	public OperacionesInterfaz getOperacion() {
+		OperacionesInterfaz operacionSel;
 		
 		if(lstOperaciones.getSelectedIndex() != -1) {
 			operacionSel = operaciones.get(lstOperaciones.getSelectedIndex());
 		} else {
-			operacionSel = Operaciones.ConsultarCitas; //TODO:Crear operación inválida?
+			operacionSel = OperacionesInterfaz.OperacionInvalida;
 		}
 		return operacionSel;
 	}
 	
 	private void actualizarListaOperaciones() {
 		lstOperacionesModel = new DefaultListModel();
-		for(Operaciones operacion : operaciones) {
-			lstOperacionesModel.addElement(nombreOperacion(operacion));
+		for(OperacionesInterfaz operacion : operaciones) {
+			lstOperacionesModel.addElement("<html><center>" + nombreOperacion(operacion) + "</center></html>");
 		}
 		lstOperaciones.setModel(lstOperacionesModel);
 		if(operaciones.size() != 0) {
@@ -136,60 +158,30 @@ public class JPOperaciones extends JPanel {
 		listenerList.remove(OperacionCambiadaListener.class, listener);
 	}
 
-	private String nombreOperacion(Operaciones operacion) {
+	private String nombreOperacion(OperacionesInterfaz operacion) {
 		String nombre;
 		
 		switch(operacion) {
-		case ConsultarBeneficiario:
-			nombre = "Consultar beneficiario";
-			break;
-		case ConsultarMedico:
-			nombre = "Consultar médico";
-			break;
-		case ConsultarUsuario:
-			nombre = "Consultar usuario";
-			break;
-		case CrearUsuario:
-			nombre = "Registrar usuario";
-			break;
-		case AnularCita:
-			nombre = "Anular cita";
-			break;
-		case EliminarMedico:
-			nombre = "Eliminar médico";
-			break;
-		case EliminarUsuario:
-			nombre = "Eliminar usuario";
-			break;
-		case EmitirVolante:
-			nombre = "Emitir volante";
-			break;
-		case EstablecerSustituto:
-			nombre = "Establecer sustituto";
-			break;
-		case ModificarBeneficiario:
-			nombre = "Modificar beneficiario";
-			break;
-		case ModificarCalendario:
-			nombre = "Modificar calendario";
-			break;
-		case ModificarMedico:
-			nombre = "Modificar médico";
-			break;
-		case ModificarUsuario:
-			nombre = "Modificar usuario";
-			break;
-		case ConsultarCitas:
-			nombre = "Consultar citas";
-			break;
 		case RegistrarBeneficiario:
 			nombre = "Registrar beneficiario";
 			break;
-		case RegistrarMedico:
-			nombre = "Registrar médico";
+		case ConsultarModificarBeneficiario:
+			nombre = "Consultar o<br>modificar beneficiario";
+			break;
+		case RegistrarUsuario:
+			nombre = "Registrar usuario";
+			break;
+		case ConsultarModificarUsuario:
+			nombre = "Consultar o<br>modificar usuario";
 			break;
 		case TramitarCita:
 			nombre = "Tramitar cita";
+			break;
+		case ConsultarAnularCita:
+			nombre = "Consultar o<br>anular cita";
+			break;
+		case EstablecerSustituto:
+			nombre = "Establecer sustituto";
 			break;
 		default:
 			nombre = "Operación desconocida";

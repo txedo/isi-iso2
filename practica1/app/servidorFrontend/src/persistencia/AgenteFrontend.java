@@ -37,6 +37,10 @@ public class AgenteFrontend {
 		return instancia;
 	}
 
+	public Connection getConexion() {
+		return conexion;
+	}
+	
 	public void setIP(String ip) {
 		this.ip = ip;
 	}
@@ -59,10 +63,6 @@ public class AgenteFrontend {
 	
 	public void cerrar() throws SQLException {
 		conexion.close();
-	}
-	
-	public Connection getConexion() {
-		return conexion;
 	}
 	
 	public ResultSet consultar(ComandoSQL comando) throws SQLException {

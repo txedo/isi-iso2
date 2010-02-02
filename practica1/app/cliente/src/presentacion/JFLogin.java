@@ -2,7 +2,6 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.Utilidades;
 import dominio.control.ControladorCliente;
 import excepciones.CadenaVaciaException;
@@ -54,9 +53,9 @@ public class JFLogin extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -8335773788689456763L;
 	
-	private final int WIDTH = 296;
-	private final int MAX_HEIGHT = 225;
-	private final int MIN_HEIGHT = 140;
+	private final int WIDTH = 285;
+	private final int MAX_HEIGHT = 272;
+	private final int MIN_HEIGHT = 175;
 	
 	private ControladorCliente controlador;
 	private JLabel jLabel2;
@@ -84,9 +83,9 @@ public class JFLogin extends javax.swing.JFrame {
 			getContentPane().setLayout(thisLayout);
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setTitle("Inicio de sesión");
-			this.setPreferredSize(new java.awt.Dimension(296, 140));
-			this.setMinimumSize(new java.awt.Dimension(296, 140));
-			this.setMaximumSize(new java.awt.Dimension(296, 225));
+			this.setPreferredSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
+			this.setMinimumSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
+			this.setMaximumSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
 			this.setResizable(false);
 			setLocationRelativeTo(null);
 			this.addWindowListener(new WindowAdapter() {
@@ -99,84 +98,74 @@ public class JFLogin extends javax.swing.JFrame {
 				AnchorLayout jPanel1Layout = new AnchorLayout();
 				getContentPane().add(jPanel1, BorderLayout.CENTER);
 				jPanel1.setLayout(jPanel1Layout);
-				jPanel1.setPreferredSize(new java.awt.Dimension(296, 140));
-				jPanel1.setSize(296, 140);
-				jPanel1.setMinimumSize(new java.awt.Dimension(296, 140));
-				jPanel1.setMaximumSize(new java.awt.Dimension(296, 225));
 				{
 					JPDatosConexion = new JPanel();
-					AnchorLayout JPDatosConexionLayout = new AnchorLayout();
-					JPDatosConexion.setLayout(JPDatosConexionLayout);
-					jPanel1.add(JPDatosConexion, new AnchorConstraint(85, 10, 1004, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					JPDatosConexion.setBorder(BorderFactory.createTitledBorder("Datos de conexión"));
-					JPDatosConexion.setPreferredSize(new java.awt.Dimension(270, 75));
+					JPDatosConexion.setLayout(null);
+					jPanel1.add(JPDatosConexion, new AnchorConstraint(104, 905, 1004, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					JPDatosConexion.setBorder(BorderFactory.createTitledBorder("Datos del servidor"));
+					JPDatosConexion.setPreferredSize(new java.awt.Dimension(259, 89));
 					JPDatosConexion.setVisible(false);
 					{
 						txtPuertoServidor = new JTextField();
 						JPDatosConexion.add(txtPuertoServidor, new AnchorConstraint(580, 950, 846, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtPuertoServidor.setText("2995");
-						txtPuertoServidor.setPreferredSize(new java.awt.Dimension(125, 20));
-						txtPuertoServidor.setVisible(false);
+						txtPuertoServidor.setBounds(115, 53, 125, 20);
 					}
 					{
 						lblPuertoServidor = new JLabel();
 						JPDatosConexion.add(lblPuertoServidor, new AnchorConstraint(593, 483, 780, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						lblPuertoServidor.setText("Puerto");
-						lblPuertoServidor.setPreferredSize(new java.awt.Dimension(120, 14));
-						lblPuertoServidor.setVisible(false);
+						lblPuertoServidor.setBounds(13, 57, 91, 14);
 					}
 					{
 						txtIPServidor = new JTextField();
 						JPDatosConexion.add(txtIPServidor, new AnchorConstraint(246, 950, 513, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtIPServidor.setText("127.0.0.1");
-						txtIPServidor.setPreferredSize(new java.awt.Dimension(125, 20));
 						txtIPServidor.setLayout(null);
 					}
 					{
 						lblDireccionServidor = new JLabel();
 						JPDatosConexion.add(lblDireccionServidor, new AnchorConstraint(286, 483, 473, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-						lblDireccionServidor.setText("Dirección IP del servidor");
-						lblDireccionServidor.setPreferredSize(new java.awt.Dimension(120, 14));
+						lblDireccionServidor.setText("Dirección IP");
 					}
 				}
 				{
 					JPDatosUsuario = new JPanel();
-					AnchorLayout JPDatosUsuarioLayout = new AnchorLayout();
-					JPDatosUsuario.setLayout(JPDatosUsuarioLayout);
-					jPanel1.add(JPDatosUsuario, new AnchorConstraint(6, 10, 630, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					JPDatosUsuario.setPreferredSize(new java.awt.Dimension(270, 75));
+					JPDatosUsuario.setLayout(null);
+					jPanel1.add(JPDatosUsuario, new AnchorConstraint(10, 905, 630, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					JPDatosUsuario.setPreferredSize(new java.awt.Dimension(259, 86));
 					JPDatosUsuario.setBorder(BorderFactory.createTitledBorder("Datos de usuario"));
 					{
 						txtPassword = new JPasswordField();
 						JPDatosUsuario.add(txtPassword, new AnchorConstraint(580, 950, 846, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-						txtPassword.setPreferredSize(new java.awt.Dimension(125, 20));
 						txtPassword.setLayout(null);
+						txtPassword.setBounds(115, 50, 125, 20);
 					}
 					{
 						jLabel3 = new JLabel();
 						JPDatosUsuario.add(jLabel3, new AnchorConstraint(593, 483, 780, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						jLabel3.setText("Contraseña");
-						jLabel3.setPreferredSize(new java.awt.Dimension(120, 14));
+						jLabel3.setBounds(13, 54, 85, 14);
 					}
 					{
 						txtUsuario = new JTextField();
 						JPDatosUsuario.add(txtUsuario, new AnchorConstraint(246, 950, 513, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-						txtUsuario.setPreferredSize(new java.awt.Dimension(125, 20));
 						txtUsuario.setLayout(null);
+						txtUsuario.setBounds(115, 22, 125, 20);
 					}
 					{
 						jLabel2 = new JLabel();
 						JPDatosUsuario.add(jLabel2, new AnchorConstraint(286, 483, 473, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						jLabel2.setText("Usuario");
-						jLabel2.setPreferredSize(new java.awt.Dimension(120, 14));
+						jLabel2.setBounds(13, 26, 85, 14);
 					}
 				}
 				{
 					btnAvanzado = new JButton();
-					jPanel1.add(btnAvanzado, new AnchorConstraint(458, 291, 7, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					jPanel1.add(btnAvanzado, new AnchorConstraint(458, 291, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					btnAvanzado.setLayout(null);
 					btnAvanzado.setText("Avanzado >>");
-					btnAvanzado.setPreferredSize(new java.awt.Dimension(104, 23));
+					btnAvanzado.setPreferredSize(new java.awt.Dimension(103, 30));
 					btnAvanzado.setRequestFocusEnabled(false);
 					btnAvanzado.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
@@ -186,12 +175,12 @@ public class JFLogin extends javax.swing.JFrame {
 				}
 				{
 					btnConectar = new JButton();
-					jPanel1.add(btnConectar, new AnchorConstraint(450, 11, 7, 698, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+					jPanel1.add(btnConectar, new AnchorConstraint(450, 10, 11, 698, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnConectar.setDefaultCapable(true);
 					getRootPane().setDefaultButton(btnConectar);
 					btnConectar.setText("Iniciar sesión");
 					btnConectar.setSelected(true);
-					btnConectar.setPreferredSize(new java.awt.Dimension(104, 23));
+					btnConectar.setPreferredSize(new java.awt.Dimension(107, 30));
 					btnConectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnConectarActionPerformed(evt);
@@ -199,10 +188,9 @@ public class JFLogin extends javax.swing.JFrame {
 					});
 				}
 			}
-			txtIPServidor.setVisible(false);
-			lblDireccionServidor.setVisible(false);
+			txtIPServidor.setBounds(115, 24, 125, 20);
+			lblDireccionServidor.setBounds(13, 28, 91, 14);
 			pack();
-			this.setSize(296, 140);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

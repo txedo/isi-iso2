@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -19,17 +18,16 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.IConstantes;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Utilidades;
+import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CadenaVaciaException;
 import excepciones.FechaNoValidaException;
@@ -90,8 +88,8 @@ public class JPCitaTramitar extends JPBase implements IConstantes {
 	private Beneficiario beneficiario;
     private String horaSeleccionada = "";
 
-	public JPCitaTramitar() {
-		super();
+	public JPCitaTramitar(JFrame frame, ControladorCliente controlador) {
+		super(frame, controlador);
 		initGUI();
 		crearModelos(new String [] {""});
 	}
@@ -390,7 +388,7 @@ public class JPCitaTramitar extends JPBase implements IConstantes {
 						// se pasa al render del comboBox las horas ya ocupadas, para mostrarlas en rojo
 						if (((Hashtable<String, ArrayList<String>>)informacion[1]).containsKey(formatoDeFecha.format(dtcDiaCita.getDate()))) {
 							horasOcupadasDia = ((Hashtable<String, ArrayList<String>>)informacion[1]).get(formatoDeFecha.format(dtcDiaCita.getDate()));
-							cbHorasCitas.setRenderer(new RenderJComboBox(horasOcupadasDia));
+							cbHorasCitas.setRenderer(new ListCellRendererCitas(horasOcupadasDia));
 						}
 						
 					}
