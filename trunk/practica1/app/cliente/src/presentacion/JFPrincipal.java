@@ -87,16 +87,20 @@ public class JFPrincipal extends javax.swing.JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				JFPrincipal inst = new JFPrincipal();
+				JFPrincipal inst = new JFPrincipal(null);
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
 			}
 		});
 	}
 	
-	public JFPrincipal() {
+	public JFPrincipal(ControladorCliente controlador) {
 		super();
+		this.controlador = controlador;
 		initGUI();
+		//TODO:¿y esta inicialización?
+		if (controlador.getSesion().getRol() == Roles.Medico.ordinal())
+		jPanelEmitirVolante.inicializarEspecialistas();
 	}
 	
 	private void initGUI() {
@@ -203,26 +207,27 @@ public class JFPrincipal extends javax.swing.JFrame {
 				}
 				{
 					jTabbedPaneOperaciones = new JTabbedPane();
-					jPanelOperaciones.add(jTabbedPaneOperaciones, new AnchorConstraint(1, 979, 903, 19, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-					jTabbedPaneOperaciones.setPreferredSize(new java.awt.Dimension(664, 434));
+					jPanelOperaciones.add(jTabbedPaneOperaciones, new AnchorConstraint(8, 16, 46, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					jTabbedPaneOperaciones.setPreferredSize(new java.awt.Dimension(656, 387));
+					jTabbedPaneOperaciones.setFont(new java.awt.Font("Tahoma",0,12));
 					{
 						jPanelBienvenida = new JPBienvenida();
 						jTabbedPaneOperaciones.addTab("Inicio", null, jPanelBienvenida, null);
 					}
 					{
-						jPanelGestionarBeneficiarios = new JPBeneficiarios();
+						jPanelGestionarBeneficiarios = new JPBeneficiarios(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Beneficiarios", null, jPanelGestionarBeneficiarios, null);
 					}
 					{
-						jPanelGestionarUsuarios = new JPUsuarios();
+						jPanelGestionarUsuarios = new JPUsuarios(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Usuarios", null, jPanelGestionarUsuarios, null);
 					}
 					{
-						jPanelGestionarCitas = new JPCitas();
+						jPanelGestionarCitas = new JPCitas(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Citas", null, jPanelGestionarCitas, null);
 					}
 					{
-						jPanelConsultarCalendario = new JPCalendarioConsultar();
+						jPanelConsultarCalendario = new JPCalendarioConsultar(this, controlador);
 						jTabbedPaneOperaciones.addTab("Consultar Calendario", null, jPanelConsultarCalendario, null);
 					}
 					{
@@ -233,7 +238,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 					}
 					
 					{
-						jPanelEmitirVolante = new JPEmitirVolante();
+						jPanelEmitirVolante = new JPEmitirVolante(this, controlador);
 						jTabbedPaneOperaciones.addTab("Emitir Volante", null, jPanelEmitirVolante, null);
 					}
 				}
@@ -261,17 +266,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 
 	//$hide>>$
-	
-	public void setControlador(ControladorCliente controlador) {
-		this.controlador = controlador;
-		jPanelGestionarUsuarios.setControlador(controlador);
-		jPanelGestionarBeneficiarios.setControlador(controlador);
-		jPanelGestionarCitas.setControlador(controlador);
-		jPanelConsultarCalendario.setControlador(controlador);
-		jPanelEmitirVolante.setControlador(controlador);
-		if (controlador.getSesion().getRol() == Roles.Medico.ordinal())
-			jPanelEmitirVolante.inicializarEspecialistas();
-	}
 	
 	@SuppressWarnings("unchecked")
 	public void iniciar() {
@@ -326,7 +320,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		/*if(!operaciones.contains(Operaciones.ModificarBeneficiario))
 			jPanelGestionarBeneficiarios.desactivarModificarBeneficiario();*/
 		if(!operaciones.contains(Operaciones.ConsultarBeneficiario))
-			jPanelGestionarBeneficiarios.desactivarConsultarBeneficiario();
+			jPanelGestionarBeneficiarios.desactivarConsultarModificarBeneficiario();
 
 		if(!operaciones.contains(Operaciones.CrearUsuario))
 			jPanelGestionarUsuarios.desactivarCrearUsuario();
@@ -340,7 +334,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		if(!operaciones.contains(Operaciones.TramitarCita))
 			jPanelGestionarCitas.desactivarTramitarCita();
 		if(!operaciones.contains(Operaciones.ConsultarCitas))
-			jPanelGestionarCitas.desactivarConsultarCita();
+			jPanelGestionarCitas.desactivarConsultarAnularCita();
 		
 		// Controlamos si, en los paneles de consultar, se puede o no también modificar/eliminar datos,
 		// según los permisos de cada rol

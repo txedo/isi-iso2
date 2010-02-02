@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
@@ -21,6 +22,7 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.Utilidades;
+import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaVaciaException;
 import excepciones.CorreoElectronicoIncorrectoException;
@@ -70,8 +72,8 @@ public class JPUsuarioConsultar extends JPBase {
 	
 	private CentroSalud centro;
 
-	public JPUsuarioConsultar() {
-		super();
+	public JPUsuarioConsultar(JFrame frame, ControladorCliente controlador) {
+		super(frame, controlador);
 		initGUI();
 	}
 	

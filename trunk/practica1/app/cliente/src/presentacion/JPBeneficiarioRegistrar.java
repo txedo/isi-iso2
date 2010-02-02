@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import com.cloudgarden.layout.AnchorConstraint;
@@ -13,6 +14,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Utilidades;
+import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CorreoElectronicoIncorrectoException;
@@ -27,7 +29,6 @@ import excepciones.PisoDomicilioIncorrectoException;
 import excepciones.PuertaDomicilioIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -75,8 +76,8 @@ public class JPBeneficiarioRegistrar extends JPBase {
 	private JLabel lblNSS;
 	private JLabel lblNIF;
 
-	public JPBeneficiarioRegistrar() {
-		super();
+	public JPBeneficiarioRegistrar(JFrame frame, ControladorCliente controlador) {
+		super(frame, controlador);
 		initGUI();
 	}
 	

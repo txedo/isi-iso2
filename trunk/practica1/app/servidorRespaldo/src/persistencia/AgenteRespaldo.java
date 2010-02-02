@@ -37,6 +37,10 @@ public class AgenteRespaldo {
 		return instancia;
 	}
 
+	public Connection getConexion() {
+		return conexion;
+	}
+
 	public void setIP(String ip) {
 		this.ip = ip;
 	}
@@ -60,11 +64,7 @@ public class AgenteRespaldo {
 	public void cerrar() throws SQLException {
 		conexion.close();
 	}
-	
-	public Connection getConexion() {
-		return conexion;
-	}
-	
+		
 	public ResultSet consultar(ComandoSQL comando) throws SQLException {
 		PreparedStatement sentencia;
 		ResultSet resultado;

@@ -11,6 +11,6 @@ public interface IConexionEstado extends Remote {
 
 	public void ponerMensaje(String mensaje) throws RemoteException;
 	
-	public void actualizarClientesEscuchando (int numeroClientes) throws RemoteException;
+	public void actualizarClientesEscuchando(int numeroClientes) throws RemoteException;
 	
 }

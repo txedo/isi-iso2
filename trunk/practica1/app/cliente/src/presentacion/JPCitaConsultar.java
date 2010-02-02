@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -21,23 +21,21 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import comunicaciones.IConstantes;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Utilidades;
+import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CadenaVaciaException;
 import excepciones.CitaNoValidaException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -60,15 +58,19 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 	
 	private final String ID_NIF = "NIF";
 	private final String ID_NSS = "NSS";
-	
+
+	private ListSelectionModel filaSeleccionada;
+	private int fila = -1;
+	private DefaultComboBoxModel cmbIdentificacionModel;	
+	private Beneficiario beneficiario;
+	private SimpleDateFormat formatoDeFecha;
+	private SimpleDateFormat formatoDeHora;
+
 	private JScrollPane jScrollPane1;
 	private JButton btnReestablecer;
 	private JButton btnAnular;
 	private JLabel lblCitas;
 	private JTable tableCitas;
-	
-	private ListSelectionModel filaSeleccionada;
-	private int fila= -1;
 	private JComboBox cmbIdentificacion;
 	private JLabel lblApellidos;
 	private JLabel lblNombre;
@@ -82,15 +84,11 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 	private JTextField txtIdentificacion;
 	private JButton btnBuscar;
 
-	private DefaultComboBoxModel cmbIdentificacionModel;
-	
-	private Beneficiario beneficiario;
-	private SimpleDateFormat formatoDeFecha = new SimpleDateFormat("dd/MM/yyyy");
-	private SimpleDateFormat formatoDeHora = new SimpleDateFormat("HH:mm");
-
-	public JPCitaConsultar() {
-		super();
+	public JPCitaConsultar(JFrame frame, ControladorCliente controlador) {
+		super(frame, controlador);
 		initGUI();
+		formatoDeFecha = new SimpleDateFormat("dd/MM/yyyy");
+		formatoDeHora = new SimpleDateFormat("HH:mm");
 	}
 	
 	private void initGUI() {

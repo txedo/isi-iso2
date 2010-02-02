@@ -32,24 +32,24 @@ import excepciones.VolanteNoValidoException;
  * Clase que exporta la instancia que será utilizada por los clientes
  * para ejecutar operaciones de la fachada del servidor front-end.
  */
-public class ConexionServidorFrontend extends UnicastRemoteObject implements IServidorFrontend{
+public class RemotoServidorFrontend extends UnicastRemoteObject implements IServidorFrontend{
 
 	private static final long serialVersionUID = 7735848879217866237L;
 	
 	private IServidorFrontend servidor;
 	private boolean registro;
 	
-	private static ConexionServidorFrontend instancia;
+	private static RemotoServidorFrontend instancia;
 
-	protected ConexionServidorFrontend() throws RemoteException {
+	protected RemotoServidorFrontend() throws RemoteException {
 		super();
 		servidor = ServidorFrontend.getServidor();
 		registro = false;
 	}
 	
-	public static ConexionServidorFrontend getConexion() throws RemoteException {
+	public static RemotoServidorFrontend getConexion() throws RemoteException {
 		if(instancia == null) {
-			instancia = new ConexionServidorFrontend();
+			instancia = new RemotoServidorFrontend();
 		}
 		return instancia;
 	}

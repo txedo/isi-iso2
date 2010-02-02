@@ -8,8 +8,7 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import comunicaciones.ConexionBDRespaldo;
-import comunicaciones.ConexionEstadoRespaldo;
+import comunicaciones.RemotoServidorRespaldo;
 import dominio.conocimiento.ConfiguracionRespaldo;
 import presentacion.JFServidorRespaldo;
 
@@ -18,14 +17,12 @@ import presentacion.JFServidorRespaldo;
  */
 public class ControladorRespaldo {
 
-	private ConexionBDRespaldo conexionBD;
-	private ConexionEstadoRespaldo conexionEstado;
+	private RemotoServidorRespaldo remotoServidor;
 	private JFServidorRespaldo ventana;
 	private boolean servidorActivo;
 
 	public ControladorRespaldo() {
-		conexionBD = null;
-		conexionEstado = null;
+		remotoServidor = null;
 		servidorActivo = false;
 		ventana = new JFServidorRespaldo(this);
 	}
@@ -54,25 +51,18 @@ public class ControladorRespaldo {
 		// Obtenemos la IP de la máquina local
 		ipLocal = Inet4Address.getLocalHost().getHostAddress();
 		
-		// Activamos la clase remota para conectarse con la base de datos
+		// Configuramos y activamos la clase remota para
+		// acceder al servidor de respaldo
 		try {
-			conexionBD = ConexionBDRespaldo.getConexion();
-			conexionBD.getAgente().setIP(configuracion.getIPBDRespaldo());
-			conexionBD.getAgente().setPuerto(configuracion.getPuertoBDRespaldo());
-			conexionBD.activar(ipLocal, configuracion.getPuertoRespaldo());
+			remotoServidor = RemotoServidorRespaldo.getServidor();
+			remotoServidor.getConexionBD().getAgente().setIP(configuracion.getIPBDRespaldo());
+			remotoServidor.getConexionBD().getAgente().setPuerto(configuracion.getPuertoBDRespaldo());
+			remotoServidor.getConexionEstado().ponerVentana(ventana);
+			remotoServidor.activar(ipLocal, configuracion.getPuertoRespaldo());
 		} catch(RemoteException e) {
 			throw new RemoteException("No se puede poner a la escucha el servidor de respaldo en la dirección IP " + ipLocal + " y el puerto " + configuracion.getPuertoRespaldo() + ".");
 		}
 
-		// Activamos la clase remota para mostrar los mensajes del servidor
-		try {
-			conexionEstado = ConexionEstadoRespaldo.getConexion();
-			conexionEstado.ponerVentana(ventana);
-			conexionEstado.activar(ipLocal, configuracion.getPuertoRespaldo() + 1);
-		} catch(RemoteException e) {
-			throw new RemoteException("No se puede poner a la escucha el servidor de respaldo en la dirección IP " + ipLocal + " y el puerto " + configuracion.getPuertoRespaldo() + ".");
-		}
-		
 		// Mostramos un mensaje indicando que el servidor está activo
 		formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		ventana.ponerMensaje(formatoFecha.format(new Date()) + ": === Servidor de respaldo iniciado ===");
@@ -89,11 +79,8 @@ public class ControladorRespaldo {
 		ipLocal = Inet4Address.getLocalHost().getHostAddress();
 		
 		// Desactivamos las clases remotas del servidor de respaldo
-		if(conexionBD != null) {
-			conexionBD.desactivar(ipLocal, configuracion.getPuertoRespaldo());
-		}
-		if(conexionEstado != null) {
-			conexionEstado.desactivar(ipLocal, configuracion.getPuertoRespaldo());
+		if(remotoServidor != null) {
+			remotoServidor.desactivar(ipLocal, configuracion.getPuertoRespaldo());
 		}
 
 		// Mostramos un mensaje indicando que el servidor está inactivo
