@@ -4,7 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Suite de pruebas para el servidor de respaldo.
+ * Suite de pruebas para el cliente.
  */
 public class SuitePruebas {
 	
@@ -15,12 +15,9 @@ public class SuitePruebas {
 	public static Test suite() {
 		TestSuite suite;
 		
-		suite = new TestSuite("Pruebas completas para el servidor de respaldo");
-		suite.addTestSuite(PruebasRemotoServidor.class);
-		suite.addTestSuite(PruebasControlador.class);
+		suite = new TestSuite("Pruebas completas para el cliente");
 		suite.addTestSuite(PruebasValidacion.class);
-		suite.addTestSuite(PruebasJFServidorRespaldo.class);
-		suite.addTestSuite(PruebasJFConfigRespaldo.class);
+		suite.addTestSuite(PruebasJPBeneficiarioRegistrar.class);
 		return suite;
 	}
 	

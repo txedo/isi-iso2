@@ -10,7 +10,7 @@ import persistencia.ComandoSQL;
  * Interfaz con las operaciones que se pueden solicitar al servidor
  * de respaldo.
  */
-public interface IServidorRespaldo extends Remote, IConexionBD, IConexionEstado {
+public interface IServidorRespaldo extends Remote, IConexionBD, IConexionLog {
 
 	public final String NOMBRE_SERVIDOR = "servidorrespaldo";	
 	
@@ -28,10 +28,12 @@ public interface IServidorRespaldo extends Remote, IConexionBD, IConexionEstado 
 	
 	public void rollback() throws RemoteException, SQLException;
 	
-	// Métodos de actualización del estado (IConexionEstado)
+	// Métodos de actualización del estado (IConexionLog)
+
+	public void ponerMensaje(String tipoMensaje, String mensaje) throws RemoteException, SQLException;
+
+	public void ponerMensaje(String usuario, String tipoMensaje, String mensaje) throws RemoteException, SQLException;
 	
-	public void ponerMensaje(String mensaje) throws RemoteException;
-	
-	public void actualizarClientesEscuchando(int numeroClientes) throws RemoteException;
+	public void actualizarClientesEscuchando(int numeroClientes) throws RemoteException, SQLException;
 	
 }

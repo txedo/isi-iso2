@@ -94,9 +94,19 @@ public class PruebasJFServidorRespaldo extends org.uispec4j.UISpecTestCase {
 			// Activamos el servidor por menú
 			mniConectar.click();
 			assertTrue(controlador.isServidorActivo());
+			assertFalse(btnConectar.isEnabled());
+			assertFalse(mniConectar.isEnabled());
+			assertFalse(mniConfigurar.isEnabled());
+			assertTrue(btnDesconectar.isEnabled());
+			assertTrue(mniDesconectar.isEnabled());
 			// Desactivamos el servidor por menú
 			mniDesconectar.click();
 			assertFalse(controlador.isServidorActivo());
+			assertTrue(btnConectar.isEnabled());
+			assertTrue(mniConectar.isEnabled());
+			assertTrue(mniConfigurar.isEnabled());
+			assertFalse(btnDesconectar.isEnabled());
+			assertFalse(mniDesconectar.isEnabled());
 		} catch(Exception e) {
 			fail(e.toString());
 		}

@@ -8,12 +8,14 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import presentacion.JFServidorFrontend;
 import comunicaciones.ConexionBDFrontend;
-import comunicaciones.ConexionEstadoFrontend;
+import comunicaciones.ConexionLogBD;
+import comunicaciones.ConexionLogVentana;
 import comunicaciones.RemotoServidorFrontend;
 import comunicaciones.GestorConexionesBD;
-import comunicaciones.GestorConexionesEstado;
+import comunicaciones.GestorConexionesLog;
 import comunicaciones.ProxyServidorRespaldo;
 import dominio.conocimiento.ConfiguracionFrontend;
+import dominio.conocimiento.ITiposMensajeLog;
 
 /**
  * Controlador principal de la funcionalidad del servidor front-end.
@@ -50,7 +52,8 @@ public class ControladorFrontend {
 	}
 
 	public void iniciarServidor(ConfiguracionFrontend configuracion) throws RemoteException, MalformedURLException, UnknownHostException, NotBoundException, SQLException {
-		ConexionEstadoFrontend estadoFrontend;
+		ConexionLogBD logBD;
+		ConexionLogVentana logFrontend;
 		String ipLocal;
 
 		// Obtenemos la IP de la máquina local
@@ -63,7 +66,7 @@ public class ControladorFrontend {
 		} catch(SQLException e) {
 		}
 		GestorConexionesBD.quitarConexiones();
-		GestorConexionesEstado.quitarConexiones();
+		GestorConexionesLog.quitarConexiones();
 		
 		// Creamos una conexión con la base de datos local
 		try {
@@ -76,10 +79,13 @@ public class ControladorFrontend {
 		}
 		GestorConexionesBD.ponerConexion(basedatos);
 				
-		// Añadimos la ventana del servidor frontend a la lista de ventanas
-		estadoFrontend = new ConexionEstadoFrontend();
-		estadoFrontend.ponerVentana(ventana);
-		GestorConexionesEstado.ponerConexion(estadoFrontend);
+		// Añadimos las conexiones que mostrarán los mensaje del servidor
+		// en su ventana principal y los guardará en la base de datos
+		logFrontend = new ConexionLogVentana();
+		logFrontend.ponerVentana(ventana);
+		logBD = new ConexionLogBD();
+		GestorConexionesLog.ponerConexion(logFrontend);
+		GestorConexionesLog.ponerConexion(logBD);
 		
 		// Establecemos conexión con el servidor de respaldo
 		if(configuracion.isRespaldoActivado()) {
@@ -96,12 +102,12 @@ public class ControladorFrontend {
 				throw new SQLException("No se puede establecer una conexión con el servidor de la base de datos de respaldo.");
 			}
 			GestorConexionesBD.ponerConexion(proxy);
-			GestorConexionesEstado.ponerConexion(proxy);
+			GestorConexionesLog.ponerConexion(proxy);
 		}
 		
 		// Creamos el servidor y lo ponemos a la escucha
 		try {
-			remotoServidor = RemotoServidorFrontend.getConexion();
+			remotoServidor = RemotoServidorFrontend.getServidor();
 			remotoServidor.activar(ipLocal, configuracion.getPuertoFrontend());
 		} catch(RemoteException e) {
 			throw new RemoteException("No se puede poner a la escucha el servidor front-end en la dirección IP " + ipLocal + " y el puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ".");
@@ -109,9 +115,9 @@ public class ControladorFrontend {
 		
 		// Mostramos un mensaje indicando que el servidor está activo
 		if(configuracion.isRespaldoActivado()) {
-			GestorConexionesEstado.ponerMensaje("=== Servidor iniciado ===");
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, "=== Servidor iniciado ===");
 		} else {
-			GestorConexionesEstado.ponerMensaje("=== Servidor iniciado (servidor de respaldo deshabilitado) ===");
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, "=== Servidor iniciado (servidor de respaldo deshabilitado) ===");
 		}
 		
 		// El servidor está activo
@@ -119,22 +125,27 @@ public class ControladorFrontend {
 	}
 	
 	public void detenerServidor(ConfiguracionFrontend configuracion) throws RemoteException, MalformedURLException, UnknownHostException, SQLException {
+		// Generamos un mensaje indicando que el servidor está inactivo
+		// (ignoramos los errores que pudieran producirse)
+		try {
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, "=== Servidor detenido ===");
+		} catch(RemoteException e) {
+		} catch(SQLException e) {
+		}
+
 		// Cerramos las conexiones con las BD y vaciamos la lista
 		// (ignoramos los errores que pudieran producirse)
 		try {
 			GestorConexionesBD.cerrarConexiones();
+			GestorConexionesBD.quitarConexiones();
 		} catch(SQLException e) {
 		}
-		GestorConexionesBD.quitarConexiones();
 		
 		// Desconectamos el servidor
 		if(remotoServidor != null) {
 			remotoServidor.desactivar(Inet4Address.getLocalHost().getHostAddress(), configuracion.getPuertoFrontend());
 		}
-		
-		// Mostramos un mensaje indicando que el servidor está inactivo
-		GestorConexionesEstado.ponerMensaje("=== Servidor detenido ===");
-		
+				
 		// El servidor no está activo
 		servidorActivo = false;
 	}

@@ -34,7 +34,7 @@ import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CalendarioNoCreadoException;
@@ -255,10 +255,10 @@ public class JPUsuarioRegistrar extends JPBase {
 		try {
 			
 			// Comprobamos todos los campos
-			Utilidades.comprobarNIF(txtDNI.getText());
-			Utilidades.comprobarNombre(txtNombre.getText());
-			Utilidades.comprobarApellidos(txtApellidos.getText());
-			Utilidades.comprobarContraseña(txtPassword.getText());	
+			Validacion.comprobarNIF(txtDNI.getText());
+			Validacion.comprobarNombre(txtNombre.getText());
+			Validacion.comprobarApellidos(txtApellidos.getText());
+			Validacion.comprobarContraseña(txtPassword.getText());	
 			if (!txtPassword.getText().equals(txtPassword2.getText()))
 					throw new ContraseñaIncorrectaException("Las contraseñas no coinciden");
 			if (lstTipoUsuario.getSelectedIndex()==-1)
@@ -266,7 +266,7 @@ public class JPUsuarioRegistrar extends JPBase {
 			else if (lstTipoMedico.getSelectedIndex()==-1 && lstTipoUsuario.getSelectedValue().equals(USU_MEDICO))
 				throw new UsuarioNoSeleccionadoException();
 			if (lstTipoUsuario.getSelectedValue().equals(USU_MEDICO) && lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA))
-				Utilidades.comprobarCadena(txtEspecialidad.getText());				
+				Validacion.comprobarCadena(txtEspecialidad.getText());				
 
 			// Creamos un nuevo usuario con los datos introducidos
 			switch (Roles.valueOf(lstTipoUsuario.getSelectedValue().toString())) {

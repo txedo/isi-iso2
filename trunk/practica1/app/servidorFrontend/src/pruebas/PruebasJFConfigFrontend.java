@@ -1,5 +1,7 @@
 package pruebas;
 
+import javax.swing.JTextField;
+
 import org.uispec4j.Button;
 import org.uispec4j.CheckBox;
 import org.uispec4j.TextBox;
@@ -23,6 +25,11 @@ public class PruebasJFConfigFrontend extends org.uispec4j.UISpecTestCase {
 	private TextBox txtPuertoRespaldo;
 	private TextBox txtPuertoFrontend;
 	private CheckBox chkRespaldo;
+	private JTextField jtxtIPBDPrincipal;
+	private JTextField jtxtPuertoBDPrincipal;
+	private JTextField jtxtIPRespaldo;
+	private JTextField jtxtPuertoRespaldo;
+	private JTextField jtxtPuertoFrontend;
 	
 	public void setUp() {
 		try {
@@ -38,6 +45,11 @@ public class PruebasJFConfigFrontend extends org.uispec4j.UISpecTestCase {
 			txtPuertoRespaldo = winVentana.getTextBox("txtPuertoRespaldo");
 			chkRespaldo = winVentana.getCheckBox("chkRespaldo");
 			txtPuertoFrontend = winVentana.getTextBox("txtPuertoFrontend");
+			jtxtIPBDPrincipal = (JTextField)txtIPBDPrincipal.getAwtComponent();
+			jtxtPuertoBDPrincipal = (JTextField)txtPuertoBDPrincipal.getAwtComponent();
+			jtxtIPRespaldo = (JTextField)txtIPRespaldo.getAwtComponent();
+			jtxtPuertoRespaldo = (JTextField)txtPuertoRespaldo.getAwtComponent();
+			jtxtPuertoFrontend = (JTextField)txtPuertoFrontend.getAwtComponent();
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -63,42 +75,32 @@ public class PruebasJFConfigFrontend extends org.uispec4j.UISpecTestCase {
 			txtIPBDPrincipal.setText("300.0.0.300");
 			btnAceptar.click();
 			assertEquals(configOriginal, ventana.getConfiguracion());
-			txtIPBDPrincipal.setText("");
-			btnAceptar.click();
-			assertEquals(configOriginal, ventana.getConfiguracion());
-			// Ponemos puertos de BD incorrectos para ver que no se aceptan
+			assertTrue(jtxtIPBDPrincipal.getSelectionStart() == 0 && jtxtIPBDPrincipal.getSelectionEnd() == "300.0.0.300".length());
 			txtIPBDPrincipal.setText("127.0.0.1");
+			// Ponemos puertos de BD incorrectos para ver que no se aceptan
 			txtPuertoBDPrincipal.setText("1234567");
 			btnAceptar.click();
 			assertEquals(configOriginal, ventana.getConfiguracion());
-			txtPuertoBDPrincipal.setText("abcdefg");
-			btnAceptar.click();
-			assertEquals(configOriginal, ventana.getConfiguracion());
-			// Ponemos IPs de servidor incorrectas para ver que no se aceptan
+			assertTrue(jtxtPuertoBDPrincipal.getSelectionStart() == 0 && jtxtPuertoBDPrincipal.getSelectionEnd() == "1234567".length());
 			txtPuertoBDPrincipal.setText("3306");
+			// Ponemos IPs de servidor incorrectas para ver que no se aceptan
 			chkRespaldo.select();
 			txtIPRespaldo.setText("127.0.0.1w");
 			btnAceptar.click();
 			assertEquals(configOriginal, ventana.getConfiguracion());
-			txtIPRespaldo.setText("");
-			btnAceptar.click();
-			assertEquals(configOriginal, ventana.getConfiguracion());
-			// Ponemos puertos de servidor incorrectos para ver que no se aceptan
+			assertTrue(jtxtIPRespaldo.getSelectionStart() == 0 && jtxtIPRespaldo.getSelectionEnd() == "127.0.0.1w".length());
 			txtIPRespaldo.setText("127.0.0.1");
+			// Ponemos puertos de servidor incorrectos para ver que no se aceptan
 			txtPuertoRespaldo.setText("-900");
 			btnAceptar.click();
 			assertEquals(configOriginal, ventana.getConfiguracion());
-			txtPuertoRespaldo.setText("¿¿??");
-			btnAceptar.click();
-			assertEquals(configOriginal, ventana.getConfiguracion());
-			// Ponemos puertos de escucha inválidos para ver que no se aceptan
+			assertTrue(jtxtPuertoRespaldo.getSelectionStart() == 0 && jtxtPuertoRespaldo.getSelectionEnd() == "-900".length());
 			txtPuertoRespaldo.setText("1098");
-			txtPuertoFrontend.setText("001000100");
-			btnAceptar.click();
-			assertEquals(configOriginal, ventana.getConfiguracion());
+			// Ponemos puertos de escucha inválidos para ver que no se aceptan
 			txtPuertoFrontend.setText("5,29");
 			btnAceptar.click();
 			assertEquals(configOriginal, ventana.getConfiguracion());
+			assertTrue(jtxtPuertoFrontend.getSelectionStart() == 0 && jtxtPuertoFrontend.getSelectionEnd() == "5,29".length());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -139,6 +141,15 @@ public class PruebasJFConfigFrontend extends org.uispec4j.UISpecTestCase {
 			txtPuertoFrontend.setText("8001");
 			btnAceptar.click();
 			assertEquals(new ConfiguracionFrontend("10.1.2.3", 1829, "192.168.1.100", 7001, 8001), ventana.getConfiguracion());
+			// Ponemos valores válidos con espacios y aceptamos la ventana
+			txtIPBDPrincipal.setText("10.5.6.7  ");
+			txtPuertoBDPrincipal.setText("  4190");
+			chkRespaldo.select();
+			txtIPRespaldo.setText("192.168.5.210  ");
+			txtPuertoRespaldo.setText("  9123");
+			txtPuertoFrontend.setText("  57340  ");
+			btnAceptar.click();
+			assertEquals(new ConfiguracionFrontend("10.5.6.7", 4190, "192.168.5.210", 9123, 57340), ventana.getConfiguracion());
 		} catch(Exception e) {
 			fail(e.toString());
 		}

@@ -19,7 +19,7 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioInexistenteException;
@@ -313,10 +313,10 @@ public class JPBeneficiarioConsultar extends JPBase {
 
 			// Buscamos el beneficiario solicitado
 			if(sTipo.equals(ID_NIF)) {
-				Utilidades.comprobarNIF(sIdentificacion);
+				Validacion.comprobarNIF(sIdentificacion);
 				beneficiario = getControlador().getBeneficiario(sIdentificacion);
 			} else if(sTipo.equals(ID_NSS)) {
-				Utilidades.comprobarNSS(sIdentificacion);
+				Validacion.comprobarNSS(sIdentificacion);
 				beneficiario = getControlador().getBeneficiarioPorNSS(sIdentificacion);
 			}
 
@@ -372,14 +372,14 @@ public class JPBeneficiarioConsultar extends JPBase {
 		try {
 			
 			// Comprobamos todos los campos
-			Utilidades.comprobarNIF(txtNIF.getText());
-			Utilidades.comprobarNSS(txtNSS.getText());
-			Utilidades.comprobarNombre(txtNombre.getText());
-			Utilidades.comprobarApellidos(txtApellidos.getText());
-			Utilidades.comprobarDomicilio(txtDomicilio.getText());			
-			Utilidades.comprobarCorreoElectronico(txtCorreoElectronico.getText());
-			Utilidades.comprobarTelefonoFijo(txtTelefonoFijo.getText());
-			Utilidades.comprobarTelefonoMovil(txtTelefonoMovil.getText());
+			Validacion.comprobarNIF(txtNIF.getText());
+			Validacion.comprobarNSS(txtNSS.getText());
+			Validacion.comprobarNombre(txtNombre.getText());
+			Validacion.comprobarApellidos(txtApellidos.getText());
+			Validacion.comprobarDomicilio(txtDomicilio.getText());			
+			Validacion.comprobarCorreoElectronico(txtCorreoElectronico.getText());
+			Validacion.comprobarTelefonoFijo(txtTelefonoFijo.getText());
+			Validacion.comprobarTelefonoMovil(txtTelefonoMovil.getText());
 			
 			// Creamos un beneficiario con los datos introducidos
 			beneficiario = new Beneficiario();

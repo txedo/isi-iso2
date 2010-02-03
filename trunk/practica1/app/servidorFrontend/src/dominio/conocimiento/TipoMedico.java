@@ -2,6 +2,9 @@ package dominio.conocimiento;
 
 public abstract class TipoMedico {
 
-	//public abstrat+Medicos getRol();
+	public TipoMedico() {
+	}
+	
+	public abstract CategoriasMedico getCategoria();
 	
 }

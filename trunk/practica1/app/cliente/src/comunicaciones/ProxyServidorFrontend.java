@@ -31,7 +31,7 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 	public void conectar(String ip, int puerto) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
-		url = "rmi://" + ip + ":" + puerto + "/" + NOMBRE_SERVIDOR;
+		url = "rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR;
         servidor = (IServidorFrontend)Naming.lookup(url);
 	}
 	

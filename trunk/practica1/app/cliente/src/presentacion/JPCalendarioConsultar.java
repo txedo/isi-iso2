@@ -5,7 +5,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.JornadaIncompletaException;
 import excepciones.MedicoInexistenteException;
@@ -208,7 +208,7 @@ public class JPCalendarioConsultar extends JPBase {
 	private void btnBuscarActionPerformed(ActionEvent evt) {
 		ArrayList<PeriodoTrabajo> periodos;
 		try {
-			Utilidades.comprobarNIF(txtNIF.getText());
+			Validacion.comprobarNIF(txtNIF.getText());
 			mMedico = getControlador().consultarMedico(txtNIF.getText());
 			periodos = mMedico.getCalendario();
 			inicializarPanel();

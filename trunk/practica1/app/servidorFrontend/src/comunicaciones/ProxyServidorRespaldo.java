@@ -13,49 +13,53 @@ import persistencia.ComandoSQL;
  */
 public class ProxyServidorRespaldo implements IServidorRespaldo {
 
-	private IServidorRespaldo conexionRemota;
+	private IServidorRespaldo servidor;
 	
 	public void conectar(String ip, int puerto) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
 		
 		url = "rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR;
-        conexionRemota = (IServidorRespaldo)Naming.lookup(url);
+        servidor = (IServidorRespaldo)Naming.lookup(url);
 	}
 
 	// Métodos de acceso a la base de datos
 	
 	public void abrir() throws RemoteException, SQLException {
-		conexionRemota.abrir();
+		servidor.abrir();
 	}
 
 	public void cerrar() throws RemoteException, SQLException {
-		conexionRemota.cerrar();
+		servidor.cerrar();
 	}
 
 	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
-		return conexionRemota.consultar(comando);
+		return servidor.consultar(comando);
 	}
 
 	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException {
-		conexionRemota.ejecutar(comando);
+		servidor.ejecutar(comando);
 	}
 
 	public void commit() throws RemoteException, SQLException {
-		conexionRemota.commit();
+		servidor.commit();
 	}
 
 	public void rollback() throws RemoteException, SQLException {
-		conexionRemota.rollback();
+		servidor.rollback();
 	}
 
 	// Métodos de actualización del estado
 	
-	public void ponerMensaje(String mensaje) throws RemoteException {
-		conexionRemota.ponerMensaje(mensaje);
+	public void ponerMensaje(String tipoMensaje, String mensaje) throws RemoteException, SQLException {
+		servidor.ponerMensaje(tipoMensaje, mensaje);
 	}
-	
-	public void actualizarClientesEscuchando(int numeroClientes) throws RemoteException {
-		conexionRemota.actualizarClientesEscuchando(numeroClientes);
+
+	public void ponerMensaje(String usuario, String tipoMensaje, String mensaje) throws RemoteException, SQLException {
+		servidor.ponerMensaje(usuario, tipoMensaje, mensaje);
+	}
+
+	public void actualizarClientesEscuchando(int numeroClientes) throws RemoteException, SQLException {
+		servidor.actualizarClientesEscuchando(numeroClientes);
 	}
 
 }

@@ -25,8 +25,8 @@ public class Beneficiario implements Serializable {
 	}
 	
 	public Beneficiario(String nif, String nss, String nombre,
-			String apellidos, String domicilio, String correo, Date fecha, int telefono,
-			int movil) {
+			String apellidos, Date fecha, String domicilio, String correo,
+			int telefono, int movil) {
 		this.nif = nif;
 		this.nss = nss;
 		this.nombre = nombre;

@@ -18,13 +18,11 @@ import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.OperacionesAuxiliares;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Sesion;
-import dominio.control.GestorMensajes;
+import dominio.control.GestorMedicos;
 import dominio.control.GestorSesiones;
-import dominio.control.GestorUsuarios;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -139,7 +137,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Obtenemos los datos de un médico existente
-			medico = GestorUsuarios.getMedico(sesionCitador.getId(), medico1.getDni());
+			medico = GestorMedicos.getMedico(sesionCitador.getId(), medico1.getDni());
 			assertEquals(medico, medico1);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -147,7 +145,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			medico = GestorUsuarios.getMedico(sesionCitador.getId() + 1, medico1.getDni());
+			medico = GestorMedicos.getMedico(sesionCitador.getId() + 1, medico1.getDni());
 			fail("Se esperaba una excepcion SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -156,7 +154,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos obtener los datos de un usuario que no es médico
-			medico = GestorUsuarios.getMedico(sesionCitador.getId(), citador1.getDni());
+			medico = GestorMedicos.getMedico(sesionCitador.getId(), citador1.getDni());
 			fail("Se esperaba una excepcion MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -165,7 +163,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos obtener los datos de un usuario que no existe
-			medico = GestorUsuarios.getMedico(sesionCitador.getId(), "94821491");
+			medico = GestorMedicos.getMedico(sesionCitador.getId(), "94821491");
 			fail("Se esperaba una excepcion MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -181,9 +179,9 @@ public class PruebasMedicos extends TestCase {
 			// Creamos un nuevo médico con la sesión del administrador
 			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
 			medico.setCentroSalud(centro1);
-			GestorUsuarios.crearMedico(sesionAdmin.getId(), medico);
+			GestorMedicos.crearMedico(sesionAdmin.getId(), medico);
 			// Comprobamos que el médico se ha creado correctamente
-			medicoGet = GestorUsuarios.getMedico(sesionAdmin.getId(), medico.getDni());
+			medicoGet = GestorMedicos.getMedico(sesionAdmin.getId(), medico.getDni());
 			assertEquals(medico, medicoGet);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -193,7 +191,7 @@ public class PruebasMedicos extends TestCase {
 			// Intentamos crear un nuevo médico con el rol de citador
 			medico = new Medico("77777777", "error", "error", "", "", especialista);
 			medico.setCentroSalud(centro1);
-			GestorUsuarios.crearMedico(sesionCitador.getId(), medico);
+			GestorMedicos.crearMedico(sesionCitador.getId(), medico);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -204,7 +202,7 @@ public class PruebasMedicos extends TestCase {
 			// Intentamos añadir un médico con un DNI que ya existe en la BD
 			medico = new Medico(citador1.getDni(), "error", "error", "", "", cabecera);
 			medico.setCentroSalud(centro1);
-			GestorUsuarios.crearMedico(sesionAdmin.getId(), medico);
+			GestorMedicos.crearMedico(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepcion MedicoYaExistenteException");
 		} catch(MedicoYaExistenteException e) {
 		} catch(Exception e) {
@@ -221,9 +219,9 @@ public class PruebasMedicos extends TestCase {
 			medico1.setLogin("medCambiado");
 			medico1.setApellidos("P. D.");
 			medico1.getCalendario().remove(1);
-			GestorUsuarios.modificarMedico(sesionAdmin.getId(), medico1);
+			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico1);
 			// Comprobamos que el médico se haya actualizado correctamente
-			medicoGet = GestorUsuarios.getMedico(sesionAdmin.getId(), medico1.getDni());
+			medicoGet = GestorMedicos.getMedico(sesionAdmin.getId(), medico1.getDni());
 			assertEquals(medico1, medicoGet);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -231,7 +229,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos modificar un médico con el rol de citador
-			GestorUsuarios.modificarMedico(sesionCitador.getId(), medico1);
+			GestorMedicos.modificarMedico(sesionCitador.getId(), medico1);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -242,7 +240,7 @@ public class PruebasMedicos extends TestCase {
 			// Intentamos modificar un médico que aún no se ha creado
 			medico = new Medico("21412395", "error", "error", "", "", pediatra);
 			medico.setCentroSalud(centro1);
-			GestorUsuarios.modificarMedico(sesionAdmin.getId(), medico);
+			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepcion MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -256,7 +254,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Eliminamos un médico existente como administrador
-			GestorUsuarios.eliminarMedico(sesionAdmin.getId(), medico2);
+			GestorMedicos.eliminarMedico(sesionAdmin.getId(), medico2);
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.toString());
@@ -264,7 +262,7 @@ public class PruebasMedicos extends TestCase {
 
 		try {
 			// Comprobamos que el médico borrado ya no exista en el sistema
-			GestorUsuarios.getMedico(sesionAdmin.getId(), medico2.getDni());
+			GestorMedicos.getMedico(sesionAdmin.getId(), medico2.getDni());
 			fail("Se esperaba una excepcion MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -273,7 +271,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos borrar un médico con el rol de citador
-			GestorUsuarios.eliminarMedico(sesionCitador.getId(), medico1);
+			GestorMedicos.eliminarMedico(sesionCitador.getId(), medico1);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -284,7 +282,7 @@ public class PruebasMedicos extends TestCase {
 			// Intentamos eliminar un médico que aún no se ha creado
 			medico = new Medico("78256514", "error", "error", "", "", pediatra);
 			medico.setCentroSalud(centro1);
-			GestorUsuarios.eliminarMedico(sesionAdmin.getId(), medico);
+			GestorMedicos.eliminarMedico(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepcion MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -293,6 +291,7 @@ public class PruebasMedicos extends TestCase {
 	}
 	
 	/** Pruebas relacionadas con los calendarios de los médicos */
+	@SuppressWarnings("deprecation")
 	public void testCalendariosMedico() {
 		Date fecha;
 		
@@ -325,6 +324,7 @@ public class PruebasMedicos extends TestCase {
 	}
 	
 	/** Pruebas relacionadas con las sustituciones de médicos */
+	@SuppressWarnings("deprecation")
 	public void testSustituciones() {
 		Vector<Date> dias;
 		
@@ -334,7 +334,7 @@ public class PruebasMedicos extends TestCase {
 			dias = new Vector<Date>();
 			dias.add(new Date(2009 - 1900, 11, 2)); // Miércoles 2/12/2009
 			dias.add(new Date(2009 - 1900, 11, 4)); // Viernes 4/12/2009
-			GestorUsuarios.modificarCalendario(sesionAdmin.getId(), medico1, dias, medico2);
+			GestorMedicos.modificarCalendario(sesionAdmin.getId(), medico1, dias, medico2);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -346,7 +346,7 @@ public class PruebasMedicos extends TestCase {
 			dias = new Vector<Date>();
 			dias.add(new Date(2009 - 1900, 11, 3)); // Jueves 3/12/2009
 			dias.add(new Date(2009 - 1900, 11, 4)); // Viernes 4/12/2009
-			GestorUsuarios.modificarCalendario(sesionAdmin.getId(), medico1, dias, medico4);
+			GestorMedicos.modificarCalendario(sesionAdmin.getId(), medico1, dias, medico4);
 			fail("Se esperaba una excepción SustitucionInvalidaException");
 		} catch(SustitucionInvalidaException e) {
 		} catch(Exception e) {
@@ -360,7 +360,7 @@ public class PruebasMedicos extends TestCase {
 			dias = new Vector<Date>();
 			dias.add(new Date(2009 - 1900, 11, 3)); // Jueves 3/12/2009
 			dias.add(new Date(2009 - 1900, 11, 4)); // Viernes 4/12/2009
-			GestorUsuarios.modificarCalendario(sesionAdmin.getId(), medico3, dias, medico2);
+			GestorMedicos.modificarCalendario(sesionAdmin.getId(), medico3, dias, medico2);
 			fail("Se esperaba una excepción SustitucionInvalidaException");
 		} catch(SustitucionInvalidaException e) {
 		} catch(Exception e) {
@@ -373,7 +373,7 @@ public class PruebasMedicos extends TestCase {
 			// (los viernes el médico 1 y 3 trabajan de 17:00 a 18:00)
 			dias = new Vector<Date>();
 			dias.add(new Date(2009 - 1900, 11, 11)); // Viernes 11/12/2009
-			GestorUsuarios.modificarCalendario(sesionAdmin.getId(), medico1, dias, medico3);
+			GestorMedicos.modificarCalendario(sesionAdmin.getId(), medico1, dias, medico3);
 			fail("Se esperaba una excepción SustitucionInvalidaException");
 		} catch(SustitucionInvalidaException e) {
 		} catch(Exception e) {

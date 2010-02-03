@@ -30,7 +30,7 @@ public class GestorConexionesBD {
 	public static void quitarConexiones() {
 		conexiones.clear();
 	}
-
+	
 	public static ResultSet consultar(ComandoSQL comando) throws SQLException {
 		ResultSet datos;
 		

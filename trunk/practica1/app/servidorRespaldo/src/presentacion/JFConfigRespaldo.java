@@ -16,7 +16,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.EventListenerList;
 import dominio.conocimiento.ConfiguracionRespaldo;
 import dominio.conocimiento.Validacion;
-import excepciones.CadenaVaciaException;
 import excepciones.IPInvalidaException;
 import excepciones.PuertoInvalidoException;
 
@@ -32,6 +31,9 @@ import excepciones.PuertoInvalidoException;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+/**
+ * Ventana de configuración del servidor de respaldo.
+ */
 public class JFConfigRespaldo extends javax.swing.JFrame {
 
 	{
@@ -200,13 +202,8 @@ public class JFConfigRespaldo extends javax.swing.JFrame {
 		// Comprobamos los datos de la BD de respaldo
 		valido = true;
 		try {
-			Validacion.comprobarDireccionIP(txtIPBDRespaldo.getText());
-			Validacion.comprobarPuerto(Integer.parseInt(txtPuertoBDRespaldo.getText()));
-		} catch(CadenaVaciaException ex) {
-			Dialogos.mostrarDialogoError(this, "Error", "La dirección IP de la base de datos de respaldo no puede ser nula.");
-			txtIPBDRespaldo.selectAll();
-			txtIPBDRespaldo.grabFocus();
-			valido = false;
+			Validacion.comprobarDireccionIP(txtIPBDRespaldo.getText().trim());
+			Validacion.comprobarPuerto(txtPuertoBDRespaldo.getText().trim());
 		} catch(IPInvalidaException ex) {
 			Dialogos.mostrarDialogoError(this, "Error", "La dirección IP de la base de datos de respaldo tiene un formato incorrecto.");
 			txtIPBDRespaldo.selectAll();
@@ -217,23 +214,13 @@ public class JFConfigRespaldo extends javax.swing.JFrame {
 			txtPuertoBDRespaldo.selectAll();
 			txtPuertoBDRespaldo.grabFocus();
 			valido = false;
-		} catch(NumberFormatException ex) {
-			Dialogos.mostrarDialogoError(this, "Error", "El puerto de la base de datos de respaldo debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
-			txtPuertoBDRespaldo.selectAll();
-			txtPuertoBDRespaldo.grabFocus();
-			valido = false;
 		}
 
 		// Comprobamos los datos del servidor de respaldo
 		if(valido) {
 			try {
-				Validacion.comprobarPuerto(Integer.parseInt(txtPuertoRespaldo.getText()));
+				Validacion.comprobarPuerto(txtPuertoRespaldo.getText().trim());
 			} catch(PuertoInvalidoException ex) {
-				Dialogos.mostrarDialogoError(this, "Error", "El puerto de escucha del servidor de respaldo debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
-				txtPuertoRespaldo.selectAll();
-				txtPuertoRespaldo.grabFocus();
-				valido = false;
-			} catch(NumberFormatException ex) {
 				Dialogos.mostrarDialogoError(this, "Error", "El puerto de escucha del servidor de respaldo debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
 				txtPuertoRespaldo.selectAll();
 				txtPuertoRespaldo.grabFocus();
@@ -245,9 +232,9 @@ public class JFConfigRespaldo extends javax.swing.JFrame {
 		// de la instancia y cerramos la ventana
 		if(valido) {
 			try {
-				configuracion.setIPBDRespaldo(txtIPBDRespaldo.getText());
-				configuracion.setPuertoBDRespaldo(Integer.parseInt(txtPuertoBDRespaldo.getText()));
-				configuracion.setPuertoRespaldo(Integer.parseInt(txtPuertoRespaldo.getText()));
+				configuracion.setIPBDRespaldo(txtIPBDRespaldo.getText().trim());
+				configuracion.setPuertoBDRespaldo(Integer.parseInt(txtPuertoBDRespaldo.getText().trim()));
+				configuracion.setPuertoRespaldo(Integer.parseInt(txtPuertoRespaldo.getText().trim()));
 			} catch(NumberFormatException e) {
 				// No puede haber errores porque ya se ha
 				// comprobado que los puertos son válidos

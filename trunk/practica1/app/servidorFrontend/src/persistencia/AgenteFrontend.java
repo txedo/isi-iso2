@@ -11,12 +11,16 @@ import java.sql.SQLException;
  */
 public class AgenteFrontend {
 
+	private static final String BASEDATOS_NOMBRE = "bdssca";
+	private static final String BASEDATOS_USUARIO = "iso";
+	private static final String BASEDATOS_CLAVE = "osi";
+	
 	private static AgenteFrontend instancia = null;
 	private Connection conexion;
 	private String ip;
 	private int puerto;
 	
-	protected AgenteFrontend() throws SQLException {
+	protected AgenteFrontend() {
 		try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch(IllegalAccessException e) {
@@ -30,7 +34,7 @@ public class AgenteFrontend {
         // porque se necesita establecer la IP
 	}
 	
-	public static AgenteFrontend getAgente() throws SQLException {
+	public static AgenteFrontend getAgente() {
 		if(instancia == null) {
 			instancia = new AgenteFrontend();
 		}
@@ -55,7 +59,7 @@ public class AgenteFrontend {
 		if(conexion == null || conexion.isClosed()) {
 			// Indicamos que las modificaciones de la base de datos
 			// no se deben aplicar hasta llamar al método 'commit'
-			url = "jdbc:mysql://" + ip + ":" + String.valueOf(puerto) + "/bdssca?user=iso&password=osi";
+			url = "jdbc:mysql://" + ip + ":" + String.valueOf(puerto) + "/" + BASEDATOS_NOMBRE + "?user=" + BASEDATOS_USUARIO + "&password=" + BASEDATOS_CLAVE;
 			conexion = DriverManager.getConnection(url);
 			conexion.setAutoCommit(false); 
 		}

@@ -22,7 +22,7 @@ public class RemotoServidorRespaldo extends UnicastRemoteObject implements IServ
 	private static final long serialVersionUID = -6996855286696746774L;
 
 	private ConexionBDRespaldo basedatos;
-	private ConexionEstadoRespaldo estado;
+	private ConexionLogVentana estado;
 	private boolean registro;
 
 	private static RemotoServidorRespaldo instancia;
@@ -30,7 +30,7 @@ public class RemotoServidorRespaldo extends UnicastRemoteObject implements IServ
 	protected RemotoServidorRespaldo() throws RemoteException {
 		super();
 		basedatos = new ConexionBDRespaldo();
-		estado = new ConexionEstadoRespaldo();
+		estado = new ConexionLogVentana();
 		registro = false;
 	}
 	
@@ -79,7 +79,7 @@ public class RemotoServidorRespaldo extends UnicastRemoteObject implements IServ
 		return basedatos;
 	}
 	
-	public ConexionEstadoRespaldo getConexionEstado() {
+	public ConexionLogVentana getConexionEstado() {
 		return estado;
 	}
 	
@@ -109,10 +109,14 @@ public class RemotoServidorRespaldo extends UnicastRemoteObject implements IServ
 		basedatos.rollback();
 	}
 
-	// Métodos de actualización del estado
-	
-	public void ponerMensaje(String mensaje) throws RemoteException {
-		estado.ponerMensaje(mensaje);
+	// Métodos del log del servidor
+
+	public void ponerMensaje(String tipoMensaje, String mensaje) throws RemoteException {
+		estado.ponerMensaje(tipoMensaje, mensaje);
+	}
+
+	public void ponerMensaje(String usuario, String tipoMensaje, String mensaje) throws RemoteException {
+		estado.ponerMensaje(usuario, tipoMensaje, mensaje);
 	}
 
 	public void actualizarClientesEscuchando(int numeroClientes) throws RemoteException {

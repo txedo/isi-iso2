@@ -4,12 +4,14 @@ import java.io.Serializable;
 
 public class Pediatra extends TipoMedico implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5571521599727300482L;
 
-	public Pediatra () {
+	public Pediatra() {
 		super();
 	}
+	
+	public CategoriasMedico getCategoria() {
+		return CategoriasMedico.Cabecera;
+	}
+	
 }

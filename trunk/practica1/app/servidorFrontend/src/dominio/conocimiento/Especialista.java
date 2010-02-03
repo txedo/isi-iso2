@@ -5,20 +5,22 @@ import java.io.Serializable;
 
 public class Especialista extends TipoMedico implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8975103923917109469L;
+	
 	private String especialidad;
 	
-	public Especialista () {
+	public Especialista() {
 		super();
 	}
 	
-	public Especialista (String especialidad) {
+	public Especialista(String especialidad) {
 		this.especialidad = especialidad;
 	}
 
+	public CategoriasMedico getCategoria() {
+		return CategoriasMedico.Cabecera;
+	}
+	
 	public String getEspecialidad() {
 		return especialidad;
 	}
@@ -26,4 +28,5 @@ public class Especialista extends TipoMedico implements Serializable{
 	public void setEspecialidad(String especialidad) {
 		this.especialidad = especialidad;
 	}
+	
 }

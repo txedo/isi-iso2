@@ -10,7 +10,7 @@ public class Cita implements Serializable {
 		
 	private static final long serialVersionUID = 590630882906518367L;
 	
-	private Date fechaYhora;
+	private Date fechaYHora;
 	private long duracion;
 	private Beneficiario beneficiario;
 	private Medico medico;
@@ -19,18 +19,18 @@ public class Cita implements Serializable {
 	}
 	
 	public Cita(Date fechaYhora, long duracion, Beneficiario beneficiario, Medico medico) {
-		this.fechaYhora = fechaYhora;
+		this.fechaYHora = fechaYhora;
 		this.duracion = duracion;
 		this.beneficiario = beneficiario;
 		this.medico = medico;
 	}
 	
 	public Date getFechaYhora() {
-		return fechaYhora;
+		return fechaYHora;
 	}
 	
-	public void setFechaYhora(Date fechaYhora) {
-		this.fechaYhora = fechaYhora;
+	public void setFechaYHora(Date fechaYHora) {
+		this.fechaYHora = fechaYHora;
 	}
 	
 	public long getDuracion() {
@@ -64,7 +64,7 @@ public class Cita implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Cita) {
 			c = (Cita)o;
-			dev = fechaYhora.equals(c.getFechaYhora()) && duracion == c.getDuracion() && beneficiario.equals(c.getBeneficiario()) && medico.equals(c.getMedico());
+			dev = fechaYHora.equals(c.getFechaYhora()) && duracion == c.getDuracion() && beneficiario.equals(c.getBeneficiario()) && medico.equals(c.getMedico());
 		}
 		return dev;
 	}

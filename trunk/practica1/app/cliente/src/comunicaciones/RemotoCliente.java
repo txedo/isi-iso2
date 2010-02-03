@@ -17,15 +17,16 @@ import dominio.control.Cliente;
  * Clase que exporta la instancia que será utilizada por el servidor
  * front-end para ejecutar operaciones en los clientes.
  */
-public class ConexionCliente extends UnicastRemoteObject implements ICliente {
+public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 
 	private static final long serialVersionUID = -6461417903923553869L;
 	
 	private ICliente cliente;
 	
-	public ConexionCliente() throws RemoteException, UnknownHostException {
+	private static RemotoCliente instancia;
+	
+	protected RemotoCliente() throws RemoteException, UnknownHostException {
 		super();
-
 
 		boolean puertoUsado;
 		int puerto;
@@ -46,6 +47,13 @@ public class ConexionCliente extends UnicastRemoteObject implements ICliente {
 		// Creamos el objeto Cliente
 		direccionIP = Inet4Address.getLocalHost().getHostAddress();
 		cliente = new Cliente(direccionIP, puerto);
+	}
+	
+	public static RemotoCliente getCliente() throws RemoteException, UnknownHostException {
+		if(instancia == null) {
+			instancia = new RemotoCliente();
+		}
+		return instancia;
 	}
 	
     public void activar() throws RemoteException, MalformedURLException {

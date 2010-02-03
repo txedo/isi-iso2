@@ -7,10 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Agente de la base de datos del servidor de respaldo.
+ * Agente de la base de datos de respaldo.
  */
 public class AgenteRespaldo {
 
+	private static final String BASEDATOS_NOMBRE = "bdsscarespaldo";
+	private static final String BASEDATOS_USUARIO = "isor";
+	private static final String BASEDATOS_CLAVE = "rosi";
+	
 	private static AgenteRespaldo instancia = null;
 	private Connection conexion;
 	private String ip;
@@ -55,7 +59,7 @@ public class AgenteRespaldo {
 		if(conexion == null || conexion.isClosed()) {
 			// Indicamos que las modificaciones de la base de datos
 			// no se deben aplicar hasta llamar al método 'commit'
-			url = "jdbc:mysql://" + ip + ":" + String.valueOf(puerto) + "/bdsscarespaldo?user=isor&password=rosi";
+			url = "jdbc:mysql://" + ip + ":" + String.valueOf(puerto) + "/" + BASEDATOS_NOMBRE + "?user=" + BASEDATOS_USUARIO + "&password=" + BASEDATOS_CLAVE;
 			conexion = DriverManager.getConnection(url);
 			conexion.setAutoCommit(false); 
 		}
