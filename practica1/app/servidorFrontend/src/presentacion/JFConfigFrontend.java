@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.EventObject;
-import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -17,10 +16,8 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
-
 import dominio.conocimiento.ConfiguracionFrontend;
 import dominio.conocimiento.Validacion;
-import excepciones.CadenaVaciaException;
 import excepciones.IPInvalidaException;
 import excepciones.PuertoInvalidoException;
 
@@ -264,20 +261,13 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 	}
 
 	private void btnAceptarActionPerformed(ActionEvent evt) {
-		Pattern patronIP;
-		int puerto;
 		boolean valido;
 		
 		// Comprobamos los datos de la BD principal
 		valido = true;
 		try {
-			Validacion.comprobarDireccionIP(txtIPBDPrincipal.getText());
-			Validacion.comprobarPuerto(Integer.parseInt(txtPuertoBDPrincipal.getText()));
-		} catch(CadenaVaciaException ex) {
-			Dialogos.mostrarDialogoError(this, "Error", "La dirección IP de la base de datos principal no puede ser nula.");
-			txtIPBDPrincipal.selectAll();
-			txtIPBDPrincipal.grabFocus();
-			valido = false;
+			Validacion.comprobarDireccionIP(txtIPBDPrincipal.getText().trim());
+			Validacion.comprobarPuerto(txtPuertoBDPrincipal.getText().trim());
 		} catch(IPInvalidaException ex) {
 			Dialogos.mostrarDialogoError(this, "Error", "La dirección IP de la base de datos principal tiene un formato incorrecto.");
 			txtIPBDPrincipal.selectAll();
@@ -298,13 +288,8 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 		// Comprobamos los datos del servidor de respaldo (si está activo)
 		if(valido && chkRespaldo.isSelected()) {
 			try {
-				Validacion.comprobarDireccionIP(txtIPRespaldo.getText());
-				Validacion.comprobarPuerto(Integer.parseInt(txtPuertoRespaldo.getText()));
-			} catch(CadenaVaciaException ex) {
-				Dialogos.mostrarDialogoError(this, "Error", "La dirección IP del servidor de respaldo no puede ser nula.");
-				txtIPRespaldo.selectAll();
-				txtIPRespaldo.grabFocus();
-				valido = false;
+				Validacion.comprobarDireccionIP(txtIPRespaldo.getText().trim());
+				Validacion.comprobarPuerto(txtPuertoRespaldo.getText().trim());
 			} catch(IPInvalidaException ex) {
 				Dialogos.mostrarDialogoError(this, "Error", "La dirección IP del servidor de respaldo tiene un formato incorrecto.");
 				txtIPRespaldo.selectAll();
@@ -326,7 +311,7 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 		// Comprobamos los datos del servidor frontend
 		if(valido) {
 			try {
-				Validacion.comprobarPuerto(Integer.parseInt(txtPuertoFrontend.getText()));
+				Validacion.comprobarPuerto(txtPuertoFrontend.getText().trim());
 			} catch(PuertoInvalidoException ex) {
 				Dialogos.mostrarDialogoError(this, "Error", "El puerto de escucha del servidor front-end debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
 				txtPuertoFrontend.selectAll();
@@ -344,17 +329,17 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 		// de la instancia y cerramos la ventana
 		if(valido) {
 			try {
-				configuracion.setIPBDPrincipal(txtIPBDPrincipal.getText());
-				configuracion.setPuertoBDPrincipal(Integer.parseInt(txtPuertoBDPrincipal.getText()));
+				configuracion.setIPBDPrincipal(txtIPBDPrincipal.getText().trim());
+				configuracion.setPuertoBDPrincipal(Integer.parseInt(txtPuertoBDPrincipal.getText().trim()));
 				configuracion.setRespaldoActivado(chkRespaldo.isSelected());
 				if(chkRespaldo.isSelected()) {
-					configuracion.setIPRespaldo(txtIPRespaldo.getText());
-					configuracion.setPuertoRespaldo(Integer.parseInt(txtPuertoRespaldo.getText()));
+					configuracion.setIPRespaldo(txtIPRespaldo.getText().trim());
+					configuracion.setPuertoRespaldo(Integer.parseInt(txtPuertoRespaldo.getText().trim()));
 				} else {
 					configuracion.setIPRespaldo((new ConfiguracionFrontend()).getIPRespaldo());
 					configuracion.setPuertoRespaldo((new ConfiguracionFrontend()).getPuertoRespaldo());
 				}
-				configuracion.setPuertoFrontend(Integer.parseInt(txtPuertoFrontend.getText()));
+				configuracion.setPuertoFrontend(Integer.parseInt(txtPuertoFrontend.getText().trim()));
 			} catch(NumberFormatException e) {
 				// No puede haber errores porque ya se ha
 				// comprobado que los puertos son válidos

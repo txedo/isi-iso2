@@ -22,6 +22,7 @@ import excepciones.NombreIncorrectoException;
 import excepciones.NumeroDomicilioIncorrectoException;
 import excepciones.PisoDomicilioIncorrectoException;
 import excepciones.PuertaDomicilioIncorrectoException;
+import excepciones.PuertoInvalidoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
 
@@ -29,87 +30,93 @@ import excepciones.TelefonoMovilIncorrectoException;
  * Clase estática que contiene métodos para comprobar la validez
  * de los campos de las ventanas.
  */
-public class Utilidades {
+public class Validacion {
 
-	private final static int NIF_LONGITUD = 9;
-	private final static int NSS_LONGITUD = 12;
-	private final static int TELEFONO_LONGITUD = 9;
+	public static final int NIF_LONGITUD = 9;
+	public static final int NSS_LONGITUD = 12;
+	public static final int TELEFONO_LONGITUD = 9;
+	public static final int PUERTO_MINIMO = 1;
+	public static final int PUERTO_MAXIMO = 65535;
 	
-	public static void comprobarNIF (String nif) throws NIFIncorrectoException {
-		// EL NIF deben ser 8 numeros y 1 letra
+	// Un NIF debe estar compuesto por 8 dígitos y 1 letra
+	public static void comprobarNIF(String nif) throws NIFIncorrectoException {
 		boolean bCorrecto = false;
 		boolean bAux = true;
 		
 		// Comprobamos la longitud del NIF 8numeros+1letra
-		if (nif.length() == NIF_LONGITUD) {
+		if(nif.length() == NIF_LONGITUD) {
 			// Comprobamos que el ultimo caracter es una letra
-			if (Character.isLetter(nif.charAt(nif.length()-1))) {
+			if(nif.charAt(nif.length() - 1) >= 'A' && nif.charAt(nif.length() - 1) <= 'Z') {
 				// Comprobamos que los 8 primeros caracters son digitos
-				for (int i = 0; i < NIF_LONGITUD-1 && bAux; i++) {
+				for(int i = 0; i < NIF_LONGITUD-1 && bAux; i++) {
 					bAux = Character.isDigit(nif.charAt(i));
 				}
 				bCorrecto = bAux;
 			}
 		}
-		if (!bCorrecto)
+		
+		if(!bCorrecto) {
 			throw new NIFIncorrectoException();
+		}
 	}
 	
-	public static void comprobarNSS (String nss) throws NSSIncorrectoException {
-		// EL NSS debe contener 12 digitos
+	// Un NSS debe estar compuesto por 12 dígitos
+	public static void comprobarNSS(String nss) throws NSSIncorrectoException {
 		boolean bCorrecto = false;
 		boolean bAux = true;
 		
 		// Comprobamos la longitud del NSS
-		if (nss.length() == NSS_LONGITUD) {
+		if(nss.length() == NSS_LONGITUD) {
 			// Comprobamos que los 12 caracters son digitos
-			for (int i = 0; i < NSS_LONGITUD && bAux; i++) {
+			for(int i = 0; i < NSS_LONGITUD && bAux; i++) {
 				bAux = Character.isDigit(nss.charAt(i));
 			}
 			bCorrecto = bAux;
 		}
-		if (!bCorrecto)
+		
+		if(!bCorrecto) {
 			throw new NSSIncorrectoException();
+		}
 	}
 	
-	public static void comprobarCadena (String cadena) throws CadenaIncorrectaException, CadenaVaciaException {
-		// Todos los caracteres de la cadena deben ser alfabeticos
+	// Una cadena es válida si todos sus caracteres son alfabéticos o espacios
+	public static void comprobarCadena(String cadena) throws CadenaIncorrectaException, CadenaVaciaException {
 		boolean bCorrecto = false;
 		boolean bAux = true;
 		
 		// El primer caracter debe ser una letra
-		if (cadena.length() > 0) {
-			if (Character.isLetter(cadena.charAt(0))) {
+		if(cadena.length() > 0) {
+			if(Character.isLetter(cadena.charAt(0))) {
 				// El resto de caracteres pueden ser letra o espacio
-				for (int i = 1; i < cadena.length() && bAux; i++) {
+				for(int i = 1; i < cadena.length() && bAux; i++) {
 					bAux = Character.isLetter(cadena.charAt(i)) || Character.isWhitespace(cadena.charAt(i));
 				}
 				bCorrecto = bAux;
 			}
-			if (!bCorrecto)
+			if(!bCorrecto) {
 				throw new CadenaIncorrectaException();
-		}
-		else {
+			}
+		} else {
 			throw new CadenaVaciaException();
 		}
 	}
 	
-	public static void comprobarNombre (String cadena) throws NombreIncorrectoException {
+	public static void comprobarNombre(String cadena) throws NombreIncorrectoException {
 		try {
-			comprobarCadena (cadena);
-		} catch (CadenaIncorrectaException e) {
+			comprobarCadena(cadena);
+		} catch(CadenaIncorrectaException e) {
 			throw new NombreIncorrectoException();
-		} catch (CadenaVaciaException e) {
+		} catch(CadenaVaciaException e) {
 			throw new NombreIncorrectoException();
 		}
 	}
 	
-	public static void comprobarApellidos (String cadena) throws ApellidoIncorrectoException {
+	public static void comprobarApellidos(String cadena) throws ApellidoIncorrectoException {
 		try {
-			comprobarCadena (cadena);
-		} catch (CadenaIncorrectaException e) {
+			comprobarCadena(cadena);
+		} catch(CadenaIncorrectaException e) {
 			throw new ApellidoIncorrectoException();
-		} catch (CadenaVaciaException e) {
+		} catch(CadenaVaciaException e) {
 			throw new ApellidoIncorrectoException();
 		}
 	}
@@ -147,7 +154,7 @@ public class Utilidades {
 		boolean bAux = true;
 		
 		if (numero.length() > 0) {
-			for (int i = 0; i < numero.length()-1 && bAux; i++) {
+			for (int i = 0; i < numero.length() && bAux; i++) {
 				bAux = Character.isDigit(numero.charAt(i));
 			}
 			bCorrecto = bAux;
@@ -240,7 +247,7 @@ public class Utilidades {
 		}		
 	}
 	
-	public static void comprobarFecha(Date date) throws FechaNacimientoIncorrectaException, FormatoFechaIncorrectoException {
+	public static void comprobarFechaNacimiento(Date date) throws FechaNacimientoIncorrectaException, FormatoFechaIncorrectoException {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		try {
 			sdf.format(date);
@@ -252,14 +259,7 @@ public class Utilidades {
 
 	}
 	
-	public static String fechaToString(Date date) {
-		String fecha = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		fecha = sdf.format(date);
-		return fecha;
-	}
-	
-	public static void comprobarContraseña (String pass) throws ContraseñaIncorrectaException {
+	public static void comprobarContraseña(String pass) throws ContraseñaIncorrectaException {
 		boolean valido = false;
 		// Contraseña alfanumérica de mínimo 8 caracteres
 		Pattern p = Pattern.compile("[a-zA-Z0-9]+");
@@ -268,20 +268,39 @@ public class Utilidades {
 	    	if (pass.length() > 7)
 	    		valido = true;
 	    if (!valido)
-	    	throw new ContraseñaIncorrectaException("La contraseña debe ser alfnumerica y tener como minimo 8 caracteres");
+	    	throw new ContraseñaIncorrectaException("La contraseña debe ser alfnumérica y tener como mínimo 8 caracteres.");
 	}
 	
-	public static void comprobarDireccionIP (String ip) throws IPInvalidaException, CadenaVaciaException {
+	public static void comprobarDireccionIP(String ip) throws IPInvalidaException {
 		Pattern patronIP;
+		
+		// Creamos un patrón que define las IPs válidas
 		patronIP = Pattern.compile("\\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." + 
 				"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
                 "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
                 "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
 		
 		if(ip.equals("")) {
-			throw new CadenaVaciaException("La direccion IP no puede ser nula.");
+			throw new IPInvalidaException("La dirección IP no puede ser nula.");
 		} else if(!patronIP.matcher(ip).matches()) {
-				throw new IPInvalidaException();
+			throw new IPInvalidaException();
+		}
+	}
+	
+	public static void comprobarPuerto(String puerto) throws PuertoInvalidoException {
+		int numPuerto;
+	
+		if(puerto.equals("")) {
+			throw new PuertoInvalidoException("El puerto no puede ser nulo.");
+		} else {
+			try {
+				numPuerto = Integer.parseInt(puerto);
+				if(numPuerto < PUERTO_MINIMO || numPuerto > PUERTO_MAXIMO) {
+					throw new PuertoInvalidoException();
+				}
+			} catch(NumberFormatException ex) {
+				throw new PuertoInvalidoException();
+			}
 		}
 	}
 	

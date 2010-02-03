@@ -42,6 +42,9 @@ import javax.swing.border.BevelBorder;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+/**
+ * Ventana principal del servidor de respaldo.
+ */
 public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEstado {
 	
 	{

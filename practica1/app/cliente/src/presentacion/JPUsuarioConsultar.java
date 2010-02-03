@@ -21,7 +21,7 @@ import dominio.conocimiento.Citador;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Roles;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaVaciaException;
@@ -229,7 +229,7 @@ public class JPUsuarioConsultar extends JPBase {
 					
 		try {
 			// Buscamos el usuario solicitado
-			Utilidades.comprobarNIF(txtDNI.getText());
+			Validacion.comprobarNIF(txtDNI.getText());
 			usuario = (Usuario) getControlador().consultarUsuario(txtDNI.getText());
 
 			// Mostramos los datos del usuario encontrado
@@ -318,8 +318,8 @@ public class JPUsuarioConsultar extends JPBase {
 			Usuario usu = null;
 			
 			// Comprobamos los campos que pueden dar fallo
-			Utilidades.comprobarNombre(txtNombre.getText());
-			Utilidades.comprobarApellidos(txtApellidos.getText());
+			Validacion.comprobarNombre(txtNombre.getText());
+			Validacion.comprobarApellidos(txtApellidos.getText());
 			
 			switch(Roles.valueOf(txtRol.getText())) {
 				case Administrador:

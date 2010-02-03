@@ -6,20 +6,17 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
-
 import presentacion.JFLogin;
 import presentacion.JFPrincipal;
-
-import comunicaciones.ConexionCliente;
+import comunicaciones.RemotoCliente;
 import comunicaciones.ICliente;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.OperacionesAuxiliares;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
@@ -32,12 +29,12 @@ import excepciones.VolanteNoValidoException;
 /**
  * Controlador principal de la funcionalidad de los clientes. 
  */
-public class ControladorCliente implements OperacionesAuxiliares {
+public class ControladorCliente {
 
 	private ProxyServidorFrontend servidor;
-	private ConexionCliente cliente;
+	private RemotoCliente cliente;
 	private ISesion sesion;
-	private JFLogin ventana;
+	private JFLogin ventanaLogin;
 	private JFPrincipal ventanaPrincipal;
 	private String usuarioAutenticado;
 	
@@ -45,13 +42,17 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		servidor = null;
 	}
 	
+	public JFPrincipal getVentanaPrincipal() {
+		return ventanaPrincipal;
+	}
+	
 	public void cerrarControlador () throws RemoteException, MalformedURLException, NotBoundException {
 		if (cliente != null) {
 			cliente.desactivar();
 		}
-		if (ventana != null) {
-			ventana.setVisible(false);
-			ventana.dispose();
+		if (ventanaLogin != null) {
+			ventanaLogin.setVisible(false);
+			ventanaLogin.dispose();
 		}
 		if (ventanaPrincipal != null) {
 			ventanaPrincipal.setVisible(false);
@@ -61,18 +62,18 @@ public class ControladorCliente implements OperacionesAuxiliares {
 	}
 	
 	public void identificarse() {
-		if (ventana != null) {
-			ventana.setVisible(false);
-			ventana.dispose();
+		if (ventanaLogin != null) {
+			ventanaLogin.setVisible(false);
+			ventanaLogin.dispose();
 		}
 		if (ventanaPrincipal != null) {
-			ventana.setVisible(false);
+			ventanaLogin.setVisible(false);
 			ventanaPrincipal.dispose();
 		}
 		// Creamos la ventana de login y la mostramos
-		ventana = new JFLogin();
-		ventana.setControlador(this);
-		ventana.setVisible(true);
+		ventanaLogin = new JFLogin();
+		ventanaLogin.setControlador(this);
+		ventanaLogin.setVisible(true);
 	}
 	
 	public ISesion getSesion() {
@@ -106,19 +107,24 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		sesion = (ISesion)servidor.identificar(login, password);
 		usuarioAutenticado = login;
 		// Una vez que el cliente se ha identificado correctamente, registramos el cliente en el servidor
-		cliente = new ConexionCliente();
+		cliente = RemotoCliente.getCliente();
 		cliente.activar();
 		servidor.registrar((ICliente)cliente, sesion.getId());
 		// Ocultamos la ventana de login
-		ventana.setVisible(false);
-		ventana.dispose();
-		if (ventanaPrincipal != null) {
+		if(ventanaLogin != null) {
+			ventanaLogin.setVisible(false);
+			ventanaLogin.dispose();
+			ventanaLogin = null;
+		}
+		if(ventanaPrincipal != null) {
 			ventanaPrincipal.dispose();
 		}
 		ventanaPrincipal = new JFPrincipal(this);
 		ventanaPrincipal.iniciar();
 		ventanaPrincipal.setVisible(true);
 	}
+	
+	// Métodos con las operación del servidor
 	
 	public void cerrarSesion() throws RemoteException, Exception {
 		servidor.liberar(sesion.getId());
@@ -140,24 +146,24 @@ public class ControladorCliente implements OperacionesAuxiliares {
 		servidor.modificar(sesion.getId(), bene);
 	}
 	
-	public Object operacionesDisponibles () throws RemoteException, Exception {
-		return servidor.mensajeAuxiliar(sesion.getId(), OPERACIONES_DISPONIBLES, null);
+	public Object operacionesDisponibles() throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OPERACIONES_DISPONIBLES, null);
 	}
 	
-	public Object crearUsuario (Usuario usu) throws RemoteException, Exception {
-		return servidor.mensajeAuxiliar(sesion.getId(), CREAR_USUARIO, usu);
+	public Object crearUsuario(Usuario usu) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usu);
 	}
 	
-	public Object consultarUsuario (String dni) throws RemoteException, Exception {
-		return servidor.mensajeAuxiliar(sesion.getId(), CONSULTAR_USUARIO, dni);
+	public Object consultarUsuario(String dni) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, dni);
 	}
 	
-	public Object modificarUsuario (Usuario usu) throws RemoteException, Exception {
-		return servidor.mensajeAuxiliar(sesion.getId(), MODIFICAR_USUARIO, usu);
+	public Object modificarUsuario(Usuario usu) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.MODIFICAR_USUARIO, usu);
 	}
 	
-	public Object eliminarUsuario (Usuario usu) throws RemoteException, Exception {
-		return servidor.mensajeAuxiliar(sesion.getId(), ELIMINAR_USUARIO, usu);
+	public Object eliminarUsuario(Usuario usu) throws RemoteException, Exception {
+		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, usu);
 	}
 
 	public Medico consultarMedico(String dni) throws RemoteException, MedicoInexistenteException, Exception {
@@ -165,11 +171,11 @@ public class ControladorCliente implements OperacionesAuxiliares {
 	}
 	
 	public Object obtenerHorasMedico (String dniMedico) throws RemoteException, Exception {
-		return servidor.mensajeAuxiliar(sesion.getId(), CONSULTAR_CITAS_MEDICO, dniMedico);
+		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO, dniMedico);
 	}
 	
 	public Object obtenerMedicos (String tipo) throws RemoteException, Exception {
-		return servidor.mensajeAuxiliar(sesion.getId(), OBTENER_MEDICOS_TIPO, tipo);
+		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, tipo);
 	}
 	
 	public void modificarMedico(Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {

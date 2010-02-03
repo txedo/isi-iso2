@@ -4,12 +4,11 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import comunicaciones.IConstantes;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Cita;
@@ -47,37 +46,30 @@ import persistencia.FPVolante;
 public class GestorCitas implements IConstantes {
 
 	// Método para pedir una nueva cita para un cierto beneficiario y médico
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYhora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException, Exception {
-		Cita cita;
-		EntradaLog entrada;
-		Usuario usuario;
-		Medico medico = null;
-		Medico medicoAsignado = null;
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException, CitaNoValidaException, Exception {
 		Vector<Cita> citas;
-		boolean cambioMedico = false;
+		Calendar hora;
+		Usuario usuario;
+		Medico medico;
+		Cita cita;
+		
+		// Comprobamos los parámetros pasados
+		if(beneficiario == null) {
+			throw new NullPointerException("El beneficiario que va a pedir cita no puede ser nulo");
+		}
+		if(idMedico == null) {
+			throw new NullPointerException("El médico para el que se va a pedir cita no puede ser nulo");			
+		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.TramitarCita);
 		
 		// Comprobamos que exista el beneficiario
 		FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-		
-		// Se comprueba si el beneficiario tiene más de 14 años. En ese caso, si tenía asignado un pediatra, se le asigna un médico de cabecera
-		if (beneficiario.getEdad() >= 14) {
-			if (beneficiario.getMedicoAsignado().getTipoMedico() instanceof Pediatra) {
-				medicoAsignado = FPTipoMedico.consultarTipoMedicoAleatorio(new Cabecera());
-				beneficiario.setMedicoAsignado(medicoAsignado);
-				cambioMedico = true;
-			}
-		}
-			
-		// Comprobamos que exista el médico (el que se pasa como argumento si no se cambia de médico, o el recién asignado)
+
+		// Comprobamos que exista el médico
 		try {
-			if (!cambioMedico)
-				usuario = FPUsuario.consultar(idMedico);
-			else
-				usuario = medicoAsignado;
-			
+			usuario = FPUsuario.consultar(idMedico);
 			if(usuario.getRol() != Roles.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
 			}
@@ -85,45 +77,50 @@ public class GestorCitas implements IConstantes {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
 		
-		// Comprobamos que el DNI introducido del medico corresponda al medico que el beneficiario tiene asignado
-		if (!((Medico)usuario).equals(beneficiario.getMedicoAsignado()))
-			throw new Exception("El médico con el que se desea pedir cita no corresponde con el médico asignado al beneficiario con DNI " + beneficiario.getNif());
-		
-		// Comprobamos que la fecha introducida sea válida para el medico dado
+		// Comprobamos que el médico para el que se va a pedir cita
+		// sea el médico que el beneficiario tiene asignado
 		medico = (Medico)usuario;
-		if(!medico.fechaEnCalendario(fechaYhora, duracion)) {
-			throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + idMedico);
+		if(!medico.getDni().equals(beneficiario.getMedicoAsignado().getDni())) {
+			throw new CitaNoValidaException("El médico con el que se desea pedir cita no se corresponde con el médico asignado al beneficiario con NIF " + beneficiario.getNif());
+		}
+
+		// Comprobamos que la hora de la cita sea múltiplo de
+		// la duración, para que si las citas duran 15 minutos,
+		// no se pueda pedir cita a las 19:38
+		hora = Calendar.getInstance();
+		hora.setTime(fechaYHora);
+		if((int)hora.get(Calendar.MINUTE) / DURACION_CITA != hora.get(Calendar.MINUTE) / DURACION_CITA) {
+			throw new FechaNoValidaException("La hora de la cita no es válida porque sólo se pueden pedir citas en intervalos de " + DURACION_CITA + "minutos");
+		}
+
+		// Comprobamos que, según el horario del médico, se pase
+		// consulta a la fecha y hora introducidas
+		if(!medico.fechaEnCalendario(fechaYHora, duracion)) {
+			throw new FechaNoValidaException("La cita solicitada queda fuera del horario de trabajo del médico con DNI " + idMedico);
 		}
 		
-		// Recuperamos las citas del médico para comprobar si no tiene ya una cita en esa fecha y hora
+		// Recuperamos las citas del médico para comprobar que no
+		// tiene ya una cita en esa misma fecha y hora
 		citas = FPCita.consultarPorMedico(idMedico);	
-		for (Cita c : citas) {
-			if (c.getFechaYhora().equals(fechaYhora))
-				throw new FechaNoValidaException("La fecha, hora y duración dadas no son válidas para concertar una cita con el médico con DNI " + idMedico);
+		for(Cita c : citas) {
+			if(c.getFechaYhora().equals(fechaYHora)) {
+				throw new FechaNoValidaException("El médico con DNI " + idMedico + " ya tiene una cita en la fecha y hora indicadas");
+			}
 		}
 		
-		// Si todo es válido, se crea la cita, se inserta y se devuelve
+		// Añadimos la cita con los datos pasados
 		cita = new Cita();
 		cita.setBeneficiario(beneficiario);
 		cita.setMedico(medico);
 		cita.setDuracion(duracion);
-		cita.setFechaYhora(fechaYhora);
+		cita.setFechaYHora(fechaYHora);
 		FPCita.insertar(cita);
-		
-		// Añadimos una entrada al log
-		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "La cita del beneficiario con NIF " + beneficiario.getNif() + " con el medico con DNI " + idMedico + " se ha creado correctamente.");
-		FPEntradaLog.insertar(entrada);
-		
-		// Si se ha cambiado el médico, actualizamos el beneficiario en la base de datos
-		if (cambioMedico) {
-			FPBeneficiario.modificar(beneficiario);
-			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "update", "Se ha modificado el médico asignado al beneficiario con NIF " + beneficiario.getNif() + ". Pasa a tener un médico de cabecera, cuyo NIF es " + medicoAsignado.getDni() +".");
-			FPEntradaLog.insertar(entrada);
-		}
 		
 		return cita;
 	}
-
+	
+	// TODO: Los siguientes métodos no están revisados
+	
 	// Método para pedir una nueva cita para un cierto beneficiario a partir de un volante
 	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYhora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException, FechaNoValidaException {
 		Cita cita;
@@ -132,6 +129,11 @@ public class GestorCitas implements IConstantes {
 		Medico medico;
 		Volante volante;
 		Vector<Cita> citas;
+		
+		// Comprobamos los parámetros pasados
+		if(beneficiario == null) {
+			throw new NullPointerException("El beneficiario que va a pedir cita no puede ser nulo");
+		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.TramitarCita);
@@ -166,7 +168,7 @@ public class GestorCitas implements IConstantes {
 		cita.setBeneficiario(beneficiario);
 		cita.setMedico(medico);
 		cita.setDuracion(duracion);
-		cita.setFechaYhora(fechaYhora);
+		cita.setFechaYHora(fechaYhora);
 		FPCita.insertar(cita);	
 		
 		// Añadimos una entrada al log

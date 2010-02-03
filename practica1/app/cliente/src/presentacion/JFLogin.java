@@ -2,7 +2,7 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.CadenaVaciaException;
 import excepciones.IPInvalidaException;
@@ -228,12 +228,12 @@ public class JFLogin extends javax.swing.JFrame {
 				txtIPServidor.grabFocus();
 				throw new CadenaVaciaException("Debe introducir una dirección IP válida.");
 			}
-			Utilidades.comprobarDireccionIP(txtIPServidor.getText());
+			Validacion.comprobarDireccionIP(txtIPServidor.getText());
 			if (txtPuertoServidor.getText().equals("")) {
 				txtPuertoServidor.grabFocus();
 				throw new CadenaVaciaException("Debe introducir un puerto válido.");
 			}
-			Utilidades.comprobarEntero(txtPuertoServidor.getText());
+			Validacion.comprobarEntero(txtPuertoServidor.getText());
 			int puerto = Integer.parseInt(txtPuertoServidor.getText());
 			controlador.iniciarSesion(txtIPServidor.getText(), puerto, txtUsuario.getText(), new String(txtPassword.getPassword()));
 		} catch (SQLException e) {
@@ -256,9 +256,8 @@ public class JFLogin extends javax.swing.JFrame {
 	}
 	
 	private void btnAvanzadoActionPerformed(ActionEvent evt) {
-		if (btnAvanzado.getText().equals("Avanzado >>")) {
+		if(btnAvanzado.getText().equals("Avanzado >>")) {
 			btnAvanzado.setText("<< Avanzado");
-			//Grande [296, 167]
 			this.setSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
 			jPanel1.setSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
 			JPDatosConexion.setVisible(true);
@@ -266,11 +265,9 @@ public class JFLogin extends javax.swing.JFrame {
 			lblDireccionServidor.setVisible(true);
 			txtPuertoServidor.setVisible(true);
 			lblPuertoServidor.setVisible(true);
-		}
-		else {
-			if (btnAvanzado.getText().equals("<< Avanzado")) {
+		} else {
+			if(btnAvanzado.getText().equals("<< Avanzado")) {
 				btnAvanzado.setText("Avanzado >>");
-				//Pequeño [296, 140]
 				this.setSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
 				jPanel1.setSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
 				JPDatosConexion.setVisible(false);

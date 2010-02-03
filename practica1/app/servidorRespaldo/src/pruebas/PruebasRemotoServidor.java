@@ -2,21 +2,22 @@ package pruebas;
 
 import java.sql.ResultSet;
 import comunicaciones.RemotoServidorRespaldo;
+import dominio.conocimiento.ITiposMensajeLog;
 import persistencia.ComandoSQL;
 import persistencia.ComandoSQLSentencia;
 import presentacion.JFServidorRespaldo;
 import junit.framework.TestCase;
 
 /**
- * Pruebas de las conexiones con la base de datos y la ventana de
- * estado del servidor de respaldo.
+ * Pruebas del objeto remoto exportado por el servidor de respaldo para
+ * conectarse con la base de datos y la ventana de estado.
  */
-public class PruebasConexiones extends TestCase {
+public class PruebasRemotoServidor extends TestCase {
 	
 	private RemotoServidorRespaldo conexion;
 	private final int PUERTO_CONEXION = 1098;
 	
-	protected void setUp() {
+	public void setUp() {
 		try {
 			// Creamos la conexión con el servidor de respaldo
 			conexion = RemotoServidorRespaldo.getServidor();		
@@ -25,7 +26,7 @@ public class PruebasConexiones extends TestCase {
 		}
 	}
 	
-	protected void tearDown() {
+	public void tearDown() {
 		// No se necesita código de finalización 
 	}
 	
@@ -104,7 +105,7 @@ public class PruebasConexiones extends TestCase {
 	}
 
 	/** Pruebas de la conexión con la ventana de estado */
-	public void testConexionEstado() {
+	public void testConexionLog() {
 		JFServidorRespaldo ventana = null;
 		
 		try {
@@ -119,8 +120,8 @@ public class PruebasConexiones extends TestCase {
 		
 		try {
 			// Actualizamos el estado de la ventana
-			conexion.ponerMensaje("Mensaje de prueba");
-			assertEquals(ventana.getMensajes(), "Mensaje de prueba\n");
+			conexion.ponerMensaje(null, ITiposMensajeLog.TIPO_OTRO, "Mensaje de prueba");
+			assertEquals(ventana.getMensajes().substring(ventana.getMensajes().lastIndexOf(':')), ": Mensaje de prueba\n");
 			conexion.actualizarClientesEscuchando(2);
 			assertEquals(ventana.getClientesEscuchando(), 2);
 		} catch(Exception e) {

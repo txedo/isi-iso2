@@ -23,13 +23,13 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import comunicaciones.IConstantes;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Especialista;
+import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.TipoMedico;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CadenaVaciaException;
@@ -292,10 +292,10 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 
 			// Buscamos el beneficiario solicitado
 			if(sTipo.equals(ID_NIF)) {
-				Utilidades.comprobarNIF(sIdentificacion);
+				Validacion.comprobarNIF(sIdentificacion);
 				beneficiario = getControlador().getBeneficiario(sIdentificacion);
 			} else if(sTipo.equals(ID_NSS)) {
-				Utilidades.comprobarNSS(sIdentificacion);
+				Validacion.comprobarNSS(sIdentificacion);
 				beneficiario = getControlador().getBeneficiarioPorNSS(sIdentificacion);
 			}
 

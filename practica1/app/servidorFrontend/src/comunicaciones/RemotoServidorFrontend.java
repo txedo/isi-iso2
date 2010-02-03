@@ -47,7 +47,7 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 		registro = false;
 	}
 	
-	public static RemotoServidorFrontend getConexion() throws RemoteException {
+	public static RemotoServidorFrontend getServidor() throws RemoteException {
 		if(instancia == null) {
 			instancia = new RemotoServidorFrontend();
 		}
@@ -163,7 +163,7 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
     // Método auxiliar
 	
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception {
-		GestorConexionesEstado.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
+//TODO:Quitar		GestorConexionesLog.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
 

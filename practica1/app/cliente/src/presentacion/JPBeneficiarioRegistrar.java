@@ -13,7 +13,8 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioYaExistenteException;
@@ -92,6 +93,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 				this.add(btnRestablecer, new AnchorConstraint(302, 160, 961, 549, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnRestablecer.setName("btnRestablecer");
 				btnRestablecer.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnRestablecerActionPerformed(evt);
@@ -105,6 +107,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 				//jPanelRegistrar.getRootPane().setDefaultButton(btnCrear);
 				btnCrear.setText("Crear beneficiario");
 				btnCrear.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnCrear.setName("btnCrear");
 				btnCrear.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnCrearActionPerformed(evt);
@@ -115,36 +118,43 @@ public class JPBeneficiarioRegistrar extends JPBase {
 				txtTelefonoMovil = new JTextField();
 				this.add(txtTelefonoMovil, new AnchorConstraint(256, 16, 805, 185, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtTelefonoMovil.setPreferredSize(new java.awt.Dimension(229, 22));
+				txtTelefonoMovil.setName("txtTelefonoMovil");
 			}
 			{
 				txtTelefonoFijo = new JTextField();
 				this.add(txtTelefonoFijo, new AnchorConstraint(227, 16, 710, 185, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtTelefonoFijo.setPreferredSize(new java.awt.Dimension(229, 22));
+				txtTelefonoFijo.setName("txtTelefonoFijo");
 			}
 			{
 				txtCorreoElectronico = new JTextField();
 				this.add(txtCorreoElectronico, new AnchorConstraint(200, 16, 612, 185, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtCorreoElectronico.setPreferredSize(new java.awt.Dimension(229, 22));
+				txtCorreoElectronico.setName("txtCorreoElectronico");
 			}
 			{
 				txtPuerta = new JTextField();
 				this.add(txtPuerta, new AnchorConstraint(173, 961, 534, 388, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtPuerta.setPreferredSize(new java.awt.Dimension(25, 22));
+				txtPuerta.setName("txtPuerta");
 			}
 			{
 				txtPiso = new JTextField();
 				this.add(txtPiso, new AnchorConstraint(173, 775, 534, 308, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtPiso.setPreferredSize(new java.awt.Dimension(25, 22));
+				txtPiso.setName("txtPiso");
 			}
 			{
 				txtNumero = new JTextField();
 				this.add(txtNumero, new AnchorConstraint(173, 598, 534, 232, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNumero.setPreferredSize(new java.awt.Dimension(25, 22));
+				txtNumero.setName("txtNumero");
 			}
 			{
 				txtDomicilio = new JTextField();
 				this.add(txtDomicilio, new AnchorConstraint(146, 17, 514, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtDomicilio.setPreferredSize(new java.awt.Dimension(229, 22));
+				txtDomicilio.setName("txtDomicilio");
 			}
 			{
 				dtcFechaNacimiento = new JDateChooser();
@@ -154,26 +164,31 @@ public class JPBeneficiarioRegistrar extends JPBase {
 				dtcFechaNacimiento.setDateFormatString("dd/MM/yyyy");
 				dtcFechaNacimiento.setToolTipText("Formato dd/MM/yyyy. Para más ayuda haga clic en el icono de la derecha.");
 				dtcFechaNacimiento.setMaxSelectableDate(new Date());
+				dtcFechaNacimiento.setName("dtcFechaNacimiento");
 			}
 			{
 				txtApellidos = new JTextField();
 				this.add(txtApellidos, new AnchorConstraint(92, 17, 416, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtApellidos.setPreferredSize(new java.awt.Dimension(229, 22));
+				txtApellidos.setName("txtApellidos");
 			}
 			{
 				txtNombre = new JTextField();
 				this.add(txtNombre, new AnchorConstraint(65, 17, 318, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNombre.setPreferredSize(new java.awt.Dimension(229, 22));
+				txtNombre.setName("txtNombre");
 			}
 			{
 				txtNSS = new JTextField();
 				this.add(txtNSS, new AnchorConstraint(39, 17, 223, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNSS.setPreferredSize(new java.awt.Dimension(229, 22));
+				txtNSS.setName("txtNSS");
 			}
 			{
 				txtNIF = new JTextField();
 				this.add(txtNIF, new AnchorConstraint(12, 17, 125, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNIF.setPreferredSize(new java.awt.Dimension(229, 22));
+				txtNIF.setName("txtNIF");
 			}
 			{
 				lblTelefonoMovil = new JLabel();
@@ -255,53 +270,61 @@ public class JPBeneficiarioRegistrar extends JPBase {
 	//$hide>>$
 	
 	private void btnCrearActionPerformed(ActionEvent evt) {
-		Beneficiario beneficiario = null;
+		Beneficiario beneficiario;
+		Medico medico;
 		
 		try {
 			
 			// Comprobamos todos los campos
-			Utilidades.comprobarNIF(txtNIF.getText());
-			Utilidades.comprobarNSS(txtNSS.getText());
-			Utilidades.comprobarNombre(txtNombre.getText());
-			Utilidades.comprobarApellidos(txtApellidos.getText());
-			Utilidades.comprobarFecha(dtcFechaNacimiento.getDate());
-			Utilidades.comprobarDomicilio(txtDomicilio.getText());
-			Utilidades.comprobarNumero(txtNumero.getText());
-			if(!txtPiso.getText().equals("")) Utilidades.comprobarPiso(txtPiso.getText());
-			if(!txtPuerta.getText().equals("")) Utilidades.comprobarPuerta(txtPuerta.getText());
-			Utilidades.comprobarCorreoElectronico(txtCorreoElectronico.getText());
-			Utilidades.comprobarTelefonoFijo(txtTelefonoFijo.getText());
-			Utilidades.comprobarTelefonoMovil(txtTelefonoMovil.getText());
+			Validacion.comprobarNIF(txtNIF.getText().trim());
+			Validacion.comprobarNSS(txtNSS.getText().trim());
+			Validacion.comprobarNombre(txtNombre.getText().trim());
+			Validacion.comprobarApellidos(txtApellidos.getText().trim());
+			Validacion.comprobarFechaNacimiento(dtcFechaNacimiento.getDate());
+			Validacion.comprobarDomicilio(txtDomicilio.getText().trim());
+			Validacion.comprobarNumero(txtNumero.getText().trim());
+			if(!txtPiso.getText().equals("")) {
+				Validacion.comprobarPiso(txtPiso.getText().trim());
+			}
+			if(!txtPuerta.getText().equals("")) {
+				Validacion.comprobarPuerta(txtPuerta.getText().trim());
+			}
+			Validacion.comprobarCorreoElectronico(txtCorreoElectronico.getText().trim());
+			Validacion.comprobarTelefonoFijo(txtTelefonoFijo.getText().trim());
+			Validacion.comprobarTelefonoMovil(txtTelefonoMovil.getText().trim());
 
 			// Creamos un nuevo beneficiario con los datos introducidos
 			beneficiario = new Beneficiario();
-			beneficiario.setNif(txtNIF.getText().toUpperCase());
-			beneficiario.setNss(txtNSS.getText());
-			beneficiario.setNombre(txtNombre.getText());
-			beneficiario.setApellidos(txtApellidos.getText());
+			beneficiario.setNif(txtNIF.getText().trim().toUpperCase());
+			beneficiario.setNss(txtNSS.getText().trim());
+			beneficiario.setNombre(txtNombre.getText().trim());
+			beneficiario.setApellidos(txtApellidos.getText().trim());
 			beneficiario.setFechaNacimiento(dtcFechaNacimiento.getDate());
-			beneficiario.setDomicilio(txtDomicilio.getText() + ", nº " + txtNumero.getText());
-			if(!txtPiso.getText().equals(""))
-				beneficiario.setDomicilio(beneficiario.getDomicilio() + ", " + txtPiso.getText() + "º");
-			if(!txtPuerta.getText().equals(""))
-				beneficiario.setDomicilio(beneficiario.getDomicilio() + " " + txtPuerta.getText().toUpperCase());
-			beneficiario.setCorreo(txtCorreoElectronico.getText());
-			beneficiario.setTelefono(Integer.parseInt(txtTelefonoFijo.getText()));
-			beneficiario.setMovil(Integer.parseInt(txtTelefonoMovil.getText()));
+			beneficiario.setDomicilio(txtDomicilio.getText().trim() + ", nº " + txtNumero.getText().trim());
+			if(!txtPiso.getText().equals("")) {
+				beneficiario.setDomicilio(beneficiario.getDomicilio() + ", " + txtPiso.getText().trim() + "º");
+			}
+			if(!txtPuerta.getText().equals("")) {
+				beneficiario.setDomicilio(beneficiario.getDomicilio() + " " + txtPuerta.getText().trim().toUpperCase());
+			}
+			beneficiario.setCorreo(txtCorreoElectronico.getText().trim());
+			beneficiario.setTelefono(Integer.parseInt(txtTelefonoFijo.getText().trim()));
+			beneficiario.setMovil(Integer.parseInt(txtTelefonoMovil.getText().trim()));
 
 			// Solicitamos al servidor que se cree el beneficiario
 			getControlador().crearBeneficiario(beneficiario);
 			
-			// El beneficiario se ha creado correctamente
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema.");
+			// Obtenemos el médico que se ha asignado al beneficiario
+			medico = getControlador().getBeneficiario(beneficiario.getNif()).getMedicoAsignado();
+			
+			// Mostramos un mensaje indicando que el beneficiario se ha
+			// creado correctamente y cuál es el médico asignado
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema y se le ha asignado el siguiente médico:\n" + medico.getNombre() + " " + medico.getApellidos() + " (centro " + medico.getCentroSalud().getNombre() + ")");
 			limpiarCamposRegistro();
 			
 		} catch(BeneficiarioYaExistenteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());			
-		} catch(SQLException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-		} catch(RemoteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			
 		} catch(NIFIncorrectoException e) {
 			txtNIF.selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
@@ -319,9 +342,13 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtApellidos.grabFocus();
 		} catch(FormatoFechaIncorrectoException e) {
+			((JTextField)dtcFechaNacimiento.getDateEditor()).selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			dtcFechaNacimiento.grabFocus();
 		} catch(FechaNacimientoIncorrectaException e) {
+			((JTextField)dtcFechaNacimiento.getDateEditor()).selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			dtcFechaNacimiento.grabFocus();
 		} catch(DomicilioIncorrectoException e) {
 			txtDomicilio.selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
@@ -350,6 +377,11 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			txtTelefonoMovil.selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtTelefonoMovil.grabFocus();
+			
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}

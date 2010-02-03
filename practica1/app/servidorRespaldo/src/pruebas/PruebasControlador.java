@@ -14,7 +14,7 @@ public class PruebasControlador extends TestCase {
 
 	private ControladorRespaldo controlador;
 	
-	protected void setUp() {
+	public void setUp() {
 		try {
 			// Inicializamos el controlador y la ventana de estado
 			controlador = new ControladorRespaldo();
@@ -23,12 +23,12 @@ public class PruebasControlador extends TestCase {
 		}
 	}
 	
-	protected void tearDown() {
+	public void tearDown() {
 		// No se necesita código de finalización 
 	}
 	
-	/** Pruebas de conexión y desconexión del servidor */
-	public void testConectarDesconectar() {
+	/** Pruebas del controlador */
+	public void testControlador() {
 		ConfiguracionRespaldo configuracion = null;
 		
 		try {

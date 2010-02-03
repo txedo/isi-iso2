@@ -1,15 +1,13 @@
 package dominio.control;
 
 import java.sql.SQLException;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
-import dominio.conocimiento.EntradaLog;
+import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Pediatra;
 import persistencia.FPBeneficiario;
-import persistencia.FPEntradaLog;
 import persistencia.FPTipoMedico;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
@@ -19,110 +17,139 @@ import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
- * Clase encargada de consultar, añadir, modificar y eliminar beneficiarios
- * en el sistema.
+ * Clase encargada de consultar, añadir y modificar beneficiarios en
+ * el sistema.
  */
 public class GestorBeneficiarios {
 
-	/* Metodo que devuelve un beneficiario, consultando por su dni.
-	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
-	public static Beneficiario getBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException {
-		Beneficiario bene = null;
-		EntradaLog entrada;
+	private static final int EDAD_PEDIATRA = 14;
+	
+	// Método para obtener los datos de un beneficiario consultando por NIF
+	public static Beneficiario getBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+		Beneficiario beneficiario;
 		
+		// Comprobamos los parámetros pasados
+		if(dni == null) {
+			throw new NullPointerException("El NIF del beneficiario buscado no puede ser nulo");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiario);
-		bene = FPBeneficiario.consultarPorNIF(dni);
-		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se consultan los datos del beneficiario con NIF "+dni);
-		FPEntradaLog.insertar(entrada);
 		
-		return bene;
+		// Obtenemos el beneficiario con el NIF indicado
+		beneficiario = FPBeneficiario.consultarPorNIF(dni);
+		
+		// Comprobamos si el beneficiario tiene más de 14 años pero
+		// aún sigue con un pediatra asignado como médico
+		comprobarMedicoBeneficiario(beneficiario);
+		
+		return beneficiario;
 	}
 	
-	public static Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException {
-		Beneficiario bene = null;
-		EntradaLog entrada;
+	// Método para obtener los datos de un beneficiario consultando por NSS
+	public static Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+		Beneficiario beneficiario;
 
+		// Comprobamos los parámetros pasados
+		if(nss == null) {
+			throw new NullPointerException("El NSS del beneficiario buscado no puede ser nulo");
+		}
+
+		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiario);
-		bene = FPBeneficiario.consultarPorNSS(nss);
-		entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "Se consultan los datos del beneficiario con NSS "+nss);
-		FPEntradaLog.insertar(entrada);
+		
+		// Obtenemos el beneficiario con el NSS indicado
+		beneficiario = FPBeneficiario.consultarPorNSS(nss);
 
-		return bene;
+		// Comprobamos si el beneficiario tiene más de 14 años pero
+		// aún sigue con un pediatra asignado como médico
+		comprobarMedicoBeneficiario(beneficiario);
+
+		return beneficiario;
 	}
 	
-
-	/* Metodo para registrar un nuevo beneficiario.
-	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
-	public static void crear(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException {
-
-		Medico medico = null;
-		EntradaLog entrada;
+	// Método para registrar un nuevo beneficiario en el sistema
+	public static void crear(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+		Medico medico;
 		
+		// Comprobamos los parámetros pasados
+		if(beneficiario == null) {
+			throw new NullPointerException("El beneficiario que se va a crear no puede ser nulo");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.RegistrarBeneficiario);
-		// Se consulta para comprobar si ese beneficiario ya existe.
-		// Si existe, se lanza una excepcion.
-		// Si no existe, se captura la BeneficiarioIncorrectoException y se comprueba que no se repita el NSS
-		// Si no se repite el NSS, se registra el nuevo beneficiario
+				
+		// Consultamos si ya existe un beneficiario con el mismo NIF del
+		// beneficiario que se quiere crear, y en ese caso se lanza un error
 		try {
 			FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" ya existe y no se puede crear");
-			FPEntradaLog.insertar(entrada);
-			throw new BeneficiarioYaExistenteException("El beneficiario con NIF "+beneficiario.getNif()+ " ya existe en la base de datos. No se puede registrar de nuevo.");
+			throw new BeneficiarioYaExistenteException("El beneficiario con NIF " + beneficiario.getNif() + " ya existe en el sistema y no se puede registrar de nuevo");
+		} catch(BeneficiarioInexistenteException e) {
+			// Lo normal es que se lance esta excepción
 		}
-		catch(BeneficiarioInexistenteException e){
+		
+		// Consultamos si ya existe un beneficiario con el mismo NSS del
+		// beneficiario que se quiere crear, y en ese caso se lanza un error
+		try {
+			FPBeneficiario.consultarPorNSS(beneficiario.getNss());
+			throw new BeneficiarioYaExistenteException("No se puede registrar el beneficiario porque ya existe otro beneficiario en el sistema con el NSS " + beneficiario.getNss());
+		} catch(BeneficiarioInexistenteException e) {
+			// Lo normal es que se lance esta excepción
+		}
+		
+		// Buscamos un médico de cabecera o pediatra para el nuevo
+		// beneficiario según su edad; si se lanza una excepción es
+		// porque no existen médicos registrados del tipo adecuado
+		if(beneficiario.getEdad() < EDAD_PEDIATRA) {
 			try {
-				FPBeneficiario.consultarPorNSS(beneficiario.getNss());
-				entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" no se puede registrar porque ya existe el NSS " + beneficiario.getNss()+ " en otro beneficiario");
-				FPEntradaLog.insertar(entrada);
-				throw new BeneficiarioYaExistenteException("El beneficiario con NIF "+beneficiario.getNif()+" no se puede registrar porque ya existe el NSS " + beneficiario.getNss()+ " en otro beneficiario");
-			}
-			catch(BeneficiarioInexistenteException bie) {
-				// Se asigna un medico de cabecera o un pediatra, segun la edad
-				// Se captura la excepcion por si no existe médicos registrados del tipo adecuado
-				if (beneficiario.getEdad() < 14)
-					try { 
-						medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Pediatra());
-					} catch (UsuarioIncorrectoException uie) {
-						entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "No se puede registrar el beneficiario con NIF " +beneficiario.getNif() + " porque no existe un pediatra en el sistema para asignárselo");
-						FPEntradaLog.insertar(entrada);
-						throw new SQLException("No se puede registrar el beneficiario con NIF " +beneficiario.getNif() + " porque no existe un pediatra en el sistema para asignárselo");
-					}
-				else
-					try {
-						medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Cabecera());
-					} catch (UsuarioIncorrectoException uie) {
-						entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "No se puede registrar el beneficiario con NIF " +beneficiario.getNif() + " porque no existe un médico de cabecera en el sistema para asignárselo");
-						FPEntradaLog.insertar(entrada);
-						throw new SQLException("No se puede registrar el beneficiario con NIF " +beneficiario.getNif() + " porque no existe un médico de cabecera en el sistema para asignárselo");
-					}
+				medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Pediatra());
 				beneficiario.setMedicoAsignado(medico);
-				FPBeneficiario.insertar(beneficiario);
-				entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "create", "El beneficiario con NIF "+beneficiario.getNif()+" se ha registrado satisfactoriamente");
-				FPEntradaLog.insertar(entrada);
-				
+			} catch(UsuarioIncorrectoException e) {
+				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún pediatra en el sistema que se le pueda asignar");
+			}
+		} else {
+			try {
+				medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Cabecera());
+				beneficiario.setMedicoAsignado(medico);
+			} catch(UsuarioIncorrectoException e) {
+				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún médico de cabecera en el sistema que se le pueda asignar");
 			}
 		}
-
+		
+		// Añadimos el beneficiario al sistema
+		FPBeneficiario.insertar(beneficiario);
 	}
 	
-	/* Metodo para modificar los datos de un beneficiario.
-	 * Se realiza esta operacion si la sesion tiene permisos suficientes */
-	public static void modificar(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
-		EntradaLog entrada;
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ModificarBeneficiario);
-		// Se consulta para comprobar si ese beneficiario ya existe.
-		// Si no existe, se lanza una excepcion.
-		// Si existe, se actualiza
-		try {
-			FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-			FPBeneficiario.modificar(beneficiario);
-			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "update", "Se han actualizado los datos del beneficiario con NIF "+beneficiario.getNif());
-			FPEntradaLog.insertar(entrada);
+	// Método para modificar un beneficiario existente en el sistema
+	public static void modificar(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException {
+		// Comprobamos los parámetros pasados
+		if(beneficiario == null) {
+			throw new NullPointerException("El beneficiario que se va a modificar no puede ser nulo");
 		}
-		catch(BeneficiarioInexistenteException e){
-			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "update", "El beneficiario con NIF "+beneficiario.getNif()+" no existe y no se puede actualizar");
-			FPEntradaLog.insertar(entrada);
-			throw e;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ModificarBeneficiario);
+		
+		// Comprobamos si existe el beneficiario que se quiere modificar
+		// y, en ese caso, lo modificamos
+		FPBeneficiario.consultarPorNIF(beneficiario.getNif());
+		FPBeneficiario.modificar(beneficiario);
+	}
+	
+	private static void comprobarMedicoBeneficiario(Beneficiario beneficiario) throws SQLException, CentroSaludIncorrectoException, UsuarioIncorrectoException {
+		Medico medico;
+		
+		// Si el beneficiario tiene más de 14 años y tenía asignado un
+		// pediatra, se le asigna un médico de cabecera y se actualiza
+		if(beneficiario.getEdad() >= EDAD_PEDIATRA && beneficiario.getMedicoAsignado().getTipoMedico().getCategoria() == CategoriasMedico.Pediatra) {
+			try {
+				medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Cabecera());
+				beneficiario.setMedicoAsignado(medico);
+				FPBeneficiario.modificar(beneficiario);
+			} catch(UsuarioIncorrectoException e) {
+				throw new UsuarioIncorrectoException("No se puede actualizar el médico asignado al beneficiario porque no existe ningún médico de cabecera en el sistema");
+			}
 		}
 	}
 	

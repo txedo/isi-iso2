@@ -149,6 +149,9 @@ public class GestorSesiones {
 		// (en teoría sí, porque primero el usuario ha tenido que hacer login)
 		sesion = sesiones.get(idSesion);
 		if(sesion == null) {
+			//TODO:Poner log
+			//entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para ejecutar la operacion " + operacion.toString());
+			//FPEntradaLog.insertar(entrada);
 			throw new SesionInvalidaException("El identificador de sesión es inválido");
 		}
 		

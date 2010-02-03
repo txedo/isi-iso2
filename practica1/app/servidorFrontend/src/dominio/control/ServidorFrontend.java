@@ -6,13 +6,16 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
-import comunicaciones.GestorConexionesEstado;
+import comunicaciones.GestorConexionesLog;
 import comunicaciones.ICliente;
 import comunicaciones.IServidorFrontend;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ISesion;
+import dominio.conocimiento.ITiposMensajeLog;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludIncorrectoException;
@@ -67,21 +70,21 @@ public class ServidorFrontend implements IServidorFrontend {
 				//cliente.desactivar();
 				clientesEscuchando.remove(GestorSesiones.getSesionAbierta().getId());			
 				String mensajeLog = "Usuario '" + GestorSesiones.getSesion(sesion.getId()).getUsuario().getLogin() + "' desconectado.";
-				GestorConexionesEstado.ponerMensaje(mensajeLog);
-				GestorConexionesEstado.actualizarClientesEscuchando(clientesEscuchando.size());
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, mensajeLog);
+				GestorConexionesLog.actualizarClientesEscuchando(clientesEscuchando.size());
 			}
-			GestorConexionesEstado.ponerMensaje("Usuario '" + login + "' autenticado.");
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Usuario '" + login + "' autenticado.");
 		} catch(RemoteException re) {
-			GestorConexionesEstado.ponerMensaje("Error de conexión al autenticar el usuario '" + login + "': " + re.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error de conexión al autenticar el usuario '" + login + "': " + re.getLocalizedMessage());
 			throw re;
 		} catch(SQLException se) {
-			GestorConexionesEstado.ponerMensaje("Error SQL al autenticar el usuario '" + login + "': " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error SQL al autenticar el usuario '" + login + "': " + se.getLocalizedMessage());
 			throw se;
 		} catch(UsuarioIncorrectoException uie) {
-			GestorConexionesEstado.ponerMensaje("Error en el nombre de usuario o la contraseña al autenticar el usuario '" + login + "': " + uie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error en el nombre de usuario o la contraseña al autenticar el usuario '" + login + "': " + uie.getLocalizedMessage());
 			throw uie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al autenticar un usuario: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al autenticar un usuario: " + e.toString());
 			throw e;
 		}
 		
@@ -97,14 +100,14 @@ public class ServidorFrontend implements IServidorFrontend {
 				url = "rmi://" + cliente.getDireccionIP() + ":" + String.valueOf(cliente.getPuerto()) + "/" + ICliente.NOMBRE_CLIENTE;
 		        ICliente terminal = (ICliente)Naming.lookup(url);
 		        clientesEscuchando.put(idSesion, terminal);
-				GestorConexionesEstado.ponerMensaje("Nuevo cliente a la escucha. ID de sesion " + idSesion);
-				GestorConexionesEstado.actualizarClientesEscuchando(clientesEscuchando.size());
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, "Nuevo cliente a la escucha. ID de sesion " + idSesion);
+				GestorConexionesLog.actualizarClientesEscuchando(clientesEscuchando.size());
 			}
 		} catch (SesionNoIniciadaException snie) {
-			GestorConexionesEstado.ponerMensaje(snie.getMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, snie.getMessage());
 			throw snie;
 		} catch (Exception e) {
-			GestorConexionesEstado.ponerMensaje(e.getMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, e.getMessage());
 			throw e;
 		}
 	}
@@ -121,11 +124,11 @@ public class ServidorFrontend implements IServidorFrontend {
 				clientesEscuchando.remove(idSesion);
 				String mensajeLog = "Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' desconectado.";
 				GestorSesiones.liberar(idSesion);
-				GestorConexionesEstado.ponerMensaje(mensajeLog);
-				GestorConexionesEstado.actualizarClientesEscuchando(clientesEscuchando.size());
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, mensajeLog);
+				GestorConexionesLog.actualizarClientesEscuchando(clientesEscuchando.size());
 			}
 		} catch (Exception e) {
-			GestorConexionesEstado.ponerMensaje(e.getMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, e.getMessage());
 			throw e;
 		}
 	}
@@ -142,32 +145,36 @@ public class ServidorFrontend implements IServidorFrontend {
 			// Obtenemos el beneficiario con el NIF indicado
 			beneficiario = GestorBeneficiarios.getBeneficiario(idSesion, dni);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Consultado el beneficiario con NIF " + dni + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultado el beneficiario con NIF " + dni + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al consultar el beneficiario con NIF " + dni + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL al consultar el beneficiario con NIF " + dni + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(UsuarioIncorrectoException uie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el médico asociado al beneficiario con NIF " + dni + ": " + uie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el médico asociado al beneficiario con NIF " + dni + ": " + uie.getLocalizedMessage());
 			throw uie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + dni + ": " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + dni + ": " + csie.getLocalizedMessage());
 			throw csie;
 		} catch(BeneficiarioInexistenteException bie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al consultar un beneficiario inexistente con NIF " + dni + ": " + bie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar un beneficiario inexistente con NIF " + dni + ": " + bie.getLocalizedMessage());
 			throw bie;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar un beneficiario con NIF nulo: " + npe.getLocalizedMessage());
+			throw npe;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de consulta del beneficiario con NIF " + dni + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al realizar una operación no permitida de consulta del beneficiario con NIF " + dni + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para consultar el beneficiario con NIF " + dni + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar el beneficiario con NIF " + dni + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al consultar un beneficiario por NIF: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al consultar un beneficiario por NIF: " + e.toString());
 			throw e;
 		}
 		
@@ -182,32 +189,36 @@ public class ServidorFrontend implements IServidorFrontend {
 			// Obtenemos el beneficiario con el NSS indicado
 			beneficiario = GestorBeneficiarios.getBeneficiarioPorNSS(idSesion, nss);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Consultado el beneficiario con NSS " + nss + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultado el beneficiario con NSS " + nss + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al consultar el beneficiario con NSS " + nss + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL al consultar el beneficiario con NSS " + nss + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(UsuarioIncorrectoException uie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el médico asociado al beneficiario con NSS " + nss + ": " + uie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el médico asociado al beneficiario con NSS " + nss + ": " + uie.getLocalizedMessage());
 			throw uie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico asociado al beneficiario con NSS " + nss + ": " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el centro de salud del médico asociado al beneficiario con NSS " + nss + ": " + csie.getLocalizedMessage());
 			throw csie;
 		} catch(BeneficiarioInexistenteException bie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al consultar un beneficiario inexistente con NSS " + nss + ": " + bie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar un beneficiario inexistente con NSS " + nss + ": " + bie.getLocalizedMessage());
 			throw bie;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar un beneficiario con NSS nulo: " + npe.getLocalizedMessage());
+			throw npe;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de consulta del beneficiario con NSS " + nss + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al realizar una operación no permitida de consulta del beneficiario con NSS " + nss + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para consultar el beneficiario con NSS " + nss + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar el beneficiario con NSS " + nss + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al consultar un beneficiario por NSS: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al consultar un beneficiario por NSS: " + e.toString());
 			throw e;
 		}
 		
@@ -221,32 +232,36 @@ public class ServidorFrontend implements IServidorFrontend {
 			// Añadimos un nuevo beneficiario al sistema
 			GestorBeneficiarios.crear(idSesion, beneficiario);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Creado el beneficiario con NIF " + beneficiario.getNif() + " y NSS " + beneficiario.getNss() + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Creado el beneficiario con NIF " + beneficiario.getNif() + " y NSS " + beneficiario.getNss() + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al crear el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL al crear el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(UsuarioIncorrectoException uie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " que se iba a crear: " + uie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " que se iba a crear: " + uie.getLocalizedMessage());
 			throw uie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " que se iba a crear: " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " que se iba a crear: " + csie.getLocalizedMessage());
 			throw csie;
 		} catch(BeneficiarioYaExistenteException byee) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al crear un beneficiario con NIF " + beneficiario.getNif() + " que ya existe: " + byee.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al crear un beneficiario con NIF " + beneficiario.getNif() + " que ya existe: " + byee.getLocalizedMessage());
 			throw byee;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al crear un beneficiario nulo: " + npe.getLocalizedMessage());
+			throw npe;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de creación de un beneficiario con NIF " + beneficiario.getNif() + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al realizar una operación no permitida de creación de un beneficiario con NIF " + beneficiario.getNif() + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para crear un beneficiario con NIF " + beneficiario.getNif() + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error al comprobar la sesión con id " + idSesion + " para crear un beneficiario con NIF " + beneficiario.getNif() + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al crear un beneficiario: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error inesperado al crear un beneficiario: " + e.toString());
 			throw e;
 		}
 	}
@@ -258,32 +273,36 @@ public class ServidorFrontend implements IServidorFrontend {
 			// Modificamos un beneficiario existente del sistema
 			GestorBeneficiarios.modificar(idSesion, beneficiario);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Modificado el beneficiario con NIF " + beneficiario.getNif() + " y NSS " + beneficiario.getNss() + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Modificado el beneficiario con NIF " + beneficiario.getNif() + " y NSS " + beneficiario.getNss() + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al modificar el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error SQL al modificar el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(UsuarioIncorrectoException uie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " que se iba a modificar: " + uie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " que se iba a modificar: " + uie.getLocalizedMessage());
 			throw uie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " que se iba a modificar: " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " que se iba a modificar: " + csie.getLocalizedMessage());
 			throw csie;
 		} catch(BeneficiarioInexistenteException bie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al modificar un beneficiario inexistente con NIF " + beneficiario.getNif() + ": " + bie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al modificar un beneficiario inexistente con NIF " + beneficiario.getNif() + ": " + bie.getLocalizedMessage());
 			throw bie;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al modificar un beneficiario con NIF nulo: " + npe.getLocalizedMessage());
+			throw npe;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de modificación del beneficiario con NIF " + beneficiario.getNif() + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al realizar una operación no permitida de modificación del beneficiario con NIF " + beneficiario.getNif() + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para modificar el beneficiario con NIF " + beneficiario.getNif() + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Error al comprobar la sesión con id " + idSesion + " para modificar el beneficiario con NIF " + beneficiario.getNif() + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al modificar un beneficiario: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Error inesperado al modificar un beneficiario: " + e.toString());
 			throw e;
 		}
 	}
@@ -298,30 +317,34 @@ public class ServidorFrontend implements IServidorFrontend {
 		
 		try {
 			// Obtenemos el médico con el DNI indicado
-			medico = GestorUsuarios.getMedico(idSesion, dni);
+			medico = GestorMedicos.getMedico(idSesion, dni);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Consultado el médico con DNI " + dni + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultado el médico con DNI " + dni + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al consultar el médico con DNI " + dni + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL al consultar el médico con DNI " + dni + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(MedicoInexistenteException mie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al consultar un médico inexistente con DNI " + dni + ": " + mie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar un médico inexistente con DNI " + dni + ": " + mie.getLocalizedMessage());
 			throw mie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico con DNI " + dni + ": " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el centro de salud del médico con DNI " + dni + ": " + csie.getLocalizedMessage());
 			throw csie;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar un médico con DNI nulo: " + npe.getLocalizedMessage());
+			throw npe;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de consulta del médico con DNI " + dni + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al realizar una operación no permitida de consulta del médico con DNI " + dni + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para consultar el médico con DNI " + dni + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar el médico con DNI " + dni + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al consultar un médico: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al consultar un médico: " + e.toString());
 			throw e;
 		}
 		
@@ -333,30 +356,34 @@ public class ServidorFrontend implements IServidorFrontend {
 		
 		try {
 			// Añadimos un nuevo médico al sistema
-			GestorUsuarios.crearMedico(idSesion, medico);
+			GestorMedicos.crearMedico(idSesion, medico);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Creado el médico con DNI " + medico.getDni() + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Creado el médico con DNI " + medico.getDni() + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al crear el médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL al crear el médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(MedicoYaExistenteException myee) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al crear un médico con DNI " + medico.getDni() + " que ya existe: " + myee.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al crear un médico con DNI " + medico.getDni() + " que ya existe: " + myee.getLocalizedMessage());
 			throw myee;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico con DNI " + medico.getDni() + " que se iba a crear: " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el centro de salud del médico con DNI " + medico.getDni() + " que se iba a crear: " + csie.getLocalizedMessage());
 			throw csie;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al crear un médico nulo: " + npe.getLocalizedMessage());
+			throw npe;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de creación de un médico con DNI " + medico.getDni() + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al realizar una operación no permitida de creación de un médico con DNI " + medico.getDni() + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para crear el médico con DNI " + medico.getDni() + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error al comprobar la sesión con id " + idSesion + " para crear el médico con DNI " + medico.getDni() + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al crear un médico: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error inesperado al crear un médico: " + e.toString());
 			throw e;
 		}
 	}
@@ -366,30 +393,34 @@ public class ServidorFrontend implements IServidorFrontend {
 		
 		try {
 			// Modificamos un médico existente del sistema
-			GestorUsuarios.modificarMedico(idSesion, medico);
+			GestorMedicos.modificarMedico(idSesion, medico);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Modificado el médico con DNI " + medico.getDni() + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Modificado el médico con DNI " + medico.getDni() + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al modificar el médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error SQL al modificar el médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(MedicoInexistenteException mie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al modificar un médico inexistente con DNI " + medico.getDni() + ": " + mie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al modificar un médico inexistente con DNI " + medico.getDni() + ": " + mie.getLocalizedMessage());
 			throw mie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico con DNI " + medico.getDni() + " que se iba a modificar: " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar el centro de salud del médico con DNI " + medico.getDni() + " que se iba a modificar: " + csie.getLocalizedMessage());
 			throw csie;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al modificar un médico nulo: " + npe.getLocalizedMessage());
+			throw npe;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de modificación del médico con DNI " + medico.getDni() + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al realizar una operación no permitida de modificación del médico con DNI " + medico.getDni() + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para modificar el médico con DNI " + medico.getDni() + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Error al comprobar la sesión con id " + idSesion + " para modificar el médico con DNI " + medico.getDni() + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al modificar un médico: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Error inesperado al modificar un médico: " + e.toString());
 			throw e;
 		}
 	}
@@ -399,30 +430,34 @@ public class ServidorFrontend implements IServidorFrontend {
 		
 		try {
 			// Eliminamos un médico del sistema
-			GestorUsuarios.eliminarMedico(idSesion, medico);
+			GestorMedicos.eliminarMedico(idSesion, medico);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Eliminado el médico con DNI " + medico.getDni() + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Eliminado el médico con DNI " + medico.getDni() + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al eliminar el médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL al eliminar el médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(MedicoInexistenteException mie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al eliminar un médico inexistente con DNI " + medico.getDni() + ": " + mie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al eliminar un médico inexistente con DNI " + medico.getDni() + ": " + mie.getLocalizedMessage());
 			throw mie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico con DNI " + medico.getDni() + " que se iba a eliminar: " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar el centro de salud del médico con DNI " + medico.getDni() + " que se iba a eliminar: " + csie.getLocalizedMessage());
 			throw csie;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al eliminar un médico nulo: " + npe.getLocalizedMessage());
+			throw npe;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de eliminación del médico con DNI " + medico.getDni() + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al realizar una operación no permitida de eliminación del médico con DNI " + medico.getDni() + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para eliminar el médico con DNI " + medico.getDni() + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_DELETE, "Error al comprobar la sesión con id " + idSesion + " para eliminar el médico con DNI " + medico.getDni() + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al eliminar un médico: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_DELETE, "Error inesperado al eliminar un médico: " + e.toString());
 			throw e;
 		}
 	}
@@ -439,40 +474,48 @@ public class ServidorFrontend implements IServidorFrontend {
 			// Pedimos una cita para un beneficiario y un médico dados
 			cita = GestorCitas.pedirCita(idSesion, beneficiario, idMedico, fechaYHora, duracion);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Solicitada una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Solicitada una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al pedir una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL al pedir una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(BeneficiarioInexistenteException bie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al pedir una cita para un beneficiario inexistente con NIF " + beneficiario.getNif() + ": " + bie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para un beneficiario inexistente con NIF " + beneficiario.getNif() + ": " + bie.getLocalizedMessage());
 			throw bie;
 		} catch(MedicoInexistenteException mie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al pedir una cita para un médico inexistente con DNI " + idMedico + ": " + mie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para un médico inexistente con DNI " + idMedico + ": " + mie.getLocalizedMessage());
 			throw mie;
 		} catch(UsuarioIncorrectoException uie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a pedir una cita: " + uie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a pedir una cita: " + uie.getLocalizedMessage());
 			throw uie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a pedir una cita: " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a pedir una cita: " + csie.getLocalizedMessage());
 			throw csie;
+		} catch(CitaNoValidaException cnve) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + cnve.getLocalizedMessage());
+			throw cnve;
 		} catch(FechaNoValidaException fnve) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al pedir una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + " a una fecha y hora no válidas: " + fnve.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + " a una fecha y hora no válidas: " + fnve.getLocalizedMessage());
 			throw fnve;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita con datos no válidos: " + npe.getLocalizedMessage());
+			throw npe;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de petición de una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al realizar una operación no permitida de petición de una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para pedir una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error al comprobar la sesión con id " + idSesion + " para pedir una cita para el médico con DNI " + idMedico + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al solicitar una cita: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error inesperado al solicitar una cita: " + e.toString());
 			throw e;
 		}
 		
@@ -487,40 +530,40 @@ public class ServidorFrontend implements IServidorFrontend {
 			// Pedimos una cita para un beneficiario a partir de un volante
 			cita = GestorCitas.pedirCita(idSesion, beneficiario, idVolante, fechaYHora, duracion);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Solicitada una cita para el el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Solicitada una cita para el el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(BeneficiarioInexistenteException bie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al pedir una cita para un beneficiario inexistente con NIF " + beneficiario.getNif() + ": " + bie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para un beneficiario inexistente con NIF " + beneficiario.getNif() + ": " + bie.getLocalizedMessage());
 			throw bie;
 		} catch(UsuarioIncorrectoException uie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a pedir una cita: " + uie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a pedir una cita: " + uie.getLocalizedMessage());
 			throw uie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a pedir una cita: " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a pedir una cita: " + csie.getLocalizedMessage());
 			throw csie;
 		} catch(VolanteNoValidoException vnve) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir de un volante con el id inexistente o inválido " + idVolante + ": " + vnve.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir de un volante con el id inexistente o inválido " + idVolante + ": " + vnve.getLocalizedMessage());
 			throw vnve;
 		} catch(FechaNoValidaException fnve) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + " a una fecha y hora no válidas: " + fnve.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + " a una fecha y hora no válidas: " + fnve.getLocalizedMessage());
 			throw fnve;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de petición de una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al realizar una operación no permitida de petición de una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para pedir una cita para y el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error al comprobar la sesión con id " + idSesion + " para pedir una cita para y el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al solicitar una cita a partir de un volante: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error inesperado al solicitar una cita a partir de un volante: " + e.toString());
 			throw e;
 		}
 		
@@ -535,32 +578,32 @@ public class ServidorFrontend implements IServidorFrontend {
 			// Obtenemos las citas que tiene un beneficiario
 			citas = GestorCitas.getCitas(idSesion, dni);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Consultadas las citas del beneficiario con NIF " + dni + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultadas las citas del beneficiario con NIF " + dni + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al consultar las citas del beneficiario con NIF " + dni + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL al consultar las citas del beneficiario con NIF " + dni + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(BeneficiarioInexistenteException bie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al consultar las citas de un beneficiario inexistente con NIF " + dni + ": " + bie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar las citas de un beneficiario inexistente con NIF " + dni + ": " + bie.getLocalizedMessage());
 			throw bie;
 		} catch(UsuarioIncorrectoException uie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el médico asociado al beneficiario con NIF " + dni + " para el que se iban a consultar las citas: " + uie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el médico asociado al beneficiario con NIF " + dni + " para el que se iban a consultar las citas: " + uie.getLocalizedMessage());
 			throw uie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + dni + " para el que se iban a consultar las citas: " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + dni + " para el que se iban a consultar las citas: " + csie.getLocalizedMessage());
 			throw csie;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de consulta de las citas del beneficiario con NIF " + dni + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al realizar una operación no permitida de consulta de las citas del beneficiario con NIF " + dni + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para consultar las citas del beneficiario con NIF " + dni + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar las citas del beneficiario con NIF " + dni + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al consultar las citas de un beneficiario: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al consultar las citas de un beneficiario: " + e.toString());
 			throw e;
 		}
 		
@@ -574,24 +617,24 @@ public class ServidorFrontend implements IServidorFrontend {
 			// Eliminamos una cita existente
 			GestorCitas.anularCita(idSesion, cita);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Anulada una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Anulada una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al anular una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL al anular una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(CitaNoValidaException cnve) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al anular una cita inexistente del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + cnve.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al anular una cita inexistente del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + cnve.getLocalizedMessage());
 			throw cnve;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de anulación de una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al realizar una operación no permitida de anulación de una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para anular una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_DELETE, "Error al comprobar la sesión con id " + idSesion + " para anular una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al anular una cita de un beneficiario: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_DELETE, "Error inesperado al anular una cita de un beneficiario: " + e.toString());
 			throw e;
 		}
 	}
@@ -604,40 +647,40 @@ public class ServidorFrontend implements IServidorFrontend {
 			// Solicitamos un volante para un cierto beneficiario y médico
 			idVolante = GestorCitas.emitirVolante(idSesion, beneficiario, emisor, destino);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Emitido un volante para el médico con DNI " + destino.getDni() + " y el beneficiario con NIF " + beneficiario.getNif() + ".");
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Emitido un volante para el médico con DNI " + destino.getDni() + " y el beneficiario con NIF " + beneficiario.getNif() + ".");
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al emitir un volante para el médico con DNI " + destino.getDni() + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL al emitir un volante para el médico con DNI " + destino.getDni() + " y el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
 			throw se;
 		} catch(BeneficiarioInexistenteException bie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al solicitar un volante para un beneficiario inexistente con NIF " + beneficiario.getNif() + ": " + bie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al solicitar un volante para un beneficiario inexistente con NIF " + beneficiario.getNif() + ": " + bie.getLocalizedMessage());
 			throw bie;
 		} catch(MedicoInexistenteException mie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al solicitar un volante para un médico inexistente con DNI " + emisor.getDni() + " o " + destino.getDni() + ": " + mie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al solicitar un volante para un médico inexistente con DNI " + emisor.getDni() + " o " + destino.getDni() + ": " + mie.getLocalizedMessage());
 			throw mie;
 		} catch(VolanteNoValidoException vnve) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al solicitar un volante para un médico no especialista con DNI " + destino.getDni() + ": " + vnve.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al solicitar un volante para un médico no especialista con DNI " + destino.getDni() + ": " + vnve.getLocalizedMessage());
 			throw vnve;
 		} catch(UsuarioIncorrectoException uie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a emitir un volante: " + uie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a emitir un volante: " + uie.getLocalizedMessage());
 			throw uie;
 		} catch(CentroSaludIncorrectoException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a emitir un volante: " + csie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el centro de salud del médico asociado al beneficiario con NIF " + beneficiario.getNif() + " para el que se iba a emitir un volante: " + csie.getLocalizedMessage());
 			throw csie;
 		} catch(OperacionIncorrectaException oie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida de emisión de un volante para el beneficiario con NIF " + beneficiario.getNif() + ": " + oie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al realizar una operación no permitida de emisión de un volante para el beneficiario con NIF " + beneficiario.getNif() + ": " + oie.getLocalizedMessage());
 			throw oie;
 		} catch(SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion + " para emitir un volante para el beneficiario con NIF " + beneficiario.getNif() + ": " + sie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error al comprobar la sesión con id " + idSesion + " para emitir un volante para el beneficiario con NIF " + beneficiario.getNif() + ": " + sie.getLocalizedMessage());
 			throw sie;
 		} catch(Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado al emitir un volante: " + e.toString());
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error inesperado al emitir un volante: " + e.toString());
 			throw e;
 		}
 		
@@ -650,38 +693,181 @@ public class ServidorFrontend implements IServidorFrontend {
 	
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception {
 		Object resultado;
-
 		String login;
+		
 		resultado = null;
-		GestorConexionesEstado.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
-		try {
-			resultado = GestorMensajes.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
-		} catch (SQLException se) {
-			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error SQL al ejecutar la operación " + codigoMensaje);
-			throw se;
-		} catch (CentroSaludIncorrectoException csie) {
-			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al ejecutar la operación " + codigoMensaje + ". No se puede recuperar el centro de salud del usuario ");
-			throw csie;
-		} catch (UsuarioYaExistenteException uyee) {
-			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al ejecutar la operación " + codigoMensaje + ". No se puede crear el usuario porque ya existe");
-			throw uyee;
-		} catch (UsuarioInexistenteException uie) {
-			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al ejecutar la operación " + codigoMensaje + ". No se puede recuperar el usuario porque no existe en la base de datos");
-			throw uie;
-		} catch (OperacionIncorrectaException oie) {
-			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesEstado.ponerMensaje(login, "Error al realizar una operación no permitida " + codigoMensaje);
-			throw oie;
-		} catch (SesionInvalidaException sie) {
-			GestorConexionesEstado.ponerMensaje("Error al comprobar la sesión con id " + idSesion 	+ " para la operación " + codigoMensaje);
-			throw sie;
-		} catch (Exception e) {
-			GestorConexionesEstado.ponerMensaje("Error inesperado: " + e.toString());
-			throw e;
+		switch((int)codigoMensaje) {
+		
+		case ICodigosMensajeAuxiliar.OPERACIONES_DISPONIBLES:
+			try {
+				resultado = GestorSesiones.operacionesDisponibles(idSesion);
+			} catch(Exception e) {
+				// TODO: Poner catch para las excepciones que se pueden lanzar
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al ejecutar una operación auxiliar: " + e.toString());
+				throw e;
+			}
+			break;
+		
+		case ICodigosMensajeAuxiliar.CONSULTAR_USUARIO:
+			try {
+				// Obtenemos el usuario con el DNI indicado
+				resultado = GestorUsuarios.getUsuario(idSesion, (String)informacion);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultado el usuario con DNI " + (String)informacion + ".");
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL al consultar el usuario con DNI " + (String)informacion + ": " + se.getLocalizedMessage());
+				throw se;
+			} catch(UsuarioInexistenteException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar un usuario inexistente con DNI " + (String)informacion + ": " + uie.getLocalizedMessage());
+				throw uie;
+			} catch(CentroSaludIncorrectoException csie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el centro de salud del usuario con DNI " + (String)informacion + ": " + csie.getLocalizedMessage());
+				throw csie;
+			} catch(NullPointerException npe) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar un usuario con DNI nulo: " + npe.getLocalizedMessage());
+				throw npe;
+			} catch(OperacionIncorrectaException oie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al realizar una operación no permitida de consulta del usuario con DNI " + (String)informacion + ": " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar el usuario con DNI " + (String)informacion + ": " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al consultar un usuario: " + e.toString());
+				throw e;
+			}
+			break;
+		
+		case ICodigosMensajeAuxiliar.CREAR_USUARIO:
+			try {
+				// Añadimos un nuevo usuario al sistema
+				GestorUsuarios.crearUsuario(idSesion, (Usuario)informacion);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Creado el usuario con DNI " + ((Usuario)informacion).getDni() + ".");
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL al crear el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + se.getLocalizedMessage());
+				throw se;
+			} catch(UsuarioYaExistenteException uyee) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al crear un usuario con DNI " + ((Usuario)informacion).getDni() + " que ya existe: " + uyee.getLocalizedMessage());
+				throw uyee;
+			} catch(CentroSaludIncorrectoException csie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar el centro de salud del usuario con DNI " + ((Usuario)informacion).getDni() + " que se iba a crear: " + csie.getLocalizedMessage());
+				throw csie;
+			} catch(NullPointerException npe) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al crear un usuario nulo: " + npe.getLocalizedMessage());
+				throw npe;
+			} catch(OperacionIncorrectaException oie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al realizar una operación no permitida de creación de un usuario con DNI " + ((Usuario)informacion).getDni() + ": " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error al comprobar la sesión con id " + idSesion + " para crear el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error inesperado al crear un usuario: " + e.toString());
+				throw e;
+			}
+			break;
+		
+		case ICodigosMensajeAuxiliar.MODIFICAR_USUARIO:
+			try {
+				// Modificamos un usuario existente del sistema
+				GestorUsuarios.modificarUsuario(idSesion, (Usuario)informacion);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Modificado el usuario con DNI " + ((Usuario)informacion).getDni() + ".");
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error SQL al modificar el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + se.getLocalizedMessage());
+				throw se;
+			} catch(UsuarioInexistenteException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al modificar un usuario inexistente con DNI " + ((Usuario)informacion).getDni() + ": " + uie.getLocalizedMessage());
+				throw uie;
+			} catch(CentroSaludIncorrectoException csie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar el centro de salud del usuario con DNI " + ((Usuario)informacion).getDni() + " que se iba a modificar: " + csie.getLocalizedMessage());
+				throw csie;
+			} catch(NullPointerException npe) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al modificar un usuario nulo: " + npe.getLocalizedMessage());
+				throw npe;
+			} catch(OperacionIncorrectaException oie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al realizar una operación no permitida de modificación del usuario con DNI " + ((Usuario)informacion).getDni() + ": " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Error al comprobar la sesión con id " + idSesion + " para modificar el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Error inesperado al modificar un usuario: " + e.toString());
+				throw e;
+			}
+			break;
+		
+		case ICodigosMensajeAuxiliar.ELIMINAR_USUARIO:
+			try {
+				// Eliminamos un usuario del sistema
+				GestorUsuarios.eliminarUsuario(idSesion, (Usuario)informacion);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Eliminado el usuario con DNI " + ((Usuario)informacion).getDni() + ".");
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL al eliminar el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + se.getLocalizedMessage());
+				throw se;
+			} catch(UsuarioInexistenteException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al eliminar un usuario inexistente con DNI " + ((Usuario)informacion).getDni() + ": " + uie.getLocalizedMessage());
+				throw uie;
+			} catch(CentroSaludIncorrectoException csie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar el centro de salud del usuario con DNI " + ((Usuario)informacion).getDni() + " que se iba a eliminar: " + csie.getLocalizedMessage());
+				throw csie;
+			} catch(NullPointerException npe) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al eliminar un usuario nulo: " + npe.getLocalizedMessage());
+				throw npe;
+			} catch(OperacionIncorrectaException oie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al realizar una operación no permitida de eliminación del usuario con DNI " + ((Usuario)informacion).getDni() + ": " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_DELETE, "Error al comprobar la sesión con id " + idSesion + " para eliminar el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_DELETE, "Error inesperado al eliminar un usuario: " + e.toString());
+				throw e;
+			}
+			break;
+		
+		case ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO:
+			try {
+				resultado = GestorMedicos.obtenerMedicos(idSesion, (String)informacion);
+			} catch(Exception e) {
+				// TODO: Poner catch para las excepciones que se pueden lanzar
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al ejecutar una operación auxiliar: " + e.toString());
+				throw e;
+			}
+			break;
+		
+		case ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO:
+			try {
+				resultado = GestorCitas.calcularCitasMedico(idSesion, (String)informacion);
+			} catch(Exception e) {
+				// TODO: Poner catch para las excepciones que se pueden lanzar
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al ejecutar una operación auxiliar: " + e.toString());
+				throw e;
+			}
+			break;
+			
 		}
 		
 		return resultado;
