@@ -2,7 +2,6 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 
-
 /**
  * Clase abstracta que representa un usuario del sistema.
  */
@@ -26,7 +25,7 @@ public abstract class Usuario implements Serializable {
 		this.apellidos = apellidos;
 	}
 
-	public abstract Roles getRol();
+	public abstract RolesUsuarios getRol();
 	
 	public String getDni() {
 		return dni;
@@ -86,6 +85,10 @@ public abstract class Usuario implements Serializable {
 			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && centro.equals(u.getCentroSalud());
 		}
 		return dev;
+	}
+
+	public String toString() {
+		return getRol().toString() + ": " + dni + ", " + login + ", " + password + ", " + nombre + ", " + apellidos;
 	}
 	
 }

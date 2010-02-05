@@ -115,7 +115,7 @@ public class FPCita {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM "
-				+ TABLA_CITAS + " WHERE " + COL_FECHA + " = ? AND " + COL_DURACION + " = ? AND " + COL_DNI_MEDICO + " = ? AND " + COL_NIF_BENEFICIARIO + " = ?", c.getFechaYhora(), c.getDuracion(), c.getMedico().getDni(), c.getBeneficiario().getNif());
+				+ TABLA_CITAS + " WHERE " + COL_FECHA + " = ? AND " + COL_DURACION + " = ? AND " + COL_DNI_MEDICO + " = ? AND " + COL_NIF_BENEFICIARIO + " = ?", c.getFechaYHora(), c.getDuracion(), c.getMedico().getDni(), c.getBeneficiario().getNif());
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
@@ -132,7 +132,7 @@ public class FPCita {
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CITAS
 				+ " (" + COL_FECHA + ", " + COL_DURACION + ", " + COL_NIF_BENEFICIARIO
 				+ ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?)",
-				c.getFechaYhora(), c.getDuracion(), c.getBeneficiario().getNif(), c.getMedico().getDni());
+				c.getFechaYHora(), c.getDuracion(), c.getBeneficiario().getNif(), c.getMedico().getDni());
 		GestorConexionesBD.ejecutar(comando);
 	}
 
@@ -142,7 +142,7 @@ public class FPCita {
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_CITAS
 				+ " WHERE " + COL_FECHA + "=? AND " + COL_DURACION + "=? AND " + COL_NIF_BENEFICIARIO
 				+ "=? AND " + COL_DNI_MEDICO + "=?",
-				c.getFechaYhora(), c.getDuracion(), c.getBeneficiario().getNif(), c.getMedico().getDni());
+				c.getFechaYHora(), c.getDuracion(), c.getBeneficiario().getNif(), c.getMedico().getDni());
 		GestorConexionesBD.ejecutar(comando);
 	}
 

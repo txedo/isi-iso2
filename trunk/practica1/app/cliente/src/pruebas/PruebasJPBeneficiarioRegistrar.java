@@ -217,7 +217,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		
 		try {
 			// Comprobamos que el beneficiario se ha creado correctamente
-			beneLeido = controlador.getBeneficiario(nif);
+			beneLeido = controlador.consultarBeneficiario(nif);
 			beneCreado = new Beneficiario(nif, nss, "Pedro", "Jiménez Serrano", new Date(1980 - 1900, 0, 1), "C/Cervantes, nº 38, 4º F", "pjs80@gmail.com", 926147130, 626405060);
 			assertEquals(beneLeido, beneCreado);
 		} catch(Exception e) {
@@ -316,7 +316,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 				nif = nif + "X";
 				// Comprobamos si ya hay un beneficiario con ese NIF
 				try {
-					controlador.getBeneficiario(nif);
+					controlador.consultarBeneficiario(nif);
 					existe = true;
 				} catch(BeneficiarioInexistenteException e) {
 					existe = false;
@@ -346,7 +346,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 				}
 				// Comprobamos si ya hay un beneficiario con ese NSS
 				try {
-					controlador.getBeneficiarioPorNSS(nss);
+					controlador.consultarBeneficiarioPorNSS(nss);
 					existe = true;
 				} catch(BeneficiarioInexistenteException e) {
 					existe = false;

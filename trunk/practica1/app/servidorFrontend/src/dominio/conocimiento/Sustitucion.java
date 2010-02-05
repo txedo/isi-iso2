@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Clase que representa el día en que un médico va a sustituir a otro.
+ * Clase que representa el día y la hora en la que un médico va
+ * a sustituir a otro.
  */
 public class Sustitucion implements Serializable {
 
@@ -12,14 +13,18 @@ public class Sustitucion implements Serializable {
 	
 	private int id;
 	private Date dia;
+	private int horaInicio;
+	private int horaFinal;
 	private Medico medico;
 	private Medico sustituto;
 	
 	public Sustitucion() {
 	}
 	
-	public Sustitucion(Date dia, Medico medico, Medico sustituto) {
+	public Sustitucion(Date dia, int horaInicio, int horaFinal, Medico medico, Medico sustituto) {
 		this.dia = dia;
+		this.horaInicio = horaInicio;
+		this.horaFinal = horaFinal;
 		this.medico = medico;
 		this.sustituto = sustituto;
 	}
@@ -38,6 +43,22 @@ public class Sustitucion implements Serializable {
 	
 	public void setDia(Date dia) {
 		this.dia = dia;
+	}
+	
+	public int getHoraInicio() {
+		return horaInicio;
+	}
+	
+	public void setHoraInicio(int horaInicio) {
+		this.horaInicio = horaInicio;
+	}
+	
+	public int getHoraFinal() {
+		return horaFinal;
+	}
+	
+	public void setHoraFinal(int horaFinal) {
+		this.horaFinal = horaFinal;
 	}
 	
 	public Medico getMedico() {

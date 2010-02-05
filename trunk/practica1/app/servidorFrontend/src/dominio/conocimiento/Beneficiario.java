@@ -120,15 +120,19 @@ public class Beneficiario implements Serializable {
 	}
 	
 	public int getEdad() {
-		int edad = -1;
+		long msInicial, msFinal, diferencia;
+		double dias;
+		int edad;
 		
-		// Se obtienen milisegundos de las fechas
-		long fechaInicialMs = fechaNacimiento.getTime();
-		long fechaFinalMs = new Date().getTime();
-		long diferencia = fechaFinalMs - fechaInicialMs;
-		// Se divide por el numero de milisegundos de un dia
-		double dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-		// Para la edad, los dias se dividen por los dias que tiene un año
+		// Calculamos la diferencia entre las fechas en milisegundos
+		msInicial = fechaNacimiento.getTime();
+		msFinal = new Date().getTime();
+		diferencia = msFinal - msInicial;
+
+		// Calculamos el número de días dividiendo entre los milisegundos de un día
+		dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+		
+		// Para obtener la edad, dividimos los días entre los días que tiene un año
 		edad = (int)(dias / 365);
 	
 		return edad;

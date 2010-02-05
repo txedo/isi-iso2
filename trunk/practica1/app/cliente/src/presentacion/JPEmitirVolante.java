@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.EventObject;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -38,6 +40,9 @@ import excepciones.MedicoInexistenteException;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+/**
+ * Panel que permite emitir volantes para ir a la consulta de especialistas.
+ */
 public class JPEmitirVolante extends JPBase {
 	
 	private static final long serialVersionUID = -2491308165795545454L;
@@ -61,8 +66,6 @@ public class JPEmitirVolante extends JPBase {
 
 	public JPEmitirVolante(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
-		jPanelBeneficiario = new JPBeneficiarioConsultar(frame, controlador);
-		jPanelBeneficiario.ocultarControles();
 		initGUI();
 	}
 	
@@ -143,12 +146,20 @@ public class JPEmitirVolante extends JPBase {
 			}
 			{
 				jSeparator1 = new JSeparator();
-				this.add(jSeparator1, new AnchorConstraint(191, 5, 493, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(jSeparator1, new AnchorConstraint(196, 5, 493, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				jSeparator1.setPreferredSize(new java.awt.Dimension(554, 10));
 			}
-			this.add(jPanelBeneficiario, new AnchorConstraint(5, 5, 437, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-			jPanelBeneficiario.setPreferredSize(new java.awt.Dimension(554, 171));
-
+			{
+				jPanelBeneficiario = new JPBeneficiarioConsultar(getFrame(), getControlador());
+				this.add(jPanelBeneficiario, new AnchorConstraint(5, 5, 437, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				jPanelBeneficiario.setPreferredSize(new java.awt.Dimension(554, 186));
+				jPanelBeneficiario.ocultarControles();
+				jPanelBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
+					public void beneficiarioBuscado(EventObject evt) {
+						jPanelBeneficiarioBeneficiarioBuscado(evt);
+					}
+				});
+			}
 			// Inicializaciones de algunos controles
 			txtNombre.setEditable(false);
 			txtNombre.setFocusable(false);
@@ -162,6 +173,8 @@ public class JPEmitirVolante extends JPBase {
 			e.printStackTrace();
 		}
 	}
+	
+	//$hide>>$
 	
 	private void crearModelos(String [] elementos) {
 		lstEspecialistasModel = new DefaultComboBoxModel(elementos);
@@ -202,16 +215,20 @@ public class JPEmitirVolante extends JPBase {
 		}
 	}
 	
+	private void jPanelBeneficiarioBeneficiarioBuscado(EventObject evt) {
+		// TODO Auto-generated method stub
+	}
+	
 	private void btnAceptarActionPerformed(ActionEvent evt) {
 		boolean valido = true;
 		Medico medico = null;
 		Medico nuevoMedico = null;
 		Beneficiario bene;
 		
-		if (jPanelBeneficiario.getNif().equals("")) { 
-			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Advertencia", "Debe introducir un beneficiario");
-			valido = false;
-		}
+//		if (jPanelBeneficiario.getNif().equals("")) { 
+	//		Dialogos.mostrarDialogoAdvertencia(getFrame(), "Advertencia", "Debe introducir un beneficiario");
+		//	valido = false;
+//		}
 		if (valido && txtNombre.getText().equals("")) {
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Advertencia", "Debe seleccionar un especialista");
 			valido = false;
@@ -221,12 +238,12 @@ public class JPEmitirVolante extends JPBase {
 				bene = jPanelBeneficiario.getBeneficiario();
 				medico = bene.getMedicoAsignado();
 				idVolante = getControlador().emitirVolante(bene, ((Medico)((Sesion)(getControlador().getSesion())).getUsuario()), especialistas.get(lstEspecialistas.getSelectedIndex()));
-				nuevoMedico = getControlador().getBeneficiario(bene.getNif()).getMedicoAsignado();
+				nuevoMedico = getControlador().consultarBeneficiario(bene.getNif()).getMedicoAsignado();
 				if (!medico.equals(nuevoMedico))
 					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante se ha emitido para el beneficiario. El identificador de dicho volante es " + idVolante+"\nTambién se ha asignado un médico de cabecera al beneficiario. El DNI del nuevo médico es "+nuevoMedico.getDni());
 				else
 					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante se ha emitido para el beneficiario. El identificador de dicho volante es " + idVolante);
-				jPanelBeneficiario.limpiarCamposConsultar();
+				jPanelBeneficiario.limpiarCamposConsulta();
 				limpiarPanelMedico();
 			} catch (RemoteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
@@ -243,5 +260,7 @@ public class JPEmitirVolante extends JPBase {
 		txtEspecialidad.setText("");
 		lstEspecialistas.clearSelection();
 	}
+	
+	//$hide<<$
 
 }

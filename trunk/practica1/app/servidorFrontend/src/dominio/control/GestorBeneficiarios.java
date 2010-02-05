@@ -25,12 +25,12 @@ public class GestorBeneficiarios {
 	private static final int EDAD_PEDIATRA = 14;
 	
 	// Método para obtener los datos de un beneficiario consultando por NIF
-	public static Beneficiario getBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+	public static Beneficiario consultarBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
 		Beneficiario beneficiario;
 		
 		// Comprobamos los parámetros pasados
 		if(dni == null) {
-			throw new NullPointerException("El NIF del beneficiario buscado no puede ser nulo");
+			throw new NullPointerException("El NIF del beneficiario buscado no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -47,12 +47,12 @@ public class GestorBeneficiarios {
 	}
 	
 	// Método para obtener los datos de un beneficiario consultando por NSS
-	public static Beneficiario getBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+	public static Beneficiario consultarBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
 		Beneficiario beneficiario;
 
 		// Comprobamos los parámetros pasados
 		if(nss == null) {
-			throw new NullPointerException("El NSS del beneficiario buscado no puede ser nulo");
+			throw new NullPointerException("El NSS del beneficiario buscado no puede ser nulo.");
 		}
 
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -69,12 +69,12 @@ public class GestorBeneficiarios {
 	}
 	
 	// Método para registrar un nuevo beneficiario en el sistema
-	public static void crear(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+	public static void crearBeneficiario(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
 		Medico medico;
 		
 		// Comprobamos los parámetros pasados
 		if(beneficiario == null) {
-			throw new NullPointerException("El beneficiario que se va a crear no puede ser nulo");
+			throw new NullPointerException("El beneficiario que se va a crear no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -84,7 +84,7 @@ public class GestorBeneficiarios {
 		// beneficiario que se quiere crear, y en ese caso se lanza un error
 		try {
 			FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-			throw new BeneficiarioYaExistenteException("El beneficiario con NIF " + beneficiario.getNif() + " ya existe en el sistema y no se puede registrar de nuevo");
+			throw new BeneficiarioYaExistenteException("El beneficiario con NIF " + beneficiario.getNif() + " ya existe en el sistema y no se puede registrar de nuevo.");
 		} catch(BeneficiarioInexistenteException e) {
 			// Lo normal es que se lance esta excepción
 		}
@@ -93,7 +93,7 @@ public class GestorBeneficiarios {
 		// beneficiario que se quiere crear, y en ese caso se lanza un error
 		try {
 			FPBeneficiario.consultarPorNSS(beneficiario.getNss());
-			throw new BeneficiarioYaExistenteException("No se puede registrar el beneficiario porque ya existe otro beneficiario en el sistema con el NSS " + beneficiario.getNss());
+			throw new BeneficiarioYaExistenteException("No se puede registrar el beneficiario porque ya existe otro beneficiario en el sistema con el NSS " + beneficiario.getNss() + ".");
 		} catch(BeneficiarioInexistenteException e) {
 			// Lo normal es que se lance esta excepción
 		}
@@ -106,14 +106,14 @@ public class GestorBeneficiarios {
 				medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Pediatra());
 				beneficiario.setMedicoAsignado(medico);
 			} catch(UsuarioIncorrectoException e) {
-				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún pediatra en el sistema que se le pueda asignar");
+				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún pediatra en el sistema que se le pueda asignar.");
 			}
 		} else {
 			try {
 				medico = FPTipoMedico.consultarTipoMedicoAleatorio(new Cabecera());
 				beneficiario.setMedicoAsignado(medico);
 			} catch(UsuarioIncorrectoException e) {
-				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún médico de cabecera en el sistema que se le pueda asignar");
+				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún médico de cabecera en el sistema que se le pueda asignar.");
 			}
 		}
 		
@@ -122,10 +122,10 @@ public class GestorBeneficiarios {
 	}
 	
 	// Método para modificar un beneficiario existente en el sistema
-	public static void modificar(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException {
+	public static void modificarBeneficiario(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException {
 		// Comprobamos los parámetros pasados
 		if(beneficiario == null) {
-			throw new NullPointerException("El beneficiario que se va a modificar no puede ser nulo");
+			throw new NullPointerException("El beneficiario que se va a modificar no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -148,7 +148,7 @@ public class GestorBeneficiarios {
 				beneficiario.setMedicoAsignado(medico);
 				FPBeneficiario.modificar(beneficiario);
 			} catch(UsuarioIncorrectoException e) {
-				throw new UsuarioIncorrectoException("No se puede actualizar el médico asignado al beneficiario porque no existe ningún médico de cabecera en el sistema");
+				throw new UsuarioIncorrectoException("No se puede actualizar el médico asignado al beneficiario porque no existe ningún médico de cabecera en el sistema.");
 			}
 		}
 	}

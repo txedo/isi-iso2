@@ -20,12 +20,12 @@ import excepciones.UsuarioYaExistenteException;
 public class GestorUsuarios {
 
 	// Método para consultar los datos de un usuario
-	public static Usuario getUsuario(long idSesion, String dni) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
+	public static Usuario consultarUsuario(long idSesion, String dni) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
 		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
 		if(dni == null) {
-			throw new NullPointerException("El DNI del usuario buscado no puede ser nulo");
+			throw new NullPointerException("El DNI del usuario buscado no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -35,7 +35,7 @@ public class GestorUsuarios {
 		try {
 			usuario = FPUsuario.consultar(dni);
 		} catch(UsuarioIncorrectoException ex) {
-			throw new UsuarioInexistenteException("No existe ningún usuario con el DNI introducido");
+			throw new UsuarioInexistenteException("No existe ningún usuario con el DNI introducido.");
 		}
 		
 		return usuario;
@@ -47,7 +47,7 @@ public class GestorUsuarios {
 		
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
-			throw new NullPointerException("El usuario que se va a crear no puede ser nulo");
+			throw new NullPointerException("El usuario que se va a crear no puede ser nulo.");
 		}
 
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -57,7 +57,7 @@ public class GestorUsuarios {
 		// usuario que se quiere crear, y en ese caso se lanza un error
 		try {
 			FPUsuario.consultar(usuario.getDni());
-			throw new UsuarioYaExistenteException("El usuario con DNI " + usuario.getDni() + " ya existe en el sistema y no se puede registrar de nuevo");
+			throw new UsuarioYaExistenteException("El usuario con DNI " + usuario.getDni() + " ya existe en el sistema y no se puede registrar de nuevo.");
 		} catch(UsuarioIncorrectoException e) {
 			// Lo normal es que se lance esta excepción
 		}
@@ -68,7 +68,7 @@ public class GestorUsuarios {
 			centro = FPCentroSalud.consultarAleatorio();
 			usuario.setCentroSalud(centro);
 		} catch(CentroSaludIncorrectoException e) {
-			throw new SQLException("No se puede registrar el usuario porque no existe ningún centro de salud en el sistema que se le pueda asignar");
+			throw new SQLException("No se puede registrar el usuario porque no existe ningún centro de salud en el sistema que se le pueda asignar.");
 		}
 
 		// Añadimos el usuario al sistema
@@ -79,7 +79,7 @@ public class GestorUsuarios {
 	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
-			throw new NullPointerException("El usuario que se va a modificar no puede ser nulo");
+			throw new NullPointerException("El usuario que se va a modificar no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -100,7 +100,7 @@ public class GestorUsuarios {
 	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
-			throw new NullPointerException("El usuario que se va a eliminar no puede ser nulo");
+			throw new NullPointerException("El usuario que se va a eliminar no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación

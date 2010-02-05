@@ -38,7 +38,7 @@ public class FPVolante {
 		
 		// Si no se obtienen datos, es porque no existe el volante 
 		if(datos.getRow() == 0) {
-			throw new VolanteNoValidoException("No existe ningún volante con el id " + String.valueOf(id));
+			throw new VolanteNoValidoException("No existe ningún volante con el id " + String.valueOf(id) + ".");
 		} else {
 			// Establecemos los datos del volante
 			volante = new Volante();
@@ -57,6 +57,7 @@ public class FPVolante {
 		ComandoSQL comando;
 		ResultSet datos;
 
+		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_VOLANTES + " (" + COL_NIF_BENEFICIARIO + ", " + COL_DNI_MEDICO_EMISOR + ", " + COL_DNI_MEDICO_RECEPTOR + ") VALUES (?, ?, ?)",
 		                                  volante.getBeneficiario().getNif(), volante.getEmisor().getDni(), volante.getReceptor().getDni());
 		GestorConexionesBD.ejecutar(comando);
@@ -67,4 +68,5 @@ public class FPVolante {
 		datos.next();
 		volante.setId(datos.getInt("LAST_INSERT_ID()"));
 	}
+	
 }

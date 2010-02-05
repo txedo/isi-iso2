@@ -34,7 +34,7 @@ public class FPBeneficiario {
 		ComandoSQL comando;
 		ResultSet datos;
 		Beneficiario bene;
-		Medico med;
+		Medico medico;
 
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS + " WHERE " + COL_NIF + " = ?", nif);
@@ -43,7 +43,7 @@ public class FPBeneficiario {
 
 		// Si no se obtienen datos, es porque el beneficiario no existe
 		if(datos.getRow() == 0) {
-			throw new BeneficiarioInexistenteException("No existe ningún beneficiario con el NIF " + nif);
+			throw new BeneficiarioInexistenteException("El beneficiario con NIF " + nif + " no se encuentra dado de alta en el sistema.");
 		} else {
 			// Establecemos los datos del beneficiario
 			bene = new Beneficiario();
@@ -53,12 +53,11 @@ public class FPBeneficiario {
 			bene.setApellidos(datos.getString(COL_APELLIDOS));
 			bene.setDomicilio(datos.getString(COL_DOMICILIO));
 			bene.setCorreo(datos.getString(COL_CORREO));
-			// Se transforma el timestamp de la base de datos a un Date
 			bene.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
 			bene.setTelefono(datos.getInt(COL_TELEFONO));
 			bene.setMovil(datos.getInt(COL_MOVIL));
-			med = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			bene.setMedicoAsignado(med);
+			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			bene.setMedicoAsignado(medico);
 		}
 
 		return bene;
@@ -67,8 +66,8 @@ public class FPBeneficiario {
 	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
 		ComandoSQL comando;
 		ResultSet datos;
-		Beneficiario bene = null;
-		Medico med = null;
+		Beneficiario bene;
+		Medico medico;
 
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS + " WHERE " + COL_NSS + " = ?", nss);
@@ -77,7 +76,7 @@ public class FPBeneficiario {
 
 		// Si no se obtienen datos, es porque el beneficiario no existe
 		if (datos.getRow() == 0) {
-			throw new BeneficiarioInexistenteException("No existe ningún beneficiario con el NSS " + nss);
+			throw new BeneficiarioInexistenteException("El beneficiario con NSS " + nss + " no se encuentra dado de alta en el sistema.");
 		} else {
 			// Establecemos los datos del beneficiario
 			bene = new Beneficiario();
@@ -87,12 +86,11 @@ public class FPBeneficiario {
 			bene.setApellidos(datos.getString(COL_APELLIDOS));
 			bene.setDomicilio(datos.getString(COL_DOMICILIO));
 			bene.setCorreo(datos.getString(COL_CORREO));
-			// Se transforma el timestamp de la base de datos a un Date
 			bene.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
 			bene.setTelefono(datos.getInt(COL_TELEFONO));
 			bene.setMovil(datos.getInt(COL_MOVIL));
-			med = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			bene.setMedicoAsignado(med);
+			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			bene.setMedicoAsignado(medico);
 		}
 
 		return bene;
@@ -101,6 +99,7 @@ public class FPBeneficiario {
 	public static void insertar(Beneficiario bene) throws SQLException {
 		ComandoSQL comando;
 
+		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_BENEFICIARIOS
 				+ " (" + COL_NIF + ", " + COL_NSS + ", " + COL_NOMBRE
 				+ ", " + COL_APELLIDOS + ", " + COL_DOMICILIO + ", " + COL_CORREO
@@ -113,7 +112,8 @@ public class FPBeneficiario {
 	public static void modificar(Beneficiario bene) throws SQLException {
 		ComandoSQL comando;
 
-		// EL NIF, el NSS y la fecha de nacimiento no se pueden cambiar
+		// Modificamos la base de datos
+		// (el NIF y el NSS no se pueden cambiar)
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_BENEFICIARIOS + " SET "
 				+ COL_NOMBRE + "=?, " + COL_APELLIDOS + "=?, " + COL_DOMICILIO + "=?, " + COL_CORREO
 				+ "=?, " + COL_TELEFONO + "=?, " + COL_MOVIL + "=?, " + COL_DNI_MEDICO + "=? WHERE " + COL_NIF + "=? ", 

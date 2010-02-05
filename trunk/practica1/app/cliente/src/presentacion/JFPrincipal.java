@@ -3,7 +3,7 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.Roles;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.control.ControladorCliente;
 import excepciones.SesionInvalidaException;
 import java.awt.BorderLayout;
@@ -99,14 +99,14 @@ public class JFPrincipal extends javax.swing.JFrame {
 		this.controlador = controlador;
 		initGUI();
 		//TODO:¿y esta inicialización?
-		if (controlador.getSesion().getRol() == Roles.Medico.ordinal())
+		if (controlador.getSesion().getRol() == RolesUsuarios.Medico.ordinal())
 		jPanelEmitirVolante.inicializarEspecialistas();
 	}
 	
 	private void initGUI() {
 		try {
 			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-			this.setPreferredSize(new java.awt.Dimension(700, 500));
+			this.setPreferredSize(new java.awt.Dimension(700, 600));
 			this.setTitle("SSCA - Unidad de Citación");
 			this.setMinimumSize(new java.awt.Dimension(600, 450));
 			setLocationRelativeTo(null);
@@ -285,7 +285,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	
 	private void configurarInterfaz(ArrayList<Operaciones> operaciones) {
 		// Inicializamos la barra de estado
-		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + Roles.values()[(int)controlador.getSesion().getRol()]);
+		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + RolesUsuarios.values()[(int)controlador.getSesion().getRol()]);
 		lblPuertoEscucha.setText("Puerto de escucha: " + controlador.getPuertoEscucha());
 		// Inicializamos las pestañas
 		if(!operaciones.contains(Operaciones.RegistrarBeneficiario)

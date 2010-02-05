@@ -7,12 +7,13 @@ import java.beans.PropertyChangeListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Vector;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -20,12 +21,10 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
-import dominio.conocimiento.Medico;
 import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
@@ -50,23 +49,29 @@ import excepciones.NSSIncorrectoException;
 /**
 * Panel que permite tramitar citas para beneficiarios del sistema.
 */
-public class JPCitaTramitar extends JPBase implements IConstantes {
+public class JPCitaTramitar extends JPBase {
 
 	private static final long serialVersionUID = 8297107492599580450L;
 	
-	private final int SABADO = 6;
-	private final int DOMINGO = 0;
 	private final String ID_NIF = "NIF";
 	private final String ID_NSS = "NSS";
-	
+
+	private Beneficiario beneficiario;
+	private Vector<Date> diasOcupados;
+	private Hashtable<Date, Vector<String>> citasOcupadas;
+	private Hashtable<DiaSemana, Vector<String>> horasCitas;
+
+	private JComboBox cmbIdentificacion;
 	private ComboBoxModel cmbIdentificacionModel;
-	private JDateChooser dtcDiaCita;
+	private JDateChooserCitas dtcDiaCita;
 	private JLabel lblMedico;
+	private JTextField txtCentro;
+	private JLabel lblCentro;
 	private JLabel lblHora;
 	private JLabel lblDia;
-	private JButton btnAceptar;
+	private JButton btnRegistrar;
 	private JTextField txtMedico;
-	private JComboBox cbHorasCitas;	
+	private JComboBox cmbHorasCitas;	
 	private JLabel lblApellidos;
 	private JLabel lblNombre;
 	private JLabel lblNSS;
@@ -78,26 +83,11 @@ public class JPCitaTramitar extends JPBase implements IConstantes {
 	private JLabel lblBuscar;
 	private JButton btnBuscar;
 	private JTextField txtIdentificacion;
-	private JTextField txtIdVolante;
-	private JLabel lblVolante;
-	
-	private ArrayList<String> horasTrabajoDia;
-	private ArrayList<String> horasOcupadasDia;
-	private JComboBox cmbIdentificacion;
-	
-	private Beneficiario beneficiario;
-    private String horaSeleccionada = "";
 
 	public JPCitaTramitar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
-		crearModelos(new String [] {""});
-	}
-	
-	private void crearModelos(String [] elementos) {
-		ComboBoxModel cbHorasCitasModel = new DefaultComboBoxModel(elementos);
-		cbHorasCitas.setModel(cbHorasCitasModel);
-		cbHorasCitas.setSelectedIndex(0);
+		cambiarEstado(false);
 	}
 	
 	private void initGUI() {
@@ -107,15 +97,10 @@ public class JPCitaTramitar extends JPBase implements IConstantes {
 			this.setSize(430, 390);
 			this.setPreferredSize(new java.awt.Dimension(430, 390));
 			{
-				txtIdVolante = new JTextField();
-				this.add(txtIdVolante, new AnchorConstraint(265, 83, 739, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtIdVolante.setPreferredSize(new java.awt.Dimension(209, 23));
-			}
-			{
-				lblVolante = new JLabel();
-				this.add(lblVolante, new AnchorConstraint(268, 350, 729, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblVolante.setText("Volante");
-				lblVolante.setPreferredSize(new java.awt.Dimension(68, 16));
+				lblCentro = new JLabel();
+				this.add(lblCentro, new AnchorConstraint(216, 312, 606, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblCentro.setText("Centro asignado");
+				lblCentro.setPreferredSize(new java.awt.Dimension(108, 16));
 			}
 			{
 				lblBuscar = new JLabel();
@@ -132,83 +117,79 @@ public class JPCitaTramitar extends JPBase implements IConstantes {
 			}
 			{
 				lblApellidos = new JLabel();
-				this.add(lblApellidos, new AnchorConstraint(149, 310, 522, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblApellidos, new AnchorConstraint(161, 310, 522, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblApellidos.setText("Apellidos");
 				lblApellidos.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			{
 				lblNombre = new JLabel();
-				this.add(lblNombre, new AnchorConstraint(121, 310, 433, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNombre, new AnchorConstraint(133, 310, 433, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNombre.setText("Nombre");
 				lblNombre.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			{
 				lblNSS = new JLabel();
-				this.add(lblNSS, new AnchorConstraint(93, 310, 344, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNSS, new AnchorConstraint(105, 310, 344, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNSS.setText("NSS");
 				lblNSS.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			{
 				lblNIF = new JLabel();
-				this.add(lblNIF, new AnchorConstraint(67, 310, 261, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNIF, new AnchorConstraint(77, 310, 261, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNIF.setText("NIF");
 				lblNIF.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			
 			{
 				lblHora = new JLabel();
-				this.add(lblHora, new AnchorConstraint(240, 350, 657, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblHora.setText("Hora cita");
-				lblHora.setPreferredSize(new java.awt.Dimension(68, 16));
+				this.add(lblHora, new AnchorConstraint(273, 321, 657, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblHora.setText("Hora de la cita");
+				lblHora.setPreferredSize(new java.awt.Dimension(99, 16));
 			}
 			{
 				lblMedico = new JLabel();
-				this.add(lblMedico, new AnchorConstraint(182, 310, 508, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblMedico.setText("Medico asignado");
+				this.add(lblMedico, new AnchorConstraint(188, 312, 508, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblMedico.setText("Médico asignado");
 				lblMedico.setPreferredSize(new java.awt.Dimension(108, 16));
 			}
 			{
 				lblDia = new JLabel();
-				this.add(lblDia, new AnchorConstraint(210, 363, 591, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblDia.setText("Dia cita");
-				lblDia.setPreferredSize(new java.awt.Dimension(55, 16));
+				this.add(lblDia, new AnchorConstraint(243, 321, 591, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblDia.setText("Día de la cita");
+				lblDia.setPreferredSize(new java.awt.Dimension(99, 16));
 			}
 			{
 				txtApellidos = new JTextField();
-				this.add(txtApellidos, new AnchorConstraint(145, 83, 534, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtApellidos.setPreferredSize(new java.awt.Dimension(209, 23));
-				txtApellidos.setFocusable(false);
+				this.add(txtApellidos, new AnchorConstraint(157, 12, 534, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtApellidos.setPreferredSize(new java.awt.Dimension(280, 23));
 				txtApellidos.setEditable(false);
 			}
 			{
 				txtNombre = new JTextField();
-				this.add(txtNombre, new AnchorConstraint(117, 83, 442, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtNombre.setPreferredSize(new java.awt.Dimension(209, 23));
-				txtNombre.setFocusable(false);
+				this.add(txtNombre, new AnchorConstraint(129, 12, 442, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtNombre.setPreferredSize(new java.awt.Dimension(280, 23));
 				txtNombre.setEditable(false);
 			}
 			{
 				txtNSS = new JTextField();
-				this.add(txtNSS, new AnchorConstraint(89, 83, 357, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtNSS.setPreferredSize(new java.awt.Dimension(209, 23));
-				txtNSS.setFocusable(false);
+				this.add(txtNSS, new AnchorConstraint(101, 12, 357, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtNSS.setPreferredSize(new java.awt.Dimension(280, 23));
 				txtNSS.setEditable(false);
 			}
 			{
 				txtNIF = new JTextField();
-				this.add(txtNIF, new AnchorConstraint(63, 83, 271, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtNIF.setPreferredSize(new java.awt.Dimension(209, 23));
-				txtNIF.setFocusable(false);
+				this.add(txtNIF, new AnchorConstraint(73, 12, 271, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtNIF.setPreferredSize(new java.awt.Dimension(280, 23));
 				txtNIF.setEditable(false);
 			}
 			{
-				btnAceptar = new JButton();
-				this.add(btnAceptar, new AnchorConstraint(330, 20, 855, 798, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-				btnAceptar.setText("Aceptar");
-				btnAceptar.setPreferredSize(new java.awt.Dimension(77, 23));
-				btnAceptar.addActionListener(new ActionListener() {
+				btnRegistrar = new JButton();
+				this.add(btnRegistrar, new AnchorConstraint(312, 12, 855, 798, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				btnRegistrar.setText("Registrar cita");
+				btnRegistrar.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnRegistrar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
-						btnAceptarActionPerformed(evt);
+						btnRegistrarActionPerformed(evt);
 					}
 				});
 			}
@@ -220,25 +201,21 @@ public class JPCitaTramitar extends JPBase implements IConstantes {
 			}
 			{
 				txtMedico = new JTextField();
-				this.add(txtMedico, new AnchorConstraint(179, 83, 519, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtMedico.setPreferredSize(new java.awt.Dimension(209, 23));
-				txtMedico.setFocusable(false);
+				this.add(txtMedico, new AnchorConstraint(185, 12, 519, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtMedico.setPreferredSize(new java.awt.Dimension(280, 23));
 				txtMedico.setEditable(false);
 			}
 			{
-				cbHorasCitas = new JComboBox();
-				this.add(cbHorasCitas, new AnchorConstraint(237, 83, 262, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				cbHorasCitas.setPreferredSize(new java.awt.Dimension(209, 23));
-				cbHorasCitas.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						cbHorasCitasActionPerformed(evt);
-					}
-				});
+				cmbHorasCitas = new JComboBox();
+				this.add(cmbHorasCitas, new AnchorConstraint(270, 12, 262, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				cmbHorasCitas.setModel(new DefaultComboBoxModel(new String[] {}));
+				cmbHorasCitas.setRenderer(new DefaultListCellRenderer());
+				cmbHorasCitas.setPreferredSize(new java.awt.Dimension(280, 23));
 			}
 			{
-				dtcDiaCita = new JDateChooser();
-				this.add(dtcDiaCita, new AnchorConstraint(208, 83, 144, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				dtcDiaCita.setPreferredSize(new java.awt.Dimension(209, 23));
+				dtcDiaCita = new JDateChooserCitas();
+				this.add(dtcDiaCita, new AnchorConstraint(241, 12, 144, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				dtcDiaCita.setPreferredSize(new java.awt.Dimension(280, 23));
 				dtcDiaCita.setDateFormatString("dd/MM/yyyy");
 				dtcDiaCita.setToolTipText("Formato dd/MM/yyyy. Para más ayuda haga clic en el icono de la derecha.");
 				dtcDiaCita.setMinSelectableDate(new Date());
@@ -247,12 +224,11 @@ public class JPCitaTramitar extends JPBase implements IConstantes {
 						dtcDiaCitaPropertyChange(evt);
 					}
 				});
-				
+			}
 			{
 				btnBuscar = new JButton();
 				this.add(btnBuscar, new AnchorConstraint(36, 11, 152, 847, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnBuscar.setDefaultCapable(true);
-				//jPanelConsultar.getRootPane().setDefaultButton(btnBuscar);
 				btnBuscar.setText("Buscar");
 				btnBuscar.setPreferredSize(new java.awt.Dimension(66, 23));
 				btnBuscar.addActionListener(new ActionListener() {
@@ -261,226 +237,287 @@ public class JPCitaTramitar extends JPBase implements IConstantes {
 					}
 				});
 			}
-				
-			cambiarEstado(false);
-
+			{
+				txtCentro = new JTextField();
+				this.add(txtCentro, new AnchorConstraint(213, 12, 616, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtCentro.setEditable(false);
+				txtCentro.setPreferredSize(new java.awt.Dimension(280, 23));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	//$hide>>$
+		
 	private void btnBuscarActionPerformed(ActionEvent evt) {
-		String sIdentificacion;
-		String sTipo;
+		String identificacion, tipo;
+		
+		// Borramos la información del antiguo beneficiario consultado
+		limpiarCamposConsulta();
 		
 		try {
 
 			// Obtenemos el identificador para buscar el beneficiario
-			sIdentificacion = txtIdentificacion.getText().toUpperCase();
-			sTipo = (String)cmbIdentificacion.getSelectedItem();
-			if(sIdentificacion.equals("")) {
+			identificacion = txtIdentificacion.getText().toUpperCase();
+			tipo = (String)cmbIdentificacion.getSelectedItem();
+			if(identificacion.equals("")) {
 				throw new CadenaVaciaException();
 			}
 
-			// Buscamos el beneficiario solicitado
-			if(sTipo.equals(ID_NIF)) {
-				Validacion.comprobarNIF(sIdentificacion);
-				beneficiario = getControlador().getBeneficiario(sIdentificacion);
-			} else if(sTipo.equals(ID_NSS)) {
-				Validacion.comprobarNSS(sIdentificacion);
-				beneficiario = getControlador().getBeneficiarioPorNSS(sIdentificacion);
+			// Validamos el identificador y buscamos el beneficiario solicitado
+			if(tipo.equals(ID_NIF)) {
+				Validacion.comprobarNIF(identificacion);
+				beneficiario = getControlador().consultarBeneficiario(identificacion);
+			} else if(tipo.equals(ID_NSS)) {
+				Validacion.comprobarNSS(identificacion);
+				beneficiario = getControlador().consultarBeneficiarioPorNSS(identificacion);
 			}
 
 			// Mostramos los datos del beneficiario encontrado
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Beneficiario encontrado.");			
-			cambiarEstado(true);
-			
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Beneficiario encontrado.");			
 			txtIdentificacion.setText("");
 			txtNIF.setText(beneficiario.getNif());
 			txtNSS.setText(beneficiario.getNss());
 			txtNombre.setText(beneficiario.getNombre());
 			txtApellidos.setText(beneficiario.getApellidos());
-			txtMedico.setText(beneficiario.getMedicoAsignado().getDni());
+			txtMedico.setText(beneficiario.getMedicoAsignado().getNombre() + " " + beneficiario.getMedicoAsignado().getApellidos() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + "; " + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion());
+			cambiarEstado(true);
 
-		} catch(SQLException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch(RemoteException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			// Consultamos al servidor toda la información
+			// necesaria para el panel de tramitación
+			diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
+			citasOcupadas = getControlador().consultarCitasMedico(beneficiario.getMedicoAsignado().getDni());
+			horasCitas = getControlador().consultarHorasCitas(beneficiario.getMedicoAsignado().getDni());
+			
+			// Deshabilitamos los días de la semana que no son
+			// laborables para el médico del beneficiario
+			dtcDiaCita.quitarDiasSemanaDesactivados();
+			for(DiaSemana dia : DiaSemana.values()) {
+				if(horasCitas.get(dia) == null || horasCitas.get(dia).size() == 0) {
+					dtcDiaCita.ponerDiaSemanaDesactivado(dia);
+				}
+			}
+			
+			// Deshabilitamos los días que el médico no puede
+			// pasar consulta en el calendario del panel
+			dtcDiaCita.quitarFechasDesactivadas();
+			dtcDiaCita.setMinSelectableDate(new Date());
+			for(Date dia : diasOcupados) {
+				dtcDiaCita.ponerFechaDesactivada(dia);
+			}
+
 		} catch(BeneficiarioInexistenteException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario no se encuentra dado de alta en el sistema.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();	
+
 		} catch(CadenaVaciaException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NIF o NSS.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NIF o un NSS.");
+			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();
 		} catch(NIFIncorrectoException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir NIF válido.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();
 		} catch(NSSIncorrectoException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NSS válido.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();
 			
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(Exception e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
 	}
 	
-	private void limpiarCamposConsultar() {
+	@SuppressWarnings("deprecation")
+	private void dtcDiaCitaPropertyChange(PropertyChangeEvent evt) {
+		Vector<String> horas;
+		Vector<String> horasOcupadas;
+		Date fecha;
+		Calendar cal;
+		int añoAct, mesAct, diaAct;
+		
+		// Obtenemos la fecha de hoy
+		cal = Calendar.getInstance();
+		añoAct = cal.get(Calendar.YEAR);
+		mesAct = cal.get(Calendar.MONTH);
+		diaAct = cal.get(Calendar.DAY_OF_MONTH);
+		
+		fecha = dtcDiaCita.getDate();
+		if(fecha != null) {
+			// Comprobamos si el día seleccionado es anterior a hoy
+			cal.setTime(fecha);
+			if(cal.get(Calendar.YEAR) < añoAct
+			 || (cal.get(Calendar.YEAR) == añoAct && cal.get(Calendar.MONTH) < mesAct)
+			 || (cal.get(Calendar.YEAR) == añoAct && cal.get(Calendar.MONTH) == mesAct && cal.get(Calendar.DAY_OF_MONTH) < diaAct)) {
+				desactivarListaHoras("El día seleccionado no es válido");
+			} else {
+				// Obtenemos la lista de horas disponibles para
+				// el día de la semana correspondiente
+				horas = new Vector<String>();
+				cal.setTime(fecha);
+				switch(cal.get(Calendar.DAY_OF_WEEK)) {
+				case Calendar.MONDAY:
+					horas.addAll(horasCitas.get(DiaSemana.Lunes));
+					break;
+				case Calendar.TUESDAY:
+					horas.addAll(horasCitas.get(DiaSemana.Martes));
+					break;
+				case Calendar.WEDNESDAY:
+					horas.addAll(horasCitas.get(DiaSemana.Miercoles));
+					break;
+				case Calendar.THURSDAY:
+					horas.addAll(horasCitas.get(DiaSemana.Jueves));
+					break;
+				case Calendar.FRIDAY:
+					horas.addAll(horasCitas.get(DiaSemana.Viernes));
+					break;
+				default:
+					// Los médicos no trabajan los fines de semana
+					break;
+				}
+				// Si la lista no tiene ninguna hora, desactivamos
+				// la selección de hora para la cita
+				if(horas.size() == 0) {
+					desactivarListaHoras("El día seleccionado no es laboral para el médico");
+				} else {
+					// Obtenemos las horas del día que el médico ya tiene ocupadas
+					horasOcupadas = citasOcupadas.get(new Date(cal.get(Calendar.YEAR) - 1900, cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)));
+					// Rellenamos la lista de horas
+					rellenarListaHoras(horas, horasOcupadas);
+				}
+			}
+		}
+	}
+		
+	@SuppressWarnings("deprecation")
+	private void btnRegistrarActionPerformed(ActionEvent evt) {
+		Date fecha, hora;
+		
+		try {
+		
+			// Comprobamos que la hora seleccionada sea válida
+			if(!horaSeleccionadaValida()) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo).");
+			} else {
+				// Obtenemos la hora definitiva de la cita
+				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
+				fecha = dtcDiaCita.getDate();
+				// Solicitamos la cita
+				getControlador().pedirCita(beneficiario, beneficiario.getMedicoAsignado().getDni(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes()), IConstantes.DURACION_CITA);				
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita ha quedado registrada.");
+				limpiarCamposConsulta();
+			}
+
+		} catch(ParseException e) {
+			limpiarCamposConsulta();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "La fecha seleccionada no tiene un formato válido.");
+
+		} catch(MedicoInexistenteException e) {
+			limpiarCamposConsulta();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+		} catch(BeneficiarioInexistenteException e) {
+			limpiarCamposConsulta();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+		} catch(FechaNoValidaException e) {
+			limpiarCamposConsulta();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+
+		} catch(SQLException e) {
+			limpiarCamposConsulta();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			limpiarCamposConsulta();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(Exception e) {
+			limpiarCamposConsulta();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		}
+	}
+
+	private void rellenarListaHoras(Vector<String> horas, Vector<String> horasOcupadas) {
+		int i;
+		
+		// Actualizamos la lista de horas
+		cmbHorasCitas.removeAllItems();
+		if(horas != null) {
+			for(String hora : horas) {
+				if(horasOcupadas != null && horasOcupadas.contains(hora)) {
+					cmbHorasCitas.addItem("<html><font color=\"#FF0000\">" + hora + "</font></html>");
+				} else {
+					cmbHorasCitas.addItem(hora);
+				}
+			}
+		}
+		
+		// Seleccionamos la primera hora no ocupada
+		if(horas != null && horas.size() > 0) {
+			i = 0;
+			while(i < horas.size() && ((String)cmbHorasCitas.getItemAt(i)).startsWith("<html>")) {
+				i++;
+			}
+			if(i >= horas.size()) {
+				cmbHorasCitas.setSelectedIndex(-1);
+			} else {
+				cmbHorasCitas.setSelectedIndex(i);
+			}
+		} else {
+			cmbHorasCitas.setSelectedIndex(-1);
+		}
+		
+		// Activamos el control
+		cmbHorasCitas.setEnabled(true);
+	}
+
+	private void desactivarListaHoras(String mensaje) {
+		cmbHorasCitas.removeAllItems();
+		cmbHorasCitas.addItem(mensaje);
+		cmbHorasCitas.setEnabled(false);
+	}
+	
+	private boolean horaSeleccionadaValida() {
+		boolean valido;
+		
+		// Sólo se devuelve true si hay una hora seleccionada
+		// en la lista que no está de color rojo
+		valido = true;
+		if(!cmbHorasCitas.isEnabled()) {
+			valido = false;
+		} else {
+			if(cmbHorasCitas.getSelectedIndex() == -1) {
+				valido = false;
+			} else if(((String)cmbHorasCitas.getSelectedItem()).startsWith("<html>")) {
+				valido = false;
+			}
+		}
+		
+		return valido;
+	}
+	
+	private void cambiarEstado(boolean estado) {
+		btnRegistrar.setEnabled(estado);
+		dtcDiaCita.setEnabled(estado);
+		cmbHorasCitas.setEnabled(estado);
+	}
+	
+	private void limpiarCamposConsulta() {
 		txtNIF.setText("");
 		txtNSS.setText("");
 		txtNombre.setText("");
 		txtApellidos.setText("");
 		txtMedico.setText("");
-		txtIdVolante.setText("");
+		txtCentro.setText("");
 		dtcDiaCita.setDate(null);
+		rellenarListaHoras(null, null);
 		cambiarEstado(false);
-		crearModelos(new String [] {""});
 	}
 	
-	private void cambiarEstado(boolean estado) {
-		btnAceptar.setEnabled(estado);
-		dtcDiaCita.setEnabled(estado);
-		cbHorasCitas.setEnabled(estado);
-		txtIdVolante.setEditable(estado);
-		txtIdVolante.setFocusable(estado);
-	}
-	
-	// Cuando se selecciona un día en el calendario, se comprueban las
-	// horas de trabajo del médico asignado al beneficiario introducido 
-	private void dtcDiaCitaPropertyChange(PropertyChangeEvent evt) {
-		/* 
-		 * Se obtiene una matriz al llamar al método correspondiente del gestor de citas.
-		 * El primer elemento es una tabla donde se indica los días en los que un médico trabaja, 
-		 * junto con todas las horas posibles para dar cita esos días, según la jornada de dicho médico.
-		 * El segundo elemento es una tabla donde se indica la fecha donde ya hay asignadas citas, 
-		 * junto con todas las horas ya ocupadas de esa fecha.
-		 */
-		Object [] informacion;
-		
-		SimpleDateFormat formatoDeFecha = new SimpleDateFormat("dd/MM/yyyy");
-		String [] horas;
-		Date fecha = dtcDiaCita.getDate();
-		if (fecha != null) {
-			try {
-				// No se consideran sabados ni domingos
-				if (fecha.getDay() != DOMINGO && fecha.getDay() != SABADO) {
-					informacion = (Object[]) getControlador().obtenerHorasMedico(txtMedico.getText());
-					// Obtenemos las horas en las que trabaja ese médico para el día seleccionado en el JDateChooser
-					horasTrabajoDia = ((Hashtable<DiaSemana, ArrayList<String>>)informacion[0]).get(DiaSemana.values()[fecha.getDay()-1]);
-					// Si el día seleccionado es laboral para el medico, se muestran todas las horas de trabajo
-					if (horasTrabajoDia != null){
-						horas = new String[horasTrabajoDia.size()];
-						for (int i=0; i<horas.length; i++) {
-							horas[i] = horasTrabajoDia.get(i);
-						}
-						// Asignamos esas horas al combobox
-						crearModelos(horas);
-						// Si el día introducido coincide con algún día donde el médico ya tiene citas asignadas, 
-						// se pasa al render del comboBox las horas ya ocupadas, para mostrarlas en rojo
-						if (((Hashtable<String, ArrayList<String>>)informacion[1]).containsKey(formatoDeFecha.format(dtcDiaCita.getDate()))) {
-							horasOcupadasDia = ((Hashtable<String, ArrayList<String>>)informacion[1]).get(formatoDeFecha.format(dtcDiaCita.getDate()));
-							cbHorasCitas.setRenderer(new ListCellRendererCitas(horasOcupadasDia));
-						}
-						
-					}
-					else
-						crearModelos(new String [] {"El día introducido no es laboral para ese médico"});
-				}
-				else
-					crearModelos(new String [] {"El día introducido no es laboral para ese médico"});
-
-			} catch(SQLException e) {
-				limpiarCamposConsultar();
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			} catch(RemoteException e) {
-				limpiarCamposConsultar();
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			} catch (Exception e) {
-				limpiarCamposConsultar();
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			}
-		}
-	}
-	
-	
-	
-	private void cbHorasCitasActionPerformed(ActionEvent evt) {
-		comprobarValidezHora();
-	}
-	
-	private boolean comprobarValidezHora () {
-		// No se puede seleccionar una hora en rojo
-		if (cbHorasCitas.getSelectedIndex() != -1) {
-			// Esto es para evitar que se seleccione el item si el día no es laboral
-			if (!cbHorasCitas.getSelectedItem().toString().equals("El día introducido no es laboral para ese médico")) {
-				if (horasOcupadasDia != null)
-					if (horasOcupadasDia.contains(cbHorasCitas.getSelectedItem().toString()))
-						horaSeleccionada = "";
-					else
-						horaSeleccionada = cbHorasCitas.getSelectedItem().toString();
-			} else
-				horaSeleccionada = "";
-		}
-		return !horaSeleccionada.equals("");
-	}
-		
-	private void btnAceptarActionPerformed(ActionEvent evt) {
-		// Se registra la cita si el día es laboral
-		SimpleDateFormat formatoDeFecha = new SimpleDateFormat("hh:mm");
-		Medico med;
-		Date fecha = dtcDiaCita.getDate();
-		Cita c;
-		try {
-			horaSeleccionada = cbHorasCitas.getSelectedItem().toString();
-			// Si es laboral ese dia y la hora no está ocupada, se pide la cita, con o sin volante.
-			if (comprobarValidezHora()) {
-				Date fechaAux = formatoDeFecha.parse(cbHorasCitas.getSelectedItem().toString());
-				med = getControlador().consultarMedico(txtMedico.getText());
-				if (txtIdVolante.getText().equals(""))
-					c = getControlador().pedirCita(beneficiario, med.getDni(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), fechaAux.getHours(), fechaAux.getMinutes()), DURACION_CITA);
-				else
-					c = getControlador().pedirCita(beneficiario, Long.parseLong(txtIdVolante.getText()), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), fechaAux.getHours(), fechaAux.getMinutes()), DURACION_CITA);
-				
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "Cita registrada.");
-				limpiarCamposConsultar();
-			}
-			else
-				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo)");
-		} catch (RemoteException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch (MedicoInexistenteException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "No existe el médico solicitado");
-		} catch (ParseException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch (BeneficiarioInexistenteException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario no está dado de alta en el sistema");
-		} catch (FechaNoValidaException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "La fecha y hora seleccionada no es válida para ese médico");
-		} catch (SQLException e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch (Exception e) {
-			limpiarCamposConsultar();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		}
-	}
-
-	// $hide>>$
-	
-	// $hide<<$
+	//$hide<<$
 
 }

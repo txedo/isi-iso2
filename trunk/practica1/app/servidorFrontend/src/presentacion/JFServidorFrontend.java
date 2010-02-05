@@ -346,7 +346,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(UnknownHostException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
-		} catch (NotBoundException e) {
+		} catch(NotBoundException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(RemoteException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
@@ -393,7 +393,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		// Si el servidor está activo, preguntamos antes de salir
 		salir = false;
 		if(controlador.isServidorActivo()) {
-			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierras el servidor front-end, se desconectará automáticamente. ¿Realmente quieres salir?")) {
+			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierra el servidor front-end, éste se desconectará automáticamente. ¿Realmente quiere salir?")) {
 				if(desactivarServidor()) {
 					salir = true;
 				}

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Vector;
 
 /**
  * Clase que representa un usuario del sistema con rol de médico.
@@ -18,15 +19,15 @@ public class Medico extends Usuario implements Serializable {
 	public Medico(String dni, String login, String password, String nombre, String apellidos, TipoMedico tipo) {
 		super(dni, login, password, nombre, apellidos);
 		calendario = new ArrayList<PeriodoTrabajo>();
-		tipoMedico=tipo;
+		tipoMedico = tipo;
 	}
 
 	public Medico() {
 		super();
 	}
 	
-	public Roles getRol() {
-		return Roles.Medico;
+	public RolesUsuarios getRol() {
+		return RolesUsuarios.Medico;
 	}
 	
 	public ArrayList<PeriodoTrabajo> getCalendario() {
@@ -159,6 +160,34 @@ public class Medico extends Usuario implements Serializable {
 		return diferente;
 	}
 	
+	public Vector<String> horasCitas(DiaSemana dia, int duracionCitas) {
+		Vector<String> horas;
+		Calendar dias;
+		int intervalos;
+		int i;
+		
+		// Generamos una lista con las horas a las que un médico podría
+		// dar cita en un determinado día de la semana
+		horas = new Vector<String>();
+		for(PeriodoTrabajo periodo : calendario) {
+			if(periodo.getDia() == dia) {
+				// Calculamos cuántas citas se pueden dar en este período de trabajo
+				intervalos = (((periodo.getHoraFinal() - periodo.getHoraInicio()) * 60) / duracionCitas);
+				// Generamos las horas de las citas
+				dias = Calendar.getInstance();
+				dias.set(Calendar.HOUR_OF_DAY, periodo.getHoraInicio());
+				dias.set(Calendar.MINUTE, 0);
+				dias.set(Calendar.SECOND, 0);
+				for(i = 0; i < intervalos; i++) {
+					horas.add(Cita.cadenaHoraCita(dias.getTime()));
+					dias.add(Calendar.MINUTE, duracionCitas);
+				}
+			}
+		}
+		
+		return horas;
+	}
+		
 	public boolean equals(Object o) {
 		Medico m;
 		boolean dev;

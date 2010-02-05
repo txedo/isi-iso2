@@ -386,7 +386,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		// Si el servidor está activo, preguntamos antes de salir
 		salir = false;
 		if(controlador.isServidorActivo()) {
-			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierras el servidor de respaldo, se desconectará automáticamente. ¿Realmente quieres salir?")) {
+			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierra el servidor de respaldo, éste se desconectará automáticamente. ¿Realmente quiere salir?")) {
 				if(desactivarServidor()) {
 					salir = true;
 				}

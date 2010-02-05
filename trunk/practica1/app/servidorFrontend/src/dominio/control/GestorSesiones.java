@@ -9,7 +9,7 @@ import java.util.Random;
 import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.Roles;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Sesion;
 import dominio.conocimiento.Usuario;
 
@@ -100,14 +100,14 @@ public class GestorSesiones {
 		
 		sesion = sesiones.get(idSesion);
 		if (sesion == null) {
-			throw new SesionInvalidaException("El identificador de sesión es inválido");
+			throw new SesionInvalidaException("El identificador de sesión es inválido.");
 		}
 				
 		// Agregamos al vector las operaciones de todos los usuarios (administrador, citador y medico)
 		operaciones.add(Operaciones.ConsultarBeneficiario);
 		
 		// Agregamos al vector las operaciones de citadores y administradores
-		if (sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
+		if (sesion.getRol() == RolesUsuarios.Administrador.ordinal() || sesion.getRol() == RolesUsuarios.Citador.ordinal()) {
 			operaciones.add(Operaciones.ConsultarCitas);
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.AnularCita);
@@ -115,7 +115,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.ModificarBeneficiario);
 		}
 		// Agregamos al vector las operaciones de administradores
-		if (sesion.getRol() == Roles.Administrador.ordinal()){
+		if (sesion.getRol() == RolesUsuarios.Administrador.ordinal()){
 			operaciones.add(Operaciones.CrearUsuario);
 			operaciones.add(Operaciones.ModificarUsuario);
 			operaciones.add(Operaciones.EliminarUsuario);
@@ -126,9 +126,10 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.EliminarMedico);
 			operaciones.add(Operaciones.ModificarCalendario);
 			operaciones.add(Operaciones.EstablecerSustituto);
+			operaciones.add(Operaciones.CalcularDiasCompletosMedico);
 		}
 		// Agregamos al vector las operaciones de médicos
-		if (sesion.getRol() == Roles.Medico.ordinal()){
+		if (sesion.getRol() == RolesUsuarios.Medico.ordinal()){
 			operaciones.add(Operaciones.EmitirVolante);
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
 		}
@@ -152,12 +153,12 @@ public class GestorSesiones {
 			//TODO:Poner log
 			//entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para ejecutar la operacion " + operacion.toString());
 			//FPEntradaLog.insertar(entrada);
-			throw new SesionInvalidaException("El identificador de sesión es inválido");
+			throw new SesionInvalidaException("El identificador de sesión es inválido.");
 		}
 		
-		esAdministrador = (sesion.getRol() == Roles.Administrador.ordinal());
-		esCitador = (sesion.getRol() == Roles.Citador.ordinal());
-		esMedico = (sesion.getRol() == Roles.Medico.ordinal());
+		esAdministrador = (sesion.getRol() == RolesUsuarios.Administrador.ordinal());
+		esCitador = (sesion.getRol() == RolesUsuarios.Citador.ordinal());
+		esMedico = (sesion.getRol() == RolesUsuarios.Medico.ordinal());
 		
 		// TODO modificar este switch para que analice el arraylist devuelto por operacionesDisponibles()
 		operaciones = operacionesDisponibles(idSesion);
@@ -230,7 +231,7 @@ public class GestorSesiones {
 		if(!permitido) {
 			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para ejecutar la operacion " + operacion.toString());
 			FPEntradaLog.insertar(entrada);
-			throw new OperacionIncorrectaException("El rol " + Roles.values()[(int)sesion.getRol()] + " no puede realizar la operación " + operacion.toString());
+			throw new OperacionIncorrectaException("El rol " + RolesUsuarios.values()[(int)sesion.getRol()] + " no puede realizar la operación " + operacion.toString() + ".");
 		}
 	}
 

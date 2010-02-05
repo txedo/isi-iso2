@@ -1,6 +1,8 @@
 package dominio.conocimiento;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -9,6 +11,8 @@ import java.util.Date;
 public class Cita implements Serializable {
 		
 	private static final long serialVersionUID = 590630882906518367L;
+	
+	private static SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm");
 	
 	private Date fechaYHora;
 	private long duracion;
@@ -25,7 +29,7 @@ public class Cita implements Serializable {
 		this.medico = medico;
 	}
 	
-	public Date getFechaYhora() {
+	public Date getFechaYHora() {
 		return fechaYHora;
 	}
 	
@@ -56,7 +60,15 @@ public class Cita implements Serializable {
 	public void setMedico(Medico medico) {
 		this.medico = medico;
 	}
+	
+	public static String cadenaHoraCita(Date fechaYHora) {
+		return formatoHora.format(fechaYHora);
+	}
 
+	public static Date horaCadenaCita(String fechaYHora) throws ParseException {
+		return formatoHora.parse(fechaYHora);
+	}
+	
 	public boolean equals(Object o) {
 		Cita c;
 		boolean dev;
@@ -64,7 +76,7 @@ public class Cita implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Cita) {
 			c = (Cita)o;
-			dev = fechaYHora.equals(c.getFechaYhora()) && duracion == c.getDuracion() && beneficiario.equals(c.getBeneficiario()) && medico.equals(c.getMedico());
+			dev = fechaYHora.equals(c.getFechaYHora()) && duracion == c.getDuracion() && beneficiario.equals(c.getBeneficiario()) && medico.equals(c.getMedico());
 		}
 		return dev;
 	}

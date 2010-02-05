@@ -16,7 +16,6 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
-import dominio.control.GestorSesiones;
 import dominio.control.ServidorFrontend;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;

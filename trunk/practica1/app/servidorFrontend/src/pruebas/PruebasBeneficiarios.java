@@ -140,7 +140,7 @@ public class PruebasBeneficiarios extends TestCase {
 		
 		try {
 			// Obtenemos los datos de un beneficiario por nif
-			bene = GestorBeneficiarios.getBeneficiario(sesionCitador.getId(), bene1.getNif());
+			bene = GestorBeneficiarios.consultarBeneficiario(sesionCitador.getId(), bene1.getNif());
 			assertEquals(bene, bene1);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -148,7 +148,7 @@ public class PruebasBeneficiarios extends TestCase {
 		
 		try {
 			// Obtenemos los datos de un beneficiario por nss
-			bene = GestorBeneficiarios.getBeneficiarioPorNSS(sesionCitador.getId(), bene2.getNss());
+			bene = GestorBeneficiarios.consultarBeneficiarioPorNSS(sesionCitador.getId(), bene2.getNss());
 			assertEquals(bene, bene2);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -156,7 +156,7 @@ public class PruebasBeneficiarios extends TestCase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			bene = GestorBeneficiarios.getBeneficiarioPorNSS(sesionCitador.getId() + 1, bene2.getNss());
+			bene = GestorBeneficiarios.consultarBeneficiarioPorNSS(sesionCitador.getId() + 1, bene2.getNss());
 			fail("Se esperaba una excepcion SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -165,7 +165,7 @@ public class PruebasBeneficiarios extends TestCase {
 		
 		try {
 			// Intentamos obtener los datos de un usuario que no es beneficiario
-			bene = GestorBeneficiarios.getBeneficiario(sesionCitador.getId(), citador1.getDni());
+			bene = GestorBeneficiarios.consultarBeneficiario(sesionCitador.getId(), citador1.getDni());
 			fail("Se esperaba una excepcion BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
@@ -174,7 +174,7 @@ public class PruebasBeneficiarios extends TestCase {
 		
 		try {
 			// Intentamos obtener los datos de un beneficiario que no existe
-			bene = GestorBeneficiarios.getBeneficiarioPorNSS(sesionCitador.getId(), "1");
+			bene = GestorBeneficiarios.consultarBeneficiarioPorNSS(sesionCitador.getId(), "1");
 			fail("Se esperaba una excepcion BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
@@ -188,9 +188,9 @@ public class PruebasBeneficiarios extends TestCase {
 		try {
 			// Creamos un nuevo beneficiario con la sesión del administrador
 			bene = new Beneficiario("6666666", "14124as-cd", "beNuevo", "nuevos", fecha2, "calle de la luna", "luna@hotmail.com", 34698124, 67912312);
-			GestorBeneficiarios.crear(sesionAdmin.getId(), bene);
+			GestorBeneficiarios.crearBeneficiario(sesionAdmin.getId(), bene);
 			// Comprobamos que el beneficiario se ha creado correctamente
-			beneGet = GestorBeneficiarios.getBeneficiario(sesionAdmin.getId(), bene.getNif());
+			beneGet = GestorBeneficiarios.consultarBeneficiario(sesionAdmin.getId(), bene.getNif());
 			assertEquals(bene, beneGet);			
 			// Se le ha tenido que asignar un pediatra
 			assertNotNull(beneGet.getMedicoAsignado());
@@ -203,7 +203,7 @@ public class PruebasBeneficiarios extends TestCase {
 		try {
 			// Intentamos crear un nuevo beneficiario con el rol de medico
 			bene = new Beneficiario("77777777", "131716-co", "error", "error", fecha1, "", "", 123456789, 987654321);
-			GestorBeneficiarios.crear(sesionMedico.getId(), bene);
+			GestorBeneficiarios.crearBeneficiario(sesionMedico.getId(), bene);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -213,7 +213,7 @@ public class PruebasBeneficiarios extends TestCase {
 		try {
 			// Intentamos añadir un beneficiario con un DNI que ya existe en la BD
 			bene = new Beneficiario(bene1.getNif(), bene1.getNss(), "error", "error", fecha1, "", "", 123456789, 987654321);
-			GestorBeneficiarios.crear(sesionAdmin.getId(), bene);
+			GestorBeneficiarios.crearBeneficiario(sesionAdmin.getId(), bene);
 			fail("Se esperaba una excepcion BeneficiarioYaExistenteException");
 		} catch(BeneficiarioYaExistenteException e) {
 		} catch(Exception e) {
@@ -223,7 +223,7 @@ public class PruebasBeneficiarios extends TestCase {
 		try {
 			// Intentamos añadir un beneficiario con un NSS que ya existe en la BD
 			bene = new Beneficiario("10239184", bene1.getNss(), "error", "error", fecha1, "", "", 123456789, 987654321);
-			GestorBeneficiarios.crear(sesionAdmin.getId(), bene);
+			GestorBeneficiarios.crearBeneficiario(sesionAdmin.getId(), bene);
 			fail("Se esperaba una excepcion BeneficiarioYaExistenteException");
 		} catch(BeneficiarioYaExistenteException e) {
 		} catch(Exception e) {
@@ -239,9 +239,9 @@ public class PruebasBeneficiarios extends TestCase {
 		try {
 			// Modificamos los datos de un benficiario existente como administrador
 			bene1.setNombre("beneCambiado");
-			GestorBeneficiarios.modificar(sesionAdmin.getId(), bene1);
+			GestorBeneficiarios.modificarBeneficiario(sesionAdmin.getId(), bene1);
 			// Comprobamos que el beneficiario se haya actualizado correctamente
-			beneGet = GestorBeneficiarios.getBeneficiario(sesionAdmin.getId(), bene1.getNif());
+			beneGet = GestorBeneficiarios.consultarBeneficiario(sesionAdmin.getId(), bene1.getNif());
 			assertEquals(bene1, beneGet);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -249,7 +249,7 @@ public class PruebasBeneficiarios extends TestCase {
 		
 		try {
 			// Intentamos modificar un beneficiario con el rol de medico
-			GestorBeneficiarios.modificar(sesionMedico.getId(), bene1);
+			GestorBeneficiarios.modificarBeneficiario(sesionMedico.getId(), bene1);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -259,7 +259,7 @@ public class PruebasBeneficiarios extends TestCase {
 		try {
 			// Intentamos modificar un beneficiario que aún no se ha creado
 			bene = new Beneficiario("21412395", "131314-as", "error", "error", fecha2, "", "", 123456789, 987654321);
-			GestorBeneficiarios.modificar(sesionAdmin.getId(), bene);
+			GestorBeneficiarios.modificarBeneficiario(sesionAdmin.getId(), bene);
 			fail("Se esperaba una excepcion BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {

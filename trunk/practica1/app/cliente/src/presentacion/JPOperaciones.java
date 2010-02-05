@@ -1,8 +1,8 @@
 package presentacion;
 
 import java.util.ArrayList;
+import java.util.EventObject;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -16,8 +16,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.conocimiento.Operaciones;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -52,9 +50,6 @@ public class JPOperaciones extends JPanel {
 		initGUI();
 		operaciones = new ArrayList<OperacionesInterfaz>();
 		listenerList = new EventListenerList();
-		lstOperacionesRenderer = new DefaultListCellRenderer();
-		lstOperacionesRenderer.setHorizontalAlignment(JLabel.CENTER);
-		lstOperaciones.setCellRenderer(lstOperacionesRenderer);
 	}
 	
 	private void initGUI() {
@@ -83,6 +78,11 @@ public class JPOperaciones extends JPanel {
 						lstOperacionesValueChanged(evt);
 					}
 				});
+				{
+					lstOperacionesRenderer = new DefaultListCellRenderer();
+					lstOperacionesRenderer.setHorizontalAlignment(JLabel.CENTER);
+					lstOperaciones.setCellRenderer(lstOperacionesRenderer);
+				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -145,7 +145,7 @@ public class JPOperaciones extends JPanel {
 		listeners = listenerList.getListenerList();
 		for(i = 0; i < listeners.length; i += 2) {
 			if(listeners[i] == OperacionCambiadaListener.class) {
-				((OperacionCambiadaListener)listeners[i + 1]).operacionCambiada(evt);
+				((OperacionCambiadaListener)listeners[i + 1]).operacionCambiada(new EventObject(this));
 			}
 		}
 	}
