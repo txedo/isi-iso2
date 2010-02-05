@@ -48,7 +48,6 @@ public class PruebasValidacion extends TestCase {
 				}
 			}
 			// Probamos NIFs correctos
-			// TODO: ¿no son válidos NIFS acabados en minúsculas como "12345678d"?
 			validos = new String[] { "12345678D", "87654321d", "00000000W" };
 			for(String nif : validos) {
 				try {

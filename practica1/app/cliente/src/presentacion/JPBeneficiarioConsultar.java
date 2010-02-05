@@ -99,6 +99,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		super(frame, controlador);
 		initGUI();
 		listenerList = new EventListenerList();
+		beneficiario = null;
 	}
 	
 	private void initGUI() {
@@ -108,7 +109,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			this.setPreferredSize(new java.awt.Dimension(430, 437));
 			{
 				lblFechaNacimiento = new JLabel();
-				this.add(lblFechaNacimiento, new AnchorConstraint(188, 304, 493, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblFechaNacimiento, new AnchorConstraint(189, 294, 493, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblFechaNacimiento.setText("Fecha de nacimiento");
 				lblFechaNacimiento.setPreferredSize(new java.awt.Dimension(116, 16));
 			}
@@ -138,55 +139,55 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 			{
 				lblMedicoAsignado = new JLabel();
-				this.add(lblMedicoAsignado, new AnchorConstraint(327, 311, 950, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblMedicoAsignado, new AnchorConstraint(327, 277, 950, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblMedicoAsignado.setText("Medico asignado");
 				lblMedicoAsignado.setPreferredSize(new java.awt.Dimension(110, 18));
 			}
 			{
 				lblTelefonoMovil = new JLabel();
-				this.add(lblTelefonoMovil, new AnchorConstraint(300, 311, 861, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblTelefonoMovil, new AnchorConstraint(301, 277, 861, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblTelefonoMovil.setText("Teléfono móvil");
 				lblTelefonoMovil.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			{
 				lblTelefonoFijo = new JLabel();
-				this.add(lblTelefonoFijo, new AnchorConstraint(273, 311, 776, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblTelefonoFijo, new AnchorConstraint(274, 277, 776, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblTelefonoFijo.setText("Teléfono fijo");
 				lblTelefonoFijo.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			{
 				lblCorreoElectronico = new JLabel();
-				this.add(lblCorreoElectronico, new AnchorConstraint(246, 313, 690, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCorreoElectronico, new AnchorConstraint(246, 273, 690, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCorreoElectronico.setText("Correo electrónico");
 				lblCorreoElectronico.setPreferredSize(new java.awt.Dimension(108, 15));
 			}
 			{
 				lblDomicilio = new JLabel();
-				this.add(lblDomicilio, new AnchorConstraint(219, 311, 604, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblDomicilio, new AnchorConstraint(217, 277, 604, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblDomicilio.setText("Domicilio");
 				lblDomicilio.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			{
 				lblApellidos = new JLabel();
-				this.add(lblApellidos, new AnchorConstraint(161, 310, 522, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblApellidos, new AnchorConstraint(161, 280, 522, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblApellidos.setText("Apellidos");
 				lblApellidos.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			{
 				lblNombre = new JLabel();
-				this.add(lblNombre, new AnchorConstraint(133, 310, 433, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNombre, new AnchorConstraint(133, 280, 433, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNombre.setText("Nombre");
 				lblNombre.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			{
 				lblNSS = new JLabel();
-				this.add(lblNSS, new AnchorConstraint(105, 310, 344, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNSS, new AnchorConstraint(105, 280, 344, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNSS.setText("NSS");
 				lblNSS.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
 			{
 				lblNIF = new JLabel();
-				this.add(lblNIF, new AnchorConstraint(77, 310, 261, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNIF, new AnchorConstraint(77, 280, 261, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNIF.setText("NIF");
 				lblNIF.setPreferredSize(new java.awt.Dimension(110, 15));
 			}
@@ -264,7 +265,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 			{
 				lblBuscar = new JLabel();
-				this.add(lblBuscar, new AnchorConstraint(14, 264, 90, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblBuscar, new AnchorConstraint(14, 387, 90, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblBuscar.setText("Buscar beneficiario por:");
 				lblBuscar.setPreferredSize(new java.awt.Dimension(156, 14));
 			}
@@ -283,7 +284,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 			{
 				lblCentro = new JLabel();
-				this.add(lblCentro, new AnchorConstraint(355, 311, 891, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCentro, new AnchorConstraint(354, 277, 891, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCentro.setText("Centro asignado");
 				lblCentro.setPreferredSize(new java.awt.Dimension(110, 18));
 			}
@@ -347,17 +348,9 @@ public class JPBeneficiarioConsultar extends JPBase {
 			txtCorreoElectronico.setText(beneficiario.getCorreo());
 			txtTelefonoFijo.setText(Integer.toString(beneficiario.getTelefono()));
 			txtTelefonoMovil.setText(Integer.toString(beneficiario.getMovil()));
-			txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getNombre() + " " + beneficiario.getMedicoAsignado().getApellidos() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+			txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
 			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + "; " + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion());
 			chkEditar.setEnabled(true);
-
-			// Notificamos que ha cambiado la operación seleccionada
-			listeners = listenerList.getListenerList();
-			for(i = 0; i < listeners.length; i += 2) {
-				if(listeners[i] == OperacionCambiadaListener.class) {
-					((BeneficiarioBuscadoListener)listeners[i + 1]).beneficiarioBuscado(new EventObject(this));
-				}
-			}
 			
 		} catch(BeneficiarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
@@ -382,6 +375,14 @@ public class JPBeneficiarioConsultar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		}
+		
+		// Notificamos que ha cambiado el beneficiario seleccionado
+		listeners = listenerList.getListenerList();
+		for(i = 0; i < listeners.length; i += 2) {
+			if(listeners[i] == BeneficiarioBuscadoListener.class) {
+				((BeneficiarioBuscadoListener)listeners[i + 1]).beneficiarioBuscado(new EventObject(this));
+			}
 		}
 	}
 	
@@ -488,38 +489,42 @@ public class JPBeneficiarioConsultar extends JPBase {
 		cambiarEdicion(false);
 	}
 	
-	private void cambiarEdicion(boolean estado) {
-		txtNombre.setEditable(estado);
-		txtApellidos.setEditable(estado);
-		txtDomicilio.setEditable(estado);
-		dtcFechaNacimiento.setEnabled(estado);
-		txtCorreoElectronico.setEditable(estado);
-		txtTelefonoFijo.setEditable(estado);
-		txtTelefonoMovil.setEditable(estado);
-		btnGuardar.setEnabled(estado);
+	private void cambiarEdicion(boolean activar) {
+		txtNombre.setEditable(activar);
+		txtApellidos.setEditable(activar);
+		txtDomicilio.setEditable(activar);
+		dtcFechaNacimiento.setEnabled(activar);
+		txtCorreoElectronico.setEditable(activar);
+		txtTelefonoFijo.setEditable(activar);
+		txtTelefonoMovil.setEditable(activar);
+		btnGuardar.setEnabled(activar);
 	}
-	
-	public void ocultarControles() {
+
+	public void reducirPanel() {
 		// Este método oculta algunos controles de la interfaz para
 		// que se pueda reutilizar el panel desde otros paneles
 		// (como JPEmitirVolante) mostrando sólo la información
 		// básica de los beneficiarios
 		lblFechaNacimiento.setVisible(false);
-		lblDomicilio.setVisible(false);
-		lblCorreoElectronico.setVisible(false);
-		lblTelefonoFijo.setVisible(false);
-		lblTelefonoMovil.setVisible(false);
-		lblMedicoAsignado.setVisible(false);
-		lblCentro.setVisible(false);
 		dtcFechaNacimiento.setVisible(false);
+		lblDomicilio.setVisible(false);
 		txtDomicilio.setVisible(false);
+		lblCorreoElectronico.setVisible(false);
 		txtCorreoElectronico.setVisible(false);
+		lblTelefonoFijo.setVisible(false);
 		txtTelefonoFijo.setVisible(false);
+		lblTelefonoMovil.setVisible(false);
 		txtTelefonoMovil.setVisible(false);
-		txtMedicoAsignado.setVisible(false);
-		txtCentro.setVisible(false);
 		btnGuardar.setVisible(false);
 		chkEditar.setVisible(false);
+		this.remove(lblMedicoAsignado);
+		this.add(lblMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblFechaNacimiento));
+		this.remove(txtMedicoAsignado);
+		this.add(txtMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(dtcFechaNacimiento));
+		this.remove(lblCentro);
+		this.add(lblCentro, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblDomicilio));
+		this.remove(txtCentro);
+		this.add(txtCentro, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(txtDomicilio));
 	}
 	
 	public void desactivarModificacion() {
@@ -530,6 +535,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 
 	public void limpiarCamposConsulta() {
+		beneficiario = null;
 		txtNIF.setText("");
 		txtNSS.setText("");
 		txtNombre.setText("");

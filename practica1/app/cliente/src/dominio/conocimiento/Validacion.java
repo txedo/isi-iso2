@@ -46,7 +46,8 @@ public class Validacion {
 		// Comprobamos la longitud del NIF 8numeros+1letra
 		if(nif.length() == NIF_LONGITUD) {
 			// Comprobamos que el ultimo caracter es una letra
-			if(nif.charAt(nif.length() - 1) >= 'A' && nif.charAt(nif.length() - 1) <= 'Z') {
+			if((nif.charAt(nif.length() - 1) >= 'A' && nif.charAt(nif.length() - 1) <= 'Z')
+			 || (nif.charAt(nif.length() - 1) >= 'a' && nif.charAt(nif.length() - 1) <= 'z')) {
 				// Comprobamos que los 8 primeros caracters son digitos
 				for(int i = 0; i < NIF_LONGITUD-1 && bAux; i++) {
 					bAux = Character.isDigit(nif.charAt(i));
