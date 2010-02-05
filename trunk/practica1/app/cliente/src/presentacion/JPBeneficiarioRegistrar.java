@@ -191,19 +191,19 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			{
 				lblTelefonoMovil = new JLabel();
-				this.add(lblTelefonoMovil, new AnchorConstraint(258, 245, 790, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblTelefonoMovil, new AnchorConstraint(258, 431, 790, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblTelefonoMovil.setText("Teléfono móvil");
 				lblTelefonoMovil.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
 			{
 				lblTelefonoFijo = new JLabel();
-				this.add(lblTelefonoFijo, new AnchorConstraint(231, 245, 692, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblTelefonoFijo, new AnchorConstraint(231, 431, 692, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblTelefonoFijo.setText("Teléfono fijo");
 				lblTelefonoFijo.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
 			{
 				lblCorreoElectronico = new JLabel();
-				this.add(lblCorreoElectronico, new AnchorConstraint(204, 245, 594, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCorreoElectronico, new AnchorConstraint(204, 431, 594, 13, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCorreoElectronico.setText("Correo electrónico");
 				lblCorreoElectronico.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
@@ -227,37 +227,37 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			{
 				lblDomicilio = new JLabel();
-				this.add(lblDomicilio, new AnchorConstraint(150, 246, 496, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblDomicilio, new AnchorConstraint(150, 429, 496, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblDomicilio.setText("Domicilio");
 				lblDomicilio.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
 			{
 				lblFechaNacimiento = new JLabel();
-				this.add(lblFechaNacimiento, new AnchorConstraint(123, 246, 397, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblFechaNacimiento, new AnchorConstraint(123, 429, 397, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblFechaNacimiento.setText("Fecha de nacimiento");
 				lblFechaNacimiento.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
 			{
 				lblApellidos = new JLabel();
-				this.add(lblApellidos, new AnchorConstraint(96, 246, 398, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblApellidos, new AnchorConstraint(96, 429, 398, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblApellidos.setText("Apellidos");
 				lblApellidos.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
 			{
 				lblNombre = new JLabel();
-				this.add(lblNombre, new AnchorConstraint(69, 246, 303, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNombre, new AnchorConstraint(69, 429, 303, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNombre.setText("Nombre");
 				lblNombre.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
 			{
 				lblNSS = new JLabel();
-				this.add(lblNSS, new AnchorConstraint(42, 246, 209, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNSS, new AnchorConstraint(42, 429, 209, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNSS.setText("NSS (Nº Seguridad Social)");
 				lblNSS.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
 			{
 				lblNIF = new JLabel();
-				this.add(lblNIF, new AnchorConstraint(15, 246, 110, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNIF, new AnchorConstraint(15, 429, 110, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNIF.setText("NIF");
 				lblNIF.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
@@ -390,7 +390,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		limpiarCamposRegistro();
 	}
 
-	private void limpiarCamposRegistro() {
+	public void limpiarCamposRegistro() {
 		txtNIF.setText("");
 		txtNSS.setText("");
 		txtNombre.setText("");

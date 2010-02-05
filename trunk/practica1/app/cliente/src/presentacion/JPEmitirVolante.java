@@ -47,7 +47,7 @@ public class JPEmitirVolante extends JPBase {
 	
 	private static final long serialVersionUID = -2491308165795545454L;
 	
-	private JPBeneficiarioConsultar jPanelBeneficiario;
+	private JPBeneficiarioConsultar pnlBeneficiario;
 	private JSeparator jSeparator1;
 	private JPanel jPanelMedico;
 	private JTextField txtNombre;
@@ -73,14 +73,13 @@ public class JPEmitirVolante extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setSize(565, 390);
-			this.setPreferredSize(new java.awt.Dimension(565, 390));
+			this.setPreferredSize(new java.awt.Dimension(565, 450));
 			{
 				jPanelMedico = new JPanel();
 				AnchorLayout jPanelMedicoLayout = new AnchorLayout();
 				jPanelMedico.setLayout(jPanelMedicoLayout);
-				this.add(jPanelMedico, new AnchorConstraint(200, 5, 885, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jPanelMedico.setPreferredSize(new java.awt.Dimension(554, 185));
+				this.add(jPanelMedico, new AnchorConstraint(252, 5, 885, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				jPanelMedico.setPreferredSize(new java.awt.Dimension(544, 185));
 				{
 					lblEspecialidad = new JLabel();
 					jPanelMedico.add(lblEspecialidad, new AnchorConstraint(107, 245, 807, 226, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
@@ -146,17 +145,17 @@ public class JPEmitirVolante extends JPBase {
 			}
 			{
 				jSeparator1 = new JSeparator();
-				this.add(jSeparator1, new AnchorConstraint(196, 5, 493, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(jSeparator1, new AnchorConstraint(249, 5, 493, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				jSeparator1.setPreferredSize(new java.awt.Dimension(554, 10));
 			}
 			{
-				jPanelBeneficiario = new JPBeneficiarioConsultar(getFrame(), getControlador());
-				this.add(jPanelBeneficiario, new AnchorConstraint(5, 5, 437, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jPanelBeneficiario.setPreferredSize(new java.awt.Dimension(554, 186));
-				jPanelBeneficiario.ocultarControles();
-				jPanelBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
+				pnlBeneficiario = new JPBeneficiarioConsultar(getFrame(), getControlador());
+				this.add(pnlBeneficiario, new AnchorConstraint(0, 0, 437, 0, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				pnlBeneficiario.setPreferredSize(new java.awt.Dimension(555, 237));
+				pnlBeneficiario.reducirPanel();
+				pnlBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
 					public void beneficiarioBuscado(EventObject evt) {
-						jPanelBeneficiarioBeneficiarioBuscado(evt);
+						pnlBeneficiarioBeneficiarioBuscado(evt);
 					}
 				});
 			}
@@ -215,7 +214,7 @@ public class JPEmitirVolante extends JPBase {
 		}
 	}
 	
-	private void jPanelBeneficiarioBeneficiarioBuscado(EventObject evt) {
+	private void pnlBeneficiarioBeneficiarioBuscado(EventObject evt) {
 		// TODO Auto-generated method stub
 	}
 	
@@ -235,7 +234,7 @@ public class JPEmitirVolante extends JPBase {
 		}
 		if (valido)
 			try {
-				bene = jPanelBeneficiario.getBeneficiario();
+				bene = pnlBeneficiario.getBeneficiario();
 				medico = bene.getMedicoAsignado();
 				idVolante = getControlador().emitirVolante(bene, ((Medico)((Sesion)(getControlador().getSesion())).getUsuario()), especialistas.get(lstEspecialistas.getSelectedIndex()));
 				nuevoMedico = getControlador().consultarBeneficiario(bene.getNif()).getMedicoAsignado();
@@ -243,7 +242,7 @@ public class JPEmitirVolante extends JPBase {
 					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante se ha emitido para el beneficiario. El identificador de dicho volante es " + idVolante+"\nTambién se ha asignado un médico de cabecera al beneficiario. El DNI del nuevo médico es "+nuevoMedico.getDni());
 				else
 					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante se ha emitido para el beneficiario. El identificador de dicho volante es " + idVolante);
-				jPanelBeneficiario.limpiarCamposConsulta();
+				pnlBeneficiario.limpiarCamposConsulta();
 				limpiarPanelMedico();
 			} catch (RemoteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());

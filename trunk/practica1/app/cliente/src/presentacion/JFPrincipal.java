@@ -106,7 +106,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private void initGUI() {
 		try {
 			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-			this.setPreferredSize(new java.awt.Dimension(700, 600));
+			this.setPreferredSize(new java.awt.Dimension(800, 600));
 			this.setTitle("SSCA - Unidad de Citación");
 			this.setMinimumSize(new java.awt.Dimension(600, 450));
 			setLocationRelativeTo(null);
