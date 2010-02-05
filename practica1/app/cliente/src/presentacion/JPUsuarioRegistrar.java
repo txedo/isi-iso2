@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.DebugGraphics;
 import javax.swing.DefaultListModel;
@@ -20,10 +19,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Citador;
@@ -31,7 +28,7 @@ import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
-import dominio.conocimiento.Roles;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Validacion;
@@ -269,7 +266,7 @@ public class JPUsuarioRegistrar extends JPBase {
 				Validacion.comprobarCadena(txtEspecialidad.getText());				
 
 			// Creamos un nuevo usuario con los datos introducidos
-			switch (Roles.valueOf(lstTipoUsuario.getSelectedValue().toString())) {
+			switch (RolesUsuarios.valueOf(lstTipoUsuario.getSelectedValue().toString())) {
 				case Administrador:
 					usu = new Administrador();
 					break;

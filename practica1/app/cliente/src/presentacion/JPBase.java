@@ -17,10 +17,9 @@ public class JPBase extends JPanel {
 	private ControladorCliente controlador;
 	
 	public JPBase() {
+		this(null, null);
 		// Este constructor evita que aparezca un error al editar
 		// con el Jigloo los formularios heredados de JPBase
-		frame = null;
-		controlador = null;
 	}
 	
 	public JPBase(JFrame frame, ControladorCliente controlador) {

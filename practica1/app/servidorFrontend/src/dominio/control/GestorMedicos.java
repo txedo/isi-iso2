@@ -8,7 +8,7 @@ import persistencia.FPSustitucion;
 import persistencia.FPTipoMedico;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.Roles;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
@@ -28,12 +28,12 @@ import excepciones.UsuarioYaExistenteException;
 public class GestorMedicos {
 
 	// Método para consultar los datos de un médico
-	public static Medico getMedico(long idSesion, String dni) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
+	public static Medico consultarMedico(long idSesion, String dni) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
 		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
 		if(dni == null) {
-			throw new NullPointerException("El DNI del médico buscado no puede ser nulo");
+			throw new NullPointerException("El DNI del médico buscado no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -41,14 +41,14 @@ public class GestorMedicos {
 		
 		// Llamamos al método equivalente para usuarios
 		try {
-			usuario = GestorUsuarios.getUsuario(idSesion, dni);
+			usuario = GestorUsuarios.consultarUsuario(idSesion, dni);
 		} catch(UsuarioInexistenteException e) {
 			throw new MedicoInexistenteException(e.getMessage());
 		}
 		
 		// Nos aseguramos de que el usuario devuelto tenga el rol esperado
-		if(usuario.getRol() != Roles.Medico) {
-			throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico");
+		if(usuario.getRol() != RolesUsuarios.Medico) {
+			throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
 		}
 
 		return (Medico)usuario;
@@ -58,7 +58,7 @@ public class GestorMedicos {
 	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
-			throw new NullPointerException("El médico que se va a crear no puede ser nulo");
+			throw new NullPointerException("El médico que se va a crear no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -76,7 +76,7 @@ public class GestorMedicos {
 	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
-			throw new NullPointerException("El médico que se va a modificar no puede ser nulo");
+			throw new NullPointerException("El médico que se va a modificar no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -94,7 +94,7 @@ public class GestorMedicos {
 	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
-			throw new NullPointerException("El médico que se va a eliminar no puede ser nulo");
+			throw new NullPointerException("El médico que se va a eliminar no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -107,7 +107,7 @@ public class GestorMedicos {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
 	}
-
+	
 	//TODO:Los siguientes métodos no se han revisado!
 	
 	public static void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Medico sustituto) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, SustitucionInvalidaException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException {
@@ -116,13 +116,16 @@ public class GestorMedicos {
 		
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
-			throw new NullPointerException("El médico que se va a sustituir no puede ser nulo");
+			throw new NullPointerException("El médico que se va a sustituir no puede ser nulo.");
 		}
 		if(dias == null) {
-			throw new NullPointerException("Los días en los que se va a realizar la sustitución no pueden ser nulos");			
+			throw new NullPointerException("Los días en los que se va a realizar la sustitución no pueden ser nulos.");			
+		}
+		if(dias.contains(null)) {
+			throw new NullPointerException("Los días en los que se va a realizar la sustitución no pueden ser nulos.");
 		}
 		if(sustituto == null) {
-			throw new NullPointerException("El médico al que se le va a asignar una sustitución no puede ser nulo");
+			throw new NullPointerException("El médico al que se le va a asignar una sustitución no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -165,7 +168,7 @@ public class GestorMedicos {
 	}
 	
 	// TODO: ¿esto qué hace realmente?
-	public static ArrayList<Medico> obtenerMedicos (long idSesion, String tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException {
+	public static ArrayList<Medico> obtenerMedicos(long idSesion, String tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException {
 		ArrayList<Medico> medicos = null;
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);

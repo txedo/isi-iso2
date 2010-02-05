@@ -1,9 +1,9 @@
 package presentacion;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,16 +11,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.Roles;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
@@ -34,7 +32,6 @@ import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
 import excepciones.UsuarioInexistenteException;
 import excepciones.UsuarioYaExistenteException;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -321,7 +318,7 @@ public class JPUsuarioConsultar extends JPBase {
 			Validacion.comprobarNombre(txtNombre.getText());
 			Validacion.comprobarApellidos(txtApellidos.getText());
 			
-			switch(Roles.valueOf(txtRol.getText())) {
+			switch(RolesUsuarios.valueOf(txtRol.getText())) {
 				case Administrador:
 					usu = new Administrador();
 					break;

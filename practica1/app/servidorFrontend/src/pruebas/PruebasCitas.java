@@ -269,7 +269,7 @@ public class PruebasCitas extends TestCase{
 			// Se pide la cita		
 			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita, DURACION);
 			// Se recuperan las citas del beneficiario1 para ver si realmente existe
-			citas = GestorCitas.getCitas(sesionCitador.getId(), bene1.getNif());
+			citas = GestorCitas.consultarCitas(sesionCitador.getId(), bene1.getNif());
 			// Como se ha limpiado la base de datos antes de ejecutar este caso de prueba, solo se obtendrá una cita
 			assertEquals(cita, citas.get(0));
 		} catch(Exception e) {
@@ -385,7 +385,7 @@ public class PruebasCitas extends TestCase{
 		try {
 			// Intentamos dar una cita valida para el medico receptor del volante
 			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, volante.getId(), fechaCita2, DURACION);
-			citas = GestorCitas.getCitas(sesionCitador.getId(), bene1.getNif());
+			citas = GestorCitas.consultarCitas(sesionCitador.getId(), bene1.getNif());
 			// Como se ha limpiado la base de datos antes de ejecutar este caso de prueba, solo se obtendrá una cita
 			assertEquals(cita, citas.get(0));
 		} catch(Exception e) {			
@@ -490,14 +490,14 @@ public class PruebasCitas extends TestCase{
 			// Creamos una cita correcta
 			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita, DURACION);
 			// Se recuperan las citas del beneficiario1 para ver si realmente existe
-			citas = GestorCitas.getCitas(sesionCitador.getId(), bene1.getNif());
+			citas = GestorCitas.consultarCitas(sesionCitador.getId(), bene1.getNif());
 			// Como se ha limpiado la base de datos antes de ejecutar este caso de prueba, solo se obtendrá una cita
 			assertEquals(cita, citas.get(0));
 			// Anulamos esa cita 
 			GestorCitas.anularCita(sesionCitador.getId(), cita);
 			// Si se ha anulado correctamente, se puede volver a concertar la scita con los mismos datos
 			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita, DURACION);
-			citas = GestorCitas.getCitas(sesionCitador.getId(), bene1.getNif());
+			citas = GestorCitas.consultarCitas(sesionCitador.getId(), bene1.getNif());
 			assertEquals(cita, citas.get(0));
 		} catch(Exception e) {
 			fail("No se esperaba ninguna excepcion al anular la cita");

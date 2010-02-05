@@ -78,7 +78,7 @@ public class ControladorFrontend {
 			throw new SQLException("No se puede establecer una conexión con el servidor de la base de datos principal (IP " + configuracion.getIPBDPrincipal() + ", puerto " + String.valueOf(configuracion.getPuertoBDPrincipal()) + ").");
 		}
 		GestorConexionesBD.ponerConexion(basedatos);
-				
+		
 		// Añadimos las conexiones que mostrarán los mensaje del servidor
 		// en su ventana principal y los guardará en la base de datos
 		logFrontend = new ConexionLogVentana();

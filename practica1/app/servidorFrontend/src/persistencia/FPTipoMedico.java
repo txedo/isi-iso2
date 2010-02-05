@@ -13,7 +13,7 @@ import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
-import dominio.conocimiento.Roles;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
@@ -44,7 +44,7 @@ public class FPTipoMedico {
 		// Si no se obtienen datos, es porque el usuario es
 		// incorrecto (o no existe, pero se trata como incorrecto)
 		if(datos.getRow() == 0) {
-			throw new UsuarioIncorrectoException("No existe el médico con DNI '" + dniMedico +"'");  
+			throw new UsuarioIncorrectoException("El médico con DNI " + dniMedico + " no se encuentra dado de alta en el sistema.");
 		} else {		
 			// Establecemos el tipo del medico
 			if (datos.getString(COL_TIPO_MEDICO).equals("Especialista"))
@@ -70,10 +70,10 @@ public class FPTipoMedico {
 		// Si no se obtienen datos, es porque el usuario es
 		// incorrecto (o no existe, pero se trata como incorrecto)
 		if(datos.getRow() == 0) {
-			throw new UsuarioIncorrectoException("No hay ningun medico de tipo '" + tipoMedico.getClass().getSimpleName() +"' en la base de datos");
+			throw new UsuarioIncorrectoException("No hay ningun medico de tipo " + tipoMedico.getClass().getSimpleName() + " en la base de datos.");
 		} // Si existe, el rol del usuario recuperado debe ser un medico 
-		else if (datos.getInt(COL_ROL)!= Roles.Medico.ordinal()){
-			throw new UsuarioIncorrectoException("A un beneficiario solo se puede asignar un medico");
+		else if (datos.getInt(COL_ROL)!= RolesUsuarios.Medico.ordinal()){
+			throw new UsuarioIncorrectoException("A un beneficiario solo se puede asignar un médico.");
 		}else{			
 			//Consultamos el medico
 			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI));		
@@ -97,7 +97,7 @@ public class FPTipoMedico {
 		// Si no se obtienen datos, es porque el usuario es
 		// incorrecto (o no existe, pero se trata como incorrecto)
 		if(datos.getRow() == 0) {
-			throw new UsuarioIncorrectoException("No hay ningun medico con dni " + medico.getDni() + " en la base de datos");
+			throw new UsuarioIncorrectoException("El médico con DNI " + medico.getDni() + " no se encuentra registrado en el sistema.");
 		}else{
 			tipo=datos.getString(COL_TIPO_MEDICO);
 		}
@@ -121,7 +121,7 @@ public class FPTipoMedico {
 		// Recorremos la lista de medicos con el tipo indicado
 		medicos = new ArrayList<Medico>();
 		if(datos.getRow() == 0) 
-			throw new MedicoInexistenteException("No existe ningún médico de tipo " + tipoMedico + " registrado en el sistema");
+			throw new MedicoInexistenteException("No existe ningún médico de tipo " + tipoMedico + " registrado en el sistema.");
 		do {
 			// Creamos el tipo de medico adecuado
 			if (tipoMedico.equals("Especialista")) 

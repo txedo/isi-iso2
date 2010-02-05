@@ -256,7 +256,7 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 		int col;
 		for (int fila=0; fila<citas.size(); fila++) {
 			col = 0;
-			fecha = citas.get(fila).getFechaYhora();
+			fecha = citas.get(fila).getFechaYHora();
 			tipo = citas.get(fila).getMedico().getTipoMedico();
 			tableCitas.setValueAt(formatoDeFecha.format(fecha), fila, col);			
 			tableCitas.setValueAt(formatoDeHora.format(fecha), fila, ++col);
@@ -293,15 +293,15 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 			// Buscamos el beneficiario solicitado
 			if(sTipo.equals(ID_NIF)) {
 				Validacion.comprobarNIF(sIdentificacion);
-				beneficiario = getControlador().getBeneficiario(sIdentificacion);
+				beneficiario = getControlador().consultarBeneficiario(sIdentificacion);
 			} else if(sTipo.equals(ID_NSS)) {
 				Validacion.comprobarNSS(sIdentificacion);
-				beneficiario = getControlador().getBeneficiarioPorNSS(sIdentificacion);
+				beneficiario = getControlador().consultarBeneficiarioPorNSS(sIdentificacion);
 			}
 
 			// Mostramos los datos del beneficiario encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Beneficiario encontrado.");
-			citas = getControlador().obtenerCitas(beneficiario.getNif());
+			citas = getControlador().consultarCitas(beneficiario.getNif());
 			if (citas != null) {
 				crearTabla(citas.size());
 				rellenarTabla(citas);

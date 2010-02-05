@@ -49,6 +49,7 @@ public class FPPeriodoTrabajo {
 		ComandoSQL comando;
 		ResultSet datos;
 
+		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_PERIODOS + " (" + COL_DNI_MEDICO + ", " + COL_HORA_INICIO + ", " + COL_HORA_FINAL + ", " + COL_DIA + ") VALUES (?, ?, ?, ?)",
 		                                  dni, periodo.getHoraInicio(), periodo.getHoraFinal(), periodo.getDia().ordinal());
 		GestorConexionesBD.ejecutar(comando);
@@ -63,6 +64,7 @@ public class FPPeriodoTrabajo {
 	public static void modificar(PeriodoTrabajo periodo) throws SQLException {
 		ComandoSQL comando;
 		
+		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_PERIODOS + " SET " + COL_HORA_INICIO + " = ?, "+ COL_HORA_FINAL + " = ?, " + COL_DIA + " = ? WHERE " + COL_ID + " = ?",
                                           periodo.getHoraInicio(), periodo.getHoraFinal(), periodo.getDia().ordinal(), periodo.getId());
 		GestorConexionesBD.ejecutar(comando);
@@ -71,6 +73,7 @@ public class FPPeriodoTrabajo {
 	public static void eliminar(PeriodoTrabajo periodo) throws SQLException {
 		ComandoSQL comando;
 		
+		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_PERIODOS + " WHERE " + COL_ID + " = " + periodo.getId());
 		GestorConexionesBD.ejecutar(comando);
 	}

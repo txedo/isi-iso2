@@ -32,7 +32,7 @@ public class FPCentroSalud {
 		// Si no se obtienen datos, es porque el usuario es
 		// incorrecto (o no existe, pero se trata como incorrecto)
 		if(datos.getRow() == 0) {
-			throw new CentroSaludIncorrectoException("No existe ningún centro de salud con el id " + String.valueOf(id));
+			throw new CentroSaludIncorrectoException("No existe ningún centro de salud con el id " + String.valueOf(id) + ".");
 		} else {
 			// Creamos el centro de salud
 			centro = new CentroSalud();
@@ -59,9 +59,9 @@ public class FPCentroSalud {
 		listaIds = new ArrayList<Integer>();
 		datos.next();
 		if(datos.getRow() == 0) {
-			throw new CentroSaludIncorrectoException("No existe ningún centro de salud");
+			throw new CentroSaludIncorrectoException("No existe ningún centro de salud en el sistema.");
 		}
-		do{
+		do {
 			listaIds.add(datos.getInt(COL_ID));
 		} while(datos.next());
 
@@ -76,6 +76,7 @@ public class FPCentroSalud {
 		ComandoSQL comando;
 		ResultSet datos;
 		
+		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CENTROS + " (" + COL_NOMBRE + ", " + COL_DIRECCION + ") VALUES (?, ?)",
                                           centro.getNombre(), centro.getDireccion());
 		GestorConexionesBD.ejecutar(comando);

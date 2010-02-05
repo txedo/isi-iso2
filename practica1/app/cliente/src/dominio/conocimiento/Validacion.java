@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaIncorrectaException;
 import excepciones.CadenaVaciaException;
@@ -16,6 +15,7 @@ import excepciones.FechaNacimientoIncorrectaException;
 import excepciones.FormatoFechaIncorrectoException;
 import excepciones.IPInvalidaException;
 import excepciones.LetraIncorrectaException;
+import excepciones.LoginIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.NombreIncorrectoException;
@@ -259,6 +259,13 @@ public class Validacion {
 
 	}
 	
+	public static void comprobarUsuario(String usuario) throws LoginIncorrectoException {
+		//TODO:Por hacer
+		if(usuario.length() == 0) {
+			throw new LoginIncorrectoException();
+		}
+	}
+	
 	public static void comprobarContraseña(String pass) throws ContraseñaIncorrectaException {
 		boolean valido = false;
 		// Contraseña alfanumérica de mínimo 8 caracteres
@@ -268,7 +275,7 @@ public class Validacion {
 	    	if (pass.length() > 7)
 	    		valido = true;
 	    if (!valido)
-	    	throw new ContraseñaIncorrectaException("La contraseña debe ser alfnumérica y tener como mínimo 8 caracteres.");
+	    	throw new ContraseñaIncorrectaException();
 	}
 	
 	public static void comprobarDireccionIP(String ip) throws IPInvalidaException {

@@ -1,10 +1,12 @@
 package dominio.control;
 
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Vector;
 import presentacion.JFLogin;
 import presentacion.JFPrincipal;
@@ -14,6 +16,7 @@ import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -97,20 +100,30 @@ public class ControladorCliente {
 		return puerto;
 	}
 	
-	public void iniciarSesion(String direccionIP, int puerto, String login, String password) throws SQLException, UsuarioIncorrectoException, Exception {
-		// Intentamos conectarnos con el servidor frontend
-		if(servidor == null) {
+	public void iniciarSesion(String direccionIP, int puerto, String login, String password) throws SQLException, UsuarioIncorrectoException, MalformedURLException, RemoteException, NotBoundException, UnknownHostException, Exception {
+		try {
+			// Establecemos conexión con el servidor front-end
 			servidor = new ProxyServidorFrontend();
+			servidor.conectar(direccionIP, puerto);
+		} catch(NotBoundException e) {
+			throw new NotBoundException("No se puede conectar con el servidor front-end porque está desactivado (IP " + direccionIP + ", puerto " + String.valueOf(puerto) + ").");
+		} catch(RemoteException e) {
+			throw new RemoteException("No se puede conectar con el servidor front-end (IP " + direccionIP + ", puerto " + String.valueOf(puerto) + ").");
 		}
-		servidor.conectar(direccionIP, puerto);
-		// Nos identificamos en el servidor
-		sesion = (ISesion)servidor.identificar(login, password);
-		usuarioAutenticado = login;
-		// Una vez que el cliente se ha identificado correctamente, registramos el cliente en el servidor
-		cliente = RemotoCliente.getCliente();
-		cliente.activar();
-		servidor.registrar((ICliente)cliente, sesion.getId());
-		// Ocultamos la ventana de login
+		
+		try {
+			// Nos identificamos en el servidor
+			sesion = (ISesion)servidor.identificar(login, password);
+			usuarioAutenticado = login;
+			// Una vez que el cliente se ha identificado correctamente, registramos el cliente en el servidor
+			cliente = RemotoCliente.getCliente();
+			cliente.activar();
+			servidor.registrar((ICliente)cliente, sesion.getId());
+		} catch(RemoteException e) {
+			throw new RemoteException("No se puede conectar con el servidor front-end (IP " + direccionIP + ", puerto " + String.valueOf(puerto) + ").");
+		}
+		
+		// Ocultamos la ventana de login y mostramos la ventana principal
 		if(ventanaLogin != null) {
 			ventanaLogin.setVisible(false);
 			ventanaLogin.dispose();
@@ -121,6 +134,7 @@ public class ControladorCliente {
 		}
 		ventanaPrincipal = new JFPrincipal(this);
 		ventanaPrincipal.iniciar();
+		ventanaPrincipal.setLocationRelativeTo(null);
 		ventanaPrincipal.setVisible(true);
 	}
 	
@@ -134,11 +148,11 @@ public class ControladorCliente {
 		servidor.crear(sesion.getId(), bene);
 	}
 	
-	public Beneficiario getBeneficiario(String nif) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+	public Beneficiario consultarBeneficiario(String nif) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		return servidor.getBeneficiario(sesion.getId(), nif);
 	}
 	
-	public Beneficiario getBeneficiarioPorNSS(String nss) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+	public Beneficiario consultarBeneficiarioPorNSS(String nss) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		return servidor.getBeneficiarioPorNSS(sesion.getId(), nss);
 	}
 	
@@ -169,12 +183,23 @@ public class ControladorCliente {
 	public Medico consultarMedico(String dni) throws RemoteException, MedicoInexistenteException, Exception {
 		return servidor.getMedico(sesion.getId(), dni);
 	}
-	
-	public Object obtenerHorasMedico (String dniMedico) throws RemoteException, Exception {
-		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO, dniMedico);
+
+	@SuppressWarnings("unchecked")
+	public Hashtable<DiaSemana, Vector<String>> consultarHorasCitas(String dniMedico) throws RemoteException, Exception {
+		return (Hashtable<DiaSemana, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS, dniMedico);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Hashtable<Date, Vector<String>> consultarCitasMedico(String dniMedico) throws RemoteException, Exception {
+		return (Hashtable<Date, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO, dniMedico);
 	}
 	
-	public Object obtenerMedicos (String tipo) throws RemoteException, Exception {
+	@SuppressWarnings("unchecked")
+	public Vector<Date> consultarDiasCompletos(String dniMedico) throws RemoteException, Exception {
+		return (Vector<Date>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_DIAS_COMPLETOS, dniMedico);
+	}
+	
+	public Object obtenerMedicos(String tipo) throws RemoteException, Exception {
 		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, tipo);
 	}
 	
@@ -182,7 +207,7 @@ public class ControladorCliente {
 		servidor.modificar(sesion.getId(), medico);
 	}
 	
-	public long emitirVolante (Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception { 
+	public long emitirVolante(Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception { 
 		return servidor.emitirVolante(sesion.getId(), bene, emisor, receptor);
 	}
 	
@@ -194,11 +219,11 @@ public class ControladorCliente {
 		 return servidor.pedirCita(sesion.getId(), beneficiario, idVolante, fechaYHora, duracion);
 	 }
 	 
-	 public void anularCita (Cita cita) throws RemoteException, CitaNoValidaException, SQLException, Exception {
+	 public void anularCita(Cita cita) throws RemoteException, CitaNoValidaException, SQLException, Exception {
 		 servidor.anularCita(sesion.getId(), cita);
 	 }
 	 
-	 public Vector<Cita> obtenerCitas(String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
+	 public Vector<Cita> consultarCitas(String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
 		 return servidor.getCitas(sesion.getId(), dni);
 	 }
 }

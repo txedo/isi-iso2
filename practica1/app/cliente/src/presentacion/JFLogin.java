@@ -5,8 +5,11 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.CadenaVaciaException;
+import excepciones.ContraseñaIncorrectaException;
 import excepciones.IPInvalidaException;
 import excepciones.EnteroIncorrectoException;
+import excepciones.LoginIncorrectoException;
+import excepciones.PuertoInvalidoException;
 import excepciones.UsuarioIncorrectoException;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -58,19 +61,19 @@ public class JFLogin extends javax.swing.JFrame {
 	private final int MIN_HEIGHT = 175;
 	
 	private ControladorCliente controlador;
-	private JLabel jLabel2;
+	private JLabel lblUsuario;
 	private JTextField txtUsuario;
 	private JLabel lblDireccionServidor;
 	private JTextField txtPuertoServidor;
 	private JLabel lblPuertoServidor;
 	private JTextField txtIPServidor;
-	private JPanel jPanel1;
+	private JPanel pnlPanel;
 	private JButton btnAvanzado;
 	private JButton btnConectar;
 	private JPasswordField txtPassword;
-	private JLabel jLabel3;
-	private JPanel JPDatosUsuario;
-	private JPanel JPDatosConexion;
+	private JLabel lblPassword;
+	private JPanel pnlDatosUsuario;
+	private JPanel pnlDatosServidor;
 
 	public JFLogin() {
 		super();
@@ -94,75 +97,77 @@ public class JFLogin extends javax.swing.JFrame {
 				}
 			});
 			{
-				jPanel1 = new JPanel();
+				pnlPanel = new JPanel();
 				AnchorLayout jPanel1Layout = new AnchorLayout();
-				getContentPane().add(jPanel1, BorderLayout.CENTER);
-				jPanel1.setLayout(jPanel1Layout);
+				getContentPane().add(pnlPanel, BorderLayout.CENTER);
+				pnlPanel.setLayout(jPanel1Layout);
 				{
-					JPDatosConexion = new JPanel();
-					JPDatosConexion.setLayout(null);
-					jPanel1.add(JPDatosConexion, new AnchorConstraint(104, 905, 1004, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					JPDatosConexion.setBorder(BorderFactory.createTitledBorder("Datos del servidor"));
-					JPDatosConexion.setPreferredSize(new java.awt.Dimension(259, 89));
-					JPDatosConexion.setVisible(false);
+					pnlDatosServidor = new JPanel();
+					pnlDatosServidor.setLayout(null);
+					pnlPanel.add(pnlDatosServidor, new AnchorConstraint(104, 905, 1004, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlDatosServidor.setBorder(BorderFactory.createTitledBorder("Datos del servidor"));
+					pnlDatosServidor.setPreferredSize(new java.awt.Dimension(259, 89));
+					pnlDatosServidor.setVisible(false);
 					{
 						txtPuertoServidor = new JTextField();
-						JPDatosConexion.add(txtPuertoServidor, new AnchorConstraint(580, 950, 846, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlDatosServidor.add(txtPuertoServidor, new AnchorConstraint(580, 950, 846, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtPuertoServidor.setText("2995");
 						txtPuertoServidor.setBounds(115, 53, 125, 20);
 					}
 					{
 						lblPuertoServidor = new JLabel();
-						JPDatosConexion.add(lblPuertoServidor, new AnchorConstraint(593, 483, 780, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlDatosServidor.add(lblPuertoServidor, new AnchorConstraint(593, 483, 780, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						lblPuertoServidor.setText("Puerto");
 						lblPuertoServidor.setBounds(13, 57, 91, 14);
 					}
 					{
 						txtIPServidor = new JTextField();
-						JPDatosConexion.add(txtIPServidor, new AnchorConstraint(246, 950, 513, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlDatosServidor.add(txtIPServidor, new AnchorConstraint(246, 950, 513, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtIPServidor.setText("127.0.0.1");
+						txtIPServidor.setBounds(115, 24, 125, 20);
 						txtIPServidor.setLayout(null);
 					}
 					{
 						lblDireccionServidor = new JLabel();
-						JPDatosConexion.add(lblDireccionServidor, new AnchorConstraint(286, 483, 473, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlDatosServidor.add(lblDireccionServidor, new AnchorConstraint(286, 483, 473, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						lblDireccionServidor.setBounds(13, 28, 91, 14);
 						lblDireccionServidor.setText("Dirección IP");
 					}
 				}
 				{
-					JPDatosUsuario = new JPanel();
-					JPDatosUsuario.setLayout(null);
-					jPanel1.add(JPDatosUsuario, new AnchorConstraint(10, 905, 630, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					JPDatosUsuario.setPreferredSize(new java.awt.Dimension(259, 86));
-					JPDatosUsuario.setBorder(BorderFactory.createTitledBorder("Datos de usuario"));
+					pnlDatosUsuario = new JPanel();
+					pnlDatosUsuario.setLayout(null);
+					pnlPanel.add(pnlDatosUsuario, new AnchorConstraint(10, 905, 630, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					pnlDatosUsuario.setPreferredSize(new java.awt.Dimension(259, 86));
+					pnlDatosUsuario.setBorder(BorderFactory.createTitledBorder("Datos de usuario"));
 					{
 						txtPassword = new JPasswordField();
-						JPDatosUsuario.add(txtPassword, new AnchorConstraint(580, 950, 846, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlDatosUsuario.add(txtPassword, new AnchorConstraint(580, 950, 846, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtPassword.setLayout(null);
 						txtPassword.setBounds(115, 50, 125, 20);
 					}
 					{
-						jLabel3 = new JLabel();
-						JPDatosUsuario.add(jLabel3, new AnchorConstraint(593, 483, 780, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-						jLabel3.setText("Contraseña");
-						jLabel3.setBounds(13, 54, 85, 14);
+						lblPassword = new JLabel();
+						pnlDatosUsuario.add(lblPassword, new AnchorConstraint(593, 483, 780, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						lblPassword.setText("Contraseña");
+						lblPassword.setBounds(13, 54, 85, 14);
 					}
 					{
 						txtUsuario = new JTextField();
-						JPDatosUsuario.add(txtUsuario, new AnchorConstraint(246, 950, 513, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						pnlDatosUsuario.add(txtUsuario, new AnchorConstraint(246, 950, 513, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtUsuario.setLayout(null);
 						txtUsuario.setBounds(115, 22, 125, 20);
 					}
 					{
-						jLabel2 = new JLabel();
-						JPDatosUsuario.add(jLabel2, new AnchorConstraint(286, 483, 473, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-						jLabel2.setText("Usuario");
-						jLabel2.setBounds(13, 26, 85, 14);
+						lblUsuario = new JLabel();
+						pnlDatosUsuario.add(lblUsuario, new AnchorConstraint(286, 483, 473, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						lblUsuario.setText("Usuario");
+						lblUsuario.setBounds(13, 26, 85, 14);
 					}
 				}
 				{
 					btnAvanzado = new JButton();
-					jPanel1.add(btnAvanzado, new AnchorConstraint(458, 291, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					pnlPanel.add(btnAvanzado, new AnchorConstraint(458, 291, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					btnAvanzado.setLayout(null);
 					btnAvanzado.setText("Avanzado >>");
 					btnAvanzado.setPreferredSize(new java.awt.Dimension(103, 30));
@@ -175,7 +180,7 @@ public class JFLogin extends javax.swing.JFrame {
 				}
 				{
 					btnConectar = new JButton();
-					jPanel1.add(btnConectar, new AnchorConstraint(450, 10, 11, 698, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+					pnlPanel.add(btnConectar, new AnchorConstraint(450, 10, 11, 698, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnConectar.setDefaultCapable(true);
 					getRootPane().setDefaultButton(btnConectar);
 					btnConectar.setText("Iniciar sesión");
@@ -188,27 +193,25 @@ public class JFLogin extends javax.swing.JFrame {
 					});
 				}
 			}
-			txtIPServidor.setBounds(115, 24, 125, 20);
-			lblDireccionServidor.setBounds(13, 28, 91, 14);
 			pack();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	//$hide>>$
+
 	private void thisWindowClosing(WindowEvent evt) {
 		try {
 			controlador.cerrarControlador();
-		} catch (RemoteException e) {
+		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
-		} catch (MalformedURLException e) {
+		} catch(MalformedURLException e) {
 			Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
-		} catch (NotBoundException e) {
+		} catch(NotBoundException e) {
 			Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
 		}
 	}
-
-	//$hide>>$
 	
 	public void setControlador(ControladorCliente controlador) {
 		this.controlador = controlador;
@@ -216,42 +219,42 @@ public class JFLogin extends javax.swing.JFrame {
 	
 	private void btnConectarActionPerformed(ActionEvent evt) {
 		try {
-			if (txtUsuario.getText().equals("")) {
-				txtUsuario.grabFocus();
-				throw new CadenaVaciaException("Debe escribir su nombre de usuario.");
-			}
-			if (txtPassword.getText().equals("")) {
-				txtPassword.grabFocus();
-				throw new CadenaVaciaException("Debe escribir su contraseña.");
-			}
-			if (txtIPServidor.getText().equals("")) {
-				txtIPServidor.grabFocus();
-				throw new CadenaVaciaException("Debe introducir una dirección IP válida.");
-			}
+			
+			// Comprobamos los campos de la ventana
+			Validacion.comprobarUsuario(txtUsuario.getText());
+			//TODO:quitadotemporalmente... Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
 			Validacion.comprobarDireccionIP(txtIPServidor.getText());
-			if (txtPuertoServidor.getText().equals("")) {
-				txtPuertoServidor.grabFocus();
-				throw new CadenaVaciaException("Debe introducir un puerto válido.");
-			}
-			Validacion.comprobarEntero(txtPuertoServidor.getText());
+			Validacion.comprobarPuerto(txtPuertoServidor.getText());
+			
 			int puerto = Integer.parseInt(txtPuertoServidor.getText());
 			controlador.iniciarSesion(txtIPServidor.getText(), puerto, txtUsuario.getText(), new String(txtPassword.getPassword()));
-		} catch (SQLException e) {
-			Dialogos.mostrarDialogoError(this, "Error en el sistema", e.getMessage());
-		} catch (UsuarioIncorrectoException e) {
-			Dialogos.mostrarDialogoError(this, "Error al autentificar", e.getMessage());
-		} catch (IPInvalidaException e) {
+		
+		} catch(UsuarioIncorrectoException e) {
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
+
+		} catch(LoginIncorrectoException e) {
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
+			txtUsuario.selectAll();
+			txtUsuario.grabFocus();
+		} catch(ContraseñaIncorrectaException e) {
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
+			txtPassword.selectAll();
+			txtPassword.grabFocus();
+		} catch(IPInvalidaException e) {
+			Dialogos.mostrarDialogoError(this, "Error", "La dirección IP del servidor tiene un formato incorrecto.");
 			txtIPServidor.selectAll();
 			txtIPServidor.grabFocus();
-			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
-		} catch (CadenaVaciaException e) {
-			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
-		} catch (EnteroIncorrectoException e) {
+		} catch(PuertoInvalidoException e) {
+			Dialogos.mostrarDialogoError(this, "Error", "El puerto del servidor tiene un formato incorrecto.");
 			txtPuertoServidor.selectAll();
 			txtPuertoServidor.grabFocus();
-			Dialogos.mostrarDialogoError(this, "Error", "El puerto debe ser un entero positivo entre 1024 y 65536.");
-		} catch (Exception e) {
-			Dialogos.mostrarDialogoError(this, "Error al autentificar", e.getLocalizedMessage());
+
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		}
 	}
 	
@@ -259,8 +262,8 @@ public class JFLogin extends javax.swing.JFrame {
 		if(btnAvanzado.getText().equals("Avanzado >>")) {
 			btnAvanzado.setText("<< Avanzado");
 			this.setSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
-			jPanel1.setSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
-			JPDatosConexion.setVisible(true);
+			pnlPanel.setSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
+			pnlDatosServidor.setVisible(true);
 			txtIPServidor.setVisible(true);
 			lblDireccionServidor.setVisible(true);
 			txtPuertoServidor.setVisible(true);
@@ -269,8 +272,8 @@ public class JFLogin extends javax.swing.JFrame {
 			if(btnAvanzado.getText().equals("<< Avanzado")) {
 				btnAvanzado.setText("Avanzado >>");
 				this.setSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
-				jPanel1.setSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
-				JPDatosConexion.setVisible(false);
+				pnlPanel.setSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
+				pnlDatosServidor.setVisible(false);
 				txtIPServidor.setVisible(false);
 				lblDireccionServidor.setVisible(false);
 				txtPuertoServidor.setVisible(false);

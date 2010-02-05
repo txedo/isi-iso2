@@ -18,8 +18,10 @@ public class FPSustitucion {
 	private static final String TABLA_SUSTITUCIONES = "sustituciones";
 	
 	private static final String COL_ID = "id";
-	private static final String COL_DNI_MEDICO = "dniMedico";
 	private static final String COL_DIA = "dia";
+	private static final String COL_HORA_INICIO = "horaInicio";
+	private static final String COL_HORA_FINAL = "horaFinal";
+	private static final String COL_DNI_MEDICO = "dniMedico";
 	private static final String COL_DNI_SUSTITUTO = "dniSustituto";
 	
 	public static ArrayList<Sustitucion> consultarMedico(String dniMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
@@ -41,6 +43,8 @@ public class FPSustitucion {
 			sustituto = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_SUSTITUTO));
 			sustitucion.setId(datos.getInt(COL_ID));
 			sustitucion.setDia(datos.getDate(COL_DIA));
+			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
+			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
 			sustitucion.setMedico(medico);
 			sustitucion.setSustituto(sustituto);
 			lista.add(sustitucion);
@@ -68,6 +72,8 @@ public class FPSustitucion {
 			sustituto = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_SUSTITUTO));
 			sustitucion.setId(datos.getInt(COL_ID));
 			sustitucion.setDia(datos.getDate(COL_DIA));
+			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
+			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
 			sustitucion.setMedico(medico);
 			sustitucion.setSustituto(sustituto);
 			lista.add(sustitucion);
@@ -80,8 +86,9 @@ public class FPSustitucion {
 		ComandoSQL comando;
 		ResultSet datos;
 
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_SUSTITUCIONES + " (" + COL_DIA + ", " + COL_DNI_MEDICO + ", " + COL_DNI_SUSTITUTO + ") VALUES (?, ?, ?)",
-		                                  sustitucion.getDia(), sustitucion.getMedico().getDni(), sustitucion.getSustituto().getDni());
+		// Modificamos la base de datos
+		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_SUSTITUCIONES + " (" + COL_DIA + ", " + COL_HORA_INICIO + ", " + COL_HORA_FINAL + ", " + COL_DNI_MEDICO + ", " + COL_DNI_SUSTITUTO + ") VALUES (?, ?, ?, ?, ?)",
+		                                  sustitucion.getDia(), sustitucion.getHoraInicio(), sustitucion.getHoraFinal(), sustitucion.getMedico().getDni(), sustitucion.getSustituto().getDni());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Cambiamos el id de la nueva sustitución

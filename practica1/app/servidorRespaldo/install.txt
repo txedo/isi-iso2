@@ -87,6 +87,8 @@ CREATE TABLE volantes (
 CREATE TABLE sustituciones (
        id INT NOT NULL AUTO_INCREMENT,
        dia DATETIME NOT NULL,
+       horaInicio INT NOT NULL,
+       horaFinal INT NOT NULL,
        dniMedico VARCHAR(255) NOT NULL,
        dniSustituto VARCHAR(255) NOT NULL,
        PRIMARY KEY (id),
