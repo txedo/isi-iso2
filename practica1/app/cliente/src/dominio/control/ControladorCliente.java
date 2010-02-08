@@ -70,7 +70,7 @@ public class ControladorCliente {
 			ventanaLogin.dispose();
 		}
 		if (ventanaPrincipal != null) {
-			ventanaLogin.setVisible(false);
+			ventanaPrincipal.setVisible(false);
 			ventanaPrincipal.dispose();
 		}
 		// Creamos la ventana de login y la mostramos

@@ -373,10 +373,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 
 	private void cerrarSesion () {
 		try {
-			if (controlador != null)
+			if (controlador != null) {
 				controlador.cerrarSesion ();
 				lblBarraEstado.setText("La sesión ha finalizado con éxito.");
 				lblPuertoEscucha.setText("");
+			}
 		} catch (RemoteException e) {
 			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		} catch (Exception e) {
