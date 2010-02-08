@@ -1,6 +1,9 @@
 package dominio.control;
 
 import java.sql.SQLException;
+
+import com.mysql.jdbc.Util;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CategoriasMedico;
@@ -9,6 +12,7 @@ import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Pediatra;
 import persistencia.FPBeneficiario;
 import persistencia.FPTipoMedico;
+import persistencia.Utilidades;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludIncorrectoException;
@@ -80,14 +84,10 @@ public class GestorBeneficiarios {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.RegistrarBeneficiario);
 				
-		// Consultamos si ya existe un beneficiario con el mismo NIF del
-		// beneficiario que se quiere crear, y en ese caso se lanza un error
-		try {
-			FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-			throw new BeneficiarioYaExistenteException("El beneficiario con NIF " + beneficiario.getNif() + " ya existe en el sistema y no se puede registrar de nuevo.");
-		} catch(BeneficiarioInexistenteException e) {
-			// Lo normal es que se lance esta excepción
-		}
+		// Consultamos si ya existe el mismo NIF del
+		// beneficiario que se quiere crear en la base de datos, y en ese caso se lanza un error
+		if (Utilidades.getDNIs().contains(beneficiario.getNif()))
+			throw new BeneficiarioYaExistenteException("El NIF " + beneficiario.getNif() + " ya existe en el sistema para otra persona y no se puede utilizar de nuevo.");
 		
 		// Consultamos si ya existe un beneficiario con el mismo NSS del
 		// beneficiario que se quiere crear, y en ese caso se lanza un error

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Usuario;
+import persistencia.Utilidades;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import excepciones.CentroSaludIncorrectoException;
@@ -54,15 +55,11 @@ public class GestorUsuarios {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.CrearUsuario);
 		
-		// Consultamos si ya existe un usuario con el mismo DNI del
-		// usuario que se quiere crear, y en ese caso se lanza un error
-		try {
-			FPUsuario.consultar(usuario.getDni());
-			throw new UsuarioYaExistenteException("El usuario con DNI " + usuario.getDni() + " ya existe en el sistema y no se puede registrar de nuevo.");
-		} catch(UsuarioIncorrectoException e) {
-			// Lo normal es que se lance esta excepción
-		}
-		
+		// Consultamos si ya existe el DNI del
+		// usuario que se quiere crear en la base de datos, y en ese caso se lanza un error
+		if (Utilidades.getDNIs().contains(usuario.getDni()))
+			throw new UsuarioYaExistenteException("El DNI " + usuario.getDni() + " ya existe en el sistema para otra persona y no se puede repetir.");
+				
 		// Consultamos si ya existe otro usuario con el mismo login, pues
 		// éste debe ser único para todos los usuarios 
 		try {

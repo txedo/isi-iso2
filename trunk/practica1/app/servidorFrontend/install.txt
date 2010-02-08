@@ -9,14 +9,14 @@ CREATE TABLE centros (
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE usuarios (
-       dni VARCHAR(255) NOT NULL, 
+       nif VARCHAR(255) NOT NULL, 
        login VARCHAR(255) UNIQUE NOT NULL default '',
        password VARCHAR(255) NOT NULL default '', 
        rol INT NOT NULL default '-1',
        nombre VARCHAR(255) NOT NULL default '',
        apellidos VARCHAR(255) NOT NULL default '',
        idCentro INT default '-1',
-       PRIMARY KEY (dni),
+       PRIMARY KEY (nif),
        FOREIGN KEY (idCentro) REFERENCES centros (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
@@ -25,7 +25,7 @@ CREATE TABLE tiposMedico (
        tipo ENUM ('Cabecera', 'Pediatra', 'Especialista') NOT NULL,
        especialidad VARCHAR(255) NOT NULL default '',
        PRIMARY KEY (dniMedico),
-       FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE NO ACTION ON UPDATE CASCADE
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE NO ACTION ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE periodosTrabajo (
@@ -35,7 +35,7 @@ CREATE TABLE periodosTrabajo (
        horaFinal INT NOT NULL,
        dia INT NOT NULL,
        PRIMARY KEY (id),
-       FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE NO ACTION ON UPDATE CASCADE
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE NO ACTION ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE entradasLog (
@@ -59,7 +59,7 @@ CREATE TABLE beneficiarios (
        movil INT NOT NULL default '-1',
        dniMedico VARCHAR(255) default '',
        PRIMARY KEY (nif),
-       FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE SET NULL ON UPDATE CASCADE
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE citas (
@@ -70,7 +70,7 @@ CREATE TABLE citas (
        dniMedico VARCHAR(255) NOT NULL,
        PRIMARY KEY (id),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
-       FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE volantes (
@@ -80,8 +80,8 @@ CREATE TABLE volantes (
        dniMedicoReceptor VARCHAR(255) NOT NULL,
        PRIMARY KEY (id),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
-       FOREIGN KEY (dniMedicoEmisor) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE,
-       FOREIGN KEY (dniMedicoReceptor) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE
+       FOREIGN KEY (dniMedicoEmisor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (dniMedicoReceptor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE sustituciones (
@@ -92,8 +92,8 @@ CREATE TABLE sustituciones (
        dniMedico VARCHAR(255) NOT NULL,
        dniSustituto VARCHAR(255) NOT NULL,
        PRIMARY KEY (id),
-       FOREIGN KEY (dniMedico) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE,
-       FOREIGN KEY (dniSustituto) REFERENCES usuarios (dni) ON DELETE CASCADE ON UPDATE CASCADE
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (dniSustituto) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 INSERT INTO centros (nombre,direccion) VALUES ("Centro de Pruebas", "Paseo de la Universidad, 4");
