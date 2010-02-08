@@ -44,6 +44,7 @@ public class GestorUsuarios {
 	// Método para añadir un nuevo usuario al sistema
 	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
 		CentroSalud centro;
+		Usuario u = null;
 		
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
@@ -58,6 +59,16 @@ public class GestorUsuarios {
 		try {
 			FPUsuario.consultar(usuario.getDni());
 			throw new UsuarioYaExistenteException("El usuario con DNI " + usuario.getDni() + " ya existe en el sistema y no se puede registrar de nuevo.");
+		} catch(UsuarioIncorrectoException e) {
+			// Lo normal es que se lance esta excepción
+		}
+		
+		// Consultamos si ya existe otro usuario con el mismo login, pues
+		// éste debe ser único para todos los usuarios 
+		try {
+			u = FPUsuario.consultar(usuario.getLogin(), usuario.getPassword());
+			if (!u.equals(usuario))
+				throw new UsuarioYaExistenteException("El login '" + usuario.getLogin() + "' ya existe en el sistema para otro usuario y no se puede utilizar de nuevo.");
 		} catch(UsuarioIncorrectoException e) {
 			// Lo normal es que se lance esta excepción
 		}
