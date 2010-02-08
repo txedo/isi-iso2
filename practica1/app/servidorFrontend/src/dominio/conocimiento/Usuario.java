@@ -82,7 +82,7 @@ public abstract class Usuario implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Usuario) {
 			u = (Usuario)o;
-			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && centro.equals(u.getCentroSalud());
+			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && centro.equals(u.getCentroSalud());
 		}
 		return dev;
 	}

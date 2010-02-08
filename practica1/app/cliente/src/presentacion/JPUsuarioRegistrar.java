@@ -247,7 +247,7 @@ public class JPUsuarioRegistrar extends JPBase {
 	private void btnCrearUsuarioActionPerformed(ActionEvent evt) {
 		Usuario usu = null;
 		TipoMedico tipo = null;
-		boolean esMedico = false;
+		boolean esMedico = false;		
 		
 		try {
 			
@@ -292,7 +292,6 @@ public class JPUsuarioRegistrar extends JPBase {
 				else if (lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA))
 					tipo = new Especialista(txtEspecialidad.getText());
 				((Medico)usu).setTipoMedico(tipo);
-				// TODO: mostrar la ventana para crear el calendario y asignarselo al medico
 				JDialog calendario = new JDialog();
 				jPanelConsultarCalendario = new JPCalendarioConsultar(getFrame(), getControlador(), this, txtDNI.getText());
 				calendario.add(jPanelConsultarCalendario);
@@ -300,17 +299,14 @@ public class JPUsuarioRegistrar extends JPBase {
 				calendario.setTitle("Configuración de calendario");
 				calendario.setBounds(jPanelConsultarCalendario.getBounds());
 				calendario.setVisible(true);
-				// Cuando se cierre la ventana...
+				// Cuando se cierre la ventana, se establece el calendario del medico.
 				((Medico)usu).setCalendario(periodos);
+				// Si se ha establecido correctamente su calendario, se puede crear el médico
+				if (periodos.size() == 0) 
+					throw new CalendarioNoCreadoException();
+				
 			}
-			if (periodos.size() != 0) {
-				// Solicitamos al servidor que se cree el usuario
-				getControlador().crearUsuario(usu);
-			}
-			else {
-				throw new CalendarioNoCreadoException();
-			}
-			
+			getControlador().crearUsuario(usu);
 			// El usuario se ha creado correctamente
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido dado de alta en el sistema.");
 			limpiarCamposRegistro();
