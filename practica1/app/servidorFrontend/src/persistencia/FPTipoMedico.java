@@ -27,7 +27,7 @@ public class FPTipoMedico {
 	
 	private static final String COL_DNI_TIPO_MEDICO = "dniMedico";
 	private static final String COL_TIPO_MEDICO = "tipo";
-	private static final String COL_DNI = "dni";
+	private static final String COL_DNI = "nif";
 	private static final String COL_ROL = "rol";
 	private static final String COL_ESPECIALIDAD = "especialidad";
 	

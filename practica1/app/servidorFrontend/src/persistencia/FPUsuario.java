@@ -22,7 +22,7 @@ public class FPUsuario {
 	
 	private static final String TABLA_USUARIOS = "usuarios";
 
-	private static final String COL_DNI = "dni";
+	private static final String COL_DNI = "nif";
 	private static final String COL_LOGIN = "login";
 	private static final String COL_PASSWORD = "password";
 	private static final String COL_ROL = "rol";
