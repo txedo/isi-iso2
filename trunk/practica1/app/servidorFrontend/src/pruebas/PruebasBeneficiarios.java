@@ -102,9 +102,9 @@ public class PruebasBeneficiarios extends TestCase {
 			admin1 = new Administrador("55667788", "admin", "nimda", "María", "L. F.");
 			citador1.setCentroSalud(centro1);
 			admin1.setCentroSalud(centro1);
-			bene1 = new Beneficiario("12345678", "123456-ab", "bene1", "asdfg", fecha1, "alguno", "uno@gmail.com", 123456789, 987654321);
+			bene1 = new Beneficiario("12345678", "123456-ab", "bene1", "asdfg", fecha1, "Calle: asfas Nº: 8 Piso: 1º Letra: A Ciudad: sfsf Provincia: afas CP: 13500", "uno@gmail.com", 123456789, 987654321);
 			bene1.setMedicoAsignado(medico2);
-			bene2 = new Beneficiario("46208746", "164028-de", "bene2", "asadasdfg", fecha2, "algun otro", "dos@gmail.com", 923456789, 687654322);
+			bene2 = new Beneficiario("46208746", "164028-de", "bene2", "asadasdfg", fecha2, "Calle: asfas Nº: 8 Piso: 1º Letra: A Ciudad: sfsf Provincia: afas CP: 13500", "dos@gmail.com", 923456789, 687654322);
 			bene2.setMedicoAsignado(medico1);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);
@@ -118,6 +118,7 @@ public class PruebasBeneficiarios extends TestCase {
 			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), admin1.getPassword());
 			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), medico1.getPassword());
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
@@ -187,7 +188,7 @@ public class PruebasBeneficiarios extends TestCase {
 		Beneficiario bene, beneGet;
 		try {
 			// Creamos un nuevo beneficiario con la sesión del administrador
-			bene = new Beneficiario("6666666", "14124as-cd", "beNuevo", "nuevos", fecha2, "calle de la luna", "luna@hotmail.com", 34698124, 67912312);
+			bene = new Beneficiario("6666666", "14124as-cd", "beNuevo", "nuevos", fecha2, "Calle: asfas Nº: 8 Piso: 1º Letra: A Ciudad: sfsf Provincia: afas CP: 13500", "luna@hotmail.com", 34698124, 67912312);
 			GestorBeneficiarios.crearBeneficiario(sesionAdmin.getId(), bene);
 			// Comprobamos que el beneficiario se ha creado correctamente
 			beneGet = GestorBeneficiarios.consultarBeneficiario(sesionAdmin.getId(), bene.getNif());
@@ -196,13 +197,12 @@ public class PruebasBeneficiarios extends TestCase {
 			assertNotNull(beneGet.getMedicoAsignado());
 			assertEquals(FPTipoMedico.consultarTipo(beneGet.getMedicoAsignado()), (new Pediatra()).getClass().getSimpleName());
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 		
 		try {
 			// Intentamos crear un nuevo beneficiario con el rol de medico
-			bene = new Beneficiario("77777777", "131716-co", "error", "error", fecha1, "", "", 123456789, 987654321);
+			bene = new Beneficiario("77777777", "131716-co", "error", "error", fecha1, "Calle: asfas Nº: 8 Piso: 1º Letra: A Ciudad: sfsf Provincia: afas CP: 13500", "", 123456789, 987654321);
 			GestorBeneficiarios.crearBeneficiario(sesionMedico.getId(), bene);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
