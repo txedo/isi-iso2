@@ -16,8 +16,8 @@ public class Beneficiario implements Serializable {
 	private String apellidos;
 	private String domicilio;
 	private String correo;
-	private int telefono;
-	private int movil;
+	private String telefono;
+	private String movil;
 	private Date fechaNacimiento;
 	private Medico medicoAsignado;	
 
@@ -26,7 +26,7 @@ public class Beneficiario implements Serializable {
 	
 	public Beneficiario(String nif, String nss, String nombre,
 			String apellidos, Date fecha, String domicilio, String correo,
-			int telefono, int movil) {
+			String telefono, String movil) {
 		this.nif = nif;
 		this.nss = nss;
 		this.nombre = nombre;
@@ -87,19 +87,19 @@ public class Beneficiario implements Serializable {
 		this.correo = correo;
 	}
 
-	public int getTelefono() {
+	public String getTelefono() {
 		return telefono;
 	}
 
-	public void setTelefono(int telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 
-	public int getMovil() {
+	public String getMovil() {
 		return movil;
 	}
 
-	public void setMovil(int movil) {
+	public void setMovil(String movil) {
 		this.movil = movil;
 	}
 
@@ -150,4 +150,8 @@ public class Beneficiario implements Serializable {
 		return dev;
 	}
 	
+	public String toString() {
+		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", M:" + medicoAsignado.getDni(); 
+	}
+
 }

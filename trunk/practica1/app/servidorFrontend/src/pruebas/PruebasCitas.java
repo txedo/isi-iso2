@@ -144,9 +144,9 @@ public class PruebasCitas extends TestCase{
 			medico3.getCalendario().add(periodo3);
 			usu1 = new Administrador("04328172", "usuario", "f", "O", "C");
 			usu1.setCentroSalud(centro1);
-			bene1 = new Beneficiario("12345679", "123456-ab", "bene1", "asdfg", fecha1, "alguno", "uno@gmail.com", 123456789, 987654321);
+			bene1 = new Beneficiario("12345679", "123456-ab", "bene1", "asdfg", fecha1, "alguno", "uno@gmail.com", "123456789", "987654321");
 			bene1.setMedicoAsignado(medico2);
-			bene2 = new Beneficiario("46208746", "164028-de", "bene2", "asadasdfg", fecha2, "algun otro", "dos@gmail.com", 923456789, 687654322);
+			bene2 = new Beneficiario("46208746", "164028-de", "bene2", "asadasdfg", fecha2, "algun otro", "dos@gmail.com", "923456789", "687654322");
 			bene2.setMedicoAsignado(medico1);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);
