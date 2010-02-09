@@ -7,4 +7,9 @@ public class PisoDomicilioIncorrectoException extends Exception {
 	public PisoDomicilioIncorrectoException() {
 		super("El piso del domicilio debe ser un número entero.");
 	}
+	
+	public PisoDomicilioIncorrectoException(String mensaje) {
+		super(mensaje);
+	}
+	
 }

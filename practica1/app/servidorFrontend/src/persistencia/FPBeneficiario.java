@@ -69,8 +69,8 @@ public class FPBeneficiario {
 			bene.setDomicilio(bene.getDomicilio() + " CP: " + datos.getString(COL_CP));			
 			bene.setCorreo(datos.getString(COL_CORREO));
 			bene.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
-			bene.setTelefono(datos.getInt(COL_TELEFONO));
-			bene.setMovil(datos.getInt(COL_MOVIL));
+			bene.setTelefono(datos.getString(COL_TELEFONO));
+			bene.setMovil(datos.getString(COL_MOVIL));
 			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 			bene.setMedicoAsignado(medico);
 		}
@@ -111,8 +111,8 @@ public class FPBeneficiario {
 			bene.setDomicilio(bene.getDomicilio() + " CP: " + datos.getString(COL_CP));			
 			bene.setCorreo(datos.getString(COL_CORREO));
 			bene.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
-			bene.setTelefono(datos.getInt(COL_TELEFONO));
-			bene.setMovil(datos.getInt(COL_MOVIL));
+			bene.setTelefono(datos.getString(COL_TELEFONO));
+			bene.setMovil(datos.getString(COL_MOVIL));
 			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 			bene.setMedicoAsignado(medico);
 		}

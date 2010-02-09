@@ -5,9 +5,10 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import excepciones.ApellidoIncorrectoException;
+import excepciones.CodigoPostalIncorrectoException;
 import excepciones.CadenaIncorrectaException;
 import excepciones.CadenaVaciaException;
-import excepciones.CiudadIncorrectaException;
+import excepciones.LocalidadIncorrectaException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.DomicilioIncorrectoException;
@@ -36,6 +37,7 @@ public class Validacion {
 
 	public static final int NIF_LONGITUD = 9;
 	public static final int NSS_LONGITUD = 12;
+	public static final int CP_LONGITUD = 5;
 	public static final int TELEFONO_LONGITUD = 9;
 	public static final int PUERTO_MINIMO = 1;
 	public static final int PUERTO_MAXIMO = 65535;
@@ -50,7 +52,7 @@ public class Validacion {
 			// Comprobamos que el ultimo caracter es una letra
 			if((nif.charAt(nif.length() - 1) >= 'A' && nif.charAt(nif.length() - 1) <= 'Z')
 			 || (nif.charAt(nif.length() - 1) >= 'a' && nif.charAt(nif.length() - 1) <= 'z')) {
-				// Comprobamos que los 8 primeros caracters son digitos
+				// Comprobamos que los 8 primeros caracteres son dígitos
 				for(int i = 0; i < NIF_LONGITUD-1 && bAux; i++) {
 					bAux = Character.isDigit(nif.charAt(i));
 				}
@@ -138,26 +140,56 @@ public class Validacion {
 			throw new DomicilioIncorrectoException();
 	}
 	
-	private static void comprobarLetra (String cadena) throws LetraIncorrectaException {
+	// Una letra sólo puede estar en el rango A - Z o a - z (sin contar la ñ)
+	private static void comprobarLetra(String cadena) throws LetraIncorrectaException {
 		boolean bCorrecto = false;
-		boolean bAux = true;
 		
-		// Debe ser un solo caracter y debe ser una letra
-		if (cadena.length() == 1)
-			if (Character.isLetter(cadena.charAt(0)))
-				bCorrecto = bAux;
+		if(cadena.length() == 1) {
+			if((cadena.toUpperCase().charAt(0) >= 'A' && cadena.toUpperCase().charAt(0) <= 'Z')) {
+				bCorrecto = true;
+			}
+		}
 
-		if (!bCorrecto)
+		if(!bCorrecto) {
 			throw new LetraIncorrectaException();
+		}
 	}
 	
-	public static void comprobarCiudad(String cadena) throws CiudadIncorrectaException {
+	public static void comprobarDomicilioCompleto(String domicilio, String numero, String piso, String puerta) throws DomicilioIncorrectoException, NumeroDomicilioIncorrectoException, PisoDomicilioIncorrectoException, PuertaDomicilioIncorrectoException {
+		comprobarDomicilio(domicilio);
+		if(numero.equals("")) {
+			// Si no se indica número tampoco se puede indicar piso y puerta
+			if(!piso.equals("")) {
+				throw new NumeroDomicilioIncorrectoException("El número del domicilio es obligatorio si se introduce la piso.");
+			} else if(!puerta.equals("")) {
+				throw new NumeroDomicilioIncorrectoException("El número del domicilio es obligatorio si se introduce la puerta.");
+			}
+		} else {
+			comprobarNumero(numero);
+			if(piso.equals("")) {
+				// Si no se indica piso tampoco se puede indicar puerta
+				if(!puerta.equals("")) {
+					throw new PisoDomicilioIncorrectoException("El piso del domicilio es obligatorio si se introduce la puerta.");
+				}
+			} else {
+				comprobarPiso(piso);
+				// Si se indica piso es obligatoria la puerta
+				if(puerta.equals("")) {
+					throw new PuertaDomicilioIncorrectoException("La puerta del domicilio es obligatoria si se introduce el piso.");
+				} else {
+					comprobarPuerta(puerta);
+				}
+			}
+		}
+	}
+	
+	public static void comprobarLocalidad(String cadena) throws LocalidadIncorrectaException {
 		try {
 			comprobarCadena(cadena);
 		} catch(CadenaIncorrectaException e) {
-			throw new CiudadIncorrectaException();
+			throw new LocalidadIncorrectaException();
 		} catch(CadenaVaciaException e) {
-			throw new CiudadIncorrectaException();
+			throw new LocalidadIncorrectaException();
 		}
 	}
 	
@@ -168,6 +200,24 @@ public class Validacion {
 			throw new ProvinciaIncorrectaException();
 		} catch(CadenaVaciaException e) {
 			throw new ProvinciaIncorrectaException();
+		}
+	}
+	
+	public static void comprobarCodigoPostal(String cp) throws CodigoPostalIncorrectoException {
+		boolean bCorrecto = false;
+		boolean bAux = true;
+		
+		// Comprobamos la longitud del CP
+		if(cp.length() == CP_LONGITUD) {
+			// Comprobamos que los 5 caracteres son dígitos
+			for(int i = 0; i < CP_LONGITUD && bAux; i++) {
+				bAux = Character.isDigit(cp.charAt(i));
+			}
+			bCorrecto = bAux;
+		}
+		
+		if(!bCorrecto) {
+			throw new CodigoPostalIncorrectoException();
 		}
 	}
 
@@ -191,30 +241,26 @@ public class Validacion {
 		boolean bCorrecto = false;
 		boolean bAux = true;
 		
-		if (correo.length() > 0) {
-			// Obtenemos la posicion del caracter @
-			int indexArroba = correo.indexOf("@");
-			// Obtenemos la posicion del "." separador de dominio. Debe ir despues de la @ y no consecutivo
-			int indexPunto = correo.indexOf(".", indexArroba+2);
-			
-			// El primer y ultimo caracter debe ser una letra
-			if (Character.isLetter(correo.charAt(0)) && Character.isLetter(correo.charAt(correo.length()-1))) {
-				// Si el correo tiene arroba y punto (despues de la arroba)
-				if (indexArroba != -1 && indexPunto != -1) {
-					// El resto de caracteres NO pueden ser espacios
-					for (int i = 1; i < correo.length()-1 && bAux; i++) {
-						bAux = !Character.isWhitespace(correo.charAt(i));
-					}
-					bCorrecto = bAux;
+		// Obtenemos la posicion del caracter @
+		int indexArroba = correo.indexOf("@");
+		// Obtenemos la posicion del "." separador de dominio. Debe ir despues de la @ y no consecutivo
+		int indexPunto = correo.indexOf(".", indexArroba+2);
+		
+		// El primer y ultimo caracter debe ser una letra
+		if (Character.isLetter(correo.charAt(0)) && Character.isLetter(correo.charAt(correo.length()-1))) {
+			// Si el correo tiene arroba y punto (despues de la arroba)
+			if (indexArroba != -1 && indexPunto != -1) {
+				// El resto de caracteres NO pueden ser espacios
+				for (int i = 1; i < correo.length()-1 && bAux; i++) {
+					bAux = !Character.isWhitespace(correo.charAt(i));
 				}
+				bCorrecto = bAux;
 			}
 		}
-		else {
-			// Admitimos que el correo sea nulo ya que es opcional
-			bCorrecto = true;
-		}
-		if (!bCorrecto)
+
+		if(!bCorrecto) {
 			throw new CorreoElectronicoIncorrectoException();
+		}
 	}
 	
 	private static boolean comprobarTelefono (String telefono, char primerDigito) {

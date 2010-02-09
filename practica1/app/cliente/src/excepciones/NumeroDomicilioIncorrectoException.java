@@ -7,4 +7,9 @@ public class NumeroDomicilioIncorrectoException extends Exception {
 	public NumeroDomicilioIncorrectoException () {
 		super("El número del domicilio debe ser un número entero.");
 	}
+	
+	public NumeroDomicilioIncorrectoException(String mensaje) {
+		super(mensaje);
+	}
+	
 }

@@ -3,16 +3,19 @@ package pruebas;
 import java.util.Date;
 import dominio.conocimiento.Validacion;
 import excepciones.ApellidoIncorrectoException;
+import excepciones.CodigoPostalIncorrectoException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.DomicilioIncorrectoException;
 import excepciones.FechaNacimientoIncorrectaException;
 import excepciones.IPInvalidaException;
+import excepciones.LocalidadIncorrectaException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.NombreIncorrectoException;
 import excepciones.NumeroDomicilioIncorrectoException;
 import excepciones.PisoDomicilioIncorrectoException;
+import excepciones.ProvinciaIncorrectaException;
 import excepciones.PuertaDomicilioIncorrectoException;
 import excepciones.PuertoInvalidoException;
 import excepciones.TelefonoFijoIncorrectoException;
@@ -292,6 +295,140 @@ public class PruebasValidacion extends TestCase {
 		}
 	}
 	
+	/** Pruebas de domicilios completos */
+	public void testDomiciliosCompletos() {
+		try {
+			// Probamos domicilios completos válidos
+			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "14", "5", "A");
+			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "14", "", "");
+			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "", "", "");
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Probamos un domicilio con puerta pero sin número
+			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "", "", "A");
+			fail("Se esperaba una excepción NumeroDomicilioIncorrectoException");
+		} catch(NumeroDomicilioIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NumeroDomicilioIncorrectoException");
+		}
+
+		try {
+			// Probamos un domicilio con piso pero sin número
+			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "", "2", "");
+			fail("Se esperaba una excepción NumeroDomicilioIncorrectoException");
+		} catch(NumeroDomicilioIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NumeroDomicilioIncorrectoException");
+		}
+
+		try {
+			// Probamos un domicilio con puerta pero sin piso
+			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "14", "", "B");
+			fail("Se esperaba una excepción PisoDomicilioIncorrectoException");
+		} catch(PisoDomicilioIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción PisoDomicilioIncorrectoException");
+		}
+
+		try {
+			// Probamos un domicilio con piso pero sin puerta
+			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "14", "2", "");
+			fail("Se esperaba una excepción PuertaDomicilioIncorrectoException");
+		} catch(PuertaDomicilioIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción PuertaDomicilioIncorrectoException");
+		}
+	}
+	
+	/** Pruebas de localidades */
+	public void testLocalidades() {
+		String[] invalidos, validos;
+		
+		try {
+			// Probamos localidades incorrectas
+			invalidos = new String[] { "", "  ", "1234", "Ciudad 12345", "**Madrid**", "Valencia  ", "  Valencia" };
+			for(String localidad : invalidos) {
+				try {
+					Validacion.comprobarLocalidad(localidad);
+					fail("La localidad '" + localidad + "' debería ser inválida.");
+				} catch(LocalidadIncorrectaException e) {
+				}
+			}
+			// Probamos localidades correctas
+			// TODO: ¿Deben soportarse ciudades con guiones, tipo "Aaaaa-bbbb"?
+			validos = new String[] { "Mérida", "Ciudad Real", "ÁÉÍÓÚ áéíóú ÑñÇç" };
+			for(String localidad : validos) {
+				try {
+					Validacion.comprobarLocalidad(localidad);
+				} catch(LocalidadIncorrectaException e) {
+					fail("La localidad '" + localidad + "' debería ser válida.");
+				}
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de códigos postales */
+	public void testCodigosPostales() {
+		String[] invalidos, validos;
+		
+		try {
+			// Probamos códigos postales incorrectos
+			invalidos = new String[] { "", "  ", "1234", "abc", "FGHIJ", "13000W", "**123", "18020  ", "  18020" };
+			for(String codigo : invalidos) {
+				try {
+					Validacion.comprobarCodigoPostal(codigo);
+					fail("El código postal '" + codigo + "' debería ser inválido.");
+				} catch(CodigoPostalIncorrectoException e) {
+				}
+			}
+			// Probamos códigos postales correctos
+			validos = new String[] { "13002", "98444", "00004" };
+			for(String codigo : validos) {
+				try {
+					Validacion.comprobarCodigoPostal(codigo);
+				} catch(CodigoPostalIncorrectoException e) {
+					fail("El código postal '" + codigo + "' debería ser válido.");
+				}
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de provincias */
+	public void testProvincias() {
+		String[] invalidos, validos;
+		
+		try {
+			// Probamos provincias incorrectas
+			invalidos = new String[] { "", "  ", "1234", "Provincia 12345", "**Badajoz**", "Sevilla  ", "  Sevilla" };
+			for(String provincia : invalidos) {
+				try {
+					Validacion.comprobarProvincia(provincia);
+					fail("La provincia '" + provincia + "' debería ser inválida.");
+				} catch(ProvinciaIncorrectaException e) {
+				}
+			}
+			// Probamos provincias correctas
+			// TODO: ¿Deben soportarse provincias con guiones, tipo "Aaaaa-bbbb"?
+			validos = new String[] { "Barcelona", "Ciudad Real", "ÁÉÍÓÚ áéíóú ÑñÇç" };
+			for(String provincia : validos) {
+				try {
+					Validacion.comprobarProvincia(provincia);
+				} catch(ProvinciaIncorrectaException e) {
+					fail("La provincia '" + provincia + "' debería ser válida.");
+				}
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
 	/** Pruebas de correos electrónicos */
 	public void testCorreosElectronicos() {
 		String[] invalidos, validos;
@@ -299,7 +436,7 @@ public class PruebasValidacion extends TestCase {
 		try {
 			// Probamos correos electrónicos incorrectos
 			// TODO: No debe constar sólo de espacios
-			invalidos = new String[] { "", "  ", "1234", "abcd", "pedro@novale", "pedro.garcia@novale", "pedro.com", "maria@yahoo.es  ", "  maria@yahoo.es" };
+			invalidos = new String[] { "", "  ", "1234", "abcd", "pedro@novale", "pedro.garcia@novale", "pedro.com", "a@.c", "maria@yahoo.es  ", "  maria@yahoo.es" };
 			for(String correo : invalidos) {
 				try {
 					Validacion.comprobarCorreoElectronico(correo);
