@@ -14,7 +14,7 @@ public class Beneficiario implements Serializable {
 	private String nss;
 	private String nombre;
 	private String apellidos;
-	private String domicilio;
+	private Direccion direccion;
 	private String correo;
 	private String telefono;
 	private String movil;
@@ -25,13 +25,13 @@ public class Beneficiario implements Serializable {
 	}
 	
 	public Beneficiario(String nif, String nss, String nombre,
-			String apellidos, Date fecha, String domicilio, String correo,
+			String apellidos, Date fecha, Direccion direccion, String correo,
 			String telefono, String movil) {
 		this.nif = nif;
 		this.nss = nss;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
-		this.domicilio = domicilio;
+		this.direccion = direccion;
 		this.correo = correo;
 		this.telefono = telefono;
 		this.movil = movil;
@@ -69,14 +69,6 @@ public class Beneficiario implements Serializable {
 
 	public void setApellidos(String apellidos) {
 		this.apellidos = apellidos;
-	}
-
-	public String getDomicilio() {
-		return domicilio;
-	}
-
-	public void setDomicilio(String domicilio) {
-		this.domicilio = domicilio;
 	}
 
 	public String getCorreo() {
@@ -119,6 +111,14 @@ public class Beneficiario implements Serializable {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 	
+	public Direccion getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(Direccion direccion) {
+		this.direccion = direccion;
+	}
+	
 	public int getEdad() {
 		long msInicial, msFinal, diferencia;
 		double dias;
@@ -145,13 +145,14 @@ public class Beneficiario implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Beneficiario) {
 			b = (Beneficiario)o;
-			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && domicilio.equals(b.getDomicilio()) && correo.equals(b.getCorreo()) && telefono == b.getTelefono() && movil == b.getMovil() && medicoAsignado.equals(b.getMedicoAsignado());
+			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && direccion.equals(b.getDireccion()) && correo.equals(b.getCorreo()) && telefono == b.getTelefono() && movil == b.getMovil() && medicoAsignado.equals(b.getMedicoAsignado());
 		}
 		return dev;
 	}
+
 	
 	public String toString() {
-		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", M:" + medicoAsignado.getDni(); 
+		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", M:" + medicoAsignado.getDni(); 
 	}
 
 }

@@ -13,6 +13,7 @@ import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
@@ -30,7 +31,7 @@ public class FPUsuario {
 	private static final String COL_APELLIDOS = "apellidos";
 	private static final String COL_ID_CENTRO = "idCentro";
 
-	public static Usuario consultar(String dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Usuario consultar(String dni) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		ArrayList<PeriodoTrabajo> calendario;
@@ -82,7 +83,7 @@ public class FPUsuario {
 		return usuario;
 	}
 	
-	public static Usuario consultar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Usuario consultar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		ArrayList<PeriodoTrabajo> calendario;

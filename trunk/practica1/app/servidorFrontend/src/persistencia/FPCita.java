@@ -12,6 +12,7 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.Medico;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
@@ -26,7 +27,7 @@ public class FPCita {
 	private static final String COL_NIF_BENEFICIARIO = "nifBeneficiario";
 	private static final String COL_DNI_MEDICO = "dniMedico";
 	
-	public static Vector<Cita> consultarPorBeneficiario(String dniBeneficiario) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Vector<Cita> consultarPorBeneficiario(String dniBeneficiario) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<Cita> citas = new Vector<Cita>();
@@ -66,7 +67,7 @@ public class FPCita {
 	}
 	
 
-	public static Vector<Cita> consultarPorMedico(String dniMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Vector<Cita> consultarPorMedico(String dniMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<Cita> citas = new Vector<Cita>();

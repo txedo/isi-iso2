@@ -8,6 +8,7 @@ import persistencia.Utilidades;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
@@ -21,7 +22,7 @@ import excepciones.UsuarioYaExistenteException;
 public class GestorUsuarios {
 
 	// Método para consultar los datos de un usuario
-	public static Usuario consultarUsuario(long idSesion, String dni) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
+	public static Usuario consultarUsuario(long idSesion, String dni) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
@@ -43,7 +44,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para añadir un nuevo usuario al sistema
-	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
+	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		CentroSalud centro;
 		Usuario u = null;
 		
@@ -84,7 +85,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para modificar un usuario existente del sistema
-	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
+	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
 			throw new NullPointerException("El usuario que se va a modificar no puede ser nulo.");
@@ -105,7 +106,7 @@ public class GestorUsuarios {
 	}
 
 	// Método para eliminar un usuario del sistema
-	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException {
+	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
 			throw new NullPointerException("El usuario que se va a eliminar no puede ser nulo.");

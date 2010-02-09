@@ -14,6 +14,7 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
@@ -324,6 +325,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 	private void btnCrearActionPerformed(ActionEvent evt) {
 		Beneficiario beneficiario;
 		Medico medico;
+		Direccion dir;
 		
 		try {
 			
@@ -364,18 +366,18 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			beneficiario.setNombre(txtNombre.getText().trim());
 			beneficiario.setApellidos(txtApellidos.getText().trim());
 			beneficiario.setFechaNacimiento(dtcFechaNacimiento.getDate());
-			beneficiario.setDomicilio("Calle: " + txtDomicilio.getText().trim());
-			if(campoVacio(txtNumero))
-				beneficiario.setDomicilio(beneficiario.getDomicilio()+ " s/n");
+			dir = new Direccion();
+			dir.setDomicilio(txtDomicilio.getText());
+			if (!txtNumero.getText().equals(""))
+				dir.setNumero(txtNumero.getText());
 			else
-				beneficiario.setDomicilio(beneficiario.getDomicilio()+ " Nº: " + txtNumero.getText().trim());
-			if(!campoVacio(txtPiso)) {
-				beneficiario.setDomicilio(beneficiario.getDomicilio() + " Piso: " + txtPiso.getText().trim() + "º");
-			}
-			if(!campoVacio(txtPuerta)) {
-				beneficiario.setDomicilio(beneficiario.getDomicilio() + " Letra: " + txtPuerta.getText().trim().toUpperCase());
-			}
-			beneficiario.setDomicilio(beneficiario.getDomicilio() + " Ciudad: " + txtLocalidad.getText().trim() + " Provincia: " + txtProvincia.getText().trim() + " CP: "+ txtCP.getText());
+				dir.setNumero("s/n");
+			dir.setPiso(txtPiso.getText());
+			dir.setPuerta(txtPuerta.getText());
+			dir.setCiudad(txtLocalidad.getText());
+			dir.setProvincia(txtProvincia.getText());
+			dir.setCp(Integer.parseInt(txtCP.getText()));
+			beneficiario.setDireccion(dir);
 			beneficiario.setCorreo(txtCorreoElectronico.getText().trim());
 			beneficiario.setTelefono(txtTelefonoFijo.getText().trim());
 			beneficiario.setMovil(txtTelefonoMovil.getText().trim());
@@ -388,7 +390,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			
 			// Mostramos un mensaje indicando que el beneficiario se ha
 			// creado correctamente y cuál es el médico asignado
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema y se le\nha asignado el siguiente médico y centro de salud:\n " + medico.getNombre() + " " + medico.getApellidos() + "\n " + medico.getCentroSalud().getNombre() + "; " + medico.getCentroSalud().getDireccion());
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema y se le\nha asignado el siguiente médico y centro de salud:\n " + medico.getNombre() + " " + medico.getApellidos() + "\n " + medico.getCentroSalud().getNombre());
 			limpiarCamposRegistro();
 			
 		} catch(BeneficiarioYaExistenteException e) {
@@ -492,6 +494,9 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		txtCorreoElectronico.setText("");
 		txtTelefonoFijo.setText("");
 		txtTelefonoMovil.setText("");
+		txtLocalidad.setText("");
+		txtCP.setText("");
+		txtProvincia.setText("");
 	}
 	
 	//$hide<<$

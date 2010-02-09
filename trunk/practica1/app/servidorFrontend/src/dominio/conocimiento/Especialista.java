@@ -18,7 +18,7 @@ public class Especialista extends TipoMedico implements Serializable{
 	}
 
 	public CategoriasMedico getCategoria() {
-		return CategoriasMedico.Cabecera;
+		return CategoriasMedico.Especialista;
 	}
 	
 	public String getEspecialidad() {

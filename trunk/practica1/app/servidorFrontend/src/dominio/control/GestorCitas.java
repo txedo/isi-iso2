@@ -19,6 +19,7 @@ import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.CitaNoValidaException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -37,7 +38,7 @@ import persistencia.FPVolante;
 public class GestorCitas {
 
 	// Método para obtener todas las citas de un beneficiario
-	public static Vector<Cita> consultarCitas(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+	public static Vector<Cita> consultarCitas(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionIncorrectaException {
 		Vector<Cita> citas;
 		
 		// Comprobamos los parámetros pasados
@@ -58,7 +59,7 @@ public class GestorCitas {
 	}
 	
 	// Método para pedir una nueva cita para un cierto beneficiario y médico
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException, CitaNoValidaException, NullPointerException {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, FechaNoValidaException, CitaNoValidaException, NullPointerException, DireccionIncorrectaException {
 		Vector<Cita> citas;
 		Calendar hora;
 		Usuario usuario;
@@ -135,7 +136,7 @@ public class GestorCitas {
 	}
 	
 	// Método para pedir una nueva cita para un cierto beneficiario a partir de un volante
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException, FechaNoValidaException, NullPointerException {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException, FechaNoValidaException, NullPointerException, DireccionIncorrectaException {
 		Vector<Cita> citas;
 		Calendar hora;
 		Medico medico;
@@ -221,7 +222,7 @@ public class GestorCitas {
 	}
 	
 	// Método para emitir un volante para un beneficiario para un especialista
-	public static long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException {
+	public static long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		Usuario usuario;
 		Volante volante;
 		
@@ -281,7 +282,7 @@ public class GestorCitas {
 
 	// Método que devuelve las horas de cada día de la semana
 	// en las que un médico puede pasar una cita
-	public static Hashtable<DiaSemana, Vector<String>> consultarHorasCitas(long idSesion, String dniMedico) throws SQLException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException, NullPointerException {
+	public static Hashtable<DiaSemana, Vector<String>> consultarHorasCitas(long idSesion, String dniMedico) throws SQLException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException, NullPointerException, DireccionIncorrectaException {
 		Hashtable<DiaSemana, Vector<String>> horasDia;
 		Usuario usuario;
 		Medico medico;
@@ -316,7 +317,7 @@ public class GestorCitas {
 	
 	// Método para obtener las citas que tiene un médico en cada día
 	@SuppressWarnings("deprecation")
-	public static Hashtable<Date, Vector<String>> consultarCitasMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, NullPointerException {
+	public static Hashtable<Date, Vector<String>> consultarCitasMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, NullPointerException, DireccionIncorrectaException {
 		Hashtable<Date, Vector<String>> citasOcupadas;
 		Vector<Cita> citas;
 		Calendar cal;
@@ -365,7 +366,7 @@ public class GestorCitas {
 
 	// Método para obtener los días en los que un médico podría pasar
 	// consulta pero ya tiene citas en todas las horas posibles
-	public static Vector<Date> consultarDiasCompletos(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, CentroSaludIncorrectoException, MedicoInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException, NullPointerException {
+	public static Vector<Date> consultarDiasCompletos(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, CentroSaludIncorrectoException, MedicoInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		Hashtable<Date, Integer> citasPorFecha;
 		Hashtable<DiaSemana, Integer> citasPorDiaSemana;
 		Vector<Date> dias;

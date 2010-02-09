@@ -12,6 +12,7 @@ import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -28,7 +29,7 @@ import excepciones.UsuarioYaExistenteException;
 public class GestorMedicos {
 
 	// Método para consultar los datos de un médico
-	public static Medico consultarMedico(long idSesion, String dni) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
+	public static Medico consultarMedico(long idSesion, String dni) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
@@ -55,7 +56,7 @@ public class GestorMedicos {
 	}
 	
 	// Método para añadir un nuevo médico al sistema
-	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
+	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
 			throw new NullPointerException("El médico que se va a crear no puede ser nulo.");
@@ -73,7 +74,7 @@ public class GestorMedicos {
 	}
 	
 	// Método para modificar un médico existente del sistema
-	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
+	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
 			throw new NullPointerException("El médico que se va a modificar no puede ser nulo.");
@@ -91,7 +92,7 @@ public class GestorMedicos {
 	}
 	
 	// Método para eliminar un médico del sistema
-	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException {
+	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
 			throw new NullPointerException("El médico que se va a eliminar no puede ser nulo.");
@@ -110,7 +111,7 @@ public class GestorMedicos {
 	
 	//TODO:Los siguientes métodos no se han revisado!
 	
-	public static void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Medico sustituto) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, SustitucionInvalidaException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException {
+	public static void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Medico sustituto) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, SustitucionInvalidaException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		ArrayList<Sustitucion> sustituciones;
 		Sustitucion sustitucion;
 		
@@ -168,7 +169,7 @@ public class GestorMedicos {
 	}
 	
 	// TODO: ¿esto qué hace realmente?
-	public static ArrayList<Medico> obtenerMedicos(long idSesion, String tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException {
+	public static ArrayList<Medico> obtenerMedicos(long idSesion, String tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, DireccionIncorrectaException {
 		ArrayList<Medico> medicos = null;
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
