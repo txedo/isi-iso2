@@ -17,6 +17,7 @@ import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.UsuarioIncorrectoException;
 
@@ -57,7 +58,7 @@ public class FPTipoMedico {
 		return tipo;
 	}
 	
-	public static Medico consultarTipoMedicoAleatorio(TipoMedico tipoMedico) throws SQLException, CentroSaludIncorrectoException, UsuarioIncorrectoException {
+	public static Medico consultarTipoMedicoAleatorio(TipoMedico tipoMedico) throws SQLException, CentroSaludIncorrectoException, UsuarioIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Medico medico = null;
@@ -106,7 +107,7 @@ public class FPTipoMedico {
 		
 	}
 	
-	public static ArrayList<Medico> consultarTodo (String tipoMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException {
+	public static ArrayList<Medico> consultarTodo (String tipoMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, MedicoInexistenteException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		ArrayList<Medico> medicos;

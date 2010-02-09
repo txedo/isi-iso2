@@ -7,6 +7,7 @@ import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Sustitucion;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
@@ -24,7 +25,7 @@ public class FPSustitucion {
 	private static final String COL_DNI_MEDICO = "dniMedico";
 	private static final String COL_DNI_SUSTITUTO = "dniSustituto";
 	
-	public static ArrayList<Sustitucion> consultarMedico(String dniMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static ArrayList<Sustitucion> consultarMedico(String dniMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Medico medico, sustituto;
@@ -53,7 +54,7 @@ public class FPSustitucion {
 		return lista;
 	}
 	
-	public static ArrayList<Sustitucion> consultarSustituto(String dniSustituto) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static ArrayList<Sustitucion> consultarSustituto(String dniSustituto) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Medico medico, sustituto;

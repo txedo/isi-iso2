@@ -15,6 +15,7 @@ import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
+import dominio.conocimiento.Direccion;
 import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -38,6 +39,7 @@ public class PruebasPersistencia extends TestCase {
 	private CentroSalud centro1, centro2, centro3;
 	private EntradaLog entrada1, entrada2, entrada3;
 	private Medico medico1, medico1Pass, medico2, medico2Pass;
+	private Direccion dir1;
 	private Citador citador1, citador1Pass, citador2, citador2Pass;
 	private Administrador administrador1, administrador1Pass;
 	private Beneficiario beneficiario1, beneficiario2, beneficiario3;
@@ -78,9 +80,10 @@ public class PruebasPersistencia extends TestCase {
 			conexionF = new ConexionBDFrontend();
 			GestorConexionesBD.ponerConexion(conexionF);
 			// Creamos objetos de prueba
-			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
-			centro2 = new CentroSalud("Centro B", null);
-			centro3 = new CentroSalud("Centro C", "Otra calle");
+			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
+			centro1 = new CentroSalud("Centro A", dir1);
+			centro2 = new CentroSalud("Centro B", dir1);
+			centro3 = new CentroSalud("Centro C", dir1);
 			entrada1 = new EntradaLog("juan", new Timestamp(109, 11, 1, 10, 10, 10, 0), "create", "Entrada de prueba 1.");
 			entrada2 = new EntradaLog("luis", new Timestamp(109, 5, 25, 7, 30, 0, 0), "update", "Entrada de prueba 2.");
 			entrada3 = new EntradaLog("mal", new Timestamp(109, 9, 10, 8, 0, 0, 0), "mal", "Entrada con errores.");
@@ -96,9 +99,9 @@ public class PruebasPersistencia extends TestCase {
 			administrador1.setCentroSalud(centro1);
 			periodo1 = new PeriodoTrabajo(10, 12, DiaSemana.Lunes);
 			periodo2 = new PeriodoTrabajo(16, 20, DiaSemana.Jueves);
-			beneficiario1 = new Beneficiario("11223344W", "121212454545", "Ángel", "L. A.", new Date(1985 - 1900, 4, 1), "Calle Ninguna, 10", "angel129@gmail.com", "900111222", "600111222");
-			beneficiario2 = new Beneficiario("88776655R", "444444444444", "José", "R. S.", new Date(1990 - 1900, 8, 20), "Calle Ninguna, 11", "pepepepe@otro.com", "900123123", "600123123");
-			beneficiario3 = new Beneficiario("91839184P", "888111111888", "Alicia", "S. L.", new Date(1945 - 1900, 1, 17), "Calle Ninguna, 12", "ali45@yahoo.es", "900455455", "600455455");
+			beneficiario1 = new Beneficiario("11223344W", "121212454545", "Ángel", "L. A.", new Date(1985 - 1900, 4, 1), dir1, "angel129@gmail.com", "900111222", "600111222");
+			beneficiario2 = new Beneficiario("88776655R", "444444444444", "José", "R. S.", new Date(1990 - 1900, 8, 20), dir1, "pepepepe@otro.com", "900123123", "600123123");
+			beneficiario3 = new Beneficiario("91839184P", "888111111888", "Alicia", "S. L.", new Date(1945 - 1900, 1, 17), dir1, "ali45@yahoo.es", "900455455", "600455455");
 			beneficiario1.setMedicoAsignado(medico1);
 			beneficiario2.setMedicoAsignado(medico2);
 			beneficiario3.setMedicoAsignado(medico2);
@@ -135,9 +138,9 @@ public class PruebasPersistencia extends TestCase {
 			administrador1Pass.setCentroSalud(centro1);
 			sustitucion1 = new Sustitucion(new Date(2009 - 1900, 11, 1), 10, 14, medico1Pass, medico2Pass);
 			sustitucion2 = new Sustitucion(new Date(2009 - 1900, 11, 2), 9, 12, medico1Pass, medico2Pass);
-			beneficiario1Pass = new Beneficiario("11223344W", "121212454545", "Ángel", "L. A.", new Date(1985 - 1900, 4, 1), "Calle Ninguna, 10", "angel129@gmail.com", "900111222", "600111222");
-			beneficiario2Pass = new Beneficiario("88776655R", "444444444444", "José", "R. S.", new Date(1990 - 1900, 8, 20), "Calle Ninguna, 11", "pepepepe@otro.com", "900123123", "600123123");
-			beneficiario3Pass = new Beneficiario("91839184P", "888111111888", "Alicia", "S. L.", new Date(1945 - 1900, 1, 17), "Calle Ninguna, 12", "ali45@yahoo.es", "900455455", "600455455");
+			beneficiario1Pass = new Beneficiario("11223344W", "121212454545", "Ángel", "L. A.", new Date(1985 - 1900, 4, 1), dir1, "angel129@gmail.com", "900111222", "600111222");
+			beneficiario2Pass = new Beneficiario("88776655R", "444444444444", "José", "R. S.", new Date(1990 - 1900, 8, 20), dir1, "pepepepe@otro.com", "900123123", "600123123");
+			beneficiario3Pass = new Beneficiario("91839184P", "888111111888", "Alicia", "S. L.", new Date(1945 - 1900, 1, 17), dir1, "ali45@yahoo.es", "900455455", "600455455");
 			beneficiario1Pass.setMedicoAsignado(medico1Pass);
 			beneficiario2Pass.setMedicoAsignado(medico2Pass);
 			beneficiario3Pass.setMedicoAsignado(medico2Pass);
@@ -184,16 +187,7 @@ public class PruebasPersistencia extends TestCase {
 		} catch(Exception e) {
 			fail(e.toString());
 		}
-		
-		try {
-			// Insertamos un nuevo centro con errores
-			FPCentroSalud.insertar(centro2);
-			fail("Se esperaba una excepción SQLException");
-		} catch(SQLException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción SQLException");
-		}
-		
+				
 		try {
 			// Intentamos insertar el mismo centro para ver si falla
 			// (no puede haber dos centros con el mismo nombre)

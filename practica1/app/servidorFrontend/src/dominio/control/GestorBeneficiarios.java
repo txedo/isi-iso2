@@ -16,6 +16,7 @@ import persistencia.Utilidades;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
@@ -29,7 +30,7 @@ public class GestorBeneficiarios {
 	private static final int EDAD_PEDIATRA = 14;
 	
 	// Método para obtener los datos de un beneficiario consultando por NIF
-	public static Beneficiario consultarBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+	public static Beneficiario consultarBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionIncorrectaException {
 		Beneficiario beneficiario;
 		
 		// Comprobamos los parámetros pasados
@@ -51,7 +52,7 @@ public class GestorBeneficiarios {
 	}
 	
 	// Método para obtener los datos de un beneficiario consultando por NSS
-	public static Beneficiario consultarBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+	public static Beneficiario consultarBeneficiarioPorNSS(long idSesion, String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionIncorrectaException {
 		Beneficiario beneficiario;
 
 		// Comprobamos los parámetros pasados
@@ -73,7 +74,7 @@ public class GestorBeneficiarios {
 	}
 	
 	// Método para registrar un nuevo beneficiario en el sistema
-	public static void crearBeneficiario(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException {
+	public static void crearBeneficiario(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionIncorrectaException {
 		Medico medico;
 		
 		// Comprobamos los parámetros pasados
@@ -122,7 +123,7 @@ public class GestorBeneficiarios {
 	}
 	
 	// Método para modificar un beneficiario existente en el sistema
-	public static void modificarBeneficiario(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException {
+	public static void modificarBeneficiario(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		// Comprobamos los parámetros pasados
 		if(beneficiario == null) {
 			throw new NullPointerException("El beneficiario que se va a modificar no puede ser nulo.");
@@ -137,7 +138,7 @@ public class GestorBeneficiarios {
 		FPBeneficiario.modificar(beneficiario);
 	}
 	
-	private static void comprobarMedicoBeneficiario(Beneficiario beneficiario) throws SQLException, CentroSaludIncorrectoException, UsuarioIncorrectoException {
+	private static void comprobarMedicoBeneficiario(Beneficiario beneficiario) throws SQLException, CentroSaludIncorrectoException, UsuarioIncorrectoException, DireccionIncorrectaException {
 		Medico medico;
 		
 		// Si el beneficiario tiene más de 14 años y tenía asignado un

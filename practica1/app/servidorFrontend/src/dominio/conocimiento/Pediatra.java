@@ -11,7 +11,7 @@ public class Pediatra extends TipoMedico implements Serializable {
 	}
 	
 	public CategoriasMedico getCategoria() {
-		return CategoriasMedico.Cabecera;
+		return CategoriasMedico.Pediatra;
 	}
 	
 }

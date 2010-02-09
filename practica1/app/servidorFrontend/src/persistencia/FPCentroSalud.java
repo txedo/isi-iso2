@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Direccion;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.DireccionIncorrectaException;
 
 /**
  * Clase dedicada a consultar y modificar centros de salud en la base de datos.
@@ -19,10 +21,11 @@ public class FPCentroSalud {
 	private static final String COL_NOMBRE = "nombre";
 	private static final String COL_DIRECCION = "direccion";
 	
-	public static CentroSalud consultar(int id) throws SQLException, CentroSaludIncorrectoException {
+	public static CentroSalud consultar(int id) throws SQLException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		CentroSalud centro = null;
+		Direccion dir;
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CENTROS + " WHERE " + COL_ID + "=?", id);
@@ -38,13 +41,14 @@ public class FPCentroSalud {
 			centro = new CentroSalud();
 			centro.setId(datos.getInt(COL_ID));
 			centro.setNombre(datos.getString(COL_NOMBRE));
-			centro.setDireccion(datos.getString(COL_DIRECCION));
+			dir = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
+			centro.setDireccion(dir);
 		}
 		
 		return centro;
 	}
 
-	public static CentroSalud consultarAleatorio() throws SQLException, CentroSaludIncorrectoException {
+	public static CentroSalud consultarAleatorio() throws SQLException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ArrayList<Integer> listaIds;
 		ComandoSQL comando;
 		ResultSet datos;
@@ -76,9 +80,16 @@ public class FPCentroSalud {
 		ComandoSQL comando;
 		ResultSet datos;
 		
+		// Insertamos primero la direccion del centro (si no existe ya en la base de datos esa dirección)
+		try {
+			FPDireccion.consultar(centro.getDireccion().getId());
+		} catch(DireccionIncorrectaException e) {
+			FPDireccion.insertar(centro.getDireccion());
+		}
+		
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CENTROS + " (" + COL_NOMBRE + ", " + COL_DIRECCION + ") VALUES (?, ?)",
-                                          centro.getNombre(), centro.getDireccion());
+                                          centro.getNombre(), centro.getDireccion().getId());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Cambiamos el id del nuevo centro de salud

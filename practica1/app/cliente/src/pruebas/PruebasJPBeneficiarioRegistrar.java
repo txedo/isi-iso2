@@ -11,6 +11,7 @@ import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
@@ -248,8 +249,8 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		try {
 			// Comprobamos que el beneficiario se ha creado correctamente
 			beneLeido = controlador.consultarBeneficiario(nif);
-			//TODO: Actualizar al cambiar la forma de guardar la dirección
-			beneCreado = new Beneficiario(nif, nss, "Pedro", "Jiménez Serrano", new Date(1980 - 1900, 0, 1), "C/Cervantes, nº 38, 4º F", "pjs80@gmail.com", "926147130", "626405060");
+			Direccion dir = new Direccion(txtDomicilio.getText(), txtNumero.getText(), txtPiso.getText(), txtPuerta.getText(), txtLocalidad.getText(), txtProvincia.getText(), Integer.parseInt(txtCP.getText()));
+			beneCreado = new Beneficiario(nif, nss, "Pedro", "Jiménez Serrano", new Date(1980 - 1900, 0, 1), dir, "pjs80@gmail.com", "926147130", "626405060");
 			assertEquals(beneLeido, beneCreado);
 		} catch(Exception e) {
 			fail(e.toString());

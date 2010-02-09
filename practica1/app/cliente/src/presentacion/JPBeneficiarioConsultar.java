@@ -20,6 +20,7 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
@@ -452,12 +453,18 @@ public class JPBeneficiarioConsultar extends JPBase {
 			txtNombre.setText(beneficiario.getNombre());
 			txtApellidos.setText(beneficiario.getApellidos());
 			dtcFechaNacimiento.setDate(beneficiario.getFechaNacimiento());
-			txtDomicilio.setText(beneficiario.getDomicilio());
+			txtLocalidad.setText(beneficiario.getDireccion().getCiudad());
+			txtProvincia.setText(beneficiario.getDireccion().getProvincia());
+			txtCP.setText(Integer.toString(beneficiario.getDireccion().getCp()));
+			txtDomicilio.setText(beneficiario.getDireccion().getDomicilio());
+			txtNumero.setText(beneficiario.getDireccion().getNumero());
+			txtPiso.setText(beneficiario.getDireccion().getPiso());
+			txtPuerta.setText(beneficiario.getDireccion().getPuerta());
 			txtCorreoElectronico.setText(beneficiario.getCorreo());
 			txtTelefonoFijo.setText(beneficiario.getTelefono());
 			txtTelefonoMovil.setText(beneficiario.getMovil());
 			txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
-			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + "; " + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion());
+			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + "; " + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion().toString());
 			chkEditar.setEnabled(true);
 			
 		} catch(BeneficiarioInexistenteException e) {
@@ -495,7 +502,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	private void btnGuardarActionPerformed(ActionEvent evt) {
-		Beneficiario benefCambiado;
+		Beneficiario benefCambiado = null;
+		Direccion dir;
 		
 		try {
 			
@@ -536,18 +544,19 @@ public class JPBeneficiarioConsultar extends JPBase {
 			benefCambiado.setNombre(txtNombre.getText().trim());
 			benefCambiado.setApellidos(txtApellidos.getText().trim());
 			benefCambiado.setFechaNacimiento(dtcFechaNacimiento.getDate());
-			benefCambiado.setDomicilio("Calle: " + txtDomicilio.getText().trim());
+			dir = new Direccion();
+			dir.setDomicilio(txtDomicilio.getText());
 			if(campoVacio(txtNumero))
-				benefCambiado.setDomicilio(beneficiario.getDomicilio()+ " s/n");
+				dir.setNumero("s/n");
 			else
-				benefCambiado.setDomicilio(beneficiario.getDomicilio()+ " Nº: " + txtNumero.getText().trim());
-			if(!campoVacio(txtPiso)) {
-				benefCambiado.setDomicilio(beneficiario.getDomicilio() + " Piso: " + txtPiso.getText().trim() + "º");
-			}
-			if(!campoVacio(txtPuerta)) {
-				benefCambiado.setDomicilio(beneficiario.getDomicilio() + " Letra: " + txtPuerta.getText().trim().toUpperCase());
-			}
-			benefCambiado.setDomicilio(beneficiario.getDomicilio() + " Ciudad: " + txtLocalidad.getText().trim() + " Provincia: " + txtProvincia.getText().trim() + " CP: "+ txtCP.getText());
+				dir.setNumero(txtNumero.getText());
+			dir.setPiso(txtPiso.getText());
+			dir.setPuerta(txtPuerta.getText());
+			dir.setCiudad(txtLocalidad.getText());
+			dir.setProvincia(txtProvincia.getText());
+			dir.setCp(Integer.parseInt(txtCP.getText()));
+			dir.setId(beneficiario.getDireccion().getId());
+			benefCambiado.setDireccion(dir);	
 			benefCambiado.setCorreo(txtCorreoElectronico.getText().trim());
 			benefCambiado.setTelefono(txtTelefonoFijo.getText().trim());
 			benefCambiado.setMovil(txtTelefonoMovil.getText().trim());
@@ -556,7 +565,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			benefCambiado.setMedicoAsignado(beneficiario.getMedicoAsignado());
 			
 			// Solicitamos al servidor que se modifique el beneficiario
-			getControlador().modificarBeneficiario(beneficiario);
+			getControlador().modificarBeneficiario(benefCambiado);
 			
 			// Mostramos un mensaje indicando que el beneficiario
 			// se ha modificado correctamente
@@ -746,8 +755,16 @@ public class JPBeneficiarioConsultar extends JPBase {
 		txtTelefonoFijo.setText("");
 		txtTelefonoMovil.setText("");
 		txtMedicoAsignado.setText("");
+		txtLocalidad.setText("");
+		txtProvincia.setText("");
+		txtDomicilio.setText("");
+		txtCP.setText("");
+		txtNumero.setText("");
+		txtPiso.setText("");
+		txtPuerta.setText("");
 		txtCentro.setText("");
 		chkEditar.setEnabled(false);
+		chkEditar.setSelected(false);
 	}
 	
 	//$hide<<$

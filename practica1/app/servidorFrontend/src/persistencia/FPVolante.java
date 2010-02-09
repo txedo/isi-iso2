@@ -8,6 +8,7 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
 
@@ -23,7 +24,7 @@ public class FPVolante {
 	private static final String COL_DNI_MEDICO_EMISOR = "dniMedicoEmisor";
 	private static final String COL_DNI_MEDICO_RECEPTOR = "dniMedicoReceptor";
 	
-	public static Volante consultar(long id) throws SQLException, VolanteNoValidoException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException {
+	public static Volante consultar(long id) throws SQLException, VolanteNoValidoException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Volante volante;

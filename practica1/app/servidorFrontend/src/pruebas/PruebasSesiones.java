@@ -10,6 +10,7 @@ import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Direccion;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -24,6 +25,7 @@ public class PruebasSesiones extends TestCase {
 	private Administrador administrador1;
 	private ConexionBDFrontend conexionF = null;
 	private Pediatra pediatra;
+	private Direccion dir1;
 	
 	protected void setUp() {
 		Connection bd;
@@ -51,13 +53,16 @@ public class PruebasSesiones extends TestCase {
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM centros");
 			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM volantes");
+			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
 			conexionF = new ConexionBDFrontend();
 			GestorConexionesBD.ponerConexion(conexionF);
 			//Inicializamos los tipos de medicos
 			pediatra = new Pediatra();
 			// Creamos objetos de prueba
-			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
+			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
+			centro1 = new CentroSalud("Centro A", dir1);
 			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", pediatra);
 			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "Apellidos");
 			medico1.setCentroSalud(centro1);

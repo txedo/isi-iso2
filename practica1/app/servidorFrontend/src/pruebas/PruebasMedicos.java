@@ -15,6 +15,7 @@ import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
+import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -36,6 +37,7 @@ public class PruebasMedicos extends TestCase {
 	private Medico medico1, medico2, medico3, medico4;
 	private Citador citador1;
 	private Administrador admin1;
+	private Direccion dir1;
 	private PeriodoTrabajo periodo11, periodo12;
 	private PeriodoTrabajo periodo21;
 	private PeriodoTrabajo periodo31, periodo32;
@@ -74,6 +76,8 @@ public class PruebasMedicos extends TestCase {
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM volantes");
 			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM direcciones");
+			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
 			conexionF = new ConexionBDFrontend();
 			GestorConexionesBD.ponerConexion(conexionF);
@@ -82,7 +86,8 @@ public class PruebasMedicos extends TestCase {
 			especialista = new Especialista("Ginecologia");
 			cabecera = new Cabecera();
 			// Creamos objetos de prueba
-			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
+			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
+			centro1 = new CentroSalud("Centro A", dir1);
 			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", pediatra);
 			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", cabecera);
 			medico3 = new Medico("58782350", "jjj", "jjj", "Juan", "P. F.", especialista);
@@ -137,7 +142,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Obtenemos los datos de un médico existente
-			medico = GestorMedicos.consultarMedico(sesionCitador.getId(), medico1.getDni());
+			medico = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico1.getDni());
 			assertEquals(medico, medico1);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -154,7 +159,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos obtener los datos de un usuario que no es médico
-			medico = GestorMedicos.consultarMedico(sesionCitador.getId(), citador1.getDni());
+			medico = GestorMedicos.consultarMedico(sesionAdmin.getId(), citador1.getDni());
 			fail("Se esperaba una excepcion MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -163,7 +168,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos obtener los datos de un usuario que no existe
-			medico = GestorMedicos.consultarMedico(sesionCitador.getId(), "94821491");
+			medico = GestorMedicos.consultarMedico(sesionAdmin.getId(), "94821491");
 			fail("Se esperaba una excepcion MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {

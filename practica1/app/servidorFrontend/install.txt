@@ -1,11 +1,24 @@
 CREATE DATABASE bdssca CHARACTER SET utf8 COLLATE utf8_bin;
 USE bdssca;
 
+CREATE TABLE direcciones (
+       id INT NOT NULL AUTO_INCREMENT,
+       domicilio VARCHAR(255) NOT NULL default '', 
+       numero VARCHAR(255) NOT NULL default -1,
+       piso VARCHAR(255) NOT NULL default -1,
+       puerta VARCHAR(255) NOT NULL default '',
+       ciudad VARCHAR(255) NOT NULL default '',
+       provincia VARCHAR(255) NOT NULL default '',
+       cp INT NOT NULL default -1,       
+       PRIMARY KEY (id)
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
 CREATE TABLE centros (
        id INT NOT NULL AUTO_INCREMENT,
        nombre VARCHAR(255) UNIQUE NOT NULL default '', 
-       direccion VARCHAR(255) NOT NULL default '', 
-       PRIMARY KEY (id)
+       direccion INT default -1, 
+       PRIMARY KEY (id),
+       FOREIGN KEY (direccion) REFERENCES direcciones (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE usuarios (
@@ -52,20 +65,15 @@ CREATE TABLE beneficiarios (
        nss VARCHAR(255) UNIQUE NOT NULL,
        nombre VARCHAR(255) NOT NULL default '', 
        apellidos VARCHAR(255) NOT NULL default '',
-       domicilio VARCHAR(255) NOT NULL default '',
-       numeroDomicilio VARCHAR(255) default '',
-       pisoDomicilio VARCHAR(255) default '',
-       puertaDomicilio VARCHAR(255) default '',
-       ciudad VARCHAR(255) NOT NULL default '',
-       provincia VARCHAR(255) NOT NULL default '',
-       cp INT NOT NULL default -1,
+       direccion INT default -1, 
        correo VARCHAR(255) default '',
        fechaNacimiento DATETIME NOT NULL,
        telefono VARCHAR(255) default '-1',
        movil VARCHAR(255) default '-1',
        dniMedico VARCHAR(255) default '',
        PRIMARY KEY (nif),
-       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE SET NULL ON UPDATE CASCADE
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE SET NULL ON UPDATE CASCADE,
+       FOREIGN KEY (direccion) REFERENCES direcciones (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE citas (
@@ -102,7 +110,8 @@ CREATE TABLE sustituciones (
        FOREIGN KEY (dniSustituto) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
-INSERT INTO centros (nombre,direccion) VALUES ("Centro de Pruebas", "Paseo de la Universidad, 4");
+INSERT INTO direcciones (domicilio, numero, piso, puerta, ciudad, provincia, cp) VALUES ("calle prueba", "s/n", -1, "", "Ciudad Real", "Ciudad Real", 13003);
+INSERT INTO centros (nombre,direccion) VALUES ("Centro de Pruebas", 1);
 INSERT INTO usuarios VALUES ("11111111A", "admin", password("admin"), 0, "Foo", "Bar", 1);
 INSERT INTO usuarios VALUES ("11111111C", "citador", password("citador"), 1, "Foo", "Bar", 1);
 INSERT INTO usuarios VALUES ("12345678C", "cabecera", password("cabecera"), 2, "Foo", "Bar", 1);

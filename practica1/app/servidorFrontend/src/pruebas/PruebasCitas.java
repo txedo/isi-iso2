@@ -27,6 +27,7 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
+import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -52,6 +53,7 @@ public class PruebasCitas extends TestCase{
 	private Administrador admin1;
 	private Beneficiario bene1, bene2;
 	private Usuario usu1;
+	private Direccion dir1;
 	private PeriodoTrabajo periodo1, periodo2, periodo3;
 	private ConexionBDFrontend conexionF;
 	private ISesion sesionCitador;
@@ -95,6 +97,8 @@ public class PruebasCitas extends TestCase{
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM volantes");
 			sentencia.executeUpdate();
+			sentencia = bd.prepareStatement("DELETE FROM direcciones");
+			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
 			conexionF = new ConexionBDFrontend();
 			GestorConexionesBD.ponerConexion(conexionF);
@@ -122,7 +126,8 @@ public class PruebasCitas extends TestCase{
 			especialista = new Especialista("Traumatologia");
 			cabecera = new Cabecera();
 			// Creamos objetos de prueba
-			centro1 = new CentroSalud("Centro A", "Calle Toledo, 44");
+			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
+			centro1 = new CentroSalud("Centro A", dir1);
 			medico1 = new Medico("12345678", "medico1", "abcdef", "Eduardo", "P. C.", pediatra);
 			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", cabecera);
 			medico3 = new Medico("34581732", "medico3", "pass", "nombre", "apellido", especialista);
@@ -144,9 +149,9 @@ public class PruebasCitas extends TestCase{
 			medico3.getCalendario().add(periodo3);
 			usu1 = new Administrador("04328172", "usuario", "f", "O", "C");
 			usu1.setCentroSalud(centro1);
-			bene1 = new Beneficiario("12345679", "123456-ab", "bene1", "asdfg", fecha1, "alguno", "uno@gmail.com", "123456789", "987654321");
+			bene1 = new Beneficiario("12345679", "123456-ab", "bene1", "asdfg", fecha1, dir1, "uno@gmail.com", "123456789", "987654321");
 			bene1.setMedicoAsignado(medico2);
-			bene2 = new Beneficiario("46208746", "164028-de", "bene2", "asadasdfg", fecha2, "algun otro", "dos@gmail.com", "923456789", "687654322");
+			bene2 = new Beneficiario("46208746", "164028-de", "bene2", "asadasdfg", fecha2, dir1, "dos@gmail.com", "923456789", "687654322");
 			bene2.setMedicoAsignado(medico1);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);
@@ -356,7 +361,8 @@ public class PruebasCitas extends TestCase{
 		}
 		
 		try {
-			// Intentamos dar una cita con un idVolante no valido			
+			// Intentamos dar una cita con un idVolante no valido	
+			FPBeneficiario.insertar(bene2);
 			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, volante.getId() + 1, fechaCita1, DURACION);
 			fail("Se esperaba una excepcion VolanteNoValidoException");
 		} catch(VolanteNoValidoException e) {
@@ -458,7 +464,7 @@ public class PruebasCitas extends TestCase{
 			assertTrue(idVolante != -1);
 			volanteRecuperado = FPVolante.consultar(idVolante);
 			assertEquals(volanteRecuperado.getId(), idVolante);
-		} catch(Exception e) { 
+		} catch(Exception e) {
 			fail("No se esperaba ninguna excepción al crear el volante");
 		}
 		
