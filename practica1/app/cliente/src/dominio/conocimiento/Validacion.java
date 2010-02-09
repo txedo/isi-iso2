@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaIncorrectaException;
 import excepciones.CadenaVaciaException;
+import excepciones.CiudadIncorrectaException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.DomicilioIncorrectoException;
@@ -21,6 +22,7 @@ import excepciones.NSSIncorrectoException;
 import excepciones.NombreIncorrectoException;
 import excepciones.NumeroDomicilioIncorrectoException;
 import excepciones.PisoDomicilioIncorrectoException;
+import excepciones.ProvinciaIncorrectaException;
 import excepciones.PuertaDomicilioIncorrectoException;
 import excepciones.PuertoInvalidoException;
 import excepciones.TelefonoFijoIncorrectoException;
@@ -147,6 +149,26 @@ public class Validacion {
 
 		if (!bCorrecto)
 			throw new LetraIncorrectaException();
+	}
+	
+	public static void comprobarCiudad(String cadena) throws CiudadIncorrectaException {
+		try {
+			comprobarCadena(cadena);
+		} catch(CadenaIncorrectaException e) {
+			throw new CiudadIncorrectaException();
+		} catch(CadenaVaciaException e) {
+			throw new CiudadIncorrectaException();
+		}
+	}
+	
+	public static void comprobarProvincia(String cadena) throws ProvinciaIncorrectaException {
+		try {
+			comprobarCadena(cadena);
+		} catch(CadenaIncorrectaException e) {
+			throw new ProvinciaIncorrectaException();
+		} catch(CadenaVaciaException e) {
+			throw new ProvinciaIncorrectaException();
+		}
 	}
 
 	public static void comprobarEntero (String numero) throws EnteroIncorrectoException {
