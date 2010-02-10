@@ -16,6 +16,7 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
+import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -88,12 +89,12 @@ public class PruebasMedicos extends TestCase {
 			// Creamos objetos de prueba
 			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
 			centro1 = new CentroSalud("Centro A", dir1);
-			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", pediatra);
-			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", cabecera);
-			medico3 = new Medico("58782350", "jjj", "jjj", "Juan", "P. F.", especialista);
-			medico4 = new Medico("91295016", "otro", "otro", "Ana", "R. M.", cabecera);
-			citador1 = new Citador("11223344", "citador", "cit123", "Fernando", "G. P.");
-			admin1 = new Administrador("55667788", "admin", "nimda", "María", "L. F.");
+			medico1 = new Medico("12345678", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
+			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", cabecera);
+			medico3 = new Medico("58782350", "jjj", Encriptacion.encriptarPasswordSHA1("jjj"), "Juan", "P. F.", especialista);
+			medico4 = new Medico("91295016", "otro", Encriptacion.encriptarPasswordSHA1("otro"), "Ana", "R. M.", cabecera);
+			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.");
+			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro1);
@@ -182,7 +183,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Creamos un nuevo médico con la sesión del administrador
-			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
+			medico = new Medico("6666666", "medNuevo", Encriptacion.encriptarPasswordSHA1("medNuevo"), "Juan", "P. C.", especialista);
 			medico.setCentroSalud(centro1);
 			GestorMedicos.crearMedico(sesionAdmin.getId(), medico);
 			// Comprobamos que el médico se ha creado correctamente
@@ -194,7 +195,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos crear un nuevo médico con el rol de citador
-			medico = new Medico("77777777", "error", "error", "", "", especialista);
+			medico = new Medico("77777777", "error", Encriptacion.encriptarPasswordSHA1("error"), "", "", especialista);
 			medico.setCentroSalud(centro1);
 			GestorMedicos.crearMedico(sesionCitador.getId(), medico);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
@@ -205,7 +206,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos añadir un médico con un DNI que ya existe en la BD
-			medico = new Medico(citador1.getDni(), "error", "error", "", "", cabecera);
+			medico = new Medico(citador1.getDni(), Encriptacion.encriptarPasswordSHA1("error"), "error", "", "", cabecera);
 			medico.setCentroSalud(centro1);
 			GestorMedicos.crearMedico(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepcion MedicoYaExistenteException");
@@ -243,7 +244,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos modificar un médico que aún no se ha creado
-			medico = new Medico("21412395", "error", "error", "", "", pediatra);
+			medico = new Medico("21412395", "error", Encriptacion.encriptarPasswordSHA1("error"), "", "", pediatra);
 			medico.setCentroSalud(centro1);
 			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepcion MedicoInexistenteException");
@@ -285,7 +286,7 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Intentamos eliminar un médico que aún no se ha creado
-			medico = new Medico("78256514", "error", "error", "", "", pediatra);
+			medico = new Medico("78256514", "error", Encriptacion.encriptarPasswordSHA1("error"), "", "", pediatra);
 			medico.setCentroSalud(centro1);
 			GestorMedicos.eliminarMedico(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepcion MedicoInexistenteException");

@@ -1,12 +1,15 @@
 package dominio.control;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Usuario;
-import persistencia.Utilidades;
+import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
+import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
 import excepciones.DireccionIncorrectaException;
 import excepciones.OperacionIncorrectaException;
@@ -46,7 +49,7 @@ public class GestorUsuarios {
 	// Método para añadir un nuevo usuario al sistema
 	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		CentroSalud centro;
-		Usuario u = null;
+		Usuario usuarioReal;
 		
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
@@ -56,17 +59,32 @@ public class GestorUsuarios {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.CrearUsuario);
 		
-		// Consultamos si ya existe el DNI del
-		// usuario que se quiere crear en la base de datos, y en ese caso se lanza un error
-		if (Utilidades.getDNIs().contains(usuario.getDni()))
-			throw new UsuarioYaExistenteException("El DNI " + usuario.getDni() + " ya existe en el sistema para otra persona y no se puede repetir.");
-				
+		// Encriptamos la contraseña del usuario (hacemos una
+		// copia del usuario para no modificar el original)
+		try {
+			usuarioReal = (Usuario)usuario.clone();
+			usuarioReal.setPassword(Encriptacion.encriptarPasswordSHA1(usuario.getPassword()));
+		} catch(NoSuchAlgorithmException e) {
+			throw new SQLException("No se puede encriptar la contraseña del usuario.");
+		}
+		
+		// Consultamos si ya existe un beneficiario con el mismo DNI
+		// que el usuario que se quiere crear en la base de datos,
+		// y en ese caso se lanza un error
+		try {
+			FPBeneficiario.consultarPorNIF(usuarioReal.getDni());
+			throw new UsuarioYaExistenteException("No se puede registrar el usuario porque ya existe un beneficiario en el sistema con el DNI " + usuarioReal.getDni() + ".");
+		} catch(UsuarioIncorrectoException e) {
+			throw new UsuarioYaExistenteException("No se puede registrar el usuario porque ya existe un beneficiario en el sistema con el DNI " + usuarioReal.getDni() + ".");
+		} catch(BeneficiarioInexistenteException e) {
+			// Lo normal es que se lance esta excepción
+		}
+		
 		// Consultamos si ya existe otro usuario con el mismo login, pues
 		// éste debe ser único para todos los usuarios 
 		try {
-			u = FPUsuario.consultar(usuario.getLogin(), usuario.getPassword());
-			if (!u.equals(usuario))
-				throw new UsuarioYaExistenteException("El login '" + usuario.getLogin() + "' ya existe en el sistema para otro usuario y no se puede utilizar de nuevo.");
+			FPUsuario.consultar(usuarioReal.getLogin(), usuarioReal.getPassword());
+			throw new UsuarioYaExistenteException("El login '" + usuarioReal.getLogin() + "' ya existe en el sistema para otro usuario y no se puede utilizar de nuevo.");
 		} catch(UsuarioIncorrectoException e) {
 			// Lo normal es que se lance esta excepción
 		}
@@ -75,17 +93,19 @@ public class GestorUsuarios {
 		// lanza una excepción es porque no hay ningún centro
 		try {
 			centro = FPCentroSalud.consultarAleatorio();
-			usuario.setCentroSalud(centro);
+			usuarioReal.setCentroSalud(centro);
 		} catch(CentroSaludIncorrectoException e) {
 			throw new SQLException("No se puede registrar el usuario porque no existe ningún centro de salud en el sistema que se le pueda asignar.");
 		}
 
 		// Añadimos el usuario al sistema
-		FPUsuario.insertar(usuario);
+		FPUsuario.insertar(usuarioReal);
 	}
 	
 	// Método para modificar un usuario existente del sistema
 	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
+		Usuario usuarioAntiguo, usuarioReal;
+		
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
 			throw new NullPointerException("El usuario que se va a modificar no puede ser nulo.");
@@ -96,13 +116,30 @@ public class GestorUsuarios {
 		
 		// Comprobamos si realmente existe el usuario que se quiere modificar
 		try {
-			FPUsuario.consultar(usuario.getDni());
+			usuarioAntiguo = FPUsuario.consultar(usuario.getDni());
 		} catch(UsuarioIncorrectoException e) {
 			throw new UsuarioInexistenteException(e.getMessage());
 		}
 		
+		// Vemos si es necesario cambiar la contraseña
+		if(!usuario.getPassword().trim().equals("")) {
+			// Encriptamos la nueva contraseña del usuario (hacemos
+			// una copia del usuario para no modificar el original)
+			try {
+				usuarioReal = (Usuario)usuario.clone();
+				usuarioReal.setPassword(Encriptacion.encriptarPasswordSHA1(usuario.getPassword()));
+			} catch(NoSuchAlgorithmException e) {
+				throw new SQLException("No se puede encriptar la contraseña del usuario.");
+			}
+		} else {
+			// Mantenemos la contraseña antigua (hacemos una
+			// copia del usuario para no modificar el original)
+			usuarioReal = (Usuario)usuario.clone();
+			usuarioReal.setPassword(usuarioAntiguo.getPassword());
+		}
+		
 		// Modificamos los datos del usuario
-		FPUsuario.modificar(usuario);
+		FPUsuario.modificar(usuarioReal);
 	}
 
 	// Método para eliminar un usuario del sistema

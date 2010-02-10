@@ -24,9 +24,7 @@ public class Beneficiario implements Serializable {
 	public Beneficiario() {
 	}
 	
-	public Beneficiario(String nif, String nss, String nombre,
-			String apellidos, Date fecha, Direccion direccion, String correo,
-			String telefono, String movil) {
+	public Beneficiario(String nif, String nss, String nombre, String apellidos, Date fecha, Direccion direccion, String correo, String telefono, String movil) {
 		this.nif = nif;
 		this.nss = nss;
 		this.nombre = nombre;
@@ -145,7 +143,7 @@ public class Beneficiario implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Beneficiario) {
 			b = (Beneficiario)o;
-			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && direccion.equals(b.getDireccion()) && correo.equals(b.getCorreo()) && telefono == b.getTelefono() && movil == b.getMovil() && medicoAsignado.equals(b.getMedicoAsignado());
+			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && direccion.equals(b.getDireccion()) && correo.equals(b.getCorreo()) && telefono.equals(b.getTelefono()) && movil.equals(b.getMovil()) && medicoAsignado.equals(b.getMedicoAsignado());
 		}
 		return dev;
 	}

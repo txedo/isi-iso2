@@ -28,6 +28,7 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
+import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -128,12 +129,12 @@ public class PruebasCitas extends TestCase{
 			// Creamos objetos de prueba
 			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
 			centro1 = new CentroSalud("Centro A", dir1);
-			medico1 = new Medico("12345678", "medico1", "abcdef", "Eduardo", "P. C.", pediatra);
-			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", cabecera);
-			medico3 = new Medico("34581732", "medico3", "pass", "nombre", "apellido", especialista);
-			medico4 = new Medico("09761231", "medNoRegistrado", "asas", "E", "P", cabecera);
-			citador1 = new Citador("11223344", "citador", "cit123", "Fernando", "G. P.");
-			admin1 = new Administrador("55667788", "admin", "nimda", "María", "L. F.");
+			medico1 = new Medico("12345678", "medico1", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
+			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", cabecera);
+			medico3 = new Medico("34581732", "medico3", Encriptacion.encriptarPasswordSHA1("pass"), "nombre", "apellido", especialista);
+			medico4 = new Medico("09761231", "medNoRegistrado", Encriptacion.encriptarPasswordSHA1("asas"), "E", "P", cabecera);
+			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.");
+			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro1);
@@ -147,7 +148,7 @@ public class PruebasCitas extends TestCase{
 			medico1.getCalendario().add(periodo2);
 			medico2.getCalendario().add(periodo3);
 			medico3.getCalendario().add(periodo3);
-			usu1 = new Administrador("04328172", "usuario", "f", "O", "C");
+			usu1 = new Administrador("04328172", "usuario", Encriptacion.encriptarPasswordSHA1("f"), "O", "C");
 			usu1.setCentroSalud(centro1);
 			bene1 = new Beneficiario("12345679", "123456-ab", "bene1", "asdfg", fecha1, dir1, "uno@gmail.com", "123456789", "987654321");
 			bene1.setMedicoAsignado(medico2);

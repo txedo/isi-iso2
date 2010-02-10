@@ -35,9 +35,9 @@ public class FPBeneficiario {
 	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
-		Beneficiario bene;
+		Beneficiario beneficiario;
 		Medico medico;
-		Direccion dir;
+		Direccion direccion;
 
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS + " WHERE " + COL_NIF + " = ?", nif);
@@ -49,30 +49,30 @@ public class FPBeneficiario {
 			throw new BeneficiarioInexistenteException("El beneficiario con NIF " + nif + " no se encuentra dado de alta en el sistema.");
 		} else {
 			// Establecemos los datos del beneficiario
-			bene = new Beneficiario();
-			bene.setNif(datos.getString(COL_NIF));
-			bene.setNss(datos.getString(COL_NSS));
-			bene.setNombre(datos.getString(COL_NOMBRE));
-			bene.setApellidos(datos.getString(COL_APELLIDOS));
-			dir = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
-			bene.setDireccion(dir);
-			bene.setCorreo(datos.getString(COL_CORREO));
-			bene.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
-			bene.setTelefono(datos.getString(COL_TELEFONO));
-			bene.setMovil(datos.getString(COL_MOVIL));
+			beneficiario = new Beneficiario();
+			beneficiario.setNif(datos.getString(COL_NIF));
+			beneficiario.setNss(datos.getString(COL_NSS));
+			beneficiario.setNombre(datos.getString(COL_NOMBRE));
+			beneficiario.setApellidos(datos.getString(COL_APELLIDOS));
+			beneficiario.setCorreo(datos.getString(COL_CORREO));
+			beneficiario.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
+			beneficiario.setTelefono(datos.getString(COL_TELEFONO));
+			beneficiario.setMovil(datos.getString(COL_MOVIL));
+			direccion = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
+			beneficiario.setDireccion(direccion);
 			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			bene.setMedicoAsignado(medico);
+			beneficiario.setMedicoAsignado(medico);
 		}
 
-		return bene;
+		return beneficiario;
 	}
 	
 	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
 		ResultSet datos;
-		Beneficiario bene;
+		Beneficiario beneficiario;
 		Medico medico;
-		Direccion dir;
+		Direccion direccion;
 
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS + " WHERE " + COL_NSS + " = ?", nss);
@@ -80,59 +80,64 @@ public class FPBeneficiario {
 		datos.next();
 
 		// Si no se obtienen datos, es porque el beneficiario no existe
-		if (datos.getRow() == 0) {
+		if(datos.getRow() == 0) {
 			throw new BeneficiarioInexistenteException("El beneficiario con NSS " + nss + " no se encuentra dado de alta en el sistema.");
 		} else {
 			// Establecemos los datos del beneficiario
-			bene = new Beneficiario();
-			bene.setNif(datos.getString(COL_NIF));
-			bene.setNss(datos.getString(COL_NSS));
-			bene.setNombre(datos.getString(COL_NOMBRE));
-			bene.setApellidos(datos.getString(COL_APELLIDOS));
-			dir = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
-			bene.setDireccion(dir);	
-			bene.setCorreo(datos.getString(COL_CORREO));
-			bene.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
-			bene.setTelefono(datos.getString(COL_TELEFONO));
-			bene.setMovil(datos.getString(COL_MOVIL));
+			beneficiario = new Beneficiario();
+			beneficiario.setNif(datos.getString(COL_NIF));
+			beneficiario.setNss(datos.getString(COL_NSS));
+			beneficiario.setNombre(datos.getString(COL_NOMBRE));
+			beneficiario.setApellidos(datos.getString(COL_APELLIDOS));
+			beneficiario.setCorreo(datos.getString(COL_CORREO));
+			beneficiario.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
+			beneficiario.setTelefono(datos.getString(COL_TELEFONO));
+			beneficiario.setMovil(datos.getString(COL_MOVIL));
+			direccion = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
+			beneficiario.setDireccion(direccion);	
 			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			bene.setMedicoAsignado(medico);
+			beneficiario.setMedicoAsignado(medico);
 		}
 
-		return bene;
+		return beneficiario;
 	}
 
-	public static void insertar(Beneficiario bene) throws SQLException {
+	public static void insertar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;
 
-		// Insertamos primero la direccion del beneficiario (si no existe ya en la base de datos esa dirección)
-		try {
-			FPDireccion.consultar(bene.getDireccion().getId());
-		} catch(DireccionIncorrectaException e) {
-			FPDireccion.insertar(bene.getDireccion());
-		}
+		// Insertamos primero la dirección del beneficiario
+		FPDireccion.insertar(beneficiario.getDireccion());
 		
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_BENEFICIARIOS
 				+ " (" + COL_NIF + ", " + COL_NSS + ", " + COL_NOMBRE
 				+ ", " + COL_APELLIDOS  + ", " + COL_DIRECCION + ", " + COL_CORREO
-				+ ", " + COL_FECHA_NACIMIENTO + ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				bene.getNif(), bene.getNss(), bene.getNombre(),
-				bene.getApellidos(), bene.getDireccion().getId(), bene.getCorreo(), new Timestamp(bene.getFechaNacimiento().getTime()), bene.getTelefono(), bene.getMovil(), bene.getMedicoAsignado().getDni());
+				+ ", " + COL_FECHA_NACIMIENTO + ", " + COL_TELEFONO + ", " + COL_MOVIL
+				+ ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				beneficiario.getNif(), beneficiario.getNss(), beneficiario.getNombre(),
+				beneficiario.getApellidos(), beneficiario.getDireccion().getId(),
+				beneficiario.getCorreo(), new Timestamp(beneficiario.getFechaNacimiento().getTime()),
+				beneficiario.getTelefono(), beneficiario.getMovil(),
+				beneficiario.getMedicoAsignado().getDni());
 		GestorConexionesBD.ejecutar(comando);
 	}
 
-	public static void modificar(Beneficiario bene) throws SQLException {
+	public static void modificar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;
 
-		// Si modificamos un beneficiario, su dirección seguro que existe en la base de datos
-		FPDireccion.modificar(bene.getDireccion());
+		// Modificamos primero la dirección del beneficiario
+		FPDireccion.modificar(beneficiario.getDireccion());
 		
 		// Modificamos la base de datos
 		// (el NIF y el NSS no se pueden cambiar)
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_BENEFICIARIOS + " SET "
-				+ COL_NOMBRE + "=?, " + COL_APELLIDOS + "=?, " + COL_CORREO + "=?, " + COL_TELEFONO + "=?, " + COL_MOVIL + "=?, " + COL_DNI_MEDICO + "=? WHERE " + COL_NIF + "=? ", 
-				bene.getNombre(), bene.getApellidos(), bene.getCorreo(), bene.getTelefono(), bene.getMovil(), bene.getMedicoAsignado().getDni(), bene.getNif());
+				+ COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_CORREO + " = ?, "
+				+ COL_TELEFONO + " = ?, " + COL_MOVIL + " = ?, " + COL_DNI_MEDICO + " = ? "
+				+ "WHERE " + COL_NIF + " = ? ", 
+				beneficiario.getNombre(), beneficiario.getApellidos(),
+				beneficiario.getCorreo(), beneficiario.getTelefono(),
+				beneficiario.getMovil(), beneficiario.getMedicoAsignado().getDni(),
+				beneficiario.getNif());
 		GestorConexionesBD.ejecutar(comando);
 	}
 
