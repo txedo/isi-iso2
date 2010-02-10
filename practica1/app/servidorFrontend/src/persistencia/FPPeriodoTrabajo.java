@@ -2,14 +2,14 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Vector;
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.PeriodoTrabajo;
 
 /**
- * Clase dedicada a consultar y modificar períodos de trabajo de los
- * médicos en la base de datos.
+ * Clase que permite consultar, insertar, modificar y eliminar períodos
+ * de trabajo de los médicos de la base de datos.
  */
 public class FPPeriodoTrabajo {
 
@@ -21,18 +21,19 @@ public class FPPeriodoTrabajo {
 	private static final String COL_HORA_FINAL = "horaFinal";
 	private static final String COL_DIA = "dia";
 	
-	public static ArrayList<PeriodoTrabajo> consultarCalendario(String dni) throws SQLException {
+	public static Vector<PeriodoTrabajo> consultarHorario(String dniMedico) throws SQLException {
 		ComandoSQL comando;
 		ResultSet datos;
-		ArrayList<PeriodoTrabajo> lista;
+		Vector<PeriodoTrabajo> lista;
 		PeriodoTrabajo periodo;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_PERIODOS + " WHERE " + COL_DNI_MEDICO + " = ?", dni);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_PERIODOS
+				+ " WHERE " + COL_DNI_MEDICO + " = ?", dniMedico);
 		datos = GestorConexionesBD.consultar(comando);
 		
 		// Devolvemos la lista de períodos de trabajo del médico
-		lista = new ArrayList<PeriodoTrabajo>();
+		lista = new Vector<PeriodoTrabajo>();
 		while(datos.next()) {
 			periodo = new PeriodoTrabajo();
 			periodo.setId(datos.getInt(COL_ID));
@@ -45,16 +46,19 @@ public class FPPeriodoTrabajo {
 		return lista;
 	}
 	
-	public static void insertar(String dni, PeriodoTrabajo periodo) throws SQLException {
+	public static void insertar(String dniMedico, PeriodoTrabajo periodo) throws SQLException {
 		ComandoSQL comando;
 		ResultSet datos;
 
 		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_PERIODOS + " (" + COL_DNI_MEDICO + ", " + COL_HORA_INICIO + ", " + COL_HORA_FINAL + ", " + COL_DIA + ") VALUES (?, ?, ?, ?)",
-		                                  dni, periodo.getHoraInicio(), periodo.getHoraFinal(), periodo.getDia().ordinal());
+		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_PERIODOS
+				+ " (" + COL_DNI_MEDICO + ", " + COL_HORA_INICIO + ", "
+				+ COL_HORA_FINAL + ", " + COL_DIA + ") VALUES (?, ?, ?, ?)",
+				dniMedico, periodo.getHoraInicio(), periodo.getHoraFinal(),
+				periodo.getDia().ordinal());
 		GestorConexionesBD.ejecutar(comando);
 		
-		// Cambiamos el id del nuevo período de trabajo
+		// Recuperamos el id autonumérico asignado al nuevo período de trabajo
 		comando = new ComandoSQLSentencia("SELECT LAST_INSERT_ID()");			
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
@@ -65,8 +69,11 @@ public class FPPeriodoTrabajo {
 		ComandoSQL comando;
 		
 		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("UPDATE " + TABLA_PERIODOS + " SET " + COL_HORA_INICIO + " = ?, "+ COL_HORA_FINAL + " = ?, " + COL_DIA + " = ? WHERE " + COL_ID + " = ?",
-                                          periodo.getHoraInicio(), periodo.getHoraFinal(), periodo.getDia().ordinal(), periodo.getId());
+		comando = new ComandoSQLSentencia("UPDATE " + TABLA_PERIODOS + " SET "
+				+ COL_HORA_INICIO + " = ?, "+ COL_HORA_FINAL + " = ?, "
+				+ COL_DIA + " = ? WHERE " + COL_ID + " = ?",
+				periodo.getHoraInicio(), periodo.getHoraFinal(),
+				periodo.getDia().ordinal(), periodo.getId());
 		GestorConexionesBD.ejecutar(comando);
 	}
 	
@@ -74,7 +81,8 @@ public class FPPeriodoTrabajo {
 		ComandoSQL comando;
 		
 		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_PERIODOS + " WHERE " + COL_ID + " = " + periodo.getId());
+		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_PERIODOS +
+				" WHERE " + COL_ID + " = " + periodo.getId());
 		GestorConexionesBD.ejecutar(comando);
 	}
 	

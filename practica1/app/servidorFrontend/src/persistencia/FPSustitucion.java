@@ -2,17 +2,19 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Vector;
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Sustitucion;
-import excepciones.CentroSaludIncorrectoException;
-import excepciones.DireccionIncorrectaException;
+import dominio.conocimiento.Usuario;
+import excepciones.CentroSaludInexistenteException;
+import excepciones.DireccionInexistenteException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
- * Clase dedicada a consultar y modificar sustituciones de médicos en
- * la base de datos.
+ * Clase que permite consultar e insertar sustituciones de médicos en la
+ * base de datos.
  */
 public class FPSustitucion {
 
@@ -25,58 +27,76 @@ public class FPSustitucion {
 	private static final String COL_DNI_MEDICO = "dniMedico";
 	private static final String COL_DNI_SUSTITUTO = "dniSustituto";
 	
-	public static ArrayList<Sustitucion> consultarMedico(String dniMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
+	public static Vector<Sustitucion> consultarPorSustituido(String dniMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
-		Medico medico, sustituto;
-		ArrayList<Sustitucion> lista;
+		Vector<Sustitucion> lista;
+		Usuario medico, sustituto;
 		Sustitucion sustitucion;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_SUSTITUCIONES + " WHERE " + COL_DNI_MEDICO + " = ?", dniMedico);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_SUSTITUCIONES
+				+ " WHERE " + COL_DNI_MEDICO + " = ?", dniMedico);
 		datos = GestorConexionesBD.consultar(comando);
 		
-		// Devolvemos la lista de días que el médico va a ser sustituido
-		lista = new ArrayList<Sustitucion>();
+		// Obtenemos los datos del médico sustituido
+		medico = FPUsuario.consultar(dniMedico);
+		if(medico.getRol() != RolesUsuarios.Medico) {
+			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones del usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
+		}
+		
+		// Devolvemos la lista de sustituciones que tiene el médico
+		lista = new Vector<Sustitucion>();
 		while(datos.next()) {
 			sustitucion = new Sustitucion();
-			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			sustituto = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_SUSTITUTO));
 			sustitucion.setId(datos.getInt(COL_ID));
 			sustitucion.setDia(datos.getDate(COL_DIA));
 			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
 			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
-			sustitucion.setMedico(medico);
-			sustitucion.setSustituto(sustituto);
+			sustitucion.setMedico((Medico)medico);
+			sustituto = FPUsuario.consultar(datos.getString(COL_DNI_SUSTITUTO));
+			if(sustituto.getRol() != RolesUsuarios.Medico) {
+				throw new UsuarioIncorrectoException("Alguna de las sustituciones del médico con DNI " + String.valueOf(dniMedico) + " no tiene asociado un usuario con rol de médico.");
+			}
+			sustitucion.setSustituto((Medico)sustituto);
 			lista.add(sustitucion);
 		}
 		
 		return lista;
 	}
 	
-	public static ArrayList<Sustitucion> consultarSustituto(String dniSustituto) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
+	public static Vector<Sustitucion> consultarPorSustituto(String dniMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
-		Medico medico, sustituto;
-		ArrayList<Sustitucion> lista;
+		Vector<Sustitucion> lista;
+		Usuario medico, sustituto;
 		Sustitucion sustitucion;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_SUSTITUCIONES + " WHERE " + COL_DNI_SUSTITUTO + " = ?", dniSustituto);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_SUSTITUCIONES
+				+ " WHERE " + COL_DNI_SUSTITUTO + " = ?", dniMedico);
 		datos = GestorConexionesBD.consultar(comando);
 		
-		// Devolvemos la lista de días que el médico va a hacer una sustitución
-		lista = new ArrayList<Sustitucion>();
+		// Obtenemos los datos del médico sustituto
+		sustituto = FPUsuario.consultar(dniMedico);
+		if(sustituto.getRol() != RolesUsuarios.Medico) {
+			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones hechas por el usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
+		}
+		
+		// Devolvemos la lista de sustituciones que va a hacer el médico
+		lista = new Vector<Sustitucion>();
 		while(datos.next()) {
 			sustitucion = new Sustitucion();
-			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			sustituto = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_SUSTITUTO));
 			sustitucion.setId(datos.getInt(COL_ID));
 			sustitucion.setDia(datos.getDate(COL_DIA));
 			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
 			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
-			sustitucion.setMedico(medico);
-			sustitucion.setSustituto(sustituto);
+			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			if(medico.getRol() != RolesUsuarios.Medico) {
+				throw new UsuarioIncorrectoException("Alguna de las sustituciones hechas por el médico con DNI " + String.valueOf(dniMedico) + " no tiene asociado un usuario con rol de médico.");
+			}
+			sustitucion.setMedico((Medico)medico);
+			sustitucion.setSustituto((Medico)sustituto);
 			lista.add(sustitucion);
 		}
 		
@@ -88,11 +108,16 @@ public class FPSustitucion {
 		ResultSet datos;
 
 		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_SUSTITUCIONES + " (" + COL_DIA + ", " + COL_HORA_INICIO + ", " + COL_HORA_FINAL + ", " + COL_DNI_MEDICO + ", " + COL_DNI_SUSTITUTO + ") VALUES (?, ?, ?, ?, ?)",
-		                                  sustitucion.getDia(), sustitucion.getHoraInicio(), sustitucion.getHoraFinal(), sustitucion.getMedico().getDni(), sustitucion.getSustituto().getDni());
+		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_SUSTITUCIONES
+				+ " (" + COL_DIA + ", " + COL_HORA_INICIO + ", " + COL_HORA_FINAL
+				+ ", " + COL_DNI_MEDICO + ", " + COL_DNI_SUSTITUTO
+				+ ") VALUES (?, ?, ?, ?, ?)",
+				sustitucion.getDia(), sustitucion.getHoraInicio(),
+				sustitucion.getHoraFinal(), sustitucion.getMedico().getDni(),
+				sustitucion.getSustituto().getDni());
 		GestorConexionesBD.ejecutar(comando);
 		
-		// Cambiamos el id de la nueva sustitución
+		// Recuperamos el id autonumérico asignado a la nueva cita
 		comando = new ComandoSQLSentencia("SELECT LAST_INSERT_ID()");			
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();

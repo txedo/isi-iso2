@@ -17,7 +17,7 @@ import dominio.conocimiento.Usuario;
 
 import persistencia.FPEntradaLog;
 import persistencia.FPUsuario;
-import excepciones.CentroSaludIncorrectoException;
+import excepciones.CentroSaludInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
@@ -42,7 +42,7 @@ public class GestorSesiones {
 	}	
 	
 	// Metodo para identificar un cliente y crear una sesion
-	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludIncorrectoException, Exception {
+	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, Exception {
 		Enumeration<Sesion> sesionesAbiertas; 
 		Sesion sesion = null;
 		EntradaLog entrada;

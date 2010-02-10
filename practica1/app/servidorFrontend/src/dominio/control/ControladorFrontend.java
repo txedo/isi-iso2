@@ -115,9 +115,9 @@ public class ControladorFrontend {
 		
 		// Mostramos un mensaje indicando que el servidor está activo
 		if(configuracion.isRespaldoActivado()) {
-			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, "=== Servidor iniciado ===");
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_INFO, "=== Servidor iniciado ===");
 		} else {
-			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, "=== Servidor iniciado (servidor de respaldo deshabilitado) ===");
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_INFO, "=== Servidor iniciado (servidor de respaldo deshabilitado) ===");
 		}
 		
 		// El servidor está activo
@@ -128,7 +128,7 @@ public class ControladorFrontend {
 		// Generamos un mensaje indicando que el servidor está inactivo
 		// (ignoramos los errores que pudieran producirse)
 		try {
-			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_OTRO, "=== Servidor detenido ===");
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_INFO, "=== Servidor detenido ===");
 		} catch(RemoteException e) {
 		} catch(SQLException e) {
 		}

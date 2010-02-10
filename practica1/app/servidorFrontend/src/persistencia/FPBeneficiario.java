@@ -9,13 +9,16 @@ import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
-import excepciones.CentroSaludIncorrectoException;
-import excepciones.DireccionIncorrectaException;
+import excepciones.CentroSaludInexistenteException;
+import excepciones.DireccionInexistenteException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
- * Clase dedicada a consultar y modificar beneficiarios en la base de datos.
+ * Clase que permtie consultar, insertar, modificar y eliminar
+ * beneficiarios de la base de datos.
  */
 public class FPBeneficiario {
 
@@ -32,15 +35,16 @@ public class FPBeneficiario {
 	private static final String COL_MOVIL = "movil";
 	private static final String COL_DNI_MEDICO = "dniMedico";
 
-	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
+	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Beneficiario beneficiario;
-		Medico medico;
+		Usuario medico;
 		Direccion direccion;
 
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS + " WHERE " + COL_NIF + " = ?", nif);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS
+				+ " WHERE " + COL_NIF + " = ?", nif);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 
@@ -60,22 +64,26 @@ public class FPBeneficiario {
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
 			direccion = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
 			beneficiario.setDireccion(direccion);
-			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			beneficiario.setMedicoAsignado(medico);
+			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			if(medico.getRol() != RolesUsuarios.Medico) {
+				throw new UsuarioIncorrectoException("El beneficiario con NIF " + nif + " no tiene asignado un usuario con rol de médico.");
+			}
+			beneficiario.setMedicoAsignado((Medico)medico);
 		}
 
 		return beneficiario;
 	}
 	
-	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
+	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Beneficiario beneficiario;
-		Medico medico;
+		Usuario medico;
 		Direccion direccion;
 
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS + " WHERE " + COL_NSS + " = ?", nss);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS
+				+ " WHERE " + COL_NSS + " = ?", nss);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 
@@ -94,9 +102,12 @@ public class FPBeneficiario {
 			beneficiario.setTelefono(datos.getString(COL_TELEFONO));
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
 			direccion = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
-			beneficiario.setDireccion(direccion);	
-			medico = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			beneficiario.setMedicoAsignado(medico);
+			beneficiario.setDireccion(direccion);
+			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			if(medico.getRol() != RolesUsuarios.Medico) {
+				throw new UsuarioIncorrectoException("El beneficiario con NSS " + nss + " no tiene asignado un usuario con rol de médico.");
+			}
+			beneficiario.setMedicoAsignado((Medico)medico);
 		}
 
 		return beneficiario;
@@ -141,4 +152,17 @@ public class FPBeneficiario {
 		GestorConexionesBD.ejecutar(comando);
 	}
 
+	public static void eliminar(Beneficiario beneficiario) throws SQLException {
+		ComandoSQL comando;
+		
+		// Modificamos la base de datos
+		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_BENEFICIARIOS
+				+ " WHERE " + COL_NIF + " = ?",
+				beneficiario.getNif()); 
+		GestorConexionesBD.ejecutar(comando);
+
+		// Eliminamos la dirección que tenía el beneficiario
+		FPDireccion.eliminar(beneficiario.getDireccion());
+	}
+	
 }

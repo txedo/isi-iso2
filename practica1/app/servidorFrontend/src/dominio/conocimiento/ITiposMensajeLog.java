@@ -9,6 +9,6 @@ public interface ITiposMensajeLog {
 	public static final String TIPO_READ = "read";
 	public static final String TIPO_UPDATE = "update";
 	public static final String TIPO_DELETE = "delete";
-	public static final String TIPO_OTRO = "read"; //TODO:¿cambiar en BD?
+	public static final String TIPO_INFO = "info";
 	
 }

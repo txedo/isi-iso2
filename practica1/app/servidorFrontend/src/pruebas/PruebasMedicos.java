@@ -1,15 +1,10 @@
 package pruebas;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
-import persistencia.AgenteFrontend;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
-import comunicaciones.ConexionBDFrontend;
-import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CentroSalud;
@@ -30,9 +25,8 @@ import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.SustitucionInvalidaException;
-import junit.framework.TestCase;
 
-public class PruebasMedicos extends TestCase {
+public class PruebasMedicos extends PruebasBase {
 
 	private CentroSalud centro1;
 	private Medico medico1, medico2, medico3, medico4;
@@ -42,7 +36,6 @@ public class PruebasMedicos extends TestCase {
 	private PeriodoTrabajo periodo11, periodo12;
 	private PeriodoTrabajo periodo21;
 	private PeriodoTrabajo periodo31, periodo32;
-	private ConexionBDFrontend conexionF;
 	private ISesion sesionCitador;
 	private ISesion sesionAdmin;
 	private Pediatra pediatra;
@@ -50,38 +43,9 @@ public class PruebasMedicos extends TestCase {
 	private Cabecera cabecera;
 	
 	protected void setUp() {
-		Connection bd;
-		PreparedStatement sentencia;
-		AgenteFrontend agente;
-		
 		try {
-			// Borramos la base de datos
-			agente = AgenteFrontend.getAgente();
-			agente.setIP("127.0.0.1");
-			agente.setPuerto(3306);
-			agente.abrir();
-			bd = agente.getConexion();
-			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM periodosTrabajo");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM usuarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM citas");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM centros");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM volantes");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM direcciones");
-			sentencia.executeUpdate();
-			// Ponemos la conexión local con la base de datos
-			conexionF = new ConexionBDFrontend();
-			GestorConexionesBD.ponerConexion(conexionF);
+			// Preparamos la base de datos
+			super.setUp();
 			//Inicializamos los tipos de medicos
 			pediatra = new Pediatra();
 			especialista = new Especialista("Ginecologia");
@@ -119,19 +83,20 @@ public class PruebasMedicos extends TestCase {
 			FPUsuario.insertar(citador1);
 			FPUsuario.insertar(admin1);
 			// Iniciamos dos sesiones con roles de citador y administrador
-			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), citador1.getPassword());
-			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), admin1.getPassword());
+			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
+			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "nimda");
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 	}
 	
 	protected void tearDown() {
-		// Cerramos la sesión y quitamos la conexión local con la base de datos
 		try {
+			// Cerramos la sesión
 			GestorSesiones.liberar(((Sesion)sesionCitador).getId());
 			GestorSesiones.liberar(((Sesion)sesionAdmin).getId());
-			GestorConexionesBD.quitarConexiones();
+			// Cerramos la base de datos
+			super.tearDown();
 		} catch(SQLException e) {
 			fail(e.toString());
 		}
@@ -183,9 +148,11 @@ public class PruebasMedicos extends TestCase {
 		
 		try {
 			// Creamos un nuevo médico con la sesión del administrador
-			medico = new Medico("6666666", "medNuevo", Encriptacion.encriptarPasswordSHA1("medNuevo"), "Juan", "P. C.", especialista);
+			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
 			medico.setCentroSalud(centro1);
 			GestorMedicos.crearMedico(sesionAdmin.getId(), medico);
+			// Al crear el médico la contraseña se habrá encriptado
+			medico.setPassword(Encriptacion.encriptarPasswordSHA1("medNuevo"));
 			// Comprobamos que el médico se ha creado correctamente
 			medicoGet = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico.getDni());
 			assertEquals(medico, medicoGet);
@@ -219,6 +186,10 @@ public class PruebasMedicos extends TestCase {
 	/** Pruebas de la operación que modifica médicos existentes */
 	public void testModificarMedico() {
 		Medico medico, medicoGet;
+		
+		//TODO: Aquí hay que comprobar si funciona que, al cambiar
+		// un médico pasando la contraseña "" se mantiene la antigua,
+		// y si se pasa otra cosa se encripta la nueva contraseña
 		
 		try {
 			// Modificamos los datos de un médico existente como administrador

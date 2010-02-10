@@ -2,7 +2,7 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 
-public class Direccion implements Serializable {
+public class Direccion implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -8460925743520811251L;
 	
@@ -84,15 +84,23 @@ public class Direccion implements Serializable {
 		this.piso = piso;
 	}
 
-	public int getCp() {
+	public int getCP() {
 		return cp;
 	}
 
-	public void setCp(int cp) {
+	public void setCP(int cp) {
 		this.cp = cp;
 	}
 	
-	public String toString () {
+	public Object clone() {
+		Direccion d;
+		
+		d = new Direccion(domicilio, numero, piso, puerta, ciudad, provincia, cp);
+		d.setId(id);
+		return d;
+	}
+	
+	public String toString() {
 		String direccion = domicilio;
 		if (numero.equals("s/n"))
 			direccion += " s/n";
@@ -113,7 +121,7 @@ public class Direccion implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Direccion) {
 			d = (Direccion)o;
-			dev = d.getDomicilio().equals(domicilio) && d.getNumero().equals(numero) && d.getPiso().equals(piso) && d.getPuerta().equals(puerta) && d.getCiudad().equals(ciudad) && d.getProvincia().equals(provincia) && d.getCp() == cp; 
+			dev = d.getDomicilio().equals(domicilio) && d.getNumero().equals(numero) && d.getPiso().equals(piso) && d.getPuerta().equals(puerta) && d.getCiudad().equals(ciudad) && d.getProvincia().equals(provincia) && d.getCP() == cp; 
 		}
 		return dev;
 	}

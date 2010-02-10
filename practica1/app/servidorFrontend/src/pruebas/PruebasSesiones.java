@@ -1,11 +1,5 @@
 package pruebas;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import comunicaciones.ConexionBDFrontend;
-import comunicaciones.GestorConexionesBD;
-import junit.framework.TestCase;
-import persistencia.AgenteFrontend;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import dominio.conocimiento.Administrador;
@@ -19,46 +13,18 @@ import dominio.conocimiento.RolesUsuarios;
 import dominio.control.GestorSesiones;
 import excepciones.UsuarioIncorrectoException;
 
-public class PruebasSesiones extends TestCase {
+public class PruebasSesiones extends PruebasBase {
 	
 	private CentroSalud centro1;
 	private Medico medico1;
 	private Administrador administrador1;
-	private ConexionBDFrontend conexionF = null;
 	private Pediatra pediatra;
 	private Direccion dir1;
 	
 	protected void setUp() {
-		Connection bd;
-		PreparedStatement sentencia;
-		AgenteFrontend agente;
-		
 		try {
-			// Borramos la base de datos
-			agente = AgenteFrontend.getAgente();
-			agente.setIP("127.0.0.1");
-			agente.setPuerto(3306);
-			agente.abrir();
-			bd = agente.getConexion();
-			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM periodosTrabajo");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM usuarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM citas");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM centros");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM volantes");
-			sentencia.executeUpdate();
-			// Ponemos la conexión local con la base de datos
-			conexionF = new ConexionBDFrontend();
-			GestorConexionesBD.ponerConexion(conexionF);
+			// Preparamos la base de datos
+			super.setUp();
 			//Inicializamos los tipos de medicos
 			pediatra = new Pediatra();
 			// Creamos objetos de prueba
@@ -77,8 +43,12 @@ public class PruebasSesiones extends TestCase {
 	}
 	
 	protected void tearDown() {
-		// Quitamos la conexión local con la base de datos
-		GestorConexionesBD.quitarConexiones();
+		try {
+			// Cerramos la base de datos
+			super.tearDown();
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 	}
 	
 	/** Prueba del escenario normal: se crea la sesion **/

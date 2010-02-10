@@ -1,7 +1,6 @@
 package dominio.conocimiento;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
@@ -13,7 +12,7 @@ public class Medico extends Usuario implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -8629345838800810415L;
 
-	private ArrayList<PeriodoTrabajo> calendario;
+	private Vector<PeriodoTrabajo> calendario;
 	private TipoMedico tipoMedico;
 	
 	public Medico() {
@@ -22,7 +21,7 @@ public class Medico extends Usuario implements Serializable, Cloneable {
 	
 	public Medico(String dni, String login, String password, String nombre, String apellidos, TipoMedico tipo) {
 		super(dni, login, password, nombre, apellidos);
-		calendario = new ArrayList<PeriodoTrabajo>();
+		calendario = new Vector<PeriodoTrabajo>();
 		tipoMedico = tipo;
 	}
 	
@@ -30,11 +29,11 @@ public class Medico extends Usuario implements Serializable, Cloneable {
 		return RolesUsuarios.Medico;
 	}
 	
-	public ArrayList<PeriodoTrabajo> getCalendario() {
+	public Vector<PeriodoTrabajo> getCalendario() {
 		return calendario;
 	}
 
-	public void setCalendario(ArrayList<PeriodoTrabajo> calendario) {
+	public void setCalendario(Vector<PeriodoTrabajo> calendario) {
 		this.calendario = calendario;
 	}
 	
@@ -102,7 +101,7 @@ public class Medico extends Usuario implements Serializable, Cloneable {
 	}
 	
 	public boolean calendariosDiferentes(Medico medico, Date fecha) {
-		ArrayList<PeriodoTrabajo> otroCalendario;
+		Vector<PeriodoTrabajo> otroCalendario;
 		Calendar calend;
 		DiaSemana dia;
 		int diaNum;
