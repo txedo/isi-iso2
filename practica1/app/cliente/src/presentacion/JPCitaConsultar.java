@@ -54,6 +54,7 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 	private Vector<Cita> citas;
 	private SimpleDateFormat formatoDia;
 	private SimpleDateFormat formatoHora;
+	private JButton btnHistoricoCitas;
 	private int fila;
 
 	private JScrollPane scpTablaCitas;
@@ -78,6 +79,17 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
 			this.setPreferredSize(new java.awt.Dimension(430, 471));
+			{
+				btnHistoricoCitas = new JButton();
+				this.add(btnHistoricoCitas, new AnchorConstraint(916, 359, 14, 9, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				btnHistoricoCitas.setText("Ver Historico Citas");
+				btnHistoricoCitas.setPreferredSize(new java.awt.Dimension(142, 26));
+				btnHistoricoCitas.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnHistoricoCitasActionPerformed(evt);
+					}
+				});
+			}
 			{
 				sepSeparador = new JSeparator();
 				this.add(sepSeparador, new AnchorConstraint(249, 6, 548, 5, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
@@ -131,6 +143,7 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 					tblTablaCitas = new JTable();
 					scpTablaCitas.setViewportView(tblTablaCitas);				
 					tblTablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					tblTablaCitas.setAutoCreateRowSorter(true);
 					ListSelectionModel tableCitasSelectionModel = tblTablaCitas.getSelectionModel();
 					tableCitasSelectionModel.addListSelectionListener(new ListSelectionListener() {
 						public void valueChanged(ListSelectionEvent evt) {
@@ -139,8 +152,36 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 					});
 				}
 			}
+			btnHistoricoCitas.setEnabled(false);
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void btnHistoricoCitasActionPerformed(ActionEvent evt) {
+		// Se muestran todas las citas del beneficiario
+		try {
+			
+			// Obtenemos y mostramos las citas del beneficiario
+			citas = getControlador().consultarHistoricoCitas(beneficiario.getNif());
+			//Vector <Cita> pendientes = getControlador().consultarCitasPendientes(beneficiario.getNif());
+			if(citas != null) {
+				crearTabla(citas.size());
+				rellenarTabla(citas);
+				// Intento dibujar las citas pasadas de otro color
+				//RenderTabla render = new RenderTabla(citas, pendientes);
+				//tblTablaCitas.setDefaultRenderer (Object.class, render);
+			}
+		
+		} catch(BeneficiarioInexistenteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+		
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
 	}
 
@@ -155,11 +196,12 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 		beneficiario = pnlBeneficiario.getBeneficiario();
 		
 		if(beneficiario != null) {
-		
+
+			btnHistoricoCitas.setEnabled(true);
 			try {
 				
-				// Obtenemos y mostramos las citas del beneficiario
-				citas = getControlador().consultarCitas(beneficiario.getNif());
+				// Obtenemos y mostramos las citas del beneficiario (sólo las pendientes)
+				citas = getControlador().consultarCitasPendientes(beneficiario.getNif());
 				if(citas != null) {
 					crearTabla(citas.size());
 					rellenarTabla(citas);
@@ -203,10 +245,16 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 			// Solicitamos al servidor que se anule la cita
 			getControlador().anularCita(cita);
 
-			// 
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita se ha eliminado correctamente.");
 			((DefaultTableModel)tblTablaCitas.getModel()).removeRow(fila);
 
+			// Volvemos a mostrar sólo las citas pendientes, por si se estaba mostrando todo el histórico
+			citas = getControlador().consultarCitasPendientes(beneficiario.getNif());
+			if(citas != null) {
+				crearTabla(citas.size());
+				rellenarTabla(citas);
+			}
+			
 		} catch(CitaNoValidaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 
@@ -280,6 +328,7 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 		tblTablaCitas.clearSelection();
 		limpiarTabla();
 		btnAnular.setEnabled(false);
+		btnHistoricoCitas.setEnabled(false);
 	}
 
 	//$hide<<$

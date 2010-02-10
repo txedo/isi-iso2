@@ -999,6 +999,67 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 			
+		case ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES:
+			try {
+				// Consultamos las citas del beneficiario con el DNI indicado
+				Vector<Cita> citas = GestorCitas.consultarCitas(idSesion, (String)informacion);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultadas las citas del beneficiario con DNI " + (String)informacion + ".");
+				// Devolvemos sólo aquellas citas cuya fecha sea mayor o igual a la fecha actual
+				Vector<Cita> citasPendientes = new Vector<Cita>();
+				Date fechaActual = new Date();
+				Date fechaCita;
+				for (Cita c: citas) {
+					fechaCita = c.getFechaYHora();
+					// Si el año es mayor, la cita estará pendiente
+					if (fechaCita.getYear() > fechaActual.getYear())
+						citasPendientes.add(c);
+					// Si es el mismo año, pero en un mes posterior, la cita estará pendiente
+					else if ((fechaCita.getYear() == fechaActual.getYear()) && (fechaCita.getMonth() > fechaActual.getMonth()))
+						citasPendientes.add(c);
+					// Si es el mismo año y el mismo mes, la cita estará pendiente en un día posterior al actual
+					else if ((fechaCita.getYear() == fechaActual.getYear()) && (fechaCita.getMonth() == fechaActual.getMonth()) && (fechaCita.getDate() > fechaActual.getDate()))
+						citasPendientes.add(c);
+					// Si es el mismo año, mes y día, la cita estará pendiente si no se ha pasado la hora
+					else if ((fechaCita.getYear() == fechaActual.getYear()) && (fechaCita.getMonth() == fechaActual.getMonth()) && (fechaCita.getDate() == fechaActual.getDate()) && (fechaCita.getHours() > fechaActual.getHours()))
+						citasPendientes.add(c);
+					// Si es el mismo año, mes, dia y hora, la cita estará pendiente si es en minutos posteriores a la fecha actual
+					else if ((fechaCita.getYear() == fechaActual.getYear()) && (fechaCita.getMonth() == fechaActual.getMonth()) && (fechaCita.getDate() == fechaActual.getDate()) && (fechaCita.getHours() == fechaActual.getHours()) && (fechaCita.getMinutes() > fechaActual.getMinutes()))
+						citasPendientes.add(c);	
+				}
+				resultado = citasPendientes;
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL al consultar las citas del médico con DNI " + (String)informacion + ": " + se.getLocalizedMessage());
+				throw se;
+			} catch(BeneficiarioInexistenteException bie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar uno de los beneficiarios que tenía cita con el médico con DNI " + (String)informacion + " para el que se estaban consultando las citas: " + bie.getLocalizedMessage());
+				throw bie;
+			} catch(UsuarioIncorrectoException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el médico con DNI " + (String)informacion + " para el que se iban a consultar las citas: " + uie.getLocalizedMessage());
+				throw uie;
+			} catch(CentroSaludIncorrectoException csie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el centro de salud del médico con DNI " + (String)informacion + " para el que se iban a consultar las citas: " + csie.getLocalizedMessage());
+				throw csie;
+			} catch(NullPointerException npe) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar las citas de un médico con datos no válidos: " + npe.getLocalizedMessage());
+				throw npe;
+			} catch(OperacionIncorrectaException oie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al realizar una operación no permitida de consulta de las citas del médico con DNI " + (String)informacion + ": " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar las citas del médico con DNI " + (String)informacion + ": " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al consultar las citas de un médico: " + e.toString());
+				throw e;
+			}
+			break;
 		case ICodigosMensajeAuxiliar.CONSULTAR_VOLANTE:
 			try {
 				// Consultamos un volante por id
