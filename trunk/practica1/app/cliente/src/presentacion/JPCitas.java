@@ -15,8 +15,9 @@ import dominio.control.ControladorCliente;
 public class JPCitas extends JPBase {
 
 	private static final long serialVersionUID = 3597203747113684691L;
-		
+	
 	private JPCitaTramitar jPanelTramitar;
+	private JPCitaVolanteTramitar jPanelVolanteTramitar;
 	private JPCitaConsultar jPanelConsultar;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
@@ -57,6 +58,11 @@ public class JPCitas extends JPBase {
 				jPanelTramitar.setPreferredSize(new java.awt.Dimension(406, 390));
 			}
 			{
+				jPanelVolanteTramitar = new JPCitaVolanteTramitar(this.getFrame(), this.getControlador());
+				this.add(jPanelVolanteTramitar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jPanelVolanteTramitar.setPreferredSize(new java.awt.Dimension(406, 390));
+			}
+			{
 				jPanelConsultar = new JPCitaConsultar(this.getFrame(), this.getControlador());
 				this.add(jPanelConsultar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 				jPanelConsultar.setPreferredSize(new java.awt.Dimension(406, 390));
@@ -70,6 +76,7 @@ public class JPCitas extends JPBase {
 	
 	private void inicializarOperaciones() {
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCita);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCitaVolante);
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarAnularCita);
 	}
 	
@@ -83,12 +90,19 @@ public class JPCitas extends JPBase {
 		if(jPanelTramitar.isValid()) {
 			jPanelTramitar.setVisible(false);
 		}
+		if(jPanelVolanteTramitar.isValid()) {
+			jPanelVolanteTramitar.setVisible(false);
+		}
 		if(jPanelConsultar.isValid()) {
 			jPanelConsultar.setVisible(false);
 		}
 		if(jPanelListaOperaciones.getOperacion() == OperacionesInterfaz.TramitarCita) {
 			jPanelTramitar.setVisible(true);
 			jPanelTramitar.repaint();
+		}
+		if(jPanelListaOperaciones.getOperacion() == OperacionesInterfaz.TramitarCitaVolante) {
+			jPanelVolanteTramitar.setVisible(true);
+			jPanelVolanteTramitar.repaint();
 		}
 		if(jPanelListaOperaciones.getOperacion() == OperacionesInterfaz.ConsultarAnularCita) {
 			jPanelConsultar.setVisible(true);
@@ -98,6 +112,7 @@ public class JPCitas extends JPBase {
 
 	public void desactivarTramitarCita() {
 		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.TramitarCita);
+		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.TramitarCitaVolante);
 	}
 
 	public void desactivarConsultarAnularCita() {

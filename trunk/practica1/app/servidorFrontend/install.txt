@@ -92,10 +92,12 @@ CREATE TABLE volantes (
        nifBeneficiario VARCHAR(255) NOT NULL,
        dniMedicoEmisor VARCHAR(255) NOT NULL,
        dniMedicoReceptor VARCHAR(255) NOT NULL,
+       idCita INT,
        PRIMARY KEY (id),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
        FOREIGN KEY (dniMedicoEmisor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
-       FOREIGN KEY (dniMedicoReceptor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
+       FOREIGN KEY (dniMedicoReceptor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (idCita) REFERENCES citas (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE sustituciones (

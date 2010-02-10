@@ -10,6 +10,7 @@ public enum OperacionesInterfaz {
 	RegistrarUsuario,
 	ConsultarModificarUsuario,
 	TramitarCita,
+	TramitarCitaVolante,
 	ConsultarAnularCita,
 	EstablecerSustituto,
 	OperacionInvalida

@@ -14,6 +14,7 @@ public class Cita implements Serializable {
 	
 	private static SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm");
 	
+	private long id;
 	private Date fechaYHora;
 	private long duracion;
 	private Beneficiario beneficiario;
@@ -27,6 +28,14 @@ public class Cita implements Serializable {
 		this.duracion = duracion;
 		this.beneficiario = beneficiario;
 		this.medico = medico;
+	}
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 	
 	public Date getFechaYHora() {

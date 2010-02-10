@@ -2,7 +2,6 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 
-
 /**
  * Clase que representa un volante que relaciona un beneficiario, un médico
  * emisor y un médico receptor.
@@ -15,16 +14,26 @@ public class Volante implements Serializable {
 	private Medico emisor;
 	private Medico receptor;
 	private Beneficiario beneficiario;
+	private Cita cita;
 	
 	public Volante() {
 	}
 	
-	public Volante(Medico emisor, Medico receptor, Beneficiario beneficiario) {
+	public Volante(Medico emisor, Medico receptor, Beneficiario beneficiario, Cita cita) {
 		this.emisor = emisor;
 		this.receptor = receptor;
 		this.beneficiario = beneficiario;
+		this.cita = cita;
 	}
 
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+	
 	public Medico getEmisor() {
 		return emisor;
 	}
@@ -48,13 +57,13 @@ public class Volante implements Serializable {
 	public void setBeneficiario(Beneficiario beneficiario) {
 		this.beneficiario = beneficiario;
 	}
-
-	public long getId() {
-		return id;
+	
+	public Cita getCita() {
+		return cita;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setCita(Cita cita) {
+		this.cita = cita;
 	}
 
 	public boolean equals(Object o) {
@@ -64,9 +73,13 @@ public class Volante implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Volante) {
 			v = (Volante)o;
-			dev = receptor.equals(v.getReceptor()) && emisor.equals(v.getEmisor()) && beneficiario.equals(v.getBeneficiario());
+			dev = receptor.equals(v.getReceptor()) && emisor.equals(v.getEmisor()) && beneficiario.equals(v.getBeneficiario()) && cita.equals(v.getCita());
 		}
 		return dev;
 	}
 
+	public String toString() {
+		return "E:" + emisor.getDni() + ", R:" + receptor.getDni() + ", B:" + beneficiario.getNif() + ", " + (cita == null ? "(sin cita)" : cita.getFechaYHora().toString());
+	}
+	
 }

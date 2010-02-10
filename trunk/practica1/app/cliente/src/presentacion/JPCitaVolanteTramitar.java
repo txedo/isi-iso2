@@ -26,9 +26,11 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
+import dominio.conocimiento.Volante;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.FechaNoValidaException;
+import excepciones.IdVolanteIncorrectoException;
 import excepciones.MedicoInexistenteException;
 
 /**
@@ -45,14 +47,18 @@ import excepciones.MedicoInexistenteException;
 */
 /**
 * Panel que permite tramitar citas para beneficiarios del sistema a partir
-* de los volantes almacenados.
+* de los volantes emitidos por los médicos de cabecera.
 */
 public class JPCitaVolanteTramitar extends JPBase {
 
 	private static final long serialVersionUID = 8297107492599580450L;
 
 	private Beneficiario beneficiario;
+	private Volante volante;
 	private Vector<Date> diasOcupados;
+	private Hashtable<Date, Vector<String>> citasOcupadas;
+	private Hashtable<DiaSemana, Vector<String>> horasCitas;
+	
 	private JLabel lblBuscarVolante;
 	private JTextField txtNumeroVolante;
 	private JTextField txtMedicoAsignado;
@@ -61,13 +67,10 @@ public class JPCitaVolanteTramitar extends JPBase {
 	private JLabel lblCentro;
 	private JButton btnBuscarVolante;
 	private JLabel lblNumeroVolante;
-	private JSeparator jSeparator2;
-	private Hashtable<Date, Vector<String>> citasOcupadas;
-	private Hashtable<DiaSemana, Vector<String>> horasCitas;
-
+	private JSeparator sepSeparador2;
 	private JDateChooserCitas dtcDiaCita;
 	private JLabel lblDatos;
-	private JSeparator jSeparator1;
+	private JSeparator sepSeparador1;
 	private JPBeneficiarioConsultar pnlBeneficiario;
 	private JLabel lblHora;
 	private JLabel lblDia;
@@ -77,7 +80,8 @@ public class JPCitaVolanteTramitar extends JPBase {
 	public JPCitaVolanteTramitar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
-		cambiarEstado(false);
+		cambiarEstadoConsulta(false);
+		cambiarEstadoTramitacion(false);
 	}
 	
 	private void initGUI() {
@@ -88,13 +92,18 @@ public class JPCitaVolanteTramitar extends JPBase {
 			this.setPreferredSize(new java.awt.Dimension(430, 485));
 			{
 				btnBuscarVolante = new JButton();
-				this.add(btnBuscarVolante, new AnchorConstraint(228, 933, 557, 353, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnBuscarVolante, new AnchorConstraint(228, 11, 557, 822, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnBuscarVolante.setText("Buscar");
 				btnBuscarVolante.setPreferredSize(new java.awt.Dimension(66, 23));
+				btnBuscarVolante.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnBuscarVolanteActionPerformed(evt);
+					}
+				});
 			}
 			{
 				txtNumeroVolante = new JTextField();
-				this.add(txtNumeroVolante, new AnchorConstraint(228, 805, 557, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtNumeroVolante, new AnchorConstraint(228, 83, 557, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNumeroVolante.setPreferredSize(new java.awt.Dimension(209, 23));
 			}
 			{
@@ -116,9 +125,9 @@ public class JPCitaVolanteTramitar extends JPBase {
 				lblDatos.setPreferredSize(new java.awt.Dimension(83, 16));
 			}
 			{
-				jSeparator1 = new JSeparator();
-				this.add(jSeparator1, new AnchorConstraint(327, 6, 587, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jSeparator1.setPreferredSize(new java.awt.Dimension(418, 10));
+				sepSeparador1 = new JSeparator();
+				this.add(sepSeparador1, new AnchorConstraint(327, 6, 587, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				sepSeparador1.setPreferredSize(new java.awt.Dimension(418, 10));
 			}
 			{
 				pnlBeneficiario = new JPBeneficiarioConsultar(this.getFrame(), this.getControlador());
@@ -176,9 +185,9 @@ public class JPCitaVolanteTramitar extends JPBase {
 				});
 			}
 			{
-				jSeparator2 = new JSeparator();
-				this.add(jSeparator2, new AnchorConstraint(193, 6, 447, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jSeparator2.setPreferredSize(new java.awt.Dimension(418, 6));
+				sepSeparador2 = new JSeparator();
+				this.add(sepSeparador2, new AnchorConstraint(193, 6, 447, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				sepSeparador2.setPreferredSize(new java.awt.Dimension(418, 6));
 			}
 			{
 				txtCentro = new JTextField();
@@ -212,7 +221,9 @@ public class JPCitaVolanteTramitar extends JPBase {
 	//$hide>>$
 
 	private void pnlBeneficiarioConsultarBeneficiarioBuscado(EventObject evt) {
-		// Borramos los datos de la última tramitación de cita
+		// Borramos los datos de la última consulta de
+		// volante y tramitación de cita
+		limpiarCamposConsulta();
 		limpiarCamposTramitacion();
 
 		// Obtenemos el beneficiario que se ha buscado en el panel de consulta
@@ -220,43 +231,71 @@ public class JPCitaVolanteTramitar extends JPBase {
 		beneficiario = pnlBeneficiario.getBeneficiario();
 		
 		if(beneficiario != null) {
-			
-			try {
-				
-				// Activamos el registro de citas
-				cambiarEstado(true);
-				
-				// Consultamos al servidor toda la información
-				// necesaria para el panel de tramitación
-				diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
-				citasOcupadas = getControlador().consultarCitasMedico(beneficiario.getMedicoAsignado().getDni());
-				horasCitas = getControlador().consultarHorasCitas(beneficiario.getMedicoAsignado().getDni());
-				
-				// Deshabilitamos los días de la semana que no son
-				// laborables para el médico del beneficiario
-				dtcDiaCita.quitarDiasSemanaDesactivados();
-				for(DiaSemana dia : DiaSemana.values()) {
-					if(horasCitas.get(dia) == null || horasCitas.get(dia).size() == 0) {
-						dtcDiaCita.ponerDiaSemanaDesactivado(dia);
-					}
-				}
-				
-				// Deshabilitamos los días que el médico no puede
-				// pasar consulta en el calendario del panel
-				dtcDiaCita.quitarFechasDesactivadas();
-				dtcDiaCita.setMinSelectableDate(new Date());
-				for(Date dia : diasOcupados) {
-					dtcDiaCita.ponerFechaDesactivada(dia);
-				}
-							
-			} catch(SQLException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			} catch(RemoteException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			} catch(Exception e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			}
+			// Activamos la búsqueda de volantes
+			cambiarEstadoConsulta(true);
+		}
+	}
+	
+	private void btnBuscarVolanteActionPerformed(ActionEvent evt) {
+		// Borramos los datos de la última tramitación de cita
+		limpiarCamposTramitacion();
 		
+		try {
+			
+			//TODO: Comprobamos el id del volante
+			//Validacion.comprobarVolante(txtNumeroVolante.getText().trim());
+			
+			// Recuperamos los datos del volante del servidor
+			volante = getControlador().consultarVolante(Long.parseLong(txtNumeroVolante.getText().trim()));
+			
+			// Si el volante ya se ha usado para dar una cita, mostramos un error
+			if(volante.getCita() != null) {
+				throw new IdVolanteIncorrectoException("El volante seleccionado ya se ha utilizado para pedir una cita y no se puede usar de nuevo.");
+			}
+			
+			// Mostramos los datos del volante encontrado
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Volante encontrado.");
+			txtNumeroVolante.setText("");
+			txtMedicoAsignado.setText(volante.getReceptor().getApellidos() + ", " + volante.getReceptor().getNombre() + " (" + volante.getReceptor().getDni() + ")");
+			txtCentro.setText(volante.getReceptor().getCentroSalud().getNombre() + "; " + volante.getReceptor().getCentroSalud().getDireccion());
+			
+			// Consultamos al servidor toda la información
+			// necesaria para el panel de tramitación
+			diasOcupados = getControlador().consultarDiasCompletos(volante.getReceptor().getDni());
+			citasOcupadas = getControlador().consultarCitasMedico(volante.getReceptor().getDni());
+			horasCitas = getControlador().consultarHorasCitas(volante.getReceptor().getDni());
+			
+			// Deshabilitamos los días de la semana que no son
+			// laborables para el médico del beneficiario
+			dtcDiaCita.quitarDiasSemanaDesactivados();
+			for(DiaSemana dia : DiaSemana.values()) {
+				if(horasCitas.get(dia) == null || horasCitas.get(dia).size() == 0) {
+					dtcDiaCita.ponerDiaSemanaDesactivado(dia);
+				}
+			}
+			
+			// Deshabilitamos los días que el médico no puede
+			// pasar consulta en el calendario del panel
+			dtcDiaCita.quitarFechasDesactivadas();
+			dtcDiaCita.setMinSelectableDate(new Date());
+			for(Date dia : diasOcupados) {
+				dtcDiaCita.ponerFechaDesactivada(dia);
+			}
+			
+			// Activamos la tramitación de citas
+			cambiarEstadoTramitacion(true);
+
+		} catch(IdVolanteIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtNumeroVolante.selectAll();
+			txtNumeroVolante.grabFocus();
+			
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
 	}
 	
@@ -334,10 +373,11 @@ public class JPCitaVolanteTramitar extends JPBase {
 				// Obtenemos la hora definitiva de la cita
 				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
 				fecha = dtcDiaCita.getDate();
-				// Solicitamos la cita
-				getControlador().pedirCita(beneficiario, beneficiario.getMedicoAsignado().getDni(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes()), IConstantes.DURACION_CITA);				
+				// Solicitamos la cita a partir del volante
+				getControlador().pedirCita(beneficiario, volante.getId(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes()), IConstantes.DURACION_CITA);				
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita ha quedado registrada.");
 				pnlBeneficiario.limpiarCamposConsulta();
+				limpiarCamposConsulta();
 				limpiarCamposTramitacion();
 			}
 
@@ -419,16 +459,30 @@ public class JPCitaVolanteTramitar extends JPBase {
 		return valido;
 	}
 	
-	private void cambiarEstado(boolean estado) {
+	private void cambiarEstadoConsulta(boolean estado) {
+		btnBuscarVolante.setEnabled(estado);
+		txtNumeroVolante.setEnabled(estado);
+		txtMedicoAsignado.setEnabled(estado);
+		txtCentro.setEnabled(estado);
+	}
+	
+	private void cambiarEstadoTramitacion(boolean estado) {
 		btnRegistrar.setEnabled(estado);
 		dtcDiaCita.setEnabled(estado);
 		cmbHorasCitas.setEnabled(estado);
 	}
 	
+	private void limpiarCamposConsulta() {
+		txtNumeroVolante.setText("");
+		txtMedicoAsignado.setText("");
+		txtCentro.setText("");
+		cambiarEstadoConsulta(false);
+	}
+	
 	private void limpiarCamposTramitacion() {
 		dtcDiaCita.setDate(null);
 		rellenarListaHoras(null, null);
-		cambiarEstado(false);
+		cambiarEstadoTramitacion(false);
 	}
 	
 	//$hide<<$
