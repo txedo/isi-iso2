@@ -228,7 +228,11 @@ public class ControladorCliente {
 		 servidor.anularCita(sesion.getId(), cita);
 	 }
 	 
-	 public Vector<Cita> consultarCitas(String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
+	 public Vector<Cita> consultarHistoricoCitas(String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
 		 return servidor.getCitas(sesion.getId(), dni);
+	 }
+	 
+	 public Vector<Cita> consultarCitasPendientes (String dni) throws RemoteException, Exception {
+	 	return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES, dni);
 	 }
 }

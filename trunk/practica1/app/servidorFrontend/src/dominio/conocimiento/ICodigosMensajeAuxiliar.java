@@ -18,9 +18,10 @@ public interface ICodigosMensajeAuxiliar {
 	public final int CONSULTAR_HORAS_CITAS = 1006;
 	public final int CONSULTAR_CITAS_MEDICO = 1005;
 	public final int CONSULTAR_DIAS_COMPLETOS = 1007;
+	public final int CONSULTAR_CITAS_PENDIENTES = 1008;
 
-	public final int OBTENER_MEDICOS_TIPO = 1008;
+	public final int OBTENER_MEDICOS_TIPO = 1009;
 	
-	public final int CONSULTAR_VOLANTE = 1009;
+	public final int CONSULTAR_VOLANTE = 1010;
 		
 }
