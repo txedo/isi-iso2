@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Clase abstracta que representa un usuario del sistema.
  */
-public abstract class Usuario implements Serializable {
+public abstract class Usuario implements Serializable, Cloneable {
 
 	protected String dni;
 	protected String login;
@@ -75,6 +75,8 @@ public abstract class Usuario implements Serializable {
 		this.centro = centro;
 	}
 
+	public abstract Object clone();
+	
 	public boolean equals(Object o) {
 		Usuario u;
 		boolean dev;
@@ -82,7 +84,7 @@ public abstract class Usuario implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Usuario) {
 			u = (Usuario)o;
-			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && centro.equals(u.getCentroSalud());
+			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && centro.equals(u.getCentroSalud());
 		}
 		return dev;
 	}

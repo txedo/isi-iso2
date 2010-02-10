@@ -2,20 +2,23 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 
-public class Direccion implements Serializable{
+public class Direccion implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8460925743520811251L;
 	
-	private String domicilio, numero, piso, puerta, ciudad, provincia;
-	private int id, cp;
+	private int id;
+	private String domicilio;
+	private String numero;
+	private String piso;
+	private String puerta;
+	private String ciudad;
+	private String provincia;
+	private int cp;
 	
-	public Direccion () {}
+	public Direccion() {
+	}
 
-	public Direccion(String domicilio, String numero, String piso, String puerta, String ciudad,
-			String provincia, int cp) {
+	public Direccion(String domicilio, String numero, String piso, String puerta, String ciudad, String provincia, int cp) {
 		this.domicilio = domicilio;
 		this.puerta = puerta;
 		this.ciudad = ciudad;
@@ -25,6 +28,14 @@ public class Direccion implements Serializable{
 		this.cp = cp;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public String getDomicilio() {
 		return domicilio;
 	}
@@ -96,24 +107,15 @@ public class Direccion implements Serializable{
 	}
 	
 	public boolean equals (Object o) {
-		Direccion d = null;
-		boolean dev = false;
-		if (o!=null && o instanceof Direccion) {
+		Direccion d;
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof Direccion) {
 			d = (Direccion)o;
-			dev = d.getDomicilio().equals(domicilio) && d.getNumero().equals(numero) && d.getPiso().equals(piso) 
-					&& d.getPuerta().equals(puerta) && d.getCiudad().equals(ciudad) && d.getProvincia().equals(provincia) && d.getCp() == cp; 
+			dev = d.getDomicilio().equals(domicilio) && d.getNumero().equals(numero) && d.getPiso().equals(piso) && d.getPuerta().equals(puerta) && d.getCiudad().equals(ciudad) && d.getProvincia().equals(provincia) && d.getCp() == cp; 
 		}
 		return dev;
 	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-
 	
 }

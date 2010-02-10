@@ -9,21 +9,21 @@ import java.util.Vector;
 /**
  * Clase que representa un usuario del sistema con rol de médico.
  */
-public class Medico extends Usuario implements Serializable {
+public class Medico extends Usuario implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -8629345838800810415L;
 
 	private ArrayList<PeriodoTrabajo> calendario;
 	private TipoMedico tipoMedico;
 	
+	public Medico() {
+		super();
+	}
+	
 	public Medico(String dni, String login, String password, String nombre, String apellidos, TipoMedico tipo) {
 		super(dni, login, password, nombre, apellidos);
 		calendario = new ArrayList<PeriodoTrabajo>();
 		tipoMedico = tipo;
-	}
-
-	public Medico() {
-		super();
 	}
 	
 	public RolesUsuarios getRol() {
@@ -187,7 +187,15 @@ public class Medico extends Usuario implements Serializable {
 		
 		return horas;
 	}
+	
+	public Object clone() {
+		Medico m;
 		
+		m = new Medico(dni, login, password, nombre, apellidos, tipoMedico);
+		m.setCentroSalud(centro);
+		return m;
+	}
+	
 	public boolean equals(Object o) {
 		Medico m;
 		boolean dev;

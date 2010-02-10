@@ -2,15 +2,14 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import comunicaciones.GestorConexionesBD;
-
 import dominio.conocimiento.Direccion;
 import excepciones.DireccionIncorrectaException;
 
 public class FPDireccion {
 
 	private static final String TABLA_DIRECCION = "direcciones";
+	
 	private static final String COL_ID = "id";
 	private static final String COL_DOMICILIO = "domicilio";
 	private static final String COL_NUMERO = "numero";
@@ -81,4 +80,5 @@ public class FPDireccion {
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_DIRECCION + " WHERE " + COL_ID + " = " + dir.getId());
 		GestorConexionesBD.ejecutar(comando);
 	}
+	
 }

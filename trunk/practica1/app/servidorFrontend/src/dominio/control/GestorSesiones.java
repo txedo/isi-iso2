@@ -1,11 +1,13 @@
 package dominio.control;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
 
+import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Operaciones;
@@ -46,13 +48,21 @@ public class GestorSesiones {
 		EntradaLog entrada;
 		Usuario usuario;
 		Random ran;
+		String passwordEncriptada;
 		boolean encontrado;
 		long idSesion;
 		
 		try {
 			
-			// Comprobamos el login y el password del usuario
-			usuario = FPUsuario.consultar(login, password);
+			// Encriptamos la contraseña del usuario
+			try {
+				passwordEncriptada = Encriptacion.encriptarPasswordSHA1(password);
+			} catch(NoSuchAlgorithmException e) {
+				throw new SQLException("No se puede encriptar la contraseña del usuario.");
+			}
+			
+			// Comprobamos el login y el password (encriptado) del usuario
+			usuario = FPUsuario.consultar(login, passwordEncriptada);
 			
 			// Se comprueba si el usuario ya tenía una sesion iniciada
 			sesionesAbiertas = sesiones.elements();

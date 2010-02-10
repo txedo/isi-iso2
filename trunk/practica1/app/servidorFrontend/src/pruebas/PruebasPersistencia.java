@@ -2,7 +2,6 @@ package pruebas;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
+import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -38,12 +38,11 @@ public class PruebasPersistencia extends TestCase {
 
 	private CentroSalud centro1, centro2, centro3;
 	private EntradaLog entrada1, entrada2, entrada3;
-	private Medico medico1, medico1Pass, medico2, medico2Pass;
+	private Medico medico1, medico2;
 	private Direccion dir1;
-	private Citador citador1, citador1Pass, citador2, citador2Pass;
-	private Administrador administrador1, administrador1Pass;
+	private Citador citador1, citador2;
+	private Administrador administrador1;
 	private Beneficiario beneficiario1, beneficiario2, beneficiario3;
-	private Beneficiario beneficiario1Pass, beneficiario2Pass, beneficiario3Pass;
 	private PeriodoTrabajo periodo1, periodo2;
 	private Sustitucion sustitucion1, sustitucion2;
 	private ConexionBDFrontend conexionF;
@@ -52,7 +51,6 @@ public class PruebasPersistencia extends TestCase {
 	protected void setUp() {
 		Connection bd;
 		PreparedStatement sentencia;
-		ResultSet resultados;
 		AgenteFrontend agente;
 		
 		try {
@@ -87,11 +85,11 @@ public class PruebasPersistencia extends TestCase {
 			entrada1 = new EntradaLog("juan", new Timestamp(109, 11, 1, 10, 10, 10, 0), "create", "Entrada de prueba 1.");
 			entrada2 = new EntradaLog("luis", new Timestamp(109, 5, 25, 7, 30, 0, 0), "update", "Entrada de prueba 2.");
 			entrada3 = new EntradaLog("mal", new Timestamp(109, 9, 10, 8, 0, 0, 0), "mal", "Entrada con errores.");
-			medico1 = new Medico("12345678", "medPrueba", "abcdef", "Eduardo", "P. C.", new Pediatra());
-			medico2 = new Medico("87654321", "medico2", "xxx", "Carmen", "G. G.", new Cabecera());
-			citador1 = new Citador("1112223", "citador", "abcdef", "Luis", "E. G.");
-			citador2 = new Citador("9998887", "citador", "abcdef", "Ana", "B. E.");
-			administrador1 = new Administrador("12121212", "admin", "nimda", "Administrador", "");
+			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", new Pediatra());
+			medico2 = new Medico("87654321A", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", new Cabecera());
+			citador1 = new Citador("1112223A", "citador", Encriptacion.encriptarPasswordSHA1("abcdef"), "Luis", "E. G.");
+			citador2 = new Citador("9998887A", "citador", Encriptacion.encriptarPasswordSHA1("abcdef"), "Ana", "B. E.");
+			administrador1 = new Administrador("12121212", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "Administrador", "");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			citador1.setCentroSalud(centro1);
@@ -105,45 +103,8 @@ public class PruebasPersistencia extends TestCase {
 			beneficiario1.setMedicoAsignado(medico1);
 			beneficiario2.setMedicoAsignado(medico2);
 			beneficiario3.setMedicoAsignado(medico2);
-			// Creamos los mismos usuarios pero con las contraseñas encriptadas
-			sentencia = bd.prepareStatement("SELECT PASSWORD(\"" + medico1.getPassword() + "\")");
-			resultados = sentencia.executeQuery();
-			resultados.next();
-			medico1Pass = new Medico("12345678", "medPrueba", resultados.getString(1), "Eduardo", "P. C.", new Pediatra());
-			resultados.close();
-			sentencia = bd.prepareStatement("SELECT PASSWORD(\"" + medico2.getPassword() + "\")");
-			resultados = sentencia.executeQuery();
-			resultados.next();
-			medico2Pass = new Medico("87654321", "medico2", resultados.getString(1), "Carmen", "G. G.", new Cabecera());
-			resultados.close();
-			sentencia = bd.prepareStatement("SELECT PASSWORD(\"" + citador1.getPassword() + "\")");
-			resultados = sentencia.executeQuery();
-			resultados.next();
-			citador1Pass = new Citador("1112223", "citador", resultados.getString(1), "Luis", "E. G.");
-			resultados.close();
-			sentencia = bd.prepareStatement("SELECT PASSWORD(\"" + citador2.getPassword() + "\")");
-			resultados = sentencia.executeQuery();
-			resultados.next();
-			citador2Pass = new Citador("9998887", "citador", resultados.getString(1), "Ana", "B. E.");
-			resultados.close();
-			sentencia = bd.prepareStatement("SELECT PASSWORD(\"" + administrador1.getPassword() + "\")");
-			resultados = sentencia.executeQuery();
-			resultados.next();
-			administrador1Pass = new Administrador("12121212", "admin", resultados.getString(1), "Administrador", "");
-			resultados.close();
-			medico1Pass.setCentroSalud(centro1);
-			medico2Pass.setCentroSalud(centro1);
-			citador1Pass.setCentroSalud(centro1);
-			citador2Pass.setCentroSalud(centro2);
-			administrador1Pass.setCentroSalud(centro1);
-			sustitucion1 = new Sustitucion(new Date(2009 - 1900, 11, 1), 10, 14, medico1Pass, medico2Pass);
-			sustitucion2 = new Sustitucion(new Date(2009 - 1900, 11, 2), 9, 12, medico1Pass, medico2Pass);
-			beneficiario1Pass = new Beneficiario("11223344W", "121212454545", "Ángel", "L. A.", new Date(1985 - 1900, 4, 1), dir1, "angel129@gmail.com", "900111222", "600111222");
-			beneficiario2Pass = new Beneficiario("88776655R", "444444444444", "José", "R. S.", new Date(1990 - 1900, 8, 20), dir1, "pepepepe@otro.com", "900123123", "600123123");
-			beneficiario3Pass = new Beneficiario("91839184P", "888111111888", "Alicia", "S. L.", new Date(1945 - 1900, 1, 17), dir1, "ali45@yahoo.es", "900455455", "600455455");
-			beneficiario1Pass.setMedicoAsignado(medico1Pass);
-			beneficiario2Pass.setMedicoAsignado(medico2Pass);
-			beneficiario3Pass.setMedicoAsignado(medico2Pass);
+			sustitucion1 = new Sustitucion(new Date(2009 - 1900, 11, 1), 10, 14, medico1, medico2);
+			sustitucion2 = new Sustitucion(new Date(2009 - 1900, 11, 2), 9, 12, medico1, medico2);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -276,7 +237,6 @@ public class PruebasPersistencia extends TestCase {
 			FPCentroSalud.insertar(centro3);
 			// Insertamos varios usuarios correctos
 			medico1.getCalendario().add(periodo1);
-			medico1Pass.getCalendario().add(periodo1);
 			FPUsuario.insertar(medico1);
 			FPUsuario.insertar(citador1);
 			FPUsuario.insertar(administrador1);
@@ -314,17 +274,17 @@ public class PruebasPersistencia extends TestCase {
 		try {
 			// Recuperamos los usuarios insertados de las dos formas posibles
 			usuario = FPUsuario.consultar(medico1.getDni());
-			assertEquals(medico1Pass, usuario);
+			assertEquals(medico1, usuario);
 			usuario = FPUsuario.consultar(citador1.getDni());
-			assertEquals(citador1Pass, usuario);
+			assertEquals(citador1, usuario);
 			usuario = FPUsuario.consultar(administrador1.getDni());
-			assertEquals(administrador1Pass, usuario);
+			assertEquals(administrador1, usuario);
 			usuario = FPUsuario.consultar(medico1.getLogin(), medico1.getPassword());
-			assertEquals(medico1Pass, usuario);
+			assertEquals(medico1, usuario);
 			usuario = FPUsuario.consultar(citador1.getLogin(), citador1.getPassword());
-			assertEquals(citador1Pass, usuario);
+			assertEquals(citador1, usuario);
 			usuario = FPUsuario.consultar(administrador1.getLogin(), administrador1.getPassword());
-			assertEquals(administrador1Pass, usuario);
+			assertEquals(administrador1, usuario);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -332,13 +292,10 @@ public class PruebasPersistencia extends TestCase {
 		try {
 			// Modificamos un usuario
 			citador1.setNombre("Ramón");
-			citador1.setApellidos("P. V.");
-			citador1Pass.setNombre("Ramón");
-			citador1Pass.setApellidos("P. V.");
 			FPUsuario.modificar(citador1);
 			// Comprobamos si los cambios han tenido efecto
 			usuario = FPUsuario.consultar(citador1.getDni());
-			assertEquals(citador1Pass, usuario);
+			assertEquals(citador1, usuario);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -347,12 +304,10 @@ public class PruebasPersistencia extends TestCase {
 			// Modificamos un médico
 			medico1.setLogin("nuevologin");
 			medico1.getCalendario().add(periodo2);
-			medico1Pass.setLogin("nuevologin");
-			medico1Pass.getCalendario().add(periodo2);
 			FPUsuario.modificar(medico1);
 			// Comprobamos si los cambios han tenido efecto
 			usuario = FPUsuario.consultar(medico1.getDni());
-			assertEquals(medico1Pass, usuario);
+			assertEquals(medico1, usuario);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -360,7 +315,6 @@ public class PruebasPersistencia extends TestCase {
 		try {
 			// Modificamos un usuario de forma incorrecta (login repetido)
 			medico1.setLogin("admin");
-			medico1Pass.setLogin("admin");
 			FPUsuario.modificar(medico1);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
@@ -528,13 +482,13 @@ public class PruebasPersistencia extends TestCase {
 		try {
 			// Recuperamos los beneficiarios insertados de las dos formas posibles
 			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario1.getNif());
-			assertEquals(beneficiario1Pass, beneficiario);
+			assertEquals(beneficiario1, beneficiario);
 			beneficiario = FPBeneficiario.consultarPorNSS(beneficiario1.getNss());
-			assertEquals(beneficiario1Pass, beneficiario);
+			assertEquals(beneficiario1, beneficiario);
 			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario2.getNif());
-			assertEquals(beneficiario2Pass, beneficiario);
+			assertEquals(beneficiario2, beneficiario);
 			beneficiario = FPBeneficiario.consultarPorNSS(beneficiario2.getNss());
-			assertEquals(beneficiario2Pass, beneficiario);
+			assertEquals(beneficiario2, beneficiario);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -543,12 +497,10 @@ public class PruebasPersistencia extends TestCase {
 			// Modificamos un beneficiario
 			beneficiario1.setApellidos("V. L.");
 			beneficiario1.setFechaNacimiento(new Date(1985 - 1900, 4, 2));
-			beneficiario1Pass.setApellidos("V. L.");
-			beneficiario1Pass.setFechaNacimiento(new Date(1985 - 1900, 4, 2));
 			FPBeneficiario.modificar(beneficiario1);
 			// Comprobamos si los cambios han tenido efecto
 			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario1.getNif());
-			assertEquals(beneficiario1Pass, beneficiario);
+			assertEquals(beneficiario1, beneficiario);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
