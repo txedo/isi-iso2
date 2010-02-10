@@ -15,6 +15,7 @@ import comunicaciones.ICliente;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
@@ -161,6 +162,10 @@ public class ControladorCliente {
 		servidor.modificar(sesion.getId(), bene);
 	}
 	
+	public void eliminarBeneficiario(Beneficiario bene) throws RemoteException, Exception {
+		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, bene);
+	}
+	
 	public Object operacionesDisponibles() throws RemoteException, Exception {
 		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OPERACIONES_DISPONIBLES, null);
 	}
@@ -200,8 +205,8 @@ public class ControladorCliente {
 		return (Vector<Date>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_DIAS_COMPLETOS, dniMedico);
 	}
 	
-	public Object obtenerMedicos(String tipo) throws RemoteException, Exception {
-		return servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, tipo);
+	public Vector<Medico> obtenerMedicos(CategoriasMedico tipo) throws RemoteException, Exception {
+		return (Vector<Medico>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, tipo);
 	}
 	
 	public void modificarMedico(Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception {

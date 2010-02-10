@@ -124,6 +124,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.AnularCita);
 			operaciones.add(Operaciones.RegistrarBeneficiario);
 			operaciones.add(Operaciones.ModificarBeneficiario);
+			operaciones.add(Operaciones.EliminarBeneficiario);
 		}
 		// Agregamos al vector las operaciones de administradores
 		if (sesion.getRol() == RolesUsuarios.Administrador.ordinal()){

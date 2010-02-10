@@ -113,8 +113,6 @@ public class PruebasBeneficiarios extends PruebasBase {
 		try {
 			// Obtenemos los datos de un beneficiario por nif
 			bene = GestorBeneficiarios.consultarBeneficiario(sesionCitador.getId(), bene1.getNif());
-			System.out.println(bene);
-			System.out.println(bene1);
 			assertEquals(bene, bene1);
 		} catch(Exception e) {
 			fail(e.toString());

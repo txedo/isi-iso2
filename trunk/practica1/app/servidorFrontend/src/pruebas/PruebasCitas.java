@@ -285,11 +285,14 @@ public class PruebasCitas extends PruebasBase {
 		Cita cita;
 		Vector<Cita> citas;
 		Volante volante = null;
+		Volante volante2 = null;
 		
 		try {
-			// 	Creamos un volante valido
+			// 	Creamos volantes valido
 			volante = new Volante(medico1,medico3,bene1,null);
+			volante2 = new Volante(medico1,medico3,bene1,null);
 			FPVolante.insertar(volante);
+			FPVolante.insertar(volante2);
 		} catch(Exception e){
 			fail("No se esperaba ninguna excepcion al crear el volante");
 		}
@@ -324,7 +327,7 @@ public class PruebasCitas extends PruebasBase {
 		try {
 			// Intentamos dar una cita con un idVolante no valido	
 			FPBeneficiario.insertar(bene2);
-			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, volante.getId() + 1, fechaCita1, DURACION);
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, volante.getId() + 1, fechaCita2, DURACION);
 			fail("Se esperaba una excepcion VolanteNoValidoException");
 		} catch(VolanteNoValidoException e) {
 		} catch(Exception e) {
@@ -361,11 +364,20 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita en la misma fecha y hora para el medico receptor del volante		
-			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, volante.getId(), fechaCita2, DURACION);
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, volante2.getId(), fechaCita2, DURACION);
 			fail("Se esperaba FechaNoValidaException");
 		} catch(FechaNoValidaException e){ 
 		} catch(Exception e) {
 			fail("Se esperaba FechaNoValidaException");
+		}
+		
+		try {
+			// Intentamos dar una cita con un volante que ya se ha utilizado		
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, volante2.getId(), fechaCita2, DURACION);
+			fail("Se esperaba VolanteNoValidoException");
+		} catch(VolanteNoValidoException e){ 
+		} catch(Exception e) {
+			fail("Se esperaba VolanteNoValidoException");
 		}
 	}
 	

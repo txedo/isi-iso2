@@ -98,9 +98,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 		super();
 		this.controlador = controlador;
 		initGUI();
-		//TODO:¿y esta inicialización?
-		if (controlador.getSesion().getRol() == RolesUsuarios.Medico.ordinal())
-		jPanelEmitirVolante.inicializarEspecialistas();
 	}
 	
 	private void initGUI() {

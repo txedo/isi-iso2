@@ -7,6 +7,7 @@ import java.util.Vector;
 import persistencia.FPSustitucion;
 import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
+import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
@@ -169,12 +170,12 @@ public class GestorMedicos {
 		}
 	}
 	
-	// TODO: ¿esto qué hace realmente?
-	public static ArrayList<Medico> obtenerMedicos(long idSesion, String tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, MedicoInexistenteException, DireccionInexistenteException {
-		ArrayList<Medico> medicos = null;
+	// Este método recupera todos los médicos que existan del tipo dado 
+	public static Vector<Medico> obtenerMedicos(long idSesion, CategoriasMedico tipoMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		Vector<Medico> medicos = null;
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
-//TODO:Cambiar!		medicos = FPTipoMedico.consultarTodo(tipo);
+		medicos = FPTipoMedico.consultarMedicos(tipoMedico);
 		return medicos;
 	}
 	

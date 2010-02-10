@@ -663,7 +663,7 @@ public class PruebasPersistencia extends PruebasBase {
 	
 	/** Pruebas de la tabla de tipos de médicos */
 	public void testTiposMedico() {
-		Vector<String> dnisMedicos;
+		Vector<Medico> medicos;
 		TipoMedico tipo;
 		String dni;
 		
@@ -688,8 +688,8 @@ public class PruebasPersistencia extends PruebasBase {
 		try {
 			// Intentamos obtener una lista con los médicos especialistas
 			// antes de añadirlos para ver que se devuelve una lista vacía
-			dnisMedicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Especialista);
-			assertTrue(dnisMedicos.size() == 0);
+			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Especialista);
+			assertTrue(medicos.size() == 0);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -718,14 +718,14 @@ public class PruebasPersistencia extends PruebasBase {
 		
 		try {
 			// Obtenemos una lista con los médicos de cabecera
-			dnisMedicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Cabecera);
-			assertTrue(dnisMedicos.size() == 2);
-			assertTrue((dnisMedicos.get(0).equals(medico2.getDni()) && dnisMedicos.get(1).equals(medico3.getDni()))
-			           || (dnisMedicos.get(0).equals(medico3.getDni()) && dnisMedicos.get(1).equals(medico2.getDni())));
+			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Cabecera);
+			assertTrue(medicos.size() == 2);
+			assertTrue((medicos.get(0).getDni().equals(medico2.getDni()) && medicos.get(1).getDni().equals(medico3.getDni()))
+			           || (medicos.get(0).getDni().equals(medico3.getDni()) && medicos.get(1).getDni().equals(medico2.getDni())));
 			// Obtenemos una lista con los médidos pediatras
-			dnisMedicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Pediatra);
-			assertTrue(dnisMedicos.size() == 1);
-			assertTrue(dnisMedicos.get(0).equals(medico4.getDni()));
+			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Pediatra);
+			assertTrue(medicos.size() == 1);
+			assertTrue(medicos.get(0).getDni().equals(medico4.getDni()));
 			// Obtenemos un médico de cabecera aleatorio
 			dni = FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Cabecera);
 			assertTrue(dni.equals(medico2.getDni()) || dni.equals(medico3.getDni()));
@@ -737,8 +737,8 @@ public class PruebasPersistencia extends PruebasBase {
 			// Eliminamos uno de los tipos de médicos
 			FPTipoMedico.eliminar(medico2.getDni());
 			// Comprobamos que los cambios han tenido efecto
-			dnisMedicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Cabecera);
-			assertTrue(dnisMedicos.size() == 1);
+			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Cabecera);
+			assertTrue(medicos.size() == 1);
 		} catch(Exception e) {
 			fail(e.toString());
 		}

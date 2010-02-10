@@ -16,6 +16,7 @@ public enum Operaciones {
 	RegistrarBeneficiario,
 	ConsultarBeneficiario,
 	ModificarBeneficiario,
+	EliminarBeneficiario,
 	RegistrarMedico,
 	ConsultarMedico,
 	EliminarMedico,

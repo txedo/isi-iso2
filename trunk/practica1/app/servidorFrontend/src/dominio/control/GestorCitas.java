@@ -225,7 +225,7 @@ public class GestorCitas {
 		// Comprobamos si realmente existe la cita que se quiere
 		// eliminar y a la vez obtenemos su identificador único
 		try {
-			cita = FPCita.consultar(cita.getFechaYHora(), cita.getDuracion(), cita.getBeneficiario().getNif(), cita.getMedico().getDni());
+			cita = FPCita.consultar(cita.getFechaYHora(), cita.getDuracion(), cita.getMedico().getDni(), cita.getBeneficiario().getNif());
 		} catch(CitaNoValidaException e) {
 			throw new CitaNoValidaException("No existe ninguna cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + " para el médico con DNI " + cita.getMedico().getDni()+ " en el día " + cita.getFechaYHora().toString() + ".");
 		}

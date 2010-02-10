@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.DebugGraphics;
 import javax.swing.DefaultListModel;
@@ -90,7 +92,7 @@ public class JPUsuarioRegistrar extends JPBase {
 	private JTextField txtLogin;
 	private JTextField txtDNI;
 	private JPCalendarioConsultar jPanelConsultarCalendario;
-	private ArrayList<PeriodoTrabajo> periodos = new ArrayList<PeriodoTrabajo>();
+	private Vector<PeriodoTrabajo> periodos = new Vector<PeriodoTrabajo>();
 	
 	public JPUsuarioRegistrar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
@@ -398,8 +400,8 @@ public class JPUsuarioRegistrar extends JPBase {
 		lstTipoMedico.setVisible(false);
 	}
 	
-	public void setPeriodos (ArrayList<PeriodoTrabajo> p) {
-		periodos = new ArrayList<PeriodoTrabajo>();
+	public void setPeriodos (Vector<PeriodoTrabajo> p) {
+		periodos = new Vector<PeriodoTrabajo>();
 		periodos.addAll(p);
 	}
 	
