@@ -549,8 +549,12 @@ public class ServidorFrontend implements IServidorFrontend {
 			throw csie;
 		} catch(VolanteNoValidoException vnve) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir de un volante con el id inexistente o inválido " + idVolante + ": " + vnve.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir de un volante inexistente o inválido con id " + idVolante + ": " + vnve.getLocalizedMessage());
 			throw vnve;
+		} catch(CitaNoValidaException cnve) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir de un volante ya utilizado con id " + idVolante + ": " + cnve.getLocalizedMessage());
+			throw cnve;
 		} catch(FechaNoValidaException fnve) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al pedir una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + " a una fecha y hora no válidas: " + fnve.getLocalizedMessage());
@@ -991,6 +995,49 @@ public class ServidorFrontend implements IServidorFrontend {
 				throw sie;
 			} catch(Exception e) {
 				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al consultar los diás completos de un médico: " + e.toString());
+				throw e;
+			}
+			break;
+			
+		case ICodigosMensajeAuxiliar.CONSULTAR_VOLANTE:
+			try {
+				// Consultamos un volante por id
+				resultado = GestorCitas.consultarVolante(idSesion, (Long)informacion);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultado el volante con id " + (Long)informacion + ".");
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL al consultar el volante con id " + (Long)informacion + ": " + se.getLocalizedMessage());
+				throw se;
+			} catch(VolanteNoValidoException vnve) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar un volante inexistente con id " + (Long)informacion + ": " + vnve.getLocalizedMessage());
+				throw vnve;
+			} catch(CitaNoValidaException cnve) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar la cita asociada al volante con id " + (Long)informacion + ": " + cnve.getLocalizedMessage());
+				throw cnve;
+			} catch(BeneficiarioInexistenteException bie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar el beneficiario asociado al volante con id " + (Long)informacion + ": " + bie.getLocalizedMessage());
+				throw bie;
+			} catch(UsuarioIncorrectoException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al consultar alguno de los médicos asociados al volante con id " + (Long)informacion + ": " + uie.getLocalizedMessage());
+				throw uie;
+			} catch(CentroSaludIncorrectoException csie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el centro de salud de alguno de los médicos asociados al volante con id " + (Long)informacion + ": " + csie.getLocalizedMessage());
+				throw csie;
+			} catch(OperacionIncorrectaException oie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al realizar una operación no permitida de consulta del volante con id " + (Long)informacion + ": " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar el volante con id " + (Long)informacion + ": " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al consultar un volante: " + e.toString());
 				throw e;
 			}
 			break;

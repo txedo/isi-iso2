@@ -20,5 +20,7 @@ public interface ICodigosMensajeAuxiliar {
 	public final int CONSULTAR_DIAS_COMPLETOS = 1007;
 
 	public final int OBTENER_MEDICOS_TIPO = 1008;
+	
+	public final int CONSULTAR_VOLANTE = 1009;
 		
 }

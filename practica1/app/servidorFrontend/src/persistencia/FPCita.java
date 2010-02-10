@@ -10,8 +10,10 @@ import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludIncorrectoException;
+import excepciones.CitaNoValidaException;
 import excepciones.DireccionIncorrectaException;
 import excepciones.UsuarioIncorrectoException;
 
@@ -22,10 +24,43 @@ public class FPCita {
 
 	private static final String TABLA_CITAS = "citas";
 	
+	private static final String COL_ID = "id";
 	private static final String COL_FECHA = "fecha";
 	private static final String COL_DURACION = "duracion";
 	private static final String COL_NIF_BENEFICIARIO = "nifBeneficiario";
 	private static final String COL_DNI_MEDICO = "dniMedico";
+	
+	public static Cita consultar(long id) throws SQLException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
+		ComandoSQL comando;
+		ResultSet datos;
+		Beneficiario bene;
+		Cita cita;
+		GregorianCalendar fechaAux;
+		Timestamp fechaTimeStamp;
+		Date fecha;
+		int duracion;
+		Medico med;
+		
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CITAS + " WHERE " + COL_ID + " = ?", id);
+		datos = GestorConexionesBD.consultar(comando);
+		datos.next();
+		
+		// Si no se obtienen datos, es porque no existe la cita 
+		if(datos.getRow() == 0) {
+			throw new CitaNoValidaException("No existe ninguna cita con el id " + String.valueOf(id) + ".");
+		} else {
+			// Establecemos los datos de la cita
+			fechaTimeStamp = datos.getTimestamp(COL_FECHA);
+			fechaAux = new GregorianCalendar(fechaTimeStamp.getYear()+1900, fechaTimeStamp.getMonth(), fechaTimeStamp.getDate(), fechaTimeStamp.getHours(), fechaTimeStamp.getMinutes());
+			fecha = fechaAux.getTime();
+			duracion = datos.getInt(COL_DURACION);
+			med = (Medico) FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			bene = (Beneficiario) FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
+			cita = new Cita(fecha, duracion, bene, med);
+		}
+		return cita;
+	}
 	
 	public static Vector<Cita> consultarPorBeneficiario(String dniBeneficiario) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
 		ComandoSQL comando;
@@ -127,23 +162,30 @@ public class FPCita {
 		return existe;
 	}
 
-	public static void insertar(Cita c) throws SQLException {
+	public static void insertar(Cita cita) throws SQLException {
 		ComandoSQL comando;
+		ResultSet datos;
 
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CITAS
 				+ " (" + COL_FECHA + ", " + COL_DURACION + ", " + COL_NIF_BENEFICIARIO
 				+ ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?)",
-				c.getFechaYHora(), c.getDuracion(), c.getBeneficiario().getNif(), c.getMedico().getDni());
+				cita.getFechaYHora(), cita.getDuracion(), cita.getBeneficiario().getNif(), cita.getMedico().getDni());
 		GestorConexionesBD.ejecutar(comando);
+		
+		// Cambiamos el id de la nueva cita
+		comando = new ComandoSQLSentencia("SELECT LAST_INSERT_ID()");			
+		datos = GestorConexionesBD.consultar(comando);
+		datos.next();
+		cita.setId(datos.getInt("LAST_INSERT_ID()"));
 	}
 
-	public static void eliminar(Cita c) throws SQLException {
+	public static void eliminar(Cita cita) throws SQLException {
 		ComandoSQL comando;
 
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_CITAS
-				+ " WHERE " + COL_FECHA + "=? AND " + COL_DURACION + "=? AND " + COL_NIF_BENEFICIARIO
-				+ "=? AND " + COL_DNI_MEDICO + "=?",
-				c.getFechaYHora(), c.getDuracion(), c.getBeneficiario().getNif(), c.getMedico().getDni());
+				+ " WHERE " + COL_FECHA + " = ? AND " + COL_DURACION + " = ? AND "
+				+ COL_NIF_BENEFICIARIO + " = ? AND " + COL_DNI_MEDICO + " = ?",
+				cita.getFechaYHora(), cita.getDuracion(), cita.getBeneficiario().getNif(), cita.getMedico().getDni());
 		GestorConexionesBD.ejecutar(comando);
 	}
 

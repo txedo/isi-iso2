@@ -136,7 +136,7 @@ public class GestorCitas {
 	}
 	
 	// Método para pedir una nueva cita para un cierto beneficiario a partir de un volante
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException, FechaNoValidaException, NullPointerException, DireccionIncorrectaException {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, VolanteNoValidoException, FechaNoValidaException, NullPointerException, CitaNoValidaException, DireccionIncorrectaException {
 		Vector<Cita> citas;
 		Calendar hora;
 		Medico medico;
@@ -159,6 +159,11 @@ public class GestorCitas {
 
 		// Obtenemos los datos del volante con el id indicado
 		volante = FPVolante.consultar(idVolante);
+		
+		// Comprobamos que el volante no se haya utilizado ya
+		if(volante.getCita() != null) {
+			throw new VolanteNoValidoException("El volante con id " + String.valueOf(idVolante) + " ya se ha utilizado para tramitar una cita y no se puede usar de nuevo.");
+		}
 		
 		// Comprobamos que el beneficiario que se pasa por parámetro y
 		// el beneficiario que tiene asociado el volante sean los mismos
@@ -199,6 +204,11 @@ public class GestorCitas {
 		cita.setFechaYHora(fechaYHora);
 		FPCita.insertar(cita);
 		
+		// Guardamos el id de la cita en el volante para que no
+		// se pueda usar el mismo volante varias veces
+		volante.setCita(cita);
+		FPVolante.modificar(volante);
+		
 		return cita; 
 	}
 	
@@ -220,7 +230,7 @@ public class GestorCitas {
 		// Eliminamos la cita de la base de datos
 		FPCita.eliminar(cita);
 	}
-	
+
 	// Método para emitir un volante para un beneficiario para un especialista
 	public static long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludIncorrectoException, NullPointerException, DireccionIncorrectaException {
 		Usuario usuario;
@@ -275,11 +285,25 @@ public class GestorCitas {
 		volante.setBeneficiario(beneficiario);
 		volante.setEmisor(emisor);
 		volante.setReceptor(destino);
+		volante.setCita(null);
 		FPVolante.insertar(volante);
 		
 		return volante.getId();
 	}
 
+	// Método para obtener los datos de un volante
+	public static Volante consultarVolante(long idSesion, long idVolante) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludIncorrectoException, DireccionIncorrectaException {
+		Volante volante;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarVolante);
+
+		// Obtenemos el volante con el id indicado
+		volante = FPVolante.consultar(idVolante);
+		
+		return volante;
+	}
+	
 	// Método que devuelve las horas de cada día de la semana
 	// en las que un médico puede pasar una cita
 	public static Hashtable<DiaSemana, Vector<String>> consultarHorasCitas(long idSesion, String dniMedico) throws SQLException, CentroSaludIncorrectoException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException, NullPointerException, DireccionIncorrectaException {

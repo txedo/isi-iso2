@@ -327,7 +327,7 @@ public class PruebasCitas extends TestCase{
 		
 		try {
 			// 	Creamos un volante valido
-			volante = new Volante(medico1,medico3,bene1);
+			volante = new Volante(medico1,medico3,bene1,null);
 			FPVolante.insertar(volante);
 		} catch(Exception e){
 			fail("No se esperaba ninguna excepcion al crear el volante");

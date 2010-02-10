@@ -177,6 +177,9 @@ public class JPOperaciones extends JPanel {
 		case TramitarCita:
 			nombre = "Tramitar cita";
 			break;
+		case TramitarCitaVolante:
+			nombre = "Tramitar cita<br>con volante";
+			break;
 		case ConsultarAnularCita:
 			nombre = "Consultar o<br>anular cita";
 			break;

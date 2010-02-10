@@ -21,6 +21,7 @@ import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Usuario;
+import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CitaNoValidaException;
@@ -209,6 +210,10 @@ public class ControladorCliente {
 	
 	public long emitirVolante(Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception { 
 		return servidor.emitirVolante(sesion.getId(), bene, emisor, receptor);
+	}
+	
+	public Volante consultarVolante(long idVolante) throws RemoteException, Exception {
+		return (Volante)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_VOLANTE, idVolante);
 	}
 	
 	public Cita pedirCita(Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception { 

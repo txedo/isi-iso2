@@ -160,9 +160,6 @@ public class JPCitaTramitar extends JPBase {
 			
 			try {
 				
-				// Activamos el registro de citas
-				cambiarEstado(true);
-				
 				// Consultamos al servidor toda la información
 				// necesaria para el panel de tramitación
 				diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
@@ -185,7 +182,10 @@ public class JPCitaTramitar extends JPBase {
 				for(Date dia : diasOcupados) {
 					dtcDiaCita.ponerFechaDesactivada(dia);
 				}
-							
+				
+				// Activamos el registro de citas
+				cambiarEstado(true);
+
 			} catch(SQLException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			} catch(RemoteException e) {

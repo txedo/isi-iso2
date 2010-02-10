@@ -23,5 +23,6 @@ public enum Operaciones {
 	ModificarCalendario,
 	EstablecerSustituto,
 	ConsultarMedicosTipo,
-	CalcularDiasCompletosMedico
+	CalcularDiasCompletosMedico,
+	ConsultarVolante
 }
