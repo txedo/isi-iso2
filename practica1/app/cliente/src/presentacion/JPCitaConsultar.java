@@ -164,13 +164,13 @@ public class JPCitaConsultar extends JPBase implements IConstantes {
 			
 			// Obtenemos y mostramos las citas del beneficiario
 			citas = getControlador().consultarHistoricoCitas(beneficiario.getNif());
-			//Vector <Cita> pendientes = getControlador().consultarCitasPendientes(beneficiario.getNif());
+			Vector <Cita> pendientes = getControlador().consultarCitasPendientes(beneficiario.getNif());
 			if(citas != null) {
 				crearTabla(citas.size());
 				rellenarTabla(citas);
 				// Intento dibujar las citas pasadas de otro color
-				//RenderTabla render = new RenderTabla(citas, pendientes);
-				//tblTablaCitas.setDefaultRenderer (Object.class, render);
+				RenderTabla render = new RenderTabla(citas, pendientes);
+				tblTablaCitas.setDefaultRenderer (Object.class, render);
 			}
 		
 		} catch(BeneficiarioInexistenteException e) {

@@ -199,6 +199,8 @@ public class PruebasMedicos extends PruebasBase {
 			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico1);
 			// Comprobamos que el médico se haya actualizado correctamente
 			medicoGet = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico1.getDni());
+			System.out.println(medico1);
+			System.out.println(medicoGet);
 			assertEquals(medico1, medicoGet);
 		} catch(Exception e) {
 			fail(e.toString());

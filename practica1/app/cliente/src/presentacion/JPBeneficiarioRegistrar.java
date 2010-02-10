@@ -376,7 +376,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			dir.setPuerta(txtPuerta.getText());
 			dir.setCiudad(txtLocalidad.getText());
 			dir.setProvincia(txtProvincia.getText());
-			dir.setCp(Integer.parseInt(txtCP.getText()));
+			dir.setCP(Integer.parseInt(txtCP.getText()));
 			beneficiario.setDireccion(dir);
 			beneficiario.setCorreo(txtCorreoElectronico.getText().trim());
 			beneficiario.setTelefono(txtTelefonoFijo.getText().trim());

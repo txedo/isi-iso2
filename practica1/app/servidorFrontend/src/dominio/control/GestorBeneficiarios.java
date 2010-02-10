@@ -7,16 +7,20 @@ import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Pediatra;
+import dominio.conocimiento.Usuario;
 import persistencia.FPBeneficiario;
 import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.CentroSaludIncorrectoException;
 import excepciones.CentroSaludInexistenteException;
+import excepciones.DireccionIncorrectaException;
 import excepciones.DireccionInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
+import excepciones.UsuarioInexistenteException;
 
 /**
  * Clase encargada de consultar, añadir y modificar beneficiarios en
@@ -44,6 +48,12 @@ public class GestorBeneficiarios {
 		// Comprobamos si el beneficiario tiene más de 14 años pero
 		// aún sigue con un pediatra asignado como médico
 		comprobarMedicoBeneficiario(beneficiario);
+		Medico m = comprobarMedicoBeneficiario(beneficiario);
+		// Si se ha cambiado el médico, se asigna el nuevo y se modifica
+		if (!m.equals(beneficiario.getMedicoAsignado())) {
+			beneficiario.setMedicoAsignado(m);
+			FPBeneficiario.modificar(beneficiario);
+		}
 		
 		return beneficiario;
 	}
@@ -65,7 +75,12 @@ public class GestorBeneficiarios {
 
 		// Comprobamos si el beneficiario tiene más de 14 años pero
 		// aún sigue con un pediatra asignado como médico
-		comprobarMedicoBeneficiario(beneficiario);
+		Medico m = comprobarMedicoBeneficiario(beneficiario);
+		// Si se ha cambiado el médico, se asigna el nuevo y se modifica
+		if (!m.equals(beneficiario.getMedicoAsignado())) {
+			beneficiario.setMedicoAsignado(m);
+			FPBeneficiario.modificar(beneficiario);
+		}
 
 		return beneficiario;
 	}
@@ -141,25 +156,47 @@ public class GestorBeneficiarios {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ModificarBeneficiario);
 		
 		// Comprobamos si existe el beneficiario que se quiere modificar
-		// y, en ese caso, lo modificamos
 		FPBeneficiario.consultarPorNIF(beneficiario.getNif());
+		
+		// Miramos si, al cambiar su fecha de nacimiento, hay que modificar su médico asignado
+		Medico m = comprobarMedicoBeneficiario(beneficiario);
+		// Si se ha cambiado el médico, se asigna el nuevo y se modifica
+		if (!m.equals(beneficiario.getMedicoAsignado()))
+			beneficiario.setMedicoAsignado(m);
+		
 		FPBeneficiario.modificar(beneficiario);
 	}
 	
-	private static void comprobarMedicoBeneficiario(Beneficiario beneficiario) throws SQLException, CentroSaludInexistenteException, UsuarioIncorrectoException, DireccionInexistenteException {
-		Medico medico;
+	// Método para eliminar un beneficiario del sistema
+	public static void eliminarBeneficiario(long idSesion, Beneficiario bene) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		// Comprobamos los parámetros pasados
+		if(bene == null) {
+			throw new NullPointerException("El beneficiario que se va a eliminar no puede ser nulo.");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarBeneficiario);
+		
+		// Comprobamos si realmente existe el usuario que se quiere borrar
+		FPBeneficiario.consultarPorNIF(bene.getNif());
+		
+		// Borramos los datos del beneficiario
+		FPBeneficiario.eliminar(bene);
+	}
+	
+	private static Medico comprobarMedicoBeneficiario(Beneficiario beneficiario) throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException {
+		Medico medico = beneficiario.getMedicoAsignado();
 		
 		// Si el beneficiario tiene más de 14 años y tenía asignado un
-		// pediatra, se le asigna un médico de cabecera y se actualiza
+		// pediatra, se le busca un médico de cabecera
 		if(beneficiario.getEdad() >= EDAD_PEDIATRA && beneficiario.getMedicoAsignado().getTipoMedico().getCategoria() == CategoriasMedico.Pediatra) {
 			try {
 				medico = (Medico)FPUsuario.consultar(FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Cabecera));
-				beneficiario.setMedicoAsignado(medico);
-				FPBeneficiario.modificar(beneficiario);
 			} catch(UsuarioIncorrectoException e) {
-				throw new UsuarioIncorrectoException("No se puede actualizar el médico asignado al beneficiario porque no existe ningún médico de cabecera en el sistema.");
+				throw new UsuarioIncorrectoException("No se puede cambiar el médico asignado al beneficiario porque no existe ningún médico de cabecera en el sistema.");
 			}
 		}
+		return medico;
 	}
 	
 }

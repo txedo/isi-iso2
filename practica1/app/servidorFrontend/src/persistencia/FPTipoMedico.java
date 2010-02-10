@@ -9,8 +9,11 @@ import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Especialista;
+import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.TipoMedico;
+import excepciones.CentroSaludInexistenteException;
+import excepciones.DireccionInexistenteException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
@@ -60,20 +63,20 @@ public class FPTipoMedico {
 		return tipo;
 	}
 
-	public static Vector<String> consultarMedicos(CategoriasMedico tipo) throws SQLException {
+	public static Vector<Medico> consultarMedicos(CategoriasMedico tipo) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
-		Vector<String> lista;
+		Vector<Medico> lista;
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_TIPOS_MEDICO
 				+ " WHERE " + COL_TIPO + " = ?", tipo.ordinal());
 		datos = GestorConexionesBD.consultar(comando);
 		
-		// Devolvemos la lista de DNIs de médicos que son del tipo indicado
-		lista = new Vector<String>();
+		// Devolvemos la lista de médicos que son del tipo indicado
+		lista = new Vector<Medico>();
 		while(datos.next()) {
-			lista.add(datos.getString(COL_DNI_MEDICO));
+			lista.add((Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO)));
 		}
 
 		return lista;

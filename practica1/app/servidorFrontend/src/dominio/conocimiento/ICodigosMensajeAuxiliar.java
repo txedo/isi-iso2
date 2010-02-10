@@ -23,5 +23,7 @@ public interface ICodigosMensajeAuxiliar {
 	public final int OBTENER_MEDICOS_TIPO = 1009;
 	
 	public final int CONSULTAR_VOLANTE = 1010;
+	
+	public final int ELIMINAR_BENEFICIARIO = 1011;
 		
 }

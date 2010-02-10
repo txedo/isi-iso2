@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 
@@ -50,7 +51,7 @@ public class JPCalendarioConsultar extends JPBase {
 	
 	private static final long serialVersionUID = -8579214415627504678L;
 	private ArrayList<JPPeriodosTrabajo> periodos = null;
-	private ArrayList<PeriodoTrabajo> periodosTrabajo;
+	private Vector<PeriodoTrabajo> periodosTrabajo;
 	private JPPeriodosTrabajo pTrabajo;
 	private int lastSelectedIndex = -1;
 	private Medico mMedico;
@@ -206,7 +207,7 @@ public class JPCalendarioConsultar extends JPBase {
 	}
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
-		ArrayList<PeriodoTrabajo> periodos;
+		Vector<PeriodoTrabajo> periodos;
 		try {
 			Validacion.comprobarNIF(txtNIF.getText());
 			mMedico = getControlador().consultarMedico(txtNIF.getText());
@@ -238,7 +239,7 @@ public class JPCalendarioConsultar extends JPBase {
 		periodos.add(pTrabajo);
 	}
 	
-	private void actualizarPeriodosTrabajo(ArrayList<PeriodoTrabajo> periodosTrabajoAActualizar) {
+	private void actualizarPeriodosTrabajo(Vector<PeriodoTrabajo> periodosTrabajoAActualizar) {
 		for (PeriodoTrabajo p : periodosTrabajoAActualizar) {
 			DiaSemana s = p.getDia();
 			int hora_inicio = p.getHoraInicio();
@@ -290,7 +291,7 @@ public class JPCalendarioConsultar extends JPBase {
 	
 	private void btnGuardarActionPerformed(ActionEvent evt) {
 		// Siempre creamos una nueva instancia del ArrayList para evitar errores
-		periodosTrabajo = new ArrayList<PeriodoTrabajo>();
+		periodosTrabajo = new Vector<PeriodoTrabajo>();
 		try {
 			// Si no esta marcada la propagacion de cambios, recorremos todo el array menos el último elemento
 			if (!cbModificarTodos.isSelected()) {

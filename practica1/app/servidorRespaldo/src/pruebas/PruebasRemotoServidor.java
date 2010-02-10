@@ -120,7 +120,7 @@ public class PruebasRemotoServidor extends TestCase {
 		
 		try {
 			// Actualizamos el estado de la ventana
-			conexion.ponerMensaje(null, ITiposMensajeLog.TIPO_OTRO, "Mensaje de prueba");
+			conexion.ponerMensaje(null, ITiposMensajeLog.TIPO_INFO, "Mensaje de prueba");
 			assertEquals(ventana.getMensajes().substring(ventana.getMensajes().lastIndexOf(':')), ": Mensaje de prueba\n");
 			conexion.actualizarClientesEscuchando(2);
 			assertEquals(ventana.getClientesEscuchando(), 2);
