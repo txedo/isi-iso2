@@ -73,7 +73,12 @@ public class Volante implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Volante) {
 			v = (Volante)o;
-			dev = receptor.equals(v.getReceptor()) && emisor.equals(v.getEmisor()) && beneficiario.equals(v.getBeneficiario()) && cita.equals(v.getCita());
+			dev = receptor.equals(v.getReceptor()) && emisor.equals(v.getEmisor()) && beneficiario.equals(v.getBeneficiario());
+			if(cita == null) {
+				dev = dev && v.getCita() == null;
+			} else {
+				dev = dev && v.getCita() != null && cita.equals(v.getCita());
+			}
 		}
 		return dev;
 	}

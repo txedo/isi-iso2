@@ -1,13 +1,13 @@
 package excepciones;
 
-public class DireccionIncorrectaException extends Exception {
+public class DireccionInexistenteException extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1389384239724340389L;
 
-	public DireccionIncorrectaException(String mensaje) {
+	public DireccionInexistenteException(String mensaje) {
 		super(mensaje);
 	}
 }

@@ -1,25 +1,14 @@
 package pruebas;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Vector;
-
-import junit.framework.TestCase;
-
-import persistencia.AgenteFrontend;
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
-import persistencia.FPCita;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
-
-import comunicaciones.ConexionBDFrontend;
-import comunicaciones.GestorConexionesBD;
-
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
@@ -46,7 +35,7 @@ import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.VolanteNoValidoException;
 
-public class PruebasCitas extends TestCase{
+public class PruebasCitas extends PruebasBase {
 
 	private CentroSalud centro1;
 	private Medico medico1, medico2, medico3, medico4;
@@ -56,7 +45,6 @@ public class PruebasCitas extends TestCase{
 	private Usuario usu1;
 	private Direccion dir1;
 	private PeriodoTrabajo periodo1, periodo2, periodo3;
-	private ConexionBDFrontend conexionF;
 	private ISesion sesionCitador;
 	private ISesion sesionAdmin;
 	private ISesion sesionMedico;
@@ -71,38 +59,9 @@ public class PruebasCitas extends TestCase{
 	private final long DURACION = 15;
 	
 	protected void setUp() {
-		Connection bd;
-		PreparedStatement sentencia;
-		AgenteFrontend agente;
-		
 		try {
-			// Borramos la base de datos
-			agente = AgenteFrontend.getAgente();
-			agente.setIP("127.0.0.1");
-			agente.setPuerto(3306);
-			agente.abrir();
-			bd = agente.getConexion();
-			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM periodosTrabajo");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM usuarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM citas");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM centros");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM volantes");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM direcciones");
-			sentencia.executeUpdate();
-			// Ponemos la conexión local con la base de datos
-			conexionF = new ConexionBDFrontend();
-			GestorConexionesBD.ponerConexion(conexionF);
+			// Preparamos la base de datos
+			super.setUp();
 			// Inicializamos fechas de nacimiento para los beneficiarios y las fechas de las citas
 			SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
 			fecha1 = formatoDelTexto.parse("1/8/1951");
@@ -163,21 +122,22 @@ public class PruebasCitas extends TestCase{
 			FPUsuario.insertar(usu1);
 			FPBeneficiario.insertar(bene1);
 			// Iniciamos tres sesiones con roles de citador, administrador y medico
-			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), citador1.getPassword());
-			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), admin1.getPassword());
-			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), medico1.getPassword());
+			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
+			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "nimda");
+			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 	}
 	
 	protected void tearDown() {
-		// Cerramos las sesiones y quitamos la conexión local con la base de datos
 		try {
+			// Cerramos las sesiones
 			GestorSesiones.liberar(((Sesion)sesionCitador).getId());
 			GestorSesiones.liberar(((Sesion)sesionAdmin).getId());
 			GestorSesiones.liberar(((Sesion)sesionMedico).getId());
-			GestorConexionesBD.quitarConexiones();
+			// Cerramos la base de datos
+			super.tearDown();
 		} catch(SQLException e) {
 			fail(e.toString());
 		}

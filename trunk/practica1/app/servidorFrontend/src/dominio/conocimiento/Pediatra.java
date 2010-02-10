@@ -14,4 +14,14 @@ public class Pediatra extends TipoMedico implements Serializable {
 		return CategoriasMedico.Pediatra;
 	}
 	
+	public boolean equals(Object o) {
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof Pediatra) {
+			dev = true; 
+		}
+		return dev;
+	}
+	
 }

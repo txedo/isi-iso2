@@ -14,4 +14,14 @@ public class Cabecera extends TipoMedico implements Serializable {
 		return CategoriasMedico.Cabecera;
 	}
 	
+	public boolean equals(Object o) {
+		boolean dev;
+		
+		dev = false;
+		if(o != null && o instanceof Cabecera) {
+			dev = true; 
+		}
+		return dev;
+	}
+	
 }
