@@ -2,6 +2,8 @@ package presentacion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DebugGraphics;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,6 +20,7 @@ import javax.swing.JList;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -33,6 +37,7 @@ import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Validacion;
+import dominio.conocimiento.IConstantes;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CalendarioNoCreadoException;
@@ -58,7 +63,7 @@ import excepciones.UsuarioYaExistenteException;
 /**
 * Panel que permite registrar nuevos usuarios en el sistema.
 */
-public class JPUsuarioRegistrar extends JPBase {
+public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 
 	private static final long serialVersionUID = 4857739286462180783L;
 	
@@ -89,12 +94,15 @@ public class JPUsuarioRegistrar extends JPBase {
 	private JTextField txtNombre;
 	private JPasswordField txtPassword2;
 	private JTextField txtLogin;
-	private JTextField txtDNI;
-	private JPCalendarioConsultar jPanelConsultarCalendario;
-	private Vector<PeriodoTrabajo> periodos = new Vector<PeriodoTrabajo>();
+	private JTextField txtNIF;
+	private JCheckBox chbCalendario;
+	private JButton btnCalendario;
+	private JLabel lblCalendario;
+	private Vector<PeriodoTrabajo> periodos;
 	
 	public JPUsuarioRegistrar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
+		periodos = new Vector<PeriodoTrabajo>();
 		initGUI();
 		crearModelos();
 	}
@@ -106,15 +114,40 @@ public class JPUsuarioRegistrar extends JPBase {
 			this.setSize(430, 390);
 			this.setPreferredSize(new java.awt.Dimension(430, 390));
 			{
+				chbCalendario = new JCheckBox();
+				this.add(chbCalendario, new AnchorConstraint(233, 654, 644, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				chbCalendario.setText("Configurado");
+				chbCalendario.setPreferredSize(new java.awt.Dimension(97, 18));
+				chbCalendario.setFocusable(false);
+				chbCalendario.setEnabled(false);
+			}
+			{
+				btnCalendario = new JButton();
+				this.add(btnCalendario, new AnchorConstraint(232, 905, 650, 303, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				btnCalendario.setText("Configurar...");
+				btnCalendario.setPreferredSize(new java.awt.Dimension(109, 21));
+				btnCalendario.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnCalendarioActionPerformed(evt);
+					}
+				});
+			}
+			{
+				lblCalendario = new JLabel();
+				this.add(lblCalendario, new AnchorConstraint(235, 332, 675, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblCalendario.setText("Calendario laboral");
+				lblCalendario.setPreferredSize(new java.awt.Dimension(86, 14));
+			}
+			{
 				lblEspecialidad = new JLabel();
-				this.add(lblEspecialidad, new AnchorConstraint(249, 347, 680, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblEspecialidad, new AnchorConstraint(262, 347, 680, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblEspecialidad.setText("Especialidad");
 				lblEspecialidad.setPreferredSize(new java.awt.Dimension(71, 16));
 			}
 			{
 				txtEspecialidad = new JTextField();
-				this.add(txtEspecialidad, new AnchorConstraint(246, 17, 691, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtEspecialidad.setPreferredSize(new java.awt.Dimension(229, 23));
+				this.add(txtEspecialidad, new AnchorConstraint(259, 18, 691, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtEspecialidad.setPreferredSize(new java.awt.Dimension(228, 19));
 			}
 			{
 				btnRestablecer = new JButton();
@@ -140,7 +173,7 @@ public class JPUsuarioRegistrar extends JPBase {
 			}
 			{
 				lstTipoMedico = new JList();
-				this.add(lstTipoMedico, new AnchorConstraint(180, 961, 601, 303, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lstTipoMedico, new AnchorConstraint(173, 961, 601, 303, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lstTipoMedico.setPreferredSize(new java.awt.Dimension(110, 54));
 				lstTipoMedico.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 				lstTipoMedico.setVisible(false);
@@ -152,7 +185,7 @@ public class JPUsuarioRegistrar extends JPBase {
 			}
 			{
 				lstTipoUsuario = new JList();
-				this.add(lstTipoUsuario, new AnchorConstraint(180, 684, 773, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lstTipoUsuario, new AnchorConstraint(173, 684, 773, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lstTipoUsuario.setPreferredSize(new java.awt.Dimension(110, 54));
 				lstTipoUsuario.setDebugGraphicsOptions(DebugGraphics.BUFFERED_OPTION);
 				lstTipoUsuario.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -189,9 +222,9 @@ public class JPUsuarioRegistrar extends JPBase {
 				txtNombre.setPreferredSize(new java.awt.Dimension(229, 22));
 			}
 			{
-				txtDNI = new JTextField();
-				this.add(txtDNI, new AnchorConstraint(12, 17, 109, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtDNI.setPreferredSize(new java.awt.Dimension(229, 22));
+				txtNIF = new JTextField();
+				this.add(txtNIF, new AnchorConstraint(12, 17, 109, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtNIF.setPreferredSize(new java.awt.Dimension(229, 22));
 			}
 			{
 				lblTipoUsuario = new JLabel();
@@ -236,6 +269,7 @@ public class JPUsuarioRegistrar extends JPBase {
 				lblNIF.setPreferredSize(new java.awt.Dimension(172, 14));
 			}
 			cambiarEstadoEspecialidad(false);
+			cambiarEstadoConfiguracionCalendario(false);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -253,7 +287,7 @@ public class JPUsuarioRegistrar extends JPBase {
 		try {
 			
 			// Comprobamos todos los campos
-			Validacion.comprobarNIF(txtDNI.getText());
+			Validacion.comprobarNIF(txtNIF.getText());
 			Validacion.comprobarNombre(txtNombre.getText());
 			Validacion.comprobarApellidos(txtApellidos.getText());
 			Validacion.comprobarContraseña(txtPassword.getText());	
@@ -279,7 +313,7 @@ public class JPUsuarioRegistrar extends JPBase {
 					usu = new Medico();
 					break;
 			}
-			usu.setDni(txtDNI.getText());
+			usu.setDni(txtNIF.getText());
 			usu.setNombre(txtNombre.getText());
 			usu.setApellidos(txtApellidos.getText());
 			usu.setLogin(txtLogin.getText());
@@ -293,19 +327,12 @@ public class JPUsuarioRegistrar extends JPBase {
 				else if (lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA))
 					tipo = new Especialista(txtEspecialidad.getText());
 				((Medico)usu).setTipoMedico(tipo);
-				JDialog calendario = new JDialog();
-				jPanelConsultarCalendario = new JPCalendarioConsultar(getFrame(), getControlador(), this, txtDNI.getText());
-				calendario.add(jPanelConsultarCalendario);
-				calendario.setModal(true);
-				calendario.setTitle("Configuración de calendario");
-				calendario.setBounds(jPanelConsultarCalendario.getBounds());
-				calendario.setVisible(true);
-				// Cuando se cierre la ventana, se establece el calendario del medico.
-				((Medico)usu).setCalendario(periodos);
-				// Si se ha establecido correctamente su calendario, se puede crear el médico
-				if (periodos.size() == 0) 
+				if (periodos.size() != HORAS_SEMANALES) {
 					throw new CalendarioNoCreadoException();
-				
+				}
+				else {
+					((Medico)usu).setCalendario(periodos);
+				}
 			}
 			getControlador().crearUsuario(usu);
 			// El usuario se ha creado correctamente
@@ -324,9 +351,9 @@ public class JPUsuarioRegistrar extends JPBase {
 		} catch(UsuarioNoSeleccionadoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe seleccionar un tipo de usuario y, si es el caso, un tipo de médico");
 		} catch(NIFIncorrectoException e) {
-			txtDNI.selectAll();
+			txtNIF.selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "El NIF debe ser el número de DNI (incluyendo el 0) y la letra sin guión.");
-			txtDNI.grabFocus();
+			txtNIF.grabFocus();
 		} catch(NombreIncorrectoException e) {
 			txtNombre.selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "El nombre del usuario sólo puede contener letras y espacios.");
@@ -343,9 +370,13 @@ public class JPUsuarioRegistrar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
 	}
-
-	// $hide>>$
 	
+	private void btnCalendarioActionPerformed(ActionEvent evt) {
+		JDialog calendario = new JDCalendarioLaboral(this, periodos);
+		calendario.setVisible(true);
+	}
+
+
 	private void crearModelos() {
 		lstTipoUsuarioModel = new DefaultListModel();
 		lstTipoUsuarioModel.addElement(USU_ADMINISTRADOR);
@@ -368,16 +399,24 @@ public class JPUsuarioRegistrar extends JPBase {
 	
 	private void lstTipoUsuarioValueChanged(ListSelectionEvent evt) {
 		cambiarEstadoEspecialidad(false);
+		cambiarEstadoConfiguracionCalendario(false);
 		if (lstTipoUsuario.getSelectedIndex()!=-1)
 			if (lstTipoUsuario.getSelectedValue().equals(USU_MEDICO)) {
 				lstTipoMedico.setSelectedIndex(0);
 				lstTipoMedico.setVisible(true);
+				cambiarEstadoConfiguracionCalendario(true);
 			} else {
 				lstTipoMedico.setSelectedIndex(-1);
 				lstTipoMedico.setVisible(false);
 			}
 	}
 	
+	private void cambiarEstadoConfiguracionCalendario(boolean b) {
+		lblCalendario.setVisible(b);
+		chbCalendario.setVisible(b);
+		btnCalendario.setVisible(b);
+	}
+
 	private void lstTipoMedicoValueChanged(ListSelectionEvent evt) {
 		if (lstTipoUsuario.getSelectedIndex()!=-1)
 			if (lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA)) {
@@ -388,7 +427,7 @@ public class JPUsuarioRegistrar extends JPBase {
 	}
 	
 	private void limpiarCamposRegistro() {
-		txtDNI.setText("");
+		txtNIF.setText("");
 		txtNombre.setText("");
 		txtApellidos.setText("");
 		txtLogin.setText("");
