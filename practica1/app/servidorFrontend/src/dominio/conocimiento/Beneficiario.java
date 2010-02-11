@@ -147,7 +147,6 @@ public class Beneficiario implements Serializable {
 		}
 		return dev;
 	}
-
 	
 	public String toString() {
 		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", M:" + medicoAsignado.getDni(); 
