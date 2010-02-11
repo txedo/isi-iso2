@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
@@ -23,7 +25,8 @@ import dominio.conocimiento.Administrador;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.Roles;
+import dominio.conocimiento.PeriodoTrabajo;
+import dominio.conocimiento.Usuario;
 import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Validacion;
@@ -69,6 +72,7 @@ public class JPUsuarioConsultar extends JPBase {
 	private JTextField txtCentro;
 
 	private CentroSalud centro;
+	private Vector<PeriodoTrabajo> periodos;
 	private Usuario usuario;
 
 	public JPUsuarioConsultar(JFrame frame, ControladorCliente controlador) {
@@ -368,6 +372,10 @@ public class JPUsuarioConsultar extends JPBase {
 			configurarFormularioConsultar(true);
 		else
 			configurarFormularioConsultar(false);
+	}
+	public void setPeriodos (Vector<PeriodoTrabajo> p) {
+		periodos = new Vector<PeriodoTrabajo>();
+		periodos.addAll(p);
 	}
 
 }

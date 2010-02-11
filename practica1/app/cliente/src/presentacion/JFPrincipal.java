@@ -224,10 +224,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 						jTabbedPaneOperaciones.addTab("Gestionar Citas", null, jPanelGestionarCitas, null);
 					}
 					{
-						jPanelConsultarCalendario = new JPCalendarioConsultar(this, controlador);
-						jTabbedPaneOperaciones.addTab("Consultar Calendario", null, jPanelConsultarCalendario, null);
-					}
-					{
 						jPanelEstablecerSustituto = new JPanel();
 						AnchorLayout jPanelEstablecerSustitutoLayout = new AnchorLayout();
 						jTabbedPaneOperaciones.addTab("Establecer Sustituto", null, jPanelEstablecerSustituto, null);
