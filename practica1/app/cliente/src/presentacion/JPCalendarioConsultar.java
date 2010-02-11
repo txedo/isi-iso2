@@ -177,6 +177,7 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 	}
 	
 	private void inicializarSpinnerHoras(JSpinner spnHoras) {
+		// Creamos un spinner en el cual se pueden seleccionar desde 0 hasta HORAS_SEMANALES
 		String [] horas = new String [HORAS_SEMANALES+1];
 		for (int i = 0; i <= HORAS_SEMANALES; i++)
 			horas[i] = i+"";
@@ -185,9 +186,13 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 	}
 
 	private void crearPanelPeriodosTrabajo (DiaSemana s) {
+		// Creamos un panel de periodos de trabajo para el día "s"
 		pTrabajo = new JPPeriodosTrabajo(s);
-		this.add(pTrabajo, new AnchorConstraint(42, 951, 878, 160, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+		// Posicionamos el panel de periodos de trabajo
+		this.add(pTrabajo, new AnchorConstraint(40, 951, 878, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+		// Le damos un tamaño al panel
 		pTrabajo.setPreferredSize(new java.awt.Dimension(400, 300));
+		// Inicialmente, deshabilitamos todos sus checkboxes
 		pTrabajo.activarPeriodos(false);
 		pTrabajo.setVisible(false);
 		jpPeriodos.add(pTrabajo);
@@ -266,6 +271,6 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 	
 	private void restablecerFormulario (int index) {
 		JPPeriodosTrabajo jpp = jpPeriodos.get(index);
-		jpp.activarPeriodos(false);
+		jpp.deseleccionarPeriodos();
 	}
 }

@@ -53,14 +53,15 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes {
 			int posY = INIT_Y;
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			//setPreferredSize(new Dimension(400, 300));
 			{
+				// Creamos un checkbox para cada periodo de trabajo y calculamos sus coordenadas con respecto al anterior
 				for (int i = HORA_INICIO_JORNADA; i < HORA_FIN_JORNADA; i++) {
-					System.out.println("A");
+					// Ponemos la mitad de los checkboxes en una columna, y la otra mitad en otra
 					if (i == HORA_INICIO_JORNADA + (HORA_FIN_JORNADA - HORA_INICIO_JORNADA)/2) {
 						posY = INIT_Y + DESPL_X;
 						posX = INIT_X;
 					}
+					// Creamos el checkbox y lo añadimos a un ArrayList para menter una referencia hacia él
 					chbPeriodos.add(crearPeriodoTrabajoEnComboBox(i, posX, posY));
 					posX = posX + DESPL_Y;
 				}
@@ -78,7 +79,6 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes {
 		chbPeriodoTrabajo.setBounds(posX, posY, WIDTH, HEIGHT);
 		String intervaloHora = getIntervaloHora2String(hora_inicio, hora_inicio+1);
 		chbPeriodoTrabajo.setText(intervaloHora);
-		
 		chbPeriodoTrabajo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				chbPeriodoTrabajoActionPerformed(evt);
@@ -94,6 +94,8 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes {
 	}
 	
 	private int [] getString2IntervaloHora (String hora) {
+		// Dado un periodo en formato "hh:00 - hh:00", devuelve un array con dos enteros
+		// int[0] contiene la hora de inicio, int[1] contiene la hora de fin
 		int [] hora_inicio_fin = new int [2];
 		String [] partes = hora.split(" - ");
 		String [] hora_inicio = partes[0].split(":");
@@ -108,12 +110,21 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes {
 	}
 	
 	public void activarPeriodos(boolean b) {
+		// Activa o desactiva todos los checkboxes del panel
 		for (JCheckBox cb : chbPeriodos) {
 			cb.setEnabled(b);
 		}
 	}
 	
+	public void deseleccionarPeriodos() {
+		// Activa o desactiva todos los checkboxes del panel
+		for (JCheckBox cb : chbPeriodos) {
+			cb.setSelected(false);
+		}
+	}
+	
 	public void seleccionarPeriodos (int hora_inicio, int hora_final) {
+		// Dado un periodo de trabajo, en el que las horas de inicio y final no tiene por qué ser consecutivas, selecciona los checkboxes correspondientes
 		while (hora_inicio < hora_final) {
 			for (JCheckBox p : chbPeriodos) {
 				if (p.getText().equals(getIntervaloHora2String(hora_inicio, hora_inicio+1))) {
