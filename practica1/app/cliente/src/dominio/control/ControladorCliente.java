@@ -240,4 +240,5 @@ public class ControladorCliente {
 	 public Vector<Cita> consultarCitasPendientes (String dni) throws RemoteException, Exception {
 	 	return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES, dni);
 	 }
+	 
 }

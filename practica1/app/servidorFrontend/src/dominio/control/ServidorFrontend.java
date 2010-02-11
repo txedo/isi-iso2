@@ -19,7 +19,6 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
-import excepciones.CentroSaludIncorrectoException;
 import excepciones.CentroSaludInexistenteException;
 import excepciones.CitaNoValidaException;
 import excepciones.FechaNoValidaException;

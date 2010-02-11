@@ -6,7 +6,6 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.DebugGraphics;
 import javax.swing.DefaultListModel;
@@ -37,7 +36,7 @@ import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CalendarioNoCreadoException;
-import excepciones.CentroSaludIncorrectoException;
+import excepciones.CentroSaludInexistenteException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NombreIncorrectoException;
@@ -315,7 +314,7 @@ public class JPUsuarioRegistrar extends JPBase {
 			
 		} catch(UsuarioYaExistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());	
-		} catch(CentroSaludIncorrectoException e) {
+		} catch(CentroSaludInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());		
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());

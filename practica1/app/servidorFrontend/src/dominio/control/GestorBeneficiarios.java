@@ -2,25 +2,19 @@ package dominio.control;
 
 import java.sql.SQLException;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.Pediatra;
-import dominio.conocimiento.Usuario;
 import persistencia.FPBeneficiario;
 import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
-import excepciones.CentroSaludIncorrectoException;
 import excepciones.CentroSaludInexistenteException;
-import excepciones.DireccionIncorrectaException;
 import excepciones.DireccionInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
-import excepciones.UsuarioInexistenteException;
 
 /**
  * Clase encargada de consultar, añadir y modificar beneficiarios en
