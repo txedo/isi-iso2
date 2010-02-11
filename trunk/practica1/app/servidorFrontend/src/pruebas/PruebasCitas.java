@@ -43,7 +43,7 @@ public class PruebasCitas extends PruebasBase {
 	private Administrador admin1;
 	private Beneficiario bene1, bene2;
 	private Usuario usu1;
-	private Direccion dir1;
+	private Direccion dir1, dir2;
 	private PeriodoTrabajo periodo1, periodo2, periodo3;
 	private ISesion sesionCitador;
 	private ISesion sesionAdmin;
@@ -86,8 +86,7 @@ public class PruebasCitas extends PruebasBase {
 			especialista = new Especialista("Traumatologia");
 			cabecera = new Cabecera();
 			// Creamos objetos de prueba
-			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
-			centro1 = new CentroSalud("Centro A", dir1);
+			centro1 = new CentroSalud("Centro A", "Calle 2, nº2");
 			medico1 = new Medico("12345678", "medico1", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
 			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", cabecera);
 			medico3 = new Medico("34581732", "medico3", Encriptacion.encriptarPasswordSHA1("pass"), "nombre", "apellido", especialista);
@@ -109,9 +108,11 @@ public class PruebasCitas extends PruebasBase {
 			medico3.getCalendario().add(periodo3);
 			usu1 = new Administrador("04328172", "usuario", Encriptacion.encriptarPasswordSHA1("f"), "O", "C");
 			usu1.setCentroSalud(centro1);
+			dir1 = new Direccion("Avda. Mayor", "10", "4", "C", "Ciudad", "Provincia", 10234);
+			dir2 = new Direccion("Calle Principal", "5", "", "", "Ciudad", "Provincia", 10234);
 			bene1 = new Beneficiario("12345679", "123456-ab", "bene1", "asdfg", fecha1, dir1, "uno@gmail.com", "123456789", "987654321");
 			bene1.setMedicoAsignado(medico2);
-			bene2 = new Beneficiario("46208746", "164028-de", "bene2", "asadasdfg", fecha2, dir1, "dos@gmail.com", "923456789", "687654322");
+			bene2 = new Beneficiario("46208746", "164028-de", "bene2", "asadasdfg", fecha2, dir2, "dos@gmail.com", "923456789", "687654322");
 			bene2.setMedicoAsignado(medico1);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);

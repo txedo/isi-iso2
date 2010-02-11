@@ -3,6 +3,10 @@ package dominio.conocimiento;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Clase con métodos estáticos relacionados con la encriptación de
+ * contraseñas.
+ */
 public class Encriptacion {
 
 	public static String encriptarPasswordSHA1(String password) throws NoSuchAlgorithmException {
@@ -12,6 +16,9 @@ public class Encriptacion {
 		int valor;
 		int i;
 
+		// Algoritmo de encriptación extraído de la web:
+		// http://www.rgagnon.com/javadetails/java-0400.html
+		
 		// Generamos la clave encriptada con el algoritmo SHA-1
 		clave = java.security.MessageDigest.getInstance("SHA-1");
 		clave.reset();

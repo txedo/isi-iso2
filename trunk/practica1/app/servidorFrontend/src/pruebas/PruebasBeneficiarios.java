@@ -34,7 +34,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 	private PeriodoTrabajo periodo1, periodo2, periodo3;
 	private Beneficiario bene1, bene2, bene3;
 	private Citador citador1;
-	private Direccion dir1, dir2;
+	private Direccion direccion1, direccion2;
 	private Administrador admin1;
 	private ISesion sesionCitador;
 	private ISesion sesionAdmin;
@@ -56,9 +56,9 @@ public class PruebasBeneficiarios extends PruebasBase {
 			fecha1 = formatoDelTexto.parse("1/8/1951");
 			fecha2 = formatoDelTexto.parse("23/2/2002");
 			// Creamos objetos de prueba
-			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
-			dir2 = new Direccion("calle 2", "s/n", "2", "A", "aadsfaada", "afafssafad", 13500);
-			centro1 = new CentroSalud("Centro A", dir1);
+			direccion1 = new Direccion("calle 1", "", "", "", "aadsfaada", "afafssafad", 13500);
+			direccion2 = new Direccion("calle 2", "10", "2", "A", "aadsfaada", "afafssafad", 13500);
+			centro1 = new CentroSalud("Centro A", "Calle 1, nº1");
 			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
 			medico2 = new Medico("87654321A", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", cabecera);
 			medico1.setCentroSalud(centro1);
@@ -73,9 +73,9 @@ public class PruebasBeneficiarios extends PruebasBase {
 			admin1 = new Administrador("55667788A", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.");
 			citador1.setCentroSalud(centro1);
 			admin1.setCentroSalud(centro1);
-			bene1 = new Beneficiario("12345678A", "123456-ab", "bene1", "asdfg", fecha1, dir2, "add@sf.com", "123456789", "987654321");
+			bene1 = new Beneficiario("12345678A", "123456-ab", "bene1", "asdfg", fecha1, direccion1, "add@sf.com", "123456789", "987654321");
 			bene1.setMedicoAsignado(medico2);
-			bene2 = new Beneficiario("46208746A", "164028-de", "bene2", "asadasdfg", fecha2, dir1, "dos@gmail.com", "923456789", "687654322");
+			bene2 = new Beneficiario("46208746A", "164028-de", "bene2", "asadasdfg", fecha2, direccion2, "dos@gmail.com", "923456789", "687654322");
 			bene2.setMedicoAsignado(medico1);
 			bene3 = new Beneficiario("12345678D", "121123456-ab", "bene3", "aadasdsdfg", fecha1, dir2, "adzxczxcd@sf.com", "123456719", "987654321");
 			bene3.setMedicoAsignado(medico2);
@@ -191,7 +191,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Creamos un nuevo beneficiario con la sesión del administrador
-			bene = new Beneficiario("6666666", "14124as-cd", "beNuevo", "nuevos", fecha2, dir2, "luna@hotmail.com", "34698124", "67912312");
+			bene = new Beneficiario("6666666", "14124as-cd", "beNuevo", "nuevos", fecha2, direccion2, "luna@hotmail.com", "34698124", "67912312");
 			GestorBeneficiarios.crearBeneficiario(sesionAdmin.getId(), bene);
 			// Comprobamos que el beneficiario se ha creado correctamente
 			beneGet = GestorBeneficiarios.consultarBeneficiario(sesionAdmin.getId(), bene.getNif());
@@ -218,7 +218,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos crear un nuevo beneficiario con el rol de medico
-			bene = new Beneficiario("77777777", "131716-co", "error", "error", fecha1, dir1, "", "123456789", "987654321");
+			bene = new Beneficiario("77777777", "131716-co", "error", "error", fecha1, direccion1, "", "123456789", "987654321");
 			GestorBeneficiarios.crearBeneficiario(sesionMedico.getId(), bene);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
@@ -228,7 +228,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos añadir un beneficiario con un DNI que ya existe en la BD
-			bene = new Beneficiario(bene1.getNif(), bene1.getNss(), "error", "error", fecha1, dir2, "", "123456789", "987654321");
+			bene = new Beneficiario(bene1.getNif(), bene1.getNss(), "error", "error", fecha1, direccion2, "", "123456789", "987654321");
 			GestorBeneficiarios.crearBeneficiario(sesionAdmin.getId(), bene);
 			fail("Se esperaba una excepcion BeneficiarioYaExistenteException");
 		} catch(BeneficiarioYaExistenteException e) {
@@ -238,7 +238,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos añadir un beneficiario con un NSS que ya existe en la BD
-			bene = new Beneficiario("10239184", bene1.getNss(), "error", "error", fecha1, dir1, "", "123456789", "987654321");
+			bene = new Beneficiario("10239184", bene1.getNss(), "error", "error", fecha1, direccion1, "", "123456789", "987654321");
 			GestorBeneficiarios.crearBeneficiario(sesionAdmin.getId(), bene);
 			fail("Se esperaba una excepcion BeneficiarioYaExistenteException");
 		} catch(BeneficiarioYaExistenteException e) {
@@ -283,7 +283,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos modificar un beneficiario que aún no se ha creado
-			bene = new Beneficiario("21412395", "131314-as", "error", "error", fecha2, dir1, "", "123456789", "987654321");
+			bene = new Beneficiario("21412395", "131314-as", "error", "error", fecha2, direccion1, "", "123456789", "987654321");
 			GestorBeneficiarios.modificarBeneficiario(sesionAdmin.getId(), bene);
 			fail("Se esperaba una excepcion BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {

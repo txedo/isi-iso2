@@ -10,7 +10,5 @@ public enum DiaSemana implements Serializable {
 	Martes,
 	Miercoles,
 	Jueves,
-	Viernes,
-	Sabado,
-	Domingo
+	Viernes
 }

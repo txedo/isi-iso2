@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.CentroSalud;
-import dominio.conocimiento.Direccion;
 import excepciones.CentroSaludInexistenteException;
-import excepciones.DireccionInexistenteException;
 
 /**
  * Clase que permite consultar e insertar centros de salud en la base de datos.
@@ -21,11 +19,10 @@ public class FPCentroSalud {
 	private static final String COL_NOMBRE = "nombre";
 	private static final String COL_DIRECCION = "direccion";
 	
-	public static CentroSalud consultar(int id) throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static CentroSalud consultar(int id) throws SQLException, CentroSaludInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		CentroSalud centro;
-		Direccion direccion;
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CENTROS
@@ -41,14 +38,13 @@ public class FPCentroSalud {
 			centro = new CentroSalud();
 			centro.setId(datos.getInt(COL_ID));
 			centro.setNombre(datos.getString(COL_NOMBRE));
-			direccion = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
-			centro.setDireccion(direccion);
+			centro.setDireccion(datos.getString(COL_DIRECCION));
 		}
 		
 		return centro;
 	}
 
-	public static CentroSalud consultarAleatorio() throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static CentroSalud consultarAleatorio() throws SQLException, CentroSaludInexistenteException {
 		ArrayList<Integer> listaIds;
 		ComandoSQL comando;
 		ResultSet datos;
@@ -82,14 +78,11 @@ public class FPCentroSalud {
 	public static void insertar(CentroSalud centro) throws SQLException {
 		ComandoSQL comando;
 		ResultSet datos;
-		
-		// Insertamos primero la dirección del centro
-		FPDireccion.insertar(centro.getDireccion());
-		
+				
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CENTROS
 				+ " (" + COL_NOMBRE + ", " + COL_DIRECCION + ") VALUES (?, ?)",
-				centro.getNombre(), centro.getDireccion().getId());
+				centro.getNombre(), centro.getDireccion());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Recuperamos el id autonumérico asignado al nuevo centro de salud

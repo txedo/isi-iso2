@@ -6,10 +6,9 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Usuario;
-import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
-import excepciones.BeneficiarioInexistenteException;
+import persistencia.FuncionesPersistencia;
 import excepciones.CentroSaludInexistenteException;
 import excepciones.DireccionInexistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -50,6 +49,7 @@ public class GestorUsuarios {
 	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
 		CentroSalud centro;
 		Usuario usuarioReal;
+		boolean existe;
 		
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
@@ -68,25 +68,13 @@ public class GestorUsuarios {
 			throw new SQLException("No se puede encriptar la contraseña del usuario.");
 		}
 
-		// Consultamos si ya existe otro usuario con el mismo DNI 
-		try {
-			FPUsuario.consultar(usuarioReal.getDni());
-			throw new UsuarioYaExistenteException("El usuario con el DNI " + usuarioReal.getDni() + " ya se encuentra dado de alta en el sistema y no se puede registrar de nuevo.");
-		} catch(UsuarioIncorrectoException e) {
-			// Lo normal es que se lance esta excepción
+		// Consultamos si ya existe otro usuario u otro
+		// beneficiario con el mismo DNI
+		existe = FuncionesPersistencia.existeNIF(usuarioReal.getDni());
+		if(existe) {
+			throw new UsuarioYaExistenteException("Ya existe una persona en el sistema registrada con el DNI " + usuarioReal.getDni() + "."); 
 		}
-			
-		// Consultamos si ya existe un beneficiario con el mismo DNI
-		// que el usuario que se quiere crear en la base de datos
-		try {
-			FPBeneficiario.consultarPorNIF(usuarioReal.getDni());
-			throw new UsuarioYaExistenteException("No se puede registrar el usuario porque ya existe un beneficiario en el sistema con el DNI " + usuarioReal.getDni() + ".");
-		} catch(UsuarioIncorrectoException e) {
-			throw new UsuarioYaExistenteException("No se puede registrar el usuario porque ya existe un beneficiario en el sistema con el DNI " + usuarioReal.getDni() + ".");
-		} catch(BeneficiarioInexistenteException e) {
-			// Lo normal es que se lance esta excepción
-		}
-		
+				
 		// Consultamos si ya existe otro usuario con el mismo login
 		try {
 			FPUsuario.consultar(usuarioReal.getLogin(), usuarioReal.getPassword());

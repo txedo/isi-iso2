@@ -14,7 +14,7 @@ public class FPDireccion {
 
 	private static final String TABLA_DIRECCIONES = "direcciones";
 	
-	private static final String COL_ID = "id";
+	private static final String COL_NIF_BENEFICIARIO = "nifBeneficiario";
 	private static final String COL_DOMICILIO = "domicilio";
 	private static final String COL_NUMERO = "numero";
 	private static final String COL_PISO = "piso";
@@ -23,24 +23,23 @@ public class FPDireccion {
 	private static final String COL_PROVINCIA = "provincia";
 	private static final String COL_CP = "cp";
 	
-	public static Direccion consultar(long id) throws SQLException, DireccionInexistenteException {
+	public static Direccion consultar(String nifBeneficiario) throws SQLException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Direccion direccion;
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_DIRECCIONES
-				+ " WHERE " + COL_ID + " = ?", id);
+				+ " WHERE " + COL_NIF_BENEFICIARIO + " = ?", nifBeneficiario);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
 		// Si no se obtienen datos, es porque no existe la dirección
 		if(datos.getRow() == 0) {
-			throw new DireccionInexistenteException("No existe ninguna dirección con el id " + String.valueOf(id) + ".");
+			throw new DireccionInexistenteException("El beneficiario con NIF " + nifBeneficiario + " no tiene registrada una dirección.");
 		} else {		
 			// Establecemos los datos de la dirección
 			direccion = new Direccion();
-			direccion.setId(datos.getInt(COL_ID));
 			direccion.setDomicilio(datos.getString(COL_DOMICILIO));
 			direccion.setNumero(datos.getString(COL_NUMERO));
 			direccion.setPiso(datos.getString(COL_PISO));
@@ -52,47 +51,41 @@ public class FPDireccion {
 		return direccion;
 	}
 	
-	public static void insertar(Direccion direccion) throws SQLException {
+	public static void insertar(String nifBeneficiario, Direccion direccion) throws SQLException {
 		ComandoSQL comando;
-		ResultSet datos;
 		
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_DIRECCIONES
-				+ " (" + COL_DOMICILIO + ", " + COL_NUMERO + ", " + COL_PISO
-				+ ", " + COL_PUERTA + ", " + COL_CIUDAD + ", " + COL_PROVINCIA
-				+ ", " + COL_CP + ") VALUES (?, ?, ?, ?, ?, ?, ?)",
-				direccion.getDomicilio(), direccion.getNumero(), direccion.getPiso(),
-				direccion.getPuerta(), direccion.getCiudad(), direccion.getProvincia(),
-				direccion.getCP());
+				+ " (" + COL_NIF_BENEFICIARIO + ", " + COL_DOMICILIO
+				+ ", "	+ COL_NUMERO + ", " + COL_PISO + ", " + COL_PUERTA
+				+ ", " + COL_CIUDAD + ", " + COL_PROVINCIA + ", " + COL_CP
+				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+				nifBeneficiario, direccion.getDomicilio(), direccion.getNumero(),
+				direccion.getPiso(), direccion.getPuerta(), direccion.getCiudad(),
+				direccion.getProvincia(), direccion.getCP());
 		GestorConexionesBD.ejecutar(comando);
-		
-		// Recuperamos el id autonumérico asignado a la nueva dirección
-		comando = new ComandoSQLSentencia("SELECT LAST_INSERT_ID()");			
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
-		direccion.setId(datos.getInt("LAST_INSERT_ID()"));
 	}
 	
-	public static void modificar(Direccion direccion) throws SQLException {
+	public static void modificar(String nifBeneficiario, Direccion direccion) throws SQLException {
 		ComandoSQL comando;
 
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_DIRECCIONES + " SET "
 				+ COL_DOMICILIO + " = ?, " + COL_NUMERO + " = ?, " + COL_PISO + " = ?, "
 				+ COL_PUERTA + " = ?, " + COL_CIUDAD + " = ?, " + COL_PROVINCIA + " = ?, "
-				+ COL_CP + " = ? WHERE " + COL_ID + " = ?", 
+				+ COL_CP + " = ? WHERE " + COL_NIF_BENEFICIARIO + " = ?", 
 				direccion.getDomicilio(), direccion.getNumero(), direccion.getPiso(),
 				direccion.getPuerta(), direccion.getCiudad(), direccion.getProvincia(),
-				direccion.getCP(), direccion.getId());
+				direccion.getCP(), nifBeneficiario);
 		GestorConexionesBD.ejecutar(comando);
 	}
 	
-	public static void eliminar(Direccion direccion) throws SQLException {
+	public static void eliminar(String nifBeneficiario) throws SQLException {
 		ComandoSQL comando;
 		
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_DIRECCIONES
-				+ " WHERE " + COL_ID + " = ?", direccion.getId());
+				+ " WHERE " + COL_NIF_BENEFICIARIO + " = ?", nifBeneficiario);
 		GestorConexionesBD.ejecutar(comando);
 	}
 	

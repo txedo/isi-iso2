@@ -134,8 +134,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 			{
 				btnEliminar = new JButton();
 				this.add(btnEliminar, new AnchorConstraint(489, 161, 974, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				btnEliminar.setText("Eliminar");
-				btnEliminar.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnEliminar.setText("Eliminar beneficiario");
+				btnEliminar.setPreferredSize(new java.awt.Dimension(129, 26));
 				btnEliminar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnEliminarActionPerformed(evt);
@@ -590,7 +590,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 			dir.setCiudad(txtLocalidad.getText());
 			dir.setProvincia(txtProvincia.getText());
 			dir.setCP(Integer.parseInt(txtCP.getText()));
-			dir.setId(beneficiario.getDireccion().getId());
 			benefCambiado.setDireccion(dir);	
 			benefCambiado.setCorreo(txtCorreoElectronico.getText().trim());
 			benefCambiado.setTelefono(txtTelefonoFijo.getText().trim());

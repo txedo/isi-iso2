@@ -1,12 +1,10 @@
 package dominio.control;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 import persistencia.FPSustitucion;
 import persistencia.FPTipoMedico;
-import persistencia.FPUsuario;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;

@@ -6,7 +6,6 @@ public class Direccion implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -8460925743520811251L;
 	
-	private int id;
 	private String domicilio;
 	private String numero;
 	private String piso;
@@ -26,14 +25,6 @@ public class Direccion implements Serializable, Cloneable {
 		this.numero = numero;
 		this.piso = piso;
 		this.cp = cp;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 	
 	public String getDomicilio() {
@@ -96,7 +87,6 @@ public class Direccion implements Serializable, Cloneable {
 		Direccion d;
 		
 		d = new Direccion(domicilio, numero, piso, puerta, ciudad, provincia, cp);
-		d.setId(id);
 		return d;
 	}
 	

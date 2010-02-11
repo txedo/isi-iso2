@@ -4,7 +4,6 @@ import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.CentroSalud;
-import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -19,7 +18,6 @@ public class PruebasSesiones extends PruebasBase {
 	private Medico medico1;
 	private Administrador administrador1;
 	private Pediatra pediatra;
-	private Direccion dir1;
 	
 	protected void setUp() {
 		try {
@@ -28,8 +26,7 @@ public class PruebasSesiones extends PruebasBase {
 			//Inicializamos los tipos de medicos
 			pediatra = new Pediatra();
 			// Creamos objetos de prueba
-			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
-			centro1 = new CentroSalud("Centro A", dir1);
+			centro1 = new CentroSalud("Centro A", "Calle 3, nº3");
 			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
 			administrador1 = new Administrador("12121212A", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "Administrador", "Apellidos");
 			medico1.setCentroSalud(centro1);
