@@ -24,7 +24,6 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.TipoMedico;
 import dominio.control.ControladorCliente;
-import excepciones.BeneficiarioInexistenteException;
 import excepciones.CitaNoValidaException;
 
 /**
@@ -142,6 +141,7 @@ public class JPCitaConsultar extends JPBase {
 					scpTablaCitas.setViewportView(tblTablaCitas);				
 					tblTablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					tblTablaCitas.setCellEditor(null);
+					tblTablaCitas.setAutoCreateRowSorter(true);
 					tblTablaCitas.setDefaultRenderer(Object.class, new TableCellRendererCitas());
 				}
 			}
@@ -228,6 +228,7 @@ public class JPCitaConsultar extends JPBase {
 		Vector<Cita> pendientes;
 		TableCellRendererCitas renderer;
 		Cita cita;
+		boolean respuesta;
 		
 		try {
 			
@@ -240,13 +241,15 @@ public class JPCitaConsultar extends JPBase {
 				if(renderer.getFilasDesactivadas().contains(tblTablaCitas.getSelectedRow())) {
 					Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione una cita que todavía esté pendiente (no marcada en azul) para anularla.");
 				} else {
-					// TODO: PREGUNTAR SI SE QUIERE ANULAR LA CITA
 					// Obtenemos la cita seleccionada
 					cita = citas.get(tblTablaCitas.getSelectedRow());
-					// Solicitamos al servidor que se anule la cita
-					getControlador().anularCita(cita);
-					// Mostramos de nuevo todas las citas
-					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita se ha eliminado correctamente.");
+					respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Seguro que desea eliminar la cita seleccionada?");
+					if (respuesta) {
+						// Solicitamos al servidor que se anule la cita
+						getControlador().anularCita(cita);
+						// Mostramos de nuevo todas las citas
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita se ha eliminado correctamente.");
+					}
 					if(viendoHistorico) {
 						citas = getControlador().consultarHistoricoCitas(beneficiario.getNif());
 						pendientes = getControlador().consultarCitasPendientes(beneficiario.getNif());

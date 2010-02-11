@@ -29,6 +29,7 @@ import dominio.conocimiento.Volante;
 import dominio.control.GestorCitas;
 import dominio.control.GestorSesiones;
 import excepciones.BeneficiarioInexistenteException;
+import excepciones.CitaNoValidaException;
 import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -55,6 +56,7 @@ public class PruebasCitas extends PruebasBase {
 	private Date fecha2;
 	private Date fechaCita1;
 	private Date fechaCita2;
+	private Date fechaCita3;
 	private GregorianCalendar calendar;
 	private final long DURACION = 15;
 	
@@ -80,6 +82,10 @@ public class PruebasCitas extends PruebasBase {
 			// La cita seria el lunes 11 de Enero de 2010, a las 16:15
 			calendar = new GregorianCalendar(2010,1-1,11,16,15);
 			fechaCita2 = calendar.getTime();
+			
+			// Fecha no valida
+			calendar = new GregorianCalendar(2010,1-1,11,16,19);
+			fechaCita3 = calendar.getTime();
 			
 			//Inicializamos los tipos de medicos
 			pediatra = new Pediatra();
@@ -224,6 +230,42 @@ public class PruebasCitas extends PruebasBase {
 		} catch(Exception e) { }
 		
 		try {
+			// Intentamos dar cita con un beneficiario nulo
+			cita = GestorCitas.pedirCita(sesionMedico.getId(), null, bene1.getMedicoAsignado().getDni(), fecha1, DURACION);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos dar cita con un medico nulo
+			cita = GestorCitas.pedirCita(sesionMedico.getId(), bene1, null, fecha1, DURACION);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos dar cita con una fecha nula
+			cita = GestorCitas.pedirCita(sesionMedico.getId(), bene1, bene1.getMedicoAsignado().getDni(), null, DURACION);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos dar cita a una hora que no sea múltiplo de la duracion de las citas
+			cita = GestorCitas.pedirCita(sesionAdmin.getId(), bene1, bene1.getMedicoAsignado().getDni(), fechaCita3, DURACION);
+			fail("Se esperaba una excepcion FechaNoValidaException");
+		} catch(FechaNoValidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion FechaNoValidaException");
+		}
+		
+		try {
 			// Se da la cita del beneficiario1 con su medico asignado
 			
 			// Se comprueba el medico asignado al beneficiario1 y se establece la fecha correcta para cada medico
@@ -333,6 +375,33 @@ public class PruebasCitas extends PruebasBase {
 		} catch(Exception e) {
 			fail("Se esperaba una excepcion FechaNoValidaException");
 		}
+		
+		try {
+			// Intentamos dar una cita con un beneficiario nulo
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), null, volante.getId(), fechaCita1, DURACION);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos dar una cita con una fecha nula
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, volante.getId(), null, DURACION);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos dar una cita con una fecha no múltiplo de la duracion de las citas
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, volante.getId(), fechaCita3, DURACION);
+			fail("Se esperaba una excepcion FechaNoValidaException");
+		} catch(FechaNoValidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion FechaNoValidaException");
+		}
 	
 		try {
 			// Intentamos dar una cita valida para el medico receptor del volante
@@ -416,10 +485,37 @@ public class PruebasCitas extends PruebasBase {
 		}
 		
 		try {
+			// Intentamos emitir un volante para un beneficiario nulo
+			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), null, medico1, medico3);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos emitir un volante para un medico emisor nulo
+			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, null, medico3);			
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos emitir un volante para un medico receptor nulo
+			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico1, null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+				
+		try {
 			// Intentamos emitir un volante correcto
 			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico1, medico3);
 			assertTrue(idVolante != -1);
-			volanteRecuperado = FPVolante.consultar(idVolante);
+			volanteRecuperado = GestorCitas.consultarVolante(sesionAdmin.getId(), idVolante);
 			assertEquals(volanteRecuperado.getId(), idVolante);
 		} catch(Exception e) {
 			fail("No se esperaba ninguna excepción al crear el volante");
@@ -434,6 +530,15 @@ public class PruebasCitas extends PruebasBase {
 		} catch(Exception e) { 
 			fail("No se esperaba ninguna excepción al crear el volante");
 		}
+		
+		try {
+			// Intentamos recuperar un volante sin permiso
+			volanteRecuperado = GestorCitas.consultarVolante(sesionMedico.getId(), 1);
+			fail("Se espera una excepción OperacionIncorrectaException");
+		} catch(OperacionIncorrectaException e) {
+		} catch(Exception e) {
+			fail("Se espera una excepción OperacionIncorrectaException");
+		}
 	}
 	
 	/** Pruebas para anular una cita **/
@@ -442,6 +547,15 @@ public class PruebasCitas extends PruebasBase {
 		Date fechaCita;
 		Cita cita;
 		Vector<Cita> citas;
+		
+		try {
+			// Intentamos anular una cita nula
+			GestorCitas.anularCita(sesionAdmin.getId(), null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
 		
 		try {
 			medicoAsignado = bene1.getMedicoAsignado();
@@ -458,14 +572,49 @@ public class PruebasCitas extends PruebasBase {
 			assertEquals(cita, citas.get(0));
 			// Anulamos esa cita 
 			GestorCitas.anularCita(sesionCitador.getId(), cita);
-			// Si se ha anulado correctamente, se puede volver a concertar la scita con los mismos datos
-			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita, DURACION);
+			// Si se ha anulado correctamente, se obtendrá una CitaNoValidaException al consultar
 			citas = GestorCitas.consultarCitas(sesionCitador.getId(), bene1.getNif());
-			assertEquals(cita, citas.get(0));
+		} catch (CitaNoValidaException e) {
 		} catch(Exception e) {
 			fail("No se esperaba ninguna excepcion al anular la cita");
 		}
+		
+		try {
+			// Se intenta anular la misma cita dos veces 
+			
+			medicoAsignado = bene1.getMedicoAsignado();
+			if (medicoAsignado.getDni().equals(medico1.getDni()))
+				fechaCita = fechaCita1;
+			else
+				fechaCita = fechaCita2;
+			// Creamos una cita correcta
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita, DURACION);
+			// Se recuperan las citas del beneficiario1 para ver si realmente existe
+			citas = GestorCitas.consultarCitas(sesionCitador.getId(), bene1.getNif());
+			// Como se ha limpiado la base de datos antes de ejecutar este caso de prueba, solo se obtendrá una cita
+			assertEquals(cita, citas.get(0));
+			// Anulamos esa cita 
+			GestorCitas.anularCita(sesionCitador.getId(), cita);
+			GestorCitas.anularCita(sesionCitador.getId(), cita);
+			fail("Se esperaba una excepcion CitaNoValidaException");
+		} catch (CitaNoValidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion CitaNoValidaException");
+		}
 
+	}
+	
+	public void testConsultarCitas() {
+		Vector<Cita> citas;
+		
+		try {
+			// Intentamos consultar las citas de un beneficiario con dni nulo
+			citas = GestorCitas.consultarCitas(sesionAdmin.getId(), null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch (NullPointerException e) {
+		} catch (Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
 	}
 	
 }
