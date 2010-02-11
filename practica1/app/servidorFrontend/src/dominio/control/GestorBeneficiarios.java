@@ -8,6 +8,7 @@ import dominio.conocimiento.Operaciones;
 import persistencia.FPBeneficiario;
 import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
+import persistencia.FuncionesPersistencia;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludInexistenteException;
@@ -82,6 +83,7 @@ public class GestorBeneficiarios {
 	// Método para registrar un nuevo beneficiario en el sistema
 	public static void crearBeneficiario(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
 		Medico medico;
+		boolean existe;
 		
 		// Comprobamos los parámetros pasados
 		if(beneficiario == null) {
@@ -91,21 +93,11 @@ public class GestorBeneficiarios {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.RegistrarBeneficiario);
 		
-		// Consultamos si ya existe un beneficiario con el mismo NIF 
-		try {
-			FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-			throw new BeneficiarioYaExistenteException("El beneficiario con el NIF " + beneficiario.getNif() + " ya se encuentra dado de alta en el sistema y no se puede registrar de nuevo.");
-		} catch(BeneficiarioInexistenteException e) {
-			// Lo normal es que se lance esta excepción
-		}
-		
-		// Consultamos si ya existe un usuario con el mismo NIF que
-		// el beneficiario que se quiere crear en la base de datos
-		try {
-			FPUsuario.consultar(beneficiario.getNif());
-			throw new BeneficiarioYaExistenteException("No se puede registrar el beneficiario porque ya existe un usuario en el sistema con el NIF " + beneficiario.getNif() + ".");
-		} catch(UsuarioIncorrectoException e) {
-			// Lo normal es que se lance esta excepción
+		// Consultamos si ya existe otro usuario u otro
+		// beneficiario con el mismo DNI
+		existe = FuncionesPersistencia.existeNIF(beneficiario.getNif());
+		if(existe) {
+			throw new BeneficiarioYaExistenteException("Ya existe una persona en el sistema registrada con el NIF " + beneficiario.getNif() + "."); 
 		}
 		
 		// Consultamos si ya existe un beneficiario con el mismo NSS

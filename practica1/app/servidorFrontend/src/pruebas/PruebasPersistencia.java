@@ -48,7 +48,6 @@ public class PruebasPersistencia extends PruebasBase {
 	private EntradaLog entrada4, entrada5, entrada6;
 	private Medico medico1, medico2, medico3, medico4;
 	private Direccion direccion1, direccion2, direccion3;
-	private Direccion direccion4, direccion5, direccion6;
 	private Citador citador1, citador2;
 	private Administrador administrador1;
 	private Beneficiario beneficiario1, beneficiario2, beneficiario3;
@@ -63,15 +62,12 @@ public class PruebasPersistencia extends PruebasBase {
 			// Preparamos la base de datos
 			super.setUp();
 			// Creamos objetos de prueba
-			direccion1 = new Direccion("Calle 1", "1", "", "", "Ciudad", "Provincia", 12500);
-			direccion2 = new Direccion("Calle 2", "1", "", "", "Ciudad", "Provincia", 13500);
-			direccion3 = new Direccion("Calle 3", "1", "", "", "Ciudad", "Provincia", 14500);
-			direccion4 = new Direccion("Avenida Mayor", "3", "", "", "Ciudad", "Provincia", 15500);
-			direccion5 = new Direccion("Plaza de España", "12", "", "", "Ciudad", "Provincia", 16500);
-			direccion6 = new Direccion("Glorieta de Bilbao", "4", "", "", "Ciudad", "Provincia", 17500);
-			centro1 = new CentroSalud("Centro A", direccion1);
-			centro2 = new CentroSalud("Centro B", direccion2);
-			centro3 = new CentroSalud("Centro C", direccion3);
+			direccion1 = new Direccion("Calle Toledo", "3", "", "", "Ciudad", "Provincia", 15500);
+			direccion2 = new Direccion("Plaza de España", "12", "", "", "Ciudad", "Provincia", 16500);
+			direccion3 = new Direccion("Avenida Principal", "4", "3", "A", "Ciudad", "Provincia", 17500);
+			centro1 = new CentroSalud("Centro A", "C/Pequeña, nº4");
+			centro2 = new CentroSalud("Centro B", "C/Media, nº10");
+			centro3 = new CentroSalud("Centro C", "C/Grande, nº5");
 			entrada1 = new EntradaLog("juan", new Timestamp(109, 11, 1, 10, 10, 10, 0), ITiposMensajeLog.TIPO_CREATE, "Entrada CREATE.");
 			entrada2 = new EntradaLog("luis", new Timestamp(109, 5, 25, 7, 30, 0, 0), ITiposMensajeLog.TIPO_READ, "Entrada READ.");
 			entrada3 = new EntradaLog("pepe", new Timestamp(109, 9, 4, 8, 0, 0, 0), ITiposMensajeLog.TIPO_UPDATE, "Entrada UPDATE.");
@@ -94,9 +90,9 @@ public class PruebasPersistencia extends PruebasBase {
 			administrador1.setCentroSalud(centro1);
 			periodo1 = new PeriodoTrabajo(10, 12, DiaSemana.Lunes);
 			periodo2 = new PeriodoTrabajo(16, 20, DiaSemana.Jueves);
-			beneficiario1 = new Beneficiario("11223344W", "121212454545", "Ángel", "L. A.", new Date(1985 - 1900, 4, 1), direccion4, "angel129@gmail.com", "900111222", "600111222");
-			beneficiario2 = new Beneficiario("88776655R", "444444444444", "José", "R. S.", new Date(1990 - 1900, 8, 20), direccion5, "pepepepe@otro.com", "900123123", "600123123");
-			beneficiario3 = new Beneficiario("91839184P", "888111111888", "Alicia", "S. L.", new Date(1945 - 1900, 1, 17), direccion6, "ali45@yahoo.es", "900455455", "600455455");
+			beneficiario1 = new Beneficiario("11223344W", "121212454545", "Ángel", "L. A.", new Date(1985 - 1900, 4, 1), direccion1, "angel129@gmail.com", "900111222", "600111222");
+			beneficiario2 = new Beneficiario("88776655R", "444444444444", "José", "R. S.", new Date(1990 - 1900, 8, 20), direccion2, "pepepepe@otro.com", "900123123", "600123123");
+			beneficiario3 = new Beneficiario("91839184P", "888111111888", "Alicia", "S. L.", new Date(1945 - 1900, 1, 17), direccion3, "ali45@yahoo.es", "900455455", "600455455");
 			beneficiario1.setMedicoAsignado(medico1);
 			beneficiario2.setMedicoAsignado(medico2);
 			beneficiario3.setMedicoAsignado(medico3);
@@ -247,7 +243,7 @@ public class PruebasPersistencia extends PruebasBase {
 		try {
 			// Comprobamos que al borrar un beneficiario se
 			// elimina también su dirección asociada
-			FPDireccion.consultar(beneficiario2.getDireccion().getId());
+			FPDireccion.consultar(beneficiario2.getNif());
 			fail("Se esperaba una excepción DireccionIncorrectaException");
 		} catch(DireccionInexistenteException e) {
 		} catch(Exception e) {
@@ -417,8 +413,8 @@ public class PruebasPersistencia extends PruebasBase {
 		Direccion direccion;
 		
 		try {
-			// Intentamos buscar una dirección inexistente
-			FPDireccion.consultar(50);
+			// Intentamos buscar la dirección de un beneficiario inexistente
+			FPDireccion.consultar("88118811N");
 			fail("Se esperaba una excepción DireccionInexistenteException");
 		} catch(DireccionInexistenteException e) {
 		} catch(Exception e) {
@@ -426,21 +422,26 @@ public class PruebasPersistencia extends PruebasBase {
 		}
 		
 		try {
-			// Insertamos varias direcciones correctas
-			// (y repetidas, que se permite)
-			FPDireccion.insertar(direccion1);
-			FPDireccion.insertar(direccion2);
-			FPDireccion.insertar(direccion1);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Comprobamos que las direcciones se han añadido bien
-			direccion = FPDireccion.consultar(direccion1.getId());
+			// Añadimos los centros de salud asociados a los médicos
+			FPCentroSalud.insertar(centro1);
+			FPCentroSalud.insertar(centro2);
+			FPCentroSalud.insertar(centro3);
+			// Insertamos los médicos de los beneficiarios
+			FPUsuario.insertar(medico1);
+			FPUsuario.insertar(medico2);
+			FPUsuario.insertar(medico3);
+			// Insertamos varios beneficiarios
+			// (se llama automáticamente a FPDireccion)
+			FPBeneficiario.insertar(beneficiario1);
+			FPBeneficiario.insertar(beneficiario2);
+			FPBeneficiario.insertar(beneficiario3);
+			// Recuperamos la dirección de los beneficiarios creados
+			direccion = FPDireccion.consultar(beneficiario1.getNif());
 			assertEquals(direccion1, direccion);
-			direccion = FPDireccion.consultar(direccion2.getId());
+			direccion = FPDireccion.consultar(beneficiario2.getNif());
 			assertEquals(direccion2, direccion);
+			direccion = FPDireccion.consultar(beneficiario3.getNif());
+			assertEquals(direccion3, direccion);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -448,9 +449,10 @@ public class PruebasPersistencia extends PruebasBase {
 		try {
 			// Modificamos una dirección existente
 			direccion2.setCiudad("Más lejos");
-			FPDireccion.modificar(direccion2);
+			direccion2.setCP(9001);
+			FPDireccion.modificar(beneficiario2.getNif(), direccion2);
 			// Comprobamos que los cambios han tenido efecto
-			direccion = FPDireccion.consultar(direccion2.getId());
+			direccion = FPDireccion.consultar(beneficiario2.getNif());
 			assertEquals(direccion2, direccion);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -458,9 +460,9 @@ public class PruebasPersistencia extends PruebasBase {
 		
 		try {
 			// Eliminamos una dirección existente
-			FPDireccion.eliminar(direccion1);
+			FPDireccion.eliminar(beneficiario3.getNif());
 			// Comprobamos que los cambios han tenido efecto
-			FPDireccion.consultar(direccion1.getId());
+			FPDireccion.consultar(beneficiario3.getNif());
 			fail("Se esperaba una excepción DireccionInexistenteException");
 		} catch(DireccionInexistenteException e) {
 		} catch(Exception e) {

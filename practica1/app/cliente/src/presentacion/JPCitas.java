@@ -84,6 +84,7 @@ public class JPCitas extends JPBase {
 		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.TramitarCita);
 		jPanelTramitar.setVisible(true);
 		jPanelConsultar.setVisible(false);
+		jPanelVolanteTramitar.setVisible(false);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(EventObject evt) {

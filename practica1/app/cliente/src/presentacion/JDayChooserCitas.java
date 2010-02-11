@@ -55,6 +55,7 @@ public class JDayChooserCitas extends JDayChooser {
 				activado = days[i].isEnabled();
 				if(activado && diasSemanaDesactivados != null) {
 					// Comprobamos si hay que deshabilitar el día de la semana
+					// (los fines de semana siempre están desactivados)
 					switch(cal.get(Calendar.DAY_OF_WEEK)) {
 					case Calendar.MONDAY:
 						activado = !diasSemanaDesactivados.contains(DiaSemana.Lunes);
@@ -72,10 +73,10 @@ public class JDayChooserCitas extends JDayChooser {
 						activado = !diasSemanaDesactivados.contains(DiaSemana.Viernes);
 						break;
 					case Calendar.SATURDAY:
-						activado = !diasSemanaDesactivados.contains(DiaSemana.Sabado);
+						activado = false;
 						break;
 					case Calendar.SUNDAY:
-						activado = !diasSemanaDesactivados.contains(DiaSemana.Domingo);
+						activado = false;
 						break;
 					}
 				}

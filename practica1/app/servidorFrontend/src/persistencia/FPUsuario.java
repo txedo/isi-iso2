@@ -24,7 +24,7 @@ public class FPUsuario {
 	
 	private static final String TABLA_USUARIOS = "usuarios";
 
-	private static final String COL_DNI = "nif";
+	private static final String COL_NIF = "nif";
 	private static final String COL_LOGIN = "login";
 	private static final String COL_PASSWORD = "password";
 	private static final String COL_ROL = "rol";
@@ -42,7 +42,7 @@ public class FPUsuario {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS
-				+ " WHERE " + COL_DNI + " = ?", dni);
+				+ " WHERE " + COL_NIF + " = ?", dni);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
@@ -65,7 +65,7 @@ public class FPUsuario {
 				throw new UsuarioIncorrectoException("El tipo del usuario con DNI " + dni + " es inválido.");
 			}
 			// Establecemos los datos del usuario
-			usuario.setDni(datos.getString(COL_DNI));
+			usuario.setDni(datos.getString(COL_NIF));
 			usuario.setLogin(datos.getString(COL_LOGIN));
 			usuario.setPassword(datos.getString(COL_PASSWORD));			
 			usuario.setNombre(datos.getString(COL_NOMBRE));
@@ -117,7 +117,7 @@ public class FPUsuario {
 				throw new UsuarioIncorrectoException("El tipo del usuario con login " + login + " es inválido.");
 			}
 			// Establecemos los datos del usuario
-			usuario.setDni(datos.getString(COL_DNI));
+			usuario.setDni(datos.getString(COL_NIF));
 			usuario.setLogin(datos.getString(COL_LOGIN));
 			usuario.setPassword(datos.getString(COL_PASSWORD));
 			usuario.setNombre(datos.getString(COL_NOMBRE));
@@ -143,7 +143,7 @@ public class FPUsuario {
 
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_USUARIOS
-				+ " (" + COL_DNI + ", " + COL_LOGIN + ", " + COL_PASSWORD + ", "
+				+ " (" + COL_NIF + ", " + COL_LOGIN + ", " + COL_PASSWORD + ", "
 				+ COL_ROL + ", " + COL_NOMBRE + ", " + COL_APELLIDOS + ", "
 				+ COL_ID_CENTRO + ") VALUES (?, ?, ?, ?, ?, ?, ?)",
 				usuario.getDni(), usuario.getLogin(), usuario.getPassword(),
@@ -170,7 +170,7 @@ public class FPUsuario {
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_USUARIOS + " SET "
 				+ COL_LOGIN + " = ?, " + COL_PASSWORD + " = ?, " + COL_ROL + " = ?, "
 				+ COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_ID_CENTRO
-				+ " = ? WHERE " + COL_DNI + " = ?",
+				+ " = ? WHERE " + COL_NIF + " = ?",
 				usuario.getLogin(), usuario.getPassword(), usuario.getRol().ordinal(),
 				usuario.getNombre(), usuario.getApellidos(),
 				usuario.getCentroSalud().getId(), usuario.getDni());
@@ -208,7 +208,7 @@ public class FPUsuario {
 		
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_USUARIOS
-				+ " WHERE " + COL_DNI + " = ?", usuario.getDni());
+				+ " WHERE " + COL_NIF + " = ?", usuario.getDni());
 		GestorConexionesBD.ejecutar(comando);
 	}
 	

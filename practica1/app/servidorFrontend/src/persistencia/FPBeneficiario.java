@@ -28,7 +28,6 @@ public class FPBeneficiario {
 	private static final String COL_NSS = "nss";
 	private static final String COL_NOMBRE = "nombre";
 	private static final String COL_APELLIDOS = "apellidos";
-	private static final String COL_DIRECCION = "direccion";
 	private static final String COL_CORREO = "correo";
 	private static final String COL_FECHA_NACIMIENTO = "fechaNacimiento";
 	private static final String COL_TELEFONO = "telefono";
@@ -62,7 +61,7 @@ public class FPBeneficiario {
 			beneficiario.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
 			beneficiario.setTelefono(datos.getString(COL_TELEFONO));
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
-			direccion = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
+			direccion = FPDireccion.consultar(beneficiario.getNif());
 			beneficiario.setDireccion(direccion);
 			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 			if(medico.getRol() != RolesUsuarios.Medico) {
@@ -101,7 +100,7 @@ public class FPBeneficiario {
 			beneficiario.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
 			beneficiario.setTelefono(datos.getString(COL_TELEFONO));
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
-			direccion = FPDireccion.consultar(datos.getInt(COL_DIRECCION));
+			direccion = FPDireccion.consultar(beneficiario.getNif());
 			beneficiario.setDireccion(direccion);
 			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 			if(medico.getRol() != RolesUsuarios.Medico) {
@@ -115,29 +114,26 @@ public class FPBeneficiario {
 
 	public static void insertar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;
-
-		// Insertamos primero la dirección del beneficiario
-		FPDireccion.insertar(beneficiario.getDireccion());
 		
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_BENEFICIARIOS
 				+ " (" + COL_NIF + ", " + COL_NSS + ", " + COL_NOMBRE
-				+ ", " + COL_APELLIDOS  + ", " + COL_DIRECCION + ", " + COL_CORREO
-				+ ", " + COL_FECHA_NACIMIENTO + ", " + COL_TELEFONO + ", " + COL_MOVIL
-				+ ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				+ ", " + COL_APELLIDOS  + ", " + COL_CORREO + ", " + COL_FECHA_NACIMIENTO
+				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO
+				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				beneficiario.getNif(), beneficiario.getNss(), beneficiario.getNombre(),
-				beneficiario.getApellidos(), beneficiario.getDireccion().getId(),
-				beneficiario.getCorreo(), new Timestamp(beneficiario.getFechaNacimiento().getTime()),
+				beneficiario.getApellidos(), beneficiario.getCorreo(),
+				new Timestamp(beneficiario.getFechaNacimiento().getTime()),
 				beneficiario.getTelefono(), beneficiario.getMovil(),
 				beneficiario.getMedicoAsignado().getDni());
 		GestorConexionesBD.ejecutar(comando);
+		
+		// Insertamos la dirección del beneficiario
+		FPDireccion.insertar(beneficiario.getNif(), beneficiario.getDireccion());
 	}
 
 	public static void modificar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;
-
-		// Modificamos primero la dirección del beneficiario
-		FPDireccion.modificar(beneficiario.getDireccion());
 		
 		// Modificamos la base de datos
 		// (el NIF y el NSS no se pueden cambiar)
@@ -150,19 +146,22 @@ public class FPBeneficiario {
 				beneficiario.getMovil(), beneficiario.getMedicoAsignado().getDni(),
 				beneficiario.getNif());
 		GestorConexionesBD.ejecutar(comando);
+		
+		// Modificamos la dirección del beneficiario
+		FPDireccion.modificar(beneficiario.getNif(), beneficiario.getDireccion());
 	}
 
 	public static void eliminar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;
-		
+
+		// Eliminamos la dirección del beneficiario
+		FPDireccion.eliminar(beneficiario.getNif());
+
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_BENEFICIARIOS
 				+ " WHERE " + COL_NIF + " = ?",
 				beneficiario.getNif()); 
 		GestorConexionesBD.ejecutar(comando);
-
-		// Eliminamos la dirección que tenía el beneficiario
-		FPDireccion.eliminar(beneficiario.getDireccion());
 	}
 	
 }

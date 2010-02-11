@@ -10,7 +10,6 @@ import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
-import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ISesion;
@@ -32,7 +31,6 @@ public class PruebasMedicos extends PruebasBase {
 	private Medico medico1, medico2, medico3, medico4;
 	private Citador citador1;
 	private Administrador admin1;
-	private Direccion dir1;
 	private PeriodoTrabajo periodo11, periodo12;
 	private PeriodoTrabajo periodo21;
 	private PeriodoTrabajo periodo31, periodo32;
@@ -51,8 +49,7 @@ public class PruebasMedicos extends PruebasBase {
 			especialista = new Especialista("Ginecologia");
 			cabecera = new Cabecera();
 			// Creamos objetos de prueba
-			dir1 = new Direccion("calle 1", "1", "", "", "aadsf", "afafssaf", 12500);
-			centro1 = new CentroSalud("Centro A", dir1);
+			centro1 = new CentroSalud("Centro Provincial", "Calle Ninguna, s/n");
 			medico1 = new Medico("12345678", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
 			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", cabecera);
 			medico3 = new Medico("58782350", "jjj", Encriptacion.encriptarPasswordSHA1("jjj"), "Juan", "P. F.", especialista);

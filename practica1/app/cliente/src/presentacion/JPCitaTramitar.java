@@ -13,7 +13,6 @@ import java.util.EventObject;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -56,7 +55,7 @@ public class JPCitaTramitar extends JPBase {
 
 	private JDateChooserCitas dtcDiaCita;
 	private JLabel lblDatos;
-	private JSeparator jSeparator1;
+	private JSeparator sepSeparador;
 	private JPBeneficiarioConsultar pnlBeneficiario;
 	private JLabel lblHora;
 	private JLabel lblDia;
@@ -82,9 +81,9 @@ public class JPCitaTramitar extends JPBase {
 				lblDatos.setPreferredSize(new java.awt.Dimension(83, 16));
 			}
 			{
-				jSeparator1 = new JSeparator();
-				this.add(jSeparator1, new AnchorConstraint(249, 6, 587, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jSeparator1.setPreferredSize(new java.awt.Dimension(418, 10));
+				sepSeparador = new JSeparator();
+				this.add(sepSeparador, new AnchorConstraint(249, 6, 587, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				sepSeparador.setPreferredSize(new java.awt.Dimension(418, 10));
 			}
 			{
 				pnlBeneficiario = new JPBeneficiarioConsultar(this.getFrame(), this.getControlador());
@@ -125,7 +124,7 @@ public class JPCitaTramitar extends JPBase {
 				cmbHorasCitas = new JComboBox();
 				this.add(cmbHorasCitas, new AnchorConstraint(312, 12, 262, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				cmbHorasCitas.setModel(new DefaultComboBoxModel(new String[] {}));
-				cmbHorasCitas.setRenderer(new DefaultListCellRenderer());
+				cmbHorasCitas.setRenderer(new ListCellRendererCitas());
 				cmbHorasCitas.setPreferredSize(new java.awt.Dimension(280, 23));
 			}
 			{
@@ -266,7 +265,7 @@ public class JPCitaTramitar extends JPBase {
 		
 			// Comprobamos que la hora seleccionada sea válida
 			if(!horaSeleccionadaValida()) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo).");
+				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo) para registrar la cita.");
 			} else {
 				// Obtenemos la hora definitiva de la cita
 				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
@@ -304,18 +303,20 @@ public class JPCitaTramitar extends JPBase {
 		cmbHorasCitas.removeAllItems();
 		if(horas != null) {
 			for(String hora : horas) {
-				if(horasOcupadas != null && horasOcupadas.contains(hora)) {
-					cmbHorasCitas.addItem("<html><font color=\"#FF0000\">" + hora + "</font></html>");
-				} else {
-					cmbHorasCitas.addItem(hora);
-				}
+				cmbHorasCitas.addItem(hora);
 			}
+		}
+		
+		// Actualizamos la lista de horas ocupadas
+		((ListCellRendererCitas)cmbHorasCitas.getRenderer()).getElementosDesactivados().clear();
+		if(horasOcupadas != null) {
+			((ListCellRendererCitas)cmbHorasCitas.getRenderer()).getElementosDesactivados().addAll(horasOcupadas);
 		}
 		
 		// Seleccionamos la primera hora no ocupada
 		if(horas != null && horas.size() > 0) {
 			i = 0;
-			while(i < horas.size() && ((String)cmbHorasCitas.getItemAt(i)).startsWith("<html>")) {
+			while(i < horas.size() && horasOcupadas.contains(horas.get(i))) {
 				i++;
 			}
 			if(i >= horas.size()) {
@@ -338,6 +339,7 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	private boolean horaSeleccionadaValida() {
+		Vector<Object> desactivadas;
 		boolean valido;
 		
 		// Sólo se devuelve true si hay una hora seleccionada
@@ -348,8 +350,11 @@ public class JPCitaTramitar extends JPBase {
 		} else {
 			if(cmbHorasCitas.getSelectedIndex() == -1) {
 				valido = false;
-			} else if(((String)cmbHorasCitas.getSelectedItem()).startsWith("<html>")) {
-				valido = false;
+			} else {
+				desactivadas = ((ListCellRendererCitas)cmbHorasCitas.getRenderer()).getElementosDesactivados();
+				if(desactivadas.contains(cmbHorasCitas.getSelectedItem())) {
+					valido = false;
+				}
 			}
 		}
 		

@@ -12,12 +12,12 @@ public class CentroSalud implements Serializable {
 	
 	private int id;
 	private String nombre;
-	private Direccion direccion;
+	private String direccion;
 	
 	public CentroSalud() {
 	}
 	
-	public CentroSalud(String nombre, Direccion direccion) {
+	public CentroSalud(String nombre, String direccion) {
 		this.nombre = nombre;
 		this.direccion = direccion;
 	}
@@ -38,11 +38,11 @@ public class CentroSalud implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public Direccion getDireccion() {
+	public String getDireccion() {
 		return direccion;
 	}
 
-	public void setDireccion(Direccion direccion) {
+	public void setDireccion(String direccion) {
 		this.direccion = direccion;
 	}
 
