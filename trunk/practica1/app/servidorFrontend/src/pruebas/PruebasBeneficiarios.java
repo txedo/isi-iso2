@@ -77,7 +77,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			bene1.setMedicoAsignado(medico2);
 			bene2 = new Beneficiario("46208746A", "164028-de", "bene2", "asadasdfg", fecha2, direccion2, "dos@gmail.com", "923456789", "687654322");
 			bene2.setMedicoAsignado(medico1);
-			bene3 = new Beneficiario("12345678D", "121123456-ab", "bene3", "aadasdsdfg", fecha1, dir2, "adzxczxcd@sf.com", "123456719", "987654321");
+			bene3 = new Beneficiario("12345678D", "121123456-ab", "bene3", "aadasdsdfg", fecha1, direccion2, "adzxczxcd@sf.com", "123456719", "987654321");
 			bene3.setMedicoAsignado(medico2);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);
@@ -327,7 +327,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos eliminar un beneficiario que aún no se ha creado
-			bene = new Beneficiario("21412395", "131314-as", "error", "error", fecha2, dir1, "", "123456789", "987654321");
+			bene = new Beneficiario("21412395", "131314-as", "error", "error", fecha2, direccion1, "", "123456789", "987654321");
 			GestorBeneficiarios.eliminarBeneficiario(sesionAdmin.getId(), bene);
 			fail("Se esperaba una excepcion BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
