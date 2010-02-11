@@ -93,10 +93,10 @@ public class FPVolante {
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_VOLANTES + " SET "
 				+ COL_NIF_BENEFICIARIO + " = ?, " + COL_DNI_MEDICO_EMISOR + " = ?, "
-				+ COL_DNI_MEDICO_RECEPTOR + " = ?, " + COL_ID_CITA + "= ?",
+				+ COL_DNI_MEDICO_RECEPTOR + " = ?, " + COL_ID_CITA + "= ? WHERE " + COL_ID_VOLANTE + "=?",
 				volante.getBeneficiario().getNif(), volante.getEmisor().getDni(),
 				volante.getReceptor().getDni(),
-				(volante.getCita() == null ? null : volante.getCita().getId()));
+				(volante.getCita() == null ? null : volante.getCita().getId()), volante.getId());
 		GestorConexionesBD.ejecutar(comando);
 	}
 	

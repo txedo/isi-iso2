@@ -663,7 +663,7 @@ public class PruebasPersistencia extends PruebasBase {
 	
 	/** Pruebas de la tabla de tipos de médicos */
 	public void testTiposMedico() {
-		Vector<Medico> medicos;
+		Vector<String> medicos;
 		TipoMedico tipo;
 		String dni;
 		
@@ -720,12 +720,12 @@ public class PruebasPersistencia extends PruebasBase {
 			// Obtenemos una lista con los médicos de cabecera
 			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Cabecera);
 			assertTrue(medicos.size() == 2);
-			assertTrue((medicos.get(0).getDni().equals(medico2.getDni()) && medicos.get(1).getDni().equals(medico3.getDni()))
-			           || (medicos.get(0).getDni().equals(medico3.getDni()) && medicos.get(1).getDni().equals(medico2.getDni())));
+			assertTrue((medicos.get(0).equals(medico2.getDni()) && medicos.get(1).equals(medico3.getDni()))
+			           || (medicos.get(0).equals(medico3.getDni()) && medicos.get(1).equals(medico2.getDni())));
 			// Obtenemos una lista con los médidos pediatras
 			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Pediatra);
 			assertTrue(medicos.size() == 1);
-			assertTrue(medicos.get(0).getDni().equals(medico4.getDni()));
+			assertTrue(medicos.get(0).equals(medico4.getDni()));
 			// Obtenemos un médico de cabecera aleatorio
 			dni = FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Cabecera);
 			assertTrue(dni.equals(medico2.getDni()) || dni.equals(medico3.getDni()));
