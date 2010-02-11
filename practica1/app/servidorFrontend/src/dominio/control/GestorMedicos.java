@@ -171,11 +171,14 @@ public class GestorMedicos {
 	}
 	
 	// Este método recupera todos los médicos que existan del tipo dado 
-	public static Vector<Medico> obtenerMedicos(long idSesion, CategoriasMedico tipoMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		Vector<Medico> medicos = null;
+	public static Vector<Medico> obtenerMedicos(long idSesion, CategoriasMedico tipoMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, NullPointerException, UsuarioInexistenteException {
+		Vector<Medico> medicos = new Vector<Medico>();
+		Vector<String> nifs = null;
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
-		medicos = FPTipoMedico.consultarMedicos(tipoMedico);
+		nifs = FPTipoMedico.consultarMedicos(tipoMedico);
+		for (String nif: nifs)
+			medicos.add((Medico)GestorUsuarios.consultarUsuario(idSesion, nif));
 		return medicos;
 	}
 	

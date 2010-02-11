@@ -908,15 +908,23 @@ public class ServidorFrontend implements IServidorFrontend {
 			try {
 				resultado = GestorMedicos.obtenerMedicos(idSesion, (CategoriasMedico)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultados los DNIs de los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ".");
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultados los los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ".");
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL al consultar los DNIs de los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ": " + se.getLocalizedMessage());
 				throw se;
+			} catch(UsuarioInexistenteException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al obtener los médicos de tipo  " + ((CategoriasMedico)informacion).toString() + ": " + uie.getLocalizedMessage());
+				throw uie;
 			} catch(CentroSaludInexistenteException csie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar el centro de salud de un medico del tipo: " + ((CategoriasMedico)informacion) + ". " + csie.getLocalizedMessage());
 				throw csie;
+			} catch(NullPointerException npe) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al obtener los médicos de un tipo nulo: " + npe.getLocalizedMessage());
+				throw npe;
 			} catch(OperacionIncorrectaException oie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al realizar una operación no permitida de consulta de los DNIs de los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ": " + oie.getLocalizedMessage());
@@ -1151,10 +1159,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 		}
-		
-		
-			
-		
+
 		return resultado;
 	}
 

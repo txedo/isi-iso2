@@ -1,5 +1,5 @@
-CREATE DATABASE bdsscarespaldo CHARACTER SET utf8 COLLATE utf8_bin;
-USE bdsscarespaldo;
+CREATE DATABASE bdssca CHARACTER SET utf8 COLLATE utf8_bin;
+USE bdssca;
 
 CREATE TABLE direcciones (
        id INT NOT NULL AUTO_INCREMENT,
@@ -35,7 +35,7 @@ CREATE TABLE usuarios (
 
 CREATE TABLE tiposMedico (
        dniMedico VARCHAR(255) NOT NULL,
-       tipo ENUM ('Cabecera', 'Pediatra', 'Especialista') NOT NULL,
+       tipo INT NOT NULL default '-1',
        especialidad VARCHAR(255) NOT NULL default '',
        PRIMARY KEY (dniMedico),
        FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE NO ACTION ON UPDATE CASCADE
@@ -55,7 +55,7 @@ CREATE TABLE entradasLog (
        id INT NOT NULL AUTO_INCREMENT,
        usuario VARCHAR(255) NOT NULL,
        fecha DATETIME NOT NULL,
-       accion ENUM ('create', 'read', 'update', 'delete') NOT NULL,
+       accion ENUM ('create', 'read', 'update', 'delete', 'info') NOT NULL,
        mensaje VARCHAR(255) NOT NULL,
        PRIMARY KEY (id)
 ) TYPE=InnoDB AUTO_INCREMENT=1;
@@ -92,10 +92,12 @@ CREATE TABLE volantes (
        nifBeneficiario VARCHAR(255) NOT NULL,
        dniMedicoEmisor VARCHAR(255) NOT NULL,
        dniMedicoReceptor VARCHAR(255) NOT NULL,
+       idCita INT,
        PRIMARY KEY (id),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
        FOREIGN KEY (dniMedicoEmisor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
-       FOREIGN KEY (dniMedicoReceptor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
+       FOREIGN KEY (dniMedicoReceptor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (idCita) REFERENCES citas (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE sustituciones (
@@ -112,13 +114,13 @@ CREATE TABLE sustituciones (
 
 INSERT INTO direcciones (domicilio, numero, piso, puerta, ciudad, provincia, cp) VALUES ("calle prueba", "s/n", -1, "", "Ciudad Real", "Ciudad Real", 13003);
 INSERT INTO centros (nombre,direccion) VALUES ("Centro de Pruebas", 1);
-INSERT INTO usuarios VALUES ("11111111A", "admin", password("admin"), 0, "Foo", "Bar", 1);
-INSERT INTO usuarios VALUES ("11111111C", "citador", password("citador"), 1, "Foo", "Bar", 1);
-INSERT INTO usuarios VALUES ("12345678C", "cabecera", password("cabecera"), 2, "Foo", "Bar", 1);
+INSERT INTO usuarios VALUES ("11111111A", "admin", "d033e22ae348aeb5660fc2140aec35850c4da997", 0, "Foo", "Bar", 1);
+INSERT INTO usuarios VALUES ("11111111C", "citador", "ffd9b2d064e1527357af9f0a10015d9ef243430d", 1, "Foo", "Bar", 1);
+INSERT INTO usuarios VALUES ("12345678C", "cabecera", "dc0df8c0bb8431c0183c8600f527b8ac3ce8cb55", 2, "Foo", "Bar", 1);
+INSERT INTO tiposmedico (dniMedico, tipo) VALUES ("12345678C", 0);
+INSERT INTO usuarios VALUES ("12345678P", "pediatra", "4e709da3cdeb6f24bdae476f178cb1539ba93d31", 2, "Foo", "Bar", 1);
+INSERT INTO tiposmedico (dniMedico, tipo) VALUES  ("12345678P", 1);
+INSERT INTO usuarios VALUES ("12345678E", "especialista", "c185fca5199a0e535100addcb696f3abc6e63861", 2, "Foo", "Bar", 1);
+INSERT INTO tiposmedico VALUES ("12345678E", 2, "Neurologia");
 INSERT INTO periodostrabajo (dniMedico, horaInicio, horaFinal, dia) VALUES ("12345678C", 9, 14, 2);
 INSERT INTO periodostrabajo (dniMedico, horaInicio, horaFinal, dia) VALUES ("12345678P", 9, 14, 2);
-INSERT INTO tiposmedico (dniMedico, tipo) VALUES ("12345678C", "Cabecera");
-INSERT INTO usuarios VALUES ("12345678P", "pediatra", password("pediatra"), 2, "Foo", "Bar", 1);
-INSERT INTO tiposmedico (dniMedico, tipo) VALUES  ("12345678P", "Pediatra");
-INSERT INTO usuarios VALUES ("12345678E", "especialista", password("especialista"), 2, "Foo", "Bar", 1);
-INSERT INTO tiposmedico VALUES ("12345678E", "Especialista", "Neurologia");
