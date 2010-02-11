@@ -159,6 +159,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 					}
 				});
 				btnGuardar.setEnabled(false);
+				btnGuardar.setSize(120, 26);
 			}
 			{
 				chkEditar = new JCheckBox();

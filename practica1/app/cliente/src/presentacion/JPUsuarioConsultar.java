@@ -4,34 +4,35 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+
 import javax.swing.ButtonGroup;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.Usuario;
+import dominio.conocimiento.Roles;
 import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaVaciaException;
-import excepciones.CorreoElectronicoIncorrectoException;
-import excepciones.DomicilioIncorrectoException;
 import excepciones.NIFIncorrectoException;
-import excepciones.NSSIncorrectoException;
 import excepciones.NombreIncorrectoException;
-import excepciones.TelefonoFijoIncorrectoException;
-import excepciones.TelefonoMovilIncorrectoException;
 import excepciones.UsuarioInexistenteException;
-import excepciones.UsuarioYaExistenteException;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -51,7 +52,6 @@ public class JPUsuarioConsultar extends JPBase {
 	private JLabel lblLogin;
 	private JLabel lblPass;
 	private JTextField txtNombre;
-	private JRadioButton radiobtnModificar;
 	private ButtonGroup buttonGroup;
 	private JTextField txtLogin;
 	private JTextField txtApellidos;
@@ -62,12 +62,14 @@ public class JPUsuarioConsultar extends JPBase {
 	private JLabel lblNombre;
 	private JButton btnAplicar;
 	private JLabel lblRol;
+	private JComboBox cbRoles;
+	private JButton btnEliminar;
+	private JCheckBox chkEditar;
 	private JLabel lblCentro;
-	private JTextField txtRol;
 	private JTextField txtCentro;
-	private JRadioButton radiobtnEliminar;
-	
+
 	private CentroSalud centro;
+	private Usuario usuario;
 
 	public JPUsuarioConsultar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
@@ -81,65 +83,64 @@ public class JPUsuarioConsultar extends JPBase {
 			this.setSize(430, 390);
 			this.setPreferredSize(new java.awt.Dimension(430, 390));
 			{
+				cbRoles = new JComboBox();
+				this.add(cbRoles, new AnchorConstraint(157, 77, 462, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				cbRoles.setPreferredSize(new java.awt.Dimension(247, 23));
+				rellenarModelo(new String [] {""});
+			}
+			{
+				btnEliminar = new JButton();
+				this.add(btnEliminar, new AnchorConstraint(229, 161, 673, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				btnEliminar.setText("Eliminar");
+				btnEliminar.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnEliminar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnEliminarActionPerformed(evt);
+					}
+				});
+			}
+			{
 				lblCentro = new JLabel();
-				this.add(lblCentro, new AnchorConstraint(189, 309, 526, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblCentro.setText("Centro salud");
-				lblCentro.setPreferredSize(new java.awt.Dimension(109, 16));
+				this.add(lblCentro, new AnchorConstraint(188, 330, 526, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblCentro.setText("Centro asignado");
+				lblCentro.setPreferredSize(new java.awt.Dimension(88, 16));
 			}
 			{
 				lblRol = new JLabel();
-				this.add(lblRol, new AnchorConstraint(160, 383, 452, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblRol.setText("Rol");
-				lblRol.setPreferredSize(new java.awt.Dimension(35, 16));
-			}
-			{
-				txtRol = new JTextField();
-				this.add(txtRol, new AnchorConstraint(157, 83, 537, 100, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtRol.setPreferredSize(new java.awt.Dimension(247, 23));
+				this.add(lblRol, new AnchorConstraint(160, 330, 452, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblRol.setText("Rol asignado");
+				lblRol.setPreferredSize(new java.awt.Dimension(88, 16));
 			}
 			{
 				txtCentro = new JTextField();
-				this.add(txtCentro, new AnchorConstraint(186, 83, 462, 100, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtCentro, new AnchorConstraint(185, 77, 462, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtCentro.setPreferredSize(new java.awt.Dimension(247, 23));
 			}
 			{
-				radiobtnEliminar = new JRadioButton();
-				this.add(radiobtnEliminar, new AnchorConstraint(260, 88, 534, 629, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-				radiobtnEliminar.setText("Eliminar");
-				radiobtnEliminar.setPreferredSize(new java.awt.Dimension(72, 20));
-			}
-			{
-				radiobtnModificar = new JRadioButton();
-				this.add(radiobtnModificar, new AnchorConstraint(233, 88, 534, 629, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-				radiobtnModificar.setText("Modificar");
-				radiobtnModificar.setPreferredSize(new java.awt.Dimension(72, 20));
-			}
-			{
 				txtLogin = new JTextField();
-				this.add(txtLogin, new AnchorConstraint(40, 83, 162, 100, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtLogin, new AnchorConstraint(40, 77, 162, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtLogin.setPreferredSize(new java.awt.Dimension(247, 23));
 			}
 			{
 				txtApellidos = new JTextField();
-				this.add(txtApellidos, new AnchorConstraint(128, 83, 388, 100, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtApellidos, new AnchorConstraint(128, 77, 388, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtApellidos.setPreferredSize(new java.awt.Dimension(247, 23));
 			}
 			{
 				txtNombre = new JTextField();
-				this.add(txtNombre, new AnchorConstraint(99, 83, 314, 100, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtNombre, new AnchorConstraint(99, 77, 314, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNombre.setPreferredSize(new java.awt.Dimension(247, 23));
 			}
 			{
 				txtDNI = new JTextField();
-				this.add(txtDNI, new AnchorConstraint(12, 83, 91, 100, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtDNI, new AnchorConstraint(12, 77, 91, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtDNI.setPreferredSize(new java.awt.Dimension(247, 23));
 			}
 			{
 				btnBuscar = new JButton();
-				this.add(btnBuscar, new AnchorConstraint(12, 11, 91, 829, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnBuscar, new AnchorConstraint(12, 5, 91, 829, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnBuscar.setText("Buscar");
 				btnBuscar.setPreferredSize(new java.awt.Dimension(66, 23));
-				btnBuscar.setSize(66, 23);
 				btnBuscar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnBuscarActionPerformed(evt);
@@ -148,7 +149,7 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				txtPass = new JTextField();
-				this.add(txtPass, new AnchorConstraint(68, 83, 226, 100, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtPass, new AnchorConstraint(68, 77, 226, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtPass.setPreferredSize(new java.awt.Dimension(247, 23));				
 			}
 			{
@@ -165,9 +166,9 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				lblPass = new JLabel();
-				this.add(lblPass, new AnchorConstraint(71, 361, 229, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblPass, new AnchorConstraint(71, 348, 229, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblPass.setText("Contraseña");
-				lblPass.setPreferredSize(new java.awt.Dimension(57, 16));
+				lblPass.setPreferredSize(new java.awt.Dimension(70, 16));
 			}
 			{
 				lblLogin = new JLabel();
@@ -186,39 +187,40 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				btnAplicar = new JButton();
-				btnAplicar.setText("Aplicar");
-				btnAplicar.setPreferredSize(new java.awt.Dimension(66, 23));
-				this.add(btnAplicar, new AnchorConstraint(250, 11, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				btnAplicar.setText("Guardar Cambios");
+				btnAplicar.setPreferredSize(new java.awt.Dimension(120, 26));
+				this.add(btnAplicar, new AnchorConstraint(229, 5, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnAplicar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnAplicarActionPerformed(evt);
 					}
 				});
-			}			
-			
-			buttonGroup.add(radiobtnEliminar);
-			radiobtnEliminar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					radiobtnEliminarActionPerformed(evt);
-				}
-			});
-			buttonGroup.add(radiobtnModificar);
-			radiobtnModificar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					radiobtnModificarActionPerformed(evt);
-				}
-			});
-			
+			}
+			{
+				chkEditar = new JCheckBox();
+				this.add(chkEditar, new AnchorConstraint(234, 125, 665, 419, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				chkEditar.setText("Habilitar edición");
+				chkEditar.setEnabled(false);
+				chkEditar.setPreferredSize(new java.awt.Dimension(114, 14));
+				chkEditar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						chkEditarActionPerformed(evt);
+					}
+				});
+			}
+
 			configurarFormularioConsultar(false);
-			activarModificacion(false);
 			txtCentro.setEditable(false);
 			txtCentro.setFocusable(false);
-			txtRol.setEditable(false);
-			txtRol.setFocusable(false);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void rellenarModelo(String [] informacion) {
+		ComboBoxModel cbRolesModel = new DefaultComboBoxModel(informacion);
+		cbRoles.setModel(cbRolesModel);	
 	}
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
@@ -231,17 +233,15 @@ public class JPUsuarioConsultar extends JPBase {
 
 			// Mostramos los datos del usuario encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Usuario encontrado.");
+			rellenarModelo(new String [] {"Administrador", "Citador", "Médico"});
 			txtLogin.setText(usuario.getLogin());
 			txtPass.setText(usuario.getPassword());
 			txtNombre.setText(usuario.getNombre());
 			txtApellidos.setText(usuario.getApellidos());
-			txtRol.setText(usuario.getRol().toString());
+			cbRoles.setSelectedIndex(usuario.getRol().ordinal());
 			centro = usuario.getCentroSalud();
 			txtCentro.setText(centro.getNombre());
-			
-			activarModificacion(true);
-			txtDNI.setEditable(false);
-			txtDNI.setFocusable(false);
+			chkEditar.setEnabled(true);
 			
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
@@ -273,10 +273,10 @@ public class JPUsuarioConsultar extends JPBase {
 		txtNombre.setText("");
 		txtApellidos.setText("");
 		txtCentro.setText("");
-		txtRol.setText("");
+		chkEditar.setSelected(false);
+		chkEditar.setEnabled(false);
+		rellenarModelo(new String [] {""});
 		configurarFormularioConsultar(false);
-		buttonGroup.clearSelection();
-		activarModificacion(false);
 	}
 	
 	private void configurarFormularioConsultar(boolean estado) {
@@ -288,74 +288,43 @@ public class JPUsuarioConsultar extends JPBase {
 		txtNombre.setFocusable(estado);
 		txtApellidos.setEditable(estado);
 		txtApellidos.setFocusable(estado);
-		
-	}
-	
-	private void activarModificacion(Boolean b) {
-		radiobtnEliminar.setEnabled(b);
-		radiobtnModificar.setEnabled(b);
-		btnAplicar.setEnabled(b);
-	}
-	
-	private void radiobtnModificarActionPerformed(ActionEvent evt) {
-		configurarFormularioConsultar(true);
-		txtLogin.setEditable(false);
-		txtLogin.setFocusable(false);
-		btnAplicar.setEnabled(true);
-	}
-	
-	private void radiobtnEliminarActionPerformed(ActionEvent evt) {
-		configurarFormularioConsultar(false);	
-		btnAplicar.setEnabled(true);
+		btnAplicar.setEnabled(estado);
+		btnEliminar.setEnabled(estado);
+		cbRoles.setFocusable(estado);
+		cbRoles.setEnabled(estado);		
 	}
 	
 	private void btnAplicarActionPerformed(ActionEvent evt) {
-		try {
-			// Creamos el usuario con los datos (si son correctos), para modificarlo/eliminarlo
-			Usuario usu = null;
-			
+		try {			
 			// Comprobamos los campos que pueden dar fallo
 			Validacion.comprobarNombre(txtNombre.getText());
 			Validacion.comprobarApellidos(txtApellidos.getText());
 			
-			switch(RolesUsuarios.valueOf(txtRol.getText())) {
+			switch(RolesUsuarios.values()[cbRoles.getSelectedIndex()]) {
 				case Administrador:
-					usu = new Administrador();
+					usuario = new Administrador();
 					break;
 				case Citador:
-					usu = new Citador();
+					usuario = new Citador();
 					break;
 				case Medico:
-					usu = new Medico();
+					usuario = new Medico();
 					break;
 			}
-			usu.setDni(txtDNI.getText());
-			usu.setLogin(txtLogin.getText());
-			usu.setPassword(txtPass.getText());
-			usu.setNombre(txtNombre.getText());
-			usu.setApellidos(txtApellidos.getText());
-			usu.setCentroSalud(centro);
+			usuario.setDni(txtDNI.getText());
+			usuario.setLogin(txtLogin.getText());
+			usuario.setPassword(txtPass.getText());
+			usuario.setNombre(txtNombre.getText());
+			usuario.setApellidos(txtApellidos.getText());
+			// Dejamos el mismo centro de salud
+			usuario.setCentroSalud(centro);
 			
-			if (radiobtnModificar.isSelected()){
-				
-				getControlador().modificarUsuario(usu);
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
-				limpiarDatos();
-				configurarFormularioConsultar(false);
-				txtDNI.setEditable(true);
-				txtDNI.setFocusable(true);
-			}
-			else if (radiobtnEliminar.isSelected()){
-				int response = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este usuario del sistema?", "Confirmar", JOptionPane.YES_NO_OPTION);
-				if (response == JOptionPane.YES_OPTION) {
-					getControlador().eliminarUsuario(usu);
-					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
-					limpiarDatos();
-					configurarFormularioConsultar(false);
-					txtDNI.setEditable(true);
-					txtDNI.setFocusable(true);
-				}
-			}
+			// Modificamos el usuario
+			getControlador().modificarUsuario(usuario);
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
+			limpiarDatos();
+			configurarFormularioConsultar(false);
+			
 		} catch(NombreIncorrectoException e) {
 			txtNombre.selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "El nombre del usuario sólo puede contener letras y espacios.");
@@ -365,13 +334,40 @@ public class JPUsuarioConsultar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Los apellidos del usuario sólo pueden contener letras y espacios.");
 			txtApellidos.grabFocus();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch(RemoteException e) {
+		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			
-		} catch(Exception e) {
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());		
+		}catch(Exception e) {
 			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
+	}
+	
+	private void btnEliminarActionPerformed(ActionEvent evt) {
+		boolean respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Seguro que desea eliminar este usuario del sistema?");
+		if (respuesta) {
+			try {
+				getControlador().eliminarUsuario(usuario);
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
+				limpiarDatos();
+				configurarFormularioConsultar(false);
+			} catch(SQLException e) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			} catch(RemoteException e) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());		
+			}catch(Exception e) {
+				e.printStackTrace();
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			}
+		}
+	}
+	
+	private void chkEditarActionPerformed(ActionEvent evt) {
+		if (chkEditar.isSelected())
+			configurarFormularioConsultar(true);
+		else
+			configurarFormularioConsultar(false);
 	}
 
 }

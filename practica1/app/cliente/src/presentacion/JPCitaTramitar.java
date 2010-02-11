@@ -316,9 +316,10 @@ public class JPCitaTramitar extends JPBase {
 		// Seleccionamos la primera hora no ocupada
 		if(horas != null && horas.size() > 0) {
 			i = 0;
-			while(i < horas.size() && horasOcupadas.contains(horas.get(i))) {
-				i++;
-			}
+			if (horasOcupadas != null)
+				while(i < horas.size() && horasOcupadas.contains(horas.get(i))) {
+					i++;
+				}
 			if(i >= horas.size()) {
 				cmbHorasCitas.setSelectedIndex(-1);
 			} else {
