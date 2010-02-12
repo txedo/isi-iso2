@@ -192,6 +192,7 @@ public class Medico extends Usuario implements Serializable, Cloneable {
 		
 		m = new Medico(dni, login, password, nombre, apellidos, tipoMedico);
 		m.setCentroSalud(centro);
+		m.setCalendario(calendario);
 		return m;
 	}
 	
