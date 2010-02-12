@@ -301,7 +301,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			//TODO Permitir ver el calendario del médico
 		}
 //		if(!operaciones.contains(Operaciones.ModificarCalendario)) {
-	//		jTabbedPaneOperaciones.remove(jPanelConsultarCalendario);
+			//jTabbedPaneOperaciones.remove(jPanelConsultarCalendario);
 //		}
 		if(!operaciones.contains(Operaciones.EstablecerSustituto)) {
 			jTabbedPaneOperaciones.remove(jPanelEstablecerSustituto);
