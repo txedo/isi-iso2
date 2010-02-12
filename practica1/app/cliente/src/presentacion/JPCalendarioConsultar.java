@@ -11,15 +11,12 @@ import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -39,20 +36,21 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 	
 	private static final long serialVersionUID = -8579214415627504678L;
 	private Vector<String> dias;
-	private Vector<JPPeriodosTrabajo> jpPeriodos = null;
+	private Vector<JPPeriodosTrabajo> jpPeriodos;
 	private Vector<PeriodoTrabajo> periodosTrabajo;
 	private JPPeriodosTrabajo pTrabajo;
 	private int lastSelectedIndex = -1;
 	private JScrollPane jScrollPane1;
 	private JLabel lblHoras;
-	private JSpinner spnHoras;
 	private JButton btnRestablecerTodo;
 	private JButton btnRestablecer;
 	private JButton btnPropagar;
-	private JButton btnGuardar;
+	private JButton btnAceptar;
 	private JList jListDiaSemana;
-	private JCheckBox cbModificar;
 	private JDialog parent = null;
+	
+	private final int DESPL_X= 150;
+	private final int DESPL_Y = 10;
 	
 	public JPCalendarioConsultar(JDialog parent, Vector<PeriodoTrabajo> p) {
 		super();
@@ -60,11 +58,6 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 		this.parent = parent;
 		this.periodosTrabajo = p;
 		actualizarPeriodosTrabajo(this.periodosTrabajo);
-		jListDiaSemana.setEnabled(true);
-		jListDiaSemana.setSelectedIndex(0);
-		cbModificar.setSelected(true);
-		cbModificarActionPerformed(null);
-		cbModificar.setEnabled(false);
 	}
 
 	private void initGUI() {
@@ -74,21 +67,16 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 			this.setLayout(thisLayout);
 			{
 				lblHoras = new JLabel();
-				this.add(lblHoras, new AnchorConstraint(12, 415, 67, 153, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblHoras.setText("Horas semanales");
-				lblHoras.setPreferredSize(new java.awt.Dimension(102, 14));
-			}
-			{
-				spnHoras = new JSpinner();
-				inicializarSpinnerHoras (spnHoras);
-				this.add(spnHoras, new AnchorConstraint(12, 615, 85, 267, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				spnHoras.setPreferredSize(new java.awt.Dimension(80, 21));
+				this.add(lblHoras, new AnchorConstraint(169, 230, 532, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblHoras.setText("Horas seleccionadas: ");
+				lblHoras.setPreferredSize(new java.awt.Dimension(116, 13));
 			}
 			{
 				btnRestablecerTodo = new JButton();
 				this.add(btnRestablecerTodo, new AnchorConstraint(916, 275, 11, 308, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnRestablecerTodo.setText("Restablecer todo");
 				btnRestablecerTodo.setPreferredSize(new java.awt.Dimension(120, 22));
+				btnRestablecerTodo.setEnabled(false);
 				btnRestablecerTodo.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnRestablecerTodoActionPerformed(evt);
@@ -100,6 +88,7 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 				this.add(btnRestablecer, new AnchorConstraint(916, 114, 11, 540, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(100, 22));
+				btnRestablecer.setEnabled(false);
 				btnRestablecer.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnRestablecerActionPerformed(evt);
@@ -107,37 +96,24 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 				});
 			}
 			{
+				btnAceptar = new JButton();
+				this.add(btnAceptar, new AnchorConstraint(911, 10, 11, 779, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+				btnAceptar.setText("Aceptar");
+				btnAceptar.setPreferredSize(new java.awt.Dimension(90, 22));
+				btnAceptar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnAceptarActionPerformed(evt);
+					}
+				});
+			}
+			{
 				btnPropagar = new JButton();
-				this.add(btnPropagar, new AnchorConstraint(161, 443, 467, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnPropagar, new AnchorConstraint(134, 216, 467, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnPropagar.setText("Propagar selección");
-				btnPropagar.setPreferredSize(new java.awt.Dimension(110, 21));
+				btnPropagar.setPreferredSize(new java.awt.Dimension(117, 24));
 				btnPropagar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnPropagarActionPerformed(evt);
-					}
-				});
-			}
-			{
-				btnGuardar = new JButton();
-				this.add(btnGuardar, new AnchorConstraint(911, 10, 11, 779, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
-				btnGuardar.setText("Guardar");
-				btnGuardar.setPreferredSize(new java.awt.Dimension(90, 22));
-				btnGuardar.setEnabled(false);
-				btnGuardar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						btnGuardarActionPerformed(evt);
-					}
-				});
-			}
-			{
-				cbModificar = new JCheckBox();
-				this.add(cbModificar, new AnchorConstraint(132, 218, 408, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				cbModificar.setText("Permitir modificar");
-				cbModificar.setPreferredSize(new java.awt.Dimension(110, 20));
-				cbModificar.setEnabled(false);
-				cbModificar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						cbModificarActionPerformed(evt);
 					}
 				});
 			}
@@ -167,8 +143,7 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 						}
 					});
 					jListDiaSemana.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-					// Seleccionamos el primer dia de la semana
-					jListDiaSemana.setEnabled(false);
+					jListDiaSemana.setSelectedIndex(0);
 				}
 			}
 		} catch (Exception e) {
@@ -176,20 +151,20 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 		}
 	}
 	
-	private void inicializarSpinnerHoras(JSpinner spnHoras) {
-		// Creamos un spinner en el cual se pueden seleccionar desde 0 hasta HORAS_SEMANALES
-		String [] horas = new String [HORAS_SEMANALES+1];
-		for (int i = 0; i <= HORAS_SEMANALES; i++)
-			horas[i] = i+"";
-		SpinnerListModel spnHorasModel = new SpinnerListModel(horas);
-		spnHoras.setModel(spnHorasModel);
+	public void setModificable (boolean b) {	
+		for (JPPeriodosTrabajo p: jpPeriodos) {
+			p.activarPeriodos(b);
+		}
+		btnPropagar.setEnabled(b);
+		btnRestablecer.setEnabled(b);
+		btnRestablecerTodo.setEnabled(b);
 	}
 
 	private void crearPanelPeriodosTrabajo (DiaSemana s) {
 		// Creamos un panel de periodos de trabajo para el día "s"
 		pTrabajo = new JPPeriodosTrabajo(s);
 		// Posicionamos el panel de periodos de trabajo
-		this.add(pTrabajo, new AnchorConstraint(40, 951, 878, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+		this.add(pTrabajo, new AnchorConstraint(DESPL_Y, 951, 878, DESPL_X, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 		// Le damos un tamaño al panel
 		pTrabajo.setPreferredSize(new java.awt.Dimension(400, 300));
 		// Inicialmente, deshabilitamos todos sus checkboxes
@@ -226,22 +201,15 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 		}
 	}
 	
-	private void cbModificarActionPerformed(ActionEvent evt) {
-		for (JPPeriodosTrabajo p: jpPeriodos) {
-			p.activarPeriodos(cbModificar.isSelected());
-		}
-		btnGuardar.setEnabled(cbModificar.isSelected());
-	}
-	
-	private void btnGuardarActionPerformed(ActionEvent evt) {
+	private void btnAceptarActionPerformed(ActionEvent evt) {
 		// Siempre creamos una nueva instancia del Vector para evitar errores
 		periodosTrabajo = new Vector<PeriodoTrabajo>();
-		obtenerPeriodosDeTrabajoSeleccionados();
+		obtenerPeriodosDeTrabajoSeleccionadosComprimidos();
 		((JDCalendarioLaboral)parent).setPeriodos(periodosTrabajo);
 		((JDCalendarioLaboral)parent).dispose();
 	}
 
-	private void obtenerPeriodosDeTrabajoSeleccionados() {
+	private void obtenerPeriodosDeTrabajoSeleccionadosComprimidos() {
 		periodosTrabajo = new Vector<PeriodoTrabajo>();
 		for (JPPeriodosTrabajo pt : jpPeriodos) {
 			periodosTrabajo.addAll(pt.getPeriodosTrabajo());
@@ -249,13 +217,19 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 	}
 
 	public Vector<PeriodoTrabajo> getPeriodosTrabajo() {
-		obtenerPeriodosDeTrabajoSeleccionados();
+		obtenerPeriodosDeTrabajoSeleccionadosComprimidos();
 		return periodosTrabajo;
 	}
 	
 	private void btnPropagarActionPerformed(ActionEvent evt) {
-		System.out.println("btnPropagar.actionPerformed, event="+evt);
-		//TODO add your code for btnPropagar.actionPerformed
+		int index = jListDiaSemana.getSelectedIndex();
+		JPPeriodosTrabajo jpptActivo = jpPeriodos.get(index);
+		for (JPPeriodosTrabajo jppt : jpPeriodos) {
+			if (!jppt.equals(jpptActivo)) {
+				jppt.deseleccionarPeriodos();
+				jppt.seleccionarPeriodos(jpptActivo.getPeriodosTrabajo());
+			}
+		}
 	}
 	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {

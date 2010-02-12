@@ -71,6 +71,10 @@ public class JDCalendarioLaboral extends javax.swing.JDialog {
 		}
 	}
 	
+	public void setModificable (boolean b) {
+		jPanelConsultarCalendario.setModificable(b);
+	}
+	
 	private void thisWindowClosing(WindowEvent evt) {
 		this.setPeriodos(jPanelConsultarCalendario.getPeriodosTrabajo());
 	}

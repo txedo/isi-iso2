@@ -2,17 +2,13 @@ package presentacion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.DebugGraphics;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,7 +16,6 @@ import javax.swing.JList;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -40,7 +35,6 @@ import dominio.conocimiento.Validacion;
 import dominio.conocimiento.IConstantes;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
-import excepciones.CalendarioNoCreadoException;
 import excepciones.CentroSaludInexistenteException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.NIFIncorrectoException;
@@ -95,7 +89,6 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	private JPasswordField txtPassword2;
 	private JTextField txtLogin;
 	private JTextField txtNIF;
-	private JCheckBox chbCalendario;
 	private JButton btnCalendario;
 	private JLabel lblCalendario;
 	private Vector<PeriodoTrabajo> periodos;
@@ -114,18 +107,10 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			this.setSize(430, 390);
 			this.setPreferredSize(new java.awt.Dimension(430, 390));
 			{
-				chbCalendario = new JCheckBox();
-				this.add(chbCalendario, new AnchorConstraint(233, 654, 644, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				chbCalendario.setText("Configurado");
-				chbCalendario.setPreferredSize(new java.awt.Dimension(97, 18));
-				chbCalendario.setFocusable(false);
-				chbCalendario.setEnabled(false);
-			}
-			{
 				btnCalendario = new JButton();
-				this.add(btnCalendario, new AnchorConstraint(232, 905, 650, 303, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnCalendario, new AnchorConstraint(232, 905, 650, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnCalendario.setText("Configurar...");
-				btnCalendario.setPreferredSize(new java.awt.Dimension(109, 21));
+				btnCalendario.setPreferredSize(new java.awt.Dimension(110, 21));
 				btnCalendario.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnCalendarioActionPerformed(evt);
@@ -147,7 +132,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			{
 				txtEspecialidad = new JTextField();
 				this.add(txtEspecialidad, new AnchorConstraint(259, 18, 691, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtEspecialidad.setPreferredSize(new java.awt.Dimension(228, 19));
+				txtEspecialidad.setPreferredSize(new java.awt.Dimension(229, 22));
 			}
 			{
 				btnRestablecer = new JButton();
@@ -327,14 +312,12 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 				else if (lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA))
 					tipo = new Especialista(txtEspecialidad.getText());
 				((Medico)usu).setTipoMedico(tipo);
-				if (periodos.size() != HORAS_SEMANALES) {
-					throw new CalendarioNoCreadoException();
-				}
-				else {
-					((Medico)usu).setCalendario(periodos);
-				}
+				((Medico)usu).setCalendario(periodos);
+				getControlador().crearMedico((Medico)usu);
 			}
-			getControlador().crearUsuario(usu);
+			else {
+				getControlador().crearUsuario(usu);
+			}
 			// El usuario se ha creado correctamente
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido dado de alta en el sistema.");
 			limpiarCamposRegistro();
@@ -347,7 +330,6 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		
 		} catch(UsuarioNoSeleccionadoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe seleccionar un tipo de usuario y, si es el caso, un tipo de médico");
 		} catch(NIFIncorrectoException e) {
@@ -364,8 +346,6 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			txtApellidos.grabFocus();
 		} catch(ContraseñaIncorrectaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
-		} catch (CalendarioNoCreadoException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Para poder crear un médico, es obligatorio crear su calendario.");
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
@@ -373,6 +353,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	
 	private void btnCalendarioActionPerformed(ActionEvent evt) {
 		JDialog calendario = new JDCalendarioLaboral(this, periodos);
+		((JDCalendarioLaboral)calendario).setModificable(true);
 		calendario.setVisible(true);
 	}
 
@@ -413,7 +394,6 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	
 	private void cambiarEstadoConfiguracionCalendario(boolean b) {
 		lblCalendario.setVisible(b);
-		chbCalendario.setVisible(b);
 		btnCalendario.setVisible(b);
 	}
 
