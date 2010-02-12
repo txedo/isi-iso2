@@ -141,7 +141,6 @@ public class JPCitaConsultar extends JPBase {
 					scpTablaCitas.setViewportView(tblTablaCitas);				
 					tblTablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					tblTablaCitas.setCellEditor(null);
-					tblTablaCitas.setAutoCreateRowSorter(true);
 					tblTablaCitas.setDefaultRenderer(Object.class, new TableCellRendererCitas());
 				}
 			}
@@ -167,6 +166,8 @@ public class JPCitaConsultar extends JPBase {
 				// Obtenemos y mostramos las citas del beneficiario
 				// (por defecto, sólo las pendientes)
 				citas = getControlador().consultarCitasPendientes(beneficiario.getNif());
+				//for (Cita c: citas)
+					//System.out.println(c.getFechaYHora());
 				crearTabla(citas.size());
 				rellenarTabla(citas);
 				

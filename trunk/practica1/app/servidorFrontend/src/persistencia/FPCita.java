@@ -110,7 +110,7 @@ public class FPCita {
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CITAS
 				+ " WHERE " + COL_NIF_BENEFICIARIO + " = ? ORDER BY " + COL_FECHA
-				+ " DESC", nifBeneficiario);
+				+ " ASC", nifBeneficiario);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 
@@ -152,7 +152,7 @@ public class FPCita {
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CITAS
 				+ " WHERE " + COL_DNI_MEDICO + " = ? ORDER BY " + COL_FECHA
-				+ " DESC", dniMedico);
+				+ " ASC", dniMedico);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 

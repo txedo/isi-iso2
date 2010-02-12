@@ -1,8 +1,10 @@
 package pruebas;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 import java.util.Vector;
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
@@ -603,14 +605,187 @@ public class PruebasCitas extends PruebasBase {
 
 	}
 	
-	public void testConsultarCitas() {
+	public void testConsultarCitasBeneficiario() {
+		Medico medicoAsignado;
+		Date fechaCitaPasada, fechaCitaPendiente;
+		Cita cita1;
+		Vector <Cita> citasPendientes;
+		
 		try {
-			// Intentamos consultar las citas de un beneficiario con dni nulo
+			// Intentamos consultar todas las citas de un beneficiario con dni nulo
 			GestorCitas.consultarCitas(sesionAdmin.getId(), null);
 			fail("Se esperaba una excepcion NullPointerException");
 		} catch (NullPointerException e) {
 		} catch (Exception e) {
 			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos consultar las citas pendientes de un beneficiario con dni nulo
+			GestorCitas.consultarCitasPendientes(sesionAdmin.getId(), null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch (NullPointerException e) {
+		} catch (Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos consultar las citas pendientes de un beneficiario sin tener permiso
+			GestorCitas.consultarCitasPendientes(sesionMedico.getId(), bene1.getNif());
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		} catch (OperacionIncorrectaException e) {
+		} catch (Exception e) {
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		}
+		
+		try {
+			// Insertamos citas válidas, tanto pendientes como pasadas
+			medicoAsignado = bene1.getMedicoAsignado();
+			if (medicoAsignado.getDni().equals(medico1.getDni())) {
+				// Cita pasada
+				fechaCitaPasada = fechaCita1;
+				// Cita pendiente
+				calendar = new GregorianCalendar(2010,6-1,11,16,15);
+				fechaCitaPendiente = calendar.getTime();
+			}
+			else {
+				fechaCitaPasada = fechaCita2;
+				// Cita pendiente
+				calendar = new GregorianCalendar(2010,6-1,7,16,15);
+				fechaCitaPendiente = calendar.getTime();
+			}
+			
+			// Creamos citas correctas
+			cita1 = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCitaPendiente, DURACION);
+			// Intentamos consultar las citas pendientes de un beneficiario
+			citasPendientes = GestorCitas.consultarCitasPendientes(sesionAdmin.getId(), bene1.getNif());
+			// La cita pasada (cita2) no puede estar en esa lista. Ademas, el tamaño debe ser uno
+			assertTrue(citasPendientes.size()==1);
+			assertEquals(cita1, citasPendientes.get(0));
+		} catch (Exception e) {
+			fail("No se esperaba ninguna excepción al consultar las citas pendientes");
+		}
+	}
+	
+	public void testConsultarCitasMedico() {
+		Calendar cal;
+		Hashtable<Date, Vector<String>> citasMedico;
+		Medico medicoAsignado;
+		Date fecha, fechaCita;
+		Cita cita;
+		
+		try {
+			// Intentamos consultar las citas de un médico nulo
+			GestorCitas.consultarCitasMedico(sesionAdmin.getId(), null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch (NullPointerException e) {
+		} catch (Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos consultar las citas de un médico sin tener permiso
+			GestorCitas.consultarCitasMedico(sesionMedico.getId(), bene1.getNif());
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		} catch (OperacionIncorrectaException e) {
+		} catch (Exception e) {
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		}
+		
+		try {
+			// Intentamos consultar las citas de un médico con un usuario que no es médico
+			GestorCitas.consultarCitasMedico(sesionAdmin.getId(), admin1.getDni());
+			fail("Se esperaba una excepcion MedicoInexistenteException");
+		} catch (MedicoInexistenteException e) {
+		} catch (Exception e) {
+			fail("Se esperaba una excepcion MedicoInexistenteException");
+		}
+		
+		try {
+			FPBeneficiario.insertar(bene2);
+			medicoAsignado = bene2.getMedicoAsignado();
+			if (medicoAsignado.getDni().equals(medico1.getDni()))
+				fechaCita = fechaCita1;
+			else
+				fechaCita = fechaCita2;
+			// Creamos una cita correcta
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene2, medicoAsignado.getDni(), fechaCita, DURACION);
+			
+			// Intentamos consultar las citas de un médico válido
+			citasMedico = GestorCitas.consultarCitasMedico(sesionAdmin.getId(), bene2.getMedicoAsignado().getDni());
+			// Debe haber una cita
+			assertTrue(!citasMedico.isEmpty());
+			// Comprobamos si realmente coinciden las fechas y horas
+			cal = Calendar.getInstance();
+			cal.setTime(cita.getFechaYHora());
+			fecha = new Date(cal.get(Calendar.YEAR) - 1900, cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+			assertEquals(citasMedico.get(fecha).get(0), cita.cadenaHoraCita(cita.getFechaYHora()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("No se esperaba excepción al consultar las citas de un médico");
+		}
+	}
+	
+	public void testConsultarDiasCompletos() {
+		Vector<Date> dias;
+		Medico medicoAsignado; 
+		Cita cita;
+		Date fecha1,fecha2, fecha3, fecha4;
+		calendar = new GregorianCalendar(2011,1-1,10,16,00);
+		fecha1 = calendar.getTime();
+		calendar = new GregorianCalendar(2011,1-1,10,16,30);
+		fecha2 = calendar.getTime();
+		calendar = new GregorianCalendar(2011,1-1,10,16,15);
+		fecha3 = calendar.getTime();
+		calendar = new GregorianCalendar(2011,1-1,10,16,45);
+		fecha4 = calendar.getTime();
+		
+		try {
+			// Intentamos consultar los dias completos de un médico nulo
+			GestorCitas.consultarDiasCompletos(sesionAdmin.getId(), null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch (NullPointerException e) {
+		} catch (Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos consultar los días completos de un médico sin tener permiso
+			GestorCitas.consultarDiasCompletos(sesionMedico.getId(), bene1.getNif());
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		} catch (OperacionIncorrectaException e) {
+		} catch (Exception e) {
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		}
+		
+		try {
+			// Intentamos consultar los dias completos de un médico con un usuario que no es médico
+			GestorCitas.consultarDiasCompletos(sesionAdmin.getId(), admin1.getDni());
+			fail("Se esperaba una excepcion MedicoInexistenteException");
+		} catch (MedicoInexistenteException e) {
+		} catch (Exception e) {
+			fail("Se esperaba una excepcion MedicoInexistenteException");
+		}
+		
+		try {
+			// Intentamos consultar los dias completos de un médico
+			dias = GestorCitas.consultarDiasCompletos(sesionAdmin.getId(), medico2.getDni());
+			// Como no tiene ninguna cita este médico, la lista debe ser vacía
+			assertTrue(dias.size() == 0);
+			// Ocupamos un día con citas
+			medicoAsignado = bene1.getMedicoAsignado();
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha1, DURACION);
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha2, DURACION);
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha3, DURACION);
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha4, DURACION);
+			// Cita pasada
+			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita2, DURACION);
+			// Intentamos consultar los dias completos de un médico
+			dias = GestorCitas.consultarDiasCompletos(sesionAdmin.getId(), medico2.getDni());
+			// Como un día lo tiene completo con citas, el tamaño de la lista debe ser uno
+			assertTrue(dias.size() == 1);
+		} catch (Exception e) {
+			fail("No se esperaba ninguna excepción al consultar los días completos de un médico");
 		}
 	}
 	
