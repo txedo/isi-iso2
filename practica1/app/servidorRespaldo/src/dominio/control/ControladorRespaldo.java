@@ -54,10 +54,10 @@ public class ControladorRespaldo {
 		// Configuramos y activamos la clase remota para
 		// acceder al servidor de respaldo
 		try {
+			ServidorRespaldo.getServidor().getConexionBD().getAgente().setIP(configuracion.getIPBDRespaldo());
+			ServidorRespaldo.getServidor().getConexionBD().getAgente().setPuerto(configuracion.getPuertoBDRespaldo());
+			ServidorRespaldo.getServidor().getConexionEstado().ponerVentana(ventana);
 			remotoServidor = RemotoServidorRespaldo.getServidor();
-			remotoServidor.getConexionBD().getAgente().setIP(configuracion.getIPBDRespaldo());
-			remotoServidor.getConexionBD().getAgente().setPuerto(configuracion.getPuertoBDRespaldo());
-			remotoServidor.getConexionEstado().ponerVentana(ventana);
 			remotoServidor.activar(ipLocal, configuracion.getPuertoRespaldo());
 		} catch(RemoteException e) {
 			throw new RemoteException("No se puede poner a la escucha el servidor de respaldo en la dirección IP " + ipLocal + " y el puerto " + configuracion.getPuertoRespaldo() + ".");

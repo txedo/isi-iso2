@@ -5,25 +5,28 @@ package dominio.conocimiento;
  * sistema.
  */
 public enum Operaciones {
-	CrearUsuario,
-	ConsultarUsuario,
-	ModificarUsuario,
-	EliminarUsuario,
-	TramitarCita,
-	ConsultarCitas,
-	AnularCita,
-	EmitirVolante,
-	RegistrarBeneficiario,
+	// Operaciones del Gestor de Beneficiarios
 	ConsultarBeneficiario,
+	RegistrarBeneficiario,
 	ModificarBeneficiario,
 	EliminarBeneficiario,
-	RegistrarMedico,
+	// Operaciones del Gestor de Usuarios
+	ConsultarUsuario,
+	RegistrarUsuario,
+	ModificarUsuario,
+	EliminarUsuario,
+	// Operaciones del Gestor de Médicos
 	ConsultarMedico,
-	EliminarMedico,
+	RegistrarMedico,
 	ModificarMedico,
-	ModificarCalendario,
-	EstablecerSustituto,
+	EliminarMedico,
 	ConsultarMedicosTipo,
-	CalcularDiasCompletosMedico,
-	ConsultarVolante
+	EstablecerSustituto,
+	// Operaciones del Gestor de Citas
+	ConsultarCitas,
+	TramitarCita,
+	TramitarCitaVolante,
+	AnularCita,
+	ConsultarVolante,
+	EmitirVolante,
 }

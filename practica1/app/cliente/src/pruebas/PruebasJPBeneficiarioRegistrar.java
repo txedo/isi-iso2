@@ -1,6 +1,5 @@
 package pruebas;
 
-import java.util.Date;
 import java.util.Random;
 import javax.swing.JTextField;
 import org.uispec4j.Button;
@@ -10,8 +9,6 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 import com.toedter.calendar.JDateChooser;
-import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
@@ -102,7 +99,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion("127.0.0.1", 2995, "admin", "admin");
+						controlador.iniciarSesion("127.0.0.1", 2995, "admin", "nimda");
 					} catch(Exception e) {
 						fail(e.toString());
 					}
@@ -115,7 +112,8 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 	
 	public void tearDown() {
 		try {
-			// Cerramos la ventana del controlador
+			// Cerramos la sesión y la ventana del controlador
+			controlador.cerrarSesion();
 			winPrincipal.dispose();
 		} catch(Exception e) {
 			fail(e.toString());
@@ -218,7 +216,6 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 	/** Pruebas con datos válidos */
 	@SuppressWarnings("deprecation")
 	public void testDatosValidos() {
-		Beneficiario beneLeido, beneCreado;
 		String nif = "", nss = "", otroNif, otroNss;
 		
 		try {
@@ -242,16 +239,6 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			txtTelefonoMovil.setText("626405060");
 			btnCrear.click();
 			comprobarCamposVacios();
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Comprobamos que el beneficiario se ha creado correctamente
-			beneLeido = controlador.consultarBeneficiario(nif);
-			Direccion dir = new Direccion(txtDomicilio.getText(), txtNumero.getText(), txtPiso.getText(), txtPuerta.getText(), txtLocalidad.getText(), txtProvincia.getText(), Integer.parseInt(txtCP.getText()));
-			beneCreado = new Beneficiario(nif, nss, "Pedro", "Jiménez Serrano", new Date(1980 - 1900, 0, 1), dir, "pjs80@gmail.com", "926147130", "626405060");
-			assertEquals(beneLeido, beneCreado);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -408,7 +395,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 				nif = nif + "X";
 				// Comprobamos si ya hay un beneficiario con ese NIF
 				try {
-					controlador.consultarBeneficiario(nif);
+					controlador.consultarBeneficiarioPorNIF(nif);
 					existe = true;
 				} catch(BeneficiarioInexistenteException e) {
 					existe = false;

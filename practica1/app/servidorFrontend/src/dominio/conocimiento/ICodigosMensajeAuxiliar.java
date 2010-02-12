@@ -15,7 +15,7 @@ public interface ICodigosMensajeAuxiliar {
 	public final int CONSULTAR_USUARIO = 1004;
 
 	// Métodos adicionales del Gestor de Citas
-	public final int CONSULTAR_HORAS_CITAS = 1006;
+	public final int CONSULTAR_HORARIO_MEDICO = 1006;
 	public final int CONSULTAR_CITAS_MEDICO = 1005;
 	public final int CONSULTAR_DIAS_COMPLETOS = 1007;
 	public final int CONSULTAR_CITAS_PENDIENTES = 1008;

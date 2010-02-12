@@ -1,6 +1,5 @@
 package pruebas;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -145,7 +144,7 @@ public class PruebasCitas extends PruebasBase {
 			GestorSesiones.liberar(((Sesion)sesionMedico).getId());
 			// Cerramos la base de datos
 			super.tearDown();
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 	}
@@ -605,11 +604,9 @@ public class PruebasCitas extends PruebasBase {
 	}
 	
 	public void testConsultarCitas() {
-		Vector<Cita> citas;
-		
 		try {
 			// Intentamos consultar las citas de un beneficiario con dni nulo
-			citas = GestorCitas.consultarCitas(sesionAdmin.getId(), null);
+			GestorCitas.consultarCitas(sesionAdmin.getId(), null);
 			fail("Se esperaba una excepcion NullPointerException");
 		} catch (NullPointerException e) {
 		} catch (Exception e) {

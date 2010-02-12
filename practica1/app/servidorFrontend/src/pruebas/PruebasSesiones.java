@@ -72,7 +72,7 @@ public class PruebasSesiones extends PruebasBase {
 			//assertEquals(s,ns);
 			assertEquals(RolesUsuarios.Medico.ordinal(), ns.getRol());
 		} catch(Exception e) {
-			fail("No se esperaba ninguna excepcion " + e.getMessage());
+			fail(e.toString());
 		}
 	}
 	

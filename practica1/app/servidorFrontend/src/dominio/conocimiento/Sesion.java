@@ -3,7 +3,10 @@ package dominio.conocimiento;
 import java.io.Serializable;
 import java.util.Date;
 
-
+/**
+ * Clase que representa una sesión iniciada por el cliente en el servidor
+ * front-end.
+ */
 public class Sesion implements ISesion, Serializable {
 
 	private static final long serialVersionUID = 4617941634511694961L;
@@ -11,14 +14,11 @@ public class Sesion implements ISesion, Serializable {
 	private long idSesion;
 	private Date horaInicio;
 	private Usuario usuario;
-	private boolean modificada;
 	
 	public Sesion(long idSesion, Usuario usuario) {
 		this.idSesion = idSesion;
+		this.horaInicio = new Date();
 		this.usuario = usuario;
-		modificada = false;
-		//TODO Calcular hora para la hora de inicio
-		//this.horaInicio = Calcular la hora
 	}
 	
 	public long getId() {
@@ -29,7 +29,7 @@ public class Sesion implements ISesion, Serializable {
 		return usuario.getRol().ordinal();
 	}
 
-	public void setIdSesion(long idSesion) {
+	public void setId(long idSesion) {
 		this.idSesion = idSesion;
 	}
 
@@ -59,14 +59,6 @@ public class Sesion implements ISesion, Serializable {
 			dev = idSesion==u.getId() && usuario.equals(u.getUsuario());
 		}
 		return dev;
-	}
-
-	public void setModificada(boolean modificada) {
-		this.modificada = modificada;
-	}
-
-	public boolean isModificada() {
-		return modificada;
 	}
 
 }

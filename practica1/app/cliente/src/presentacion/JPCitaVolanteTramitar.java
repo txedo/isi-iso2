@@ -245,6 +245,9 @@ public class JPCitaVolanteTramitar extends JPBase {
 			//TODO: Comprobamos el id del volante
 			//Validacion.comprobarVolante(txtNumeroVolante.getText().trim());
 			
+			//TODO: Creo que ahora mismo no se comprueba si el volante
+			// está asociado al beneficiario, hacer!
+			
 			// Recuperamos los datos del volante del servidor
 			volante = getControlador().consultarVolante(Long.parseLong(txtNumeroVolante.getText().trim()));
 			
@@ -263,7 +266,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 			// necesaria para el panel de tramitación
 			diasOcupados = getControlador().consultarDiasCompletos(volante.getReceptor().getDni());
 			citasOcupadas = getControlador().consultarCitasMedico(volante.getReceptor().getDni());
-			horasCitas = getControlador().consultarHorasCitas(volante.getReceptor().getDni());
+			horasCitas = getControlador().consultarHorarioMedico(volante.getReceptor().getDni());
 			
 			// Deshabilitamos los días de la semana que no son
 			// laborables para el médico del beneficiario

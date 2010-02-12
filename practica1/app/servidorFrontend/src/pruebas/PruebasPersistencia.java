@@ -62,9 +62,6 @@ public class PruebasPersistencia extends PruebasBase {
 			// Preparamos la base de datos
 			super.setUp();
 			// Creamos objetos de prueba
-			direccion1 = new Direccion("Calle Toledo", "3", "", "", "Ciudad", "Provincia", 15500);
-			direccion2 = new Direccion("Plaza de España", "12", "", "", "Ciudad", "Provincia", 16500);
-			direccion3 = new Direccion("Avenida Principal", "4", "3", "A", "Ciudad", "Provincia", 17500);
 			centro1 = new CentroSalud("Centro A", "C/Pequeña, nº4");
 			centro2 = new CentroSalud("Centro B", "C/Media, nº10");
 			centro3 = new CentroSalud("Centro C", "C/Grande, nº5");
@@ -90,6 +87,9 @@ public class PruebasPersistencia extends PruebasBase {
 			administrador1.setCentroSalud(centro1);
 			periodo1 = new PeriodoTrabajo(10, 12, DiaSemana.Lunes);
 			periodo2 = new PeriodoTrabajo(16, 20, DiaSemana.Jueves);
+			direccion1 = new Direccion("Calle Toledo", "3", "", "", "Ciudad", "Provincia", 15500);
+			direccion2 = new Direccion("Plaza de España", "12", "", "", "Ciudad", "Provincia", 16500);
+			direccion3 = new Direccion("Avenida Principal", "4", "3", "A", "Ciudad", "Provincia", 17500);
 			beneficiario1 = new Beneficiario("11223344W", "121212454545", "Ángel", "L. A.", new Date(1985 - 1900, 4, 1), direccion1, "angel129@gmail.com", "900111222", "600111222");
 			beneficiario2 = new Beneficiario("88776655R", "444444444444", "José", "R. S.", new Date(1990 - 1900, 8, 20), direccion2, "pepepepe@otro.com", "900123123", "600123123");
 			beneficiario3 = new Beneficiario("91839184P", "888111111888", "Alicia", "S. L.", new Date(1945 - 1900, 1, 17), direccion3, "ali45@yahoo.es", "900455455", "600455455");
@@ -178,7 +178,10 @@ public class PruebasPersistencia extends PruebasBase {
 		}
 		
 		try {
-			// Recuperamos los beneficiarios insertados de las dos formas posibles
+			// Insertamos otro beneficiario más
+			beneficiario3.setNss("998877778899");
+			FPBeneficiario.insertar(beneficiario3);
+			// Recuperamos varios beneficiarios de las dos formas posibles
 			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario1.getNif());
 			assertEquals(beneficiario1, beneficiario);
 			beneficiario = FPBeneficiario.consultarPorNSS(beneficiario1.getNss());
@@ -189,30 +192,6 @@ public class PruebasPersistencia extends PruebasBase {
 			assertEquals(beneficiario2, beneficiario);
 		} catch(Exception e) {
 			fail(e.toString());
-		}
-		
-		try {
-			// Insertamos un beneficiario con un usuario no médico asociado
-			beneficiario3.setNif("06060606W");
-			beneficiario3.setNss("881188881188");
-			beneficiario3.getMedicoAsignado().setDni(administrador1.getDni());
-			FPUsuario.insertar(administrador1);
-			FPBeneficiario.insertar(beneficiario3);
-			// Comprobamos que no se puede recuperar el beneficiario insertado
-			FPBeneficiario.consultarPorNIF(beneficiario3.getNif());
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(UsuarioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		}
-		
-		try {
-			// Comprobamos que no se puede recuperar el beneficiario insertado
-			FPBeneficiario.consultarPorNSS(beneficiario3.getNss());
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(UsuarioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		}
 		
 		try {
@@ -248,6 +227,16 @@ public class PruebasPersistencia extends PruebasBase {
 		} catch(DireccionInexistenteException e) {
 		} catch(Exception e) {
 			fail("Se esperaba una excepción DireccionIncorrectaException");
+		}
+		
+		try {
+			// Comprobamos que los beneficiarios no borrados siguen existiendo
+			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario1.getNif());
+			assertEquals(beneficiario1, beneficiario);
+			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario3.getNif());
+			assertEquals(beneficiario3, beneficiario);
+		} catch(Exception e) {
+			fail(e.toString());
 		}
 	}
 
@@ -406,6 +395,17 @@ public class PruebasPersistencia extends PruebasBase {
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+		
+		try {
+			// Comprobamos que las citas no borradas siguen existiendo
+			// Recuperamos varias citas de las dos formas posibles
+			cita = FPCita.consultar(cita2.getId());
+			assertEquals(cita2, cita);
+			cita = FPCita.consultar(cita3.getId());
+			assertEquals(cita3, cita);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 	}
 	
 	/** Pruebas de la tabla de direcciones */
@@ -467,6 +467,17 @@ public class PruebasPersistencia extends PruebasBase {
 		} catch(DireccionInexistenteException e) {
 		} catch(Exception e) {
 			fail("Se esperaba una excepción DireccionInexistenteException");
+		}
+		
+		try {
+			// Comprobamos que las direcciones no borradas siguen existiendo
+			// Recuperamos la dirección de los beneficiarios creados
+			direccion = FPDireccion.consultar(beneficiario1.getNif());
+			assertEquals(direccion1, direccion);
+			direccion = FPDireccion.consultar(beneficiario2.getNif());
+			assertEquals(direccion2, direccion);
+		} catch(Exception e) {
+			fail(e.toString());
 		}
 	}
 	
@@ -705,15 +716,11 @@ public class PruebasPersistencia extends PruebasBase {
 			FPUsuario.insertar(medico2);
 			FPUsuario.insertar(medico3);
 			FPUsuario.insertar(medico4);
-			// Recuperamos el tipo de los médicos insertados
+			// Recuperamos varios de los tipos de médicos insertados
 			tipo = FPTipoMedico.consultar(medico1.getDni());
 			assertEquals(tipo, medico1.getTipoMedico());
 			tipo = FPTipoMedico.consultar(medico2.getDni());
 			assertEquals(tipo, medico2.getTipoMedico());
-			tipo = FPTipoMedico.consultar(medico3.getDni());
-			assertEquals(tipo, medico3.getTipoMedico());
-			tipo = FPTipoMedico.consultar(medico4.getDni());
-			assertEquals(tipo, medico4.getTipoMedico());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -741,6 +748,18 @@ public class PruebasPersistencia extends PruebasBase {
 			// Comprobamos que los cambios han tenido efecto
 			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Cabecera);
 			assertTrue(medicos.size() == 1);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Comprobamos que los tipos de médicos no borrados siguen existiendo
+			tipo = FPTipoMedico.consultar(medico1.getDni());
+			assertEquals(tipo, medico1.getTipoMedico());
+			tipo = FPTipoMedico.consultar(medico3.getDni());
+			assertEquals(tipo, medico3.getTipoMedico());
+			tipo = FPTipoMedico.consultar(medico4.getDni());
+			assertEquals(tipo, medico4.getTipoMedico());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -772,10 +791,13 @@ public class PruebasPersistencia extends PruebasBase {
 		try {
 			// Añadimos los centros de salud asociados a los usuarios
 			FPCentroSalud.insertar(centro1);
+			FPCentroSalud.insertar(centro2);
 			FPCentroSalud.insertar(centro3);
 			// Insertamos varios usuarios correctos de todos los tipos
 			medico1.getCalendario().add(periodo1);
+			medico2.getCalendario().add(periodo2);
 			FPUsuario.insertar(medico1);
+			FPUsuario.insertar(medico2);
 			FPUsuario.insertar(citador1);
 			FPUsuario.insertar(administrador1);
 		} catch(Exception e) {
@@ -801,19 +823,15 @@ public class PruebasPersistencia extends PruebasBase {
 		}
 		
 		try {
-			// Recuperamos los usuarios insertados de las dos formas posibles
+			// Recuperamos varios usuarios insertados de las dos formas posibles
 			usuario = FPUsuario.consultar(medico1.getDni());
 			assertEquals(medico1, usuario);
 			usuario = FPUsuario.consultar(citador1.getDni());
 			assertEquals(citador1, usuario);
-			usuario = FPUsuario.consultar(administrador1.getDni());
-			assertEquals(administrador1, usuario);
 			usuario = FPUsuario.consultar(medico1.getLogin(), medico1.getPassword());
 			assertEquals(medico1, usuario);
 			usuario = FPUsuario.consultar(citador1.getLogin(), citador1.getPassword());
 			assertEquals(citador1, usuario);
-			usuario = FPUsuario.consultar(administrador1.getLogin(), administrador1.getPassword());
-			assertEquals(administrador1, usuario);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -893,6 +911,20 @@ public class PruebasPersistencia extends PruebasBase {
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+		
+		try {
+			// Comprobamos que los usuarios no borrados siguen existiendo
+			usuario = FPUsuario.consultar(citador1.getDni());
+			assertEquals(citador1, usuario);
+			usuario = FPUsuario.consultar(citador1.getLogin(), citador1.getPassword());
+			assertEquals(citador1, usuario);
+			usuario = FPUsuario.consultar(medico2.getDni());
+			assertEquals(medico2, usuario);
+			usuario = FPUsuario.consultar(medico2.getLogin(), medico2.getPassword());
+			assertEquals(medico2, usuario);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 	}
 	
 	/** Pruebas de la tabla de volantes */
@@ -946,6 +978,16 @@ public class PruebasPersistencia extends PruebasBase {
 			// Comprobamos que los cambios han tenido efecto
 			volante = FPVolante.consultar(volante1.getId());
 			assertEquals(volante1, volante);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Comprobamos que los volantes siguen teniendo los datos correctos
+			volante = FPVolante.consultar(volante1.getId());
+			assertEquals(volante1, volante);
+			volante = FPVolante.consultar(volante2.getId());
+			assertEquals(volante2, volante);
 		} catch(Exception e) {
 			fail(e.toString());
 		}

@@ -87,7 +87,7 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
     	}
     }
     
-    // Métodos de gestión de sesiones
+    // Métodos del Gestor de Sesiones
     
 	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
 		return servidor.identificar(login, password);
@@ -101,7 +101,7 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 		servidor.liberar(idSesion);
 	}
 
-    // Métodos de gestión de beneficiarios
+    // Métodos del Gestor de Beneficiarios
 	
 	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		return servidor.getBeneficiario(idSesion, dni);
@@ -119,7 +119,7 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 		servidor.modificar(idSesion, beneficiario);
 	}
 	
-    // Métodos de gestión de médicos
+    // Métodos del Gestor de Médicos
 	
 	public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception {
 		return servidor.getMedico(idSesion, dni);
@@ -137,7 +137,7 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 		servidor.eliminar(idSesion, medico);
 	}
 	
-    // Métodos de gestión de citas
+    // Métodos del Gestor de Citas
 	
 	public Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception {
 		return servidor.pedirCita(idSesion, beneficiario, idMedico, fechaYHora, duracion);
@@ -162,7 +162,6 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
     // Método auxiliar
 	
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception {
-//TODO:Quitar		GestorConexionesLog.ponerMensaje("Usuario '" + GestorSesiones.getSesion(idSesion).getUsuario().getLogin() + "' ejecuta la operación " + codigoMensaje);
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
 

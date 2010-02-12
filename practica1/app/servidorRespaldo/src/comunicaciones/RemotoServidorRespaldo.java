@@ -11,6 +11,8 @@ import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import dominio.control.ServidorRespaldo;
 import persistencia.ComandoSQL;
 
 /**
@@ -21,16 +23,14 @@ public class RemotoServidorRespaldo extends UnicastRemoteObject implements IServ
 
 	private static final long serialVersionUID = -6996855286696746774L;
 
-	private ConexionBDRespaldo basedatos;
-	private ConexionLogVentana estado;
+	private IServidorRespaldo servidor;
 	private boolean registro;
 
 	private static RemotoServidorRespaldo instancia;
 	
 	protected RemotoServidorRespaldo() throws RemoteException {
 		super();
-		basedatos = new ConexionBDRespaldo();
-		estado = new ConexionLogVentana();
+		servidor = ServidorRespaldo.getServidor();
 		registro = false;
 	}
 	
@@ -75,52 +75,44 @@ public class RemotoServidorRespaldo extends UnicastRemoteObject implements IServ
 		}
     }
 	
-	public ConexionBDRespaldo getConexionBD() {
-		return basedatos;
-	}
-	
-	public ConexionLogVentana getConexionEstado() {
-		return estado;
-	}
-	
 	// Métodos de acceso a la base de datos
 	
 	public void abrir() throws RemoteException, SQLException {
-		basedatos.abrir();
+		servidor.abrir();
 	}
 	
 	public void cerrar() throws RemoteException, SQLException {
-		basedatos.cerrar();
+		servidor.cerrar();
 	}
 	
 	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
-		return basedatos.consultar(comando);
+		return servidor.consultar(comando);
 	}
 
 	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException {
-		basedatos.ejecutar(comando);
+		servidor.ejecutar(comando);
 	}
 
 	public void commit() throws RemoteException, SQLException {
-		basedatos.commit();
+		servidor.commit();
 	}
 
 	public void rollback() throws RemoteException, SQLException {
-		basedatos.rollback();
+		servidor.rollback();
 	}
 
 	// Métodos del log del servidor
 
-	public void ponerMensaje(String tipoMensaje, String mensaje) throws RemoteException {
-		estado.ponerMensaje(tipoMensaje, mensaje);
+	public void ponerMensaje(String tipoMensaje, String mensaje) throws RemoteException, SQLException {
+		servidor.ponerMensaje(tipoMensaje, mensaje);
 	}
 
-	public void ponerMensaje(String usuario, String tipoMensaje, String mensaje) throws RemoteException {
-		estado.ponerMensaje(usuario, tipoMensaje, mensaje);
+	public void ponerMensaje(String usuario, String tipoMensaje, String mensaje) throws RemoteException, SQLException {
+		servidor.ponerMensaje(usuario, tipoMensaje, mensaje);
 	}
 
-	public void actualizarClientesEscuchando(int numeroClientes) throws RemoteException {
-		estado.actualizarClientesEscuchando(numeroClientes);
+	public void actualizarClientesEscuchando(int numeroClientes) throws RemoteException, SQLException {
+		servidor.actualizarClientesEscuchando(numeroClientes);
 	}
 	
 }

@@ -163,7 +163,7 @@ public class JPCitaTramitar extends JPBase {
 				// necesaria para el panel de tramitación
 				diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
 				citasOcupadas = getControlador().consultarCitasMedico(beneficiario.getMedicoAsignado().getDni());
-				horasCitas = getControlador().consultarHorasCitas(beneficiario.getMedicoAsignado().getDni());
+				horasCitas = getControlador().consultarHorarioMedico(beneficiario.getMedicoAsignado().getDni());
 				
 				// Deshabilitamos los días de la semana que no son
 				// laborables para el médico del beneficiario
@@ -315,15 +315,18 @@ public class JPCitaTramitar extends JPBase {
 		
 		// Seleccionamos la primera hora no ocupada
 		if(horas != null && horas.size() > 0) {
-			i = 0;
-			if (horasOcupadas != null)
+			if(horasOcupadas == null) {
+				cmbHorasCitas.setSelectedIndex(0);
+			} else {
+				i = 0;
 				while(i < horas.size() && horasOcupadas.contains(horas.get(i))) {
 					i++;
 				}
-			if(i >= horas.size()) {
-				cmbHorasCitas.setSelectedIndex(-1);
-			} else {
-				cmbHorasCitas.setSelectedIndex(i);
+				if(i >= horas.size()) {
+					cmbHorasCitas.setSelectedIndex(-1);
+				} else {
+					cmbHorasCitas.setSelectedIndex(i);
+				}
 			}
 		} else {
 			cmbHorasCitas.setSelectedIndex(-1);

@@ -1,16 +1,12 @@
 package dominio.conocimiento;
 
 /**
- * Interfaz implementada por los objetos Sesion.
+ * Interfaz que define las operaciones básicas de la clase Sesion.
  */
 public interface ISesion {
-	
-	public boolean cambioSesion = false;
-	
+
 	public long getId();
 	
 	public long getRol();
-	
-	public boolean isModificada();
 	
 }

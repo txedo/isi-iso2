@@ -14,7 +14,7 @@ import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -25,7 +25,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -84,6 +83,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	/**
 	* Auto-generated main method to display this JFrame
 	*/
+	// TODO:Temporal, quitar al dejar de hacer pruebas!
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -262,10 +262,10 @@ public class JFPrincipal extends javax.swing.JFrame {
 	
 	@SuppressWarnings("unchecked")
 	public void iniciar() {
-		ArrayList<Operaciones> operaciones = null;
+		Vector<Operaciones> operaciones = null;
 
 		try {
-			operaciones = (ArrayList<Operaciones>)controlador.operacionesDisponibles();
+			operaciones = controlador.operacionesDisponibles();
 			this.configurarInterfaz(operaciones);
 		} catch (RemoteException e) {
 			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
@@ -276,7 +276,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		}
 	}
 	
-	private void configurarInterfaz(ArrayList<Operaciones> operaciones) {
+	private void configurarInterfaz(Vector<Operaciones> operaciones) {
 		// Inicializamos la barra de estado
 		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + RolesUsuarios.values()[(int)controlador.getSesion().getRol()]);
 		lblPuertoEscucha.setText("Puerto de escucha: " + controlador.getPuertoEscucha());
@@ -293,16 +293,16 @@ public class JFPrincipal extends javax.swing.JFrame {
 		if (!operaciones.contains(Operaciones.EmitirVolante))
 			jTabbedPaneOperaciones.remove(jPanelEmitirVolante);
 		
-		if(!operaciones.contains(Operaciones.CrearUsuario)
+		if(!operaciones.contains(Operaciones.RegistrarUsuario)
 				&& !operaciones.contains(Operaciones.ConsultarUsuario)) {
 			jTabbedPaneOperaciones.remove(jPanelGestionarUsuarios);
 		}
 		if(!operaciones.contains(Operaciones.ConsultarMedico)) {
 			//TODO Permitir ver el calendario del médico
 		}
-		if(!operaciones.contains(Operaciones.ModificarCalendario)) {
-			jTabbedPaneOperaciones.remove(jPanelConsultarCalendario);
-		}
+//		if(!operaciones.contains(Operaciones.ModificarCalendario)) {
+	//		jTabbedPaneOperaciones.remove(jPanelConsultarCalendario);
+//		}
 		if(!operaciones.contains(Operaciones.EstablecerSustituto)) {
 			jTabbedPaneOperaciones.remove(jPanelEstablecerSustituto);
 		}
@@ -315,7 +315,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		if(!operaciones.contains(Operaciones.ConsultarBeneficiario))
 			jPanelGestionarBeneficiarios.desactivarConsultarModificarBeneficiario();
 
-		if(!operaciones.contains(Operaciones.CrearUsuario))
+		if(!operaciones.contains(Operaciones.RegistrarUsuario))
 			jPanelGestionarUsuarios.desactivarCrearUsuario();
 		/*if(!operaciones.contains(Operaciones.ModificarUsuario))
 			jPanelGestionarUsuarios.desactivarModificarUsuario();
@@ -376,6 +376,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 		} catch (Exception e) {
 			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		}
+	}
+	
+	public void forzarCierreSesion() {
+		Dialogos.mostrarDialogoAdvertencia(this, "Aviso", "Se ha iniciado una sesión con el mismo nombre de usuario en otro equipo.\nEsta sesión se cerrará automáticamente.");
+		controlador.identificarse();
 	}
 
 	//$hide<<$

@@ -57,7 +57,7 @@ public class GestorUsuarios {
 		}
 
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.CrearUsuario);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.RegistrarUsuario);
 		
 		// Encriptamos la contraseña del usuario (hacemos una
 		// copia del usuario para no modificar el original)
@@ -74,7 +74,7 @@ public class GestorUsuarios {
 		if(existe) {
 			throw new UsuarioYaExistenteException("Ya existe una persona en el sistema registrada con el DNI " + usuarioReal.getDni() + "."); 
 		}
-				
+		
 		// Consultamos si ya existe otro usuario con el mismo login
 		try {
 			FPUsuario.consultar(usuarioReal.getLogin(), usuarioReal.getPassword());

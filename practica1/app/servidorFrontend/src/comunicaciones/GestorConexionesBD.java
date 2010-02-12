@@ -37,11 +37,11 @@ public class GestorConexionesBD {
 		try {
 			// Para hacer una consulta utilizamos la primera conexión
 			if(conexiones.size() == 0) {
-				throw new SQLException("La lista de conexiones esta vacía");
+				throw new SQLException("La lista de conexiones está vacía.");
 			}
 			datos = conexiones.get(0).consultar(comando);
 		} catch(RemoteException ex) {
-			throw new SQLException("Error en la conexión con una base de datos remota", ex);
+			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
 		}
 		return datos;
 	}
@@ -53,7 +53,7 @@ public class GestorConexionesBD {
 			// Para hacer una modificación accedemos a todas las bases de
 			// datos, y si alguna falla revertimos los cambios de las anteriores
 			if(conexiones.size() == 0) {
-				throw new SQLException("La lista de conexiones esta vacía");
+				throw new SQLException("La lista de conexiones está vacía.");
 			}
 			conexionesUsadas = new ArrayList<IConexionBD>();
 			for(IConexionBD conexion : conexiones) {
@@ -65,7 +65,7 @@ public class GestorConexionesBD {
 					for(IConexionBD conexionUsada : conexionesUsadas) {
 						conexionUsada.rollback();
 					}
-					throw new SQLException("Error en el acceso a las bases de datos", ex);
+					throw new SQLException("Error en el acceso a las bases de datos.", ex);
 				}
 			}
 			// Aplicamos los cambios en todas las conexiones
@@ -73,7 +73,7 @@ public class GestorConexionesBD {
 				conexion.commit();
 			}
 		} catch(RemoteException ex) {
-			throw new SQLException("Error en la conexión con una base de datos remota", ex);
+			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class GestorConexionesBD {
 				conexion.cerrar();
 			}
 		} catch(RemoteException ex) {
-			throw new SQLException("Error en la conexión con una base de datos remota", ex);
+			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
 		}
 	}
 	

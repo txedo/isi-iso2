@@ -3,6 +3,7 @@ package pruebas;
 import java.sql.ResultSet;
 import comunicaciones.RemotoServidorRespaldo;
 import dominio.conocimiento.ITiposMensajeLog;
+import dominio.control.ServidorRespaldo;
 import persistencia.ComandoSQL;
 import persistencia.ComandoSQLSentencia;
 import presentacion.JFServidorRespaldo;
@@ -56,8 +57,8 @@ public class PruebasRemotoServidor extends TestCase {
 		
 		try {
 			// Configuramos la base de datos
-			conexion.getConexionBD().getAgente().setIP("127.0.0.1");
-			conexion.getConexionBD().getAgente().setPuerto(3306);
+			ServidorRespaldo.getServidor().getConexionBD().getAgente().setIP("127.0.0.1");
+			ServidorRespaldo.getServidor().getConexionBD().getAgente().setPuerto(3306);
 			// Activamos la conexión y abrimos la base de datos
 			conexion.activar("127.0.0.1", PUERTO_CONEXION);
 			conexion.abrir();
@@ -111,7 +112,7 @@ public class PruebasRemotoServidor extends TestCase {
 		try {
 			// Configuramos la ventana de estado
 			ventana = new JFServidorRespaldo(null);
-			conexion.getConexionEstado().ponerVentana(ventana);
+			ServidorRespaldo.getServidor().getConexionEstado().ponerVentana(ventana);
 			// Activamos la conexión
 			conexion.activar("127.0.0.1", PUERTO_CONEXION);
 		} catch(Exception e) {

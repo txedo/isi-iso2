@@ -474,7 +474,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			// Buscamos el beneficiario solicitado
 			if(tipo.equals(ID_NIF)) {
 				Validacion.comprobarNIF(identificacion);
-				beneficiario = getControlador().consultarBeneficiario(identificacion);
+				beneficiario = getControlador().consultarBeneficiarioPorNIF(identificacion);
 			} else if(tipo.equals(ID_NSS)) {
 				Validacion.comprobarNSS(identificacion);
 				beneficiario = getControlador().consultarBeneficiarioPorNSS(identificacion);
