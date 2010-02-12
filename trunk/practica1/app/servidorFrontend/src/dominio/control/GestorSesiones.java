@@ -1,25 +1,28 @@
 package dominio.control;
 
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
-
+import java.util.Vector;
+import comunicaciones.ICliente;
+import comunicaciones.ProxyCliente;
 import dominio.conocimiento.Encriptacion;
-import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Sesion;
 import dominio.conocimiento.Usuario;
-
-import persistencia.FPEntradaLog;
 import persistencia.FPUsuario;
 import excepciones.CentroSaludInexistenteException;
+import excepciones.DireccionInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
+import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
@@ -28,231 +31,190 @@ import excepciones.UsuarioIncorrectoException;
  */
 public class GestorSesiones {
 	
-	// Tabla hash de sesiones. La clave es el idSesion y el valor es la Sesion con ese idSesion
+	// Tabla que asocia el identificador de cada sesión con la propia sesión
 	private static Hashtable<Long, Sesion> sesiones = new Hashtable<Long, Sesion>();
-	// Se almacena la sesion que ya estaba abierta, para que el servidor pueda consultarla y desconectar ese cliente
-	private static Sesion sesionAbierta;
-		
-	// Metodo para cerrar una sesion y borrarla de la tabla de sesiones abiertas
-	public static void liberar(long idSesion) throws SQLException {
-		EntradaLog entrada;
-		entrada = new EntradaLog(sesiones.get(idSesion).getUsuario().getLogin(), "read", "Se ha cerrado la sesion cuyo id era " +idSesion);
-		sesiones.remove(idSesion);
-		FPEntradaLog.insertar(entrada);
-	}	
-	
+
+	// Tabla que asocia el identificador de cada sesión con el cliente
+	private static Hashtable<Long, ICliente> clientes = new Hashtable<Long, ICliente>();
+
 	// Metodo para identificar un cliente y crear una sesion
-	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, Exception {
+	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, Exception {
 		Enumeration<Sesion> sesionesAbiertas; 
-		Sesion sesion = null;
-		EntradaLog entrada;
+		Sesion sesion, sesionAbierta;
+		ICliente cliente;
 		Usuario usuario;
-		Random ran;
+		Random rnd;
 		String passwordEncriptada;
 		boolean encontrado;
 		long idSesion;
 		
+		// Encriptamos la contraseña del usuario
 		try {
-			
-			// Encriptamos la contraseña del usuario
-			try {
-				passwordEncriptada = Encriptacion.encriptarPasswordSHA1(password);
-			} catch(NoSuchAlgorithmException e) {
-				throw new SQLException("No se puede encriptar la contraseña del usuario.");
+			passwordEncriptada = Encriptacion.encriptarPasswordSHA1(password);
+		} catch(NoSuchAlgorithmException e) {
+			throw new SQLException("No se puede encriptar la contraseña del usuario.");
+		}
+		
+		// Comprobamos el login y la contraseña encriptada del usuario
+		usuario = FPUsuario.consultar(login, passwordEncriptada);
+
+		// Comprobamos si el usuario ya tenía una sesión iniciada
+		sesionesAbiertas = sesiones.elements();
+		sesionAbierta = null;
+		encontrado = false;
+		while(sesionesAbiertas.hasMoreElements() && !encontrado) {
+			sesionAbierta = sesionesAbiertas.nextElement();
+			if(sesionAbierta.getUsuario().getDni().equals(usuario.getDni())) {
+				encontrado = true;
 			}
-			
-			// Comprobamos el login y el password (encriptado) del usuario
-			usuario = FPUsuario.consultar(login, passwordEncriptada);
-			
-			// Se comprueba si el usuario ya tenía una sesion iniciada
-			sesionesAbiertas = sesiones.elements();
-			encontrado = false;
-			while(sesionesAbiertas.hasMoreElements() && !encontrado) {
-				sesionAbierta = sesionesAbiertas.nextElement();
-				if(sesionAbierta.getUsuario().getDni().equals(usuario.getDni())) {
-					encontrado = true;
+		}
+		
+		// Si el usuario ya tenía una sesion iniciada, se cierra
+		if(encontrado) {
+			cliente = clientes.get(sesionAbierta.getId());
+			// El cliente devuelto puede ser null si nunca se llamó al
+			// método registrar (por ejemplo, en las pruebas del sistema)
+			if(cliente != null) {
+				try {
+					// Forzamos a que el cliente antiguo salga del sistema
+					cliente.cerrarSesion();
+					ServidorFrontend.getServidor().liberar(sesionAbierta.getId());
+				} catch(RemoteException e) {
+					// Ignoramos la excepción
 				}
 			}
-			// Si el usuario ya tenía una sesion iniciada, se cierra
-			if(encontrado) {
-				liberar(sesionAbierta.getId());
-			}
-
-			// Creamos un identificador único para la nueva sesión
-			ran = new Random();
-			ran.setSeed(System.currentTimeMillis());
-			do {
-				idSesion = ran.nextLong();
-			} while (sesiones.containsKey(idSesion));
-
-			// Se crea la sesion, se inserta en la tabla de sesiones
-			// abiertas y se escribe el log
-			sesion = new Sesion(idSesion, usuario);
-			sesiones.put(idSesion, sesion);
-			if (encontrado)
-				sesion.setModificada(true);
-			
-			entrada = new EntradaLog(login, "read", "Se ha creado la sesion con id "+sesion.getId());
-			FPEntradaLog.insertar(entrada);
-			
-		} catch(UsuarioIncorrectoException ex) {
-			entrada = new EntradaLog(login, "read", "Intento de acceso al sistema fallido");
-			FPEntradaLog.insertar(entrada);
-			throw ex;
 		}
+
+		// Creamos un identificador único para la nueva sesión
+		rnd = new Random();
+		rnd.setSeed(System.currentTimeMillis());
+		do {
+			idSesion = Math.abs(rnd.nextLong());
+		} while(sesiones.containsKey(idSesion));
+
+		// Creamos la sesión y la guardamos en la tabla de sesiones
+		sesion = new Sesion(idSesion, usuario);
+		sesiones.put(idSesion, sesion);
 		
 		return (ISesion)sesion;
 	}
 	
-	public static ArrayList<Operaciones> operacionesDisponibles (long idSesion) throws SesionInvalidaException {
+	// Método para registrar un nuevo cliente en el sistema
+	public static void registrar(long idSesion, ICliente cliente) throws SesionNoIniciadaException, RemoteException {
+		ProxyCliente proxyCliente;
 		Sesion sesion;
-		ArrayList<Operaciones> operaciones = new ArrayList<Operaciones>();
 		
+		// Comprobamos si la sesión es válida
 		sesion = sesiones.get(idSesion);
-		if (sesion == null) {
-			throw new SesionInvalidaException("El identificador de sesión es inválido.");
+		if(sesion == null) {
+			throw new SesionNoIniciadaException("El identificador de la sesión es inválido.");
 		}
-				
-		// Agregamos al vector las operaciones de todos los usuarios (administrador, citador y medico)
+
+		// Establecemos conexión con el cliente remoto y lo guardamos
+		try {
+			proxyCliente = new ProxyCliente();
+			proxyCliente.conectar(cliente.getDireccionIP(), cliente.getPuerto());
+		} catch(NotBoundException e) {
+			throw new RemoteException("No se puede conectar con el cliente porque está desactivado (IP " + cliente.getDireccionIP() + ", puerto " + String.valueOf(cliente.getPuerto()) + ").");
+		} catch(MalformedURLException e) {
+			throw new RemoteException("No se puede conectar con el cliente (IP " + cliente.getDireccionIP() + ", puerto " + String.valueOf(cliente.getPuerto()) + ").");
+		} catch(RemoteException e) {
+			throw new RemoteException("No se puede conectar con el cliente (IP " + cliente.getDireccionIP() + ", puerto " + String.valueOf(cliente.getPuerto()) + ").");
+		}
+		clientes.put(idSesion, proxyCliente);
+	}
+	
+	// Metodo para cerrar una sesión y liberar el cliente registrado
+	public static void liberar(long idSesion) throws SesionNoIniciadaException {
+		Sesion sesion;
+		
+		// Comprobamos si la sesión es válida
+		sesion = sesiones.get(idSesion);
+		if(sesion == null) {
+			throw new SesionNoIniciadaException("El identificador de la sesión es inválido.");
+		}
+
+		// Quitamos la sesión y el cliente
+		sesiones.remove(idSesion);
+		clientes.remove(idSesion);
+	}	
+	
+	// Método que devuelve las operaciones que puede realizar el usuario con el servidor
+	public static Vector<Operaciones> operacionesDisponibles(long idSesion) throws SesionInvalidaException {
+		Vector<Operaciones> operaciones;
+		Sesion sesion;
+		
+		// Comprobamos si la sesión es válida
+		sesion = sesiones.get(idSesion);
+		if(sesion == null) {
+			throw new SesionInvalidaException("El identificador de la sesión es inválido.");
+		}
+		
+		// Agregamos las operaciones permitidas para todos los usuarios
+		operaciones = new Vector<Operaciones>();
 		operaciones.add(Operaciones.ConsultarBeneficiario);
 		
-		// Agregamos al vector las operaciones de citadores y administradores
-		if (sesion.getRol() == RolesUsuarios.Administrador.ordinal() || sesion.getRol() == RolesUsuarios.Citador.ordinal()) {
-			operaciones.add(Operaciones.ConsultarCitas);
-			operaciones.add(Operaciones.ConsultarVolante);
-			operaciones.add(Operaciones.TramitarCita);
-			operaciones.add(Operaciones.AnularCita);
+		// Agregamos las operaciones permitidas para citadores y administradores
+		if(sesion.getRol() == RolesUsuarios.Administrador.ordinal() || sesion.getRol() == RolesUsuarios.Citador.ordinal()) {
 			operaciones.add(Operaciones.RegistrarBeneficiario);
 			operaciones.add(Operaciones.ModificarBeneficiario);
 			operaciones.add(Operaciones.EliminarBeneficiario);
+			operaciones.add(Operaciones.ConsultarCitas);
+			operaciones.add(Operaciones.TramitarCita);
+			operaciones.add(Operaciones.TramitarCitaVolante);
+			operaciones.add(Operaciones.AnularCita);
+			operaciones.add(Operaciones.ConsultarVolante);
 		}
-		// Agregamos al vector las operaciones de administradores
-		if (sesion.getRol() == RolesUsuarios.Administrador.ordinal()){
-			operaciones.add(Operaciones.CrearUsuario);
+		
+		// Agregamos las operaciones permitidas para administradores
+		if(sesion.getRol() == RolesUsuarios.Administrador.ordinal()) {
+			operaciones.add(Operaciones.ConsultarUsuario);
+			operaciones.add(Operaciones.RegistrarUsuario);
 			operaciones.add(Operaciones.ModificarUsuario);
 			operaciones.add(Operaciones.EliminarUsuario);
-			operaciones.add(Operaciones.ConsultarUsuario);
-			operaciones.add(Operaciones.RegistrarMedico);
 			operaciones.add(Operaciones.ConsultarMedico);
+			operaciones.add(Operaciones.RegistrarMedico);
 			operaciones.add(Operaciones.ModificarMedico);
 			operaciones.add(Operaciones.EliminarMedico);
-			operaciones.add(Operaciones.ModificarCalendario);
-			operaciones.add(Operaciones.EstablecerSustituto);
-			operaciones.add(Operaciones.CalcularDiasCompletosMedico);
-		}
-		// Agregamos al vector las operaciones de médicos
-		if (sesion.getRol() == RolesUsuarios.Medico.ordinal()){
-			operaciones.add(Operaciones.EmitirVolante);
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
+			operaciones.add(Operaciones.EstablecerSustituto);
+		}
+		
+		// Agregamos las operaciones permitidas para médicos
+		if(sesion.getRol() == RolesUsuarios.Medico.ordinal()) {
+			operaciones.add(Operaciones.ConsultarMedicosTipo);
+			operaciones.add(Operaciones.EmitirVolante);
 		}
 		
 		return operaciones;
 	}
 	
-	public static void comprobarPermiso(long idSesion, Operaciones operacion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException {
+	// Método utilizado por otros gestores para comprobar los permisos de un usuario
+	public static void comprobarPermiso(long idSesion, Operaciones operacion) throws SesionInvalidaException, OperacionIncorrectaException {
+		Vector<Operaciones> operaciones;
 		Sesion sesion;
-		boolean permitido = false;
-		EntradaLog entrada;
-		boolean esAdministrador = false;
-		boolean esCitador = false;
-		boolean esMedico = false;
-		ArrayList<Operaciones> operaciones;
 		
-		// Obtenemos la sesión para el id indicado y comprobamos si existe
-		// (en teoría sí, porque primero el usuario ha tenido que hacer login)
+		// Comprobamos si la sesión es válida
 		sesion = sesiones.get(idSesion);
 		if(sesion == null) {
-			//TODO:Poner log
-			//entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para ejecutar la operacion " + operacion.toString());
-			//FPEntradaLog.insertar(entrada);
-			throw new SesionInvalidaException("El identificador de sesión es inválido.");
+			throw new SesionInvalidaException("El identificador de la sesión es inválido.");
 		}
-		
-		esAdministrador = (sesion.getRol() == RolesUsuarios.Administrador.ordinal());
-		esCitador = (sesion.getRol() == RolesUsuarios.Citador.ordinal());
-		esMedico = (sesion.getRol() == RolesUsuarios.Medico.ordinal());
-		
-		// TODO modificar este switch para que analice el arraylist devuelto por operacionesDisponibles()
+
+		// Obtenemos la lista de operaciones disponibles para el usuario
 		operaciones = operacionesDisponibles(idSesion);
-		permitido = operaciones.contains(operacion);
-		
-		// Vemos cuál es la operación solicitada
-		/*switch(operacion) {
-		case CrearUsuario:
-			permitido = esAdministrador;
-			break;
-		case ModificarUsuario:
-			permitido = esAdministrador; 
-			break;
-		case EliminarUsuario:
-			permitido = esAdministrador; 
-			break;
-		case TramitarCita:
-			permitido = esAdministrador || esCitador;
-			break;
-		case AnularCita:
-			permitido = esAdministrador || esCitador;
-			break;
-		case ConsultarCitas:
-			permitido = esAdministrador || esCitador;
-			break;
-		case EmitirVolante:
-			permitido = esMedico;
-			break;
-		case RegistrarBeneficiario:
-			permitido = esAdministrador || esCitador;
-			break;
-		case ModificarBeneficiario:
-			permitido = esAdministrador || esCitador;
-			break;
-		case ConsultarBeneficiario:
-			permitido = true;
-			break;
-		case ConsultarMedico:
-			permitido = esAdministrador || esCitador;
-			break;
-		case RegistrarMedico:
-			permitido = esAdministrador ;
-			break;
-		case ModificarMedico:
-			permitido = esAdministrador ;
-			break;
-		case EliminarMedico:
-			permitido = esAdministrador ;
-			break;
-		case ModificarCalendario:
-			permitido = esAdministrador;
-			break;
-		case EstablecerSustituto:
-			permitido = esAdministrador;
-			break;
-		case ConsultarUsuario:
-			// Estas operaciones siempre están permitidas
-			permitido = true;
-			break;
-		case ConsultarMedicosTipo:
-			// Estas operaciones siempre están permitidas
-			permitido = esMedico;
-			break;
-		default:
-			permitido = false;
-			break;
-		}*/
 
 		// Comprobamos si se tienen permisos para realizar la operación
-		if(!permitido) {
-			entrada = new EntradaLog(GestorSesiones.getSesion(idSesion).getUsuario().getLogin(), "read", "No tiene permiso para ejecutar la operacion " + operacion.toString());
-			FPEntradaLog.insertar(entrada);
-			throw new OperacionIncorrectaException("El rol " + RolesUsuarios.values()[(int)sesion.getRol()] + " no puede realizar la operación " + operacion.toString() + ".");
+		if(!operaciones.contains(operacion)) {
+			throw new OperacionIncorrectaException("El rol " + RolesUsuarios.values()[(int)sesion.getRol()] + " no tiene permiso para realizar la operación " + operacion.toString() + ".");
 		}
 	}
 
+	public static Hashtable<Long, ICliente> getClientes() {
+		return clientes;
+	}
+	
 	public static Sesion getSesion(long idSesion) {
 		return sesiones.get(idSesion);
 	}
 
-	public static Sesion getSesionAbierta() {
-		return sesionAbierta;
-	}
-	
 }

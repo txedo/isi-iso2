@@ -58,6 +58,37 @@ public class GestorCitas {
 		return citas;
 	}
 	
+	// Método para obtener todas las citas pendientes de un beneficiario
+	public static Vector<Cita> consultarCitasPendientes(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
+		Vector<Cita> citas, pendientes;
+		Date fechaActual;
+		
+		// Comprobamos los parámetros pasados
+		if(dni == null) {
+			throw new NullPointerException("El NIF del beneficiario para el que se quieren buscar las citas no puede ser nulo.");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
+
+		// Comprobamos que exista el beneficiario
+		FPBeneficiario.consultarPorNIF(dni);
+		
+		// Recuperamos las citas del beneficiario
+		citas = FPCita.consultarPorBeneficiario(dni);
+		
+		// Nos quedamos con las citas posteriores a la fecha y hora actuales
+		fechaActual = new Date();
+		pendientes = new Vector<Cita>();
+		for(Cita cita : citas) {
+			if(cita.getFechaYHora().after(fechaActual)) {
+				pendientes.add(cita);
+			}
+		}
+		
+		return pendientes;
+	}
+	
 	// Método para pedir una nueva cita para un cierto beneficiario y médico
 	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, MedicoInexistenteException, FechaNoValidaException, CitaNoValidaException, NullPointerException, DireccionInexistenteException {
 		Vector<Cita> citas;
@@ -152,7 +183,7 @@ public class GestorCitas {
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.TramitarCita);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.TramitarCitaVolante);
 
 		// Comprobamos que exista el beneficiario
 		beneficiario = FPBeneficiario.consultarPorNIF(beneficiario.getNif());
@@ -233,6 +264,19 @@ public class GestorCitas {
 		FPCita.eliminar(cita);
 	}
 
+	// Método para obtener los datos de un volante
+	public static Volante consultarVolante(long idSesion, long idVolante) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		Volante volante;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarVolante);
+
+		// Obtenemos el volante con el id indicado
+		volante = FPVolante.consultar(idVolante);
+		
+		return volante;
+	}
+	
 	// Método para emitir un volante para un beneficiario para un especialista
 	public static long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
 		Usuario usuario;
@@ -291,54 +335,6 @@ public class GestorCitas {
 		FPVolante.insertar(volante);
 		
 		return volante.getId();
-	}
-
-	// Método para obtener los datos de un volante
-	public static Volante consultarVolante(long idSesion, long idVolante) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		Volante volante;
-		
-		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarVolante);
-
-		// Obtenemos el volante con el id indicado
-		volante = FPVolante.consultar(idVolante);
-		
-		return volante;
-	}
-	
-	// Método que devuelve las horas de cada día de la semana
-	// en las que un médico puede pasar una cita
-	public static Hashtable<DiaSemana, Vector<String>> consultarHorasCitas(long idSesion, String dniMedico) throws SQLException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException, NullPointerException, DireccionInexistenteException {
-		Hashtable<DiaSemana, Vector<String>> horasDia;
-		Usuario usuario;
-		Medico medico;
-		
-		// Comprobamos los parámetros pasados
-		if(dniMedico == null) {
-			throw new NullPointerException("El DNI del médico para el que se quiere consultar el horario no puede ser nulo.");
-		}
-
-		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedico);
-		
-		// Comprobamos que exista el médico
-		try {
-			usuario = FPUsuario.consultar(dniMedico);
-			if(usuario.getRol() != RolesUsuarios.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
-			}
-			medico = (Medico)usuario;
-		} catch(UsuarioIncorrectoException ex) {
-			throw new MedicoInexistenteException(ex.getMessage());
-		}
-		
-		// Generamos la tabla que asocia día de la semana con horas de trabajo
-		horasDia = new Hashtable<DiaSemana, Vector<String>>();
-		for(DiaSemana dia : DiaSemana.values()) {
-			horasDia.put(dia, medico.horasCitas(dia, IConstantes.DURACION_CITA));
-		}
-		
-		return horasDia;
 	}
 	
 	// Método para obtener las citas que tiene un médico en cada día
@@ -409,7 +405,7 @@ public class GestorCitas {
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.CalcularDiasCompletosMedico);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedico);
 		
 		// Comprobamos que exista el médico
 		try {

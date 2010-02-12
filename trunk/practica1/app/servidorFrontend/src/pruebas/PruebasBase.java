@@ -13,11 +13,10 @@ import junit.framework.TestCase;
  */
 public class PruebasBase extends TestCase {
 
-	private ConexionBDFrontend conexionF;
-	
 	protected void setUp() {
 		Connection bd;
 		PreparedStatement sentencia;
+		ConexionBDFrontend conexion;
 		AgenteFrontend agente;
 		
 		try {
@@ -48,8 +47,8 @@ public class PruebasBase extends TestCase {
 			sentencia = bd.prepareStatement("DELETE FROM volantes");
 			sentencia.executeUpdate();
 			// Ponemos la conexión local con la base de datos
-			conexionF = new ConexionBDFrontend();
-			GestorConexionesBD.ponerConexion(conexionF);
+			conexion = new ConexionBDFrontend();
+			GestorConexionesBD.ponerConexion(conexion);
 		} catch(Exception e) {
 			fail(e.toString());
 		}

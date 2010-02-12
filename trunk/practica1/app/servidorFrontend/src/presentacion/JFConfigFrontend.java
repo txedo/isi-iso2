@@ -33,6 +33,9 @@ import excepciones.PuertoInvalidoException;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+/**
+ * Ventana de configuración de las conexiones del servidor front-end.
+ */
 public class JFConfigFrontend extends javax.swing.JFrame {
 
 	{

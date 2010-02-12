@@ -1,6 +1,5 @@
 package pruebas;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import persistencia.FPBeneficiario;
@@ -104,7 +103,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			GestorSesiones.liberar(((Sesion)sesionMedico).getId());
 			// Cerramos la base de datos
 			super.tearDown();
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 	}
@@ -115,7 +114,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Pasamos un nif a null
-			bene = GestorBeneficiarios.consultarBeneficiario(sesionCitador.getId(), null);
+			bene = GestorBeneficiarios.consultarBeneficiarioPorNIF(sesionCitador.getId(), null);
 			fail("Se esperaba NullPointerException");
 		} catch (NullPointerException e) {
 		} catch(Exception e) {
@@ -133,7 +132,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Obtenemos los datos de un beneficiario por nif
-			bene = GestorBeneficiarios.consultarBeneficiario(sesionCitador.getId(), bene1.getNif());
+			bene = GestorBeneficiarios.consultarBeneficiarioPorNIF(sesionCitador.getId(), bene1.getNif());
 			assertEquals(bene, bene1);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -158,7 +157,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos obtener los datos de un usuario que no es beneficiario
-			bene = GestorBeneficiarios.consultarBeneficiario(sesionCitador.getId(), citador1.getDni());
+			bene = GestorBeneficiarios.consultarBeneficiarioPorNIF(sesionCitador.getId(), citador1.getDni());
 			fail("Se esperaba una excepcion BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
@@ -194,7 +193,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			bene = new Beneficiario("6666666", "14124as-cd", "beNuevo", "nuevos", fecha2, direccion2, "luna@hotmail.com", "34698124", "67912312");
 			GestorBeneficiarios.crearBeneficiario(sesionAdmin.getId(), bene);
 			// Comprobamos que el beneficiario se ha creado correctamente
-			beneGet = GestorBeneficiarios.consultarBeneficiario(sesionAdmin.getId(), bene.getNif());
+			beneGet = GestorBeneficiarios.consultarBeneficiarioPorNIF(sesionAdmin.getId(), bene.getNif());
 			assertEquals(bene, beneGet);			
 			// Se le ha tenido que asignar un pediatra
 			assertNotNull(beneGet.getMedicoAsignado());
@@ -207,7 +206,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			// Intentamos añadir un beneficiario al que se le tiene que asignar un médico de cabecera
 			GestorBeneficiarios.crearBeneficiario(sesionAdmin.getId(), bene3);
 			// Comprobamos que el beneficiario se ha creado correctamente
-			beneGet = GestorBeneficiarios.consultarBeneficiario(sesionAdmin.getId(), bene3.getNif());
+			beneGet = GestorBeneficiarios.consultarBeneficiarioPorNIF(sesionAdmin.getId(), bene3.getNif());
 			assertEquals(bene3, beneGet);			
 			// Se le ha tenido que asignar un pediatra
 			assertNotNull(beneGet.getMedicoAsignado());
@@ -266,7 +265,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			bene1.setNombre("beneCambiado");
 			GestorBeneficiarios.modificarBeneficiario(sesionAdmin.getId(), bene1);
 			// Comprobamos que el beneficiario se haya actualizado correctamente
-			beneGet = GestorBeneficiarios.consultarBeneficiario(sesionAdmin.getId(), bene1.getNif());
+			beneGet = GestorBeneficiarios.consultarBeneficiarioPorNIF(sesionAdmin.getId(), bene1.getNif());
 			assertEquals(bene1, beneGet);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -295,7 +294,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			// Cambiamos la fecha de nacimiento del beneficiario para asignarle un nuevo médico
 			bene2.setFechaNacimiento(fecha1);
 			GestorBeneficiarios.modificarBeneficiario(sesionCitador.getId(), bene2);
-			bene = GestorBeneficiarios.consultarBeneficiario(sesionCitador.getId(), bene2.getNif());
+			bene = GestorBeneficiarios.consultarBeneficiarioPorNIF(sesionCitador.getId(), bene2.getNif());
 			assertEquals(bene, bene2);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -305,7 +304,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 	
 	/** Pruebas de la operación que elimina beneficiarios */
 	public void testEliminarBeneficiario() {
-		Beneficiario bene, beneGet;
+		Beneficiario bene;
 		
 		try {
 			// Intentamos eliminar un beneficiario nulo
@@ -338,7 +337,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		try {
 			// Intentamos eliminar un beneficiario correcto
 			GestorBeneficiarios.eliminarBeneficiario(sesionAdmin.getId(), bene1);
-			bene = GestorBeneficiarios.consultarBeneficiario(sesionAdmin.getId(), bene1.getNif());
+			bene = GestorBeneficiarios.consultarBeneficiarioPorNIF(sesionAdmin.getId(), bene1.getNif());
 			// Tiene que lanzarse essta excepcion porque ya no existirá el beneficiario
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {

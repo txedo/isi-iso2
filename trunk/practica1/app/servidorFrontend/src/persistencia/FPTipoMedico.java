@@ -9,7 +9,6 @@ import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Especialista;
-import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.TipoMedico;
 import excepciones.CentroSaludInexistenteException;

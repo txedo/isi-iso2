@@ -1,6 +1,5 @@
 package pruebas;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
 import persistencia.FPCentroSalud;
@@ -94,7 +93,7 @@ public class PruebasMedicos extends PruebasBase {
 			GestorSesiones.liberar(((Sesion)sesionAdmin).getId());
 			// Cerramos la base de datos
 			super.tearDown();
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			fail(e.toString());
 		}
 	}

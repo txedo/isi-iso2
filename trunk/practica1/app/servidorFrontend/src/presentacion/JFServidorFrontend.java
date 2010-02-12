@@ -42,6 +42,9 @@ import java.util.EventObject;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+/**
+ * Ventana principal del servidor front-end.
+ */
 public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEstado {
 	
 	{
@@ -253,12 +256,14 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 					lblConfigRespaldo.setName("lblConfiguracionRespaldo");
 				}
 			}
-			frmConfiguracion = new JFConfigFrontend();
-			frmConfiguracion.addVentanaCerradaListener(new VentanaCerradaListener() {
-				public void ventanaCerrada(EventObject evt) {    
-					frmConfiguracionVentanaCerrada(evt);
-				}
-			});
+			{
+				frmConfiguracion = new JFConfigFrontend();
+				frmConfiguracion.addVentanaCerradaListener(new VentanaCerradaListener() {
+					public void ventanaCerrada(EventObject evt) {    
+						frmConfiguracionVentanaCerrada(evt);
+					}
+				});
+			}
 			pack();
 		} catch(Exception e) {
 			e.printStackTrace();

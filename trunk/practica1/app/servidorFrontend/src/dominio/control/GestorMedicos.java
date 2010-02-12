@@ -2,10 +2,14 @@ package dominio.control;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Vector;
 import persistencia.FPSustitucion;
 import persistencia.FPTipoMedico;
+import persistencia.FPUsuario;
 import dominio.conocimiento.CategoriasMedico;
+import dominio.conocimiento.DiaSemana;
+import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
@@ -109,6 +113,61 @@ public class GestorMedicos {
 		}
 	}
 	
+	// Método que devuelve las horas de cada día de la semana
+	// en las que un médico puede pasar una cita
+	public static Hashtable<DiaSemana, Vector<String>> consultarHorarioMedico(long idSesion, String dniMedico) throws SQLException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException, NullPointerException, DireccionInexistenteException {
+		Hashtable<DiaSemana, Vector<String>> horasDia;
+		Usuario usuario;
+		Medico medico;
+		
+		// Comprobamos los parámetros pasados
+		if(dniMedico == null) {
+			throw new NullPointerException("El DNI del médico para el que se quiere consultar el horario no puede ser nulo.");
+		}
+
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedico);
+		
+		// Comprobamos que exista el médico
+		try {
+			usuario = FPUsuario.consultar(dniMedico);
+			if(usuario.getRol() != RolesUsuarios.Medico) {
+				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+			}
+			medico = (Medico)usuario;
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		// Generamos la tabla que asocia día de la semana con horas de trabajo
+		horasDia = new Hashtable<DiaSemana, Vector<String>>();
+		for(DiaSemana dia : DiaSemana.values()) {
+			horasDia.put(dia, medico.horasCitas(dia, IConstantes.DURACION_CITA));
+		}
+		
+		return horasDia;
+	}
+	
+	// Método que devuelve todos los médicos de un determinado tipo 
+	public static Vector<Medico> consultarMedicosPorTipo(long idSesion, CategoriasMedico tipoMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		Vector<Medico> medicos;
+		Vector<String> nifs;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
+		
+		// Obtenemos los NIFs de todos los médicos del tipo dado
+		nifs = FPTipoMedico.consultarMedicos(tipoMedico);
+		
+		// Recuperamos los médicos con los NIFs anteriores
+		medicos = new Vector<Medico>();
+		for(String nif : nifs) {
+			medicos.add((Medico)FPUsuario.consultar(nif));
+		}
+		
+		return medicos;
+	}
+	
 	//TODO:Los siguientes métodos no se han revisado!
 	
 	public static void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Medico sustituto) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, SustitucionInvalidaException, UsuarioIncorrectoException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
@@ -166,18 +225,6 @@ public class GestorMedicos {
 			sustitucion.setSustituto(sustituto);
 			FPSustitucion.insertar(sustitucion);
 		}
-	}
-	
-	// Este método recupera todos los médicos que existan del tipo dado 
-	public static Vector<Medico> obtenerMedicos(long idSesion, CategoriasMedico tipoMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, NullPointerException, UsuarioInexistenteException {
-		Vector<Medico> medicos = new Vector<Medico>();
-		Vector<String> nifs = null;
-		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
-		nifs = FPTipoMedico.consultarMedicos(tipoMedico);
-		for (String nif: nifs)
-			medicos.add((Medico)GestorUsuarios.consultarUsuario(idSesion, nif));
-		return medicos;
 	}
 	
 }

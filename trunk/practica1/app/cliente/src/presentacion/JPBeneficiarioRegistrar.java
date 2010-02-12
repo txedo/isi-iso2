@@ -386,7 +386,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			getControlador().crearBeneficiario(beneficiario);
 			
 			// Obtenemos el médico que se ha asignado al beneficiario
-			medico = getControlador().consultarBeneficiario(beneficiario.getNif()).getMedicoAsignado();
+			medico = getControlador().consultarBeneficiarioPorNIF(beneficiario.getNif()).getMedicoAsignado();
 			
 			// Mostramos un mensaje indicando que el beneficiario se ha
 			// creado correctamente y cuál es el médico asignado

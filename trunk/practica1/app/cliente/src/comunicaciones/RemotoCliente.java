@@ -12,6 +12,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import dominio.control.Cliente;
+import dominio.control.ControladorCliente;
 
 /**
  * Clase que exporta la instancia que será utilizada por el servidor
@@ -85,6 +86,10 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
     	} catch(NotBoundException ex) {
     	}
     }
+    
+    public void setControlador(ControladorCliente controlador) {
+    	((Cliente)cliente).setControlador(controlador);
+    }
 
     // Métodos del cliente
 
@@ -98,6 +103,10 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 
 	public void actualizarVentanas() throws RemoteException {
 		cliente.actualizarVentanas();
+	}
+	
+	public void cerrarSesion() throws RemoteException {
+		cliente.cerrarSesion();
 	}
     
 }
