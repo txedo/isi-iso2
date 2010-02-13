@@ -92,7 +92,7 @@ public class JFCalendarioLaboral extends javax.swing.JFrame {
 		cerrarVentana();
 	}
 	
-	private void cerrarVentana() {
+	public void cerrarVentana() {
 		Object[] listeners;
 		int i;
 		
