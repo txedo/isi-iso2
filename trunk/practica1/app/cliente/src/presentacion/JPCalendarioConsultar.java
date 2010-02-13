@@ -115,9 +115,9 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 			}
 			{
 				btnPropagar = new JButton();
-				this.add(btnPropagar, new AnchorConstraint(134, 216, 467, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnPropagar, new AnchorConstraint(134, 216, 467, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnPropagar.setText("Propagar selección");
-				btnPropagar.setPreferredSize(new java.awt.Dimension(117, 24));
+				btnPropagar.setPreferredSize(new java.awt.Dimension(132, 24));
 				btnPropagar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnPropagarActionPerformed(evt);
@@ -127,7 +127,7 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 			{
 				jScrollPane1 = new JScrollPane();
 				this.add(jScrollPane1, new AnchorConstraint(10, 222, 332, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jScrollPane1.setPreferredSize(new java.awt.Dimension(115, 112));
+				jScrollPane1.setPreferredSize(new java.awt.Dimension(132, 112));
 				{
 					// Creamos la lista de dias de trabajo
 					// Tambien se crea un JPPeriodosTrabajo para cada dia (inicialmente NO visibles)
@@ -143,7 +143,7 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 					jListDiaSemana = new JList();
 					jScrollPane1.setViewportView(jListDiaSemana);
 					jListDiaSemana.setModel(jListDiaSemanaModel);
-					jListDiaSemana.setPreferredSize(new java.awt.Dimension(112, 109));
+					jListDiaSemana.setPreferredSize(new java.awt.Dimension(127, 109));
 					jListDiaSemana.addListSelectionListener(new ListSelectionListener() {
 						public void valueChanged(ListSelectionEvent evt) {
 							jListDiaSemanaValueChanged(evt);
@@ -233,6 +233,7 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 		// Siempre creamos una nueva instancia del Vector para evitar errores
 		obtenerPeriodosDeTrabajoSeleccionadosComprimidos();
 		((JFCalendarioLaboral)parent).setPeriodos(periodosTrabajo);
+		((JFCalendarioLaboral)parent).cerrarVentana();
 	}
 
 	private void obtenerPeriodosDeTrabajoSeleccionadosComprimidos() {
@@ -248,14 +249,21 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 	}
 	
 	private void btnPropagarActionPerformed(ActionEvent evt) {
+		int horasAux = 0;
+		horas = 0;
 		int index = jListDiaSemana.getSelectedIndex();
 		JPPeriodosTrabajo jpptActivo = jpPeriodos.get(index);
 		for (JPPeriodosTrabajo jppt : jpPeriodos) {
 			if (!jppt.equals(jpptActivo)) {
 				jppt.deseleccionarPeriodos();
 				jppt.seleccionarPeriodos(jpptActivo.getPeriodosTrabajo());
+				horas += jppt.getHorasSeleccionadas();
+				horasAux = jppt.getHorasSeleccionadas();
 			}
+			
 		}
+		horas += horasAux;
+		lblHoras.setText("Horas semanales seleccionadas: " + horas);
 	}
 	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {

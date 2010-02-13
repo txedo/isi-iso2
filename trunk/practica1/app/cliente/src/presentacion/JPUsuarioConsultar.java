@@ -335,6 +335,8 @@ public class JPUsuarioConsultar extends JPBase {
 	}
 	
 	private void btnAplicarActionPerformed(ActionEvent evt) {
+		Usuario usuarioMod = null;
+		
 		try {			
 			// Comprobamos los campos que pueden dar fallo
 			Validacion.comprobarNombre(txtNombre.getText());
@@ -342,25 +344,34 @@ public class JPUsuarioConsultar extends JPBase {
 			
 			switch(RolesUsuarios.values()[cbRoles.getSelectedIndex()]) {
 				case Administrador:
-					usuario = new Administrador();
+					usuarioMod = new Administrador();
 					break;
 				case Citador:
-					usuario = new Citador();
+					usuarioMod = new Citador();
 					break;
 				case Medico:
-					usuario = new Medico();
+					usuarioMod = new Medico();
 					break;
 			}
-			usuario.setDni(txtDNI.getText());
-			usuario.setLogin(txtLogin.getText());
-			usuario.setPassword(txtPass.getText());
-			usuario.setNombre(txtNombre.getText());
-			usuario.setApellidos(txtApellidos.getText());
+			usuarioMod.setDni(txtDNI.getText());
+			usuarioMod.setLogin(txtLogin.getText());
+			usuarioMod.setPassword(txtPass.getText());
+			usuarioMod.setNombre(txtNombre.getText());
+			usuarioMod.setApellidos(txtApellidos.getText());
 			// Dejamos el mismo centro de salud
-			usuario.setCentroSalud(centro);
+			usuarioMod.setCentroSalud(centro);
 			
 			// Modificamos el usuario
-			getControlador().modificarUsuario(usuario);
+			if (usuarioMod instanceof Medico) {
+				// Cambiamos el calendario
+				((Medico)usuarioMod).setCalendario(periodos);
+				// Ponemos su tipo de médico
+				((Medico)usuarioMod).setTipoMedico(((Medico)usuario).getTipoMedico());
+				getControlador().modificarMedico((Medico)usuarioMod);				
+			}
+			else
+				getControlador().modificarUsuario(usuarioMod);
+			
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
 			limpiarDatos();
 			configurarFormularioConsultar(false);
@@ -409,6 +420,7 @@ public class JPUsuarioConsultar extends JPBase {
 		else
 			configurarFormularioConsultar(false);
 	}
+	
 	public void setPeriodos (Vector<PeriodoTrabajo> p) {
 		periodos = new Vector<PeriodoTrabajo>();
 		periodos.addAll(p);
@@ -416,21 +428,20 @@ public class JPUsuarioConsultar extends JPBase {
 	
 	private void btnCalendarioActionPerformed(ActionEvent evt) {
 		calendario = new JFCalendarioLaboral(this, periodos);
+		getFrame().setEnabled(false);
+		calendario.setModificable(chkEditar.isSelected());
+		calendario.setLocationRelativeTo(this);		
+		calendario.setVisible(true);
 		calendario.addVentanaCerradaListener(new VentanaCerradaListener() {
 			public void ventanaCerrada(EventObject evt) {    
 				calendarioVentanaCerrada(evt);
 			}
 		});
-		
-		setEnabled(false);
-		calendario.setModificable(chkEditar.isSelected());
-		calendario.setLocationRelativeTo(this);		
-		calendario.setVisible(true);
 	}
 	
 	private void calendarioVentanaCerrada(EventObject evt) {
 		// Reactivamos la ventana 
-		setEnabled(true);
+		getFrame().setEnabled(true);
 	}
 	
 	private void cbRolesItemStateChanged(ItemEvent evt) {

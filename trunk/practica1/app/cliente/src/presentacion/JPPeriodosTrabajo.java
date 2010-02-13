@@ -40,6 +40,7 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 	private static final int INIT_Y = 0;
 	
 	private int horasDeseleccionadas = 0;
+	private int horasSeleccionadas = 0;
 	
 	private EventListenerList listenerList;
 
@@ -175,6 +176,7 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 			for (JCheckBox p : chbPeriodos) {
 				if (p.getText().equals(getIntervaloHora2String(hora_inicio, hora_inicio+1))) {
 					p.setSelected(true);
+					horasSeleccionadas ++;
 				}
 			}
 			hora_inicio++;
@@ -182,8 +184,10 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 	}
 	
 	public void seleccionarPeriodos (Vector<PeriodoTrabajo> periodos) {
+		horasSeleccionadas = 0;
 		for (PeriodoTrabajo pt : periodos) {
 			seleccionarPeriodos(pt.getHoraInicio(), pt.getHoraFinal());
+			
 		}
 	}
 	
@@ -239,6 +243,10 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 
 	public int getHorasDeseleccionadas() {
 		return horasDeseleccionadas;
+	}
+
+	public int getHorasSeleccionadas() {
+		return horasSeleccionadas;
 	}
 
 

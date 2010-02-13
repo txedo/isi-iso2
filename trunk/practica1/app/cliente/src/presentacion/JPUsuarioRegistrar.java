@@ -269,8 +269,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	
 	private void btnCrearUsuarioActionPerformed(ActionEvent evt) {
 		Usuario usu = null;
-		TipoMedico tipo = null;
-		boolean esMedico = false;		
+		TipoMedico tipo = null;	
 		
 		try {
 			
@@ -297,7 +296,6 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 					usu = new Citador();
 					break;
 				case Medico:
-					esMedico = true;
 					usu = new Medico();
 					break;
 			}
@@ -307,7 +305,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			usu.setLogin(txtLogin.getText());
 			usu.setPassword(txtPassword.getText());
 			
-			if (esMedico) {
+			if (usu instanceof Medico) {
 				if (lstTipoMedico.getSelectedValue().equals(MED_CABECERA))
 					tipo = new Cabecera();
 				else if (lstTipoMedico.getSelectedValue().equals(MED_PEDIATRA))
@@ -356,21 +354,20 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	
 	private void btnCalendarioActionPerformed(ActionEvent evt) {
 		calendario = new JFCalendarioLaboral(this, periodos);
+		getFrame().setEnabled(false);
+		calendario.setModificable(true);
+		calendario.setLocationRelativeTo(this);		
+		calendario.setVisible(true);
 		calendario.addVentanaCerradaListener(new VentanaCerradaListener() {
 			public void ventanaCerrada(EventObject evt) {    
 				calendarioVentanaCerrada(evt);
 			}
 		});
-		
-		setEnabled(false);
-		calendario.setModificable(true);
-		calendario.setLocationRelativeTo(this);		
-		calendario.setVisible(true);
 	}
 	
 	private void calendarioVentanaCerrada(EventObject evt) {
 		// Reactivamos la ventana 
-		setEnabled(true);
+		getFrame().setEnabled(true);
 	}
 
 	private void crearModelos() {
