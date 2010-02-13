@@ -58,7 +58,7 @@ import excepciones.UsuarioYaExistenteException;
 /**
 * Panel que permite registrar nuevos usuarios en el sistema.
 */
-public class JPUsuarioRegistrar extends JPBase implements IConstantes {
+public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDatos {
 
 	private static final long serialVersionUID = 4857739286462180783L;
 	
