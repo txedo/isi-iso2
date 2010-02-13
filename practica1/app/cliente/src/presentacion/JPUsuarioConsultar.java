@@ -52,7 +52,7 @@ import excepciones.UsuarioInexistenteException;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JPUsuarioConsultar extends JPBase {
+public class JPUsuarioConsultar extends JPBase implements IPasoDatos {
 
 	private JLabel lblNIFUsuario;
 	private JLabel lblLogin;

@@ -1,19 +1,14 @@
 package presentacion;
-import com.cloudgarden.layout.AnchorLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Vector;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.EventListenerList;
 
 import dominio.conocimiento.PeriodoTrabajo;
-import dominio.control.ControladorCliente;
 
 
 /**
@@ -67,12 +62,7 @@ public class JFCalendarioLaboral extends javax.swing.JFrame {
 	}
 	
 	public void setPeriodos (Vector<PeriodoTrabajo> p) {
-		if (parent instanceof JPUsuarioRegistrar) {
-			((JPUsuarioRegistrar)parent).setPeriodos(p);
-		}
-		if (parent instanceof JPUsuarioConsultar) {
-			((JPUsuarioConsultar)parent).setPeriodos(p);
-		}
+		((IPasoDatos)parent).setPeriodos(p);
 	}
 	
 	public void setModificable (boolean b) {
