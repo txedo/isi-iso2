@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.DebugGraphics;
@@ -93,6 +94,8 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	private JLabel lblCalendario;
 	private Vector<PeriodoTrabajo> periodos;
 	
+	private JFCalendarioLaboral calendario;
+	
 	public JPUsuarioRegistrar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		periodos = new Vector<PeriodoTrabajo>();
@@ -119,9 +122,9 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			}
 			{
 				lblCalendario = new JLabel();
-				this.add(lblCalendario, new AnchorConstraint(235, 332, 675, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCalendario, new AnchorConstraint(235, 282, 675, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCalendario.setText("Calendario laboral");
-				lblCalendario.setPreferredSize(new java.awt.Dimension(86, 14));
+				lblCalendario.setPreferredSize(new java.awt.Dimension(136, 14));
 			}
 			{
 				lblEspecialidad = new JLabel();
@@ -352,11 +355,23 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	}
 	
 	private void btnCalendarioActionPerformed(ActionEvent evt) {
-		JDialog calendario = new JDCalendarioLaboral(this, periodos);
-		((JDCalendarioLaboral)calendario).setModificable(true);
+		calendario = new JFCalendarioLaboral(this, periodos);
+		calendario.addVentanaCerradaListener(new VentanaCerradaListener() {
+			public void ventanaCerrada(EventObject evt) {    
+				calendarioVentanaCerrada(evt);
+			}
+		});
+		
+		setEnabled(false);
+		calendario.setModificable(true);
+		calendario.setLocationRelativeTo(this);		
 		calendario.setVisible(true);
 	}
-
+	
+	private void calendarioVentanaCerrada(EventObject evt) {
+		// Reactivamos la ventana 
+		setEnabled(true);
+	}
 
 	private void crearModelos() {
 		lstTipoUsuarioModel = new DefaultListModel();

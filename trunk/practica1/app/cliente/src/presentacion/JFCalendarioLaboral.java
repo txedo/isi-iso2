@@ -3,12 +3,14 @@ import com.cloudgarden.layout.AnchorLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.event.EventListenerList;
 
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.control.ControladorCliente;
@@ -26,14 +28,17 @@ import dominio.control.ControladorCliente;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JDCalendarioLaboral extends javax.swing.JDialog {
+public class JFCalendarioLaboral extends javax.swing.JFrame {
 
 	private JPanel parent;
 	private JPCalendarioConsultar jPanelConsultarCalendario;
 	
-	public JDCalendarioLaboral(JPanel parent, Vector<PeriodoTrabajo> p) {
+	private EventListenerList listenerList;
+	
+	public JFCalendarioLaboral(JPanel parent, Vector<PeriodoTrabajo> p) {
 		super ();
 		this.parent = parent;
+		listenerList = new EventListenerList();
 		jPanelConsultarCalendario = new JPCalendarioConsultar(this, p);
 		initGUI();
 	}
@@ -46,7 +51,6 @@ public class JDCalendarioLaboral extends javax.swing.JDialog {
 				this.setTitle("Configuración del calendario laboral");
 				this.setSize(430, 300);
 				this.setResizable(false);
-				this.setModal(true);
 				this.add(jPanelConsultarCalendario);
 				jPanelConsultarCalendario.setVisible(true);
 			}
@@ -74,9 +78,33 @@ public class JDCalendarioLaboral extends javax.swing.JDialog {
 	public void setModificable (boolean b) {
 		jPanelConsultarCalendario.setModificable(b);
 	}
+		
+	public void addVentanaCerradaListener(VentanaCerradaListener listener) {
+		listenerList.add(VentanaCerradaListener.class, listener);
+	}
+
+	public void removeVentanaCerradaListener(VentanaCerradaListener listener) {
+		listenerList.remove(VentanaCerradaListener.class, listener);
+	}
 	
 	private void thisWindowClosing(WindowEvent evt) {
 		this.setPeriodos(jPanelConsultarCalendario.getPeriodosTrabajo());
+		cerrarVentana();
+	}
+	
+	private void cerrarVentana() {
+		Object[] listeners;
+		int i;
+		
+		// Notificamos que la ventana se ha cerrado
+		listeners = listenerList.getListenerList();
+		for(i = 0; i < listeners.length; i += 2) {
+			if(listeners[i] == VentanaCerradaListener.class) {
+				((VentanaCerradaListener)listeners[i + 1]).ventanaCerrada(new EventObject(this));
+			}
+		}
+		
+		this.dispose();
 	}
 
 }

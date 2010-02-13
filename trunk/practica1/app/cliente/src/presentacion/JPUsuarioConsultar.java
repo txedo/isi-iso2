@@ -6,6 +6,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.EventObject;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
@@ -18,6 +19,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
@@ -55,7 +58,6 @@ public class JPUsuarioConsultar extends JPBase {
 	private JLabel lblLogin;
 	private JLabel lblPass;
 	private JTextField txtNombre;
-	private ButtonGroup buttonGroup;
 	private JTextField txtLogin;
 	private JTextField txtApellidos;
 	private JTextField txtDNI;
@@ -72,6 +74,8 @@ public class JPUsuarioConsultar extends JPBase {
 	private JCheckBox chkEditar;
 	private JLabel lblCentro;
 	private JTextField txtCentro;
+	
+	private JFCalendarioLaboral calendario;
 
 	private CentroSalud centro;
 	private Vector<PeriodoTrabajo> periodos;
@@ -90,11 +94,10 @@ public class JPUsuarioConsultar extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setSize(430, 390);
 			this.setPreferredSize(new java.awt.Dimension(430, 390));
 			{
 				btnCalendario = new JButton();
-				this.add(btnCalendario, new AnchorConstraint(213, 508, 601, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnCalendario, new AnchorConstraint(220, 508, 601, 118, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnCalendario.setText("Ver...");
 				btnCalendario.setPreferredSize(new java.awt.Dimension(110, 21));
 				btnCalendario.setEnabled(false);
@@ -107,14 +110,14 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				lblCalendario = new JLabel();
-				this.add(lblCalendario, new AnchorConstraint(216, 324, 591, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCalendario, new AnchorConstraint(223, 307, 591, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCalendario.setText("Calendario laboral");
-				lblCalendario.setPreferredSize(new java.awt.Dimension(94, 14));
+				lblCalendario.setPreferredSize(new java.awt.Dimension(111, 14));
 			}
 			{
 				cbRoles = new JComboBox();
-				this.add(cbRoles, new AnchorConstraint(157, 77, 462, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				cbRoles.setPreferredSize(new java.awt.Dimension(247, 23));
+				this.add(cbRoles, new AnchorConstraint(156, 77, 462, 118, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				cbRoles.setPreferredSize(new java.awt.Dimension(251, 23));
 				cbRoles.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent evt) {
 						cbRolesItemStateChanged(evt);
@@ -124,7 +127,7 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				btnEliminar = new JButton();
-				this.add(btnEliminar, new AnchorConstraint(255, 161, 673, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnEliminar, new AnchorConstraint(273, 161, 673, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnEliminar.setText("Eliminar");
 				btnEliminar.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnEliminar.addActionListener(new ActionListener() {
@@ -147,32 +150,32 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				txtCentro = new JTextField();
-				this.add(txtCentro, new AnchorConstraint(185, 77, 462, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtCentro.setPreferredSize(new java.awt.Dimension(247, 23));
+				this.add(txtCentro, new AnchorConstraint(185, 77, 462, 118, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtCentro.setPreferredSize(new java.awt.Dimension(251, 23));
 			}
 			{
 				txtLogin = new JTextField();
-				this.add(txtLogin, new AnchorConstraint(40, 77, 162, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtLogin.setPreferredSize(new java.awt.Dimension(247, 23));
+				this.add(txtLogin, new AnchorConstraint(39, 77, 162, 118, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtLogin.setPreferredSize(new java.awt.Dimension(251, 23));
 			}
 			{
 				txtApellidos = new JTextField();
-				this.add(txtApellidos, new AnchorConstraint(128, 77, 388, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtApellidos.setPreferredSize(new java.awt.Dimension(247, 23));
+				this.add(txtApellidos, new AnchorConstraint(127, 77, 388, 118, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtApellidos.setPreferredSize(new java.awt.Dimension(251, 23));
 			}
 			{
 				txtNombre = new JTextField();
-				this.add(txtNombre, new AnchorConstraint(99, 77, 314, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtNombre.setPreferredSize(new java.awt.Dimension(247, 23));
+				this.add(txtNombre, new AnchorConstraint(98, 77, 314, 118, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtNombre.setPreferredSize(new java.awt.Dimension(251, 23));
 			}
 			{
 				txtDNI = new JTextField();
-				this.add(txtDNI, new AnchorConstraint(12, 77, 91, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtDNI.setPreferredSize(new java.awt.Dimension(247, 23));
+				this.add(txtDNI, new AnchorConstraint(11, 77, 91, 118, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtDNI.setPreferredSize(new java.awt.Dimension(251, 23));
 			}
 			{
 				btnBuscar = new JButton();
-				this.add(btnBuscar, new AnchorConstraint(12, 5, 91, 829, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnBuscar, new AnchorConstraint(11, 5, 91, 829, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnBuscar.setText("Buscar");
 				btnBuscar.setPreferredSize(new java.awt.Dimension(66, 23));
 				btnBuscar.addActionListener(new ActionListener() {
@@ -183,8 +186,8 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				txtPass = new JTextField();
-				this.add(txtPass, new AnchorConstraint(68, 77, 226, 106, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtPass.setPreferredSize(new java.awt.Dimension(247, 23));				
+				this.add(txtPass, new AnchorConstraint(67, 77, 226, 118, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtPass.setPreferredSize(new java.awt.Dimension(251, 23));				
 			}
 			{
 				lblApellidos = new JLabel();
@@ -217,13 +220,10 @@ public class JPUsuarioConsultar extends JPBase {
 				lblNIFUsuario.setPreferredSize(new java.awt.Dimension(50, 16));
 			}
 			{
-				buttonGroup = new ButtonGroup();
-			}
-			{
 				btnAplicar = new JButton();
 				btnAplicar.setText("Guardar Cambios");
 				btnAplicar.setPreferredSize(new java.awt.Dimension(120, 26));
-				this.add(btnAplicar, new AnchorConstraint(255, 8, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnAplicar, new AnchorConstraint(271, 5, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnAplicar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnAplicarActionPerformed(evt);
@@ -232,17 +232,17 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				chkEditar = new JCheckBox();
-				this.add(chkEditar, new AnchorConstraint(260, 133, 665, 419, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(chkEditar, new AnchorConstraint(274, 136, 665, 419, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				chkEditar.setText("Habilitar edición");
 				chkEditar.setEnabled(false);
-				chkEditar.setPreferredSize(new java.awt.Dimension(106, 11));
+				chkEditar.setPreferredSize(new java.awt.Dimension(106, 19));
 				chkEditar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						chkEditarActionPerformed(evt);
 					}
 				});
 			}
-
+			
 			configurarFormularioConsultar(false);
 			txtCentro.setEditable(false);
 			txtCentro.setFocusable(false);
@@ -258,7 +258,7 @@ public class JPUsuarioConsultar extends JPBase {
 	}
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
-		Usuario usuario = null;
+		usuario = null;
 					
 		try {
 			// Buscamos el usuario solicitado
@@ -415,9 +415,22 @@ public class JPUsuarioConsultar extends JPBase {
 	}
 	
 	private void btnCalendarioActionPerformed(ActionEvent evt) {
-		JDialog calendario = new JDCalendarioLaboral(this, periodos);
-		((JDCalendarioLaboral)calendario).setModificable(chkEditar.isSelected());
+		calendario = new JFCalendarioLaboral(this, periodos);
+		calendario.addVentanaCerradaListener(new VentanaCerradaListener() {
+			public void ventanaCerrada(EventObject evt) {    
+				calendarioVentanaCerrada(evt);
+			}
+		});
+		
+		setEnabled(false);
+		calendario.setModificable(chkEditar.isSelected());
+		calendario.setLocationRelativeTo(this);		
 		calendario.setVisible(true);
+	}
+	
+	private void calendarioVentanaCerrada(EventObject evt) {
+		// Reactivamos la ventana 
+		setEnabled(true);
 	}
 	
 	private void cbRolesItemStateChanged(ItemEvent evt) {
@@ -429,6 +442,11 @@ public class JPUsuarioConsultar extends JPBase {
 				btnCalendario.setEnabled(false);
 			}
 		}
+	}
+	
+	private void chkEditarStateChanged(ChangeEvent evt) {
+		System.out.println("chkEditar.stateChanged, event="+evt);
+		//TODO add your code for chkEditar.stateChanged
 	}
 
 }

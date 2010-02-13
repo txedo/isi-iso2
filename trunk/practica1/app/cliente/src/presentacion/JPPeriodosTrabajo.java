@@ -9,10 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.EventListener;
+import java.util.EventObject;
 import java.util.Vector;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.event.EventListenerList;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -36,6 +38,10 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 	private static final int DESPL_Y = 27;
 	private static final int INIT_X = 0;
 	private static final int INIT_Y = 0;
+	
+	private int horasDeseleccionadas = 0;
+	
+	private EventListenerList listenerList;
 
 	private ArrayList<JCheckBox> chbPeriodos = new ArrayList<JCheckBox>();
 	private JCheckBox chbPeriodoTrabajo;
@@ -46,6 +52,7 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 		super();
 		diaSemana = d;
 		initGUI();
+		listenerList = new EventListenerList();
 	}
 	
 	private void initGUI() {
@@ -108,7 +115,40 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 	}
 
 	private void chbPeriodoTrabajoActionPerformed(ActionEvent evt) {
-		
+		Object [] listeners;
+		// Notificamos que se ha seleccionado un checkbox
+		if (((JCheckBox)evt.getSource()).isSelected()) {
+			listeners = listenerList.getListenerList();
+			for(int i = 0; i < listeners.length; i += 2) {
+				if(listeners[i] == HoraSeleccionadaListener.class) {
+					((HoraSeleccionadaListener)listeners[i + 1]).horaSeleccionada(new EventObject(this));
+				}
+			}
+		}
+		else {
+			listeners = listenerList.getListenerList();
+			for(int i = 0; i < listeners.length; i += 2) {
+				if(listeners[i] == HoraNoSeleccionadaListener.class) {
+					((HoraNoSeleccionadaListener)listeners[i + 1]).horaNoSeleccionada(new EventObject(this));
+				}
+			}
+		}
+	}
+	
+	public void addHoraSeleccionadaListener(HoraSeleccionadaListener listener) {
+		listenerList.add(HoraSeleccionadaListener.class, listener);
+	}
+
+	public void removeHoraSeleccionadaListener(HoraSeleccionadaListener listener) {
+		listenerList.remove(HoraSeleccionadaListener.class, listener);
+	}
+	
+	public void addHoraNoSeleccionadaListener(HoraNoSeleccionadaListener listener) {
+		listenerList.add(HoraNoSeleccionadaListener.class, listener);
+	}
+
+	public void removeNoHoraSeleccionadaListener(HoraNoSeleccionadaListener listener) {
+		listenerList.remove(HoraNoSeleccionadaListener.class, listener);
 	}
 	
 	public void activarPeriodos(boolean b) {
@@ -119,9 +159,13 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 	}
 	
 	public void deseleccionarPeriodos() {
-		// Activa o desactiva todos los checkboxes del panel
+		horasDeseleccionadas = 0;
+		// Desactivamos solo las horas marcadas
 		for (JCheckBox cb : chbPeriodos) {
-			cb.setSelected(false);
+			if (cb.isSelected()){
+				cb.setSelected(false);
+				horasDeseleccionadas ++;
+			}
 		}
 	}
 	
@@ -192,5 +236,10 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 	public void setDiaSemana(DiaSemana diaSemana) {
 		this.diaSemana = diaSemana;
 	}
+
+	public int getHorasDeseleccionadas() {
+		return horasDeseleccionadas;
+	}
+
 
 }
