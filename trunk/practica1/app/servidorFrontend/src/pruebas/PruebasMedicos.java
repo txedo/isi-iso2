@@ -1,7 +1,11 @@
 package pruebas;
 
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Vector;
+
+import comunicaciones.IConstantes;
+
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import dominio.conocimiento.Administrador;
@@ -23,6 +27,8 @@ import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.SustitucionInvalidaException;
+import excepciones.UsuarioIncorrectoException;
+import excepciones.UsuarioInexistenteException;
 
 public class PruebasMedicos extends PruebasBase {
 
@@ -103,6 +109,15 @@ public class PruebasMedicos extends PruebasBase {
 		Medico medico;
 		
 		try {
+			// Intentamos consultar un médico nulo
+			medico = GestorMedicos.consultarMedico(sesionCitador.getId(), null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
 			// Obtenemos los datos de un médico existente
 			medico = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico1.getDni());
 			assertEquals(medico, medico1);
@@ -141,6 +156,15 @@ public class PruebasMedicos extends PruebasBase {
 	/** Pruebas de la operación que crea nuevos médicos */
 	public void testCrearMedico() {
 		Medico medico, medicoGet;
+		
+		try {
+			// Intentamos crear un médico nulo
+			GestorMedicos.crearMedico(sesionCitador.getId(), null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
 		
 		try {
 			// Creamos un nuevo médico con la sesión del administrador
@@ -183,6 +207,36 @@ public class PruebasMedicos extends PruebasBase {
 	public void testModificarMedico() {
 		Medico medico, medicoGet;
 		
+		try {
+			// Intentamos modificar un médico nulo
+			GestorMedicos.modificarMedico(sesionCitador.getId(), null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
+		
+		try {
+			// Intentamos modificar un medico inexistente
+			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", cabecera);
+			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico);
+			fail("Se esperaba una excepcion MedicoInexistenteException");
+		} catch(MedicoInexistenteException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion MedicoInexistenteException");
+		}
+		
+		try {
+			// Intentamos modificar un medico sin tener permiso
+			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", cabecera);
+			GestorMedicos.modificarMedico(sesionCitador.getId(), medico);
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		} catch(OperacionIncorrectaException e) {
+		} catch(Exception e) {			
+			fail("Se esperaba una excepcion OperacionIncorrectaException");
+		}
+		
+		
 		//TODO: Aquí hay que comprobar si funciona que, al cambiar
 		// un médico pasando la contraseña "" se mantiene la antigua,
 		// y si se pasa otra cosa se encripta la nueva contraseña
@@ -192,11 +246,10 @@ public class PruebasMedicos extends PruebasBase {
 			medico1.setLogin("medCambiado");
 			medico1.setApellidos("P. D.");
 			medico1.getCalendario().remove(1);
+			// Como la contraseña no se quiere cambiar, se pone como ""
 			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico1);
 			// Comprobamos que el médico se haya actualizado correctamente
 			medicoGet = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico1.getDni());
-			System.out.println(medico1);
-			System.out.println(medicoGet);
 			assertEquals(medico1, medicoGet);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -226,6 +279,15 @@ public class PruebasMedicos extends PruebasBase {
 	/** Pruebas de la operación que elimina médicos existentes */
 	public void testEliminarMedico() {
 		Medico medico;
+		
+		try {
+			// Intentamos eliminar un médico nulo
+			GestorMedicos.eliminarMedico(sesionAdmin.getId(), null);
+			fail("Se esperaba una excepcion NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepcion NullPointerException");
+		}
 		
 		try {
 			// Eliminamos un médico existente como administrador
@@ -269,6 +331,9 @@ public class PruebasMedicos extends PruebasBase {
 	@SuppressWarnings("deprecation")
 	public void testCalendariosMedico() {
 		Date fecha;
+		Hashtable<DiaSemana, Vector<String>> horario;
+		Medico medico;
+		PeriodoTrabajo p;
 		
 		try {
 			// Comprobamos varias fechas válidas
@@ -293,6 +358,63 @@ public class PruebasMedicos extends PruebasBase {
 			assertFalse(medico1.fechaEnCalendario(fecha, 10));
 			fecha = new Date(2009 - 1900, 11, 6, 12, 00, 0); // Domingo 12:00-12:10
 			assertFalse(medico1.fechaEnCalendario(fecha, 10));
+			
+			
+			try {
+				// Intentamos obtener el horario de un médico nulo
+				GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), null);
+				fail("Se esperaba una excepcion NullPointerException");
+			} catch(NullPointerException e) {
+			} catch(Exception e) {
+				fail("Se esperaba una excepcion NullPointerException");
+			}
+			
+			try {
+				// Intentamos consultar el horario de un médico con el rol de citador
+				GestorMedicos.consultarHorarioMedico(sesionCitador.getId(), medico1.getDni());
+				fail("Se esperaba una excepcion OperacionIncorrectaException");
+			} catch(OperacionIncorrectaException e) {
+			} catch(Exception e) {
+				fail("Se esperaba una excepcion OperacionIncorrectaException");
+			}
+			
+			try {
+				// Intentamos obtener el horario de un medico inexistente
+				medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", cabecera);
+				GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), medico.getDni());
+				fail("Se esperaba una excepcion MedicoInexistenteException");
+			} catch(MedicoInexistenteException e) {
+			} catch(Exception e) {
+				fail("Se esperaba una excepcion MedicoInexistenteException");
+			}
+			
+			try {
+				// Intentamos obtener el horario de un usuario que no es médico
+				GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), admin1.getDni());
+				fail("Se esperaba una excepcion MedicoInexistenteException");
+			} catch(MedicoInexistenteException e) {
+			} catch(Exception e) {
+				fail("Se esperaba una excepcion MedicoInexistenteException");
+			}
+			
+			try {
+				// Intentamos obtener el horario de un medico correcto				
+				horario = GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), medico2.getDni());
+				// No se debe obtener una tabla vacía
+				assertTrue(horario.keys().hasMoreElements());
+				// Segun el calendario del médico2, se deben obtener horas sólo para los Lunes
+				assertTrue(horario.get(DiaSemana.Lunes).size()!=0);
+				assertTrue(horario.get(DiaSemana.Martes).size()==0);
+				assertTrue(horario.get(DiaSemana.Miercoles).size()==0);
+				assertTrue(horario.get(DiaSemana.Jueves).size()==0);
+				assertTrue(horario.get(DiaSemana.Viernes).size()==0);
+				// El número de citas para ese día debe ser (horaFinal - horaInicio ) / Duracion (en minutos)
+				p = medico2.getCalendario().get(0);
+				assertTrue(horario.get(DiaSemana.Lunes).size()==(((p.getHoraFinal() - p.getHoraInicio()) * 60) / IConstantes.DURACION_CITA));
+			} catch(Exception e) {
+				fail("Se esperaba una excepción al obtener el horario de un médico");
+			}
+			
 		} catch(Exception e) {
 			fail(e.toString());
 		}
