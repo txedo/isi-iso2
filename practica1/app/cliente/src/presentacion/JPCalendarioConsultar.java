@@ -7,11 +7,13 @@ import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.PeriodoTrabajo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.EventObject;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -47,17 +49,22 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 	private JButton btnPropagar;
 	private JButton btnAceptar;
 	private JList jListDiaSemana;
-	private JDialog parent = null;
+	private JFrame parent = null;
 	
 	private final int DESPL_X= 150;
 	private final int DESPL_Y = 10;
 	
-	public JPCalendarioConsultar(JDialog parent, Vector<PeriodoTrabajo> p) {
+	private int horas;
+	
+	public JPCalendarioConsultar(JFrame parent, Vector<PeriodoTrabajo> p) {
 		super();
-		initGUI();
 		this.parent = parent;
 		this.periodosTrabajo = p;
+		for (PeriodoTrabajo pt: periodosTrabajo)
+			horas += pt.getHoraFinal() - pt.getHoraInicio();
+		initGUI();
 		actualizarPeriodosTrabajo(this.periodosTrabajo);
+		
 	}
 
 	private void initGUI() {
@@ -67,9 +74,9 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 			this.setLayout(thisLayout);
 			{
 				lblHoras = new JLabel();
-				this.add(lblHoras, new AnchorConstraint(169, 230, 532, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblHoras.setText("Horas seleccionadas: ");
-				lblHoras.setPreferredSize(new java.awt.Dimension(116, 13));
+				this.add(lblHoras, new AnchorConstraint(187, 230, 532, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblHoras.setText("Horas semanales seleccionadas: " + horas);
+				lblHoras.setPreferredSize(new java.awt.Dimension(189, 13));
 			}
 			{
 				btnRestablecerTodo = new JButton();
@@ -170,7 +177,28 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 		// Inicialmente, deshabilitamos todos sus checkboxes
 		pTrabajo.activarPeriodos(false);
 		pTrabajo.setVisible(false);
+		pTrabajo.addHoraSeleccionadaListener(new HoraSeleccionadaListener() {
+			public void horaSeleccionada(EventObject evt) {
+				pTrabajoHoraSeleccionada(evt);
+			}
+		});
+		
+		pTrabajo.addHoraNoSeleccionadaListener(new HoraNoSeleccionadaListener() {
+			public void horaNoSeleccionada(EventObject evt) {
+				pTrabajoHoraNoSeleccionada(evt);
+			}
+		});
 		jpPeriodos.add(pTrabajo);
+	}
+	
+	private void pTrabajoHoraSeleccionada(EventObject evt) {
+		horas++;
+		lblHoras.setText("Horas semanales seleccionadas: " + horas);
+	}
+	
+	private void pTrabajoHoraNoSeleccionada(EventObject evt) {
+		horas--;
+		lblHoras.setText("Horas semanales seleccionadas: " + horas);
 	}
 	
 	private void actualizarPeriodosTrabajo(Vector<PeriodoTrabajo> periodosTrabajoAActualizar) {
@@ -203,10 +231,8 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 	
 	private void btnAceptarActionPerformed(ActionEvent evt) {
 		// Siempre creamos una nueva instancia del Vector para evitar errores
-		periodosTrabajo = new Vector<PeriodoTrabajo>();
 		obtenerPeriodosDeTrabajoSeleccionadosComprimidos();
-		((JDCalendarioLaboral)parent).setPeriodos(periodosTrabajo);
-		((JDCalendarioLaboral)parent).dispose();
+		((JFCalendarioLaboral)parent).setPeriodos(periodosTrabajo);
 	}
 
 	private void obtenerPeriodosDeTrabajoSeleccionadosComprimidos() {
@@ -246,5 +272,7 @@ public class JPCalendarioConsultar extends JPBase implements IConstantes {
 	private void restablecerFormulario (int index) {
 		JPPeriodosTrabajo jpp = jpPeriodos.get(index);
 		jpp.deseleccionarPeriodos();
+		horas -= jpp.getHorasDeseleccionadas();
+		lblHoras.setText("Horas semanales seleccionadas: " + horas);
 	}
 }
