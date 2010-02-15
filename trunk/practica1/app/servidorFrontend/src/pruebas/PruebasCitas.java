@@ -677,7 +677,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos consultar las citas de un médico nulo
-			GestorCitas.consultarCitasMedico(sesionAdmin.getId(), null);
+			GestorCitas.consultarHorasCitasMedico(sesionAdmin.getId(), null);
 			fail("Se esperaba una excepcion NullPointerException");
 		} catch (NullPointerException e) {
 		} catch (Exception e) {
@@ -686,7 +686,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos consultar las citas de un médico sin tener permiso
-			GestorCitas.consultarCitasMedico(sesionMedico.getId(), bene1.getNif());
+			GestorCitas.consultarHorasCitasMedico(sesionMedico.getId(), bene1.getNif());
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch (OperacionIncorrectaException e) {
 		} catch (Exception e) {
@@ -695,7 +695,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos consultar las citas de un médico con un usuario que no es médico
-			GestorCitas.consultarCitasMedico(sesionAdmin.getId(), admin1.getDni());
+			GestorCitas.consultarHorasCitasMedico(sesionAdmin.getId(), admin1.getDni());
 			fail("Se esperaba una excepcion MedicoInexistenteException");
 		} catch (MedicoInexistenteException e) {
 		} catch (Exception e) {
@@ -713,7 +713,7 @@ public class PruebasCitas extends PruebasBase {
 			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene2, medicoAsignado.getDni(), fechaCita, DURACION);
 			
 			// Intentamos consultar las citas de un médico válido
-			citasMedico = GestorCitas.consultarCitasMedico(sesionAdmin.getId(), bene2.getMedicoAsignado().getDni());
+			citasMedico = GestorCitas.consultarHorasCitasMedico(sesionAdmin.getId(), bene2.getMedicoAsignado().getDni());
 			// Debe haber una cita
 			assertTrue(!citasMedico.isEmpty());
 			// Comprobamos si realmente coinciden las fechas y horas

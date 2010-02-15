@@ -6,7 +6,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.EventObject;
+import java.util.Hashtable;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -22,10 +24,13 @@ import javax.swing.event.EventListenerList;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Administrador;
+import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Cita;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
+import dominio.conocimiento.Roles;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Validacion;
@@ -253,14 +258,15 @@ public class JPUsuarioConsultar extends JPBase implements IPasoDatos {
 			}
 
 			configurarFormularioConsultar(false);
+			cmbRol.setFocusable(false);
+			cmbRol.setEnabled(false);
 			txtCentro.setEditable(false);
 			txtCentro.setFocusable(false);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
+	}	
 	//$hide>>$
 	
 	public Usuario getUsuario() {
@@ -308,11 +314,13 @@ public class JPUsuarioConsultar extends JPBase implements IPasoDatos {
 			txtDNI.grabFocus();			
 		} catch(CadenaVaciaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un DNI.");
+			limpiarDatos();
 			txtDNI.grabFocus();	
 		} catch(NIFIncorrectoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir DNI válido.");
+			limpiarDatos();
 			txtDNI.selectAll();
-			txtDNI.grabFocus();	
+			txtDNI.grabFocus();			
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -352,8 +360,16 @@ public class JPUsuarioConsultar extends JPBase implements IPasoDatos {
 		txtApellidos.setFocusable(estado);
 		btnAplicar.setEnabled(estado);
 		btnEliminar.setEnabled(estado);
-		cmbRol.setFocusable(estado);
-		cmbRol.setEnabled(estado);	
+		// No se puede cambiar el rol de un médico
+		if (usuario!=null)
+			if (usuario.getRol().equals(RolesUsuarios.Medico)) {
+				cmbRol.setFocusable(false);
+				cmbRol.setEnabled(false);
+			}
+			else {
+				cmbRol.setFocusable(estado);
+				cmbRol.setEnabled(estado);
+			}
 		if (estado)
 			btnCalendario.setText("Configurar...");
 		else
@@ -388,7 +404,7 @@ public class JPUsuarioConsultar extends JPBase implements IPasoDatos {
 			usuarioMod.setCentroSalud(centro);
 			
 			// Modificamos el usuario
-			if (usuarioMod instanceof Medico) {
+			if (usuarioMod.getRol().equals(RolesUsuarios.Medico)) {
 				// Cambiamos el calendario
 				((Medico)usuarioMod).setCalendario(periodos);
 				// Ponemos su tipo de médico
@@ -422,19 +438,53 @@ public class JPUsuarioConsultar extends JPBase implements IPasoDatos {
 	}
 	
 	private void btnEliminarActionPerformed(ActionEvent evt) {
+		Vector<Beneficiario> beneficiarios;
+		Vector<Cita> citas;
+		String mensaje = "";
 		boolean respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Seguro que desea eliminar este usuario del sistema?");
+		
 		if (respuesta) {
 			try {
-				getControlador().eliminarUsuario(usuario);
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
-				limpiarDatos();
-				configurarFormularioConsultar(false);
+				if (usuario.getRol().equals(RolesUsuarios.Medico)) {
+					beneficiarios = getControlador().obtenerBeneficiariosMedico(usuario.getDni());
+					citas = getControlador().consultarCitasMedico(usuario.getDni());
+					// TODO: Falta hacer lo mismo para las sustituciones
+					if (beneficiarios.size()!=0)
+						mensaje = "El médico que quiere borrar tiene beneficiarios asignados. \n";
+	
+					if (citas.size()!=0)
+						mensaje = "El médico que quiere borrar tiene citas pendientes. \n";
+					
+					mensaje += "\n¿Seguro que quiere continuar con la eliminación?";
+					respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", mensaje);
+					if (respuesta) {
+						// Eliminamos las citas de ese médico
+						for (Cita c: citas)
+						 	getControlador().anularCita(c);
+						// TODO: cancelar las sustituciones
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Informacion", "Se va a asignar un nuevo médico a los beneficiarios afectados");
+						// Asignamos un nuevo médico a los beneficiarios
+						for (Beneficiario b: beneficiarios)
+							getControlador().asignarMedicoBeneficiario(b);
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Informacion", "Beneficiarios actualizados");
+						// Eliminamos el médico al final, para evitar problemas con claves ajenas nulas
+						getControlador().eliminarMedico((Medico)usuario);
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
+						limpiarDatos();
+						configurarFormularioConsultar(false);
+					}
+				}
+				else {
+					getControlador().eliminarUsuario(usuario);
+					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
+					limpiarDatos();
+					configurarFormularioConsultar(false);
+				}
 			} catch(SQLException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 			} catch(RemoteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());		
 			}catch(Exception e) {
-				e.printStackTrace();
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 			}
 		}

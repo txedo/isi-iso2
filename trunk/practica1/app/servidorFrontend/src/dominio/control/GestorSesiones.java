@@ -179,6 +179,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
 			operaciones.add(Operaciones.ConsultarSustitutosPosibles);
 			operaciones.add(Operaciones.EstablecerSustituto);
+			operaciones.add(Operaciones.ConsultarBeneficiariosMedico);
 		}
 		
 		// Agregamos las operaciones permitidas para médicos

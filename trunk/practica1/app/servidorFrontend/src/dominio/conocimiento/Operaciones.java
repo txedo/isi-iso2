@@ -23,6 +23,7 @@ public enum Operaciones {
 	ConsultarMedicosTipo,
 	ConsultarSustitutosPosibles,
 	EstablecerSustituto,
+	ConsultarBeneficiariosMedico,
 	// Operaciones del Gestor de Citas
 	ConsultarCitas,
 	TramitarCita,

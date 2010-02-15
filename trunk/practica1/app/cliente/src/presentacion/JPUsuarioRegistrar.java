@@ -7,9 +7,12 @@ import java.sql.SQLException;
 import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
 import javax.swing.DebugGraphics;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,6 +28,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Citador;
+import dominio.conocimiento.Especialidades;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -79,7 +83,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDato
 	private JList lstTipoMedico;
 	private JLabel lblTipoUsuario;
 	private JLabel lblEspecialidad;
-	private JTextField txtEspecialidad;
+	private JComboBox cbEspecialidad;
 	private JLabel lblNombre;
 	private JLabel lblPassword2;
 	private JLabel lblPassword;
@@ -133,9 +137,9 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDato
 				lblEspecialidad.setPreferredSize(new java.awt.Dimension(71, 16));
 			}
 			{
-				txtEspecialidad = new JTextField();
-				this.add(txtEspecialidad, new AnchorConstraint(259, 18, 691, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtEspecialidad.setPreferredSize(new java.awt.Dimension(229, 22));
+				cbEspecialidad = new JComboBox();
+				this.add(cbEspecialidad, new AnchorConstraint(259, 18, 691, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				cbEspecialidad.setPreferredSize(new java.awt.Dimension(229, 22));
 			}
 			{
 				btnRestablecer = new JButton();
@@ -258,12 +262,19 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDato
 			}
 			cambiarEstadoEspecialidad(false);
 			cambiarEstadoConfiguracionCalendario(false);
+			rellenarModelo(new String [] {""});
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	//$hide>>$
+	
+	private void rellenarModelo(String [] informacion) {
+		ComboBoxModel cbEspecialidadModel = new DefaultComboBoxModel(informacion);
+		cbEspecialidad.setModel(cbEspecialidadModel);	
+	}
 	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {
 		limpiarCamposRegistro();
@@ -285,9 +296,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDato
 			if (lstTipoUsuario.getSelectedIndex()==-1)
 				throw new UsuarioNoSeleccionadoException();
 			else if (lstTipoMedico.getSelectedIndex()==-1 && lstTipoUsuario.getSelectedValue().equals(USU_MEDICO))
-				throw new UsuarioNoSeleccionadoException();
-			if (lstTipoUsuario.getSelectedValue().equals(USU_MEDICO) && lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA))
-				Validacion.comprobarCadena(txtEspecialidad.getText());				
+				throw new UsuarioNoSeleccionadoException();								
 
 			// Creamos un nuevo usuario con los datos introducidos
 			switch (RolesUsuarios.valueOf(lstTipoUsuario.getSelectedValue().toString())) {
@@ -313,7 +322,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDato
 				else if (lstTipoMedico.getSelectedValue().equals(MED_PEDIATRA))
 					tipo = new Pediatra();
 				else if (lstTipoMedico.getSelectedValue().equals(MED_ESPECIALISTA))
-					tipo = new Especialista(txtEspecialidad.getText());
+					tipo = new Especialista(cbEspecialidad.getSelectedItem().toString());
 				((Medico)usu).setTipoMedico(tipo);
 				((Medico)usu).setCalendario(periodos);
 				getControlador().crearMedico((Medico)usu);
@@ -387,9 +396,15 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDato
 
 	private void cambiarEstadoEspecialidad(boolean estado) {
 		lblEspecialidad.setVisible(estado);
-		txtEspecialidad.setVisible(estado);
+		cbEspecialidad.setVisible(estado);
+		String [] valores = new String [Especialidades.values().length]; 
 		if (!estado)
-			txtEspecialidad.setText("");
+			rellenarModelo(new String [] {""});
+		else {
+			for (int i=0; i<Especialidades.values().length; i++) 
+				valores[i] = Especialidades.values()[i].toString();
+			rellenarModelo(valores);
+		}
 	}
 	
 	private void lstTipoUsuarioValueChanged(ListSelectionEvent evt) {
@@ -430,6 +445,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDato
 		lstTipoUsuario.clearSelection();
 		lstTipoMedico.clearSelection();
 		lstTipoMedico.setVisible(false);
+		periodos = new Vector<PeriodoTrabajo>();
 	}
 	
 	public void setPeriodos (Vector<PeriodoTrabajo> p) {
