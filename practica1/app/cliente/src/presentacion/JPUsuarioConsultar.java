@@ -453,9 +453,9 @@ public class JPUsuarioConsultar extends JPBase implements IPasoDatos {
 						mensaje = "El médico que quiere borrar tiene beneficiarios asignados. \n";
 	
 					if (citas.size()!=0)
-						mensaje = "El médico que quiere borrar tiene citas pendientes. \n";
+						mensaje += "El médico que quiere borrar tiene citas pendientes. \n";
 					
-					mensaje += "\n¿Seguro que quiere continuar con la eliminación?";
+					mensaje += "¿Seguro que quiere continuar con la eliminación?";
 					respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", mensaje);
 					if (respuesta) {
 						// Eliminamos las citas de ese médico
