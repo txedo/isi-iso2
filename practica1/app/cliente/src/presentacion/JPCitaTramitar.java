@@ -92,7 +92,7 @@ public class JPCitaTramitar extends JPBase {
 				pnlBeneficiario.reducirPanel();
 				pnlBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
 					public void beneficiarioBuscado(EventObject evt) {
-						pnlBeneficiarioConsultarBeneficiarioBuscado(evt);
+						pnlBeneficiarioBeneficiarioBuscado(evt);
 					}
 				});
 			}
@@ -147,7 +147,7 @@ public class JPCitaTramitar extends JPBase {
 	
 	//$hide>>$
 
-	private void pnlBeneficiarioConsultarBeneficiarioBuscado(EventObject evt) {
+	private void pnlBeneficiarioBeneficiarioBuscado(EventObject evt) {
 		// Borramos los datos de la última tramitación de cita
 		limpiarCamposTramitacion();
 

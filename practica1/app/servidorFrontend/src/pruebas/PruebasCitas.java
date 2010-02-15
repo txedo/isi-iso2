@@ -29,6 +29,7 @@ import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Volante;
 import dominio.control.GestorCitas;
 import dominio.control.GestorSesiones;
+import dominio.control.GestorVolantes;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CitaNoValidaException;
 import excepciones.FechaNoValidaException;
@@ -442,7 +443,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			idVolante = GestorCitas.emitirVolante(sesionCitador.getId() + 1, bene1, medico1, medico3);
+			idVolante = GestorVolantes.emitirVolante(sesionCitador.getId() + 1, bene1, medico1, medico3);
 			fail("Se esperaba una excepcion SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -451,7 +452,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos emitir un volante como un administrador
-			idVolante = GestorCitas.emitirVolante(sesionAdmin.getId(), bene1, medico1, medico3);
+			idVolante = GestorVolantes.emitirVolante(sesionAdmin.getId(), bene1, medico1, medico3);
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -460,7 +461,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos emitir un volante para un beneficiario no registrado 
-			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene2, medico1, medico3);
+			idVolante = GestorVolantes.emitirVolante(sesionMedico.getId(), bene2, medico1, medico3);
 			fail("Se esperaba una excepcion BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
@@ -469,7 +470,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos emitir un volante para un medico no registrado
-			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico4, medico4);
+			idVolante = GestorVolantes.emitirVolante(sesionMedico.getId(), bene1, medico4, medico4);
 			fail("Se esperaba una excepcion MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -478,7 +479,7 @@ public class PruebasCitas extends PruebasBase {
 			
 		try {
 			// Intentamos emitir un volante para un medico receptor que no es especialista
-			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico1, medico2);
+			idVolante = GestorVolantes.emitirVolante(sesionMedico.getId(), bene1, medico1, medico2);
 			fail("Se esperaba una excepcion VolanteNoValidoException");
 		} catch(VolanteNoValidoException e) {
 		} catch(Exception e) {
@@ -487,7 +488,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos emitir un volante para un beneficiario nulo
-			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), null, medico1, medico3);
+			idVolante = GestorVolantes.emitirVolante(sesionMedico.getId(), null, medico1, medico3);
 			fail("Se esperaba una excepcion NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -496,7 +497,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos emitir un volante para un medico emisor nulo
-			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, null, medico3);			
+			idVolante = GestorVolantes.emitirVolante(sesionMedico.getId(), bene1, null, medico3);			
 			fail("Se esperaba una excepcion NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -505,7 +506,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos emitir un volante para un medico receptor nulo
-			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico1, null);
+			idVolante = GestorVolantes.emitirVolante(sesionMedico.getId(), bene1, medico1, null);
 			fail("Se esperaba una excepcion NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -514,9 +515,9 @@ public class PruebasCitas extends PruebasBase {
 				
 		try {
 			// Intentamos emitir un volante correcto
-			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico1, medico3);
+			idVolante = GestorVolantes.emitirVolante(sesionMedico.getId(), bene1, medico1, medico3);
 			assertTrue(idVolante != -1);
-			volanteRecuperado = GestorCitas.consultarVolante(sesionAdmin.getId(), idVolante);
+			volanteRecuperado = GestorVolantes.consultarVolante(sesionAdmin.getId(), idVolante);
 			assertEquals(volanteRecuperado.getId(), idVolante);
 		} catch(Exception e) {
 			fail("No se esperaba ninguna excepción al crear el volante");
@@ -524,7 +525,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos emitir un volante correcto, en este caso, del especialista para si mismo
-			idVolante = GestorCitas.emitirVolante(sesionMedico.getId(), bene1, medico3, medico3);
+			idVolante = GestorVolantes.emitirVolante(sesionMedico.getId(), bene1, medico3, medico3);
 			assertTrue(idVolante != -1);
 			volanteRecuperado = FPVolante.consultar(idVolante);
 			assertEquals(volanteRecuperado.getId(), idVolante);
@@ -534,7 +535,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos recuperar un volante sin permiso
-			volanteRecuperado = GestorCitas.consultarVolante(sesionMedico.getId(), 1);
+			volanteRecuperado = GestorVolantes.consultarVolante(sesionMedico.getId(), 1);
 			fail("Se espera una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {

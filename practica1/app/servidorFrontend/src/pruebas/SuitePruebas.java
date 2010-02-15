@@ -19,7 +19,6 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasPersistencia.class);
 		suite.addTestSuite(PruebasSesiones.class);
 		suite.addTestSuite(PruebasMedicos.class);
-		suite.addTestSuite(PruebasUsuarios.class);
 		suite.addTestSuite(PruebasBeneficiarios.class);
 		suite.addTestSuite(PruebasCitas.class);
 		suite.addTestSuite(PruebasValidacion.class);

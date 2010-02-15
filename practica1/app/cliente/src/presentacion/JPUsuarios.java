@@ -17,6 +17,7 @@ public class JPUsuarios extends JPBase {
 
 	private JPUsuarioRegistrar jPanelRegistrar;
 	private JPUsuarioConsultar jPanelConsultar;
+	private JPEstablecerSustituto jPanelSustitutos;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
 
@@ -60,6 +61,11 @@ public class JPUsuarios extends JPBase {
 				this.add(jPanelConsultar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 				jPanelConsultar.setPreferredSize(new java.awt.Dimension(406, 390));
 			}
+			{
+				jPanelSustitutos = new JPEstablecerSustituto(this.getFrame(), this.getControlador());
+				this.add(jPanelSustitutos, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jPanelSustitutos.setPreferredSize(new java.awt.Dimension(406, 390));
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -70,30 +76,37 @@ public class JPUsuarios extends JPBase {
 	private void inicializarOperaciones() {
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.RegistrarUsuario);
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarModificarUsuario);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.EstablecerSustituto);
 	}
 
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.RegistrarUsuario);
 		jPanelRegistrar.setVisible(true);
 		jPanelConsultar.setVisible(false);
+		jPanelSustitutos.setVisible(false);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(EventObject evt) {
 		if(jPanelRegistrar.isValid()) {
 			jPanelRegistrar.setVisible(false);
 		}
-		
 		if(jPanelConsultar.isValid()) {
 			jPanelConsultar.setVisible(false);
+		}
+		if(jPanelSustitutos.isValid()) {
+			jPanelSustitutos.setVisible(false);
 		}
 		if(jPanelListaOperaciones.getOperacion() == OperacionesInterfaz.RegistrarUsuario) {
 			jPanelRegistrar.setVisible(true);
 			jPanelRegistrar.repaint();
-		}
-		
+		}	
 		if(jPanelListaOperaciones.getOperacion() == OperacionesInterfaz.ConsultarModificarUsuario) {
 			jPanelConsultar.setVisible(true);
 			jPanelConsultar.repaint();
+		}
+		if(jPanelListaOperaciones.getOperacion() == OperacionesInterfaz.EstablecerSustituto) {
+			jPanelSustitutos.setVisible(true);
+			jPanelSustitutos.repaint();
 		}
 	}
 
@@ -103,6 +116,10 @@ public class JPUsuarios extends JPBase {
 
 	public void desactivarConsultarUsuario() {
 		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarModificarUsuario);
+	}
+	
+	public void desactivarEstablecerSustituto() {
+		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.EstablecerSustituto);
 	}
 	
 	//$hide<<$

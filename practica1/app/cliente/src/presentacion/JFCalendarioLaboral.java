@@ -23,7 +23,7 @@ import dominio.conocimiento.PeriodoTrabajo;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JFCalendarioLaboral extends javax.swing.JFrame {
+public class JFCalendarioLaboral extends javax.swing.JFrame implements IPasoDatos {
 
 	private JPanel parent;
 	private JPCalendarioConsultar jPanelConsultarCalendario;

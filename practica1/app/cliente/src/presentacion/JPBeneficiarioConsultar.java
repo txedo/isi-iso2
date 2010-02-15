@@ -425,30 +425,9 @@ public class JPBeneficiarioConsultar extends JPBase {
 			e.printStackTrace();
 		}
 	}
-	
-	private void btnEliminarActionPerformed(ActionEvent evt) {
-		boolean respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Realmente desea eliminar este beneficiario?");
-		if (respuesta) {
-			try {
-				getControlador().eliminarBeneficiario(beneficiario);
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Informacion", "Beneficiario eliminado correctamente");
-				limpiarCamposConsulta();
-			} catch(BeneficiarioInexistenteException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
-				
-			} catch(SQLException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			} catch(RemoteException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			} catch(Exception e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			}
-			
-		}
-	}
 
 	//$hide>>$
-	
+		
 	public Beneficiario getBeneficiario() {
 		return beneficiario;
 	}
@@ -461,6 +440,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		// Borramos la información del antiguo beneficiario consultado
 		limpiarCamposConsulta();
 		deshabilitarEdicion();
+		beneficiario = null;
 
 		try {
 
@@ -685,6 +665,27 @@ public class JPBeneficiarioConsultar extends JPBase {
 		}
 	}
 
+	private void btnEliminarActionPerformed(ActionEvent evt) {
+		boolean respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Realmente desea eliminar este beneficiario?");
+		if (respuesta) {
+			try {
+				getControlador().eliminarBeneficiario(beneficiario);
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Informacion", "Beneficiario eliminado correctamente");
+				limpiarCamposConsulta();
+			} catch(BeneficiarioInexistenteException e) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+				
+			} catch(SQLException e) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+			} catch(RemoteException e) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+			} catch(Exception e) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+			}
+			
+		}
+	}
+
 	private void chkEditarActionPerformed(ActionEvent evt) {
 		cambiarEdicion(chkEditar.isSelected());
 	}
@@ -761,14 +762,14 @@ public class JPBeneficiarioConsultar extends JPBase {
 		txtTelefonoMovil.setVisible(false);
 		btnGuardar.setVisible(false);
 		chkEditar.setVisible(false);
-		this.remove(lblMedicoAsignado);
-		this.add(lblMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblFechaNacimiento));
-		this.remove(txtMedicoAsignado);
-		this.add(txtMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(dtcFechaNacimiento));
 		this.remove(lblCentro);
 		this.add(lblCentro, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblDomicilio));
 		this.remove(txtCentro);
 		this.add(txtCentro, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(txtDomicilio));
+		this.remove(lblMedicoAsignado);
+		this.add(lblMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblFechaNacimiento));
+		this.remove(txtMedicoAsignado);
+		this.add(txtMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(dtcFechaNacimiento));
 	}
 	
 	public void desactivarModificacion() {
