@@ -177,6 +177,11 @@ public class ControladorCliente {
 		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, bene);
 	}
 	
+	public void asignarMedicoBeneficiario(Beneficiario b) throws RemoteException, Exception {
+		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO, b);
+		
+	}
+	
 	// Métodos del servidor relacionados con usuarios
 		
 	public Usuario consultarUsuario(String dni) throws RemoteException, Exception {
@@ -218,14 +223,21 @@ public class ControladorCliente {
 		servidor.eliminar(sesion.getId(), medico);
 	}
 
+	public Vector<Beneficiario> obtenerBeneficiariosMedico (String dniMedico) throws RemoteException, Exception {
+		return (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, dniMedico);
+	}
 	@SuppressWarnings("unchecked")
 	public Hashtable<DiaSemana, Vector<String>> consultarHorarioMedico(String dniMedico) throws RemoteException, Exception {
 		return (Hashtable<DiaSemana, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, dniMedico);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Hashtable<Date, Vector<String>> consultarCitasMedico(String dniMedico) throws RemoteException, Exception {
-		return (Hashtable<Date, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO, dniMedico);
+	public Hashtable<Date, Vector<String>> consultarHorasCitasMedico(String dniMedico) throws RemoteException, Exception {
+		return (Hashtable<Date, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS_MEDICO, dniMedico);
+	}
+	
+	public Vector<Cita> consultarCitasMedico(String dniMedico) throws RemoteException, Exception {
+		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO, dniMedico);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -272,5 +284,6 @@ public class ControladorCliente {
 	public Vector<Operaciones> operacionesDisponibles() throws RemoteException, Exception {
 		return (Vector<Operaciones>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OPERACIONES_DISPONIBLES, null);
 	}
+
 	 
 }

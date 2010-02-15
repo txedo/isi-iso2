@@ -143,10 +143,10 @@ public class GestorBeneficiarios {
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ModificarBeneficiario);
-		
+
 		// Comprobamos si existe el beneficiario que se quiere modificar
 		FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-		
+
 		// Miramos si es necesario cambiar el médico asignado al beneficiario
 		// (en caso de que se haya cambiado su fecha de nacimiento)
 		medico = comprobarMedicoBeneficiario(beneficiario);
@@ -154,7 +154,7 @@ public class GestorBeneficiarios {
 			// Cambiamos el médico antes de guardarlo en la base de datos
 			beneficiario.setMedicoAsignado(medico);
 		}
-		
+
 		// Modificamos los datos del beneficiario
 		FPBeneficiario.modificar(beneficiario);
 	}
@@ -174,6 +174,34 @@ public class GestorBeneficiarios {
 		
 		// Borramos los datos del beneficiario
 		FPBeneficiario.eliminar(bene);
+	}
+	
+	public static void asignarMedico (long idSesion, Beneficiario beneficiario) throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException, NullPointerException, OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException {
+		Medico medico;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ModificarBeneficiario);
+		
+		// Buscamos un médico de cabecera o pediatra para el 
+		// beneficiario según su edad; si se lanza una excepción es
+		// porque no existen médicos registrados del tipo adecuado
+		if(beneficiario.getEdad() < EDAD_PEDIATRA) {
+			try {
+				medico = (Medico)FPUsuario.consultar(FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Pediatra));
+				beneficiario.setMedicoAsignado(medico);
+			} catch(UsuarioIncorrectoException e) {
+				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún pediatra en el sistema que se le pueda asignar.");
+			}
+		} else {
+			try {
+				medico = (Medico)FPUsuario.consultar(FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Cabecera));
+				beneficiario.setMedicoAsignado(medico);
+			} catch(UsuarioIncorrectoException e) {
+				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún médico de cabecera en el sistema que se le pueda asignar.");
+			}
+		}
+		// Actualizamos el beneficiario
+		modificarBeneficiario(idSesion, beneficiario);
 	}
 	
 	private static Medico comprobarMedicoBeneficiario(Beneficiario beneficiario) throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException {
@@ -202,7 +230,6 @@ public class GestorBeneficiarios {
 				throw new UsuarioIncorrectoException("No se puede cambiar el médico asignado al beneficiario porque no existe ningún pediatra en el sistema.");
 			}
 		}
-		
 		return medico;
 	}
 	

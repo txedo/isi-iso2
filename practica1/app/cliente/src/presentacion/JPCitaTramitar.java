@@ -162,7 +162,7 @@ public class JPCitaTramitar extends JPBase {
 				// Consultamos al servidor toda la información
 				// necesaria para el panel de tramitación
 				diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
-				citasOcupadas = getControlador().consultarCitasMedico(beneficiario.getMedicoAsignado().getDni());
+				citasOcupadas = getControlador().consultarHorasCitasMedico(beneficiario.getMedicoAsignado().getDni());
 				horasCitas = getControlador().consultarHorarioMedico(beneficiario.getMedicoAsignado().getDni());
 				
 				// Deshabilitamos los días de la semana que no son

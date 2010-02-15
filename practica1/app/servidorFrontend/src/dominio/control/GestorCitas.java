@@ -262,9 +262,9 @@ public class GestorCitas {
 		FPCita.eliminar(cita);
 	}
 	
-	// Método para obtener las citas que tiene un médico en cada día
+	// Método para obtener las horas de las citas que tiene un médico en cada día
 	@SuppressWarnings("deprecation")
-	public static Hashtable<Date, Vector<String>> consultarCitasMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, MedicoInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static Hashtable<Date, Vector<String>> consultarHorasCitasMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, MedicoInexistenteException, NullPointerException, DireccionInexistenteException {
 		Hashtable<Date, Vector<String>> citasOcupadas;
 		Vector<Cita> citas;
 		Calendar cal;
@@ -273,7 +273,7 @@ public class GestorCitas {
 		
 		// Comprobamos los parámetros pasados
 		if(dniMedico == null) {
-			throw new NullPointerException("El DNI del médico para el que se quieren buscar las citas puede ser nulo.");
+			throw new NullPointerException("El DNI del médico para el que se quieren buscar las fechas de sus citas no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -309,6 +309,36 @@ public class GestorCitas {
 		}
 		
 		return citasOcupadas;
+	}
+	
+	// Método para obtener citas que tiene un médico
+	@SuppressWarnings("deprecation")
+	public static Vector<Cita> consultarCitasMedico(long idSesion, String dniMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException {
+		Vector<Cita> citas;
+		Usuario usuario;
+		
+		// Comprobamos los parámetros pasados
+		if(dniMedico == null) {
+			throw new NullPointerException("El DNI del médico para el que se quieren buscar las citas puede ser nulo.");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
+		
+		// Comprobamos que exista el médico
+		try {
+			usuario = FPUsuario.consultar(dniMedico);
+			if(usuario.getRol() != RolesUsuarios.Medico) {
+				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+			}
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		// Obtenemos las citas que ya tiene asignadas el médico
+		citas = FPCita.consultarPorMedico(dniMedico);
+		
+		return citas;
 	}
 
 	// Método para obtener los días en los que un médico podría pasar
