@@ -187,6 +187,46 @@ public class Medico extends Usuario implements Serializable, Cloneable {
 		return horas;
 	}
 	
+	public Vector<String> horasCitas(DiaSemana dia, int horaInicio, int horaFinal, int duracionCitas) {
+		Vector<String> horas;
+		Calendar dias;
+		int horaRealInicio, horaRealFinal;
+		int intervalos;
+		int i;
+		
+		// Generamos una lista con las horas a las que un médico podría dar
+		// cita en un determinado día de la semana y un rango limitado de horas
+		horas = new Vector<String>();
+		for(PeriodoTrabajo periodo : calendario) {
+			if(periodo.getDia() == dia && periodo.horaEnPeriodo(horaInicio, horaFinal)) {
+				// Reducimos el período según el rango de horas pasado
+				if(periodo.getHoraInicio() < horaInicio) {
+					horaRealInicio = horaInicio;
+				} else {
+					horaRealInicio = periodo.getHoraInicio();
+				}
+				if(periodo.getHoraFinal() > horaFinal) {
+					horaRealFinal = horaFinal;
+				} else {
+					horaRealFinal = periodo.getHoraFinal();
+				}
+				// Calculamos cuántas citas se pueden dar en este período de trabajo
+				intervalos = (((horaRealFinal - horaRealInicio) * 60) / duracionCitas);
+				// Generamos las horas de las citas
+				dias = Calendar.getInstance();
+				dias.set(Calendar.HOUR_OF_DAY, horaRealInicio);
+				dias.set(Calendar.MINUTE, 0);
+				dias.set(Calendar.SECOND, 0);
+				for(i = 0; i < intervalos; i++) {
+					horas.add(Cita.cadenaHoraCita(dias.getTime()));
+					dias.add(Calendar.MINUTE, duracionCitas);
+				}
+			}
+		}
+		
+		return horas;
+	}
+	
 	public Object clone() {
 		Medico m;
 		

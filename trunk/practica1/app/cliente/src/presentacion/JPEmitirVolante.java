@@ -53,7 +53,7 @@ public class JPEmitirVolante extends JPBase {
 	private static final long serialVersionUID = -2491308165795545454L;
 	
 	private JPBeneficiarioConsultar pnlBeneficiario;
-	private JSeparator jSeparator1;
+	private JSeparator sepSeparador;
 	private JPanel jPanelMedico;
 	private JTextField txtNombre;
 	private JTextField txtEspecialidad;
@@ -150,9 +150,9 @@ public class JPEmitirVolante extends JPBase {
 				}
 			}
 			{
-				jSeparator1 = new JSeparator();
-				this.add(jSeparator1, new AnchorConstraint(249, 5, 493, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jSeparator1.setPreferredSize(new java.awt.Dimension(554, 10));
+				sepSeparador = new JSeparator();
+				this.add(sepSeparador, new AnchorConstraint(249, 5, 493, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				sepSeparador.setPreferredSize(new java.awt.Dimension(554, 10));
 			}
 			{
 				pnlBeneficiario = new JPBeneficiarioConsultar(getFrame(), getControlador());

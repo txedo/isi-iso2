@@ -77,6 +77,17 @@ public class Sustitucion implements Serializable {
 		this.sustituto = sustituto;
 	}
 	
+	public boolean horaEnSustitucion(int horaInicio, int horaFinal) {
+		boolean dev;
+		
+		// Devuelve true si las horas de esta sustitución se solapan
+		// con alguna de las horas del rango indicado
+		dev = (horaInicio >= this.horaInicio && horaInicio < this.horaFinal);
+		dev = dev || (horaFinal > this.horaInicio && horaFinal <= this.horaFinal);
+		dev = dev || (horaInicio <= this.horaInicio && horaFinal >= this.horaFinal);
+		return dev;
+	}
+	
 	public boolean equals(Object o) {
 		Sustitucion s;
 		boolean dev;

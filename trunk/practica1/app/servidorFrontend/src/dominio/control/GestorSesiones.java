@@ -177,6 +177,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.ModificarMedico);
 			operaciones.add(Operaciones.EliminarMedico);
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
+			operaciones.add(Operaciones.ConsultarSustitutosPosibles);
 			operaciones.add(Operaciones.EstablecerSustituto);
 		}
 		

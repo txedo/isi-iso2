@@ -21,12 +21,14 @@ public enum Operaciones {
 	ModificarMedico,
 	EliminarMedico,
 	ConsultarMedicosTipo,
+	ConsultarSustitutosPosibles,
 	EstablecerSustituto,
 	// Operaciones del Gestor de Citas
 	ConsultarCitas,
 	TramitarCita,
 	TramitarCitaVolante,
 	AnularCita,
+	// Operaciones del Gestor de Volantes
 	ConsultarVolante,
 	EmitirVolante,
 }

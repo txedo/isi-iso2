@@ -56,6 +56,17 @@ public class PeriodoTrabajo implements Serializable {
 		this.dia = dia;
 	}
 	
+	public boolean horaEnPeriodo(int horaInicio, int horaFinal) {
+		boolean dev;
+		
+		// Devuelve true si este período se solapa con
+		// alguna de las horas del rango indicado
+		dev = (horaInicio >= this.horaInicio && horaInicio < this.horaFinal);
+		dev = dev || (horaFinal > this.horaInicio && horaFinal <= this.horaFinal);
+		dev = dev || (horaInicio <= this.horaInicio && horaFinal >= this.horaFinal);
+		return dev;
+	}
+	
 	public boolean equals(Object o) {
 		PeriodoTrabajo p;
 		boolean dev;

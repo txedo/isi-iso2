@@ -697,13 +697,17 @@ public class ServidorFrontend implements IServidorFrontend {
 		}
 	}
 	
+	// ------------------------------
+	// Métodos del Gestor de Volantes
+	// ------------------------------
+	
 	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception {
 		long idVolante;
 		String login;
 		
 		try {
 			// Solicitamos un volante para un cierto beneficiario y médico
-			idVolante = GestorCitas.emitirVolante(idSesion, beneficiario, emisor, destino);
+			idVolante = GestorVolantes.emitirVolante(idSesion, beneficiario, emisor, destino);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Emitido un volante para el beneficiario con NIF " + beneficiario.getNif() + ".");
 		} catch(SQLException se) {
@@ -1058,6 +1062,53 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 		
+		case ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS:
+			try {
+				// Obtenemos los médicos posibles para una sustitución
+				resultado = GestorMedicos.obtenerPosiblesSustitutos(idSesion, (String)((Object[])informacion)[0], (Date)((Object[])informacion)[1], (Integer)((Object[])informacion)[2], (Integer)((Object[])informacion)[3]);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultados los médicos que pueden sustituir al médico con DNI " + (String)((Object[])informacion)[0] + ".");
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL mientras se consultaban los médicos que pueden sustituir al médico con DNI " + (String)((Object[])informacion)[0] + ": " + se.getLocalizedMessage());
+				throw se;
+			} catch(MedicoInexistenteException mie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un médico mientras se consultaban los médicos que pueden sustituir al médico con DNI " + (String)((Object[])informacion)[0] + ": " + mie.getLocalizedMessage());
+				throw mie;
+			} catch(UsuarioIncorrectoException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un usuario mientras se consultaban los médicos que pueden sustituir al médico con DNI " + (String)((Object[])informacion)[0] + ": " + uie.getLocalizedMessage());
+				throw uie;
+			} catch(CentroSaludInexistenteException csie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un centro de salud mientras se consultaban los médicos que pueden sustituir al médico con DNI " + (String)((Object[])informacion)[0] + ": " + csie.getLocalizedMessage());
+				throw csie;
+			} catch(DireccionInexistenteException die) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar una dirección mientras se consultaban los médicos que pueden sustituir al médico con DNI " + (String)((Object[])informacion)[0] + ": " + die.getLocalizedMessage());
+				throw die;
+			} catch(FechaNoValidaException fnve) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al analizar la fecha del día para el que se estaban consultando los médicos que pueden sustituir al médico con DNI " + (String)((Object[])informacion)[0] + ": " + fnve.getLocalizedMessage());
+				throw fnve;
+			} catch(NullPointerException npe) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar consultar los médicos que pueden sustituir a otro médico con datos no válidos: " + npe.getLocalizedMessage());
+				throw npe;
+			} catch(OperacionIncorrectaException oie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta de los médicos que pueden sustituir al médico con DNI " + (String)((Object[])informacion)[0] + ": " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar los médicos que pueden sustituir al médico con DNI " + (String)((Object[])informacion)[0] + ": " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se consultaban los médicos que pueden sustituir a otro médico: " + e.toString());
+				throw e;
+			}
+			break;
+			
 		// Operaciones auxiliares del Gestor de Citas
 		
 		case ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO:
@@ -1197,10 +1248,12 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 		
+		// Operaciones auxiliares del Gestor de Volantes
+			
 		case ICodigosMensajeAuxiliar.CONSULTAR_VOLANTE:
 			try {
 				// Consultamos un volante por id
-				resultado = GestorCitas.consultarVolante(idSesion, (Long)informacion);
+				resultado = GestorVolantes.consultarVolante(idSesion, (Long)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultado el volante con id " + (Long)informacion + ".");
 			} catch(SQLException se) {

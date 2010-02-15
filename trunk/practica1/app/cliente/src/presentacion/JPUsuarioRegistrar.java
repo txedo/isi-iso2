@@ -263,6 +263,8 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDato
 		}
 	}
 	
+	//$hide>>$
+	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {
 		limpiarCamposRegistro();
 	}
@@ -435,6 +437,6 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes, IPasoDato
 		periodos.addAll(p);
 	}
 	
-	// $hide<<$
+	//$hide<<$
 
 }
