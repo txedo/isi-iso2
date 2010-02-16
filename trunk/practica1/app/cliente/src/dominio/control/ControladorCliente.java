@@ -6,6 +6,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
 import presentacion.JFLogin;
@@ -19,6 +20,7 @@ import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
@@ -142,20 +144,31 @@ public class ControladorCliente {
 		ventanaPrincipal.setLocationRelativeTo(null);
 		ventanaPrincipal.setVisible(true);
 	}
-	
-	// Métodos llamados por el servidor front-end
+
+	// ---------------------------
+	// Métodos servidor -> cliente
+	// ---------------------------
 	
 	public void forzarCierreSesion() {
 		ventanaPrincipal.forzarCierreSesion();
 	}
 	
-	// Métodos del servidor relacionados con la sesión
+	// ---------------------------
+	// Métodos cliente -> servidor
+	// ---------------------------
+	
+	// Métodos de gestión de sesiones
 	
 	public void cerrarSesion() throws RemoteException, Exception {
 		servidor.liberar(sesion.getId());
 	}
 	
-	// Métodos del servidor relacionados con beneficiarios
+	@SuppressWarnings("unchecked")
+	public Vector<Operaciones> operacionesDisponibles() throws RemoteException, Exception {
+		return (Vector<Operaciones>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OPERACIONES_DISPONIBLES, null);
+	}
+	
+	// Métodos de gestión de beneficiarios
 	
 	public Beneficiario consultarBeneficiarioPorNIF(String nif) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		return servidor.getBeneficiario(sesion.getId(), nif);
@@ -176,14 +189,13 @@ public class ControladorCliente {
 	public void eliminarBeneficiario(Beneficiario bene) throws RemoteException, Exception {
 		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, bene);
 	}
-	
-	public void asignarMedicoBeneficiario(Beneficiario b) throws RemoteException, Exception {
-		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO, b);
-		
+
+	public void asignarMedicoBeneficiario(Beneficiario bene) throws RemoteException, Exception {
+		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO, bene);		
 	}
-	
-	// Métodos del servidor relacionados con usuarios
-		
+
+	// Métodos de gestión de usuarios
+
 	public Usuario consultarUsuario(String dni) throws RemoteException, Exception {
 		return (Usuario)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, dni);
 	}
@@ -200,7 +212,7 @@ public class ControladorCliente {
 		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, usu);
 	}
 
-	// Métodos del servidor relacionados con médicos
+	// Métodos de gestión de médicos
 	
 	public Medico consultarMedico(String dni) throws RemoteException, MedicoInexistenteException, Exception {
 		return servidor.getMedico(sesion.getId(), dni);
@@ -221,6 +233,10 @@ public class ControladorCliente {
 
 	public void eliminarMedico(Medico medico) throws RemoteException, MedicoInexistenteException, Exception {
 		servidor.eliminar(sesion.getId(), medico);
+	}
+	
+	public void asignarSustituto(Medico medico, Vector<Date> dias, int horaDesde, int horaHasta, Medico sustituto) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		servidor.modificarCalendario(sesion.getId(), medico, dias, new GregorianCalendar(1980, 0, 1, horaDesde, 0).getTime(), new GregorianCalendar(1980, 0, 1, horaHasta, 0).getTime(), (IMedico)sustituto);
 	}
 
 	public Vector<Beneficiario> obtenerBeneficiariosMedico (String dniMedico) throws RemoteException, Exception {
@@ -245,7 +261,12 @@ public class ControladorCliente {
 		return (Vector<Date>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_DIAS_COMPLETOS, dniMedico);
 	}
 	
-	// Métodos del servidor relacionados con citas
+	@SuppressWarnings("unchecked")
+	public Vector<Medico> obtenerPosiblesSustitutos(String dniMedico, Date dia, int horaDesde, int horaHasta) throws RemoteException, Exception {
+		return (Vector<Medico>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { dniMedico, dia, horaDesde, horaHasta });
+	}
+	
+	// Métodos de gestión de citas
 	
 	public Vector<Cita> consultarHistoricoCitas(String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
 		return servidor.getCitas(sesion.getId(), dni);
@@ -268,7 +289,7 @@ public class ControladorCliente {
 		servidor.anularCita(sesion.getId(), cita);
 	}
 	
-	// Métodos del servidor relacionados con volantes
+	// Métodos de gestión de volantes
 	
 	public Volante consultarVolante(long idVolante) throws RemoteException, Exception {
 		return (Volante)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_VOLANTE, idVolante);
@@ -276,13 +297,6 @@ public class ControladorCliente {
 
 	public long emitirVolante(Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception { 
 		return servidor.emitirVolante(sesion.getId(), bene, emisor, receptor);
-	}
-		
-	// Otros métodos del servidor
-	
-	@SuppressWarnings("unchecked")
-	public Vector<Operaciones> operacionesDisponibles() throws RemoteException, Exception {
-		return (Vector<Operaciones>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OPERACIONES_DISPONIBLES, null);
 	}
 
 	 
