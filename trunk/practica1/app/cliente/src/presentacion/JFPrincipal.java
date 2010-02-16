@@ -158,7 +158,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 				jPanelOperaciones.setPreferredSize(new java.awt.Dimension(692, 479));
 				{
 					lblPuertoEscucha = new JLabel();
-					jPanelOperaciones.add(lblPuertoEscucha, new AnchorConstraint(961, 567, 998, 15, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+					jPanelOperaciones.add(lblPuertoEscucha, new AnchorConstraint(961, 567, 4, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblPuertoEscucha.setPreferredSize(new java.awt.Dimension(382, 17));
 				}
 				{
@@ -185,8 +185,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 				}
 				{
 					lblBarraEstado = new JLabel();
-					jPanelOperaciones.add(lblBarraEstado, new AnchorConstraint(928, 568, 961, 15, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-					lblBarraEstado.setPreferredSize(new java.awt.Dimension(383, 15));
+					jPanelOperaciones.add(lblBarraEstado, new AnchorConstraint(928, 568, 21, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					lblBarraEstado.setPreferredSize(new java.awt.Dimension(383, 17));
 				}
 				{
 					jTabbedPaneOperaciones = new JTabbedPane();
