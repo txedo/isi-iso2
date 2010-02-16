@@ -373,15 +373,20 @@ public class JPCitaVolanteTramitar extends JPBase {
 			if(!horaSeleccionadaValida()) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo).");
 			} else {
+				
 				// Obtenemos la hora definitiva de la cita
 				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
 				fecha = dtcDiaCita.getDate();
+				
 				// Solicitamos la cita a partir del volante
-				getControlador().pedirCita(beneficiario, volante.getId(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes()), IConstantes.DURACION_CITA);				
+				getControlador().pedirCita(beneficiario, volante.getId(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes()), IConstantes.DURACION_CITA);
+
+				// Mostramos el resultado de la operación y limpiamos el panel
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita ha quedado registrada.");
 				pnlBeneficiario.limpiarCamposConsulta();
 				limpiarCamposConsulta();
 				limpiarCamposTramitacion();
+				
 			}
 
 		} catch(ParseException e) {

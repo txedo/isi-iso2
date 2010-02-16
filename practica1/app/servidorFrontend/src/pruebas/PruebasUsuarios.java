@@ -1,7 +1,5 @@
 package pruebas;
 
-import java.sql.SQLException;
-
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import dominio.conocimiento.Administrador;
@@ -13,8 +11,6 @@ import dominio.conocimiento.Sesion;
 import dominio.conocimiento.Usuario;
 import dominio.control.GestorSesiones;
 import dominio.control.GestorUsuarios;
-import excepciones.CentroSaludIncorrectoException;
-import excepciones.OperacionIncorrectaException;
 import excepciones.UsuarioYaExistenteException;
 
 /** Pruebas de usuarios para cubrir aquellos casos que no cubren el resto de pruebas **/

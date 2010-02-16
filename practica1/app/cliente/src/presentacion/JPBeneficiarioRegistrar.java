@@ -305,13 +305,13 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			{
 				lblNSS = new JLabel();
-				this.add(lblNSS, new AnchorConstraint(42, 429, 209, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNSS, new AnchorConstraint(43, 429, 209, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNSS.setText("NSS *");
 				lblNSS.setPreferredSize(new java.awt.Dimension(121, 14));
 			}
 			{
 				lblNIF = new JLabel();
-				this.add(lblNIF, new AnchorConstraint(15, 429, 110, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblNIF, new AnchorConstraint(16, 429, 110, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblNIF.setText("NIF *");
 				lblNIF.setPreferredSize(new java.awt.Dimension(121, 14));
 			}

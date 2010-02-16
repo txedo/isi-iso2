@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Vector;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import excepciones.BeneficiarioInexistenteException;
@@ -85,6 +86,10 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 		servidor.eliminar(idSesion, medico);
 	}
 
+	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		servidor.modificarCalendario(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
+	}
+	
 	// Métodos de gestión de citas
 
 	public Cita pedirCita(long idSesion, Beneficiario bene, String dniMedico, Date fechaYhora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception {

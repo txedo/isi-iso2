@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Vector;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.control.ServidorFrontend;
@@ -87,7 +88,7 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
     	}
     }
     
-    // Métodos del Gestor de Sesiones
+    // Métodos de gestión de sesiones
     
 	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
 		return servidor.identificar(login, password);
@@ -101,7 +102,7 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 		servidor.liberar(idSesion);
 	}
 
-    // Métodos del Gestor de Beneficiarios
+    // Métodos de gestión de beneficiarios
 	
 	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		return servidor.getBeneficiario(idSesion, dni);
@@ -119,7 +120,7 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 		servidor.modificar(idSesion, beneficiario);
 	}
 	
-    // Métodos del Gestor de Médicos
+    // Métodos de gestión de médicos
 	
 	public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception {
 		return servidor.getMedico(idSesion, dni);
@@ -137,7 +138,11 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 		servidor.eliminar(idSesion, medico);
 	}
 	
-    // Métodos del Gestor de Citas
+	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		servidor.modificarCalendario(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
+	}
+	
+    // Métodos de gestión de citas
 	
 	public Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception {
 		return servidor.pedirCita(idSesion, beneficiario, idMedico, fechaYHora, duracion);
@@ -155,6 +160,8 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 		servidor.anularCita(idSesion, cita);
 	}
 	
+	// Métodos de gestión de volantes
+	
 	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception {
 		return servidor.emitirVolante(idSesion, beneficiario, emisor, destino);
 	}
@@ -165,12 +172,4 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
 
-	// Métodos aún no implementados
-
-	/*
-
-	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException {
-		GestorMedicos.modificarCalendario(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
-	}
-	*/
 }

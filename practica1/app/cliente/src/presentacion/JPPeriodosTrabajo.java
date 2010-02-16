@@ -8,12 +8,9 @@ import dominio.conocimiento.PeriodoTrabajo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Vector;
-
 import javax.swing.JCheckBox;
-import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
 
 /**
@@ -28,7 +25,11 @@ import javax.swing.event.EventListenerList;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListener {
+/**
+ * Panel que permite editar las horas de trabajo de un día determinado
+ * de la semana.
+ */
+public class JPPeriodosTrabajo extends javax.swing.JPanel implements IConstantes {
 	
 	private static final long serialVersionUID = -8549178364759642024L;
 	
@@ -39,48 +40,110 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 	private static final int INIT_X = 0;
 	private static final int INIT_Y = 0;
 	
-	private int horasDeseleccionadas = 0;
-	private int horasSeleccionadas = 0;
-	
 	private EventListenerList listenerList;
 
 	private ArrayList<JCheckBox> chbPeriodos = new ArrayList<JCheckBox>();
 	private JCheckBox chbPeriodoTrabajo;
 	private Vector<PeriodoTrabajo> periodos;
 	private DiaSemana diaSemana;
-	
-	public JPPeriodosTrabajo(DiaSemana d) {
+
+	private int horasDeseleccionadas = 0;
+	private int horasSeleccionadas = 0;
+		
+	public JPPeriodosTrabajo(DiaSemana dia) {
 		super();
-		diaSemana = d;
 		initGUI();
+		diaSemana = dia;
 		listenerList = new EventListenerList();
+		// Creamos un checkbox para cada periodo de trabajo
+		// y calculamos sus coordenadas con respecto al anterior
+		int posX = INIT_X;
+		int posY = INIT_Y;
+		for(int i = HORA_INICIO_JORNADA; i < HORA_FIN_JORNADA; i++) {
+			// Ponemos la mitad de los checkboxes en una columna, y la otra mitad en otra
+			if(i == HORA_INICIO_JORNADA + (HORA_FIN_JORNADA - HORA_INICIO_JORNADA)/2) {
+				posY = INIT_Y + DESPL_X;
+				posX = INIT_X;
+			}
+			// Creamos el checkbox y lo añadimos a una lista para meter una referencia
+			chbPeriodos.add(crearPeriodoTrabajoEnComboBox(i, posX, posY));
+			posX += DESPL_Y;
+		}
 	}
 	
 	private void initGUI() {
 		try {
-			int posX = INIT_X;
-			int posY = INIT_Y;
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setSize(10, 10);
-			{
-				// Creamos un checkbox para cada periodo de trabajo y calculamos sus coordenadas con respecto al anterior
-				for (int i = HORA_INICIO_JORNADA; i < HORA_FIN_JORNADA; i++) {
-					// Ponemos la mitad de los checkboxes en una columna, y la otra mitad en otra
-					if (i == HORA_INICIO_JORNADA + (HORA_FIN_JORNADA - HORA_INICIO_JORNADA)/2) {
-						posY = INIT_Y + DESPL_X;
-						posX = INIT_X;
-					}
-					// Creamos el checkbox y lo añadimos a un ArrayList para menter una referencia hacia él
-					chbPeriodos.add(crearPeriodoTrabajoEnComboBox(i, posX, posY));
-					posX = posX + DESPL_Y;
-				}
-			}
-		} catch (Exception e) {
+			this.setPreferredSize(new java.awt.Dimension(100, 100));
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	//$hide>>$
+	
+	public DiaSemana getDiaSemana() {
+		return diaSemana;
+	}
+	
+	public void setDiaSemana(DiaSemana diaSemana) {
+		this.diaSemana = diaSemana;
+	}
+	
+	public int getHorasSeleccionadas() {
+		return horasSeleccionadas;
+	}
+	
+	public int getHorasDeseleccionadas() {
+		return horasDeseleccionadas;
+	}
+
+	public Vector<PeriodoTrabajo> getPeriodosTrabajo () {
+		Vector<PeriodoTrabajo> aux = new Vector<PeriodoTrabajo>();
+		periodos = new Vector<PeriodoTrabajo>();
+		// Obtenemos todos los periodos de trabajo seleccionados en el panel
+		for (JCheckBox p : chbPeriodos) {
+			if (p.isSelected()) {
+				PeriodoTrabajo pt = new PeriodoTrabajo();
+				pt.setHoraInicio(getString2IntervaloHora(p.getText())[0]);
+				pt.setHoraFinal(getString2IntervaloHora(p.getText())[1]);
+				pt.setDia(diaSemana);
+				aux.add(pt);
+			}
+		}
+		// Comprimimos las horas consecutivas en un solo periodo
+		// NOTA: los periodos están ordenados porque así fue su creación
+		if (aux.size() <= 1) {
+			// Si se han seleccionado 0 o 1 periodos, no comprimimos nada
+			periodos = aux;
+		}
+		else {
+			PeriodoTrabajo a;
+			PeriodoTrabajo b;
+			int hora_inicial;
+			int hora_final;
+			for (int i = 0; i < aux.size(); i++) {
+				// Tomamos los periodos i e i+1
+				a = aux.get(i);
+				if (i < (aux.size()-1)) b = aux.get(i+1);
+				else b = aux.get(i);
+				// Cogemosla hora inicial del periodo
+				hora_inicial = a.getHoraInicio();
+				// Mientras se trate de periodos consecutivas, vamos avanzando hasta que se rompa la secuencia
+				while (a.getHoraFinal() == b.getHoraInicio()) {
+					i++;
+					a = aux.get(i);
+					if (i < (aux.size()-1)) b = aux.get(i+1);
+					else b = aux.get(i);
+				}
+				// Si salimos del bucle, es porque se ha roto la secuencia y tomamos la hora final de la secuencia
+				hora_final = a.getHoraFinal();
+				periodos.add(new PeriodoTrabajo(hora_inicial, hora_final, a.getDia()));
+			}
+		}
+		return periodos;
+	}
 	
 	private JCheckBox crearPeriodoTrabajoEnComboBox (int hora_inicio, int posX, int posY) {
 		chbPeriodoTrabajo = new JCheckBox();
@@ -190,64 +253,7 @@ public class JPPeriodosTrabajo extends JPanel implements IConstantes, EventListe
 			
 		}
 	}
+
+	//$hide<<$
 	
-	public Vector<PeriodoTrabajo> getPeriodosTrabajo () {
-		Vector<PeriodoTrabajo> aux = new Vector<PeriodoTrabajo>();
-		periodos = new Vector<PeriodoTrabajo>();
-		// Obtenemos todos los periodos de trabajo seleccionados en el panel
-		for (JCheckBox p : chbPeriodos) {
-			if (p.isSelected()) {
-				PeriodoTrabajo pt = new PeriodoTrabajo();
-				pt.setHoraInicio(getString2IntervaloHora(p.getText())[0]);
-				pt.setHoraFinal(getString2IntervaloHora(p.getText())[1]);
-				pt.setDia(diaSemana);
-				aux.add(pt);
-			}
-		}
-		// Comprimimos las horas consecutivas en un solo periodo
-		// NOTA: los periodos están ordenados porque así fue su creación
-		if (aux.size() <= 1) {
-			// Si se han seleccionado 0 o 1 periodos, no comprimimos nada
-			periodos = aux;
-		}
-		else {
-			PeriodoTrabajo a;
-			PeriodoTrabajo b;
-			int hora_inicial;
-			int hora_final;
-			for (int i = 0; i < aux.size(); i++) {
-				// Tomamos los periodos i e i+1
-				a = aux.get(i);
-				if (i < (aux.size()-1)) b = aux.get(i+1);
-				else b = aux.get(i);
-				// Cogemosla hora inicial del periodo
-				hora_inicial = a.getHoraInicio();
-				// Mientras se trate de periodos consecutivas, vamos avanzando hasta que se rompa la secuencia
-				while (a.getHoraFinal() == b.getHoraInicio()) {
-					i++;
-					a = aux.get(i);
-					if (i < (aux.size()-1)) b = aux.get(i+1);
-					else b = aux.get(i);
-				}
-				// Si salimos del bucle, es porque se ha roto la secuencia y tomamos la hora final de la secuencia
-				hora_final = a.getHoraFinal();
-				periodos.add(new PeriodoTrabajo(hora_inicial, hora_final, a.getDia()));
-			}
-		}
-		return periodos;
-	}
-
-	public void setDiaSemana(DiaSemana diaSemana) {
-		this.diaSemana = diaSemana;
-	}
-
-	public int getHorasDeseleccionadas() {
-		return horasDeseleccionadas;
-	}
-
-	public int getHorasSeleccionadas() {
-		return horasSeleccionadas;
-	}
-
-
 }

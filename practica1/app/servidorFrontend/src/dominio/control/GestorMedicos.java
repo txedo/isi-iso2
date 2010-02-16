@@ -1,6 +1,7 @@
 package dominio.control;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -10,6 +11,7 @@ import persistencia.FPUsuario;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
+import dominio.conocimiento.IMedico;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
@@ -170,6 +172,7 @@ public class GestorMedicos {
 		return medicos;
 	}
 	
+	// Método que devuelve una lista de posibles sustitutos para un médico en una fecha
 	public static Vector<Medico> obtenerPosiblesSustitutos(long idSesion, String dniMedico, Date dia, int horaDesde, int horaHasta) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, CentroSaludInexistenteException, DireccionInexistenteException, MedicoInexistenteException, UsuarioIncorrectoException, NullPointerException, FechaNoValidaException {
 		Vector<Medico> sustitutos;
 		Vector<String> horasCitas, horasSust;
@@ -218,7 +221,7 @@ public class GestorMedicos {
 		// Obtenemos las horas de las citas que se van a tener que sustituir
 		horasCitas = medico.horasCitas(Utilidades.diaFecha(dia), horaDesde, horaHasta, IConstantes.DURACION_CITA);
 		if(horasCitas.size() == 0) {
-			throw new FechaNoValidaException("El médico con DNI " + dniMedico + " no trabaja en la fecha y horas indicadas.");
+			throw new FechaNoValidaException("El médico que se quiere sustituir no trabaja en la fecha y horas indicadas.");
 		}
 		
 		// Obtenemos los médicos del sistema que son del mismo tipo
@@ -290,11 +293,14 @@ public class GestorMedicos {
 		return sustitutos;
 	}
 	
-	//TODO:Los siguientes métodos no se han revisado!
-	
-	public static void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Medico sustituto) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, SustitucionInvalidaException, UsuarioIncorrectoException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
-		Vector<Sustitucion> sustituciones;
+	// Método que asigna un sustituto a un médico en una determinada fecha
+	public static void establecerSustituto(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws NullPointerException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException, SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException, FechaNoValidaException, SustitucionInvalidaException {
+		Vector<Medico> medicos;
+		Usuario usuario;
+		Medico sustitutoReal;
+		Calendar calend;
 		Sustitucion sustitucion;
+		int horaDesdeN, horaHastaN;
 		
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
@@ -306,45 +312,64 @@ public class GestorMedicos {
 		if(dias.contains(null)) {
 			throw new NullPointerException("Los días en los que se va a realizar la sustitución no pueden ser nulos.");
 		}
+		if(horaDesde == null) {
+			throw new NullPointerException("La hora de inicio de la sustitución no puede ser nula.");
+		}
+		if(horaHasta == null) {
+			throw new NullPointerException("La hora de final de la sustitución no puede ser nula.");
+		}
 		if(sustituto == null) {
-			throw new NullPointerException("El médico al que se le va a asignar una sustitución no puede ser nulo.");
+			throw new NullPointerException("El médico que va a realizar la sustitución no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EstablecerSustituto);
-		
-		// TODO: ¿Se pueden sustituir médicos de todos los tipos?
-		// TODO: ¿Se pueden sustituir médicos de un tipo con médicos de otro tipo?
-		
-		// Comprobamos que ni el médico sustituido ni el sustituto tiene que
-		// hacer ya una sustitución alguno de los días solicitados
-		sustituciones = FPSustitucion.consultarPorSustituto(sustituto.getDni());
-		for(Sustitucion sust : sustituciones) {
-			if(dias.contains(sust.getDia())) {
-				throw new SustitucionInvalidaException("El médico sustituto ya va a hacer una sustitución en alguno de los días solicitados.");
+	
+		// Comprobamos que existan los médicos sustituto y sustituido
+		try {
+			usuario = FPUsuario.consultar(medico.getDni());
+			if(usuario.getRol() != RolesUsuarios.Medico) {
+				throw new MedicoInexistenteException("El médico sustituido no es un usuario del sistema con rol de médico.");
 			}
+			medico = (Medico)usuario;
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
 		}
-		sustituciones = FPSustitucion.consultarPorSustituido(medico.getDni());
-		for(Sustitucion sust : sustituciones) {
-			if(dias.contains(sust.getDia())) {
-				throw new SustitucionInvalidaException("El médico sustituido tenía que hacer una sustitución en alguno de los días solicitados.");
+		try {
+			usuario = FPUsuario.consultar(sustituto.getDni());
+			if(usuario.getRol() != RolesUsuarios.Medico) {
+				throw new MedicoInexistenteException("El médico sustituto no es un usuario del sistema con rol de médico.");
 			}
+			sustitutoReal = (Medico)usuario;
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
 		}
 		
-		// Comprobamos que el horario del médico y el sustituto sean
-		// diferentes para todos los días solicitados
+		// Extraemos la hora de inicio y de final
+		calend = Calendar.getInstance();
+		calend.setTime(horaDesde);
+		horaDesdeN = calend.get(Calendar.HOUR_OF_DAY);
+		calend.setTime(horaHasta);
+		horaHastaN = calend.get(Calendar.HOUR_OF_DAY);
+		
+		// Vemos si el médico sustituto propuesto es uno de los
+		// que devuelve el método 'obtenerPosiblesSustitutos'
 		for(Date dia : dias) {
-			if(!medico.calendariosDiferentes(sustituto, dia)) {
-				throw new SustitucionInvalidaException("Los calendarios del médico sustituto y del sustituido tienen horas en común en alguno de los días solicitados.");
+			medicos = obtenerPosiblesSustitutos(idSesion, medico.getDni(), dia, horaDesdeN, horaHastaN);
+			if(!medicos.contains(sustituto)) {
+				throw new SustitucionInvalidaException("El médico sustituto propuesto no puede realizar la sustitución del día " + dia.toString() + ".");
 			}
 		}
 		
-		// Añadimos las sustituciones a la base de datos
+		// Si el médico puede hacer la sustitución todos los días,
+		// generamos y guardamos las sustituciones en la base de datos
 		for(Date dia : dias) {
 			sustitucion = new Sustitucion();
 			sustitucion.setDia(dia);
+			sustitucion.setHoraInicio(horaDesdeN);
+			sustitucion.setHoraFinal(horaHastaN);
 			sustitucion.setMedico(medico);
-			sustitucion.setSustituto(sustituto);
+			sustitucion.setSustituto(sustitutoReal);
 			FPSustitucion.insertar(sustitucion);
 		}
 	}
