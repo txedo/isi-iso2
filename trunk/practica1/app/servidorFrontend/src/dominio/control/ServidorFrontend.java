@@ -11,6 +11,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.ITiposMensajeLog;
 import dominio.conocimiento.Medico;
@@ -26,6 +27,7 @@ import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
 import excepciones.SesionNoIniciadaException;
+import excepciones.SustitucionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.UsuarioInexistenteException;
 import excepciones.UsuarioYaExistenteException;
@@ -50,7 +52,7 @@ public class ServidorFrontend implements IServidorFrontend {
 	}
 	
     // ------------------------------
-    // Métodos del Gestor de Sesiones
+    // Métodos de gestión de sesiones
     // ------------------------------
     
 	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
@@ -116,7 +118,7 @@ public class ServidorFrontend implements IServidorFrontend {
 	}
 
 	// -----------------------------------
-	// Métodos del Gestor de Beneficiarios
+	// Métodos de gestión de beneficiarios
 	// -----------------------------------
 	
 	public Beneficiario getBeneficiario(long idSesion, String dni) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
@@ -306,7 +308,7 @@ public class ServidorFrontend implements IServidorFrontend {
 	}
 	
 	// -----------------------------
-	// Métodos del Gestor de Médicos
+	// Métodos de gestión de médicos
 	// -----------------------------
 	
 	public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception {
@@ -476,8 +478,61 @@ public class ServidorFrontend implements IServidorFrontend {
 		}
 	}
 	
+	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		String login;
+		
+		try {
+			// Asignamos un sustituto a un médico
+			GestorMedicos.establecerSustituto(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Asignada una sustitución del médico con DNI " + sustituto.getDni() + " al médico con DNI " + medico.getDni() + ".");
+		} catch(SQLException se) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se asignaba una sustitución al médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());
+			throw se;
+		} catch(MedicoInexistenteException mie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar un médico mientras se asignaba una sustitución al médico con DNI " + medico.getDni() + ": " + mie.getLocalizedMessage());
+			throw mie;
+		} catch(CentroSaludInexistenteException csie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar un centro de salud mientras se asignaba una sustitución al médico con DNI " + medico.getDni() + ": " + csie.getLocalizedMessage());
+			throw csie;
+		} catch(DireccionInexistenteException die) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar una dirección mientras se asignaba una sustitución al médico con DNI " + medico.getDni() + ": " + die.getLocalizedMessage());
+			throw die;
+		} catch(UsuarioIncorrectoException uie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar un usuario mientras se asignaba una sustitución al médico con DNI " + medico.getDni() + ": " + uie.getLocalizedMessage());
+			throw uie;
+		} catch(FechaNoValidaException fnve) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al analizar la fecha de los días para los que se estaba asignando un sustituto al médico con DNI " + medico.getDni() + ": " + fnve.getLocalizedMessage());
+			throw fnve;
+		} catch(SustitucionInvalidaException sie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al analizar los datos de la sustitución que se estaba asignando al médico con DNI " + medico.getDni() + ": " + sie.getLocalizedMessage());
+			throw sie;
+		} catch(NullPointerException npe) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al intentar asignar una sustitución a un médico con datos no válidos: " + npe.getLocalizedMessage());
+			throw npe;
+		} catch(OperacionIncorrectaException oie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al intentar realizar una operación no permitida de asignación de una sustitución al médico con DNI " + medico.getDni() + ": " + oie.getLocalizedMessage());
+			throw oie;
+		} catch(SesionInvalidaException sie) {
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error al comprobar la sesión con id " + idSesion + " para asignar una sustitución al médico con DNI " + medico.getDni() + ": " + sie.getLocalizedMessage());
+			throw sie;
+		} catch(Exception e) {
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_CREATE, "Error inesperado mientras se asignaba una sustitución a un médico: " + e.toString());
+			throw e;
+		}
+	}
+
 	// ---------------------------
-	// Métodos del Gestor de Citas
+	// Métodos de gestión de citas
 	// ---------------------------
 	
 	public Cita pedirCita(long idSesion, Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception {
@@ -698,7 +753,7 @@ public class ServidorFrontend implements IServidorFrontend {
 	}
 	
 	// ------------------------------
-	// Métodos del Gestor de Volantes
+	// Métodos de gestión de volantes
 	// ------------------------------
 	
 	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception {
@@ -768,7 +823,7 @@ public class ServidorFrontend implements IServidorFrontend {
 		resultado = null;
 		switch((int)codigoMensaje) {
 	
-		// Operaciones auxiliares del Gestor de Sesiones
+		// Métodos auxiliares de gestión de sesiones
 		
 		case ICodigosMensajeAuxiliar.OPERACIONES_DISPONIBLES:
 			try {
@@ -784,7 +839,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 			
-		// Operaciones auxiliares del Gestor de Beneficiarios
+		// Métodos auxiliares de gestión de beneficiarios
 			
 		case ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO:
 			try {
@@ -828,7 +883,7 @@ public class ServidorFrontend implements IServidorFrontend {
 				throw e;
 			}
 			break;
-			
+
 		case ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO:
 			try {
 				GestorBeneficiarios.asignarMedico(idSesion, (Beneficiario)informacion);
@@ -870,9 +925,9 @@ public class ServidorFrontend implements IServidorFrontend {
 				throw e;
 			}
 			break;
-			
-		// Operaciones auxiliares del Gestor de Usuarios
-			
+
+		// Métodos auxiliares de gestión de usuarios
+						
 		case ICodigosMensajeAuxiliar.CONSULTAR_USUARIO:
 			try {
 				// Obtenemos el usuario con el DNI indicado
@@ -1029,7 +1084,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 		
-		// Operaciones auxiliares del Gestor de Médicos
+		// Métodos auxiliares de gestión de médicos
 			
 		case ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO:
 			try {
@@ -1185,7 +1240,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 			
-		// Operaciones auxiliares del Gestor de Citas
+		// Métodos auxiliares de gestión de citas
 		
 		case ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS_MEDICO:
 			try {
@@ -1371,7 +1426,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 		
-		// Operaciones auxiliares del Gestor de Volantes
+		// Métodos auxiliares de gestión de volantes
 			
 		case ICodigosMensajeAuxiliar.CONSULTAR_VOLANTE:
 			try {
@@ -1424,14 +1479,5 @@ public class ServidorFrontend implements IServidorFrontend {
 
 		return resultado;
 	}
-
-	// Métodos aún no implementados
-
-	/*
-
-	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException {
-		GestorMedicos.modificarCalendario(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
-	}
-	*/
 
 }
