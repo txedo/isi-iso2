@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
@@ -61,6 +62,7 @@ public class JPEmitirVolante extends JPBase {
 	private JButton btnAceptar;
 	private JLabel lblSelectl;
 	private JList lstEspecialistas;
+	private JScrollPane jScrollPane1;
 	private JComboBox cbEspecialidad;
 	private ListModel lstEspecialistasModel; 
 	
@@ -102,11 +104,16 @@ public class JPEmitirVolante extends JPBase {
 					lblSelectl.setPreferredSize(new java.awt.Dimension(158, 16));
 				}
 				{
-					
-					lstEspecialistas = new JList();
-					lstEspecialistas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-					jPanelMedico.add(lstEspecialistas, new AnchorConstraint(34, 12, 316, 229, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					lstEspecialistas.setPreferredSize(new java.awt.Dimension(313, 107));
+					jScrollPane1 = new JScrollPane();
+					jPanelMedico.add(jScrollPane1, new AnchorConstraint(34, 15, 316, 229, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					jScrollPane1.setPreferredSize(new java.awt.Dimension(310, 110));
+					{
+						
+						lstEspecialistas = new JList();
+						jScrollPane1.setViewportView(lstEspecialistas);
+						lstEspecialistas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						lstEspecialistas.setPreferredSize(new java.awt.Dimension(306, 107));
+					}
 				}
 				{
 					btnAceptar = new JButton();

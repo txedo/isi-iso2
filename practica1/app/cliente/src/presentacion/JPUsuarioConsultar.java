@@ -449,9 +449,7 @@ public class JPUsuarioConsultar extends JPBase {
 					mensaje += "¿Seguro que quiere continuar con la eliminación?";
 					respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", mensaje);
 					if (respuesta) {
-						// Eliminamos las citas de ese médico
-						for (Cita c: citas)
-						 	getControlador().anularCita(c);
+						// Las citas se eliminan automaticamente por la integridad de clave ajena definida en la base de datos
 						// TODO: cancelar las sustituciones
 						Dialogos.mostrarDialogoInformacion(getFrame(), "Informacion", "Se va a asignar un nuevo médico a los beneficiarios afectados");
 						// Asignamos un nuevo médico a los beneficiarios
