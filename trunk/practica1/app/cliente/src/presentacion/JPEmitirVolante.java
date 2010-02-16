@@ -57,6 +57,7 @@ public class JPEmitirVolante extends JPBase {
 	private JPBeneficiarioConsultar pnlBeneficiario;
 	private JSeparator sepSeparador;
 	private JPanel jPanelMedico;
+	private JLabel lblEspecialidad;
 	private JButton btnAceptar;
 	private JLabel lblSelectl;
 	private JList lstEspecialistas;
@@ -84,13 +85,19 @@ public class JPEmitirVolante extends JPBase {
 				this.add(jPanelMedico, new AnchorConstraint(252, 5, 885, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				jPanelMedico.setPreferredSize(new java.awt.Dimension(544, 185));
 				{
+					lblEspecialidad = new JLabel();
+					jPanelMedico.add(lblEspecialidad, new AnchorConstraint(12, 374, 154, 4, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					lblEspecialidad.setText("Seleccione una especialidad: ");
+					lblEspecialidad.setPreferredSize(new java.awt.Dimension(176, 16));
+				}
+				{
 					cbEspecialidad = new JComboBox();
 					jPanelMedico.add(cbEspecialidad, new AnchorConstraint(34, 392, 310, 4, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					cbEspecialidad.setPreferredSize(new java.awt.Dimension(213, 23));
 				}
 				{
 					lblSelectl = new JLabel();
-					jPanelMedico.add(lblSelectl, new AnchorConstraint(12, 167, 186, 414, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					jPanelMedico.add(lblSelectl, new AnchorConstraint(12, 167, 186, 229, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					lblSelectl.setText("Seleccione un especialista:");
 					lblSelectl.setPreferredSize(new java.awt.Dimension(158, 16));
 				}
@@ -98,14 +105,14 @@ public class JPEmitirVolante extends JPBase {
 					
 					lstEspecialistas = new JList();
 					lstEspecialistas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-					jPanelMedico.add(lstEspecialistas, new AnchorConstraint(34, 12, 316, 414, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					jPanelMedico.add(lstEspecialistas, new AnchorConstraint(34, 12, 316, 229, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					lstEspecialistas.setPreferredSize(new java.awt.Dimension(313, 107));
 				}
 				{
 					btnAceptar = new JButton();
-					jPanelMedico.add(btnAceptar, new AnchorConstraint(156, 11, 996, 865, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					jPanelMedico.add(btnAceptar, new AnchorConstraint(156, 11, 996, 842, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 					btnAceptar.setText("Aceptar");
-					btnAceptar.setPreferredSize(new java.awt.Dimension(64, 23));
+					btnAceptar.setPreferredSize(new java.awt.Dimension(77, 23));
 					btnAceptar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnAceptarActionPerformed(evt);
