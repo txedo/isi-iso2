@@ -5,9 +5,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import persistencia.FPBeneficiario;
 import persistencia.FPSustitucion;
 import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
+import persistencia.FuncionesPersistencia;
+import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
@@ -18,6 +22,7 @@ import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Utilidades;
+import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludInexistenteException;
 import excepciones.DireccionInexistenteException;
 import excepciones.FechaNoValidaException;
@@ -153,7 +158,7 @@ public class GestorMedicos {
 	}
 	
 	// Método que devuelve todos los médicos de un determinado tipo 
-	public static Vector<Medico> consultarMedicosPorTipo(long idSesion, CategoriasMedico tipoMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Vector<Medico> consultarMedicosPorTipo(long idSesion, Object... informacion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		Vector<Medico> medicos;
 		Vector<String> nifs;
 		
@@ -161,7 +166,7 @@ public class GestorMedicos {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
 		
 		// Obtenemos los NIFs de todos los médicos del tipo dado
-		nifs = FPTipoMedico.consultarMedicos(tipoMedico);
+		nifs = FPTipoMedico.consultarMedicos(informacion);
 		
 		// Recuperamos los médicos con los NIFs anteriores
 		medicos = new Vector<Medico>();
@@ -372,6 +377,25 @@ public class GestorMedicos {
 			sustitucion.setSustituto(sustitutoReal);
 			FPSustitucion.insertar(sustitucion);
 		}
+	}
+	
+	public static Vector<Beneficiario> getBeneficiariosMedico(long idSesion, String dniMedico) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		Vector<Beneficiario> beneficiarios;
+		Vector<String> nifs;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiariosMedico);
+		
+		// Obtenemos los NIFs de todos los beneficiarios asociados a ese médico
+		nifs = FuncionesPersistencia.getBeneficiariosMedico(dniMedico);
+		
+		// Recuperamos los beneficiarios con los NIFs anteriores
+		beneficiarios = new Vector<Beneficiario>();
+		for(String nif : nifs) {
+			beneficiarios.add(FPBeneficiario.consultarPorNIF(nif));
+		}
+		
+		return beneficiarios;
 	}
 	
 }

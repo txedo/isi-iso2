@@ -526,6 +526,7 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			else {
 				btnCalendario.setEnabled(false);
+				periodos = new Vector<PeriodoTrabajo>();
 			}
 		}
 	}

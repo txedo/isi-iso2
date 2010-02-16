@@ -219,8 +219,8 @@ public class ControladorCliente {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Vector<Medico> obtenerMedicos(CategoriasMedico tipo) throws RemoteException, Exception {
-		return (Vector<Medico>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, tipo);
+	public Vector<Medico> obtenerMedicos(Object... parametros) throws RemoteException, Exception {
+		return (Vector<Medico>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, parametros);
 	}
 
 	public void crearMedico(Medico medico) throws RemoteException, MedicoYaExistenteException, Exception {
