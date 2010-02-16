@@ -211,7 +211,7 @@ public class GestorBeneficiarios {
 		medico = beneficiario.getMedicoAsignado();
 		
 		// Si el beneficiario tiene más de 14 años y tenía asignado un
-		// pediatra, se le busca un médico de cabecera
+		// pediatra (o no tenia médico asignado), se le busca un médico de cabecera
 		if(beneficiario.getEdad() >= EDAD_PEDIATRA && beneficiario.getMedicoAsignado().getTipoMedico().getCategoria() == CategoriasMedico.Pediatra) {
 			try {
 				medico = (Medico)FPUsuario.consultar(FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Cabecera));

@@ -503,6 +503,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(Exception e) {
+			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
 		

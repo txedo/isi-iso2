@@ -1088,31 +1088,33 @@ public class ServidorFrontend implements IServidorFrontend {
 			
 		case ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO:
 			try {
-				resultado = GestorMedicos.consultarMedicosPorTipo(idSesion, (CategoriasMedico)informacion);
+				// Toma un numero variable de argumentos porque el tipo "Especialista", va acompañado de su especialidad
+				Object [] parametros = (Object[])informacion;
+				resultado = GestorMedicos.consultarMedicosPorTipo(idSesion, parametros);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultados los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ".");
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultados los médicos de tipo " + ((CategoriasMedico)parametros[0]).toString() + ".");
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL mientras se consultaban los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ": " + se.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL mientras se consultaban los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + se.getLocalizedMessage());
 				throw se;
 			} catch(UsuarioIncorrectoException uie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un usuario mientras se consultaban los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ": " + uie.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un usuario mientras se consultaban los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + uie.getLocalizedMessage());
 				throw uie;
 			} catch(CentroSaludInexistenteException csie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un centro de salud mientras se consultaban los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ": " + csie.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un centro de salud mientras se consultaban los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + csie.getLocalizedMessage());
 				throw csie;
 			} catch(DireccionInexistenteException die) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar una dirección mientras se consultaban los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ": " + die.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar una dirección mientras se consultaban los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + die.getLocalizedMessage());
 				throw die;
 			} catch(OperacionIncorrectaException oie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta de los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ": " + oie.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta de los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + oie.getLocalizedMessage());
 				throw oie;
 			} catch(SesionInvalidaException sie) {
-				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar los médicos de tipo " + ((CategoriasMedico)informacion).toString() + ": " + sie.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + sie.getLocalizedMessage());
 				throw sie;
 			} catch(Exception e) {
 				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se consultaban los médicos de un cierto tipo: " + e.toString());
