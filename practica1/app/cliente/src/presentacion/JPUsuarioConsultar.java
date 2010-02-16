@@ -249,7 +249,7 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(btnGuardar, new AnchorConstraint(327, 12, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnGuardar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
-						btnAplicarActionPerformed(evt);
+						btnGuardarActionPerformed(evt);
 					}
 				});
 			}
@@ -367,7 +367,7 @@ public class JPUsuarioConsultar extends JPBase {
 		}
 	}
 	
-	private void btnAplicarActionPerformed(ActionEvent evt) {
+	private void btnGuardarActionPerformed(ActionEvent evt) {
 		Usuario usuarioMod = null;
 		
 		try {			
@@ -386,7 +386,7 @@ public class JPUsuarioConsultar extends JPBase {
 					usuarioMod = new Medico();
 					break;
 			}
-			usuarioMod.setDni(txtNIFBuscado.getText());
+			usuarioMod.setDni(txtNIF.getText());
 			usuarioMod.setLogin(txtLogin.getText());
 			usuarioMod.setPassword(txtPassword.getText());
 			usuarioMod.setNombre(txtNombre.getText());
