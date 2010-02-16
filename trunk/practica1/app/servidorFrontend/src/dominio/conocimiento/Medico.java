@@ -8,7 +8,7 @@ import java.util.Vector;
 /**
  * Clase que representa un usuario del sistema con rol de médico.
  */
-public class Medico extends Usuario implements Serializable, Cloneable {
+public class Medico extends Usuario implements IMedico, Serializable, Cloneable {
 
 	private static final long serialVersionUID = -8629345838800810415L;
 

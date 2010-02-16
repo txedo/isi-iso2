@@ -251,12 +251,6 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 					});
 				}
 			}
-			frmConfiguracion = new JFConfigRespaldo();
-			frmConfiguracion.addVentanaCerradaListener(new VentanaCerradaListener() {
-				public void ventanaCerrada(EventObject evt) {    
-					frmConfiguracionVentanaCerrada(evt);
-				}
-			});
 			pack();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -266,6 +260,13 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	//$hide>>$
 	
 	private void mniConfigurarActionPerformed(ActionEvent evt) {
+		// Creamos la ventana de configuración
+		frmConfiguracion = new JFConfigRespaldo();
+		frmConfiguracion.addVentanaCerradaListener(new VentanaCerradaListener() {
+			public void ventanaCerrada(EventObject evt) {    
+				frmConfiguracionVentanaCerrada(evt);
+			}
+		});
 		// Desactivamos la ventana hasta aceptar o cancelar la configuración
 		setEnabled(false);
 		frmConfiguracion.setConfiguracion(configuracion);
@@ -279,6 +280,8 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		frmConfiguracion.setVisible(false);
 		configuracion = frmConfiguracion.getConfiguracion();
 		actualizarConfiguracion();
+		// Eliminamos la ventana de configuración
+		frmConfiguracion.dispose();
 	}
 
 	private void btnConectarActionPerformed(ActionEvent evt) {

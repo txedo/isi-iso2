@@ -3,6 +3,7 @@ package dominio.control;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
 import dominio.conocimiento.Beneficiario;
@@ -263,7 +264,6 @@ public class GestorCitas {
 	}
 	
 	// Método para obtener las horas de las citas que tiene un médico en cada día
-	@SuppressWarnings("deprecation")
 	public static Hashtable<Date, Vector<String>> consultarHorasCitasMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, MedicoInexistenteException, NullPointerException, DireccionInexistenteException {
 		Hashtable<Date, Vector<String>> citasOcupadas;
 		Vector<Cita> citas;
@@ -299,7 +299,7 @@ public class GestorCitas {
 		for(Cita cita : citas) {
 			fecha = cita.getFechaYHora();
 			cal.setTime(fecha);
-			fechaDia = new Date(cal.get(Calendar.YEAR) - 1900, cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+			fechaDia = new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).getTime();
 			// Inicializamos la lista de días si no se ha creado antes
 			if(!citasOcupadas.containsKey(fechaDia)) {
 				citasOcupadas.put(fechaDia, new Vector<String>());

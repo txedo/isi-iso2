@@ -1,15 +1,17 @@
 package presentacion;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.EventObject;
 import java.util.Vector;
-
-import javax.swing.JPanel;
+import javax.swing.JButton;
 import javax.swing.WindowConstants;
 import javax.swing.event.EventListenerList;
-
+import com.cloudgarden.layout.AnchorConstraint;
+import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.PeriodoTrabajo;
-
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -23,50 +25,104 @@ import dominio.conocimiento.PeriodoTrabajo;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class JFCalendarioLaboral extends javax.swing.JFrame implements IPasoDatos {
+/**
+ * Ventana de consulta y edición del calendario laboral de los médicos.
+ */
+public class JFCalendarioLaboral extends javax.swing.JFrame {
 
-	private JPanel parent;
-	private JPCalendarioConsultar jPanelConsultarCalendario;
+	private static final long serialVersionUID = -2734721898893202142L;
 	
 	private EventListenerList listenerList;
-	
-	public JFCalendarioLaboral(JPanel parent, Vector<PeriodoTrabajo> p) {
-		super ();
-		this.parent = parent;
-		listenerList = new EventListenerList();
-		jPanelConsultarCalendario = new JPCalendarioConsultar(this, p);
+
+	private JPCalendarioConsultar jPanelConsultarCalendario;
+	private JButton btnRestablecerTodo;
+	private JButton btnRestablecer;
+	private JButton btnAceptar;
+
+	public JFCalendarioLaboral() {
+		super();
 		initGUI();
+		listenerList = new EventListenerList();
 	}
 	
 	private void initGUI() {
 		try {
+			AnchorLayout thisLayout = new AnchorLayout();
+			this.setLayout(thisLayout);
+			this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+			this.setTitle("Configuración del calendario laboral");
+			this.setResizable(false);
+			this.setPreferredSize(new java.awt.Dimension(438, 293));
+			this.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent evt) {
+					thisWindowClosing(evt);
+				}
+			});
 			{
-				setLocationRelativeTo(getRootPane());
-				this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-				this.setTitle("Configuración del calendario laboral");
-				this.setSize(430, 300);
-				this.setResizable(false);
-				this.add(jPanelConsultarCalendario);
+				jPanelConsultarCalendario = new JPCalendarioConsultar();
+				getContentPane().add(jPanelConsultarCalendario, new AnchorConstraint(2, 977, 836, 1, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jPanelConsultarCalendario.setVisible(true);
+				jPanelConsultarCalendario.setPreferredSize(new java.awt.Dimension(412, 207));
 			}
 			{
-				this.addWindowListener(new WindowAdapter() {
-					public void windowClosing(WindowEvent evt) {
-						thisWindowClosing(evt);
+				btnRestablecerTodo = new JButton();
+				getContentPane().add(btnRestablecerTodo, new AnchorConstraint(916, 299, 11, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				btnRestablecerTodo.setText("Restablecer todo");
+				btnRestablecerTodo.setPreferredSize(new java.awt.Dimension(117, 24));
+				btnRestablecerTodo.setEnabled(false);
+				btnRestablecerTodo.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnRestablecerTodoActionPerformed(evt);
 					}
 				});
 			}
-		} catch (Exception e) {
+			{
+				btnRestablecer = new JButton();
+				getContentPane().add(btnRestablecer, new AnchorConstraint(916, 136, 11, 540, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+				btnRestablecer.setText("Restablecer");
+				btnRestablecer.setPreferredSize(new java.awt.Dimension(117, 24));
+				btnRestablecer.setEnabled(false);
+				btnRestablecer.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnRestablecerActionPerformed(evt);
+					}
+				});
+			}
+			{
+				btnAceptar = new JButton();
+				getContentPane().add(btnAceptar, new AnchorConstraint(911, 10, 11, 779, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+				btnAceptar.setText("Aceptar");
+				btnAceptar.setPreferredSize(new java.awt.Dimension(117, 24));
+				btnAceptar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnAceptarActionPerformed(evt);
+					}
+				});
+			}
+			pack();
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void setPeriodos (Vector<PeriodoTrabajo> p) {
-		((IPasoDatos)parent).setPeriodos(p);
+	//$hide>>$
+	
+	public Vector<PeriodoTrabajo> getPeriodosTrabajo() {
+		return jPanelConsultarCalendario.getPeriodosTrabajo();
 	}
 	
-	public void setModificable (boolean b) {
-		jPanelConsultarCalendario.setModificable(b);
+	public void setPeriodosTrabajo(Vector<PeriodoTrabajo> periodos) {
+		jPanelConsultarCalendario.setPeriodosTrabajo(periodos);
+	}
+	
+	public int getHorasSemanales() {
+		return jPanelConsultarCalendario.getHorasSemanales();
+	}
+	
+	public void setModificable(boolean modificable) {
+		btnRestablecer.setEnabled(modificable);
+		btnRestablecerTodo.setEnabled(modificable);
+		jPanelConsultarCalendario.setModificable(modificable);
 	}
 		
 	public void addVentanaCerradaListener(VentanaCerradaListener listener) {
@@ -77,12 +133,23 @@ public class JFCalendarioLaboral extends javax.swing.JFrame implements IPasoDato
 		listenerList.remove(VentanaCerradaListener.class, listener);
 	}
 	
+	private void btnRestablecerActionPerformed(ActionEvent evt) {
+		jPanelConsultarCalendario.restablecerDiaSeleccionado();
+	}
+
+	private void btnRestablecerTodoActionPerformed(ActionEvent evt) {
+		jPanelConsultarCalendario.restablecerTodo();
+	}
+
 	private void thisWindowClosing(WindowEvent evt) {
-		this.setPeriodos(jPanelConsultarCalendario.getPeriodosTrabajo());
 		cerrarVentana();
 	}
 	
-	public void cerrarVentana() {
+	private void btnAceptarActionPerformed(ActionEvent evt) {
+		cerrarVentana();
+	}
+	
+	private void cerrarVentana() {
 		Object[] listeners;
 		int i;
 		
@@ -93,8 +160,8 @@ public class JFCalendarioLaboral extends javax.swing.JFrame implements IPasoDato
 				((VentanaCerradaListener)listeners[i + 1]).ventanaCerrada(new EventObject(this));
 			}
 		}
-		
-		this.dispose();
 	}
 
+	//$hide<<$
+	
 }

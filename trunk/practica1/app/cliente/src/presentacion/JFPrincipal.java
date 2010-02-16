@@ -80,20 +80,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JPBienvenida jPanelBienvenida;
 	private JTabbedPane jTabbedPaneOperaciones;
 
-	/**
-	* Auto-generated main method to display this JFrame
-	*/
-	// TODO:Temporal, quitar al dejar de hacer pruebas!
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				JFPrincipal inst = new JFPrincipal(null);
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
-			}
-		});
-	}
-	
 	public JFPrincipal(ControladorCliente controlador) {
 		super();
 		this.controlador = controlador;
@@ -103,7 +89,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private void initGUI() {
 		try {
 			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-			this.setPreferredSize(new java.awt.Dimension(800, 600));
+			this.setPreferredSize(new java.awt.Dimension(850, 700));
 			this.setTitle("SSCA - Unidad de Citación");
 			this.setMinimumSize(new java.awt.Dimension(600, 450));
 			setLocationRelativeTo(null);

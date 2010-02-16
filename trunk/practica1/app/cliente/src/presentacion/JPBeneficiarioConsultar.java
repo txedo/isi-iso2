@@ -55,7 +55,7 @@ import excepciones.TelefonoMovilIncorrectoException;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
- * Panel que permite consultar beneficiarios existentes.
+ * Panel que permite consultar, modificar y eliminar beneficiarios existentes.
  */
 public class JPBeneficiarioConsultar extends JPBase {
 
@@ -121,9 +121,9 @@ public class JPBeneficiarioConsultar extends JPBase {
 	public JPBeneficiarioConsultar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
-		deshabilitarEdicion();
 		listenerList = new EventListenerList();
 		beneficiario = null;
+		cambiarEdicion(false);
 	}
 	
 	private void initGUI() {
@@ -439,8 +439,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		
 		// Borramos la información del antiguo beneficiario consultado
 		limpiarCamposConsulta();
-		deshabilitarEdicion();
-		beneficiario = null;
+		cambiarEdicion(false);
 
 		try {
 
@@ -481,7 +480,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 			txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
 			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + "; " + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion().toString());
 			chkEditar.setEnabled(true);
-			btnEliminar.setEnabled(true);
 			
 		} catch(BeneficiarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
@@ -586,7 +584,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			// se ha modificado correctamente
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente.");
 			limpiarCamposConsulta();
-			deshabilitarEdicion();
+			cambiarEdicion(false);
 			
 		} catch(BeneficiarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
@@ -698,10 +696,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 		listenerList.remove(BeneficiarioBuscadoListener.class, listener);
 	}
 	
-	private void deshabilitarEdicion() {
-		cambiarEdicion(false);
-	}
-	
 	private void cambiarEdicion(boolean activar) {
 		txtNombre.setEditable(activar);
 		txtApellidos.setEditable(activar);
@@ -717,6 +711,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		txtTelefonoFijo.setEditable(activar);
 		txtTelefonoMovil.setEditable(activar);
 		btnGuardar.setEnabled(activar);
+		btnEliminar.setEnabled(activar);
 		lblCamposOblig.setVisible(activar);
 		if(activar) {
 			lblNIF.setText("NIF *");

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Vector;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import excepciones.BeneficiarioInexistenteException;
@@ -55,7 +56,7 @@ public interface IServidorFrontend extends Remote {
 	
 	public void eliminar(long idSesion, Medico medico) throws RemoteException, MedicoInexistenteException, SQLException, Exception;
 
-	//	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException;
+	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException, MedicoInexistenteException, SQLException, Exception;
 
 	// Métodos de gestión de citas
 	
@@ -67,6 +68,8 @@ public interface IServidorFrontend extends Remote {
 	
 	public void anularCita(long idSesion, Cita cita) throws RemoteException, CitaNoValidaException, SQLException, Exception;
 
+	// Métodos de gestión de volantes
+	
 	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception;
 	
 	// Método auxiliar
