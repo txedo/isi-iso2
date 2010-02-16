@@ -63,9 +63,13 @@ public class FPBeneficiario {
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
 			direccion = FPDireccion.consultar(beneficiario.getNif());
 			beneficiario.setDireccion(direccion);
-			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			if(medico.getRol() != RolesUsuarios.Medico) {
-				throw new UsuarioIncorrectoException("El beneficiario con NIF " + nif + " no tiene asignado un usuario con rol de médico.");
+			if (datos.getString(COL_DNI_MEDICO)==null)
+				medico = null;			
+			else {
+				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+				if(medico.getRol() != RolesUsuarios.Medico) {
+					throw new UsuarioIncorrectoException("El beneficiario con NIF " + nif + " no tiene asignado un usuario con rol de médico.");
+				}
 			}
 			beneficiario.setMedicoAsignado((Medico)medico);
 		}
@@ -102,9 +106,13 @@ public class FPBeneficiario {
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
 			direccion = FPDireccion.consultar(beneficiario.getNif());
 			beneficiario.setDireccion(direccion);
-			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			if(medico.getRol() != RolesUsuarios.Medico) {
-				throw new UsuarioIncorrectoException("El beneficiario con NSS " + nss + " no tiene asignado un usuario con rol de médico.");
+			if (datos.getString(COL_DNI_MEDICO)==null)
+				medico = null;
+			else {
+				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+				if(medico.getRol() != RolesUsuarios.Medico) {
+					throw new UsuarioIncorrectoException("El beneficiario con NSS " + nss + " no tiene asignado un usuario con rol de médico.");
+				}
 			}
 			beneficiario.setMedicoAsignado((Medico)medico);
 		}
