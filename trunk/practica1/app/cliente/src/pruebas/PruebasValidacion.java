@@ -1,7 +1,9 @@
 package pruebas;
 
 import java.util.Date;
-import dominio.conocimiento.Validacion;
+
+import presentacion.Validacion;
+
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CodigoPostalIncorrectoException;
 import excepciones.ContraseñaIncorrectaException;

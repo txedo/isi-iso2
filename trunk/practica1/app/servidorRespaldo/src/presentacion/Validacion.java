@@ -1,4 +1,4 @@
-package dominio.conocimiento;
+package presentacion;
 
 import java.util.regex.Pattern;
 import excepciones.IPInvalidaException;
@@ -31,18 +31,14 @@ public class Validacion {
 	
 	public static void comprobarPuerto(String puerto) throws PuertoInvalidoException {
 		int numPuerto;
-	
-		if(puerto.equals("")) {
-			throw new PuertoInvalidoException("El puerto no puede ser nulo.");
-		} else {
-			try {
-				numPuerto = Integer.parseInt(puerto);
-				if(numPuerto < PUERTO_MINIMO || numPuerto > PUERTO_MAXIMO) {
-					throw new PuertoInvalidoException();
-				}
-			} catch(NumberFormatException ex) {
+		
+		try {
+			numPuerto = Integer.parseInt(puerto);
+			if(numPuerto < PUERTO_MINIMO || numPuerto > PUERTO_MAXIMO) {
 				throw new PuertoInvalidoException();
 			}
+		} catch(NumberFormatException ex) {
+			throw new PuertoInvalidoException();
 		}
 	}
 	

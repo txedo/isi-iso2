@@ -32,7 +32,6 @@ import dominio.conocimiento.Especialidades;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Sesion;
-import dominio.conocimiento.ordenPorApellido;
 import dominio.control.ControladorCliente;
 import excepciones.MedicoInexistenteException;
 
@@ -182,7 +181,7 @@ public class JPEmitirVolante extends JPBase {
 		try {
 			especialistas = (Vector<Medico>) getControlador().obtenerMedicos(CategoriasMedico.Especialista, cbEspecialidad.getSelectedItem().toString());
 			if (especialistas.size()>0) {
-				Collections.sort(especialistas, new ordenPorApellido());
+				Collections.sort(especialistas, new ComparatorMedicosApellido());
 				info = new String[especialistas.size()];
 				// Mostramos los nombres y DNIs de los especialistas existentes en la especialidad indicada
 				for (int i=0; i<especialistas.size(); i++)

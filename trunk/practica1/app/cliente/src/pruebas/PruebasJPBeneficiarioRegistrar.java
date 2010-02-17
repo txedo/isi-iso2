@@ -9,10 +9,10 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 import com.toedter.calendar.JDateChooser;
-import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 import presentacion.JPBeneficiarioRegistrar;
+import presentacion.Validacion;
 
 /**
  * Pruebas del panel de registro de beneficiarios.

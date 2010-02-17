@@ -15,7 +15,6 @@ import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.EventListenerList;
 import dominio.conocimiento.ConfiguracionRespaldo;
-import dominio.conocimiento.Validacion;
 import excepciones.IPInvalidaException;
 import excepciones.PuertoInvalidoException;
 
