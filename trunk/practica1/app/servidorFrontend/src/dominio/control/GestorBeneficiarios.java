@@ -85,7 +85,6 @@ public class GestorBeneficiarios {
 	
 	// Método para registrar un nuevo beneficiario en el sistema
 	public static void crearBeneficiario(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
-		Medico medico;
 		boolean existe;
 		
 		// Comprobamos los parámetros pasados
@@ -110,26 +109,7 @@ public class GestorBeneficiarios {
 		} catch(BeneficiarioInexistenteException e) {
 			// Lo normal es que se lance esta excepción
 		}
-		
-		// Buscamos un médico de cabecera o pediatra para el nuevo
-		// beneficiario según su edad; si se lanza una excepción es
-		// porque no existen médicos registrados del tipo adecuado
-		if(beneficiario.getEdad() < EDAD_PEDIATRA) {
-			try {
-				medico = (Medico)FPUsuario.consultar(FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Pediatra));
-				beneficiario.setMedicoAsignado(medico);
-			} catch(UsuarioIncorrectoException e) {
-				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún pediatra en el sistema que se le pueda asignar.");
-			}
-		} else {
-			try {
-				medico = (Medico)FPUsuario.consultar(FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Cabecera));
-				beneficiario.setMedicoAsignado(medico);
-			} catch(UsuarioIncorrectoException e) {
-				throw new UsuarioIncorrectoException("No se puede registrar el beneficiario porque no existe ningún médico de cabecera en el sistema que se le pueda asignar.");
-			}
-		}
-		
+
 		// Añadimos el beneficiario al sistema
 		FPBeneficiario.insertar(beneficiario);
 	}

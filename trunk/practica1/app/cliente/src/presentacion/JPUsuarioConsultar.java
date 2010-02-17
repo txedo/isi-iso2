@@ -15,6 +15,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
@@ -22,7 +23,6 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.Medico;
@@ -32,6 +32,8 @@ import dominio.conocimiento.RolesUsuarios;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaVaciaException;
+import excepciones.ContraseñaIncorrectaException;
+import excepciones.LoginIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NombreIncorrectoException;
 import excepciones.UsuarioInexistenteException;
@@ -63,7 +65,6 @@ public class JPUsuarioConsultar extends JPBase {
 	
 	private JFCalendarioLaboral calendario;
 
-	private CentroSalud centro;
 	private Vector<PeriodoTrabajo> periodos;
 	private Usuario usuario;
 
@@ -76,7 +77,7 @@ public class JPUsuarioConsultar extends JPBase {
 	private JTextField txtApellidos;
 	private JTextField txtNIFBuscado;
 	private JButton btnBuscar;
-	private JTextField txtPassword;
+	private JPasswordField txtPassword;
 	private JLabel lblApellidos;
 	private JLabel lblNombre;
 	private JButton btnGuardar;
@@ -206,7 +207,7 @@ public class JPUsuarioConsultar extends JPBase {
 				});
 			}
 			{
-				txtPassword = new JTextField();
+				txtPassword = new JPasswordField();
 				this.add(txtPassword, new AnchorConstraint(185, 12, 388, 116, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtPassword.setPreferredSize(new java.awt.Dimension(302, 23));
 				txtPassword.setEditable(false);
@@ -320,10 +321,10 @@ public class JPUsuarioConsultar extends JPBase {
 			txtNombre.setText(usuario.getNombre());
 			txtApellidos.setText(usuario.getApellidos());
 			cmbRol.setSelectedIndex(usuario.getRol().ordinal());
-			centro = usuario.getCentroSalud();
-			txtCentro.setText(centro.getNombre());
-			if (usuario.getRol().equals(RolesUsuarios.Medico))
+			txtCentro.setText(usuario.getCentroSalud().getNombre() + "(" + usuario.getCentroSalud().getDireccion() + ")");
+			if(usuario.getRol().equals(RolesUsuarios.Medico)) {
 				periodos = ((Medico)usuario).getCalendario();
+			}
 			chkEditar.setEnabled(true);
 			
 		} catch(UsuarioInexistenteException e) {
@@ -357,62 +358,77 @@ public class JPUsuarioConsultar extends JPBase {
 	}
 	
 	private void btnGuardarActionPerformed(ActionEvent evt) {
-		Usuario usuarioMod = null;
+		Usuario usuarioModif = null;
 		
-		try {			
-			// Comprobamos los campos que pueden dar fallo
-			Validacion.comprobarNombre(txtNombre.getText());
-			Validacion.comprobarApellidos(txtApellidos.getText());
+		try {
 			
+			// Comprobamos todos los campos
+			Validacion.comprobarNombre(txtNombre.getText().trim());
+			Validacion.comprobarApellidos(txtApellidos.getText().trim());
+			Validacion.comprobarUsuario(txtLogin.getText().trim());
+			Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
+			
+			// Creamos un nuevo usuario con los datos introducidos
 			switch(RolesUsuarios.values()[cmbRol.getSelectedIndex()]) {
 				case Administrador:
-					usuarioMod = new Administrador();
+					usuarioModif = new Administrador();
 					break;
 				case Citador:
-					usuarioMod = new Citador();
+					usuarioModif = new Citador();
 					break;
 				case Medico:
-					usuarioMod = new Medico();
+					usuarioModif = new Medico();
 					break;
 			}
-			usuarioMod.setDni(txtNIF.getText());
-			usuarioMod.setLogin(txtLogin.getText());
-			usuarioMod.setPassword(txtPassword.getText());
-			usuarioMod.setNombre(txtNombre.getText());
-			usuarioMod.setApellidos(txtApellidos.getText());
-			// Dejamos el mismo centro de salud
-			usuarioMod.setCentroSalud(centro);
+			usuarioModif.setDni(txtNIF.getText().trim().toUpperCase());
+			usuarioModif.setLogin(txtLogin.getText().trim());
+			usuarioModif.setPassword(new String(txtPassword.getPassword()));
+			usuarioModif.setNombre(txtNombre.getText().trim());
+			usuarioModif.setApellidos(txtApellidos.getText().trim());
 			
-			// Modificamos el usuario
-			if (usuarioMod.getRol().equals(RolesUsuarios.Medico)) {
-				// Cambiamos el calendario
-				((Medico)usuarioMod).setCalendario(periodos);
-				// Ponemos su tipo de médico
-				((Medico)usuarioMod).setTipoMedico(((Medico)usuario).getTipoMedico());
-				getControlador().modificarMedico((Medico)usuarioMod);				
+			// Dejamos el mismo médico
+			usuarioModif.setCentroSalud(usuario.getCentroSalud());
+			
+			// Modificamos el tipo de médico si es necesario
+			if(usuarioModif.getRol().equals(RolesUsuarios.Medico)) {
+				((Medico)usuarioModif).setCalendario(periodos);
+				((Medico)usuarioModif).setTipoMedico(((Medico)usuario).getTipoMedico());
 			}
-			else
-				getControlador().modificarUsuario(usuarioMod);
 			
+			// Solicitamos al servidor que se modifique el usuario
+			getControlador().modificarUsuario(usuarioModif);
+
+			// Mostramos el resultado de la operación y limpiamos el panel
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
-			limpiarCamposConsulta();
-			
+			restablecerPanel();
+		
+		} catch(UsuarioInexistenteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());	
+
 		} catch(NombreIncorrectoException e) {
-			txtNombre.selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "El nombre del usuario sólo puede contener letras y espacios.");
+			txtNombre.selectAll();
 			txtNombre.grabFocus();
 		} catch(ApellidoIncorrectoException e) {
-			txtApellidos.selectAll();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Los apellidos del usuario sólo pueden contener letras y espacios.");
+			txtApellidos.selectAll();
 			txtApellidos.grabFocus();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(LoginIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtLogin.selectAll();
+			txtLogin.grabFocus();
+		} catch(ContraseñaIncorrectaException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtPassword.selectAll();
+			txtPassword.grabFocus();
+			
 		} catch(SQLException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(RemoteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());		
-		}catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());		
+		} catch(Exception e) {
 			e.printStackTrace();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
 	}
 	

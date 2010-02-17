@@ -27,6 +27,7 @@ import dominio.conocimiento.Medico;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.CentroSaludIncorrectoException;
 import excepciones.CodigoPostalIncorrectoException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.DomicilioIncorrectoException;
@@ -115,7 +116,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(430, 486));
+			this.setPreferredSize(new java.awt.Dimension(430, 427));
 			{
 				ComboBoxModel cmbCentrosModel = new DefaultComboBoxModel();
 				cmbCentros = new JComboBox();
@@ -130,7 +131,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			{
 				lblCamposOblig = new JLabel();
-				this.add(lblCamposOblig, new AnchorConstraint(412, 13, 900, 696, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(lblCamposOblig, new AnchorConstraint(363, 13, 900, 696, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				lblCamposOblig.setText("* Campos obligatorios");
 				lblCamposOblig.setPreferredSize(new java.awt.Dimension(129, 17));
 				lblCamposOblig.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -174,7 +175,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			{
 				btnRestablecer = new JButton();
-				this.add(btnRestablecer, new AnchorConstraint(438, 308, 961, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnRestablecer, new AnchorConstraint(389, 308, 961, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 25));
 				btnRestablecer.setName("btnRestablecer");
@@ -186,7 +187,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			{
 				btnCrear = new JButton();
-				this.add(btnCrear, new AnchorConstraint(438, 13, 961, 765, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnCrear, new AnchorConstraint(389, 13, 961, 765, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnCrear.setDefaultCapable(true);
 				btnCrear.setText("Crear beneficiario");
 				btnCrear.setPreferredSize(new java.awt.Dimension(120, 26));
@@ -347,14 +348,14 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			{
 				lblCentro = new JLabel();
 				this.add(lblCentro, new AnchorConstraint(341, 305, 731, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblCentro.setText("Centro de salud");
+				lblCentro.setText("Centro de salud *");
 				lblCentro.setPreferredSize(new java.awt.Dimension(119, 14));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	//$hide>>$
 	
 	private void btnCrearActionPerformed(ActionEvent evt) {
@@ -392,6 +393,18 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			if(!campoVacio(txtTelefonoMovil)) {
 				Validacion.comprobarTelefonoMovil(txtTelefonoMovil.getText().trim());
 			}
+			if(cmbCentros.getSelectedIndex() == -1) {
+				throw new CentroSaludIncorrectoException();
+			}
+			
+			// Obtenemos un médico del centro seleccionado
+//TODO:Cuando se haga la operación, descomentar la siguiente linea y quitar
+// la que toma un médico fijo
+//			medico = getControlador().obtenerMedicoCentro(centros.get(cmbCentros.getSelectedIndex()));
+			medico = getControlador().consultarMedico("12345678C");
+			if(medico == null) {
+				throw new CentroSaludIncorrectoException("No se puede asignar al beneficiario ningún médico del centro seleccionado.");
+			}
 			
 			// Creamos un nuevo beneficiario con los datos introducidos
 			beneficiario = new Beneficiario();
@@ -412,6 +425,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			beneficiario.setCorreo(txtCorreoElectronico.getText().trim());
 			beneficiario.setTelefono(txtTelefonoFijo.getText().trim());
 			beneficiario.setMovil(txtTelefonoMovil.getText().trim());
+			beneficiario.setMedicoAsignado(medico);
 
 			// Solicitamos al servidor que se cree el beneficiario
 			getControlador().crearBeneficiario(beneficiario);
@@ -421,7 +435,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			
 			// Mostramos un mensaje indicando que el beneficiario se ha
 			// creado correctamente y cuál es el médico asignado
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema y se le\nha asignado el siguiente médico y centro de salud:\n " + medico.getNombre() + " " + medico.getApellidos() + "\n " + medico.getCentroSalud().getNombre());
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema y se\nle ha asignado automáticamente el siguiente médico:\n" + medico.getApellidos() + ", " + medico.getNombre());
 			limpiarCamposRegistro();
 			
 		} catch(BeneficiarioYaExistenteException e) {
@@ -491,6 +505,9 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtTelefonoMovil.selectAll();
 			txtTelefonoMovil.grabFocus();
+		} catch(CentroSaludIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			cmbCentros.grabFocus();
 			
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());

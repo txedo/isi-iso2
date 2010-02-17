@@ -150,6 +150,10 @@ public class JPBeneficiarios extends JPBase {
 	
 	// Métodos públicos
 	
+	public OperacionesInterfaz getOperacionSeleccionada() {
+		return operacionSeleccionada;
+	}
+	
 	public void addOperacionCambiadaListener(OperacionCambiadaListener listener) {
 		listenerList.add(OperacionCambiadaListener.class, listener);
 	}

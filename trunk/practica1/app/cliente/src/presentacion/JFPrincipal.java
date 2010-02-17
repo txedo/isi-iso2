@@ -8,6 +8,7 @@ import dominio.conocimiento.RolesUsuarios;
 import dominio.control.ControladorCliente;
 import excepciones.SesionInvalidaException;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -281,6 +282,22 @@ public class JFPrincipal extends javax.swing.JFrame {
 	}
 	
 	private void jTabbedPaneOperacionesStateChanged(ChangeEvent evt) {
+		Component comp;
+		
+		comp = jTabbedPaneOperaciones.getSelectedComponent();
+		if(comp == jPanelGestionarBeneficiarios) {
+			operacionSeleccionada = jPanelGestionarBeneficiarios.getOperacionSeleccionada();
+		} else if(comp == jPanelGestionarUsuarios) {
+			operacionSeleccionada = jPanelGestionarUsuarios.getOperacionSeleccionada();
+		} else if(comp == jPanelGestionarCitas) {
+			operacionSeleccionada = jPanelGestionarCitas.getOperacionSeleccionada();
+		} else if(comp == jPanelGestionarSustituciones) {
+			operacionSeleccionada = jPanelGestionarSustituciones.getOperacionSeleccionada();
+		} else if(comp == jPanelGestionarVolantes) {
+			operacionSeleccionada = jPanelGestionarVolantes.getOperacionSeleccionada();
+		} else {
+			operacionSeleccionada = OperacionesInterfaz.OperacionInvalida;
+		}
 		restablecerPaneles();
 	}
 

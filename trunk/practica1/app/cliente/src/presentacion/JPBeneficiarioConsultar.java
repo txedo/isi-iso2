@@ -174,8 +174,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 			{
 				lblMedicoAsignado = new JLabel();
-				this.add(lblMedicoAsignado, new AnchorConstraint(411, 277, 950, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblMedicoAsignado.setText("Médico asignado");
+				this.add(lblMedicoAsignado, new AnchorConstraint(438, 277, 891, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblMedicoAsignado.setText("Médico asignado *");
 				lblMedicoAsignado.setPreferredSize(new java.awt.Dimension(110, 18));
 			}
 			{
@@ -228,7 +228,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 			{
 				txtMedicoAsignado = new JTextField();
-				this.add(txtMedicoAsignado, new AnchorConstraint(409, 12, 953, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtMedicoAsignado, new AnchorConstraint(436, 12, 893, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtMedicoAsignado.setEditable(false);
 				txtMedicoAsignado.setPreferredSize(new java.awt.Dimension(280, 22));
 			}
@@ -313,14 +313,14 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 			{
 				txtCentro = new JTextField();
-				this.add(txtCentro, new AnchorConstraint(436, 12, 893, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtCentro, new AnchorConstraint(409, 12, 953, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtCentro.setEditable(false);
 				txtCentro.setPreferredSize(new java.awt.Dimension(280, 22));
 			}
 			{
 				lblCentro = new JLabel();
-				this.add(lblCentro, new AnchorConstraint(438, 277, 891, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblCentro.setText("Centro asignado");
+				this.add(lblCentro, new AnchorConstraint(411, 277, 950, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblCentro.setText("Centro de salud *");
 				lblCentro.setPreferredSize(new java.awt.Dimension(110, 18));
 			}
 			{
@@ -437,7 +437,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		try {
 
 			// Obtenemos el identificador para buscar el beneficiario
-			identificacion = txtIdentificacion.getText().toUpperCase();
+			identificacion = txtIdentificacion.getText().toUpperCase().trim();
 			tipo = (String)cmbIdentificacion.getSelectedItem();
 			if(identificacion.equals("")) {
 				throw new CadenaVaciaException();
@@ -509,7 +509,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			txtTelefonoFijo.setText(beneficiario.getTelefono());
 			txtTelefonoMovil.setText(beneficiario.getMovil());
 			txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
-			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + "; " + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion().toString());
+			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + " (" + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion() + ")");
 			chkEditar.setEnabled(true);
 		}
 		
@@ -523,14 +523,12 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	private void btnGuardarActionPerformed(ActionEvent evt) {
-		Beneficiario benefCambiado = null;
+		Beneficiario beneficiarioModif = null;
 		Direccion dir;
 		
 		try {
 			
 			// Comprobamos todos los campos
-			Validacion.comprobarNIF(txtNIF.getText().trim());
-			Validacion.comprobarNSS(txtNSS.getText().trim());
 			Validacion.comprobarNombre(txtNombre.getText().trim());
 			Validacion.comprobarApellidos(txtApellidos.getText().trim());
 			Validacion.comprobarFechaNacimiento(dtcFechaNacimiento.getDate());
@@ -558,12 +556,12 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 			
 			// Creamos un nuevo beneficiario con los datos introducidos
-			benefCambiado = new Beneficiario();
-			benefCambiado.setNif(txtNIF.getText().trim().toUpperCase());
-			benefCambiado.setNss(txtNSS.getText().trim());
-			benefCambiado.setNombre(txtNombre.getText().trim());
-			benefCambiado.setApellidos(txtApellidos.getText().trim());
-			benefCambiado.setFechaNacimiento(dtcFechaNacimiento.getDate());
+			beneficiarioModif = new Beneficiario();
+			beneficiarioModif.setNif(txtNIF.getText().trim().toUpperCase());
+			beneficiarioModif.setNss(txtNSS.getText().trim());
+			beneficiarioModif.setNombre(txtNombre.getText().trim());
+			beneficiarioModif.setApellidos(txtApellidos.getText().trim());
+			beneficiarioModif.setFechaNacimiento(dtcFechaNacimiento.getDate());
 			dir = new Direccion();
 			dir.setDomicilio(txtDomicilio.getText().trim());
 			dir.setNumero(txtNumero.getText().trim().toUpperCase());
@@ -572,19 +570,18 @@ public class JPBeneficiarioConsultar extends JPBase {
 			dir.setCiudad(txtLocalidad.getText().trim());
 			dir.setProvincia(txtProvincia.getText().trim());
 			dir.setCP(Integer.parseInt(txtCP.getText().trim()));
-			benefCambiado.setDireccion(dir);
-			benefCambiado.setCorreo(txtCorreoElectronico.getText().trim());
-			benefCambiado.setTelefono(txtTelefonoFijo.getText().trim());
-			benefCambiado.setMovil(txtTelefonoMovil.getText().trim());
+			beneficiarioModif.setDireccion(dir);
+			beneficiarioModif.setCorreo(txtCorreoElectronico.getText().trim());
+			beneficiarioModif.setTelefono(txtTelefonoFijo.getText().trim());
+			beneficiarioModif.setMovil(txtTelefonoMovil.getText().trim());
 			
-			// Se asigna el mismo médico
-			benefCambiado.setMedicoAsignado(beneficiario.getMedicoAsignado());
+			// Dejamos el mismo médico
+			beneficiarioModif.setMedicoAsignado(beneficiario.getMedicoAsignado());
 			
 			// Solicitamos al servidor que se modifique el beneficiario
-			getControlador().modificarBeneficiario(benefCambiado);
+			getControlador().modificarBeneficiario(beneficiarioModif);
 			
-			// Mostramos un mensaje indicando que el beneficiario
-			// se ha modificado correctamente
+			// Mostramos el resultado de la operación y limpiamos el panel
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente.");
 			restablecerPanel();
 			
@@ -717,6 +714,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 			lblLocalidad.setText("Localidad *");
 			lblCP.setText("CP *");
 			lblProvincia.setText("Provincia *");
+			lblCentro.setText("Centro de salud *");
+			lblMedicoAsignado.setText("Médico asignado *");
 		} else {
 			lblNIF.setText("NIF");
 			lblNSS.setText("NSS");
@@ -727,6 +726,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 			lblLocalidad.setText("Localidad");
 			lblCP.setText("CP");
 			lblProvincia.setText("Provincia");
+			lblCentro.setText("Centro de salud");
+			lblMedicoAsignado.setText("Médico asignado");
 		}
 	}
 
