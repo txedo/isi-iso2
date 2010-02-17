@@ -21,28 +21,26 @@ import dominio.control.ControladorCliente;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que agrupa todas las operaciones sobre citas.
+* Panel que agrupa todas las operaciones sobre sustituciones.
 */
-public class JPCitas extends JPBase {
+public class JPSustituciones extends JPBase {
 
-	private static final long serialVersionUID = 3597203747113684691L;
+	private static final long serialVersionUID = -7175632273033085117L;
 	
 	private EventListenerList listenerList;
 	private OperacionesInterfaz operacionSeleccionada;
-
-	private JPCitaTramitar jPanelTramitar;
-	private JPCitaVolanteTramitar jPanelVolanteTramitar;
-	private JPCitaConsultar jPanelConsultar;
+	
+	private JPEstablecerSustituto jPanelEstablecer;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
 	
-	public JPCitas() {
+	public JPSustituciones() {
 		this(null, null);
 		// Este constructor evita que aparezca un error al editar
-		// los formularios o paneles que utilizan JPCitas
+		// los formularios o paneles que utilizan JPSustituciones
 	}
 	
-	public JPCitas(JFrame frame, ControladorCliente controlador) {
+	public JPSustituciones(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		listenerList = new EventListenerList();
 		operacionSeleccionada = OperacionesInterfaz.OperacionInvalida;
@@ -53,9 +51,9 @@ public class JPCitas extends JPBase {
 	
 	private void initGUI() {
 		try {
+			this.setSize(565, 390);
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setSize(565, 390);
 			this.setPreferredSize(new java.awt.Dimension(565, 390));
 			{
 				jPanelListaOperaciones = new JPOperaciones();
@@ -75,38 +73,24 @@ public class JPCitas extends JPBase {
 				jSeparator.setPreferredSize(new java.awt.Dimension(5, 390));
 			}
 			{
-				jPanelTramitar = new JPCitaTramitar(this.getFrame(), this.getControlador());
-				this.add(jPanelTramitar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelTramitar.setPreferredSize(new java.awt.Dimension(406, 390));
-			}
-			{
-				jPanelVolanteTramitar = new JPCitaVolanteTramitar(this.getFrame(), this.getControlador());
-				this.add(jPanelVolanteTramitar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelVolanteTramitar.setPreferredSize(new java.awt.Dimension(406, 390));
-			}
-			{
-				jPanelConsultar = new JPCitaConsultar(this.getFrame(), this.getControlador());
-				this.add(jPanelConsultar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelConsultar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jPanelEstablecer = new JPEstablecerSustituto(this.getFrame(), this.getControlador());
+				this.add(jPanelEstablecer, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jPanelEstablecer.setPreferredSize(new java.awt.Dimension(406, 390));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	// $hide>>$
-	
+	//$hide>>$
+
 	private void inicializarOperaciones() {
-		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCita);
-		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCitaVolante);
-		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarAnularCita);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.EstablecerSustituto);
 	}
 	
 	private void ocultarPaneles() {
-		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.TramitarCita);
-		jPanelTramitar.setVisible(true);
-		jPanelConsultar.setVisible(false);
-		jPanelVolanteTramitar.setVisible(false);
+		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.EstablecerSustituto);
+		jPanelEstablecer.setVisible(true);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(OperacionCambiadaEvent evt) {
@@ -115,28 +99,14 @@ public class JPCitas extends JPBase {
 
 		operacionSeleccionada = evt.getOperacion();
 		
-		if(jPanelTramitar.isValid()) {
-			jPanelTramitar.setVisible(false);
+		if(jPanelEstablecer.isValid()) {
+			jPanelEstablecer.setVisible(false);
 		}
-		if(jPanelVolanteTramitar.isValid()) {
-			jPanelVolanteTramitar.setVisible(false);
+		if(operacionSeleccionada == OperacionesInterfaz.EstablecerSustituto) {
+			jPanelEstablecer.setVisible(true);
+			jPanelEstablecer.repaint();
 		}
-		if(jPanelConsultar.isValid()) {
-			jPanelConsultar.setVisible(false);
-		}
-		if(operacionSeleccionada == OperacionesInterfaz.TramitarCita) {
-			jPanelTramitar.setVisible(true);
-			jPanelTramitar.repaint();
-		}
-		if(operacionSeleccionada == OperacionesInterfaz.TramitarCitaVolante) {
-			jPanelVolanteTramitar.setVisible(true);
-			jPanelVolanteTramitar.repaint();
-		}
-		if(operacionSeleccionada == OperacionesInterfaz.ConsultarAnularCita) {
-			jPanelConsultar.setVisible(true);
-			jPanelConsultar.repaint();
-		}
-		
+
 		// Notificamos que ha cambiado la operación seleccionada
 		listeners = listenerList.getListenerList();
 		for(i = 0; i < listeners.length; i += 2) {
@@ -145,9 +115,9 @@ public class JPCitas extends JPBase {
 			}
 		}
 	}
-
+	
 	// Métodos públicos
-
+	
 	public void addOperacionCambiadaListener(OperacionCambiadaListener listener) {
 		listenerList.add(OperacionCambiadaListener.class, listener);
 	}
@@ -156,28 +126,18 @@ public class JPCitas extends JPBase {
 		listenerList.remove(OperacionCambiadaListener.class, listener);
 	}
 	
-	public void desactivarTramitarCita() {
-		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.TramitarCita);
+	public void desactivarEstablecerSustituto() {
+		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.EstablecerSustituto);
 	}
 	
-	public void desactivarTramitarCitaVolante() {
-		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.TramitarCitaVolante);
-	}
-
-	public void desactivarConsultarAnularCita() {
-		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarAnularCita);
-	}
-
 	public boolean hayOperacionesDisponibles() {
 		return (jPanelListaOperaciones.getNumeroOperaciones() > 0);
 	}
 	
 	// <métodos del observador>
-
+	
 	public void restablecerPaneles() {
-		jPanelConsultar.restablecerPanel();
-		jPanelTramitar.restablecerPanel();
-		jPanelVolanteTramitar.restablecerPanel();
+		jPanelEstablecer.restablecerPanel();
 	}
 	
 	//$hide<<$

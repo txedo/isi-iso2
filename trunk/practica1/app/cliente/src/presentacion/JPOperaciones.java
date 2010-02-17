@@ -1,7 +1,6 @@
 package presentacion;
 
-import java.util.ArrayList;
-import java.util.EventObject;
+import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -37,8 +36,7 @@ public class JPOperaciones extends JPanel {
 	private static final long serialVersionUID = -6305737945313540184L;
 	
 	private EventListenerList listenerList;
-	
-	private ArrayList<OperacionesInterfaz> operaciones;
+	private Vector<OperacionesInterfaz> operaciones;
 	
 	private DefaultListModel lstOperacionesModel;
 	private DefaultListCellRenderer lstOperacionesRenderer;
@@ -47,9 +45,9 @@ public class JPOperaciones extends JPanel {
 
 	public JPOperaciones() {
 		super();
-		initGUI();
-		operaciones = new ArrayList<OperacionesInterfaz>();
+		operaciones = new Vector<OperacionesInterfaz>();
 		listenerList = new EventListenerList();
+		initGUI();
 	}
 	
 	private void initGUI() {
@@ -91,37 +89,6 @@ public class JPOperaciones extends JPanel {
 	
 	//$hide>>$
 	
-	public void ponerOperacion(OperacionesInterfaz operacion) {
-		if(!operaciones.contains(operacion)) {
-			operaciones.add(operacion);
-			actualizarListaOperaciones();
-		}
-	}
-	
-	public void quitarOperacion(OperacionesInterfaz operacion) {
-		if(operaciones.contains(operacion)) {
-			operaciones.remove(operacion);
-			actualizarListaOperaciones();
-		}		
-	}
-	
-	public void setOperacion(OperacionesInterfaz operacion) {
-		if(operaciones.contains(operacion)) {
-			lstOperaciones.setSelectedValue(operaciones.indexOf(operacion), true);
-		}
-	}
-
-	public OperacionesInterfaz getOperacion() {
-		OperacionesInterfaz operacionSel;
-		
-		if(lstOperaciones.getSelectedIndex() != -1) {
-			operacionSel = operaciones.get(lstOperaciones.getSelectedIndex());
-		} else {
-			operacionSel = OperacionesInterfaz.OperacionInvalida;
-		}
-		return operacionSel;
-	}
-	
 	private void actualizarListaOperaciones() {
 		lstOperacionesModel = new DefaultListModel();
 		for(OperacionesInterfaz operacion : operaciones) {
@@ -145,19 +112,11 @@ public class JPOperaciones extends JPanel {
 		listeners = listenerList.getListenerList();
 		for(i = 0; i < listeners.length; i += 2) {
 			if(listeners[i] == OperacionCambiadaListener.class) {
-				((OperacionCambiadaListener)listeners[i + 1]).operacionCambiada(new EventObject(this));
+				((OperacionCambiadaListener)listeners[i + 1]).operacionCambiada(new OperacionCambiadaEvent(this, getOperacion()));
 			}
 		}
 	}
 	
-	public void addOperacionCambiadaListener(OperacionCambiadaListener listener) {
-		listenerList.add(OperacionCambiadaListener.class, listener);
-	}
-
-	public void removeOperacionCambiadaListener(OperacionCambiadaListener listener) {
-		listenerList.remove(OperacionCambiadaListener.class, listener);
-	}
-
 	private String nombreOperacion(OperacionesInterfaz operacion) {
 		String nombre;
 		
@@ -165,11 +124,17 @@ public class JPOperaciones extends JPanel {
 		case RegistrarBeneficiario:
 			nombre = "Registrar beneficiario";
 			break;
+		case ConsultarBeneficiario:
+			nombre = "Consultar beneficiario";
+			break;
 		case ConsultarModificarBeneficiario:
 			nombre = "Consultar o<br>modificar beneficiario";
 			break;
 		case RegistrarUsuario:
 			nombre = "Registrar usuario";
+			break;
+		case ConsultarUsuario:
+			nombre = "Consultar usuario";
 			break;
 		case ConsultarModificarUsuario:
 			nombre = "Consultar o<br>modificar usuario";
@@ -183,6 +148,9 @@ public class JPOperaciones extends JPanel {
 		case ConsultarAnularCita:
 			nombre = "Consultar o<br>anular cita";
 			break;
+		case EmitirVolante:
+			nombre = "Emitir volante";
+			break;
 		case EstablecerSustituto:
 			nombre = "Establecer sustituto";
 			break;
@@ -193,7 +161,52 @@ public class JPOperaciones extends JPanel {
 		
 		return nombre;
 	}
+	
+	// Métodos públicos
+	
+	public OperacionesInterfaz getOperacion() {
+		OperacionesInterfaz operacionSel;
 		
+		if(lstOperaciones.getSelectedIndex() != -1) {
+			operacionSel = operaciones.get(lstOperaciones.getSelectedIndex());
+		} else {
+			operacionSel = OperacionesInterfaz.OperacionInvalida;
+		}
+		return operacionSel;
+	}
+		
+	public void setOperacion(OperacionesInterfaz operacion) {
+		if(operaciones.contains(operacion)) {
+			lstOperaciones.setSelectedValue(operaciones.indexOf(operacion), true);
+		}
+	}
+	
+	public int getNumeroOperaciones() {
+		return operaciones.size();
+	}
+
+	public void addOperacionCambiadaListener(OperacionCambiadaListener listener) {
+		listenerList.add(OperacionCambiadaListener.class, listener);
+	}
+
+	public void removeOperacionCambiadaListener(OperacionCambiadaListener listener) {
+		listenerList.remove(OperacionCambiadaListener.class, listener);
+	}
+	
+	public void ponerOperacion(OperacionesInterfaz operacion) {
+		if(!operaciones.contains(operacion)) {
+			operaciones.add(operacion);
+			actualizarListaOperaciones();
+		}
+	}
+	
+	public void quitarOperacion(OperacionesInterfaz operacion) {
+		if(operaciones.contains(operacion)) {
+			operaciones.remove(operacion);
+			actualizarListaOperaciones();
+		}		
+	}
+
 	//$hide<<$
 	
 }

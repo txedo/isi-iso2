@@ -77,6 +77,12 @@ public class JPCitaVolanteTramitar extends JPBase {
 	private JButton btnRegistrar;
 	private JComboBox cmbHorasCitas;
 
+	public JPCitaVolanteTramitar() {
+		this(null, null);
+		// Este constructor evita que aparezca un error al editar
+		// los formularios o paneles que utilizan JPCitaVolanteTramitar
+	}
+	
 	public JPCitaVolanteTramitar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
@@ -383,9 +389,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 
 				// Mostramos el resultado de la operación y limpiamos el panel
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita ha quedado registrada.");
-				pnlBeneficiario.limpiarCamposConsulta();
-				limpiarCamposConsulta();
-				limpiarCamposTramitacion();
+				restablecerPanel();
 				
 			}
 
@@ -491,6 +495,16 @@ public class JPCitaVolanteTramitar extends JPBase {
 		dtcDiaCita.setDate(null);
 		rellenarListaHoras(null, null);
 		cambiarEstadoTramitacion(false);
+	}
+
+	// Métodos públicos
+
+	// <métodos del observador>
+
+	public void restablecerPanel() {
+		pnlBeneficiario.restablecerPanel();
+		limpiarCamposConsulta();
+		limpiarCamposTramitacion();		
 	}
 	
 	//$hide<<$

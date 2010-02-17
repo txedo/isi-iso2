@@ -54,6 +54,11 @@ public class Cliente implements ICliente {
 				controlador.beneficiarioActualizado((Beneficiario)dato);
 			}
 			break;
+		case ICodigosOperacionesCliente.ELIMINAR:
+			if(dato instanceof Beneficiario) {
+				controlador.beneficiarioEliminado((Beneficiario)dato);
+			}
+			break;
 		}
 	}
 	

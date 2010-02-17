@@ -5,8 +5,6 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-import dominio.conocimiento.ICodigosOperacionesCliente;
-
 /**
  * Proxy utilizado para conectarse con los clientes.
  */
@@ -34,18 +32,8 @@ public class ProxyCliente implements ICliente {
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
 		Thread hilo;
 		
-		tOperacion = operacion;
-		tDato = dato;
 		// Lanzamos la operación en otro hilo para no detener el servidor
-		hilo = new Thread(new Runnable() {
-			public void run() {
-				try {
-					cliente.actualizarVentanas(tOperacion, tDato);
-				} catch(RemoteException e) {
-					// Ignoramos la excepción
-				}
-			}
-		});
+		hilo = new Thread(new HiloActualizarVentanas(cliente, operacion, dato));
 		hilo.start();
 	}
 	
@@ -53,19 +41,54 @@ public class ProxyCliente implements ICliente {
 		Thread hilo;
 		
 		// Lanzamos la operación en otro hilo para no detener el servidor
-		hilo = new Thread(new Runnable() {
-			public void run() {
-				try {
-					cliente.cerrarSesion();
-				} catch(RemoteException e) {
-					// Ignoramos la excepción
-				}
-			}
-		});
+		hilo = new Thread(new HiloCerrarSesion(cliente));
 		hilo.start();
 	}
 	
-	private int tOperacion;
-	private Object tDato;
+	/**
+	 * Hilo utilizado para lanzar la operación cerrarSesion en un cliente.
+	 */
+	private class HiloCerrarSesion implements Runnable {
+	
+		private ICliente cliente;
+		
+		public HiloCerrarSesion(ICliente cliente) {
+			this.cliente = cliente;
+		}
+		
+		public void run() {
+			try {
+				cliente.cerrarSesion();
+			} catch(RemoteException e) {
+				// Aquí no se puede manejar la excepción
+			}
+		}
+		
+	}
 
+	/**
+	 * Hilo utilizado para lanzar la operación actualizarVentanas en un cliente.
+	 */
+	private class HiloActualizarVentanas implements Runnable {
+	
+		private ICliente cliente;
+		private int operacion;
+		private Object dato;
+		
+		public HiloActualizarVentanas(ICliente cliente, int operacion, Object dato) {
+			this.cliente = cliente;
+			this.operacion = operacion;
+			this.dato = dato;
+		}
+		
+		public void run() {
+			try {
+				cliente.actualizarVentanas(operacion, dato);
+			} catch(RemoteException e) {
+				// Aquí no se puede manejar la excepción
+			}
+		}
+		
+	}
+	
 }

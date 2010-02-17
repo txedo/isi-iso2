@@ -4,12 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-
 import java.util.Collections;
 import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,17 +17,13 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Especialidades;
-import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Sesion;
 import dominio.control.ControladorCliente;
@@ -69,6 +63,12 @@ public class JPEmitirVolante extends JPBase {
 	private long idVolante;
 	private Beneficiario beneficiario = null;
 
+	public JPEmitirVolante() {
+		this(null, null);
+		// Este constructor evita que aparezca un error al editar
+		// los formularios o paneles que utilizan JPEmitirVolante
+	}
+	
 	public JPEmitirVolante(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
@@ -243,8 +243,7 @@ public class JPEmitirVolante extends JPBase {
 			try {
 				idVolante = getControlador().emitirVolante(beneficiario, ((Medico)((Sesion)(getControlador().getSesion())).getUsuario()), especialistas.get(lstEspecialistas.getSelectedIndex()));
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante se ha emitido para el beneficiario. El identificador de dicho volante es " + idVolante);
-				pnlBeneficiario.limpiarCamposConsulta();
-				limpiarPanelMedico();
+				restablecerPanel();
 			} catch (RemoteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 			} catch (SQLException e) {
@@ -261,6 +260,13 @@ public class JPEmitirVolante extends JPBase {
 		cbEspecialidad.setEnabled(false);
 		cbEspecialidad.setFocusable(false);
 		lstEspecialistas.setEnabled(false);
+	}
+
+	// Métodos públicos
+	
+	public void restablecerPanel() {
+		pnlBeneficiario.restablecerPanel();
+		limpiarPanelMedico();
 	}
 	
 	//$hide<<$

@@ -2,10 +2,17 @@ package presentacion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Vector;
+
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -14,6 +21,7 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Medico;
 import dominio.control.ControladorCliente;
@@ -54,6 +62,8 @@ public class JPBeneficiarioRegistrar extends JPBase {
 
 	private static final long serialVersionUID = 6966877345630053451L;
 	
+	private Vector<CentroSalud> centros;
+	
 	private JButton btnRestablecer;
 	private JButton btnCrear;
 	private JTextField txtTelefonoMovil;
@@ -74,6 +84,8 @@ public class JPBeneficiarioRegistrar extends JPBase {
 	private JLabel lblDomicilio;
 	private JTextField txtNIF;
 	private JLabel lblTelefonoMovil;
+	private JLabel lblCentro;
+	private JComboBox cmbCentros;
 	private JLabel lblCamposOblig;
 	private JTextField txtCP;
 	private JLabel lblCP;
@@ -88,6 +100,12 @@ public class JPBeneficiarioRegistrar extends JPBase {
 	private JLabel lblNSS;
 	private JLabel lblNIF;
 
+	public JPBeneficiarioRegistrar() {
+		this(null, null);
+		// Este constructor evita que aparezca un error al editar
+		// los formularios o paneles que utilizan JPBeneficiarioRegistrar
+	}
+	
 	public JPBeneficiarioRegistrar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
@@ -97,10 +115,22 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(430, 399));
+			this.setPreferredSize(new java.awt.Dimension(430, 486));
+			{
+				ComboBoxModel cmbCentrosModel = new DefaultComboBoxModel();
+				cmbCentros = new JComboBox();
+				this.add(cmbCentros, new AnchorConstraint(337, 13, 741, 145, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				cmbCentros.setModel(cmbCentrosModel);
+				cmbCentros.setPreferredSize(new java.awt.Dimension(272, 23));
+				cmbCentros.addFocusListener(new FocusAdapter() {
+					public void focusGained(FocusEvent evt) {
+						cmbCentrosFocusGained(evt);
+					}
+				});
+			}
 			{
 				lblCamposOblig = new JLabel();
-				this.add(lblCamposOblig, new AnchorConstraint(335, 13, 900, 696, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(lblCamposOblig, new AnchorConstraint(412, 13, 900, 696, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				lblCamposOblig.setText("* Campos obligatorios");
 				lblCamposOblig.setPreferredSize(new java.awt.Dimension(129, 17));
 				lblCamposOblig.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -144,7 +174,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			{
 				btnRestablecer = new JButton();
-				this.add(btnRestablecer, new AnchorConstraint(361, 142, 961, 549, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnRestablecer, new AnchorConstraint(438, 308, 961, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 25));
 				btnRestablecer.setName("btnRestablecer");
@@ -156,7 +186,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			{
 				btnCrear = new JButton();
-				this.add(btnCrear, new AnchorConstraint(361, 13, 961, 765, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnCrear, new AnchorConstraint(438, 13, 961, 765, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnCrear.setDefaultCapable(true);
 				btnCrear.setText("Crear beneficiario");
 				btnCrear.setPreferredSize(new java.awt.Dimension(120, 26));
@@ -244,7 +274,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			{
 				lblTelefonoMovil = new JLabel();
-				this.add(lblTelefonoMovil, new AnchorConstraint(312, 431, 790, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblTelefonoMovil, new AnchorConstraint(314, 431, 790, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblTelefonoMovil.setText("Teléfono móvil");
 				lblTelefonoMovil.setPreferredSize(new java.awt.Dimension(119, 14));
 			}
@@ -314,6 +344,12 @@ public class JPBeneficiarioRegistrar extends JPBase {
 				lblNIF.setText("NIF *");
 				lblNIF.setPreferredSize(new java.awt.Dimension(121, 14));
 			}
+			{
+				lblCentro = new JLabel();
+				this.add(lblCentro, new AnchorConstraint(341, 305, 731, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblCentro.setText("Centro de salud");
+				lblCentro.setPreferredSize(new java.awt.Dimension(119, 14));
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -344,7 +380,6 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			if(!campoVacio(txtPuerta)) {
 				Validacion.comprobarPuerta(txtPuerta.getText().trim());
 			}
-			Validacion.comprobarDomicilioCompleto(txtDomicilio.getText().trim(), txtNumero.getText().trim(), txtPiso.getText().trim(), txtPuerta.getText().trim());
 			Validacion.comprobarLocalidad(txtLocalidad.getText().trim());
 			Validacion.comprobarCodigoPostal(txtCP.getText().trim());
 			Validacion.comprobarProvincia(txtProvincia.getText().trim());
@@ -366,16 +401,13 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			beneficiario.setApellidos(txtApellidos.getText().trim());
 			beneficiario.setFechaNacimiento(dtcFechaNacimiento.getDate());
 			dir = new Direccion();
-			dir.setDomicilio(txtDomicilio.getText());
-			if (!txtNumero.getText().equals(""))
-				dir.setNumero(txtNumero.getText());
-			else
-				dir.setNumero("s/n");
-			dir.setPiso(txtPiso.getText());
-			dir.setPuerta(txtPuerta.getText());
-			dir.setCiudad(txtLocalidad.getText());
-			dir.setProvincia(txtProvincia.getText());
-			dir.setCP(Integer.parseInt(txtCP.getText()));
+			dir.setDomicilio(txtDomicilio.getText().trim());
+			dir.setNumero(txtNumero.getText().trim());
+			dir.setPiso(txtPiso.getText().trim());
+			dir.setPuerta(txtPuerta.getText().trim());
+			dir.setCiudad(txtLocalidad.getText().trim());
+			dir.setProvincia(txtProvincia.getText().trim());
+			dir.setCP(Integer.parseInt(txtCP.getText().trim()));
 			beneficiario.setDireccion(dir);
 			beneficiario.setCorreo(txtCorreoElectronico.getText().trim());
 			beneficiario.setTelefono(txtTelefonoFijo.getText().trim());
@@ -473,11 +505,42 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		limpiarCamposRegistro();
 	}
 
+	private void cmbCentrosFocusGained(FocusEvent evt) {
+		if(cmbCentros.getModel().getSize() == 0) {
+			rellenarListaCentros();
+		}
+	}
+
 	private boolean campoVacio(JTextField campo) {
 		return campo.getText().trim().equals("");
 	}
 	
-	public void limpiarCamposRegistro() {
+	private void rellenarListaCentros() {
+		DefaultComboBoxModel lista;
+		
+		try {
+			
+			// Obtenemos la lista de centros de salud
+			centros = getControlador().consultarCentros();
+			
+			// Rellenamos el combobox con los centros
+			lista = new DefaultComboBoxModel();
+			for(CentroSalud centro : centros) {
+				lista.addElement(centro.getNombre() + " (" + centro.getDireccion() + ")");
+			}
+			cmbCentros.setModel(lista);
+			cmbCentros.setSelectedIndex(-1);
+			
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		}
+	}
+	
+	private void limpiarCamposRegistro() {
 		txtNIF.setText("");
 		txtNSS.setText("");
 		txtNombre.setText("");
@@ -496,6 +559,13 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		txtLocalidad.setText("");
 		txtCP.setText("");
 		txtProvincia.setText("");
+		cmbCentros.setSelectedIndex(-1);
+	}
+	
+	// Métodos públicos
+	
+	public void restablecerPanel() {
+		limpiarCamposRegistro();
 	}
 	
 	//$hide<<$

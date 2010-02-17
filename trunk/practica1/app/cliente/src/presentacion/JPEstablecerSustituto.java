@@ -69,6 +69,12 @@ public class JPEstablecerSustituto extends JPBase {
 	private JSpinner spnHoraDesde;
 	private JLabel lblHoraDesde;
 
+	public JPEstablecerSustituto() {
+		this(null, null);
+		// Este constructor evita que aparezca un error al editar
+		// los formularios o paneles que utilizan JPEstablecerSustituto
+	}
+	
 	public JPEstablecerSustituto(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
@@ -335,9 +341,7 @@ public class JPEstablecerSustituto extends JPBase {
 
 				// Mostramos el resultado de la operación y limpiamos el panel
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La sustitución se ha almacenado correctamente.");
-				pnlMedico.limpiarCamposConsulta();
-				limpiarCamposConsulta();
-				limpiarCamposSustitucion();
+				restablecerPanel();
 				
 			}
 			
@@ -351,9 +355,7 @@ public class JPEstablecerSustituto extends JPBase {
 	}
 	
 	private void btnRestablecerTodoActionPerformed(ActionEvent evt) {
-		pnlMedico.limpiarCamposConsulta();
-		limpiarCamposConsulta();
-		limpiarCamposSustitucion();
+		restablecerPanel();
 	}
 	
 	private void rellenarListaSustitutos(Vector<String> elementos) {
@@ -383,6 +385,14 @@ public class JPEstablecerSustituto extends JPBase {
 	private void limpiarCamposSustitucion() {
 		rellenarListaSustitutos(new Vector<String>());
 		cambiarEstadoSustitucion(false);
+	}
+	
+	// Métodos públicos
+	
+	public void restablecerPanel() {
+		pnlMedico.restablecerPanel();
+		limpiarCamposConsulta();
+		limpiarCamposSustitucion();	
 	}
 	
 	//$hide<<$

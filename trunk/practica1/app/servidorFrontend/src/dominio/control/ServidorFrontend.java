@@ -849,6 +849,7 @@ public class ServidorFrontend implements IServidorFrontend {
 				GestorBeneficiarios.eliminarBeneficiario(idSesion, (Beneficiario)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Eliminado el beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ".");
+				GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.ELIMINAR, (Beneficiario)informacion);
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL mientras se eliminaba el beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ": " + se.getLocalizedMessage());
@@ -1086,6 +1087,29 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 		
+		case ICodigosMensajeAuxiliar.CONSULTAR_CENTROS:
+			try {
+				// Consultamos la lista de centros de salud
+				resultado = GestorUsuarios.consultarCentros(idSesion);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultada la lista de centros de salud.");
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL mientras se consultaba la lista de centros de salud: " + se.getLocalizedMessage());
+				throw se;
+			} catch(OperacionIncorrectaException oie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta de la lista de centros de salud: " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar la lista de centros de salud: " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado al consultar la lista de centros de salud: " + e.toString());
+				throw e;
+			}
+			break;
+
 		// Métodos auxiliares de gestión de médicos
 			
 		case ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO:
@@ -1478,7 +1502,7 @@ public class ServidorFrontend implements IServidorFrontend {
 				throw e;
 			}
 			break;
-			
+		
 		}
 
 		return resultado;

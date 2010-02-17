@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Vector;
+
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.CentroSalud;
 import excepciones.CentroSaludInexistenteException;
@@ -73,6 +75,29 @@ public class FPCentroSalud {
 		}
 		
 		return centro;
+	}
+	
+	public static Vector<CentroSalud> consultarTodo() throws SQLException {
+		Vector<CentroSalud> lista;
+		ComandoSQL comando;
+		ResultSet datos;
+		CentroSalud centro;
+		
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CENTROS);
+		datos = GestorConexionesBD.consultar(comando);
+		
+		// Devolvemos la lista de centros de salud
+		lista = new Vector<CentroSalud>();
+		while(datos.next()) {
+			centro = new CentroSalud();
+			centro.setId(datos.getInt(COL_ID));
+			centro.setNombre(datos.getString(COL_NOMBRE));
+			centro.setDireccion(datos.getString(COL_DIRECCION));
+			lista.add(centro);
+		}
+		
+		return lista;
 	}
 	
 	public static void insertar(CentroSalud centro) throws SQLException {

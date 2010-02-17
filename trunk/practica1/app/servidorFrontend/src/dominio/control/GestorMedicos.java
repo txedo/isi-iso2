@@ -5,14 +5,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import persistencia.FPBeneficiario;
 import persistencia.FPSustitucion;
 import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import persistencia.FuncionesPersistencia;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.IMedico;
@@ -114,6 +112,11 @@ public class GestorMedicos {
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.EliminarMedico);
 
+		// Todo lo relacionado con eliminar un médico (como reasignar
+		// nuevos médicos a los beneficiarios) no se debe hacer aquí,
+		// sino en eliminarUsuario, porque si se llama a eliminarUsuario
+		// con un médico no se ejecutaría el mismo código !!!
+		
 		// Llamamos al método equivalente para usuarios
 		try {
 			GestorUsuarios.eliminarUsuario(idSesion, medico);
