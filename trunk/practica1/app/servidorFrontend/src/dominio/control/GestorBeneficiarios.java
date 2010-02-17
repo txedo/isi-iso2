@@ -1,6 +1,8 @@
 package dominio.control;
 
 import java.sql.SQLException;
+import java.util.Vector;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Medico;
@@ -214,6 +216,25 @@ public class GestorBeneficiarios {
 				}
 		}
 		return medico;
+	}
+	
+	public static Vector<Beneficiario> getBeneficiariosMedico(long idSesion, String dniMedico) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		Vector<Beneficiario> beneficiarios;
+		Vector<String> nifs;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiariosMedico);
+		
+		// Obtenemos los NIFs de todos los beneficiarios asociados a ese médico
+		nifs = FPBeneficiario.getBeneficiariosMedico(dniMedico);
+		
+		// Recuperamos los beneficiarios con los NIFs anteriores
+		beneficiarios = new Vector<Beneficiario>();
+		for(String nif : nifs) {
+			beneficiarios.add(FPBeneficiario.consultarPorNIF(nif));
+		}
+		
+		return beneficiarios;
 	}
 	
 }

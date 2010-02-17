@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Vector;
 
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Beneficiario;
@@ -33,6 +34,7 @@ public class FPBeneficiario {
 	private static final String COL_TELEFONO = "telefono";
 	private static final String COL_MOVIL = "movil";
 	private static final String COL_DNI_MEDICO = "dniMedico";
+	private static final String COL_BENEFICIARIOS_NIF = "nif";
 
 	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
@@ -119,6 +121,25 @@ public class FPBeneficiario {
 
 		return beneficiario;
 	}
+	
+	 public static Vector<String> getBeneficiariosMedico(String dniMedico) throws SQLException {
+         ComandoSQL comando;
+         ResultSet datos;
+         Vector<String> nifsBeneficiarios;
+         
+         // Consultamos la base de datos
+         comando = new ComandoSQLSentencia("SELECT " + COL_BENEFICIARIOS_NIF + " FROM "
+                         + TABLA_BENEFICIARIOS + " WHERE " + COL_DNI_MEDICO + " = ? ", dniMedico);
+         datos = GestorConexionesBD.consultar(comando);
+         
+         
+         nifsBeneficiarios = new Vector<String>();
+         while (datos.next()) {
+                 nifsBeneficiarios.add(datos.getString(COL_BENEFICIARIOS_NIF));
+         }
+         return nifsBeneficiarios;
+ }
+
 
 	public static void insertar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;
