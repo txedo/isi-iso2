@@ -35,6 +35,7 @@ public class FPBeneficiario {
 	private static final String COL_MOVIL = "movil";
 	private static final String COL_DNI_MEDICO = "dniMedico";
 	private static final String COL_BENEFICIARIOS_NIF = "nif";
+	private static final String COL_CENTRO = "idCentro";
 
 	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
@@ -74,6 +75,7 @@ public class FPBeneficiario {
 				}
 			}
 			beneficiario.setMedicoAsignado((Medico)medico);
+			beneficiario.setCentro(FPCentroSalud.consultar(datos.getInt(COL_CENTRO)));
 		}
 
 		return beneficiario;
@@ -117,6 +119,7 @@ public class FPBeneficiario {
 				}
 			}
 			beneficiario.setMedicoAsignado((Medico)medico);
+			beneficiario.setCentro(FPCentroSalud.consultar(datos.getInt(COL_CENTRO)));
 		}
 
 		return beneficiario;
@@ -148,13 +151,13 @@ public class FPBeneficiario {
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_BENEFICIARIOS
 				+ " (" + COL_NIF + ", " + COL_NSS + ", " + COL_NOMBRE
 				+ ", " + COL_APELLIDOS  + ", " + COL_CORREO + ", " + COL_FECHA_NACIMIENTO
-				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO
-				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO + ", " + COL_CENTRO
+				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				beneficiario.getNif(), beneficiario.getNss(), beneficiario.getNombre(),
 				beneficiario.getApellidos(), beneficiario.getCorreo(),
 				new Timestamp(beneficiario.getFechaNacimiento().getTime()),
 				beneficiario.getTelefono(), beneficiario.getMovil(),
-				beneficiario.getMedicoAsignado().getDni());
+				beneficiario.getMedicoAsignado().getDni(), beneficiario.getCentro().getId());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Insertamos la dirección del beneficiario
@@ -164,8 +167,7 @@ public class FPBeneficiario {
 	public static void modificar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;
 		
-		// Modificamos la base de datos
-		// (el NIF y el NSS no se pueden cambiar)
+		// Modificamos la base de datoss
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_BENEFICIARIOS + " SET "
 				+ COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_CORREO + " = ?, "
 				+ COL_TELEFONO + " = ?, " + COL_MOVIL + " = ?, " + COL_DNI_MEDICO + " = ? "
@@ -182,9 +184,6 @@ public class FPBeneficiario {
 
 	public static void eliminar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;
-
-		// Eliminamos la dirección del beneficiario
-		FPDireccion.eliminar(beneficiario.getNif());
 
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_BENEFICIARIOS

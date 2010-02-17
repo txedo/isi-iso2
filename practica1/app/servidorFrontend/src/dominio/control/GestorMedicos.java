@@ -11,6 +11,7 @@ import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import persistencia.FuncionesPersistencia;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.IMedico;
@@ -103,7 +104,10 @@ public class GestorMedicos {
 	}
 	
 	// Método para eliminar un médico del sistema
-	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
+		Vector<Beneficiario> beneficiarios;
+		Medico med = null;
+		
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
 			throw new NullPointerException("El médico que se va a eliminar no puede ser nulo.");
@@ -117,11 +121,23 @@ public class GestorMedicos {
 		// sino en eliminarUsuario, porque si se llama a eliminarUsuario
 		// con un médico no se ejecutaría el mismo código !!!
 		
-		// Llamamos al método equivalente para usuarios
+		// Llamamos al método equivalente para eliminar usuarios
 		try {
 			GestorUsuarios.eliminarUsuario(idSesion, medico);
 		} catch(UsuarioInexistenteException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		// Tomamos la lista de beneficiarios del medico
+		beneficiarios = GestorBeneficiarios.getBeneficiariosMedico(idSesion, medico.getDni());
+
+		// Intentamos asignar un nuevo médico a los beneficiarios afectados
+		for (Beneficiario bene: beneficiarios) {
+			med = GestorBeneficiarios.comprobarMedicoBeneficiario(bene);
+			if (med != null) {
+				bene.setMedicoAsignado(med);
+				GestorBeneficiarios.modificarBeneficiario(idSesion, bene);
+			}
 		}
 	}
 	

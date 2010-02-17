@@ -889,17 +889,13 @@ public class ServidorFrontend implements IServidorFrontend {
 
 		case ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO:
 			try {
-				GestorBeneficiarios.asignarMedico(idSesion, (Beneficiario)informacion);
+				resultado = GestorBeneficiarios.comprobarMedicoBeneficiario((Beneficiario)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Asignado un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ".");
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error SQL al asignar un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ": " + se.getLocalizedMessage());
 				throw se;
-			} catch(BeneficiarioInexistenteException bie) {
-				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar el beneficiario con NIF " + ((Beneficiario)informacion).getNif() + " para asignarle un nuevo médico: " + bie.getLocalizedMessage());
-				throw bie;
 			} catch(UsuarioIncorrectoException uie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar un usuario al asignar un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ": " + uie.getLocalizedMessage());
@@ -916,13 +912,6 @@ public class ServidorFrontend implements IServidorFrontend {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al intentar asignar un nuevo médico a un beneficiario con datos no válidos: " + npe.getLocalizedMessage());
 				throw npe;
-			} catch(OperacionIncorrectaException oie) {
-				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al intentar realizar una operación no permitida de asignación de un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ": " + oie.getLocalizedMessage());
-				throw oie;
-			} catch(SesionInvalidaException sie) {
-				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Error al comprobar la sesión con id " + idSesion + " para asignar un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ": " + sie.getLocalizedMessage());
-				throw sie;
 			} catch(Exception e) {
 				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Error inesperado mientras se asignaba un nuevo médico a un beneficiario: " + e.toString());
 				throw e;

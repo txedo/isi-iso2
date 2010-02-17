@@ -396,16 +396,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			if(cmbCentros.getSelectedIndex() == -1) {
 				throw new CentroSaludIncorrectoException();
 			}
-			
-			// Obtenemos un médico del centro seleccionado
-//TODO:Cuando se haga la operación, descomentar la siguiente linea y quitar
-// la que toma un médico fijo
-//			medico = getControlador().obtenerMedicoCentro(centros.get(cmbCentros.getSelectedIndex()));
-			medico = getControlador().consultarMedico("12345678C");
-			if(medico == null) {
-				throw new CentroSaludIncorrectoException("No se puede asignar al beneficiario ningún médico del centro seleccionado.");
-			}
-			
+					
 			// Creamos un nuevo beneficiario con los datos introducidos
 			beneficiario = new Beneficiario();
 			beneficiario.setNif(txtNIF.getText().trim().toUpperCase());
@@ -425,7 +416,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			beneficiario.setCorreo(txtCorreoElectronico.getText().trim());
 			beneficiario.setTelefono(txtTelefonoFijo.getText().trim());
 			beneficiario.setMovil(txtTelefonoMovil.getText().trim());
-			beneficiario.setMedicoAsignado(medico);
+			beneficiario.setCentro(centros.get(cmbCentros.getSelectedIndex()));
 
 			// Solicitamos al servidor que se cree el beneficiario
 			getControlador().crearBeneficiario(beneficiario);
