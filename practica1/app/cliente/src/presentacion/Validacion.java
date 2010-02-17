@@ -1,4 +1,4 @@
-package dominio.conocimiento;
+package presentacion;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

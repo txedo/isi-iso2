@@ -37,7 +37,6 @@ import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.Validacion;
 import dominio.conocimiento.IConstantes;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;

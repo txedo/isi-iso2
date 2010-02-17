@@ -2,7 +2,6 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.CadenaVaciaException;
 import excepciones.ContraseñaIncorrectaException;

@@ -17,7 +17,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import dominio.conocimiento.ConfiguracionFrontend;
-import dominio.conocimiento.Validacion;
 import excepciones.IPInvalidaException;
 import excepciones.PuertoInvalidoException;
 

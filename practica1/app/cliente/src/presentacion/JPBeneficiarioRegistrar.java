@@ -16,7 +16,6 @@ import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.Validacion;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioYaExistenteException;

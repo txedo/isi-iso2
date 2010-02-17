@@ -1,6 +1,6 @@
 package pruebas;
 
-import dominio.conocimiento.Validacion;
+import presentacion.Validacion;
 import excepciones.IPInvalidaException;
 import excepciones.PuertoInvalidoException;
 import junit.framework.TestCase;

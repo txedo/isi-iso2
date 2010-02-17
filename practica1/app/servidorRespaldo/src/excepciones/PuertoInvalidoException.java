@@ -1,6 +1,6 @@
 package excepciones;
 
-import dominio.conocimiento.Validacion;
+import presentacion.Validacion;
 
 /**
  * Excepción lanzada al introducir un número de puerto con un formato
