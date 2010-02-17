@@ -12,7 +12,6 @@ import java.util.Vector;
 import comunicaciones.ICliente;
 import comunicaciones.ProxyCliente;
 import dominio.conocimiento.Encriptacion;
-import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
@@ -154,6 +153,7 @@ public class GestorSesiones {
 		// Agregamos las operaciones permitidas para todos los usuarios
 		operaciones = new Vector<Operaciones>();
 		operaciones.add(Operaciones.ConsultarBeneficiario);
+		operaciones.add(Operaciones.ConsultarCentros);
 		
 		// Agregamos las operaciones permitidas para citadores y administradores
 		if(sesion.getRol() == RolesUsuarios.Administrador.ordinal() || sesion.getRol() == RolesUsuarios.Citador.ordinal()) {

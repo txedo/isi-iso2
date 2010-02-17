@@ -16,7 +16,7 @@ import comunicaciones.ICliente;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.CategoriasMedico;
+import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
@@ -157,6 +157,10 @@ public class ControladorCliente {
 		ventanaPrincipal.beneficiarioActualizado(beneficiario);
 	}
 	
+	public void beneficiarioEliminado(Beneficiario beneficiario) {
+		//TODO
+	}
+	
 	// ---------------------------
 	// Métodos cliente -> servidor
 	// ---------------------------
@@ -216,6 +220,11 @@ public class ControladorCliente {
 		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, usu);
 	}
 
+	@SuppressWarnings("unchecked")
+	public Vector<CentroSalud> consultarCentros() throws RemoteException, Exception {
+		return (Vector<CentroSalud>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CENTROS, null);
+	}
+	
 	// Métodos de gestión de médicos
 	
 	public Medico consultarMedico(String dni) throws RemoteException, MedicoInexistenteException, Exception {
@@ -243,6 +252,7 @@ public class ControladorCliente {
 		servidor.modificarCalendario(sesion.getId(), medico, dias, new GregorianCalendar(1980, 0, 1, horaDesde, 0).getTime(), new GregorianCalendar(1980, 0, 1, horaHasta, 0).getTime(), (IMedico)sustituto);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Vector<Beneficiario> obtenerBeneficiariosMedico (String dniMedico) throws RemoteException, Exception {
 		return (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, dniMedico);
 	}
@@ -256,6 +266,7 @@ public class ControladorCliente {
 		return (Hashtable<Date, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS_MEDICO, dniMedico);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Vector<Cita> consultarCitasMedico(String dniMedico) throws RemoteException, Exception {
 		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO, dniMedico);
 	}
@@ -302,6 +313,5 @@ public class ControladorCliente {
 	public long emitirVolante(Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception { 
 		return servidor.emitirVolante(sesion.getId(), bene, emisor, receptor);
 	}
-
-	 
+	
 }

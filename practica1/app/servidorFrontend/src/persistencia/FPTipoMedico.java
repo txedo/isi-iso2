@@ -70,12 +70,12 @@ public class FPTipoMedico {
 		Vector<String> lista;
 		Object [] parametros = informacion;
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT dniMedico FROM " + TABLA_TIPOS_MEDICO
+		comando = new ComandoSQLSentencia("SELECT " + COL_DNI_MEDICO + " FROM " + TABLA_TIPOS_MEDICO
 				+ " WHERE " + COL_TIPO + " = ?", ((CategoriasMedico)parametros[0]).ordinal());
 		
 		// Si es un especialista y se ha indicado su especialidad, se modifica la consulta
 		if (((CategoriasMedico)parametros[0]).equals(CategoriasMedico.Especialista) && parametros.length > 1)
-			comando = new ComandoSQLSentencia("SELECT dniMedico FROM " + TABLA_TIPOS_MEDICO
+			comando = new ComandoSQLSentencia("SELECT " + COL_DNI_MEDICO + " FROM " + TABLA_TIPOS_MEDICO
 					+ " WHERE " + COL_TIPO + " = ? AND " + COL_ESPECIALIDAD + " = ?", ((CategoriasMedico)parametros[0]).ordinal(), ((String)parametros[1]));
 		
 		datos = GestorConexionesBD.consultar(comando);

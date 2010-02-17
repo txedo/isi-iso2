@@ -61,6 +61,12 @@ public class JPCitaConsultar extends JPBase {
 	private JLabel lblCitas;
 	private JTable tblTablaCitas;
 
+	public JPCitaConsultar() {
+		this(null, null);
+		// Este constructor evita que aparezca un error al editar
+		// los formularios o paneles que utilizan JPCitaConsultar
+	}
+	
 	public JPCitaConsultar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
@@ -350,8 +356,7 @@ public class JPCitaConsultar extends JPBase {
 	}
 	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {
-		pnlBeneficiario.limpiarCamposConsulta();
-		limpiarCamposConsulta();
+		restablecerPanel();
 	}
 	
 	private void limpiarCamposConsulta() {
@@ -360,6 +365,15 @@ public class JPCitaConsultar extends JPBase {
 		btnHistoricoCitas.setEnabled(false);
 		lblCitas.setText("Citas pendientes encontradas:");
 		viendoHistorico = false;
+	}
+	
+	// Métodos públicos
+	
+	// <métodos del observador>
+	
+	public void restablecerPanel() {
+		pnlBeneficiario.restablecerPanel();
+		limpiarCamposConsulta();
 	}
 
 	//$hide<<$

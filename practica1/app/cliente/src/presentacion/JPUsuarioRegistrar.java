@@ -8,7 +8,6 @@ import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
-import javax.swing.DebugGraphics;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -79,7 +78,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	private JLabel lblTipoUsuario;
 	private JLabel lblCamposOblig;
 	private JLabel lblEspecialidad;
-	private JComboBox cbEspecialidad;
+	private JComboBox cmbEspecialidad;
 	private JLabel lblNombre;
 	private JLabel lblPasswordConf;
 	private JLabel lblHorasSemanales;
@@ -95,6 +94,12 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	private JLabel lblCalendario;
 	
 	private JFCalendarioLaboral frmCalendario;
+	
+	public JPUsuarioRegistrar() {
+		this(null, null);
+		// Este constructor evita que aparezca un error al editar
+		// los formularios o paneles que utilizan JPUsuarioRegistrar
+	}
 	
 	public JPUsuarioRegistrar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
@@ -138,13 +143,13 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 				lblEspecialidad.setPreferredSize(new java.awt.Dimension(126, 16));
 			}
 			{
-				cbEspecialidad = new JComboBox();
-				this.add(cbEspecialidad, new AnchorConstraint(259, 18, 691, 184, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				cbEspecialidad.setPreferredSize(new java.awt.Dimension(229, 22));
+				cmbEspecialidad = new JComboBox();
+				this.add(cmbEspecialidad, new AnchorConstraint(259, 12, 691, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				cmbEspecialidad.setPreferredSize(new java.awt.Dimension(268, 22));
 			}
 			{
 				btnRestablecer = new JButton();
-				this.add(btnRestablecer, new AnchorConstraint(309, 141, 957, 219, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnRestablecer, new AnchorConstraint(309, 308, 957, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnRestablecer.addActionListener(new ActionListener() {
@@ -281,7 +286,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	
 	private void rellenarModelo(String [] informacion) {
 		ComboBoxModel cbEspecialidadModel = new DefaultComboBoxModel(informacion);
-		cbEspecialidad.setModel(cbEspecialidadModel);	
+		cmbEspecialidad.setModel(cbEspecialidadModel);	
 	}
 	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {
@@ -333,7 +338,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 					tipo = new Pediatra();
 					break;
 				case Especialista:
-					tipo = new Especialista(cbEspecialidad.getSelectedItem().toString());
+					tipo = new Especialista(cmbEspecialidad.getSelectedItem().toString());
 					break;
 				}
 				((Medico)usu).setTipoMedico(tipo);
@@ -422,7 +427,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 
 	private void cambiarEstadoEspecialidad(boolean estado) {
 		lblEspecialidad.setVisible(estado);
-		cbEspecialidad.setVisible(estado);
+		cmbEspecialidad.setVisible(estado);
 		String [] valores = new String [Especialidades.values().length]; 
 		if (!estado)
 			rellenarModelo(new String [] {""});
@@ -473,7 +478,18 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		lstTipoUsuario.clearSelection();
 		lstTipoMedico.clearSelection();
 		lstTipoMedico.setVisible(false);
+		lblCalendario.setVisible(false);
+		btnCalendario.setVisible(false);
+		lblHorasSemanales.setVisible(false);
+		lblEspecialidad.setVisible(false);
+		cmbEspecialidad.setVisible(false);
 		periodos = new Vector<PeriodoTrabajo>();
+	}
+	
+	// Métodos públicos
+	
+	public void restablecerPanel() {
+		limpiarCamposRegistro();
 	}
 	
 	//$hide<<$

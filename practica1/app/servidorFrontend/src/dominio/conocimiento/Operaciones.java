@@ -32,4 +32,6 @@ public enum Operaciones {
 	// Operaciones del Gestor de Volantes
 	ConsultarVolante,
 	EmitirVolante,
+	// Operaciones del Gestor de Centros
+	ConsultarCentros
 }

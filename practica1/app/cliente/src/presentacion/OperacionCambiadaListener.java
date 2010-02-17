@@ -1,13 +1,12 @@
 package presentacion;
 
 import java.util.EventListener;
-import java.util.EventObject;
 
 /**
- * Interfaz para el evento OperacionCambiada de la clase JPOperaciones.
+ * Interfaz para el evento OperacionCambiada de los paneles.
  */
 public interface OperacionCambiadaListener extends EventListener {
 
-	public void operacionCambiada(EventObject evt);
+	public void operacionCambiada(OperacionCambiadaEvent evt);
 	
 }

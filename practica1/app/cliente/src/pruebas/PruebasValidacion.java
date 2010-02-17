@@ -297,54 +297,6 @@ public class PruebasValidacion extends TestCase {
 		}
 	}
 	
-	/** Pruebas de domicilios completos */
-	public void testDomiciliosCompletos() {
-		try {
-			// Probamos domicilios completos válidos
-			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "14", "5", "A");
-			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "14", "", "");
-			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "", "", "");
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Probamos un domicilio con puerta pero sin número
-			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "", "", "A");
-			fail("Se esperaba una excepción NumeroDomicilioIncorrectoException");
-		} catch(NumeroDomicilioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NumeroDomicilioIncorrectoException");
-		}
-
-		try {
-			// Probamos un domicilio con piso pero sin número
-			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "", "2", "");
-			fail("Se esperaba una excepción NumeroDomicilioIncorrectoException");
-		} catch(NumeroDomicilioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NumeroDomicilioIncorrectoException");
-		}
-
-		try {
-			// Probamos un domicilio con puerta pero sin piso
-			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "14", "", "B");
-			fail("Se esperaba una excepción PisoDomicilioIncorrectoException");
-		} catch(PisoDomicilioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción PisoDomicilioIncorrectoException");
-		}
-
-		try {
-			// Probamos un domicilio con piso pero sin puerta
-			Validacion.comprobarDomicilioCompleto("Avda. Reyes Católicos", "14", "2", "");
-			fail("Se esperaba una excepción PuertaDomicilioIncorrectoException");
-		} catch(PuertaDomicilioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción PuertaDomicilioIncorrectoException");
-		}
-	}
-	
 	/** Pruebas de localidades */
 	public void testLocalidades() {
 		String[] invalidos, validos;

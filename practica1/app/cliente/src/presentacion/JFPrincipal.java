@@ -2,7 +2,6 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
@@ -26,7 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -58,10 +58,13 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private static final long serialVersionUID = 1155264551580232934L;
 
 	private ControladorCliente controlador;
+	private OperacionesInterfaz operacionSeleccionada;
 	
+	private JPBeneficiarios jPanelGestionarBeneficiarios;
 	private JPUsuarios jPanelGestionarUsuarios;
 	private JPCitas jPanelGestionarCitas;
-	private JPBeneficiarios jPanelGestionarBeneficiarios;
+	private JPSustituciones jPanelGestionarSustituciones;
+	private JPVolantes jPanelGestionarVolantes;
 	private JPanel jPanelOperaciones;
 	private JMenuItem menuitemAcercaDe;
 	private JSeparator jSeparator2;
@@ -70,20 +73,19 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JMenu jMenu4;
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar;
-	private JPanel jPanelEstablecerSustituto;
 	private JLabel lblPuertoEscucha;
 	private JButton btnCerrarSesion;
 	private JButton btnCerrarAplicacion;
 	private JLabel lblBarraEstado;
 	private JSeparator jSeparator1;
 	private JMenuItem menuitemContenidoAyuda;
-	private JPEmitirVolante jPanelEmitirVolante;
 	private JPBienvenida jPanelBienvenida;
 	private JTabbedPane jTabbedPaneOperaciones;
 
 	public JFPrincipal(ControladorCliente controlador) {
 		super();
 		this.controlador = controlador;
+		operacionSeleccionada = OperacionesInterfaz.OperacionInvalida;
 		initGUI();
 	}
 	
@@ -194,6 +196,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 					jPanelOperaciones.add(jTabbedPaneOperaciones, new AnchorConstraint(8, 16, 46, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					jTabbedPaneOperaciones.setPreferredSize(new java.awt.Dimension(656, 387));
 					jTabbedPaneOperaciones.setFont(new java.awt.Font("Tahoma",0,12));
+					jTabbedPaneOperaciones.addChangeListener(new ChangeListener() {
+						public void stateChanged(ChangeEvent evt) {
+							jTabbedPaneOperacionesStateChanged(evt);
+						}
+					});
 					{
 						jPanelBienvenida = new JPBienvenida();
 						jTabbedPaneOperaciones.addTab("Inicio", null, jPanelBienvenida, null);
@@ -201,25 +208,47 @@ public class JFPrincipal extends javax.swing.JFrame {
 					{
 						jPanelGestionarBeneficiarios = new JPBeneficiarios(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Beneficiarios", null, jPanelGestionarBeneficiarios, null);
+						jPanelGestionarBeneficiarios.addOperacionCambiadaListener(new OperacionCambiadaListener() {
+							public void operacionCambiada(OperacionCambiadaEvent evt) {
+								jPanelGestionarBeneficiariosOperacionCambiada(evt);
+							}
+						});
 					}
 					{
 						jPanelGestionarUsuarios = new JPUsuarios(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Usuarios", null, jPanelGestionarUsuarios, null);
+						jPanelGestionarUsuarios.addOperacionCambiadaListener(new OperacionCambiadaListener() {
+							public void operacionCambiada(OperacionCambiadaEvent evt) {
+								jPanelGestionarUsuariosOperacionCambiada(evt);
+							}
+						});
 					}
 					{
 						jPanelGestionarCitas = new JPCitas(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Citas", null, jPanelGestionarCitas, null);
+						jPanelGestionarCitas.addOperacionCambiadaListener(new OperacionCambiadaListener() {
+							public void operacionCambiada(OperacionCambiadaEvent evt) {
+								jPanelGestionarCitasOperacionCambiada(evt);
+							}
+						});
 					}
 					{
-						jPanelEstablecerSustituto = new JPanel();
-						AnchorLayout jPanelEstablecerSustitutoLayout = new AnchorLayout();
-						jTabbedPaneOperaciones.addTab("Establecer Sustituto", null, jPanelEstablecerSustituto, null);
-						jPanelEstablecerSustituto.setLayout(jPanelEstablecerSustitutoLayout);
+						jPanelGestionarSustituciones = new JPSustituciones();
+						jTabbedPaneOperaciones.addTab("Gestionar Sustituciones", null, jPanelGestionarSustituciones, null);
+						jPanelGestionarSustituciones.addOperacionCambiadaListener(new OperacionCambiadaListener() {
+							public void operacionCambiada(OperacionCambiadaEvent evt) {
+								jPanelGestionarSustitucionesOperacionCambiada(evt);
+							}
+						});
 					}
-					
 					{
-						jPanelEmitirVolante = new JPEmitirVolante(this, controlador);
-						jTabbedPaneOperaciones.addTab("Emitir Volante", null, jPanelEmitirVolante, null);
+						jPanelGestionarVolantes = new JPVolantes(this, controlador);
+						jTabbedPaneOperaciones.addTab("Gestionar Volantes", null, jPanelGestionarVolantes, null);
+						jPanelGestionarVolantes.addOperacionCambiadaListener(new OperacionCambiadaListener() {
+							public void operacionCambiada(OperacionCambiadaEvent evt) {
+								jPanelGestionarVolantesOperacionCambiada(evt);
+							}
+						});
 					}
 				}
 			}
@@ -228,6 +257,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 			e.printStackTrace();
 		}
 	}
+	
+	//$hide>>$
 	
 	private void btnCerrarSesionActionPerformed(ActionEvent evt) {
 		confirmarCerrarSesion();
@@ -245,7 +276,56 @@ public class JFPrincipal extends javax.swing.JFrame {
 		cerrarAplicacion();
 	}
 
-	//$hide>>$
+	private void thisWindowClosing(WindowEvent evt) {
+		cerrarAplicacion();
+	}
+	
+	private void jTabbedPaneOperacionesStateChanged(ChangeEvent evt) {
+		restablecerPaneles();
+	}
+
+	private void jPanelGestionarBeneficiariosOperacionCambiada(OperacionCambiadaEvent evt) {
+		operacionSeleccionada = evt.getOperacion();
+		restablecerPaneles();
+	}
+	
+	private void jPanelGestionarUsuariosOperacionCambiada(OperacionCambiadaEvent evt) {
+		operacionSeleccionada = evt.getOperacion();
+		restablecerPaneles();
+	}
+
+	private void jPanelGestionarCitasOperacionCambiada(OperacionCambiadaEvent evt) {
+		operacionSeleccionada = evt.getOperacion();
+		restablecerPaneles();
+	}
+	
+	private void jPanelGestionarSustitucionesOperacionCambiada(OperacionCambiadaEvent evt) {
+		operacionSeleccionada = evt.getOperacion();
+		restablecerPaneles();
+	}
+	
+	private void jPanelGestionarVolantesOperacionCambiada(OperacionCambiadaEvent evt) {
+		operacionSeleccionada = evt.getOperacion();
+		restablecerPaneles();
+	}
+	
+	private void restablecerPaneles() {
+		if(jPanelGestionarBeneficiarios != null) {
+			jPanelGestionarBeneficiarios.restablecerPaneles();
+		}
+		if(jPanelGestionarUsuarios != null) {
+			jPanelGestionarUsuarios.restablecerPaneles();
+		}
+		if(jPanelGestionarCitas != null) {
+			jPanelGestionarCitas.restablecerPaneles();
+		}
+		if(jPanelGestionarSustituciones != null) {
+			jPanelGestionarSustituciones.restablecerPaneles();
+		}
+		if(jPanelGestionarVolantes != null) {
+			jPanelGestionarVolantes.restablecerPaneles();
+		}
+	}
 	
 	@SuppressWarnings("unchecked")
 	public void iniciar() {
@@ -267,66 +347,87 @@ public class JFPrincipal extends javax.swing.JFrame {
 		// Inicializamos la barra de estado
 		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + RolesUsuarios.values()[(int)controlador.getSesion().getRol()]);
 		lblPuertoEscucha.setText("Puerto de escucha: " + controlador.getPuertoEscucha());
-		// Inicializamos las pestañas
-		if(!operaciones.contains(Operaciones.RegistrarBeneficiario)
-				&& !operaciones.contains(Operaciones.ConsultarBeneficiario)) {
+
+		// Inicializamos los paneles de gestión de beneficiarios
+		if(!operaciones.contains(Operaciones.ConsultarBeneficiario)) {
+			jPanelGestionarBeneficiarios.desactivarConsultarBeneficiario();
+			jPanelGestionarBeneficiarios.desactivarConsultarModificarBeneficiario();
+		}
+		if(!operaciones.contains(Operaciones.RegistrarBeneficiario)) {
+			jPanelGestionarBeneficiarios.desactivarRegistrarBeneficiario();
+		}
+		if(!operaciones.contains(Operaciones.ModificarBeneficiario)) {
+			jPanelGestionarBeneficiarios.desactivarConsultarModificarBeneficiario();
+		}
+		if(!operaciones.contains(Operaciones.EliminarBeneficiario)) {
+			jPanelGestionarBeneficiarios.desactivarConsultarModificarBeneficiario();
+		}
+		if(operaciones.contains(Operaciones.ConsultarBeneficiario)
+		 && operaciones.contains(Operaciones.ModificarBeneficiario)
+		 && operaciones.contains(Operaciones.EliminarBeneficiario)) {
+			jPanelGestionarBeneficiarios.desactivarConsultarBeneficiario();
+		}
+		
+		// Inicializamos los paneles de gestión de usuarios
+		if(!operaciones.contains(Operaciones.ConsultarUsuario)) {
+			jPanelGestionarUsuarios.desactivarConsultarUsuario();
+			jPanelGestionarUsuarios.desactivarConsultarModificarUsuario();
+		}
+		if(!operaciones.contains(Operaciones.RegistrarUsuario)) {
+			jPanelGestionarUsuarios.desactivarCrearUsuario();
+		}
+		if(!operaciones.contains(Operaciones.ModificarUsuario)) {
+			jPanelGestionarUsuarios.desactivarConsultarModificarUsuario();
+		}
+		if(!operaciones.contains(Operaciones.EliminarUsuario)) {
+			jPanelGestionarUsuarios.desactivarConsultarModificarUsuario();
+		}
+		if(operaciones.contains(Operaciones.ConsultarUsuario)
+		 && operaciones.contains(Operaciones.ModificarUsuario)
+		 && operaciones.contains(Operaciones.EliminarUsuario)) {
+			jPanelGestionarUsuarios.desactivarConsultarUsuario();
+		}
+		
+		// Inicializamos los paneles de gestión de citas
+		if(!operaciones.contains(Operaciones.ConsultarCitas)) {
+			jPanelGestionarCitas.desactivarConsultarAnularCita();
+		}
+		if(!operaciones.contains(Operaciones.TramitarCita)) {
+			jPanelGestionarCitas.desactivarTramitarCita();
+		}
+		if(!operaciones.contains(Operaciones.TramitarCitaVolante)) {
+			jPanelGestionarCitas.desactivarTramitarCitaVolante();
+		}
+		
+		// Inicializamos los paneles de gestión de sustituciones
+		if(!operaciones.contains(Operaciones.EstablecerSustituto)) {
+			jPanelGestionarSustituciones.desactivarEstablecerSustituto();
+		}
+		
+		// Inicializamos los paneles de gestión de volantes
+		if(!operaciones.contains(Operaciones.EmitirVolante)) {
+			jPanelGestionarVolantes.desactivarEmitirVolante();
+		}
+		
+		// Quitamos las pestañas que se han quedado sin operaciones
+		if(!jPanelGestionarBeneficiarios.hayOperacionesDisponibles()) {
 			jTabbedPaneOperaciones.remove(jPanelGestionarBeneficiarios);
 		}
-		if(!operaciones.contains(Operaciones.TramitarCita)
-				&& !operaciones.contains(Operaciones.ConsultarCitas)){
-			jTabbedPaneOperaciones.remove(jPanelGestionarCitas);
-		}
-		
-		if (!operaciones.contains(Operaciones.EmitirVolante))
-			jTabbedPaneOperaciones.remove(jPanelEmitirVolante);
-		
-		if(!operaciones.contains(Operaciones.RegistrarUsuario)
-				&& !operaciones.contains(Operaciones.ConsultarUsuario)) {
+		if(!jPanelGestionarUsuarios.hayOperacionesDisponibles()) {
 			jTabbedPaneOperaciones.remove(jPanelGestionarUsuarios);
 		}
-		if(!operaciones.contains(Operaciones.ConsultarMedico)) {
-			//TODO Permitir ver el calendario del médico
+		if(!jPanelGestionarCitas.hayOperacionesDisponibles()) {
+			jTabbedPaneOperaciones.remove(jPanelGestionarCitas);
 		}
-//		if(!operaciones.contains(Operaciones.ModificarCalendario)) {
-			//jTabbedPaneOperaciones.remove(jPanelConsultarCalendario);
-//		}
-		if(!operaciones.contains(Operaciones.EstablecerSustituto)) {
-			jTabbedPaneOperaciones.remove(jPanelEstablecerSustituto);
+		if(!jPanelGestionarSustituciones.hayOperacionesDisponibles()) {
+			jTabbedPaneOperaciones.remove(jPanelGestionarSustituciones);
 		}
-
-		// Inicializamos el contenido de cada pestaña
-		if(!operaciones.contains(Operaciones.RegistrarBeneficiario))
-			jPanelGestionarBeneficiarios.desactivarRegistrarBeneficiario();
-		/*if(!operaciones.contains(Operaciones.ModificarBeneficiario))
-			jPanelGestionarBeneficiarios.desactivarModificarBeneficiario();*/
-		if(!operaciones.contains(Operaciones.ConsultarBeneficiario))
-			jPanelGestionarBeneficiarios.desactivarConsultarModificarBeneficiario();
-
-		if(!operaciones.contains(Operaciones.RegistrarUsuario))
-			jPanelGestionarUsuarios.desactivarCrearUsuario();
-		/*if(!operaciones.contains(Operaciones.ModificarUsuario))
-			jPanelGestionarUsuarios.desactivarModificarUsuario();
-		if(!operaciones.contains(Operaciones.EliminarUsuario))
-			jPanelGestionarUsuarios.desactivarEliminarUsuario();*/
-		if(!operaciones.contains(Operaciones.ConsultarUsuario))
-			jPanelGestionarUsuarios.desactivarConsultarUsuario();
+		if(!jPanelGestionarVolantes.hayOperacionesDisponibles()) {
+			jTabbedPaneOperaciones.remove(jPanelGestionarVolantes);
+		}
 		
-		if(!operaciones.contains(Operaciones.TramitarCita))
-			jPanelGestionarCitas.desactivarTramitarCita();
-		if(!operaciones.contains(Operaciones.ConsultarCitas))
-			jPanelGestionarCitas.desactivarConsultarAnularCita();
-		
-		// Controlamos si, en los paneles de consultar, se puede o no también modificar/eliminar datos,
-		// según los permisos de cada rol
-		if (!operaciones.contains(Operaciones.ModificarBeneficiario)
-				&& operaciones.contains(Operaciones.ConsultarBeneficiario))
-			jPanelGestionarBeneficiarios.desactivarModificacion();
-		
+		// Refrescamos el panel inicial de bienvenida
 		jPanelBienvenida.repaint();
-	}
-	
-	private void thisWindowClosing(WindowEvent evt) {
-		cerrarAplicacion();
 	}
 	
 	private void cerrarAplicacion() {
@@ -365,17 +466,37 @@ public class JFPrincipal extends javax.swing.JFrame {
 		}
 	}
 	
+	// Métodos públicos
+	
 	public void forzarCierreSesion() {
 		Dialogos.mostrarDialogoAdvertencia(this, "Aviso", "Se ha iniciado una sesión con el mismo nombre de usuario en otro equipo.\nEsta sesión se cerrará automáticamente.");
 		controlador.identificarse();
 	}
 
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
-		jPanelGestionarBeneficiarios.beneficiarioActualizado(beneficiario);
+		// Redirigimos la operación al grupo de paneles seleccionado
+		switch(operacionSeleccionada) {
+		case ConsultarBeneficiario:
+		case ConsultarModificarBeneficiario:
+		case RegistrarBeneficiario:
+			jPanelGestionarBeneficiarios.beneficiarioActualizado(beneficiario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
 	}
-	
+
 	public void beneficiarioEliminado(Beneficiario beneficiario) {
-		jPanelGestionarBeneficiarios.beneficiarioEliminado(beneficiario);
+		// Redirigimos la operación al grupo de paneles seleccionado
+		switch(operacionSeleccionada) {
+		case ConsultarBeneficiario:
+		case ConsultarModificarBeneficiario:
+		case RegistrarBeneficiario:
+			jPanelGestionarBeneficiarios.beneficiarioEliminado(beneficiario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
 	}
 	
 	//$hide<<$

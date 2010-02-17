@@ -2,6 +2,8 @@ package dominio.control;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.Vector;
+
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Operaciones;
@@ -156,5 +158,18 @@ public class GestorUsuarios {
 		// Borramos los datos del usuario
 		FPUsuario.eliminar(usuario);
 	}
+
+	// Método para obtener la lista de centros de salud de los usuarios
+	public static Vector<CentroSalud> consultarCentros(long idSesion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException {
+		Vector<CentroSalud> centros;
 		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCentros);
+		
+		// Obtenemos la lista de centros de salud
+		centros = FPCentroSalud.consultarTodo();
+		
+		return centros;
+	}
+
 }

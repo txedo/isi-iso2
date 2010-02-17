@@ -73,9 +73,7 @@ public class GestorBeneficiarios {
 		beneficiario = FPBeneficiario.consultarPorNSS(nss);
 
 		// Miramos si es necesario cambiar el médico asignado al beneficiario
-		System.out.println("Llega1 " + beneficiario.getMedicoAsignado());
 		medico = comprobarMedicoBeneficiario(beneficiario);
-		System.out.println("Llega "+medico);
 		if(!medico.equals(beneficiario.getMedicoAsignado())) {
 			// Cambiamos el médico y lo guardamos en la base de datos
 			beneficiario.setMedicoAsignado(medico);

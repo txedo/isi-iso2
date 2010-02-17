@@ -84,6 +84,58 @@ public class Validacion {
 		}
 	}
 	
+	// Un nombre sólo puede tener letras o espacios TODO:¿y guiones?
+	public static void comprobarNombre(String cadena) throws NombreIncorrectoException {
+		try {
+			comprobarCadena(cadena);
+		} catch(CadenaIncorrectaException e) {
+			throw new NombreIncorrectoException();
+		} catch(CadenaVaciaException e) {
+			throw new NombreIncorrectoException();
+		}
+	}
+
+	// Los apellidos sólo pueden tener letras o espacios TODO:¿y guiones?
+	public static void comprobarApellidos(String cadena) throws ApellidoIncorrectoException {
+		try {
+			comprobarCadena(cadena);
+		} catch(CadenaIncorrectaException e) {
+			throw new ApellidoIncorrectoException();
+		} catch(CadenaVaciaException e) {
+			throw new ApellidoIncorrectoException();
+		}
+	}
+	
+	// La fecha de nacimiento debe ser válida y no anterior a la fecha actual
+	public static void comprobarFechaNacimiento(Date date) throws FechaNacimientoIncorrectaException, FormatoFechaIncorrectoException {
+		SimpleDateFormat sdf;
+		
+		sdf = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			sdf.format(date);
+		} catch(Exception e) {
+			throw new FormatoFechaIncorrectoException();
+		}
+		
+		if(date.after(new Date())) {
+			throw new FechaNacimientoIncorrectaException();
+		}
+	}
+	
+	public static void comprobarDomicilio(String cadena) throws DomicilioIncorrectoException {
+		// Todos los caracteres de la cadena deben ser alfabeticos
+		boolean bCorrecto = false;
+		
+		// El primer caracter debe ser una letra
+		if (cadena.length() > 0) {
+			if (Character.isLetter(cadena.charAt(0))) {
+				bCorrecto = true;
+			}
+		}
+		if (!bCorrecto)
+			throw new DomicilioIncorrectoException();
+	}
+	
 	// Una cadena es válida si todos sus caracteres son alfabéticos o espacios
 	public static void comprobarCadena(String cadena) throws CadenaIncorrectaException, CadenaVaciaException {
 		boolean bCorrecto = false;
@@ -106,80 +158,31 @@ public class Validacion {
 		}
 	}
 	
-	public static void comprobarNombre(String cadena) throws NombreIncorrectoException {
+	// El número del domicilio debe ser un número acabado opcionalmente en una letra
+	public static void comprobarNumero(String text) throws NumeroDomicilioIncorrectoException {
+//TODO: cambiar para que el número pueda acabar en una letra
 		try {
-			comprobarCadena(cadena);
-		} catch(CadenaIncorrectaException e) {
-			throw new NombreIncorrectoException();
-		} catch(CadenaVaciaException e) {
-			throw new NombreIncorrectoException();
+			comprobarEntero(text);
+		} catch(EnteroIncorrectoException e) {
+			throw new NumeroDomicilioIncorrectoException ();
 		}
 	}
-	
-	public static void comprobarApellidos(String cadena) throws ApellidoIncorrectoException {
-		try {
-			comprobarCadena(cadena);
-		} catch(CadenaIncorrectaException e) {
-			throw new ApellidoIncorrectoException();
-		} catch(CadenaVaciaException e) {
-			throw new ApellidoIncorrectoException();
-		}
-	}
-	
-	public static void comprobarDomicilio (String cadena) throws DomicilioIncorrectoException {
-		// Todos los caracteres de la cadena deben ser alfabeticos
-		boolean bCorrecto = false;
-		
-		// El primer caracter debe ser una letra
-		if (cadena.length() > 0) {
-			if (Character.isLetter(cadena.charAt(0))) {
-				bCorrecto = true;
-			}
-		}
-		if (!bCorrecto)
-			throw new DomicilioIncorrectoException();
-	}
-	
-	// Una letra sólo puede estar en el rango A - Z o a - z (sin contar la ñ)
-	private static void comprobarLetra(String cadena) throws LetraIncorrectaException {
-		boolean bCorrecto = false;
-		
-		if(cadena.length() == 1) {
-			if((cadena.toUpperCase().charAt(0) >= 'A' && cadena.toUpperCase().charAt(0) <= 'Z')) {
-				bCorrecto = true;
-			}
-		}
 
-		if(!bCorrecto) {
-			throw new LetraIncorrectaException();
-		}
+	// El piso del domicilio debe ser un número
+	public static void comprobarPiso(String text) throws PisoDomicilioIncorrectoException {
+		try {
+			comprobarEntero(text);
+		} catch(EnteroIncorrectoException e) {
+			throw new PisoDomicilioIncorrectoException ();
+		}	
 	}
-	
-	public static void comprobarDomicilioCompleto(String domicilio, String numero, String piso, String puerta) throws DomicilioIncorrectoException, NumeroDomicilioIncorrectoException, PisoDomicilioIncorrectoException, PuertaDomicilioIncorrectoException {
-		comprobarDomicilio(domicilio);
-		if(numero.equals("")) {
-			// Si no se indica número tampoco se puede indicar piso y puerta
-			if(!piso.equals("")) {
-				throw new NumeroDomicilioIncorrectoException("El número del domicilio es obligatorio si se introduce la piso.");
-			} else if(!puerta.equals("")) {
-				throw new NumeroDomicilioIncorrectoException("El número del domicilio es obligatorio si se introduce la puerta.");
-			}
-		} else {
-			comprobarNumero(numero);
-			if(piso.equals("")) {
-				// Si no se indica piso tampoco se puede indicar puerta
-				if(!puerta.equals("")) {
-					throw new PisoDomicilioIncorrectoException("El piso del domicilio es obligatorio si se introduce la puerta.");
-				}
-			} else {
-				comprobarPiso(piso);
-				// Si se indica piso es obligatoria la puerta
-				if(puerta.equals("")) {
-					throw new PuertaDomicilioIncorrectoException("La puerta del domicilio es obligatoria si se introduce el piso.");
-				} else {
-					comprobarPuerta(puerta);
-				}
-			}
+
+	// La puerta del domicilio debe ser una única letra
+	public static void comprobarPuerta(String text) throws PuertaDomicilioIncorrectoException {
+		try {
+			comprobarLetra(text);
+		} catch(LetraIncorrectaException e) {
+			throw new PuertaDomicilioIncorrectoException();
 		}
 	}
 	
@@ -200,6 +203,21 @@ public class Validacion {
 			throw new ProvinciaIncorrectaException();
 		} catch(CadenaVaciaException e) {
 			throw new ProvinciaIncorrectaException();
+		}
+	}
+	
+	// Una letra sólo puede estar en el rango A - Z o a - z (sin contar la ñ)
+	private static void comprobarLetra(String cadena) throws LetraIncorrectaException {
+		boolean bCorrecto = false;
+		
+		if(cadena.length() == 1) {
+			if((cadena.toUpperCase().charAt(0) >= 'A' && cadena.toUpperCase().charAt(0) <= 'Z')) {
+				bCorrecto = true;
+			}
+		}
+
+		if(!bCorrecto) {
+			throw new LetraIncorrectaException();
 		}
 	}
 	
@@ -292,41 +310,9 @@ public class Validacion {
 			throw new TelefonoMovilIncorrectoException();
 	}
 
-	public static void comprobarNumero(String text) throws NumeroDomicilioIncorrectoException {
-		try {
-			comprobarEntero(text);
-		} catch (EnteroIncorrectoException e) {
-			throw new NumeroDomicilioIncorrectoException ();
-		}		
-	}
 
-	public static void comprobarPiso(String text) throws PisoDomicilioIncorrectoException {
-		try {
-			comprobarEntero(text);
-		} catch (EnteroIncorrectoException e) {
-			throw new PisoDomicilioIncorrectoException ();
-		}	
-	}
-
-	public static void comprobarPuerta(String text) throws PuertaDomicilioIncorrectoException {
-		try {
-			comprobarLetra(text);
-		} catch (LetraIncorrectaException e) {
-			throw new PuertaDomicilioIncorrectoException();
-		}		
-	}
 	
-	public static void comprobarFechaNacimiento(Date date) throws FechaNacimientoIncorrectaException, FormatoFechaIncorrectoException {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		try {
-			sdf.format(date);
-		} catch (Exception e) {
-			throw new FormatoFechaIncorrectoException();
-		}
-		Date now = new Date();
-		if (date.after(now)) throw new FechaNacimientoIncorrectaException();
 
-	}
 	
 	public static void comprobarUsuario(String usuario) throws LoginIncorrectoException {
 		//TODO:Por hacer

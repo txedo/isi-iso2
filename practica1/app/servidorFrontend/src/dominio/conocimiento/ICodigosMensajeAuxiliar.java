@@ -18,20 +18,21 @@ public interface ICodigosMensajeAuxiliar {
 	public final int MODIFICAR_USUARIO = 1004;
 	public final int ELIMINAR_USUARIO = 1005;
 	public final int CONSULTAR_USUARIO = 1006;
+	public final int CONSULTAR_CENTROS = 1007;
 	
 	// Operaciones auxiliares del Gestor de Médicos
-	public final int OBTENER_MEDICOS_TIPO = 1007;
-	public final int CONSULTAR_HORARIO_MEDICO = 1008;
-	public final int OBTENER_POSIBLES_SUSTITUTOS = 1009;
-	public final int CONSULTAR_BENEFICIARIOS_MEDICO = 1010;
+	public final int OBTENER_MEDICOS_TIPO = 1008;
+	public final int CONSULTAR_HORARIO_MEDICO = 1009;
+	public final int OBTENER_POSIBLES_SUSTITUTOS = 1010;
+	public final int CONSULTAR_BENEFICIARIOS_MEDICO = 1011;
 	
 	// Operaciones auxiliares del Gestor de Citas
-	public final int CONSULTAR_HORAS_CITAS_MEDICO = 1011;
-	public final int CONSULTAR_CITAS_MEDICO = 1012;
-	public final int CONSULTAR_DIAS_COMPLETOS = 1013;
-	public final int CONSULTAR_CITAS_PENDIENTES = 1014;
+	public final int CONSULTAR_HORAS_CITAS_MEDICO = 1012;
+	public final int CONSULTAR_CITAS_MEDICO = 1013;
+	public final int CONSULTAR_DIAS_COMPLETOS = 1014;
+	public final int CONSULTAR_CITAS_PENDIENTES = 1015;
 	
 	// Operaciones auxiliares del Gestor de Volantes
-	public final int CONSULTAR_VOLANTE = 1015;
+	public final int CONSULTAR_VOLANTE = 1016;
 	
 }

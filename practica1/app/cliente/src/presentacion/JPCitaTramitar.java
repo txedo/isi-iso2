@@ -62,6 +62,12 @@ public class JPCitaTramitar extends JPBase {
 	private JButton btnRegistrar;
 	private JComboBox cmbHorasCitas;
 
+	public JPCitaTramitar() {
+		this(null, null);
+		// Este constructor evita que aparezca un error al editar
+		// los formularios o paneles que utilizan JPCitaTramitar
+	}
+	
 	public JPCitaTramitar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
@@ -267,14 +273,18 @@ public class JPCitaTramitar extends JPBase {
 			if(!horaSeleccionadaValida()) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo) para registrar la cita.");
 			} else {
+				
 				// Obtenemos la hora definitiva de la cita
 				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
 				fecha = dtcDiaCita.getDate();
+				
 				// Solicitamos la cita
-				getControlador().pedirCita(beneficiario, beneficiario.getMedicoAsignado().getDni(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes()), IConstantes.DURACION_CITA);				
+				getControlador().pedirCita(beneficiario, beneficiario.getMedicoAsignado().getDni(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes()), IConstantes.DURACION_CITA);
+				
+				// Mostramos el resultado de la operación y limpiamos el panel
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita ha quedado registrada.");
-				pnlBeneficiario.limpiarCamposConsulta();
-				limpiarCamposTramitacion();
+				restablecerPanel();
+
 			}
 
 		} catch(ParseException e) {
@@ -375,6 +385,15 @@ public class JPCitaTramitar extends JPBase {
 		dtcDiaCita.setDate(null);
 		rellenarListaHoras(null, null);
 		cambiarEstado(false);
+	}
+	
+	// Métodos públicos
+	
+	// <métodos del observador>
+	
+	public void restablecerPanel() {
+		pnlBeneficiario.restablecerPanel();
+		limpiarCamposTramitacion();		
 	}
 	
 	//$hide<<$

@@ -94,8 +94,8 @@ public class JPUsuarioConsultar extends JPBase {
 
 	public JPUsuarioConsultar() {
 		this(null, null);
-		// Este constructor evita que aparezca un error al editar con
-		// el Jigloo los formularios que utilizan JPUsuarioConsultar
+		// Este constructor evita que aparezca un error al editar
+		// los formularios o paneles que utilizan JPUsuarioConsultar
 	}
 	
 	public JPUsuarioConsultar(JFrame frame, ControladorCliente controlador) {
@@ -293,17 +293,9 @@ public class JPUsuarioConsultar extends JPBase {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	}	
+	}
+	
 	//$hide>>$
-	
-	public Usuario getUsuario() {
-		return usuario;
-	}
-	
-	private void rellenarModelo(String [] informacion) {
-		ComboBoxModel cbRolesModel = new DefaultComboBoxModel(informacion);
-		cmbRol.setModel(cbRolesModel);	
-	}
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
 		Object[] listeners;
@@ -311,7 +303,6 @@ public class JPUsuarioConsultar extends JPBase {
 
 		// Borramos la información del antiguo usuario consultado
 		limpiarCamposConsulta();
-		cambiarEdicion(false);
 					
 		try {
 			
@@ -337,7 +328,6 @@ public class JPUsuarioConsultar extends JPBase {
 			
 		} catch(UsuarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
-			limpiarCamposConsulta();
 			txtNIFBuscado.selectAll();
 			txtNIFBuscado.grabFocus();			
 
@@ -406,7 +396,6 @@ public class JPUsuarioConsultar extends JPBase {
 			
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
 			limpiarCamposConsulta();
-			cambiarEdicion(false);
 			
 		} catch(NombreIncorrectoException e) {
 			txtNombre.selectAll();
@@ -459,14 +448,12 @@ public class JPUsuarioConsultar extends JPBase {
 						getControlador().eliminarMedico((Medico)usuario);
 						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
 						limpiarCamposConsulta();
-						cambiarEdicion(false);
 					}
 				}
 				else {
 					getControlador().eliminarUsuario(usuario);
 					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
 					limpiarCamposConsulta();
-					cambiarEdicion(false);
 				}
 			} catch(SQLException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
@@ -480,14 +467,6 @@ public class JPUsuarioConsultar extends JPBase {
 	
 	private void chkEditarActionPerformed(ActionEvent evt) {
 		cambiarEdicion(chkEditar.isSelected());
-	}
-	
-	public void addUsuarioBuscadoListener(UsuarioBuscadoListener listener) {
-		listenerList.add(UsuarioBuscadoListener.class, listener);
-	}
-
-	public void removeUsuarioBuscadoListener(UsuarioBuscadoListener listener) {
-		listenerList.remove(UsuarioBuscadoListener.class, listener);
 	}
 	
 	private void btnCalendarioActionPerformed(ActionEvent evt) {
@@ -557,6 +536,38 @@ public class JPUsuarioConsultar extends JPBase {
 			btnCalendario.setText("Ver...");
 		}
 	}
+
+	private void limpiarCamposConsulta() {
+		usuario = null;
+		txtNIF.setText("");
+		txtLogin.setText("");
+		txtPassword.setText("");
+		txtNombre.setText("");
+		txtApellidos.setText("");
+		txtCentro.setText("");
+		chkEditar.setSelected(false);
+		rellenarModelo(new String [] {""});
+		cambiarEdicion(false);
+	}
+
+	private void rellenarModelo(String [] informacion) {
+		ComboBoxModel cbRolesModel = new DefaultComboBoxModel(informacion);
+		cmbRol.setModel(cbRolesModel);	
+	}
+	
+	// Métodos públicos
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void addUsuarioBuscadoListener(UsuarioBuscadoListener listener) {
+		listenerList.add(UsuarioBuscadoListener.class, listener);
+	}
+
+	public void removeUsuarioBuscadoListener(UsuarioBuscadoListener listener) {
+		listenerList.remove(UsuarioBuscadoListener.class, listener);
+	}
 	
 	public void reducirPanel() {
 		// Este método oculta algunos controles de la interfaz para
@@ -579,21 +590,22 @@ public class JPUsuarioConsultar extends JPBase {
 		this.remove(txtCentro);
 		this.add(txtCentro, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(txtLogin));
 	}
-
-	public void limpiarCamposConsulta() {
-		usuario = null;
-		txtNIF.setText("");
-		txtLogin.setText("");
-		txtPassword.setText("");
-		txtNombre.setText("");
-		txtApellidos.setText("");
-		txtCentro.setText("");
-		chkEditar.setSelected(false);
-		chkEditar.setEnabled(false);
-		rellenarModelo(new String [] {""});
-		cambiarEdicion(false);
+	
+	public void desactivarModificacion() {
+		// Este método se utiliza cuando un usuario puede
+		// consultar un beneficiario, pero no modificarlo
+		chkEditar.setVisible(false);
+		btnGuardar.setVisible(false);
+		btnEliminar.setVisible(false);
 	}
-
+	
+	// <métodos del observador>
+	
+	public void restablecerPanel() {
+		txtNIFBuscado.setText("");
+		limpiarCamposConsulta();
+	}
+	
 	//$hide<<$
 	
 }
