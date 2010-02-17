@@ -27,6 +27,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CategoriasMedico;
+import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.Especialidades;
 import dominio.conocimiento.Especialista;
@@ -39,8 +40,8 @@ import dominio.conocimiento.Usuario;
 import dominio.conocimiento.IConstantes;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
-import excepciones.CentroSaludInexistenteException;
 import excepciones.ContraseñaIncorrectaException;
+import excepciones.LoginIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NombreIncorrectoException;
 import excepciones.UsuarioNoSeleccionadoException;
@@ -105,7 +106,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		super(frame, controlador);
 		periodos = new Vector<PeriodoTrabajo>();
 		initGUI();
-		crearModelos();
+		rellenarTiposUsuario();
 	}
 	
 	private void initGUI() {
@@ -294,43 +295,47 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	}
 	
 	private void btnCrearUsuarioActionPerformed(ActionEvent evt) {
-		Usuario usu = null;
-		TipoMedico tipo = null;	
+		Usuario usuario = null;
+		TipoMedico tipo = null;
+		CentroSalud centro;
 		
 		try {
 			
 			// Comprobamos todos los campos
-			Validacion.comprobarNIF(txtNIF.getText());
-			Validacion.comprobarNombre(txtNombre.getText());
-			Validacion.comprobarApellidos(txtApellidos.getText());
-			Validacion.comprobarContraseña(txtPassword.getText());	
-			if (!txtPassword.getText().equals(txtPasswordConf.getText()))
-					throw new ContraseñaIncorrectaException("Las contraseñas no coinciden");
-			if (lstTipoUsuario.getSelectedIndex()==-1)
-				throw new UsuarioNoSeleccionadoException();
-			else if (lstTipoMedico.getSelectedIndex()==-1 && lstTipoUsuario.getSelectedValue().equals(RolesUsuarios.Medico.name()))
-				throw new UsuarioNoSeleccionadoException();								
+			Validacion.comprobarNIF(txtNIF.getText().trim());
+			Validacion.comprobarNombre(txtNombre.getText().trim());
+			Validacion.comprobarApellidos(txtApellidos.getText().trim());
+			Validacion.comprobarContraseña(new String(txtPassword.getPassword()));	
+			if(!(new String(txtPassword.getPassword())).equals(new String(txtPasswordConf.getPassword()))) {
+				throw new ContraseñaIncorrectaException("Las contraseñas no coinciden.");
+			}
+			if(lstTipoUsuario.getSelectedIndex() == -1) {
+				throw new UsuarioNoSeleccionadoException("No se ha seleccionado el tipo de usuario.");
+			} else if(lstTipoMedico.getSelectedIndex() == -1 && lstTipoUsuario.getSelectedValue().equals(RolesUsuarios.Medico.name())) {
+				throw new UsuarioNoSeleccionadoException("No se ha seleccionado el tipo de médico.");
+			}
 
 			// Creamos un nuevo usuario con los datos introducidos
 			switch (RolesUsuarios.valueOf(lstTipoUsuario.getSelectedValue().toString())) {
 				case Administrador:
-					usu = new Administrador();
+					usuario = new Administrador();
 					break;
 				case Citador:
-					usu = new Citador();
+					usuario = new Citador();
 					break;
 				case Medico:
-					usu = new Medico();
+					usuario = new Medico();
 					break;
 			}
-			usu.setDni(txtNIF.getText());
-			usu.setNombre(txtNombre.getText());
-			usu.setApellidos(txtApellidos.getText());
-			usu.setLogin(txtLogin.getText());
-			usu.setPassword(txtPassword.getText());
+			usuario.setDni(txtNIF.getText().trim());
+			usuario.setNombre(txtNombre.getText().trim());
+			usuario.setApellidos(txtApellidos.getText().trim());
+			usuario.setLogin(txtLogin.getText().trim());
+			usuario.setPassword(new String(txtPassword.getPassword()));
 			
-			if (usu.getRol() == RolesUsuarios.Medico) {
-				switch (CategoriasMedico.valueOf(lstTipoMedico.getSelectedValue().toString())) {
+			// Creamos el tipo de médico si es necesario
+			if(usuario.getRol() == RolesUsuarios.Medico) {
+				switch(CategoriasMedico.valueOf(lstTipoMedico.getSelectedValue().toString())) {
 				case Cabecera:
 					tipo = new Cabecera();
 					break;
@@ -341,43 +346,52 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 					tipo = new Especialista(cmbEspecialidad.getSelectedItem().toString());
 					break;
 				}
-				((Medico)usu).setTipoMedico(tipo);
-				((Medico)usu).setCalendario(periodos);
-				getControlador().crearMedico((Medico)usu);
+				((Medico)usuario).setTipoMedico(tipo);
+				((Medico)usuario).setCalendario(periodos);
 			}
-			else {
-				getControlador().crearUsuario(usu);
-			}
-			// El usuario se ha creado correctamente
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido dado de alta en el sistema.");
-			limpiarCamposRegistro();
+			
+			// Solicitamos al servidor que se cree el usuario
+			getControlador().crearUsuario(usuario);
+			
+			// Obtenemos el médico que se ha asignado al beneficiario
+			centro = getControlador().consultarUsuario(usuario.getDni()).getCentroSalud();
+
+			// Mostramos el resultado de la operación y limpiamos el panel
+			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido dado de alta en el sistema y se\nle ha asignado automáticamente el siguiente centro:\n" + centro.getNombre() + " (" + centro.getDireccion() + ")");
+			restablecerPanel();
 			
 		} catch(UsuarioYaExistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());	
-		} catch(CentroSaludInexistenteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());		
-		} catch(SQLException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch(RemoteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch(UsuarioNoSeleccionadoException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe seleccionar un tipo de usuario y, si es el caso, un tipo de médico");
+
 		} catch(NIFIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtNIF.selectAll();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "El NIF debe ser el número de DNI (incluyendo el 0) y la letra sin guión.");
 			txtNIF.grabFocus();
 		} catch(NombreIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtNombre.selectAll();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "El nombre del usuario sólo puede contener letras y espacios.");
 			txtNombre.grabFocus();
 		} catch(ApellidoIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtApellidos.selectAll();
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Los apellidos del usuario sólo pueden contener letras y espacios.");
 			txtApellidos.grabFocus();
+		} catch(LoginIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtLogin.selectAll();
+			txtLogin.grabFocus();
 		} catch(ContraseñaIncorrectaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtPassword.selectAll();
+			txtPassword.grabFocus();
+		} catch(UsuarioNoSeleccionadoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(Exception e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
 	}
 	
@@ -412,7 +426,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		frmCalendario.dispose();
 	}
 
-	private void crearModelos() {
+	private void rellenarTiposUsuario() {
 		lstTipoUsuarioModel = new DefaultListModel();
 		for(RolesUsuarios rol : RolesUsuarios.values()) {
 			lstTipoUsuarioModel.addElement(rol.name());			

@@ -48,6 +48,10 @@ public class JPEmitirVolante extends JPBase {
 	
 	private static final long serialVersionUID = -2491308165795545454L;
 	
+	private Vector<Medico> especialistas;
+	private long idVolante;
+	private Beneficiario beneficiario = null;
+
 	private JPBeneficiarioConsultar pnlBeneficiario;
 	private JSeparator sepSeparador;
 	private JPanel jPanelMedico;
@@ -59,10 +63,6 @@ public class JPEmitirVolante extends JPBase {
 	private JComboBox cbEspecialidad;
 	private ListModel lstEspecialistasModel; 
 	
-	private Vector<Medico> especialistas;
-	private long idVolante;
-	private Beneficiario beneficiario = null;
-
 	public JPEmitirVolante() {
 		this(null, null);
 		// Este constructor evita que aparezca un error al editar
@@ -229,11 +229,6 @@ public class JPEmitirVolante extends JPBase {
 	
 	private void btnAceptarActionPerformed(ActionEvent evt) {
 		boolean valido = true;
-
-		if (beneficiario == null) { 
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un beneficiario");
-			valido = false;
-		}
 		
 		if (valido && lstEspecialistas.getSelectedIndex()==-1) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe seleccionar un especialista");
