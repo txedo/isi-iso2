@@ -1189,7 +1189,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			
 		case ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO:
 			try {
-				resultado = GestorMedicos.getBeneficiariosMedico(idSesion, (String)informacion);
+				resultado = GestorBeneficiarios.getBeneficiariosMedico(idSesion, (String)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultados los beneficiarios asignados al médico con DNI " + (String)informacion + ".");
 			} catch(SQLException se) {
