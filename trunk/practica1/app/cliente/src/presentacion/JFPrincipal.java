@@ -2,6 +2,8 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
 import dominio.control.ControladorCliente;
@@ -69,7 +71,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar;
 	private JPanel jPanelEstablecerSustituto;
-	private JPCalendarioConsultar jPanelConsultarCalendario;
 	private JLabel lblPuertoEscucha;
 	private JButton btnCerrarSesion;
 	private JButton btnCerrarAplicacion;
@@ -369,6 +370,14 @@ public class JFPrincipal extends javax.swing.JFrame {
 		controlador.identificarse();
 	}
 
+	public void beneficiarioActualizado(Beneficiario beneficiario) {
+		jPanelGestionarBeneficiarios.beneficiarioActualizado(beneficiario);
+	}
+	
+	public void beneficiarioEliminado(Beneficiario beneficiario) {
+		jPanelGestionarBeneficiarios.beneficiarioEliminado(beneficiario);
+	}
+	
 	//$hide<<$
 	
 }

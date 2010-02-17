@@ -166,8 +166,6 @@ public class JPCitaConsultar extends JPBase {
 				// Obtenemos y mostramos las citas del beneficiario
 				// (por defecto, sólo las pendientes)
 				citas = getControlador().consultarCitasPendientes(beneficiario.getNif());
-				//for (Cita c: citas)
-					//System.out.println(c.getFechaYHora());
 				crearTabla(citas.size());
 				rellenarTabla(citas);
 				

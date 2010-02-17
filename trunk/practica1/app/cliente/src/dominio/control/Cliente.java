@@ -2,6 +2,8 @@ package dominio.control;
 
 import java.rmi.RemoteException;
 import comunicaciones.ICliente;
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 
 /**
  * Clase utilizada por el servidor front-end que implementa las
@@ -44,9 +46,15 @@ public class Cliente implements ICliente {
 	public void setControlador(ControladorCliente controlador) {
 		this.controlador = controlador;
 	}
-
-	public void actualizarVentanas() throws RemoteException {
-		// TODO Auto-generated method stub
+ 
+	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
+		switch(operacion) {
+		case ICodigosOperacionesCliente.MODIFICAR:
+			if(dato instanceof Beneficiario) {
+				controlador.beneficiarioActualizado((Beneficiario)dato);
+			}
+			break;
+		}
 	}
 	
 	public void cerrarSesion() throws RemoteException {

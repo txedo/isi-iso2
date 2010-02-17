@@ -11,6 +11,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
+
+import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 
@@ -101,8 +103,8 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 		return cliente.getPuerto();
 	}
 
-	public void actualizarVentanas() throws RemoteException {
-		cliente.actualizarVentanas();
+	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
+		cliente.actualizarVentanas(operacion, dato);
 	}
 	
 	public void cerrarSesion() throws RemoteException {

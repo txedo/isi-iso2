@@ -12,6 +12,7 @@ import java.util.Vector;
 import comunicaciones.ICliente;
 import comunicaciones.ProxyCliente;
 import dominio.conocimiento.Encriptacion;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
@@ -211,6 +212,14 @@ public class GestorSesiones {
 		}
 	}
 
+	public static void actualizarClientes(long idSesion, int operacion, Object dato) throws RemoteException {
+		for(Long id : clientes.keySet()) {
+			if(id != idSesion) {
+				clientes.get(id).actualizarVentanas(operacion, dato);
+			}
+		}
+	}
+	
 	public static Hashtable<Long, ICliente> getClientes() {
 		return clientes;
 	}
