@@ -153,6 +153,10 @@ public class ControladorCliente {
 		ventanaPrincipal.forzarCierreSesion();
 	}
 	
+	public void beneficiarioActualizado(Beneficiario beneficiario) {
+		ventanaPrincipal.beneficiarioActualizado(beneficiario);
+	}
+	
 	// ---------------------------
 	// Métodos cliente -> servidor
 	// ---------------------------

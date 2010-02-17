@@ -5,6 +5,8 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
+import dominio.conocimiento.ICodigosOperacionesCliente;
+
 /**
  * Proxy utilizado para conectarse con los clientes.
  */
@@ -29,16 +31,29 @@ public class ProxyCliente implements ICliente {
 		return cliente.getPuerto();
 	}
 
-	public void actualizarVentanas() throws RemoteException {
-		cliente.actualizarVentanas();
+	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
+		Thread hilo;
+		
+		tOperacion = operacion;
+		tDato = dato;
+		// Lanzamos la operación en otro hilo para no detener el servidor
+		hilo = new Thread(new Runnable() {
+			public void run() {
+				try {
+					cliente.actualizarVentanas(tOperacion, tDato);
+				} catch(RemoteException e) {
+					// Ignoramos la excepción
+				}
+			}
+		});
+		hilo.start();
 	}
 	
 	public void cerrarSesion() throws RemoteException {
-		Runnable run;
 		Thread hilo;
 		
 		// Lanzamos la operación en otro hilo para no detener el servidor
-		run = new Runnable() {
+		hilo = new Thread(new Runnable() {
 			public void run() {
 				try {
 					cliente.cerrarSesion();
@@ -46,9 +61,11 @@ public class ProxyCliente implements ICliente {
 					// Ignoramos la excepción
 				}
 			}
-		};
-		hilo = new Thread(run);
+		});
 		hilo.start();
 	}
+	
+	private int tOperacion;
+	private Object tDato;
 
 }

@@ -2,6 +2,7 @@ package comunicaciones;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 
 /**
  * Interfaz con las operaciones que se pueden solicitar a los
@@ -16,7 +17,7 @@ public interface ICliente extends Remote {
 	
 	public int getPuerto() throws RemoteException;
 	
-	public void actualizarVentanas() throws RemoteException;
+	public void actualizarVentanas(int operacion, Object dato) throws RemoteException;
 	
 	public void cerrarSesion() throws RemoteException;
 	

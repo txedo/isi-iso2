@@ -432,9 +432,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
-		Object[] listeners;
+		Beneficiario beneficiarioBuscado;
 		String identificacion, tipo;
-		int i;
 		
 		// Borramos la información del antiguo beneficiario consultado
 		limpiarCamposConsulta();
@@ -450,41 +449,22 @@ public class JPBeneficiarioConsultar extends JPBase {
 			}
 
 			// Buscamos el beneficiario solicitado
+			beneficiarioBuscado = null;
 			if(tipo.equals(ID_NIF)) {
 				Validacion.comprobarNIF(identificacion);
-				beneficiario = getControlador().consultarBeneficiarioPorNIF(identificacion);
+				beneficiarioBuscado = getControlador().consultarBeneficiarioPorNIF(identificacion);
 			} else if(tipo.equals(ID_NSS)) {
 				Validacion.comprobarNSS(identificacion);
-				beneficiario = getControlador().consultarBeneficiarioPorNSS(identificacion);
+				beneficiarioBuscado = getControlador().consultarBeneficiarioPorNSS(identificacion);
 			}
-
-			// Mostramos los datos del beneficiario encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Beneficiario encontrado.");			
-			txtIdentificacion.setText("");
-			txtNIF.setText(beneficiario.getNif());
-			txtNSS.setText(beneficiario.getNss());
-			txtNombre.setText(beneficiario.getNombre());
-			txtApellidos.setText(beneficiario.getApellidos());
-			dtcFechaNacimiento.setDate(beneficiario.getFechaNacimiento());
-			txtLocalidad.setText(beneficiario.getDireccion().getCiudad());
-			txtProvincia.setText(beneficiario.getDireccion().getProvincia());
-			txtCP.setText(Integer.toString(beneficiario.getDireccion().getCP()));
-			txtDomicilio.setText(beneficiario.getDireccion().getDomicilio());
-			txtNumero.setText(beneficiario.getDireccion().getNumero());
-			txtPiso.setText(beneficiario.getDireccion().getPiso());
-			txtPuerta.setText(beneficiario.getDireccion().getPuerta());
-			txtCorreoElectronico.setText(beneficiario.getCorreo());
-			txtTelefonoFijo.setText(beneficiario.getTelefono());
-			txtTelefonoMovil.setText(beneficiario.getMovil());
-			txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
-			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + "; " + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion().toString());
-			chkEditar.setEnabled(true);
+			buscarBeneficiario(beneficiarioBuscado);
 			
 		} catch(BeneficiarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtIdentificacion.selectAll();
-			txtIdentificacion.grabFocus();			
-
+			txtIdentificacion.grabFocus();
+			
 		} catch(CadenaVaciaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NIF o un NSS.");
 			txtIdentificacion.grabFocus();
@@ -496,15 +476,43 @@ public class JPBeneficiarioConsultar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtIdentificacion.selectAll();
 			txtIdentificacion.grabFocus();
-
+		
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(Exception e) {
-			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
+	}
+	
+	private void buscarBeneficiario(Beneficiario beneficiario) {
+		Object[] listeners;
+		int i;
+
+		// Actualizamos el beneficiario
+		this.beneficiario = beneficiario;
+		
+		// Mostramos los datos del beneficiario encontrado
+		txtIdentificacion.setText("");
+		txtNIF.setText(beneficiario.getNif());
+		txtNSS.setText(beneficiario.getNss());
+		txtNombre.setText(beneficiario.getNombre());
+		txtApellidos.setText(beneficiario.getApellidos());
+		dtcFechaNacimiento.setDate(beneficiario.getFechaNacimiento());
+		txtLocalidad.setText(beneficiario.getDireccion().getCiudad());
+		txtProvincia.setText(beneficiario.getDireccion().getProvincia());
+		txtCP.setText(Integer.toString(beneficiario.getDireccion().getCP()));
+		txtDomicilio.setText(beneficiario.getDireccion().getDomicilio());
+		txtNumero.setText(beneficiario.getDireccion().getNumero());
+		txtPiso.setText(beneficiario.getDireccion().getPiso());
+		txtPuerta.setText(beneficiario.getDireccion().getPuerta());
+		txtCorreoElectronico.setText(beneficiario.getCorreo());
+		txtTelefonoFijo.setText(beneficiario.getTelefono());
+		txtTelefonoMovil.setText(beneficiario.getMovil());
+		txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+		txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + "; " + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion().toString());
+		chkEditar.setEnabled(true);
 		
 		// Notificamos que ha cambiado el beneficiario seleccionado
 		listeners = listenerList.getListenerList();
@@ -738,6 +746,21 @@ public class JPBeneficiarioConsultar extends JPBase {
 
 	private boolean campoVacio(JTextField campo) {
 		return campo.getText().trim().equals("");
+	}
+	
+	public void beneficiarioActualizado(Beneficiario beneficiario) {
+		if(this.beneficiario != null && this.beneficiario.getNif().equals(beneficiario.getNif())) {
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El beneficiario mostrado ha sido modificado.");
+			buscarBeneficiario(beneficiario);
+		}
+	}
+	
+	public void beneficiarioEliminado(Beneficiario beneficiario) {
+		if(this.beneficiario != null & this.beneficiario.getNif().equals(beneficiario.getNif())) {
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El beneficiario mostrado ha sido eliminado.");
+			limpiarCamposConsulta();
+			cambiarEdicion(false);
+		}
 	}
 	
 	public void reducirPanel() {

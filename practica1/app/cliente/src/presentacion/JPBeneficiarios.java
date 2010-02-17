@@ -5,6 +5,8 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.Beneficiario;
 import dominio.control.ControladorCliente;
 import java.util.EventObject;
 
@@ -109,6 +111,14 @@ public class JPBeneficiarios extends JPBase {
 			jPanelConsultar.setVisible(true);
 			jPanelConsultar.repaint();
 		}
+	}
+	
+	public void beneficiarioActualizado(Beneficiario beneficiario) {
+		jPanelConsultar.beneficiarioActualizado(beneficiario);
+	}
+	
+	public void beneficiarioEliminado(Beneficiario beneficiario) {
+		jPanelConsultar.beneficiarioEliminado(beneficiario);
 	}
 	
 	public void desactivarRegistrarBeneficiario() {
