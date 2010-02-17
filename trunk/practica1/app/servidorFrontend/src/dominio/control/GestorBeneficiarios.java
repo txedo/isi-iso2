@@ -8,7 +8,6 @@ import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import persistencia.FPBeneficiario;
-import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import persistencia.FuncionesPersistencia;
 import excepciones.BeneficiarioInexistenteException;
@@ -88,6 +87,7 @@ public class GestorBeneficiarios {
 	// Método para registrar un nuevo beneficiario en el sistema
 	public static void crearBeneficiario(long idSesion, Beneficiario beneficiario) throws SQLException, BeneficiarioYaExistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
 		boolean existe;
+		Medico medico;
 		
 		// Comprobamos los parámetros pasados
 		if(beneficiario == null) {
@@ -112,6 +112,12 @@ public class GestorBeneficiarios {
 			// Lo normal es que se lance esta excepción
 		}
 
+		// Intentamos asignar un medico al beneficiario
+		// Si no hay médicos disponibles, se lanzará una excepcion y no se registrará el beneficiario
+		medico = comprobarMedicoBeneficiario(beneficiario);
+		// Cambiamos el médico y lo guardamos en la base de datos
+		beneficiario.setMedicoAsignado(medico);
+		
 		// Añadimos el beneficiario al sistema
 		FPBeneficiario.insertar(beneficiario);
 	}
@@ -160,7 +166,7 @@ public class GestorBeneficiarios {
 		FPBeneficiario.eliminar(bene);
 	}
 	
-	public static void asignarMedico (long idSesion, Beneficiario beneficiario) throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException, NullPointerException, OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException {
+	/*public static void asignarMedico (long idSesion, Beneficiario beneficiario) throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException, NullPointerException, OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException {
 		Medico medico;
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -185,10 +191,10 @@ public class GestorBeneficiarios {
 			}
 		}
 		// Actualizamos el beneficiario
-		modificarBeneficiario(idSesion, beneficiario);
-	}
+		modificasrBeneficiario(idSesion, beneficiario);
+	}*/
 	
-	private static Medico comprobarMedicoBeneficiario(Beneficiario beneficiario) throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException {
+	public static Medico comprobarMedicoBeneficiario(Beneficiario beneficiario) throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException {
 		Medico medico;
 		
 		// Por defecto, el beneficiario se quedará con su médico
@@ -198,8 +204,8 @@ public class GestorBeneficiarios {
 		// pediatra (o no tenia médico asignado), se le busca un médico de cabecera
 		if(beneficiario.getEdad() >= EDAD_PEDIATRA)
 			if (beneficiario.getMedicoAsignado()==null || beneficiario.getMedicoAsignado().getTipoMedico().getCategoria() == CategoriasMedico.Pediatra) {
-				try {
-					medico = (Medico)FPUsuario.consultar(FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Cabecera));
+				try {			
+					medico = (Medico)FPUsuario.consultar(FuncionesPersistencia.getMedicoTipoAsociadoCentro(CategoriasMedico.Cabecera, beneficiario.getCentro()));
 				} catch(UsuarioIncorrectoException e) {
 					throw new UsuarioIncorrectoException("No se puede cambiar el médico asignado al beneficiario porque no existe ningún médico de cabecera en el sistema.");
 				}
@@ -210,7 +216,7 @@ public class GestorBeneficiarios {
 		if(beneficiario.getEdad() < EDAD_PEDIATRA)
 			if (beneficiario.getMedicoAsignado()==null || beneficiario.getMedicoAsignado().getTipoMedico().getCategoria() == CategoriasMedico.Cabecera) {
 				try {
-					medico = (Medico)FPUsuario.consultar(FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Pediatra));
+					medico = (Medico)FPUsuario.consultar(FuncionesPersistencia.getMedicoTipoAsociadoCentro(CategoriasMedico.Pediatra, beneficiario.getCentro()));
 				} catch(UsuarioIncorrectoException e) {
 					throw new UsuarioIncorrectoException("No se puede cambiar el médico asignado al beneficiario porque no existe ningún pediatra en el sistema.");
 				}

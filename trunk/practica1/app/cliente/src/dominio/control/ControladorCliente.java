@@ -198,8 +198,8 @@ public class ControladorCliente {
 		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, bene);
 	}
 
-	public void asignarMedicoBeneficiario(Beneficiario bene) throws RemoteException, Exception {
-		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO, bene);		
+	public Medico comprobarMedicoBeneficiario(Beneficiario bene) throws RemoteException, Exception {
+		return (Medico)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO, bene);		
 	}
 
 	// Métodos de gestión de usuarios

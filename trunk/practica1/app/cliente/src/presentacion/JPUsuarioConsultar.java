@@ -443,7 +443,7 @@ public class JPUsuarioConsultar extends JPBase {
 				if (usuario.getRol().equals(RolesUsuarios.Medico)) {
 					beneficiarios = getControlador().obtenerBeneficiariosMedico(usuario.getDni());
 					citas = getControlador().consultarCitasMedico(usuario.getDni());
-					// TODO: Falta hacer lo mismo para las sustituciones
+					// TODO: Quitar tanto aviso
 					if (beneficiarios.size()!=0)
 						mensaje = "El médico que quiere borrar tiene beneficiarios asignados. \n";
 	
@@ -453,13 +453,6 @@ public class JPUsuarioConsultar extends JPBase {
 					mensaje += "¿Seguro que quiere continuar con la eliminación?";
 					respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", mensaje);
 					if (respuesta) {
-						// Las citas se eliminan automaticamente por la integridad de clave ajena definida en la base de datos
-						// TODO: cancelar las sustituciones
-						Dialogos.mostrarDialogoInformacion(getFrame(), "Informacion", "Se va a asignar un nuevo médico a los beneficiarios afectados");
-						// Asignamos un nuevo médico a los beneficiarios
-						for (Beneficiario b: beneficiarios)
-							getControlador().asignarMedicoBeneficiario(b);
-						Dialogos.mostrarDialogoInformacion(getFrame(), "Informacion", "Beneficiarios actualizados");
 						// Eliminamos el médico al final, para evitar problemas con claves ajenas nulas
 						getControlador().eliminarMedico((Medico)usuario);
 						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");

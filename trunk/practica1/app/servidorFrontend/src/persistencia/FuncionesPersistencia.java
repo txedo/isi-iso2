@@ -50,9 +50,10 @@ public class FuncionesPersistencia {
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT " + COL_DNI_MEDICO + " FROM "
 				+ TABLA_TIPOS_MEDICO + ", " + TABLA_USUARIOS + " WHERE " + 
-				COL_DNI_MEDICO + " = " + COL_USUARIOS_NIF + " AND " + COL_TIPO_MEDICO + " = ? " +
+				COL_DNI_MEDICO + " = " + COL_USUARIOS_NIF + " AND " + COL_TIPO_MEDICO + " = ?" +
 				" AND " + COL_CENTRO + " = ? ORDER BY RAND() LIMIT 1", tipoMedico.ordinal(), centro.getId()); 
 		datos = GestorConexionesBD.consultar(comando);
+		datos.next();
 		
 		// Devolvemos el nif de ese tipo de médico, obtenido aleatoriamente
 		if (datos.getRow() != 0)
