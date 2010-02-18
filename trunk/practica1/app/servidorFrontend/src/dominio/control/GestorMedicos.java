@@ -16,6 +16,7 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Sustitucion;
+import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Utilidades;
 import excepciones.BeneficiarioInexistenteException;
@@ -174,7 +175,7 @@ public class GestorMedicos {
 	}
 	
 	// Método que devuelve todos los médicos de un determinado tipo 
-	public static Vector<Medico> consultarMedicosPorTipo(long idSesion, Object... informacion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Vector<Medico> consultarMedicosPorTipo(long idSesion, TipoMedico tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		Vector<Medico> medicos;
 		Vector<String> nifs;
 		
@@ -182,7 +183,7 @@ public class GestorMedicos {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
 		
 		// Obtenemos los NIFs de todos los médicos del tipo dado
-		nifs = FPTipoMedico.consultarMedicos(informacion);
+		nifs = FPTipoMedico.consultarMedicos(tipo);
 		
 		// Recuperamos los médicos con los NIFs anteriores
 		medicos = new Vector<Medico>();
@@ -248,7 +249,7 @@ public class GestorMedicos {
 		// Obtenemos los médicos del sistema que son del mismo tipo
 		// que el médico pasado como parámetro, para limitar un
 		// poco la búsqueda de sustitutos
-		dnis = FPTipoMedico.consultarMedicos(medico.getTipoMedico().getCategoria());
+		dnis = FPTipoMedico.consultarMedicos(medico.getTipoMedico());
 		
 		// Nos quedamos con los médicos encontrados que realmente pueden
 		// hacer una sustitución en la fecha y hora dadas

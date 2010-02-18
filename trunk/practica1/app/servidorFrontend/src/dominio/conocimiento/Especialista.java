@@ -40,4 +40,8 @@ public class Especialista extends TipoMedico implements Serializable{
 		return dev;
 	}
 	
+	public String toString() {
+		return super.toString() + " (" + especialidad + ")";
+	}
+	
 }

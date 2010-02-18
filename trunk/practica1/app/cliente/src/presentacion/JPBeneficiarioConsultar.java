@@ -713,7 +713,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		boolean respuesta;
 		
 		// Solicitamos confirmación para borrar el beneficiario
-		respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Realmente desea eliminar este beneficiario?");
+		respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Seguro que desea eliminar este beneficiario?");
 
 		if(respuesta) {
 			try {

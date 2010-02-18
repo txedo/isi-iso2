@@ -64,21 +64,24 @@ public class FPTipoMedico {
 	
 	// Este método recibe un número variable de argumentos. Un argumento es la categoria del médico (obligatorio)
 	// y otro es la especialidad, si la categoria del médico es especialista (opcional)
-	public static Vector<String> consultarMedicos(Object... informacion) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Vector<String> consultarMedicos(TipoMedico tipo) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<String> lista;
-		Object [] parametros = informacion;
+		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT " + COL_DNI_MEDICO + " FROM " + TABLA_TIPOS_MEDICO
-				+ " WHERE " + COL_TIPO + " = ?", ((CategoriasMedico)parametros[0]).ordinal());
-		
-		// Si es un especialista y se ha indicado su especialidad, se modifica la consulta
-		if (((CategoriasMedico)parametros[0]).equals(CategoriasMedico.Especialista) && parametros.length > 1)
-			comando = new ComandoSQLSentencia("SELECT " + COL_DNI_MEDICO + " FROM " + TABLA_TIPOS_MEDICO
-					+ " WHERE " + COL_TIPO + " = ? AND " + COL_ESPECIALIDAD + " = ?", ((CategoriasMedico)parametros[0]).ordinal(), ((String)parametros[1]));
-		
+		if(tipo.getCategoria() == CategoriasMedico.Especialista) {
+			comando = new ComandoSQLSentencia("SELECT " + COL_DNI_MEDICO + " FROM "
+					+ TABLA_TIPOS_MEDICO + " WHERE " + COL_TIPO + " = ? AND "
+					+ COL_ESPECIALIDAD + " = ?", tipo.getCategoria().ordinal(),
+					((Especialista)tipo).getEspecialidad());
+		} else {
+			comando = new ComandoSQLSentencia("SELECT " + COL_DNI_MEDICO + " FROM "
+					+ TABLA_TIPOS_MEDICO + " WHERE " + COL_TIPO + " = ?",
+					tipo.getCategoria().ordinal());
+		}
 		datos = GestorConexionesBD.consultar(comando);
+		
 		// Devolvemos la lista de médicos que son del tipo indicado
 		lista = new Vector<String>();
 		while(datos.next()) {

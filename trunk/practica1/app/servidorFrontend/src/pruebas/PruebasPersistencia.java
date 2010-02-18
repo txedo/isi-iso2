@@ -701,7 +701,7 @@ public class PruebasPersistencia extends PruebasBase {
 		try {
 			// Intentamos obtener una lista con los médicos especialistas
 			// antes de añadirlos para ver que se devuelve una lista vacía
-			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Especialista);
+			medicos = FPTipoMedico.consultarMedicos(new Especialista(""));
 			assertTrue(medicos.size() == 0);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -727,12 +727,12 @@ public class PruebasPersistencia extends PruebasBase {
 		
 		try {
 			// Obtenemos una lista con los médicos de cabecera
-			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Cabecera);
+			medicos = FPTipoMedico.consultarMedicos(new Cabecera());
 			assertTrue(medicos.size() == 2);
 			assertTrue((medicos.get(0).equals(medico2.getDni()) && medicos.get(1).equals(medico3.getDni()))
 			           || (medicos.get(0).equals(medico3.getDni()) && medicos.get(1).equals(medico2.getDni())));
 			// Obtenemos una lista con los médidos pediatras
-			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Pediatra);
+			medicos = FPTipoMedico.consultarMedicos(new Pediatra());
 			assertTrue(medicos.size() == 1);
 			assertTrue(medicos.get(0).equals(medico4.getDni()));
 			// Obtenemos un médico de cabecera aleatorio
@@ -746,7 +746,7 @@ public class PruebasPersistencia extends PruebasBase {
 			// Eliminamos uno de los tipos de médicos
 			FPTipoMedico.eliminar(medico2.getDni());
 			// Comprobamos que los cambios han tenido efecto
-			medicos = FPTipoMedico.consultarMedicos(CategoriasMedico.Cabecera);
+			medicos = FPTipoMedico.consultarMedicos(new Cabecera());
 			assertTrue(medicos.size() == 1);
 		} catch(Exception e) {
 			fail(e.toString());

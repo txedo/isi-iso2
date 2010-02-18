@@ -22,8 +22,8 @@ import javax.swing.ListSelectionModel;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Especialidades;
+import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Sesion;
 import dominio.control.ControladorCliente;
@@ -179,7 +179,7 @@ public class JPEmitirVolante extends JPBase {
 	public void inicializarEspecialistas() {		
 		String [] info = {""};
 		try {
-			especialistas = (Vector<Medico>) getControlador().obtenerMedicos(CategoriasMedico.Especialista, cbEspecialidad.getSelectedItem().toString());
+			especialistas = (Vector<Medico>) getControlador().obtenerMedicosTipo(new Especialista(cbEspecialidad.getSelectedItem().toString()));
 			if (especialistas.size()>0) {
 				Collections.sort(especialistas, new ComparatorMedicosApellido());
 				info = new String[especialistas.size()];
