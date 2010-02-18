@@ -1,8 +1,11 @@
 package pruebas;
 
 import java.util.Random;
+
+import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import org.uispec4j.Button;
+import org.uispec4j.ComboBox;
 import org.uispec4j.TextBox;
 import org.uispec4j.Panel;
 import org.uispec4j.Trigger;
@@ -37,6 +40,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 	private TextBox txtCP;
 	private TextBox txtTelefonoFijo;
 	private TextBox txtTelefonoMovil;
+	private ComboBox cmbCentros;
 	private Button btnCrear;
 	private Button btnRestablecer;
 	private JTextField jtxtNIF;
@@ -54,12 +58,23 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 	private JTextField jtxtCorreo;
 	private JTextField jtxtTelefonoFijo;
 	private JTextField jtxtTelefonoMovil;
+	private JComboBox jcmbCentros;
 	private Window winPrincipal;
 	
 	public void setUp() {
 		try {
-			// Creamos el panel
+			// Establecemos conexión con el servidor front-end
 			controlador = new ControladorCliente();
+			winPrincipal = WindowInterceptor.run(new Trigger() {
+				public void run() {
+					try {
+						controlador.iniciarSesion("127.0.0.1", 2995, "admin", "nimda");
+					} catch(Exception e) {
+						fail(e.toString());
+					}
+				}
+			});
+			// Creamos el panel
 			panel = new JPBeneficiarioRegistrar(controlador.getVentanaPrincipal(), controlador);
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
@@ -78,6 +93,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			txtCorreo = pnlPanel.getTextBox("txtCorreo");
 			txtTelefonoFijo = pnlPanel.getTextBox("txtTelefonoFijo");
 			txtTelefonoMovil = pnlPanel.getTextBox("txtTelefonoMovil");
+			cmbCentros = pnlPanel.getComboBox("cmbCentros");
 			btnCrear = pnlPanel.getButton("btnCrear");
 			btnRestablecer = pnlPanel.getButton("btnRestablecer");
 			jtxtNIF = (JTextField)txtNIF.getAwtComponent();
@@ -95,16 +111,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			jtxtCorreo = (JTextField)txtCorreo.getAwtComponent();
 			jtxtTelefonoFijo = (JTextField)txtTelefonoFijo.getAwtComponent();
 			jtxtTelefonoMovil = (JTextField)txtTelefonoMovil.getAwtComponent();
-			// Establecemos conexión con el servidor front-end
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion("127.0.0.1", 2995, "admin", "nimda");
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
+			jcmbCentros = (JComboBox)cmbCentros.getAwtComponent();
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -203,11 +210,17 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			btnCrear.click();
 			assertTrue(jtxtTelefonoFijo.getSelectionStart() == 0 && jtxtTelefonoFijo.getSelectionEnd() == txtTelefonoFijo.getText().length());
 			txtTelefonoFijo.setText("926147130");
-			// Ponemos un teléfono fijo incorrecto y comprobamos que se selecciona
+			// Ponemos un teléfono móvil incorrecto y comprobamos que se selecciona
 			txtTelefonoMovil.setText("61011122");
 			btnCrear.click();
 			assertTrue(jtxtTelefonoMovil.getSelectionStart() == 0 && jtxtTelefonoMovil.getSelectionEnd() == txtTelefonoMovil.getText().length());
 			txtTelefonoMovil.setText("626405060");
+			// Ponemos un centro de salud incorrecto y comprobamos que se produce un error
+			jcmbCentros.grabFocus();
+			jcmbCentros.setSelectedIndex(-1);
+			btnCrear.click();
+			assertTrue(txtNIF.getText().length() != 0);
+			jcmbCentros.setSelectedIndex(0);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -237,6 +250,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			txtCorreo.setText("pjs80@gmail.com");
 			txtTelefonoFijo.setText("926147130");
 			txtTelefonoMovil.setText("626405060");
+			jcmbCentros.setSelectedIndex(0);
 			btnCrear.click();
 			comprobarCamposVacios();
 		} catch(Exception e) {
@@ -262,6 +276,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			txtCorreo.setText("pjs80@gmail.com");
 			txtTelefonoFijo.setText("926147130");
 			txtTelefonoMovil.setText("626405060");
+			jcmbCentros.setSelectedIndex(0);
 			btnCrear.click();
 			assertEquals(txtNIF.getText(), nif);
 			// Intentamos crear un beneficiario con el mismo NSS
@@ -282,8 +297,8 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			nss = generarNSS();
 			txtNIF.setText(nif);
 			txtNSS.setText(nss);
-			txtNombre.setText("Pedro");
-			txtApellidos.setText("Jiménez Serrano");
+			txtNombre.setText("Pedro  ");
+			txtApellidos.setText("  Jiménez Serrano");
 			txtFechaNacimiento.setText("01/01/1980");
 			txtDomicilio.setText("C/Cervantes");
 			txtNumero.setText("38");
@@ -295,6 +310,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			txtCorreo.setText("");
 			txtTelefonoFijo.setText(" ");
 			txtTelefonoMovil.setText("  ");
+			jcmbCentros.setSelectedIndex(0);
 			btnCrear.click();
 			comprobarCamposVacios();
 		} catch(Exception e) {
@@ -311,16 +327,17 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			txtNombre.setText("Pedro");
 			txtApellidos.setText("Jiménez Serrano");
 			txtFechaNacimiento.setText("01/01/1980");
-			txtDomicilio.setText("C/Cervantes");
+			txtDomicilio.setText("  C/Cervantes");
 			txtNumero.setText("");
 			txtPiso.setText(" ");
 			txtPuerta.setText("  ");
-			txtLocalidad.setText("Ciudad Real");
+			txtLocalidad.setText("Ciudad Real  ");
 			txtCP.setText("13001");
 			txtProvincia.setText("Ciudad Real");
-			txtCorreo.setText("pjs80@gmail.com");
+			txtCorreo.setText("pjs80@gmail.com  ");
 			txtTelefonoFijo.setText("926147130");
 			txtTelefonoMovil.setText("626405060");
+			jcmbCentros.setSelectedIndex(0);
 			btnCrear.click();
 			comprobarCamposVacios();
 		} catch(Exception e) {
@@ -352,6 +369,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			txtCorreo.setText("pjs80@gmail.com");
 			txtTelefonoFijo.setText("926147130");
 			txtTelefonoMovil.setText("626405060");
+			jcmbCentros.setSelectedIndex(0);
 			btnRestablecer.click();
 			comprobarCamposVacios();
 		} catch(Exception e) {
@@ -375,6 +393,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		assertTrue(txtCorreo.getText().equals(""));
 		assertTrue(txtTelefonoFijo.getText().equals(""));
 		assertTrue(txtTelefonoMovil.getText().equals(""));
+		assertTrue(jcmbCentros.getSelectedIndex() == -1);
 	}
 	
 	private String generarNIF() {
