@@ -116,13 +116,13 @@ public class JPUsuarios extends JPBase {
 		
 		operacionSeleccionada = evt.getOperacion();
 		
-		if(jPanelRegistrar.isValid()) {
+		if(jPanelRegistrar != null) {
 			jPanelRegistrar.setVisible(false);
 		}
-		if(jPanelConsultarModificar.isValid()) {
+		if(jPanelConsultarModificar != null) {
 			jPanelConsultarModificar.setVisible(false);
 		}
-		if(jPanelConsultar.isValid()) {
+		if(jPanelConsultar != null) {
 			jPanelConsultar.setVisible(false);
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.RegistrarUsuario) {
@@ -181,6 +181,7 @@ public class JPUsuarios extends JPBase {
 
 	public void restablecerPaneles() {
 		jPanelConsultar.restablecerPanel();
+		jPanelConsultarModificar.restablecerPanel();
 		jPanelRegistrar.restablecerPanel();
 	}
 	

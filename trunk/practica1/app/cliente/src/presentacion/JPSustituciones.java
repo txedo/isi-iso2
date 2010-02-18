@@ -99,7 +99,7 @@ public class JPSustituciones extends JPBase {
 
 		operacionSeleccionada = evt.getOperacion();
 		
-		if(jPanelEstablecer.isValid()) {
+		if(jPanelEstablecer != null) {
 			jPanelEstablecer.setVisible(false);
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.EstablecerSustituto) {

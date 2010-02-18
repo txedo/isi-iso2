@@ -608,7 +608,7 @@ public class PruebasCitas extends PruebasBase {
 	
 	public void testConsultarCitasBeneficiario() {
 		Medico medicoAsignado;
-		Date fechaCitaPasada, fechaCitaPendiente;
+		Date fechaCitaPendiente;
 		Cita cita1;
 		Vector <Cita> citasPendientes;
 		
@@ -643,14 +643,11 @@ public class PruebasCitas extends PruebasBase {
 			// Insertamos citas válidas, tanto pendientes como pasadas
 			medicoAsignado = bene1.getMedicoAsignado();
 			if (medicoAsignado.getDni().equals(medico1.getDni())) {
-				// Cita pasada
-				fechaCitaPasada = fechaCita1;
 				// Cita pendiente
 				calendar = new GregorianCalendar(2010,6-1,11,16,15);
 				fechaCitaPendiente = calendar.getTime();
 			}
 			else {
-				fechaCitaPasada = fechaCita2;
 				// Cita pendiente
 				calendar = new GregorianCalendar(2010,6-1,7,16,15);
 				fechaCitaPendiente = calendar.getTime();
@@ -668,6 +665,7 @@ public class PruebasCitas extends PruebasBase {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testConsultarCitasMedico() {
 		Calendar cal;
 		Hashtable<Date, Vector<String>> citasMedico;
@@ -720,7 +718,7 @@ public class PruebasCitas extends PruebasBase {
 			cal = Calendar.getInstance();
 			cal.setTime(cita.getFechaYHora());
 			fecha = new Date(cal.get(Calendar.YEAR) - 1900, cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-			assertEquals(citasMedico.get(fecha).get(0), cita.cadenaHoraCita(cita.getFechaYHora()));
+			assertEquals(citasMedico.get(fecha).get(0), Cita.cadenaHoraCita(cita.getFechaYHora()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("No se esperaba excepción al consultar las citas de un médico");
@@ -730,7 +728,6 @@ public class PruebasCitas extends PruebasBase {
 	public void testConsultarDiasCompletos() {
 		Vector<Date> dias;
 		Medico medicoAsignado; 
-		Cita cita;
 		Date fecha1,fecha2, fecha3, fecha4;
 		calendar = new GregorianCalendar(2011,1-1,10,16,00);
 		fecha1 = calendar.getTime();
@@ -775,12 +772,12 @@ public class PruebasCitas extends PruebasBase {
 			assertTrue(dias.size() == 0);
 			// Ocupamos un día con citas
 			medicoAsignado = bene1.getMedicoAsignado();
-			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha1, DURACION);
-			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha2, DURACION);
-			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha3, DURACION);
-			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha4, DURACION);
+			GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha1, DURACION);
+			GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha2, DURACION);
+			GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha3, DURACION);
+			GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fecha4, DURACION);
 			// Cita pasada
-			cita = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita2, DURACION);
+			GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCita2, DURACION);
 			// Intentamos consultar los dias completos de un médico
 			dias = GestorCitas.consultarDiasCompletos(sesionAdmin.getId(), medico2.getDni());
 			// Como un día lo tiene completo con citas, el tamaño de la lista debe ser uno

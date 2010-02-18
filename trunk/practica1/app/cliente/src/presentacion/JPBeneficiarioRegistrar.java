@@ -416,7 +416,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			beneficiario.setCorreo(txtCorreoElectronico.getText().trim());
 			beneficiario.setTelefono(txtTelefonoFijo.getText().trim());
 			beneficiario.setMovil(txtTelefonoMovil.getText().trim());
-			beneficiario.setCentro(centros.get(cmbCentros.getSelectedIndex()));
+			beneficiario.setCentroSalud(centros.get(cmbCentros.getSelectedIndex()));
 
 			// Solicitamos al servidor que se cree el beneficiario
 			getControlador().crearBeneficiario(beneficiario);

@@ -2,7 +2,6 @@ package comunicaciones;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import dominio.conocimiento.ICodigosOperacionesCliente;
 
 /**
  * Interfaz con las operaciones que se pueden solicitar a los

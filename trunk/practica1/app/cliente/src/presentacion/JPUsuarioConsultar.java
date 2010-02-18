@@ -8,7 +8,6 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.EventObject;
 import java.util.Vector;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,8 +22,10 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Citador;
+import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Usuario;
@@ -57,18 +58,14 @@ public class JPUsuarioConsultar extends JPBase {
 
 	private static final long serialVersionUID = 2736737327573021315L;
 	
-	private final String TIPO_ADMINISTRADOR = "Administrador";
-	private final String TIPO_MEDICO = "Médico";
-	private final String TIPO_CITADOR = "Citador";
-
 	private EventListenerList listenerList;
-	
-	private JFCalendarioLaboral calendario;
-
 	private Vector<PeriodoTrabajo> periodos;
 	private Usuario usuario;
-
+	
 	private JLabel lblNIFBuscado;
+	private JLabel lblEspecialidad;
+	private JTextField txtEspecialidad;
+	private JLabel lblHorasSemanales;
 	private JLabel lblNIF;
 	private JLabel lblLogin;
 	private JLabel lblPassword;
@@ -93,6 +90,8 @@ public class JPUsuarioConsultar extends JPBase {
 	private JLabel lblCentro;
 	private JTextField txtCentro;
 
+	private JFCalendarioLaboral frmCalendario;
+
 	public JPUsuarioConsultar() {
 		this(null, null);
 		// Este constructor evita que aparezca un error al editar
@@ -113,12 +112,18 @@ public class JPUsuarioConsultar extends JPBase {
 			this.setLayout(thisLayout);
 			this.setPreferredSize(new java.awt.Dimension(430, 390));
 			{
+				lblHorasSemanales = new JLabel();
+				this.add(lblHorasSemanales, new AnchorConstraint(273, 770, 742, 234, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblHorasSemanales.setText("0 horas semanales");
+				lblHorasSemanales.setPreferredSize(new java.awt.Dimension(97, 16));
+			}
+			{
 				btnCalendario = new JButton();
 				this.add(btnCalendario, new AnchorConstraint(270, 508, 601, 116, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnCalendario.setText("Ver...");
 				btnCalendario.setPreferredSize(new java.awt.Dimension(110, 23));
-				btnCalendario.setEnabled(false);
 				btnCalendario.setToolTipText("Sólo tienen definido un calendario laboral los usuarios de tipo Médico");
+				btnCalendario.setEnabled(false);
 				btnCalendario.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnCalendarioActionPerformed(evt);
@@ -141,11 +146,10 @@ public class JPUsuarioConsultar extends JPBase {
 						cbRolesItemStateChanged(evt);
 					}
 				});
-				rellenarModelo(new String [] {""});
 			}
 			{
 				btnEliminar = new JButton();
-				this.add(btnEliminar, new AnchorConstraint(329, 161, 673, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnEliminar, new AnchorConstraint(352, 161, 673, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnEliminar.setText("Eliminar usuario");
 				btnEliminar.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnEliminar.addActionListener(new ActionListener() {
@@ -246,7 +250,7 @@ public class JPUsuarioConsultar extends JPBase {
 				btnGuardar = new JButton();
 				btnGuardar.setText("Guardar cambios");
 				btnGuardar.setPreferredSize(new java.awt.Dimension(120, 26));
-				this.add(btnGuardar, new AnchorConstraint(327, 12, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnGuardar, new AnchorConstraint(350, 11, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnGuardar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnGuardarActionPerformed(evt);
@@ -255,7 +259,7 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				chkEditar = new JCheckBox();
-				this.add(chkEditar, new AnchorConstraint(330, 142, 665, 419, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(chkEditar, new AnchorConstraint(353, 141, 665, 419, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				chkEditar.setText("Habilitar edición");
 				chkEditar.setEnabled(false);
 				chkEditar.setPreferredSize(new java.awt.Dimension(106, 19));
@@ -273,7 +277,7 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				lblCamposOblig = new JLabel();
-				this.add(lblCamposOblig, new AnchorConstraint(303, 13, 875, 673, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(lblCamposOblig, new AnchorConstraint(326, 12, 875, 673, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				lblCamposOblig.setText("* Campos obligatorios");
 				lblCamposOblig.setHorizontalAlignment(SwingConstants.TRAILING);
 				lblCamposOblig.setPreferredSize(new java.awt.Dimension(129, 17));
@@ -291,6 +295,18 @@ public class JPUsuarioConsultar extends JPBase {
 				lblNIF.setText("NIF *");
 				lblNIF.setPreferredSize(new java.awt.Dimension(99, 16));
 			}
+			{
+				txtEspecialidad = new JTextField();
+				this.add(txtEspecialidad, new AnchorConstraint(298, 12, 760, 116, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtEspecialidad.setEditable(false);
+				txtEspecialidad.setPreferredSize(new java.awt.Dimension(302, 23));
+			}
+			{
+				lblEspecialidad = new JLabel();
+				this.add(lblEspecialidad, new AnchorConstraint(303, 282, 811, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblEspecialidad.setText("Especialidad *");
+				lblEspecialidad.setPreferredSize(new java.awt.Dimension(111, 13));
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -300,6 +316,7 @@ public class JPUsuarioConsultar extends JPBase {
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
 		Object[] listeners;
+		int horas;
 		int i;
 
 		// Borramos la información del antiguo usuario consultado
@@ -313,18 +330,46 @@ public class JPUsuarioConsultar extends JPBase {
 
 			// Mostramos los datos del usuario encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Usuario encontrado.");
-			rellenarModelo(new String [] {TIPO_ADMINISTRADOR, TIPO_CITADOR, TIPO_MEDICO});
 			txtNIFBuscado.setText("");
 			txtNIF.setText(usuario.getDni());
 			txtLogin.setText(usuario.getLogin());
 			txtPassword.setText(usuario.getPassword());
 			txtNombre.setText(usuario.getNombre());
 			txtApellidos.setText(usuario.getApellidos());
-			cmbRol.setSelectedIndex(usuario.getRol().ordinal());
-			txtCentro.setText(usuario.getCentroSalud().getNombre() + "(" + usuario.getCentroSalud().getDireccion() + ")");
+			txtCentro.setText(usuario.getCentroSalud().getNombre() + " (" + usuario.getCentroSalud().getDireccion() + ")");
 			if(usuario.getRol().equals(RolesUsuarios.Medico)) {
+				rellenarTiposUsuario(new String[] { RolesUsuarios.Medico.name() + " (" + ((Medico)usuario).getTipoMedico().getCategoria().name() + ")" });
+				lblCalendario.setVisible(true);
+				btnCalendario.setVisible(true);
+				btnCalendario.setEnabled(true);
+				lblHorasSemanales.setVisible(true);
 				periodos = ((Medico)usuario).getCalendario();
+				horas = 0;
+				for(PeriodoTrabajo periodo : periodos) {
+					horas += periodo.numeroHoras();
+				}
+				if(horas == 1) {
+					lblHorasSemanales.setText("1 hora semanal");
+				} else {
+					lblHorasSemanales.setText(horas + " horas semanales");
+				}
+				if(((Medico)usuario).getTipoMedico().getCategoria() == CategoriasMedico.Especialista) {
+					lblEspecialidad.setVisible(true);
+					txtEspecialidad.setVisible(true);
+					txtEspecialidad.setText(((Especialista)((Medico)usuario).getTipoMedico()).getEspecialidad());
+				} else {
+					lblEspecialidad.setVisible(false);
+					txtEspecialidad.setVisible(false);
+				}
+			} else {
+				rellenarTiposUsuarioNoMedico();
+				lblCalendario.setVisible(false);
+				btnCalendario.setVisible(false);
+				lblHorasSemanales.setVisible(false);
+				lblEspecialidad.setVisible(false);
+				txtEspecialidad.setVisible(false);
 			}
+			cmbRol.setSelectedItem(usuario.getRol().name());
 			chkEditar.setEnabled(true);
 			
 		} catch(UsuarioInexistenteException e) {
@@ -369,16 +414,12 @@ public class JPUsuarioConsultar extends JPBase {
 			Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
 			
 			// Creamos un nuevo usuario con los datos introducidos
-			switch(RolesUsuarios.values()[cmbRol.getSelectedIndex()]) {
-				case Administrador:
-					usuarioModif = new Administrador();
-					break;
-				case Citador:
-					usuarioModif = new Citador();
-					break;
-				case Medico:
-					usuarioModif = new Medico();
-					break;
+			if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Administrador.name())) {
+				usuarioModif = new Administrador();
+			} else if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Citador.name())) {
+				usuarioModif = new Citador();
+			} else if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Medico.name())) {
+				usuarioModif = new Medico();
 			}
 			usuarioModif.setDni(txtNIF.getText().trim().toUpperCase());
 			usuarioModif.setLogin(txtLogin.getText().trim());
@@ -465,11 +506,11 @@ public class JPUsuarioConsultar extends JPBase {
 					limpiarCamposConsulta();
 				}
 			} catch(SQLException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			} catch(RemoteException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());		
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());		
 			} catch(Exception e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			}
 		}
 	}
@@ -480,36 +521,40 @@ public class JPUsuarioConsultar extends JPBase {
 	
 	private void btnCalendarioActionPerformed(ActionEvent evt) {
 		// Creamos la ventana de consulta/edición de calendarios
-		calendario = new JFCalendarioLaboral();
-		calendario.addVentanaCerradaListener(new VentanaCerradaListener() {
+		frmCalendario = new JFCalendarioLaboral();
+		frmCalendario.addVentanaCerradaListener(new VentanaCerradaListener() {
 			public void ventanaCerrada(EventObject evt) {    
 				calendarioVentanaCerrada(evt);
 			}
 		});
 		// Desactivamos la ventana hasta cerrar la ventana de calendarios
 		getFrame().setEnabled(false);
-		calendario.setPeriodosTrabajo(periodos);
-		calendario.setModificable(chkEditar.isSelected());
-		calendario.setLocationRelativeTo(this);		
-		calendario.setVisible(true);
+		frmCalendario.setPeriodosTrabajo(periodos);
+		frmCalendario.setModificable(chkEditar.isSelected());
+		frmCalendario.setLocationRelativeTo(this);		
+		frmCalendario.setVisible(true);
 	}
 	
 	private void calendarioVentanaCerrada(EventObject evt) {
 		// Reactivamos la ventana 
 		getFrame().setEnabled(true);
-		calendario.setVisible(false);
+		frmCalendario.setVisible(false);
 		periodos = new Vector<PeriodoTrabajo>();
-		periodos.addAll(calendario.getPeriodosTrabajo());
+		periodos.addAll(frmCalendario.getPeriodosTrabajo());
+		if(frmCalendario.getHorasSemanales() == 1) {
+			lblHorasSemanales.setText("1 hora semanal");
+		} else {
+			lblHorasSemanales.setText(frmCalendario.getHorasSemanales() + " horas semanales");
+		}
 		// Eliminamos la ventana de configuración
-		calendario.dispose();
+		frmCalendario.dispose();
 	}
 	
 	private void cbRolesItemStateChanged(ItemEvent evt) {
-		if (evt.getStateChange() == ItemEvent.SELECTED) {
-			if (evt.getItem().equals(TIPO_MEDICO)) {
+		if(evt.getStateChange() == ItemEvent.SELECTED) {
+			if(evt.getItem().equals(RolesUsuarios.Medico.name())) {
 				btnCalendario.setEnabled(true);
-			}
-			else {
+			} else {
 				btnCalendario.setEnabled(false);
 				periodos = new Vector<PeriodoTrabajo>();
 			}
@@ -555,15 +600,34 @@ public class JPUsuarioConsultar extends JPBase {
 		txtApellidos.setText("");
 		txtCentro.setText("");
 		chkEditar.setSelected(false);
-		rellenarModelo(new String [] {""});
+		cmbRol.setSelectedIndex(-1);
+		lblCalendario.setVisible(false);
+		btnCalendario.setVisible(false);
+		lblHorasSemanales.setVisible(false);
+		lblEspecialidad.setVisible(false);
+		txtEspecialidad.setVisible(false);
 		cambiarEdicion(false);
 	}
 
-	private void rellenarModelo(String [] informacion) {
-		ComboBoxModel cbRolesModel = new DefaultComboBoxModel(informacion);
-		cmbRol.setModel(cbRolesModel);	
+	private void rellenarTiposUsuario(String[] elementos) {
+		DefaultComboBoxModel cmbRolesModel;
+		
+		cmbRolesModel = new DefaultComboBoxModel(elementos);
+		cmbRol.setModel(cmbRolesModel);	
 	}
-	
+
+	private void rellenarTiposUsuarioNoMedico() {
+		DefaultComboBoxModel cmbRolesModel;
+		
+		cmbRolesModel = new DefaultComboBoxModel();
+		for(RolesUsuarios rol : RolesUsuarios.values()) {
+			if(rol != RolesUsuarios.Medico) {
+				cmbRolesModel.addElement(rol.name());
+			}
+		}
+		cmbRol.setModel(cmbRolesModel);	
+	}
+
 	// Métodos públicos
 
 	public Usuario getUsuario() {

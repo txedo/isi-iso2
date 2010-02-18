@@ -35,7 +35,7 @@ public class FPBeneficiario {
 	private static final String COL_MOVIL = "movil";
 	private static final String COL_DNI_MEDICO = "dniMedico";
 	private static final String COL_BENEFICIARIOS_NIF = "nif";
-	private static final String COL_CENTRO = "idCentro";
+	private static final String COL_ID_CENTRO = "idCentro";
 
 	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
@@ -75,7 +75,7 @@ public class FPBeneficiario {
 				}
 			}
 			beneficiario.setMedicoAsignado((Medico)medico);
-			beneficiario.setCentro(FPCentroSalud.consultar(datos.getInt(COL_CENTRO)));
+			beneficiario.setCentroSalud(FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO)));
 		}
 
 		return beneficiario;
@@ -119,7 +119,7 @@ public class FPBeneficiario {
 				}
 			}
 			beneficiario.setMedicoAsignado((Medico)medico);
-			beneficiario.setCentro(FPCentroSalud.consultar(datos.getInt(COL_CENTRO)));
+			beneficiario.setCentroSalud(FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO)));
 		}
 
 		return beneficiario;
@@ -151,13 +151,13 @@ public class FPBeneficiario {
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_BENEFICIARIOS
 				+ " (" + COL_NIF + ", " + COL_NSS + ", " + COL_NOMBRE
 				+ ", " + COL_APELLIDOS  + ", " + COL_CORREO + ", " + COL_FECHA_NACIMIENTO
-				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO + ", " + COL_CENTRO
+				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO + ", " + COL_ID_CENTRO
 				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				beneficiario.getNif(), beneficiario.getNss(), beneficiario.getNombre(),
 				beneficiario.getApellidos(), beneficiario.getCorreo(),
 				new Timestamp(beneficiario.getFechaNacimiento().getTime()),
 				beneficiario.getTelefono(), beneficiario.getMovil(),
-				beneficiario.getMedicoAsignado().getDni(), beneficiario.getCentro().getId());
+				beneficiario.getMedicoAsignado().getDni(), beneficiario.getCentroSalud().getId());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Insertamos la dirección del beneficiario
@@ -167,15 +167,18 @@ public class FPBeneficiario {
 	public static void modificar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;
 		
-		// Modificamos la base de datoss
+		// Modificamos la base de datos
+		// (el NIF y el NSS no se pueden cambiar)
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_BENEFICIARIOS + " SET "
 				+ COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_CORREO + " = ?, "
-				+ COL_TELEFONO + " = ?, " + COL_MOVIL + " = ?, " + COL_DNI_MEDICO + " = ? "
-				+ "WHERE " + COL_NIF + " = ? ", 
+				+ COL_FECHA_NACIMIENTO + " = ?, " + COL_TELEFONO + " = ?, "
+				+ COL_MOVIL + " = ?, " + COL_DNI_MEDICO + " = ?, " + COL_ID_CENTRO
+				+ " = ? WHERE " + COL_NIF + " = ? ", 
 				beneficiario.getNombre(), beneficiario.getApellidos(),
-				beneficiario.getCorreo(), beneficiario.getTelefono(),
-				beneficiario.getMovil(), beneficiario.getMedicoAsignado().getDni(),
-				beneficiario.getNif());
+				beneficiario.getCorreo(), beneficiario.getFechaNacimiento(),
+				beneficiario.getTelefono(), beneficiario.getMovil(),
+				beneficiario.getMedicoAsignado().getDni(),
+				beneficiario.getCentroSalud().getId(), beneficiario.getNif());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Modificamos la dirección del beneficiario

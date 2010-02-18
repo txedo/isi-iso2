@@ -67,6 +67,10 @@ public class PeriodoTrabajo implements Serializable {
 		return dev;
 	}
 	
+	public int numeroHoras() {
+		return (horaFinal - horaInicio);
+	}
+	
 	public boolean equals(Object o) {
 		PeriodoTrabajo p;
 		boolean dev;

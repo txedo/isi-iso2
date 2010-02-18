@@ -5,13 +5,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
-import persistencia.FPBeneficiario;
 import persistencia.FPSustitucion;
 import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
-import persistencia.FuncionesPersistencia;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.IMedico;
@@ -133,7 +130,7 @@ public class GestorMedicos {
 
 		// Intentamos asignar un nuevo médico a los beneficiarios afectados
 		for (Beneficiario bene: beneficiarios) {
-			med = GestorBeneficiarios.comprobarMedicoBeneficiario(bene);
+			med = GestorBeneficiarios.obtenerMedicoBeneficiario(bene);
 			if (med != null) {
 				bene.setMedicoAsignado(med);
 				GestorBeneficiarios.modificarBeneficiario(idSesion, bene);

@@ -18,14 +18,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.TipoMedico;
 import dominio.control.ControladorCliente;
-import excepciones.CitaNoValidaException;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo

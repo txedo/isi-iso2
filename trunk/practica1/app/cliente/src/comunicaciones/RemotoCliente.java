@@ -11,8 +11,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
-
-import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 
