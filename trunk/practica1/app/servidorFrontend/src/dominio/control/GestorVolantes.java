@@ -62,6 +62,9 @@ public class GestorVolantes {
 		
 		// Comprobamos que exista el beneficiario
 		beneficiario = FPBeneficiario.consultarPorNIF(beneficiario.getNif());
+		if(beneficiario.getMedicoAsignado() == null) {
+			throw new MedicoInexistenteException("El beneficiario al que se le va a emitir el volante no tiene asignado ningún médico.");
+		}
 		
 		// Comprobamos que exista el médico emisor
 		try {

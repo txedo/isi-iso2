@@ -66,15 +66,16 @@ public class FPBeneficiario {
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
 			direccion = FPDireccion.consultar(beneficiario.getNif());
 			beneficiario.setDireccion(direccion);
-			if (datos.getString(COL_DNI_MEDICO)==null)
-				medico = null;			
-			else {
+			if(datos.getString(COL_DNI_MEDICO) == null) {
+				medico = null;
+				beneficiario.setMedicoAsignado(null);
+			} else {
 				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 				if(medico.getRol() != RolesUsuarios.Medico) {
 					throw new UsuarioIncorrectoException("El beneficiario con NIF " + nif + " no tiene asignado un usuario con rol de médico.");
 				}
+				beneficiario.setMedicoAsignado((Medico)medico);
 			}
-			beneficiario.setMedicoAsignado((Medico)medico);
 			beneficiario.setCentroSalud(FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO)));
 		}
 
@@ -157,7 +158,8 @@ public class FPBeneficiario {
 				beneficiario.getApellidos(), beneficiario.getCorreo(),
 				new Timestamp(beneficiario.getFechaNacimiento().getTime()),
 				beneficiario.getTelefono(), beneficiario.getMovil(),
-				beneficiario.getMedicoAsignado().getDni(), beneficiario.getCentroSalud().getId());
+				(beneficiario.getMedicoAsignado() == null ? null : beneficiario.getMedicoAsignado().getDni()),
+				beneficiario.getCentroSalud().getId());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Insertamos la dirección del beneficiario
@@ -175,9 +177,9 @@ public class FPBeneficiario {
 				+ COL_MOVIL + " = ?, " + COL_DNI_MEDICO + " = ?, " + COL_ID_CENTRO
 				+ " = ? WHERE " + COL_NIF + " = ? ", 
 				beneficiario.getNombre(), beneficiario.getApellidos(),
-				beneficiario.getCorreo(), beneficiario.getFechaNacimiento(),
+				beneficiario.getCorreo(), new Timestamp(beneficiario.getFechaNacimiento().getTime()),
 				beneficiario.getTelefono(), beneficiario.getMovil(),
-				beneficiario.getMedicoAsignado().getDni(),
+				(beneficiario.getMedicoAsignado() == null ? null : beneficiario.getMedicoAsignado().getDni()),
 				beneficiario.getCentroSalud().getId(), beneficiario.getNif());
 		GestorConexionesBD.ejecutar(comando);
 		

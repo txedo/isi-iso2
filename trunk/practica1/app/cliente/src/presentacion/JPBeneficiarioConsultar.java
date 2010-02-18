@@ -72,6 +72,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 	private EventListenerList listenerList;
 	private Beneficiario beneficiario;
 	private Vector<CentroSalud> centros;
+	private boolean reducido;
 
 	private ComboBoxModel cmbIdentificacionModel;
 	private JLabel lblMedicoAsignado;
@@ -128,6 +129,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		initGUI();
 		listenerList = new EventListenerList();
 		beneficiario = null;
+		reducido = false;
 		cambiarEdicion(false);
 	}
 	
@@ -469,6 +471,13 @@ public class JPBeneficiarioConsultar extends JPBase {
 				Validacion.comprobarNSS(identificacion);
 				beneficiarioBuscado = getControlador().consultarBeneficiarioPorNSS(identificacion);
 			}
+			
+			// Si este panel se está usando dentro de otro panel,
+			// no se pueden buscar beneficiarios sin médico
+			if(reducido && beneficiarioBuscado.getMedicoAsignado() == null) {
+				beneficiarioBuscado = null;
+				throw new BeneficiarioInexistenteException("El beneficiario con " + tipo + " " + identificacion + " no tiene ningún médico asignado.");
+			}
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Beneficiario encontrado.");
 					
 		} catch(BeneficiarioInexistenteException e) {
@@ -526,8 +535,11 @@ public class JPBeneficiarioConsultar extends JPBase {
 			txtCorreoElectronico.setText(beneficiario.getCorreo());
 			txtTelefonoFijo.setText(beneficiario.getTelefono());
 			txtTelefonoMovil.setText(beneficiario.getMovil());
-			if (beneficiario.getMedicoAsignado()!=null)
+			if(beneficiario.getMedicoAsignado() == null) {
+				txtMedicoAsignado.setText("(ninguno)");
+			} else {
 				txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+			}
 			cmbCentros.setSelectedIndex(centros.indexOf(beneficiario.getCentroSalud()));
 			chkEditar.setEnabled(true);
 		}
@@ -610,7 +622,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			medico = getControlador().consultarBeneficiarioPorNIF(beneficiario.getNif()).getMedicoAsignado();
 
 			// Mostramos el resultado de la operación y limpiamos el panel
-			if(beneficiario.getMedicoAsignado().equals(medico)) {
+			if(medico.equals(beneficiario.getMedicoAsignado())) {
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente.");
 			} else {
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente y se\nle ha asignado automáticamente el siguiente médico:\n" + medico.getApellidos() + ", " + medico.getNombre());
@@ -730,7 +742,11 @@ public class JPBeneficiarioConsultar extends JPBase {
 	private void cmbCentrosItemStateChanged(ItemEvent evt) {
 		if(cmbCentros.getSelectedIndex() != -1) {
 			if(centros.get(cmbCentros.getSelectedIndex()).equals(beneficiario.getCentroSalud())) {
-				txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+				if(beneficiario.getMedicoAsignado() == null) {
+					txtMedicoAsignado.setText("(ninguno)");
+				} else {
+					txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+				}
 			} else {
 				txtMedicoAsignado.setText("(nuevo médico)");
 			}
@@ -879,6 +895,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		this.add(lblCentro, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblFechaNacimiento));
 		this.remove(cmbCentros);
 		this.add(cmbCentros, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(dtcFechaNacimiento));
+		reducido = true;
 	}
 	
 	public void desactivarModificacion() {

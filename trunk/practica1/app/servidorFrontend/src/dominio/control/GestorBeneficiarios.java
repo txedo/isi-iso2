@@ -44,15 +44,12 @@ public class GestorBeneficiarios {
 				
 		// Miramos si es necesario cambiar el médico asignado al beneficiario
 		medico = obtenerMedicoBeneficiario(beneficiario);
-		if(!medico.equals(beneficiario.getMedicoAsignado())) {
+		if(medico == null || !medico.equals(beneficiario.getMedicoAsignado())) {
 			// Cambiamos el médico y lo guardamos en la base de datos
 			beneficiario.setMedicoAsignado(medico);
 			FPBeneficiario.modificar(beneficiario);
 		}
 		
-		// Si el beneficiario no tiene médico asignado, se lanza una excepción
-		if (beneficiario.getMedicoAsignado() == null)
-			throw new UsuarioIncorrectoException("El beneficiario con NIF " + beneficiario.getNif() + " no tiene asignado médico.");
 		return beneficiario;
 	}
 	
@@ -74,7 +71,7 @@ public class GestorBeneficiarios {
 
 		// Miramos si es necesario cambiar el médico asignado al beneficiario
 		medico = obtenerMedicoBeneficiario(beneficiario);
-		if(!medico.equals(beneficiario.getMedicoAsignado())) {
+		if(medico == null || !medico.equals(beneficiario.getMedicoAsignado())) {
 			// Cambiamos el médico y lo guardamos en la base de datos
 			beneficiario.setMedicoAsignado(medico);
 			FPBeneficiario.modificar(beneficiario);
@@ -119,6 +116,9 @@ public class GestorBeneficiarios {
 		// una excepción para que el beneficiario pueda elegir otro centro
 		medico = obtenerMedicoBeneficiario(beneficiario);
 		beneficiario.setMedicoAsignado(medico);
+		if(medico == null) {
+			throw new UsuarioIncorrectoException("No existe ningún médico que se pueda asignar al beneficiario en el centro " + beneficiario.getCentroSalud().getNombre() + ".");
+		}
 		
 		// Añadimos el beneficiario al sistema
 		FPBeneficiario.insertar(beneficiario);
@@ -144,6 +144,9 @@ public class GestorBeneficiarios {
 
 		// Miramos si es necesario cambiar el médico asignado al beneficiario
 		medico = obtenerMedicoBeneficiario(beneficiario);
+		if(medico == null) {
+			throw new UsuarioIncorrectoException("No existe ningún médico que se pueda asignar al beneficiario en el centro " + beneficiario.getCentroSalud().getNombre() + ".");
+		}
 		if(!medico.equals(beneficiario.getMedicoAsignado())) {
 			// Cambiamos el médico antes de guardarlo en la base de datos
 			beneficiario.setMedicoAsignado(medico);
@@ -183,13 +186,13 @@ public class GestorBeneficiarios {
 		// se le busca un nuevo médico de cabecera
 		if(beneficiario.getEdad() >= EDAD_PEDIATRA) {
 			if(beneficiario.getMedicoAsignado() == null
-			  || !beneficiario.getCentroSalud().equals(beneficiario.getMedicoAsignado().getCentroSalud())
-			  || beneficiario.getMedicoAsignado().getTipoMedico().getCategoria() == CategoriasMedico.Pediatra) {
-				try {
-					nifMedico = UtilidadesPersistencia.obtenerMedicoAleatorioTipoCentro(CategoriasMedico.Cabecera, beneficiario.getCentroSalud());
+			 || !beneficiario.getCentroSalud().equals(beneficiario.getMedicoAsignado().getCentroSalud())
+			 || beneficiario.getMedicoAsignado().getTipoMedico().getCategoria() == CategoriasMedico.Pediatra) {
+				nifMedico = UtilidadesPersistencia.obtenerMedicoAleatorioTipoCentro(CategoriasMedico.Cabecera, beneficiario.getCentroSalud());
+				if(nifMedico.equals("")) {
+					medico = null;
+				} else {
 					medico = (Medico)FPUsuario.consultar(nifMedico);
-				} catch(UsuarioIncorrectoException e) {
-					throw new UsuarioIncorrectoException("No se puede asignar un médico al beneficiario porque no existe ningún médico de cabecera en el centro " + beneficiario.getCentroSalud().getNombre() + ".");
 				}
 			}
 		}
@@ -200,11 +203,11 @@ public class GestorBeneficiarios {
 			if(beneficiario.getMedicoAsignado() == null
 			 || !beneficiario.getCentroSalud().equals(beneficiario.getMedicoAsignado().getCentroSalud())
 			 || beneficiario.getMedicoAsignado().getTipoMedico().getCategoria() == CategoriasMedico.Cabecera) {
-				try {
-					nifMedico = UtilidadesPersistencia.obtenerMedicoAleatorioTipoCentro(CategoriasMedico.Pediatra, beneficiario.getCentroSalud());
+				nifMedico = UtilidadesPersistencia.obtenerMedicoAleatorioTipoCentro(CategoriasMedico.Pediatra, beneficiario.getCentroSalud());
+				if(nifMedico.equals("")) {
+					medico = null;
+				} else {
 					medico = (Medico)FPUsuario.consultar(nifMedico);
-				} catch(UsuarioIncorrectoException e) {
-					throw new UsuarioIncorrectoException("No se puede asignar un médico al beneficiario porque no existe ningún pediatra en el centro " + beneficiario.getCentroSalud().getNombre() + ".");
 				}
 			}
 		}
