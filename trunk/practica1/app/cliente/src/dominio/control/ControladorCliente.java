@@ -288,8 +288,13 @@ public class ControladorCliente {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Vector<Cita> consultarCitasPendientes(String dni) throws RemoteException, Exception {
+	public Vector<Cita> consultarCitasPendientesBeneficiario(String dni) throws RemoteException, Exception {
 		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES, dni);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Vector<Cita> consultarCitasPendientesMedico(String dni) throws RemoteException, Exception {
+		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES_MEDICO, dni);
 	}
 	
 	public Cita pedirCita(Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception { 

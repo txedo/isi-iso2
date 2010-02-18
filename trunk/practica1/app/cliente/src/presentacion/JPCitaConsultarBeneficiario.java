@@ -41,7 +41,7 @@ import excepciones.CitaNoValidaException;
 /**
  * Panel que permite consultar y anular citas existentes.
  */
-public class JPCitaConsultar extends JPBase {
+public class JPCitaConsultarBeneficiario extends JPBase {
 
 	private static final long serialVersionUID = 117161427277876393L;
 
@@ -61,13 +61,13 @@ public class JPCitaConsultar extends JPBase {
 	private JLabel lblCitas;
 	private JTable tblTablaCitas;
 
-	public JPCitaConsultar() {
+	public JPCitaConsultarBeneficiario() {
 		this(null, null);
 		// Este constructor evita que aparezca un error al editar
 		// los formularios o paneles que utilizan JPCitaConsultar
 	}
 	
-	public JPCitaConsultar(JFrame frame, ControladorCliente controlador) {
+	public JPCitaConsultarBeneficiario(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 		formatoDia = new SimpleDateFormat("dd/MM/yyyy");
@@ -171,7 +171,7 @@ public class JPCitaConsultar extends JPBase {
 				
 				// Obtenemos y mostramos las citas del beneficiario
 				// (por defecto, sólo las pendientes)
-				citas = getControlador().consultarCitasPendientes(beneficiario.getNif());
+				citas = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
 				crearTabla(citas.size());
 				rellenarTabla(citas);
 				
@@ -205,7 +205,7 @@ public class JPCitaConsultar extends JPBase {
 			// Obtenemos y mostramos todas las citas del beneficiario,
 			// marcando en azul las que son pasadas
 			citas = getControlador().consultarHistoricoCitas(beneficiario.getNif());
-			pendientes = getControlador().consultarCitasPendientes(beneficiario.getNif());
+			pendientes = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
 			crearTabla(citas.size());
 			rellenarTabla(citas, pendientes);
 			
@@ -257,11 +257,11 @@ public class JPCitaConsultar extends JPBase {
 					}
 					if(viendoHistorico) {
 						citas = getControlador().consultarHistoricoCitas(beneficiario.getNif());
-						pendientes = getControlador().consultarCitasPendientes(beneficiario.getNif());
+						pendientes = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
 						crearTabla(citas.size());
 						rellenarTabla(citas, pendientes);
 					} else {
-						citas = getControlador().consultarCitasPendientes(beneficiario.getNif());
+						citas = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
 						crearTabla(citas.size());
 						rellenarTabla(citas);
 					}

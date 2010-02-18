@@ -508,7 +508,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 			txtCorreoElectronico.setText(beneficiario.getCorreo());
 			txtTelefonoFijo.setText(beneficiario.getTelefono());
 			txtTelefonoMovil.setText(beneficiario.getMovil());
-			txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+			if (beneficiario.getMedicoAsignado()!=null)
+				txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
 			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + " (" + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion() + ")");
 			chkEditar.setEnabled(true);
 		}

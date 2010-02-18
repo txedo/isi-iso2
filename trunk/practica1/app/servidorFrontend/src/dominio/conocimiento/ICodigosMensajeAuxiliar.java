@@ -29,10 +29,11 @@ public interface ICodigosMensajeAuxiliar {
 	// Operaciones auxiliares del Gestor de Citas
 	public final int CONSULTAR_HORAS_CITAS_MEDICO = 1012;
 	public final int CONSULTAR_CITAS_MEDICO = 1013;
-	public final int CONSULTAR_DIAS_COMPLETOS = 1014;
-	public final int CONSULTAR_CITAS_PENDIENTES = 1015;
+	public final int CONSULTAR_CITAS_PENDIENTES_MEDICO = 1014;
+	public final int CONSULTAR_DIAS_COMPLETOS = 1015;
+	public final int CONSULTAR_CITAS_PENDIENTES = 1016;
 	
 	// Operaciones auxiliares del Gestor de Volantes
-	public final int CONSULTAR_VOLANTE = 1016;
+	public final int CONSULTAR_VOLANTE = 1017;
 	
 }

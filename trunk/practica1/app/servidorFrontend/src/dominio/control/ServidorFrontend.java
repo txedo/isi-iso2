@@ -1403,7 +1403,7 @@ public class ServidorFrontend implements IServidorFrontend {
 		case ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES:
 			try {
 				// Obtenemos las citas pendientes que tiene un beneficiario
-				resultado = GestorCitas.consultarCitasPendientes(idSesion, (String)informacion);
+				resultado = GestorCitas.consultarCitasPendientesBeneficiario(idSesion, (String)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultadas las citas pendientes del beneficiario con NIF " + (String)informacion + ".");
 			} catch(SQLException se) {
@@ -1439,6 +1439,49 @@ public class ServidorFrontend implements IServidorFrontend {
 				throw sie;
 			} catch(Exception e) {
 				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se consultaban las citas pendientes de un beneficiario: " + e.toString());
+				throw e;
+			}
+			break;
+			
+		case ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES_MEDICO:
+			try {
+				// Obtenemos las citas pendientes que tiene un beneficiario
+				resultado = GestorCitas.consultarCitasPendientesMedico(idSesion, (String)informacion);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultadas las citas pendientes del médico con NIF " + (String)informacion + ".");
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL mientras se consultaban las citas pendientes del médico con NIF " + (String)informacion + ": " + se.getLocalizedMessage());
+				throw se;
+			} catch(BeneficiarioInexistenteException bie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un beneficiario mientras se consultaban las citas pendientes del médico con NIF " + (String)informacion + ": " + bie.getLocalizedMessage());
+				throw bie;
+			} catch(UsuarioIncorrectoException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el médico con NIF " + (String)informacion + " para el que se querían consultar sus citas pendientes: " + uie.getLocalizedMessage());
+				throw uie;
+			} catch(CentroSaludInexistenteException csie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un centro de salud mientras se consultaban las citas pendientes del médico con NIF " + (String)informacion + ": " + csie.getLocalizedMessage());
+				throw csie;
+			} catch(DireccionInexistenteException die) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar una dirección mientras se consultaban las citas pendientes del médico con NIF " + (String)informacion + ": " + die.getLocalizedMessage());
+				throw die;
+			} catch(NullPointerException npe) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar consultar las citas pendientes de un médico con datos no válidos: " + npe.getLocalizedMessage());
+				throw npe;
+			} catch(OperacionIncorrectaException oie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta de las citas pendientes del médico con NIF " + (String)informacion + ": " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar las citas pendientes del médico con NIF " + (String)informacion + ": " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se consultaban las citas pendientes de un médico: " + e.toString());
 				throw e;
 			}
 			break;
