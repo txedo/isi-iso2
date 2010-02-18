@@ -2,13 +2,10 @@ package presentacion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
-
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -38,6 +35,7 @@ import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.NombreIncorrectoException;
 import excepciones.NumeroDomicilioIncorrectoException;
+import excepciones.OperacionIncorrectaException;
 import excepciones.PisoDomicilioIncorrectoException;
 import excepciones.ProvinciaIncorrectaException;
 import excepciones.PuertaDomicilioIncorrectoException;
@@ -110,6 +108,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 	public JPBeneficiarioRegistrar(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
+		rellenarListaCentros();
 	}
 	
 	private void initGUI() {
@@ -123,11 +122,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 				this.add(cmbCentros, new AnchorConstraint(337, 13, 741, 145, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				cmbCentros.setModel(cmbCentrosModel);
 				cmbCentros.setPreferredSize(new java.awt.Dimension(272, 23));
-				cmbCentros.addFocusListener(new FocusAdapter() {
-					public void focusGained(FocusEvent evt) {
-						cmbCentrosFocusGained(evt);
-					}
-				});
+				cmbCentros.setName("cmbCentros");
 			}
 			{
 				lblCamposOblig = new JLabel();
@@ -513,12 +508,6 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		limpiarCamposRegistro();
 	}
 
-	private void cmbCentrosFocusGained(FocusEvent evt) {
-		if(cmbCentros.getModel().getSize() == 0) {
-			rellenarListaCentros();
-		}
-	}
-
 	private boolean campoVacio(JTextField campo) {
 		return campo.getText().trim().equals("");
 	}
@@ -538,6 +527,9 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			}
 			cmbCentros.setModel(lista);
 			cmbCentros.setSelectedIndex(-1);
+		
+		} catch(OperacionIncorrectaException e) {
+			// Ignoramos el error
 			
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());

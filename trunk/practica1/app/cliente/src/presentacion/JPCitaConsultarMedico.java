@@ -81,7 +81,7 @@ public class JPCitaConsultarMedico extends JPBase {
 			this.setPreferredSize(new java.awt.Dimension(430, 471));
 			{
 				btnHistoricoCitas = new JButton();
-				this.add(btnHistoricoCitas, new AnchorConstraint(916, 11, 14, 645, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnHistoricoCitas, new AnchorConstraint(916, 11, 11, 645, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnHistoricoCitas.setText("Ver histórico de citas");
 				btnHistoricoCitas.setPreferredSize(new java.awt.Dimension(142, 26));
 				btnHistoricoCitas.setEnabled(false);
@@ -93,13 +93,13 @@ public class JPCitaConsultarMedico extends JPBase {
 			}
 			{
 				sepSeparador = new JSeparator();
-				this.add(sepSeparador, new AnchorConstraint(249, 6, 548, 5, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(sepSeparador, new AnchorConstraint(189, 6, 548, 5, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				sepSeparador.setPreferredSize(new java.awt.Dimension(419, 10));
 			}
 			{
 				pnlUsuario = new JPUsuarioConsultar(this.getFrame(), this.getControlador());
 				this.add(pnlUsuario, new AnchorConstraint(0, 0, 511, 0, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				pnlUsuario.setPreferredSize(new java.awt.Dimension(430, 237));
+				pnlUsuario.setPreferredSize(new java.awt.Dimension(430, 183));
 				pnlUsuario.reducirPanel();
 				pnlUsuario.addUsuarioBuscadoListener(new UsuarioBuscadoListener() {
 					public void usuarioBuscado(EventObject evt) {
@@ -109,7 +109,7 @@ public class JPCitaConsultarMedico extends JPBase {
 			}
 			{
 				btnRestablecer = new JButton();
-				this.add(btnRestablecer, new AnchorConstraint(916, 163, 14, 673, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnRestablecer, new AnchorConstraint(916, 164, 11, 673, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnRestablecer.addActionListener(new ActionListener() {
@@ -120,14 +120,14 @@ public class JPCitaConsultarMedico extends JPBase {
 			}
 			{
 				lblCitas = new JLabel();
-				this.add(lblCitas, new AnchorConstraint(260, 273, 506, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCitas, new AnchorConstraint(200, 273, 506, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCitas.setText("Citas pendientes encontradas:");
 				lblCitas.setPreferredSize(new java.awt.Dimension(228, 16));
 			}
 			{
 				scpTablaCitas = new JScrollPane();
-				this.add(scpTablaCitas, new AnchorConstraint(282, 12, 53, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				scpTablaCitas.setPreferredSize(new java.awt.Dimension(409, 136));
+				this.add(scpTablaCitas, new AnchorConstraint(222, 12, 49, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				scpTablaCitas.setPreferredSize(new java.awt.Dimension(409, 200));
 				{
 					tblTablaCitas = new JTable();
 					scpTablaCitas.setViewportView(tblTablaCitas);				
