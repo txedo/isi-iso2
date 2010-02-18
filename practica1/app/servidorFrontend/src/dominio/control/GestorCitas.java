@@ -143,6 +143,9 @@ public class GestorCitas {
 		
 		// Comprobamos que exista el beneficiario
 		beneficiario = FPBeneficiario.consultarPorNIF(beneficiario.getNif());
+		if(beneficiario.getMedicoAsignado() == null) {
+			throw new MedicoInexistenteException("El beneficiario que va a pedir cita no tiene asignado ningún médico.");
+		}
 
 		// Comprobamos que exista el médico
 		try {
@@ -197,7 +200,7 @@ public class GestorCitas {
 	}
 	
 	// Método para pedir una nueva cita para un cierto beneficiario a partir de un volante
-	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, VolanteNoValidoException, FechaNoValidaException, NullPointerException, CitaNoValidaException, DireccionInexistenteException {
+	public static Cita pedirCita(long idSesion, Beneficiario beneficiario, long idVolante, Date fechaYHora, long duracion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, VolanteNoValidoException, FechaNoValidaException, NullPointerException, CitaNoValidaException, DireccionInexistenteException, MedicoInexistenteException {
 		Vector<Cita> citas;
 		Calendar hora;
 		Medico medico;
@@ -217,6 +220,9 @@ public class GestorCitas {
 
 		// Comprobamos que exista el beneficiario
 		beneficiario = FPBeneficiario.consultarPorNIF(beneficiario.getNif());
+		if(beneficiario.getMedicoAsignado() == null) {
+			throw new MedicoInexistenteException("El beneficiario que va a pedir cita no tiene asignado ningún médico.");
+		}
 
 		// Obtenemos los datos del volante con el id indicado
 		volante = FPVolante.consultar(idVolante);

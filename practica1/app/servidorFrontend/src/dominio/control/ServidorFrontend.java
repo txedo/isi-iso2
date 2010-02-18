@@ -618,6 +618,10 @@ public class ServidorFrontend implements IServidorFrontend {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar un usuario mientras se tramitaba una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + uie.getLocalizedMessage());
 			throw uie;
+		} catch(MedicoInexistenteException bie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar un médico mientras se tramitaba una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + bie.getLocalizedMessage());
+			throw bie;
 		} catch(CentroSaludInexistenteException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error al recuperar un centro de salud mientras se tramitaba una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + csie.getLocalizedMessage());

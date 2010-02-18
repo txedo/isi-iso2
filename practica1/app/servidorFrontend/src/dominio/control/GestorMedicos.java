@@ -103,7 +103,7 @@ public class GestorMedicos {
 	// Método para eliminar un médico del sistema
 	public static void eliminarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
 		Vector<Beneficiario> beneficiarios;
-		Medico med = null;
+		Medico nuevoMedico = null;
 		
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
@@ -129,11 +129,11 @@ public class GestorMedicos {
 		beneficiarios = GestorBeneficiarios.getBeneficiariosMedico(idSesion, medico.getDni());
 
 		// Intentamos asignar un nuevo médico a los beneficiarios afectados
-		for (Beneficiario bene: beneficiarios) {
-			med = GestorBeneficiarios.obtenerMedicoBeneficiario(bene);
-			if (med != null) {
-				bene.setMedicoAsignado(med);
-				GestorBeneficiarios.modificarBeneficiario(idSesion, bene);
+		for(Beneficiario beneficiario : beneficiarios) {
+			nuevoMedico = GestorBeneficiarios.obtenerMedicoBeneficiario(beneficiario);
+			if(nuevoMedico != null) {
+				beneficiario.setMedicoAsignado(nuevoMedico);
+				GestorBeneficiarios.modificarBeneficiario(idSesion, beneficiario);
 			}
 		}
 	}

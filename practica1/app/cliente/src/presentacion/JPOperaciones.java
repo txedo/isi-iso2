@@ -148,7 +148,7 @@ public class JPOperaciones extends JPanel {
 			nombre = "Consultar o anular<br>citas de beneficiarios";
 			break;
 		case ConsultarCitaMedico:
-			nombre = "Consultar citas<br>de médicso";
+			nombre = "Consultar citas<br>de médicos";
 			break;
 		case EmitirVolante:
 			nombre = "Emitir volante";

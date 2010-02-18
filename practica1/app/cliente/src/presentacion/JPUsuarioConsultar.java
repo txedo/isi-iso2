@@ -414,12 +414,15 @@ public class JPUsuarioConsultar extends JPBase {
 			Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
 			
 			// Creamos un nuevo usuario con los datos introducidos
-			if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Administrador.name())) {
-				usuarioModif = new Administrador();
-			} else if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Citador.name())) {
-				usuarioModif = new Citador();
-			} else if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Medico.name())) {
+			// (si el usuario era médico no puede cambiar de rol)
+			if(usuario.getRol() == RolesUsuarios.Medico) {
 				usuarioModif = new Medico();
+			} else {
+				if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Administrador.name())) {
+					usuarioModif = new Administrador();
+				} else if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Citador.name())) {
+					usuarioModif = new Citador();
+				}
 			}
 			usuarioModif.setDni(txtNIF.getText().trim().toUpperCase());
 			usuarioModif.setLogin(txtLogin.getText().trim());
@@ -578,6 +581,7 @@ public class JPUsuarioConsultar extends JPBase {
 			lblPassword.setText("Contraseña *");
 			lblRol.setText("Rol asignado *");
 			lblCalendario.setText("Calendario laboral *");
+			lblCentro.setText("Centro asignado *");
 			btnCalendario.setText("Configurar...");
 		} else {
 			lblNIF.setText("NIF");
@@ -587,6 +591,7 @@ public class JPUsuarioConsultar extends JPBase {
 			lblPassword.setText("Contraseña");
 			lblRol.setText("Rol asignado");
 			lblCalendario.setText("Calendario laboral");
+			lblCentro.setText("Centro asignado");
 			btnCalendario.setText("Ver...");
 		}
 	}
@@ -599,6 +604,7 @@ public class JPUsuarioConsultar extends JPBase {
 		txtNombre.setText("");
 		txtApellidos.setText("");
 		txtCentro.setText("");
+		chkEditar.setEnabled(false);
 		chkEditar.setSelected(false);
 		cmbRol.setSelectedIndex(-1);
 		lblCalendario.setVisible(false);
