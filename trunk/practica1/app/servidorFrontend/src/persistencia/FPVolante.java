@@ -45,6 +45,7 @@ public class FPVolante {
 		
 		// Si no se obtienen datos, es porque no existe el volante 
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new VolanteNoValidoException("No existe ningún volante con el id " + String.valueOf(id) + ".");
 		} else {
 			// Establecemos los datos del volante
@@ -63,6 +64,7 @@ public class FPVolante {
 			volante.setReceptor(medReceptor);
 			volante.setCita(cita);
 		}
+		
 		return volante;
 	}
 		
@@ -85,6 +87,7 @@ public class FPVolante {
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		volante.setId(datos.getInt("LAST_INSERT_ID()"));
+		datos.close();
 	}
 
 	public static void modificar(Volante volante) throws SQLException {

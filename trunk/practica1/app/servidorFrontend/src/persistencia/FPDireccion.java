@@ -36,6 +36,7 @@ public class FPDireccion {
 		
 		// Si no se obtienen datos, es porque no existe la dirección
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new DireccionInexistenteException("El beneficiario con NIF " + nifBeneficiario + " no tiene registrada una dirección.");
 		} else {		
 			// Establecemos los datos de la dirección
@@ -47,7 +48,9 @@ public class FPDireccion {
 			direccion.setCiudad(datos.getString(COL_CIUDAD));
 			direccion.setProvincia(datos.getString(COL_PROVINCIA));
 			direccion.setCP(datos.getInt(COL_CP));
+			datos.close();
 		}
+		
 		return direccion;
 	}
 	

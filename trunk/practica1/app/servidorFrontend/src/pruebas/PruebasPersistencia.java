@@ -40,6 +40,7 @@ import persistencia.FPSustitucion;
 import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
+import persistencia.UtilidadesPersistencia;
 
 public class PruebasPersistencia extends PruebasBase {
 
@@ -93,6 +94,9 @@ public class PruebasPersistencia extends PruebasBase {
 			beneficiario1 = new Beneficiario("11223344W", "121212454545", "Ángel", "L. A.", new Date(1985 - 1900, 4, 1), direccion1, "angel129@gmail.com", "900111222", "600111222");
 			beneficiario2 = new Beneficiario("88776655R", "444444444444", "José", "R. S.", new Date(1990 - 1900, 8, 20), direccion2, "pepepepe@otro.com", "900123123", "600123123");
 			beneficiario3 = new Beneficiario("91839184P", "888111111888", "Alicia", "S. L.", new Date(1945 - 1900, 1, 17), direccion3, "ali45@yahoo.es", "900455455", "600455455");
+			beneficiario1.setCentroSalud(medico1.getCentroSalud());
+			beneficiario2.setCentroSalud(medico2.getCentroSalud());
+			beneficiario3.setCentroSalud(medico3.getCentroSalud());
 			beneficiario1.setMedicoAsignado(medico1);
 			beneficiario2.setMedicoAsignado(medico2);
 			beneficiario3.setMedicoAsignado(medico3);
@@ -120,6 +124,7 @@ public class PruebasPersistencia extends PruebasBase {
 	/** Pruebas de la tabla de beneficiarios */
 	@SuppressWarnings("deprecation")
 	public void testBeneficiarios() {
+		Vector<String> nifsBeneficiarios;
 		Beneficiario beneficiario;
 		
 		try {
@@ -178,8 +183,9 @@ public class PruebasPersistencia extends PruebasBase {
 		}
 		
 		try {
-			// Insertamos otro beneficiario más
+			// Insertamos otro beneficiario más sin médico asignado
 			beneficiario3.setNss("998877778899");
+			beneficiario3.setMedicoAsignado(null);
 			FPBeneficiario.insertar(beneficiario3);
 			// Recuperamos varios beneficiarios de las dos formas posibles
 			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario1.getNif());
@@ -200,10 +206,21 @@ public class PruebasPersistencia extends PruebasBase {
 			beneficiario1.setFechaNacimiento(new Date(1985 - 1900, 4, 2));
 			beneficiario1.getDireccion().setProvincia("Nueva provincia");
 			beneficiario1.getDireccion().setCP(20000);
+			beneficiario1.setMedicoAsignado(medico2);
 			FPBeneficiario.modificar(beneficiario1);
 			// Comprobamos si los cambios han tenido efecto
 			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario1.getNif());
 			assertEquals(beneficiario1, beneficiario);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Obtenemos la lista de beneficiarios de un médico dado
+			nifsBeneficiarios = FPBeneficiario.consultarBeneficiariosMedico(medico2.getDni());
+			assertTrue(nifsBeneficiarios.size() == 2);
+			assertTrue((nifsBeneficiarios.get(0).equals(beneficiario1.getNif()) && nifsBeneficiarios.get(1).equals(beneficiario2.getNif()))
+			           || (nifsBeneficiarios.get(0).equals(beneficiario2.getNif()) && nifsBeneficiarios.get(1).equals(beneficiario1.getNif()))); 
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -235,6 +252,8 @@ public class PruebasPersistencia extends PruebasBase {
 			assertEquals(beneficiario1, beneficiario);
 			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario3.getNif());
 			assertEquals(beneficiario3, beneficiario);
+			beneficiario = FPBeneficiario.consultarPorNSS(beneficiario3.getNss());
+			assertEquals(beneficiario3, beneficiario);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -242,6 +261,7 @@ public class PruebasPersistencia extends PruebasBase {
 
 	/** Pruebas de la tabla de centros de salud */
 	public void testCentrosSalud() {
+		Vector<CentroSalud> centros;
 		CentroSalud centro;
 		
 		try {
@@ -276,7 +296,7 @@ public class PruebasPersistencia extends PruebasBase {
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {
-			fail(e.toString());
+			fail("Se esperaba una excepción SQLException");
 		}
 
 		try {
@@ -286,6 +306,16 @@ public class PruebasPersistencia extends PruebasBase {
 		} catch(CentroSaludInexistenteException e) {
 		} catch(Exception e) {
 			fail("Se esperaba una excepción CentroSaludInexistenteException");
+		}
+		
+		try {
+			// Obtenemos la lista completa de centros de salud
+			centros = FPCentroSalud.consultarTodo();
+			assertTrue(centros.size() == 2);
+			assertTrue((centros.get(0).equals(centro1) && centros.get(1).equals(centro3))
+			           || (centros.get(0).equals(centro3) && centros.get(1).equals(centro1)));
+		} catch(Exception e) {
+			fail(e.toString());
 		}
 	}
 
@@ -988,6 +1018,51 @@ public class PruebasPersistencia extends PruebasBase {
 			assertEquals(volante1, volante);
 			volante = FPVolante.consultar(volante2.getId());
 			assertEquals(volante2, volante);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de las utilidades de persistencia */
+	public void testUtilidades() {
+		String dni;
+		
+		try {
+			// Añadimos varios beneficiarios y usuarios
+			FPCentroSalud.insertar(centro1);
+			FPCentroSalud.insertar(centro2);
+			FPUsuario.insertar(medico1);
+			FPUsuario.insertar(medico2);
+			FPUsuario.insertar(medico3);
+			FPUsuario.insertar(administrador1);
+			FPBeneficiario.insertar(beneficiario1);
+			FPBeneficiario.insertar(beneficiario2);
+			FPBeneficiario.insertar(beneficiario3);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Comprobamos que existe el NIF de un beneficiario
+			assertTrue(UtilidadesPersistencia.existeNIF(beneficiario3.getNif()));
+			// Comprobamos que existe el DNI de un usuario
+			assertTrue(UtilidadesPersistencia.existeNIF(administrador1.getDni()));
+			// Comprobamos que no existe un NIF aleatorio
+			assertFalse(UtilidadesPersistencia.existeNIF("11881188P"));
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Buscamos un médico de cabecera al azar del centro1
+			dni = UtilidadesPersistencia.obtenerMedicoAleatorioTipoCentro(CategoriasMedico.Cabecera, centro1);
+			assertEquals(medico2.getDni(), dni);
+			// Buscamos un médico de cabecera al azar del centro2
+			dni = UtilidadesPersistencia.obtenerMedicoAleatorioTipoCentro(CategoriasMedico.Cabecera, centro2);
+			assertEquals(medico3.getDni(), dni);
+			// Buscamos un médico al azar que no existe
+			dni = UtilidadesPersistencia.obtenerMedicoAleatorioTipoCentro(CategoriasMedico.Especialista, centro2);
+			assertEquals("", dni);
 		} catch(Exception e) {
 			fail(e.toString());
 		}

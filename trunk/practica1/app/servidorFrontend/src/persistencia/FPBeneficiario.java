@@ -52,6 +52,7 @@ public class FPBeneficiario {
 
 		// Si no se obtienen datos, es porque el beneficiario no existe
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new BeneficiarioInexistenteException("El beneficiario con NIF " + nif + " no se encuentra dado de alta en el sistema.");
 		} else {
 			// Establecemos los datos del beneficiario
@@ -67,16 +68,17 @@ public class FPBeneficiario {
 			direccion = FPDireccion.consultar(beneficiario.getNif());
 			beneficiario.setDireccion(direccion);
 			if(datos.getString(COL_DNI_MEDICO) == null) {
-				medico = null;
 				beneficiario.setMedicoAsignado(null);
 			} else {
 				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 				if(medico.getRol() != RolesUsuarios.Medico) {
+					datos.close();
 					throw new UsuarioIncorrectoException("El beneficiario con NIF " + nif + " no tiene asignado un usuario con rol de médico.");
 				}
 				beneficiario.setMedicoAsignado((Medico)medico);
 			}
 			beneficiario.setCentroSalud(FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO)));
+			datos.close();
 		}
 
 		return beneficiario;
@@ -97,6 +99,7 @@ public class FPBeneficiario {
 
 		// Si no se obtienen datos, es porque el beneficiario no existe
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new BeneficiarioInexistenteException("El beneficiario con NSS " + nss + " no se encuentra dado de alta en el sistema.");
 		} else {
 			// Establecemos los datos del beneficiario
@@ -111,39 +114,42 @@ public class FPBeneficiario {
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
 			direccion = FPDireccion.consultar(beneficiario.getNif());
 			beneficiario.setDireccion(direccion);
-			if (datos.getString(COL_DNI_MEDICO)==null)
-				medico = null;
-			else {
+			if(datos.getString(COL_DNI_MEDICO) == null) {
+				beneficiario.setMedicoAsignado(null);
+			} else {
 				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 				if(medico.getRol() != RolesUsuarios.Medico) {
+					datos.close();
 					throw new UsuarioIncorrectoException("El beneficiario con NSS " + nss + " no tiene asignado un usuario con rol de médico.");
 				}
+				beneficiario.setMedicoAsignado((Medico)medico);
 			}
-			beneficiario.setMedicoAsignado((Medico)medico);
 			beneficiario.setCentroSalud(FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO)));
+			datos.close();
 		}
 
 		return beneficiario;
 	}
 	
-	 public static Vector<String> getBeneficiariosMedico(String dniMedico) throws SQLException {
-         ComandoSQL comando;
-         ResultSet datos;
-         Vector<String> nifsBeneficiarios;
-         
-         // Consultamos la base de datos
-         comando = new ComandoSQLSentencia("SELECT " + COL_BENEFICIARIOS_NIF + " FROM "
-                         + TABLA_BENEFICIARIOS + " WHERE " + COL_DNI_MEDICO + " = ? ", dniMedico);
-         datos = GestorConexionesBD.consultar(comando);
-         
-         
-         nifsBeneficiarios = new Vector<String>();
-         while (datos.next()) {
-                 nifsBeneficiarios.add(datos.getString(COL_BENEFICIARIOS_NIF));
-         }
-         return nifsBeneficiarios;
- }
-
+	public static Vector<String> consultarBeneficiariosMedico(String dniMedico) throws SQLException {
+		ComandoSQL comando;
+		ResultSet datos;
+		Vector<String> nifsBeneficiarios;
+     
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT " + COL_BENEFICIARIOS_NIF + " FROM "
+				+ TABLA_BENEFICIARIOS + " WHERE " + COL_DNI_MEDICO + " = ? ", dniMedico);
+		datos = GestorConexionesBD.consultar(comando);
+ 
+		// Devolvemos la lista de beneficiarios
+		nifsBeneficiarios = new Vector<String>();
+		while(datos.next()) {
+			nifsBeneficiarios.add(datos.getString(COL_BENEFICIARIOS_NIF));
+		}
+		datos.close();
+		
+		return nifsBeneficiarios;
+	}
 
 	public static void insertar(Beneficiario beneficiario) throws SQLException {
 		ComandoSQL comando;

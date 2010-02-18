@@ -121,8 +121,10 @@ public class PruebasRemotoServidor extends TestCase {
 		
 		try {
 			// Actualizamos el estado de la ventana
-			conexion.ponerMensaje(null, ITiposMensajeLog.TIPO_INFO, "Mensaje de prueba");
+			conexion.ponerMensaje("user", ITiposMensajeLog.TIPO_INFO, "Mensaje de prueba");
 			assertEquals(ventana.getMensajes().substring(ventana.getMensajes().lastIndexOf(':')), ": Mensaje de prueba\n");
+			conexion.ponerMensaje(ITiposMensajeLog.TIPO_INFO, "Otro mensaje de prueba");
+			assertEquals(ventana.getMensajes().substring(ventana.getMensajes().lastIndexOf(':')), ": Otro mensaje de prueba\n");
 			conexion.actualizarClientesEscuchando(2);
 			assertEquals(ventana.getClientesEscuchando(), 2);
 		} catch(Exception e) {

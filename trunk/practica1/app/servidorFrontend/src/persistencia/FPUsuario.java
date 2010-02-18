@@ -48,6 +48,7 @@ public class FPUsuario {
 		
 		// Si no se obtienen datos, es porque no existe el usuario
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new UsuarioIncorrectoException("El usuario con DNI " + dni + " no se encuentra dado de alta en el sistema.");
 		} else {
 			// Creamos un usuario del tipo adecuado
@@ -62,6 +63,7 @@ public class FPUsuario {
 				usuario = new Medico();
 				break;
 			default:
+				datos.close();
 				throw new UsuarioIncorrectoException("El tipo del usuario con DNI " + dni + " es inválido.");
 			}
 			// Establecemos los datos del usuario
@@ -80,6 +82,7 @@ public class FPUsuario {
 				tipo = FPTipoMedico.consultar(usuario.getDni());
 				((Medico)usuario).setTipoMedico(tipo);
 			}
+			datos.close();
 		}
 		
 		return usuario;
@@ -100,6 +103,7 @@ public class FPUsuario {
 		
 		// Si no se obtienen datos, es porque no existe el usuario
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new UsuarioIncorrectoException("El nombre de usuario o contraseña introducidos no son válidos.");
 		} else {	
 			// Creamos un usuario del tipo adecuado
@@ -114,6 +118,7 @@ public class FPUsuario {
 				usuario = new Medico();
 				break;
 			default:
+				datos.close();
 				throw new UsuarioIncorrectoException("El tipo del usuario con login " + login + " es inválido.");
 			}
 			// Establecemos los datos del usuario
@@ -132,6 +137,7 @@ public class FPUsuario {
 				tipo = FPTipoMedico.consultar(usuario.getDni());
 				((Medico)usuario).setTipoMedico(tipo);
 			}
+			datos.close();
 		}
 		
 		return usuario;

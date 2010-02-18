@@ -42,7 +42,8 @@ public class FPPeriodoTrabajo {
 			periodo.setDia(DiaSemana.values()[datos.getInt(COL_DIA)]);
 			lista.add(periodo);
 		}
-		
+		datos.close();
+
 		return lista;
 	}
 	
@@ -63,6 +64,7 @@ public class FPPeriodoTrabajo {
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		periodo.setId(datos.getInt("LAST_INSERT_ID()"));
+		datos.close();
 	}
 	
 	public static void modificar(PeriodoTrabajo periodo) throws SQLException {

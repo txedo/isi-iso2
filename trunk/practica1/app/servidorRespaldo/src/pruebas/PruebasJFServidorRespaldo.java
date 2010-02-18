@@ -3,7 +3,9 @@ package pruebas;
 import org.uispec4j.Button;
 import org.uispec4j.MenuItem;
 import org.uispec4j.TextBox;
+import org.uispec4j.Trigger;
 import org.uispec4j.Window;
+import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 import dominio.conocimiento.ConfiguracionRespaldo;
 import dominio.control.ControladorRespaldo;
@@ -19,11 +21,13 @@ public class PruebasJFServidorRespaldo extends org.uispec4j.UISpecTestCase {
 	private Window winVentana;
 	private Button btnConectar;
 	private Button btnDesconectar;
+	private Button btnSalir;
 	private TextBox lblBarraEstado;
 	private TextBox lblConfigBD;
 	private MenuItem mniConectar;
 	private MenuItem mniDesconectar;
 	private MenuItem mniConfigurar;
+	private MenuItem mniSalir;
 
 	public void setUp() {
 		try {
@@ -34,10 +38,12 @@ public class PruebasJFServidorRespaldo extends org.uispec4j.UISpecTestCase {
 			winVentana = new Window(ventana);
 			btnConectar = winVentana.getButton("btnConectar");
 			btnDesconectar = winVentana.getButton("btnDesconectar");
+			btnSalir = winVentana.getButton("btnSalir");
 			lblBarraEstado = winVentana.getTextBox("lblBarraEstado");
 			lblConfigBD = winVentana.getTextBox("lblConfigBD");
 			mniConectar = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Conectar");
 			mniDesconectar = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Desconectar");
+			mniSalir = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Salir");
 			mniConfigurar = winVentana.getMenuBar().getMenu("Opciones").getSubMenu("Configurar...");
 		} catch(Exception e) {
 			fail(e.toString());
@@ -107,6 +113,31 @@ public class PruebasJFServidorRespaldo extends org.uispec4j.UISpecTestCase {
 			assertTrue(mniConfigurar.isEnabled());
 			assertFalse(btnDesconectar.isEnabled());
 			assertFalse(mniDesconectar.isEnabled());
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+
+		try {
+			// Activamos el servidor e intentamos salir pero
+			// cancelamos el cuadro de diálogo de confirmación
+			mniConectar.click();
+			WindowInterceptor.init(btnSalir.triggerClick())
+		    .process(new WindowHandler() {
+		    	public Trigger process(Window window) {
+		    		return window.getButton("No").triggerClick();
+		    	}
+		    }).run();
+			// Comprobamos que el servidor sigue activo
+			assertTrue(controlador.isServidorActivo());
+			// Intentamos salir por menú
+			WindowInterceptor.init(mniSalir.triggerClick())
+		    .process(new WindowHandler() {
+		    	public Trigger process(Window window) {
+		    		return window.getButton("No").triggerClick();
+		    	}
+		    }).run();
+			// Comprobamos que el servidor sigue activo
+			assertTrue(controlador.isServidorActivo());
 		} catch(Exception e) {
 			fail(e.toString());
 		}

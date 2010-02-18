@@ -44,6 +44,7 @@ public class FPCita {
 		
 		// Si no se obtienen datos, es porque no existe la cita
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new CitaNoValidaException("No existe ninguna cita con el id " + String.valueOf(id) + ".");
 		} else {
 			// Establecemos los datos de la cita
@@ -55,9 +56,11 @@ public class FPCita {
 			cita.setBeneficiario(beneficiario);
 			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 			if(medico.getRol() != RolesUsuarios.Medico) {
+				datos.close();
 				throw new UsuarioIncorrectoException("La cita con id " + String.valueOf(id) + " no tiene asociado un usuario con rol de médico.");
 			}
 			cita.setMedico((Medico)medico);
+			datos.close();
 		}
 		
 		return cita;
@@ -80,6 +83,7 @@ public class FPCita {
 		
 		// Si no se obtienen datos, es porque no existe la cita 
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new CitaNoValidaException("No existe ninguna cita con los datos indicados.");
 		} else {
 			// Establecemos los datos de la cita
@@ -91,9 +95,11 @@ public class FPCita {
 			cita.setBeneficiario(beneficiario);
 			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 			if(medico.getRol() != RolesUsuarios.Medico) {
+				datos.close();
 				throw new UsuarioIncorrectoException("La cita con los datos indicados no tiene asociado un usuario con rol de médico.");
 			}
 			cita.setMedico((Medico)medico);
+			datos.close();
 		}
 		
 		return cita;
@@ -131,11 +137,13 @@ public class FPCita {
 				cita.setBeneficiario(beneficiario);
 				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 				if(medico.getRol() != RolesUsuarios.Medico) {
+					datos.close();
 					throw new UsuarioIncorrectoException("Alguna de las citas del beneficiario con NIF " + nifBeneficiario + " no tiene asociado un usuario con rol de médico.");
 				}
 				cita.setMedico((Medico)medico);
 				citas.add(cita);
 			} while(datos.next());
+			datos.close();
 		}
 
 		return citas;
@@ -159,6 +167,7 @@ public class FPCita {
 		// Obtenemos los datos del médico
 		medico = FPUsuario.consultar(dniMedico);
 		if(medico.getRol() != RolesUsuarios.Medico) {
+			datos.close();
 			throw new UsuarioIncorrectoException("No se pueden consultar las citas del usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
 		}
 		
@@ -178,6 +187,7 @@ public class FPCita {
 				cita.setMedico((Medico)medico);
 				citas.add(cita);
 			} while(datos.next());
+			datos.close();
 		}
 
 		return citas;
@@ -200,6 +210,7 @@ public class FPCita {
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		cita.setId(datos.getInt("LAST_INSERT_ID()"));
+		datos.close();
 	}
 
 	public static void eliminar(Cita cita) throws SQLException {

@@ -119,8 +119,10 @@ public class PruebasCitas extends PruebasBase {
 			dir1 = new Direccion("Avda. Mayor", "10", "4", "C", "Ciudad", "Provincia", 10234);
 			dir2 = new Direccion("Calle Principal", "5", "", "", "Ciudad", "Provincia", 10234);
 			bene1 = new Beneficiario("12345679", "123456-ab", "bene1", "asdfg", fecha1, dir1, "uno@gmail.com", "123456789", "987654321");
+			bene1.setCentroSalud(medico2.getCentroSalud());
 			bene1.setMedicoAsignado(medico2);
 			bene2 = new Beneficiario("46208746", "164028-de", "bene2", "asadasdfg", fecha2, dir2, "dos@gmail.com", "923456789", "687654322");
+			bene2.setCentroSalud(medico1.getCentroSalud());
 			bene2.setMedicoAsignado(medico1);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);

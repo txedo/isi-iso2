@@ -201,6 +201,7 @@ public class PruebasMedicos extends PruebasBase {
 	/** Pruebas de la operación que modifica médicos existentes */
 	public void testModificarMedico() {
 		Medico medico, medicoGet;
+		String password;
 		
 		try {
 			// Intentamos modificar un médico nulo
@@ -238,13 +239,31 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Modificamos los datos de un médico existente como administrador
+			// (como la contraseña no se quiere cambiar, se deja "")
 			medico1.setLogin("medCambiado");
 			medico1.setApellidos("P. D.");
 			medico1.getCalendario().remove(1);
-			// Como la contraseña no se quiere cambiar, se pone como ""
+			password = medico1.getPassword();
+			medico1.setPassword("");
 			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico1);
 			// Comprobamos que el médico se haya actualizado correctamente
+			// (la contraseña devuelta debe ser la original, "abcdef", encriptada)
 			medicoGet = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico1.getDni());
+			medico1.setPassword(Encriptacion.encriptarPasswordSHA1("abcdef"));
+			assertEquals(medico1, medicoGet);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Modificamos los datos de un médico existente como administrador
+			// (cambiando también la contraseña)
+			medico1.setPassword("zzz123");
+			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico1);
+			// Comprobamos que el médico se haya actualizado correctamente
+			// (la contraseña devuelta debe ser la nueva, "zzz123", encriptada)
+			medicoGet = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico1.getDni());
+			medico1.setPassword(Encriptacion.encriptarPasswordSHA1("zzz123"));
 			assertEquals(medico1, medicoGet);
 		} catch(Exception e) {
 			fail(e.toString());

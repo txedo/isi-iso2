@@ -223,7 +223,7 @@ public class GestorBeneficiarios {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiariosMedico);
 		
 		// Obtenemos los NIFs de todos los beneficiarios asociados a ese médico
-		nifs = FPBeneficiario.getBeneficiariosMedico(dniMedico);
+		nifs = FPBeneficiario.consultarBeneficiariosMedico(dniMedico);
 		
 		// Recuperamos los beneficiarios con los NIFs anteriores
 		beneficiarios = new Vector<Beneficiario>();

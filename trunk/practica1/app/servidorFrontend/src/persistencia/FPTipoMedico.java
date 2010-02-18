@@ -41,6 +41,7 @@ public class FPTipoMedico {
 		// Si no se obtienen datos, es porque no existe el médico
 		// o es un usuario con un rol diferente de médico
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new UsuarioIncorrectoException("El médico con DNI " + dniMedico + " no se encuentra dado de alta en el sistema o no tiene asociado una categoría de médico.");
 		} else {
 			// Establecemos los datos del tipo de médico
@@ -55,6 +56,7 @@ public class FPTipoMedico {
 				tipo = new Pediatra();
 				break;
 			default:
+				datos.close();
 				throw new UsuarioIncorrectoException("La categoría del médico con DNI " + dniMedico + " es inválida.");
 			}
 		}
@@ -87,6 +89,7 @@ public class FPTipoMedico {
 		while(datos.next()) {
 			lista.add(datos.getString(COL_DNI_MEDICO));
 		}
+		datos.close();
 
 		return lista;
 	}
@@ -107,6 +110,7 @@ public class FPTipoMedico {
 		// Si no se obtienen datos, es porque no hay ningún médico
 		// en el sistema de la categoría indicada
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new UsuarioIncorrectoException("No hay ningún médico de tipo " + tipo.name() + " registrado en el sistema.");
 		} else {
 			// Obtenemos los DNIs de todos los médicos del tipo indicado
@@ -114,6 +118,7 @@ public class FPTipoMedico {
 			do {
 				listaDNIs.add(datos.getString(COL_DNI_MEDICO));
 			} while(datos.next());
+			datos.close();
 			// Devolvemos un DNI aleatorio
 			rnd = new Random(System.currentTimeMillis());
 			dni = listaDNIs.get(rnd.nextInt(listaDNIs.size()));
