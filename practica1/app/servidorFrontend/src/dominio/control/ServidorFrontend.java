@@ -889,7 +889,7 @@ public class ServidorFrontend implements IServidorFrontend {
 
 		case ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO:
 			try {
-				resultado = GestorBeneficiarios.comprobarMedicoBeneficiario((Beneficiario)informacion);
+				resultado = GestorBeneficiarios.obtenerMedicoBeneficiario((Beneficiario)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Asignado un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ".");
 			} catch(SQLException se) {

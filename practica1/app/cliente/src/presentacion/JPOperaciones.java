@@ -97,8 +97,7 @@ public class JPOperaciones extends JPanel {
 		lstOperaciones.setModel(lstOperacionesModel);
 		if(operaciones.size() != 0) {
 			lstOperaciones.setSelectedIndex(0);
-		}
-		else {
+		} else {
 			lstOperaciones.setSelectedIndex(-1);
 		}
 		lstOperaciones.repaint();
@@ -146,10 +145,10 @@ public class JPOperaciones extends JPanel {
 			nombre = "Tramitar cita<br>con volante";
 			break;
 		case ConsultarAnularCitaBeneficiario:
-			nombre = "Consultar o<br>anular cita beneficiario";
+			nombre = "Consultar o anular<br>citas de beneficiarios";
 			break;
 		case ConsultarCitaMedico:
-			nombre = "Consultar citas medico";
+			nombre = "Consultar citas<br>de médicso";
 			break;
 		case EmitirVolante:
 			nombre = "Emitir volante";

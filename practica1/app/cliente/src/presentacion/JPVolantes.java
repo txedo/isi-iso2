@@ -99,7 +99,7 @@ public class JPVolantes extends JPBase {
 
 		operacionSeleccionada = evt.getOperacion();
 		
-		if(jPanelEmitir.isValid()) {
+		if(jPanelEmitir != null) {
 			jPanelEmitir.setVisible(false);
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.EmitirVolante) {

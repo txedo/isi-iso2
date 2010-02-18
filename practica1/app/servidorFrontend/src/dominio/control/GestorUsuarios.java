@@ -10,7 +10,7 @@ import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Usuario;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
-import persistencia.FuncionesPersistencia;
+import persistencia.UtilidadesPersistencia;
 import excepciones.CentroSaludInexistenteException;
 import excepciones.DireccionInexistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -72,7 +72,7 @@ public class GestorUsuarios {
 
 		// Consultamos si ya existe otro usuario u otro
 		// beneficiario con el mismo DNI
-		existe = FuncionesPersistencia.existeNIF(usuarioReal.getDni());
+		existe = UtilidadesPersistencia.existeNIF(usuarioReal.getDni());
 		if(existe) {
 			throw new UsuarioYaExistenteException("Ya existe una persona en el sistema registrada con el DNI " + usuarioReal.getDni() + "."); 
 		}

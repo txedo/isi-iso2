@@ -20,7 +20,7 @@ public class Beneficiario implements Serializable {
 	private String movil;
 	private Date fechaNacimiento;
 	private Medico medicoAsignado;	
-	private CentroSalud centro;
+	private CentroSalud centroSalud;
 
 	public Beneficiario() {
 	}
@@ -36,7 +36,7 @@ public class Beneficiario implements Serializable {
 		this.movil = movil;
 		this.fechaNacimiento=fecha;
 		this.medicoAsignado = null;
-		this.centro = null;
+		this.centroSalud = null;
 	}
 
 	public String getNif() {
@@ -119,6 +119,14 @@ public class Beneficiario implements Serializable {
 		this.direccion = direccion;
 	}
 	
+	public CentroSalud getCentroSalud() {
+		return centroSalud;
+	}
+
+	public void setCentroSalud(CentroSalud centro) {
+		this.centroSalud = centro;
+	}
+	
 	public int getEdad() {
 		long msInicial, msFinal, diferencia;
 		double dias;
@@ -152,14 +160,6 @@ public class Beneficiario implements Serializable {
 	
 	public String toString() {
 		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", M:" + medicoAsignado.getDni(); 
-	}
-
-	public CentroSalud getCentro() {
-		return centro;
-	}
-
-	public void setCentro(CentroSalud centro) {
-		this.centro = centro;
 	}
 
 }

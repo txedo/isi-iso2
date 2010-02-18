@@ -2,10 +2,13 @@ package presentacion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.EventObject;
+import java.util.Vector;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -20,11 +23,14 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Direccion;
+import dominio.conocimiento.Medico;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CadenaVaciaException;
+import excepciones.CentroSaludIncorrectoException;
 import excepciones.CodigoPostalIncorrectoException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.DomicilioIncorrectoException;
@@ -64,13 +70,14 @@ public class JPBeneficiarioConsultar extends JPBase {
 	private final String ID_NSS = "NSS";
 	
 	private EventListenerList listenerList;
-	
 	private Beneficiario beneficiario;
+	private Vector<CentroSalud> centros;
 
 	private ComboBoxModel cmbIdentificacionModel;
 	private JLabel lblMedicoAsignado;
 	private JTextField txtMedicoAsignado;
 	private JLabel lblTelefonoMovil;
+	private JComboBox cmbCentros;
 	private JButton btnEliminar;
 	private JLabel lblCamposOblig;
 	private JTextField txtCP;
@@ -87,7 +94,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 	private JLabel lblNumero;
 	private JDateChooser dtcFechaNacimiento;
 	private JLabel lblCentro;
-	private JTextField txtCentro;
 	private JLabel lblFechaNacimiento;
 	private JLabel lblTelefonoFijo;
 	private JLabel lblCorreoElectronico;
@@ -312,12 +318,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 				cmbIdentificacion.setModel(cmbIdentificacionModel);
 			}
 			{
-				txtCentro = new JTextField();
-				this.add(txtCentro, new AnchorConstraint(409, 12, 953, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				txtCentro.setEditable(false);
-				txtCentro.setPreferredSize(new java.awt.Dimension(280, 22));
-			}
-			{
 				lblCentro = new JLabel();
 				this.add(lblCentro, new AnchorConstraint(411, 277, 950, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCentro.setText("Centro de salud *");
@@ -419,6 +419,19 @@ public class JPBeneficiarioConsultar extends JPBase {
 				lblCamposOblig.setPreferredSize(new java.awt.Dimension(129, 17));
 				lblCamposOblig.setFont(lblCamposOblig.getFont().deriveFont(10.0f));
 			}
+			{
+				ComboBoxModel cmbCentrosModel = new DefaultComboBoxModel();
+				cmbCentros = new JComboBox();
+				this.add(cmbCentros, new AnchorConstraint(409, 12, 741, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				cmbCentros.setModel(cmbCentrosModel);
+				cmbCentros.setPreferredSize(new java.awt.Dimension(280, 23));
+				cmbCentros.setEnabled(false);
+				cmbCentros.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						cmbCentrosItemStateChanged(evt);
+					}
+				});
+			}
 			btnEliminar.setEnabled(false);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -441,6 +454,11 @@ public class JPBeneficiarioConsultar extends JPBase {
 			tipo = (String)cmbIdentificacion.getSelectedItem();
 			if(identificacion.equals("")) {
 				throw new CadenaVaciaException();
+			}
+			
+			// Rellenamos la lista de centros si estaba vacía
+			if(cmbCentros.getModel().getSize() == 0) {
+				rellenarListaCentros();
 			}
 
 			// Buscamos el beneficiario solicitado
@@ -510,7 +528,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			txtTelefonoMovil.setText(beneficiario.getMovil());
 			if (beneficiario.getMedicoAsignado()!=null)
 				txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
-			txtCentro.setText(beneficiario.getMedicoAsignado().getCentroSalud().getNombre() + " (" + beneficiario.getMedicoAsignado().getCentroSalud().getDireccion() + ")");
+			cmbCentros.setSelectedIndex(centros.indexOf(beneficiario.getCentroSalud()));
 			chkEditar.setEnabled(true);
 		}
 		
@@ -524,7 +542,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	private void btnGuardarActionPerformed(ActionEvent evt) {
-		Beneficiario beneficiarioModif = null;
+		Beneficiario beneficiarioModif;
+		Medico medico;
 		Direccion dir;
 		
 		try {
@@ -555,6 +574,9 @@ public class JPBeneficiarioConsultar extends JPBase {
 			if(!campoVacio(txtTelefonoMovil)) {
 				Validacion.comprobarTelefonoMovil(txtTelefonoMovil.getText().trim());
 			}
+			if(cmbCentros.getSelectedIndex() == -1) {
+				throw new CentroSaludIncorrectoException();
+			}
 			
 			// Creamos un nuevo beneficiario con los datos introducidos
 			beneficiarioModif = new Beneficiario();
@@ -575,15 +597,24 @@ public class JPBeneficiarioConsultar extends JPBase {
 			beneficiarioModif.setCorreo(txtCorreoElectronico.getText().trim());
 			beneficiarioModif.setTelefono(txtTelefonoFijo.getText().trim());
 			beneficiarioModif.setMovil(txtTelefonoMovil.getText().trim());
+			beneficiarioModif.setCentroSalud(centros.get(cmbCentros.getSelectedIndex()));
 			
-			// Dejamos el mismo médico
+			// Por defecto, dejamos el mismo médico asignado; el servidor ya
+			// lo cambiará si el beneficiario cambia de centro o de edad
 			beneficiarioModif.setMedicoAsignado(beneficiario.getMedicoAsignado());
 			
 			// Solicitamos al servidor que se modifique el beneficiario
 			getControlador().modificarBeneficiario(beneficiarioModif);
 			
+			// Obtenemos el médico que se le ha asignado al beneficiario
+			medico = getControlador().consultarBeneficiarioPorNIF(beneficiario.getNif()).getMedicoAsignado();
+
 			// Mostramos el resultado de la operación y limpiamos el panel
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente.");
+			if(beneficiario.getMedicoAsignado().equals(medico)) {
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente.");
+			} else {
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente y se\nle ha asignado automáticamente el siguiente médico:\n" + medico.getApellidos() + ", " + medico.getNombre());
+			}
 			restablecerPanel();
 			
 		} catch(BeneficiarioInexistenteException e) {
@@ -653,6 +684,9 @@ public class JPBeneficiarioConsultar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtTelefonoMovil.selectAll();
 			txtTelefonoMovil.grabFocus();
+		} catch(CentroSaludIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			cmbCentros.grabFocus();
 			
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
@@ -664,12 +698,21 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 
 	private void btnEliminarActionPerformed(ActionEvent evt) {
-		boolean respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Realmente desea eliminar este beneficiario?");
-		if (respuesta) {
+		boolean respuesta;
+		
+		// Solicitamos confirmación para borrar el beneficiario
+		respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Realmente desea eliminar este beneficiario?");
+
+		if(respuesta) {
 			try {
+				
+				// Solicitamos al servidor que se elimine el beneficiario
 				getControlador().eliminarBeneficiario(beneficiario);
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Informacion", "Beneficiario eliminado correctamente");
+				
+				// Mostramos el resultado de la operación y limpiamos el panel
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido eliminado correctamente.");
 				restablecerPanel();
+				
 			} catch(BeneficiarioInexistenteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 				
@@ -684,8 +727,43 @@ public class JPBeneficiarioConsultar extends JPBase {
 		}
 	}
 
+	private void cmbCentrosItemStateChanged(ItemEvent evt) {
+		if(cmbCentros.getSelectedIndex() != -1) {
+			if(centros.get(cmbCentros.getSelectedIndex()).equals(beneficiario.getCentroSalud())) {
+				txtMedicoAsignado.setText(beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+			} else {
+				txtMedicoAsignado.setText("(nuevo médico)");
+			}
+		}
+	}
+	
 	private void chkEditarActionPerformed(ActionEvent evt) {
 		cambiarEdicion(chkEditar.isSelected());
+	}
+	
+	private void rellenarListaCentros() {
+		DefaultComboBoxModel lista;
+		
+		try {
+			
+			// Obtenemos la lista de centros de salud
+			centros = getControlador().consultarCentros();
+			
+			// Rellenamos el combobox con los centros
+			lista = new DefaultComboBoxModel();
+			for(CentroSalud centro : centros) {
+				lista.addElement(centro.getNombre() + " (" + centro.getDireccion() + ")");
+			}
+			cmbCentros.setModel(lista);
+			cmbCentros.setSelectedIndex(-1);
+			
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		}
 	}
 	
 	private void cambiarEdicion(boolean activar) {
@@ -702,6 +780,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		txtCorreoElectronico.setEditable(activar);
 		txtTelefonoFijo.setEditable(activar);
 		txtTelefonoMovil.setEditable(activar);
+		cmbCentros.setEnabled(activar);
 		btnGuardar.setEnabled(activar);
 		btnEliminar.setEnabled(activar);
 		lblCamposOblig.setVisible(activar);
@@ -751,8 +830,9 @@ public class JPBeneficiarioConsultar extends JPBase {
 		txtPiso.setText("");
 		txtPuerta.setText("");
 		txtMedicoAsignado.setText("");
-		txtCentro.setText("");
+		cmbCentros.setSelectedIndex(-1);
 		chkEditar.setSelected(false);
+		chkEditar.setEnabled(false);
 		cambiarEdicion(false);
 	}
 	
@@ -791,14 +871,14 @@ public class JPBeneficiarioConsultar extends JPBase {
 		txtTelefonoMovil.setVisible(false);
 		btnGuardar.setVisible(false);
 		chkEditar.setVisible(false);
-		this.remove(lblCentro);
-		this.add(lblCentro, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblDomicilio));
-		this.remove(txtCentro);
-		this.add(txtCentro, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(txtDomicilio));
 		this.remove(lblMedicoAsignado);
-		this.add(lblMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblFechaNacimiento));
+		this.add(lblMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblDomicilio));
 		this.remove(txtMedicoAsignado);
-		this.add(txtMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(dtcFechaNacimiento));
+		this.add(txtMedicoAsignado, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(txtDomicilio));
+		this.remove(lblCentro);
+		this.add(lblCentro, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(lblFechaNacimiento));
+		this.remove(cmbCentros);
+		this.add(cmbCentros, ((AnchorLayout)this.getLayout()).getLayoutComponentConstraint(dtcFechaNacimiento));
 	}
 	
 	public void desactivarModificacion() {

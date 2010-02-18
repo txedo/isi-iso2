@@ -123,16 +123,16 @@ public class JPCitas extends JPBase {
 
 		operacionSeleccionada = evt.getOperacion();
 		
-		if(jPanelTramitar.isValid()) {
+		if(jPanelTramitar != null) {
 			jPanelTramitar.setVisible(false);
 		}
-		if(jPanelVolanteTramitar.isValid()) {
+		if(jPanelVolanteTramitar != null) {
 			jPanelVolanteTramitar.setVisible(false);
 		}
-		if(jPanelConsultarCitasBeneficiario.isValid()) {
+		if(jPanelConsultarCitasBeneficiario != null) {
 			jPanelConsultarCitasBeneficiario.setVisible(false);
 		}
-		if(jPanelConsultarCitasMedico.isValid()) {
+		if(jPanelConsultarCitasMedico != null) {
 			jPanelConsultarCitasMedico.setVisible(false);
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.TramitarCita) {
