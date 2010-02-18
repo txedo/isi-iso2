@@ -87,7 +87,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		super();
 		initGUI();
 		this.controlador = controlador;
-		configuracion = frmConfiguracion.getConfiguracion();
+		configuracion = new ConfiguracionRespaldo();
 		actualizarConfiguracion();
 	}
 	
@@ -342,7 +342,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(UnknownHostException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
-		} catch (NotBoundException e) {
+		} catch(NotBoundException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(RemoteException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());

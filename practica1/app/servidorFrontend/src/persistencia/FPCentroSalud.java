@@ -34,6 +34,7 @@ public class FPCentroSalud {
 		
 		// Si no se obtienen datos, es porque el centro no existe
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new CentroSaludInexistenteException("No existe ningún centro de salud con el id " + String.valueOf(id) + ".");
 		} else {
 			// Establecemos los datos del centro de salud
@@ -41,6 +42,7 @@ public class FPCentroSalud {
 			centro.setId(datos.getInt(COL_ID));
 			centro.setNombre(datos.getString(COL_NOMBRE));
 			centro.setDireccion(datos.getString(COL_DIRECCION));
+			datos.close();
 		}
 		
 		return centro;
@@ -61,6 +63,7 @@ public class FPCentroSalud {
 		
 		// Si no se obtienen datos, es porque no hay ningún centro
 		if(datos.getRow() == 0) {
+			datos.close();
 			throw new CentroSaludInexistenteException("No existe ningún centro de salud en el sistema.");
 		} else {
 			// Obtenemos los ids de todos los centros registrados
@@ -68,6 +71,7 @@ public class FPCentroSalud {
 			do {
 				listaIds.add(datos.getInt(COL_ID));
 			} while(datos.next());
+			datos.close();
 			// Devolvemos un centro aleatorio
 			rnd = new Random(System.currentTimeMillis());
 			id = rnd.nextInt(listaIds.size());
@@ -96,6 +100,7 @@ public class FPCentroSalud {
 			centro.setDireccion(datos.getString(COL_DIRECCION));
 			lista.add(centro);
 		}
+		datos.close();
 		
 		return lista;
 	}
@@ -115,6 +120,7 @@ public class FPCentroSalud {
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		centro.setId(datos.getInt("LAST_INSERT_ID()"));
+		datos.close();
 	}
 
 }

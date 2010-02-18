@@ -42,6 +42,7 @@ public class FPSustitucion {
 		// Obtenemos los datos del médico sustituido
 		medico = FPUsuario.consultar(dniMedico);
 		if(medico.getRol() != RolesUsuarios.Medico) {
+			datos.close();
 			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones del usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
 		}
 		
@@ -56,12 +57,14 @@ public class FPSustitucion {
 			sustitucion.setMedico((Medico)medico);
 			sustituto = FPUsuario.consultar(datos.getString(COL_DNI_SUSTITUTO));
 			if(sustituto.getRol() != RolesUsuarios.Medico) {
+				datos.close();
 				throw new UsuarioIncorrectoException("Alguna de las sustituciones del médico con DNI " + String.valueOf(dniMedico) + " no tiene asociado un usuario con rol de médico.");
 			}
 			sustitucion.setSustituto((Medico)sustituto);
 			lista.add(sustitucion);
 		}
-		
+		datos.close();
+
 		return lista;
 	}
 	
@@ -80,6 +83,7 @@ public class FPSustitucion {
 		// Obtenemos los datos del médico sustituto
 		sustituto = FPUsuario.consultar(dniMedico);
 		if(sustituto.getRol() != RolesUsuarios.Medico) {
+			datos.close();
 			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones hechas por el usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
 		}
 		
@@ -93,12 +97,14 @@ public class FPSustitucion {
 			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
 			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
 			if(medico.getRol() != RolesUsuarios.Medico) {
+				datos.close();
 				throw new UsuarioIncorrectoException("Alguna de las sustituciones hechas por el médico con DNI " + String.valueOf(dniMedico) + " no tiene asociado un usuario con rol de médico.");
 			}
 			sustitucion.setMedico((Medico)medico);
 			sustitucion.setSustituto((Medico)sustituto);
 			lista.add(sustitucion);
 		}
+		datos.close();
 		
 		return lista;
 	}
@@ -122,6 +128,7 @@ public class FPSustitucion {
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		sustitucion.setId(datos.getInt("LAST_INSERT_ID()"));
+		datos.close();
 	}
 	
 }

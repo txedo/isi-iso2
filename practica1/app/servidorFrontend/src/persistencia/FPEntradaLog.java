@@ -38,6 +38,7 @@ public class FPEntradaLog {
 			entrada.setMensaje(datos.getString(COL_MENSAJE));
 			log.add(entrada);
 		}
+		datos.close();
 		
 		return log;
 	}

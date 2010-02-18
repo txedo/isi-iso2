@@ -153,7 +153,12 @@ public class Beneficiario implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Beneficiario) {
 			b = (Beneficiario)o;
-			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && direccion.equals(b.getDireccion()) && correo.equals(b.getCorreo()) && telefono.equals(b.getTelefono()) && movil.equals(b.getMovil()) && medicoAsignado.equals(b.getMedicoAsignado());
+			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && direccion.equals(b.getDireccion()) && correo.equals(b.getCorreo()) && telefono.equals(b.getTelefono()) && movil.equals(b.getMovil()) && centroSalud.equals(b.getCentroSalud());
+			if(medicoAsignado == null) {
+				dev = dev & (b.getMedicoAsignado() == null); 
+			} else {
+				dev = dev & medicoAsignado.equals(b.getMedicoAsignado());
+			}
 		}
 		return dev;
 	}
