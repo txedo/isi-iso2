@@ -325,8 +325,8 @@ public class JPUsuarioConsultar extends JPBase {
 		try {
 			
 			// Buscamos el usuario solicitado
-			Validacion.comprobarNIF(txtNIFBuscado.getText());
-			usuario = (Usuario) getControlador().consultarUsuario(txtNIFBuscado.getText());
+			Validacion.comprobarNIF(txtNIFBuscado.getText().trim().toUpperCase());
+			usuario = getControlador().consultarUsuario(txtNIFBuscado.getText().trim().toUpperCase());
 
 			// Mostramos los datos del usuario encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Usuario encontrado.");
@@ -477,37 +477,73 @@ public class JPUsuarioConsultar extends JPBase {
 	}
 	
 	private void btnEliminarActionPerformed(ActionEvent evt) {
-		Vector<Beneficiario> beneficiarios;
+		JFAvisos frmAviso;
+		Vector<Beneficiario> beneficiarios, beneficiariosCamb;
 		Vector<Cita> citas;
-		String mensaje = "";
-		boolean respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Seguro que desea eliminar este usuario del sistema?");
+		String mensaje;
+		boolean respuesta;
 		
-		if (respuesta) {
+		// Solicitamos confirmación para eliminar el usuario
+		respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Seguro que desea eliminar este usuario?");
+		
+		if(respuesta) {
 			try {
-				if (usuario.getRol().equals(RolesUsuarios.Medico)) {
+				
+				if(usuario.getRol().equals(RolesUsuarios.Medico)) {
+					
+					// Si el usuario a borrar es un médico, vemos si tiene
+					// beneficiarios asignados o citas pendientes
 					beneficiarios = getControlador().obtenerBeneficiariosMedico(usuario.getDni());
 					citas = getControlador().consultarCitasMedico(usuario.getDni());
-					// TODO: Quitar tanto aviso
-					if (beneficiarios.size()!=0)
-						mensaje = "El médico que quiere borrar tiene beneficiarios asignados. \n";
-	
-					if (citas.size()!=0)
-						mensaje += "El médico que quiere borrar tiene citas pendientes. \n";
-					
-					mensaje += "¿Seguro que quiere continuar con la eliminación?";
-					respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", mensaje);
-					if (respuesta) {
-						// Eliminamos el médico al final, para evitar problemas con claves ajenas nulas
-						getControlador().eliminarMedico((Medico)usuario);
-						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
-						limpiarCamposConsulta();
+					mensaje = "";
+					if(beneficiarios.size() > 0 && citas.size() > 0) {
+						mensaje = "El médico que va a borrar tiene beneficiarios asignados y citas pendientes.\n";
+					} else if(beneficiarios.size() > 0) {
+						mensaje = "El médico que va a borrar tiene beneficiarios asignados.\n";
+					} else if(citas.size() > 0) {
+						mensaje = "El médico que va a borrar tiene citas pendientes.\n";
 					}
-				}
-				else {
+					if(beneficiarios.size() > 0 || citas.size() > 0) {
+						mensaje += "¿Quiere continuar con la eliminación?";
+						respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", mensaje);
+					} else {
+						respuesta = true;
+					}
+					
+					if(respuesta) {
+						
+						// Solicitamos al servidor que se elimine el médico
+						getControlador().eliminarUsuario((Medico)usuario);
+						
+						// Mostramos el resultado de la operación y limpiamos el panel
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
+						restablecerPanel();
+						
+						// Volvemos a leer los beneficiarios para obtener sus
+						// nuevos médicos y se los mostramos al administrador
+						// para que les pueda avisar del cambio
+						if(beneficiarios.size() > 0) {
+							frmAviso = new JFAvisos();
+							beneficiariosCamb = new Vector<Beneficiario>();
+							for(Beneficiario beneficiario : beneficiarios) {
+								beneficiariosCamb.add(getControlador().consultarBeneficiarioPorNIF(beneficiario.getNif()));
+							}
+							frmAviso.mostrarBeneficiarios("Los siguientes beneficiarios han cambiado de médico:", beneficiariosCamb);
+						}
+						
+					}
+					
+				} else {
+					
+					// Solicitamos al servidor que se elimine el usuario
 					getControlador().eliminarUsuario(usuario);
+					
+					// Mostramos el resultado de la operación y limpiamos el panel
 					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido eliminado correctamente.");
-					limpiarCamposConsulta();
+					restablecerPanel();
+					
 				}
+				
 			} catch(SQLException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			} catch(RemoteException e) {

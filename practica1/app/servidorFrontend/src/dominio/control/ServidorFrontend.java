@@ -8,7 +8,6 @@ import comunicaciones.GestorConexionesLog;
 import comunicaciones.ICliente;
 import comunicaciones.IServidorFrontend;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ICodigosOperacionesCliente;
@@ -16,6 +15,7 @@ import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.ITiposMensajeLog;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
@@ -891,37 +891,6 @@ public class ServidorFrontend implements IServidorFrontend {
 			}
 			break;
 
-		case ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO:
-			try {
-				resultado = GestorBeneficiarios.obtenerMedicoBeneficiario((Beneficiario)informacion);
-				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Asignado un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ".");
-			} catch(SQLException se) {
-				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error SQL al asignar un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ": " + se.getLocalizedMessage());
-				throw se;
-			} catch(UsuarioIncorrectoException uie) {
-				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar un usuario al asignar un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ": " + uie.getLocalizedMessage());
-				throw uie;
-			} catch(CentroSaludInexistenteException csie) {
-				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar un centro de salud al asignar un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ": " + csie.getLocalizedMessage());
-				throw csie;
-			} catch(DireccionInexistenteException die) {
-				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar una dirección al asignar un nuevo médico al beneficiario con NIF " + ((Beneficiario)informacion).getNif() + ": " + die.getLocalizedMessage());
-				throw die;
-			} catch(NullPointerException npe) {
-				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al intentar asignar un nuevo médico a un beneficiario con datos no válidos: " + npe.getLocalizedMessage());
-				throw npe;
-			} catch(Exception e) {
-				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Error inesperado mientras se asignaba un nuevo médico a un beneficiario: " + e.toString());
-				throw e;
-			}
-			break;
-
 		// Métodos auxiliares de gestión de usuarios
 						
 		case ICodigosMensajeAuxiliar.CONSULTAR_USUARIO:
@@ -1107,36 +1076,35 @@ public class ServidorFrontend implements IServidorFrontend {
 			
 		case ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO:
 			try {
-				// Toma un numero variable de argumentos porque el tipo "Especialista", va acompañado de su especialidad
-				Object [] parametros = (Object[])informacion;
-				resultado = GestorMedicos.consultarMedicosPorTipo(idSesion, parametros);
+				// Obtenemos todos los médicos que son de un tipo determinado
+				resultado = GestorMedicos.consultarMedicosPorTipo(idSesion, (TipoMedico)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultados los médicos de tipo " + ((CategoriasMedico)parametros[0]).toString() + ".");
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Consultados los médicos de tipo " + ((TipoMedico)informacion).toString() + ".");
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL mientras se consultaban los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + se.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error SQL mientras se consultaban los médicos de tipo " + ((TipoMedico)informacion).toString() + ": " + se.getLocalizedMessage());
 				throw se;
 			} catch(UsuarioIncorrectoException uie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un usuario mientras se consultaban los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + uie.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un usuario mientras se consultaban los médicos de tipo " + ((TipoMedico)informacion).toString() + ": " + uie.getLocalizedMessage());
 				throw uie;
 			} catch(CentroSaludInexistenteException csie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un centro de salud mientras se consultaban los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + csie.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un centro de salud mientras se consultaban los médicos de tipo " + ((TipoMedico)informacion).toString() + ": " + csie.getLocalizedMessage());
 				throw csie;
 			} catch(DireccionInexistenteException die) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar una dirección mientras se consultaban los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + die.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar una dirección mientras se consultaban los médicos de tipo " + ((TipoMedico)informacion).toString() + ": " + die.getLocalizedMessage());
 				throw die;
 			} catch(OperacionIncorrectaException oie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta de los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + oie.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta de los médicos de tipo " + ((TipoMedico)informacion).toString() + ": " + oie.getLocalizedMessage());
 				throw oie;
 			} catch(SesionInvalidaException sie) {
-				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar los médicos de tipo " + ((CategoriasMedico)((Object[])informacion)[0]).toString() + ": " + sie.getLocalizedMessage());
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar los médicos de tipo " + ((TipoMedico)informacion).toString() + ": " + sie.getLocalizedMessage());
 				throw sie;
 			} catch(Exception e) {
-				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se consultaban los médicos de un cierto tipo: " + e.toString());
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se consultaban los médicos de un determinado tipo: " + e.toString());
 				throw e;
 			}
 			break;

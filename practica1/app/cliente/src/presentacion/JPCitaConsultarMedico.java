@@ -44,7 +44,7 @@ public class JPCitaConsultarMedico extends JPBase {
 
 	private static final long serialVersionUID = 117161427277876393L;
 
-	private DefaultTableModel modeloTabla;
+	private TableModelNoEditable modeloTabla;
 	private Medico medico;
 	private Vector<Cita> citas;
 	private SimpleDateFormat formatoDia;
@@ -224,7 +224,7 @@ public class JPCitaConsultarMedico extends JPBase {
 		encabezado.add("DNI Médico");
 		encabezado.add("Tipo Médico");
 		encabezado.add("Especialidad");
-		modeloTabla = new DefaultTableModel(encabezado, nfilas);
+		modeloTabla = new TableModelNoEditable(encabezado, nfilas);
 		tblTablaCitas.setModel(modeloTabla);
 		tblTablaCitas.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(200);
 		tblTablaCitas.getTableHeader().getColumnModel().getColumn(1).setMaxWidth(200);

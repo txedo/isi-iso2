@@ -24,6 +24,7 @@ import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
@@ -186,20 +187,16 @@ public class ControladorCliente {
 		return servidor.getBeneficiarioPorNSS(sesion.getId(), nss);
 	}
 
-	public void crearBeneficiario(Beneficiario bene) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
-		servidor.crear(sesion.getId(), bene);
+	public void crearBeneficiario(Beneficiario beneficiario) throws RemoteException, SQLException, BeneficiarioYaExistenteException, Exception {
+		servidor.crear(sesion.getId(), beneficiario);
 	}
 			
-	public void modificarBeneficiario(Beneficiario bene) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
-		servidor.modificar(sesion.getId(), bene);
+	public void modificarBeneficiario(Beneficiario beneficiario) throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
+		servidor.modificar(sesion.getId(), beneficiario);
 	}
 	
-	public void eliminarBeneficiario(Beneficiario bene) throws RemoteException, Exception {
-		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, bene);
-	}
-
-	public Medico comprobarMedicoBeneficiario(Beneficiario bene) throws RemoteException, Exception {
-		return (Medico)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ASIGNAR_MEDICO_BENEFICIARIO, bene);		
+	public void eliminarBeneficiario(Beneficiario beneficiario) throws RemoteException, Exception {
+		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, beneficiario);
 	}
 
 	// Métodos de gestión de usuarios
@@ -231,11 +228,6 @@ public class ControladorCliente {
 		return servidor.getMedico(sesion.getId(), dni);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Vector<Medico> obtenerMedicos(Object... parametros) throws RemoteException, Exception {
-		return (Vector<Medico>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, parametros);
-	}
-
 	public void crearMedico(Medico medico) throws RemoteException, MedicoYaExistenteException, Exception {
 		servidor.crear(sesion.getId(), medico);
 	}
@@ -253,9 +245,15 @@ public class ControladorCliente {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Vector<Beneficiario> obtenerBeneficiariosMedico (String dniMedico) throws RemoteException, Exception {
+	public Vector<Medico> obtenerMedicosTipo(TipoMedico tipo) throws RemoteException, Exception {
+		return (Vector<Medico>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, tipo);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Vector<Beneficiario> obtenerBeneficiariosMedico(String dniMedico) throws RemoteException, Exception {
 		return (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, dniMedico);
 	}
+	
 	@SuppressWarnings("unchecked")
 	public Hashtable<DiaSemana, Vector<String>> consultarHorarioMedico(String dniMedico) throws RemoteException, Exception {
 		return (Hashtable<DiaSemana, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, dniMedico);
