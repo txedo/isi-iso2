@@ -58,7 +58,7 @@ public class GestorCitas {
 	}
 	
 	// Método para obtener todas las citas pendientes de un beneficiario
-	public static Vector<Cita> consultarCitasPendientes(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
+	public static Vector<Cita> consultarCitasPendientesBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
 		Vector<Cita> citas, pendientes;
 		Date fechaActual;
 		
@@ -75,6 +75,37 @@ public class GestorCitas {
 		
 		// Recuperamos las citas del beneficiario
 		citas = FPCita.consultarPorBeneficiario(dni);
+		
+		// Nos quedamos con las citas posteriores a la fecha y hora actuales
+		fechaActual = new Date();
+		pendientes = new Vector<Cita>();
+		for(Cita cita : citas) {
+			if(cita.getFechaYHora().after(fechaActual)) {
+				pendientes.add(cita);
+			}
+		}
+		
+		return pendientes;
+	}
+	
+	// Método para obtener todas las citas pendientes de un médico
+	public static Vector<Cita> consultarCitasPendientesMedico(long idSesion, String dni) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException {
+		Vector<Cita> citas, pendientes;
+		Date fechaActual;
+		
+		// Comprobamos los parámetros pasados
+		if(dni == null) {
+			throw new NullPointerException("El NIF del médico para el que se quieren buscar las citas no puede ser nulo.");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
+
+		// Comprobamos que exista el médico
+		FPUsuario.consultar(dni);
+		
+		// Recuperamos las citas del médico
+		citas = FPCita.consultarPorMedico(dni);
 		
 		// Nos quedamos con las citas posteriores a la fecha y hora actuales
 		fechaActual = new Date();

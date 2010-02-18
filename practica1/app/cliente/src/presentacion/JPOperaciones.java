@@ -145,8 +145,11 @@ public class JPOperaciones extends JPanel {
 		case TramitarCitaVolante:
 			nombre = "Tramitar cita<br>con volante";
 			break;
-		case ConsultarAnularCita:
-			nombre = "Consultar o<br>anular cita";
+		case ConsultarAnularCitaBeneficiario:
+			nombre = "Consultar o<br>anular cita beneficiario";
+			break;
+		case ConsultarCitaMedico:
+			nombre = "Consultar citas medico";
 			break;
 		case EmitirVolante:
 			nombre = "Emitir volante";

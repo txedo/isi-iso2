@@ -32,7 +32,8 @@ public class JPCitas extends JPBase {
 
 	private JPCitaTramitar jPanelTramitar;
 	private JPCitaVolanteTramitar jPanelVolanteTramitar;
-	private JPCitaConsultar jPanelConsultar;
+	private JPCitaConsultarBeneficiario jPanelConsultarCitasBeneficiario;
+	private JPCitaConsultarMedico jPanelConsultarCitasMedico;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
 	
@@ -85,10 +86,16 @@ public class JPCitas extends JPBase {
 				jPanelVolanteTramitar.setPreferredSize(new java.awt.Dimension(406, 390));
 			}
 			{
-				jPanelConsultar = new JPCitaConsultar(this.getFrame(), this.getControlador());
-				this.add(jPanelConsultar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelConsultar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jPanelConsultarCitasBeneficiario = new JPCitaConsultarBeneficiario(this.getFrame(), this.getControlador());
+				this.add(jPanelConsultarCitasBeneficiario, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jPanelConsultarCitasBeneficiario.setPreferredSize(new java.awt.Dimension(406, 390));
 			}
+			{
+				jPanelConsultarCitasMedico = new JPCitaConsultarMedico(this.getFrame(), this.getControlador());
+				this.add(jPanelConsultarCitasMedico, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jPanelConsultarCitasMedico.setPreferredSize(new java.awt.Dimension(406, 390));
+			}
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -99,13 +106,14 @@ public class JPCitas extends JPBase {
 	private void inicializarOperaciones() {
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCita);
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCitaVolante);
-		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarAnularCita);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarAnularCitaBeneficiario);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarCitaMedico);
 	}
 	
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.TramitarCita);
 		jPanelTramitar.setVisible(true);
-		jPanelConsultar.setVisible(false);
+		jPanelConsultarCitasBeneficiario.setVisible(false);
 		jPanelVolanteTramitar.setVisible(false);
 	}
 	
@@ -121,8 +129,11 @@ public class JPCitas extends JPBase {
 		if(jPanelVolanteTramitar.isValid()) {
 			jPanelVolanteTramitar.setVisible(false);
 		}
-		if(jPanelConsultar.isValid()) {
-			jPanelConsultar.setVisible(false);
+		if(jPanelConsultarCitasBeneficiario.isValid()) {
+			jPanelConsultarCitasBeneficiario.setVisible(false);
+		}
+		if(jPanelConsultarCitasMedico.isValid()) {
+			jPanelConsultarCitasMedico.setVisible(false);
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.TramitarCita) {
 			jPanelTramitar.setVisible(true);
@@ -132,9 +143,13 @@ public class JPCitas extends JPBase {
 			jPanelVolanteTramitar.setVisible(true);
 			jPanelVolanteTramitar.repaint();
 		}
-		if(operacionSeleccionada == OperacionesInterfaz.ConsultarAnularCita) {
-			jPanelConsultar.setVisible(true);
-			jPanelConsultar.repaint();
+		if(operacionSeleccionada == OperacionesInterfaz.ConsultarAnularCitaBeneficiario) {
+			jPanelConsultarCitasBeneficiario.setVisible(true);
+			jPanelConsultarCitasBeneficiario.repaint();
+		}
+		if(operacionSeleccionada == OperacionesInterfaz.ConsultarCitaMedico) {
+			jPanelConsultarCitasMedico.setVisible(true);
+			jPanelConsultarCitasMedico.repaint();
 		}
 		
 		// Notificamos que ha cambiado la operación seleccionada
@@ -169,7 +184,7 @@ public class JPCitas extends JPBase {
 	}
 
 	public void desactivarConsultarAnularCita() {
-		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarAnularCita);
+		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarAnularCitaBeneficiario);
 	}
 
 	public boolean hayOperacionesDisponibles() {
@@ -179,7 +194,8 @@ public class JPCitas extends JPBase {
 	// <métodos del observador>
 
 	public void restablecerPaneles() {
-		jPanelConsultar.restablecerPanel();
+		jPanelConsultarCitasBeneficiario.restablecerPanel();
+		jPanelConsultarCitasMedico.restablecerPanel();
 		jPanelTramitar.restablecerPanel();
 		jPanelVolanteTramitar.restablecerPanel();
 	}

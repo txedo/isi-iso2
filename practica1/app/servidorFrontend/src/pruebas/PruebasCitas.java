@@ -623,7 +623,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos consultar las citas pendientes de un beneficiario con dni nulo
-			GestorCitas.consultarCitasPendientes(sesionAdmin.getId(), null);
+			GestorCitas.consultarCitasPendientesBeneficiario(sesionAdmin.getId(), null);
 			fail("Se esperaba una excepcion NullPointerException");
 		} catch (NullPointerException e) {
 		} catch (Exception e) {
@@ -632,7 +632,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos consultar las citas pendientes de un beneficiario sin tener permiso
-			GestorCitas.consultarCitasPendientes(sesionMedico.getId(), bene1.getNif());
+			GestorCitas.consultarCitasPendientesBeneficiario(sesionMedico.getId(), bene1.getNif());
 			fail("Se esperaba una excepcion OperacionIncorrectaException");
 		} catch (OperacionIncorrectaException e) {
 		} catch (Exception e) {
@@ -659,7 +659,7 @@ public class PruebasCitas extends PruebasBase {
 			// Creamos citas correctas
 			cita1 = GestorCitas.pedirCita(sesionCitador.getId(), bene1, medicoAsignado.getDni(), fechaCitaPendiente, DURACION);
 			// Intentamos consultar las citas pendientes de un beneficiario
-			citasPendientes = GestorCitas.consultarCitasPendientes(sesionAdmin.getId(), bene1.getNif());
+			citasPendientes = GestorCitas.consultarCitasPendientesBeneficiario(sesionAdmin.getId(), bene1.getNif());
 			// La cita pasada (cita2) no puede estar en esa lista. Ademas, el tamaño debe ser uno
 			assertTrue(citasPendientes.size()==1);
 			assertEquals(cita1, citasPendientes.get(0));
