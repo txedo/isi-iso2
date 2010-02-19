@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Clase que representa un beneficiario del sistema de salud.
  */
-public class Beneficiario implements Serializable {
+public class Beneficiario implements Serializable, Cloneable {
 	
 	private static final long serialVersionUID = 1938859991040689592L;
 	
@@ -146,6 +146,15 @@ public class Beneficiario implements Serializable {
 		return edad;
 	}
 	
+	public Object clone() {
+		Beneficiario b;
+		
+		b = new Beneficiario(nif, nss, nombre, apellidos, (Date)fechaNacimiento.clone(), (Direccion)direccion.clone(), correo, telefono, movil);
+		b.setCentroSalud((centroSalud == null) ? null : (CentroSalud)centroSalud.clone());
+		b.setMedicoAsignado((medicoAsignado == null) ? null : (Medico)medicoAsignado.clone());
+		return b;
+	}
+	
 	public boolean equals(Object o) {
 		Beneficiario b;
 		boolean dev;
@@ -164,7 +173,7 @@ public class Beneficiario implements Serializable {
 	}
 	
 	public String toString() {
-		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", M:" + medicoAsignado.getDni(); 
+		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", M:" + ((medicoAsignado == null) ? "(ninguno)" : medicoAsignado.getDni()); 
 	}
 
 }

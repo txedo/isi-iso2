@@ -10,6 +10,7 @@ public enum Operaciones {
 	RegistrarBeneficiario,
 	ModificarBeneficiario,
 	EliminarBeneficiario,
+	ConsultarBeneficiariosMedico,
 	// Operaciones del Gestor de Usuarios
 	ConsultarUsuario,
 	RegistrarUsuario,
@@ -23,7 +24,6 @@ public enum Operaciones {
 	ConsultarMedicosTipo,
 	ConsultarSustitutosPosibles,
 	EstablecerSustituto,
-	ConsultarBeneficiariosMedico,
 	// Operaciones del Gestor de Citas
 	ConsultarCitas,
 	TramitarCita,

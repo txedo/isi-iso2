@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Clase que representa un centro de salud en el que pueden trabajan
  * los usuarios (incluidos médicos) del sistema.
  */
-public class CentroSalud implements Serializable {
+public class CentroSalud implements Serializable, Cloneable {
 	
 	private static final long serialVersionUID = 560876087738590995L;
 	
@@ -46,6 +46,14 @@ public class CentroSalud implements Serializable {
 		this.direccion = direccion;
 	}
 
+	public Object clone() {
+		CentroSalud c;
+		
+		c = new CentroSalud(nombre, direccion);
+		c.setId(id);
+		return c;
+	}
+	
 	public boolean equals(Object o) {
 		CentroSalud c;
 		boolean dev;

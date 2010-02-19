@@ -18,9 +18,11 @@ public class SuitePruebas {
 		suite = new TestSuite("Pruebas completas para el servidor frontend");
 		suite.addTestSuite(PruebasPersistencia.class);
 		suite.addTestSuite(PruebasSesiones.class);
-		suite.addTestSuite(PruebasMedicos.class);
 		suite.addTestSuite(PruebasBeneficiarios.class);
 		suite.addTestSuite(PruebasCitas.class);
+		suite.addTestSuite(PruebasUsuarios.class);
+		suite.addTestSuite(PruebasMedicos.class);
+		suite.addTestSuite(PruebasVolantes.class);
 		suite.addTestSuite(PruebasValidacion.class);
 		suite.addTestSuite(PruebasJFConfigFrontend.class);
 		return suite;
