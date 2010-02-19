@@ -811,6 +811,15 @@ public class PruebasPersistencia extends PruebasBase {
 		
 		try {
 			// Intentamos buscar un usuario sin haber creado ninguno
+			usuario = FPUsuario.consultarPorLogin("login");
+			fail("Se esperaba una excepción UsuarioIncorrectoException");
+		} catch(UsuarioIncorrectoException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción UsuarioIncorrectoException");
+		}
+		
+		try {
+			// Intentamos buscar un usuario sin haber creado ninguno
 			usuario = FPUsuario.consultar("login", "pass");
 			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
@@ -853,7 +862,7 @@ public class PruebasPersistencia extends PruebasBase {
 		}
 		
 		try {
-			// Recuperamos varios usuarios insertados de las dos formas posibles
+			// Recuperamos varios usuarios insertados de las tres formas posibles
 			usuario = FPUsuario.consultar(medico1.getDni());
 			assertEquals(medico1, usuario);
 			usuario = FPUsuario.consultar(citador1.getDni());
@@ -861,6 +870,10 @@ public class PruebasPersistencia extends PruebasBase {
 			usuario = FPUsuario.consultar(medico1.getLogin(), medico1.getPassword());
 			assertEquals(medico1, usuario);
 			usuario = FPUsuario.consultar(citador1.getLogin(), citador1.getPassword());
+			assertEquals(citador1, usuario);
+			usuario = FPUsuario.consultarPorLogin(medico1.getLogin());
+			assertEquals(medico1, usuario);
+			usuario = FPUsuario.consultarPorLogin(citador1.getLogin());
 			assertEquals(citador1, usuario);
 		} catch(Exception e) {
 			fail(e.toString());

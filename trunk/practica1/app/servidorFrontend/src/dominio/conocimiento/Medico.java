@@ -100,65 +100,6 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 		return fechaOk;
 	}
 	
-	public boolean calendariosDiferentes(Medico medico, Date fecha) {
-		Vector<PeriodoTrabajo> otroCalendario;
-		Calendar calend;
-		DiaSemana dia;
-		int diaNum;
-		boolean diaOk, diferente;
-		
-		// Obtenemos los períodos de trabajo del otro médico
-		otroCalendario = medico.getCalendario();
-		
-		// Obtenemos el día de la semana asociado a la fecha pasada
-		diaOk = true;
-		calend = Calendar.getInstance();
-		calend.setTime(fecha);
-		diaNum = calend.get(Calendar.DAY_OF_WEEK);
-		switch(diaNum) {
-			case Calendar.MONDAY:
-				dia = DiaSemana.Lunes;
-				break;
-			case Calendar.TUESDAY:
-				dia = DiaSemana.Martes;
-				break;
-			case Calendar.WEDNESDAY:
-				dia = DiaSemana.Miercoles;
-				break;
-			case Calendar.THURSDAY:
-				dia = DiaSemana.Jueves;
-				break;
-			case Calendar.FRIDAY:
-				dia = DiaSemana.Viernes;
-				break;
-			default:
-				// Este día de la semana no es válido
-				diaOk = false;
-				dia = DiaSemana.Lunes;
-				break;
-		}
-		
-		// Comprobamos si los períodos de trabajo de los dos médicos para el
-		// día indicado son excluyentes, es decir, no se solapa ninguna hora
-		if(diaOk) {
-			diferente = true;
-			for(PeriodoTrabajo otroPeriodo : otroCalendario) {
-				for(PeriodoTrabajo periodo : calendario) {
-					if(otroPeriodo.getDia() == dia && periodo.getDia() == dia) {
-						if(!((periodo.getHoraInicio() < otroPeriodo.getHoraInicio() && periodo.getHoraFinal() < otroPeriodo.getHoraInicio())
-						   || (periodo.getHoraInicio() > otroPeriodo.getHoraFinal() && periodo.getHoraFinal() > otroPeriodo.getHoraFinal()))) {
-							diferente = false;
-						}						
-					}
-				}
-			}
-		} else {
-			diferente = false;
-		}
-		
-		return diferente;
-	}
-	
 	public Vector<String> horasCitas(DiaSemana dia, int duracionCitas) {
 		Vector<String> horas;
 		Calendar dias;
@@ -232,7 +173,11 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 		Medico m;
 		
 		m = new Medico(dni, login, password, nombre, apellidos, tipoMedico);
-		m.setCentroSalud((CentroSalud)centro.clone());
+		if(centro == null) {
+			m.setCentroSalud(null);
+		} else {
+			m.setCentroSalud((CentroSalud)centro.clone());
+		}
 		m.setCalendario((Vector<PeriodoTrabajo>)calendario.clone());
 		return m;
 	}

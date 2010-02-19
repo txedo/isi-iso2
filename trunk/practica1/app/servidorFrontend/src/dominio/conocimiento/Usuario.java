@@ -84,7 +84,12 @@ public abstract class Usuario implements Serializable, Cloneable {
 		dev = false;
 		if(o != null && o instanceof Usuario) {
 			u = (Usuario)o;
-			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && centro.equals(u.getCentroSalud());
+			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos());
+			if(centro == null) {
+				dev = dev & (u.getCentroSalud() == null);
+			} else {
+				dev = dev & centro.equals(u.getCentroSalud());
+			}
 		}
 		return dev;
 	}

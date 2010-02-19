@@ -97,7 +97,9 @@ public class FPUsuario {
 		TipoMedico tipo;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS + " WHERE " + COL_LOGIN + " = ? AND " + COL_PASSWORD + " = ?", login, password);
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS
+				+ " WHERE " + COL_LOGIN + " = ? AND " + COL_PASSWORD + " = ?",
+				login, password);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
@@ -105,7 +107,7 @@ public class FPUsuario {
 		if(datos.getRow() == 0) {
 			datos.close();
 			throw new UsuarioIncorrectoException("El nombre de usuario o contraseña introducidos no son válidos.");
-		} else {	
+		} else {
 			// Creamos un usuario del tipo adecuado
 			switch(RolesUsuarios.values()[datos.getInt(COL_ROL)]) {
 			case Citador:
@@ -138,6 +140,32 @@ public class FPUsuario {
 				((Medico)usuario).setTipoMedico(tipo);
 			}
 			datos.close();
+		}
+		
+		return usuario;
+	}
+	
+	public static Usuario consultarPorLogin(String login) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		ComandoSQL comando;
+		ResultSet datos;
+		Usuario usuario;
+		String password;
+		
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS
+				+ " WHERE " + COL_LOGIN + " = ?", login);
+		datos = GestorConexionesBD.consultar(comando);
+		datos.next();
+		
+		// Si no se obtienen datos, es porque no existe el usuario
+		if(datos.getRow() == 0) {
+			datos.close();
+			throw new UsuarioIncorrectoException("El nombre de usuario introducido no es válido.");
+		} else {
+			// Obtenemos la contraseña y llamamos al otro método
+			password = datos.getString(COL_PASSWORD);
+			datos.close();
+			usuario = consultar(login, password);
 		}
 		
 		return usuario;

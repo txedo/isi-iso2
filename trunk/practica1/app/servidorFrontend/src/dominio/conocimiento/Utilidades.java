@@ -3,6 +3,9 @@ package dominio.conocimiento;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Clase con métodos estáticos auxiliares utilizados en otras clases.
+ */
 public class Utilidades {
 
 	public static DiaSemana diaFecha(Date fecha) {

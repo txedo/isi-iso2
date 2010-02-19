@@ -455,6 +455,14 @@ public class ServidorFrontend implements IServidorFrontend {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar un médico mientras se eliminaba el médico con DNI " + medico.getDni() + ": " + mie.getLocalizedMessage());
 			throw mie;
+		} catch(BeneficiarioInexistenteException bie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar un beneficiario mientras se eliminaba el médico con DNI " + medico.getDni() + ": " + bie.getLocalizedMessage());
+			throw bie;
+		} catch(UsuarioIncorrectoException uie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar un usuario mientras se eliminaba el médico con DNI " + medico.getDni() + ": " + uie.getLocalizedMessage());
+			throw uie;
 		} catch(CentroSaludInexistenteException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar un centro de salud mientras se eliminaba el médico con DNI " + medico.getDni() + ": " + csie.getLocalizedMessage());
@@ -1021,6 +1029,14 @@ public class ServidorFrontend implements IServidorFrontend {
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL mientras se eliminaba el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + se.getLocalizedMessage());
 				throw se;
 			} catch(UsuarioInexistenteException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar un usuario mientras se eliminaba el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + uie.getLocalizedMessage());
+				throw uie;
+			} catch(BeneficiarioInexistenteException bie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar un beneficiario mientras se eliminaba el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + bie.getLocalizedMessage());
+				throw bie;
+			} catch(UsuarioIncorrectoException uie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error al recuperar un usuario mientras se eliminaba el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + uie.getLocalizedMessage());
 				throw uie;

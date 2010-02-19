@@ -2,7 +2,6 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.ConfiguracionFrontend;
 import dominio.control.ControladorFrontend;
 import java.awt.BorderLayout;
@@ -184,6 +183,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 					pnlPanel.add(lblClientesConectados, new AnchorConstraint(855, 285, 30, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblClientesConectados.setText("0 clientes conectados.");
 					lblClientesConectados.setPreferredSize(new java.awt.Dimension(239, 16));
+					lblClientesConectados.setName("lblClientesConectados");
 				}
 				{
 					scpPanelLog = new JScrollPane();
@@ -203,6 +203,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 					pnlPanel.add(lblBarraEstado, new AnchorConstraint(937, 285, 11, 10, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblBarraEstado.setText("Servidor desconectado.");
 					lblBarraEstado.setPreferredSize(new java.awt.Dimension(239, 14));
+					lblBarraEstado.setName("lblBarraEstado");
 				}
 				{
 					btnDesconectar = new JButton();
@@ -210,6 +211,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 					btnDesconectar.setText("Desconectar");
 					btnDesconectar.setPreferredSize(new java.awt.Dimension(116, 30));
 					btnDesconectar.setEnabled(false);
+					btnDesconectar.setName("btnDesconectar");
 					btnDesconectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnDesconectarActionPerformed(evt);
@@ -221,6 +223,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 					pnlPanel.add(btnConectar, new AnchorConstraint(13, 322, 165, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					btnConectar.setText("Conectar");
 					btnConectar.setPreferredSize(new java.awt.Dimension(110, 30));
+					btnConectar.setName("btnConectar");
 					btnConectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnConectarActionPerformed(evt);
@@ -245,7 +248,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 					lblConfigBD.setText("BD Principal: IP XXX.XXX.XXX.XXX, puerto XXXXX");
 					lblConfigBD.setPreferredSize(new java.awt.Dimension(277, 14));
 					lblConfigBD.setHorizontalAlignment(SwingConstants.TRAILING);
-					lblConfigBD.setName("lblConfiguracionBD");
+					lblConfigBD.setName("lblConfigBD");
 				}
 				{
 					lblConfigRespaldo = new JLabel();
@@ -253,7 +256,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 					lblConfigRespaldo.setText("Servidor Respaldo: IP XXX.XXX.XXX.XXX, puerto XXXXX");
 					lblConfigRespaldo.setPreferredSize(new java.awt.Dimension(277, 15));
 					lblConfigRespaldo.setHorizontalAlignment(SwingConstants.TRAILING);
-					lblConfigRespaldo.setName("lblConfiguracionRespaldo");
+					lblConfigRespaldo.setName("lblConfigRespaldo");
 				}
 			}
 			pack();

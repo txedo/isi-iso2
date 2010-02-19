@@ -1,32 +1,48 @@
 package pruebas;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import persistencia.AgenteFrontend;
+import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import dominio.conocimiento.Administrador;
+import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
+import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Especialista;
+import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Sesion;
+import dominio.conocimiento.Usuario;
 import dominio.control.GestorMedicos;
 import dominio.control.GestorSesiones;
+import dominio.control.GestorUsuarios;
+import dominio.control.ServidorFrontend;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
+import excepciones.UsuarioInexistenteException;
+import excepciones.UsuarioYaExistenteException;
 
+/**
+ * Pruebas del Gestor de Médicos.
+ */
 public class PruebasMedicos extends PruebasBase {
 
+	private ServidorFrontend servidor;
 	private CentroSalud centro1;
 	private Medico medico1, medico2, medico3, medico4;
 	private Citador citador1;
@@ -34,6 +50,8 @@ public class PruebasMedicos extends PruebasBase {
 	private PeriodoTrabajo periodo11, periodo12;
 	private PeriodoTrabajo periodo21;
 	private PeriodoTrabajo periodo31, periodo32;
+	private Beneficiario beneficiario1;
+	private Direccion direccion1;
 	private ISesion sesionCitador;
 	private ISesion sesionAdmin;
 	private Pediatra pediatra;
@@ -44,6 +62,9 @@ public class PruebasMedicos extends PruebasBase {
 		try {
 			// Preparamos la base de datos
 			super.setUp();
+			// Obtenemos el servidor frontend, que se utilizará para llamar
+			// a los métodos del gestor y así probar las dos clases a la vez
+			servidor = ServidorFrontend.getServidor();
 			//Inicializamos los tipos de medicos
 			pediatra = new Pediatra();
 			especialista = new Especialista("Ginecologia");
@@ -72,6 +93,10 @@ public class PruebasMedicos extends PruebasBase {
 			medico2.getCalendario().add(periodo21);
 			medico3.getCalendario().add(periodo31);
 			medico3.getCalendario().add(periodo32);
+			direccion1 = new Direccion("calle 1", "", "", "", "aadsfaada", "afafssafad", 13500);
+			beneficiario1 = new Beneficiario("88484848L", "123456-ab", "bene1", "asdfg", new Date(), direccion1, "add@sf.com", "123456789", "987654321");
+			beneficiario1.setCentroSalud(medico2.getCentroSalud());
+			beneficiario1.setMedicoAsignado(medico2);
 			FPCentroSalud.insertar(centro1);
 			FPUsuario.insertar(medico1);
 			FPUsuario.insertar(medico2);
@@ -79,6 +104,7 @@ public class PruebasMedicos extends PruebasBase {
 			FPUsuario.insertar(medico4);
 			FPUsuario.insertar(citador1);
 			FPUsuario.insertar(admin1);
+			FPBeneficiario.insertar(beneficiario1);
 			// Iniciamos dos sesiones con roles de citador y administrador
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
 			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "nimda");
@@ -99,52 +125,52 @@ public class PruebasMedicos extends PruebasBase {
 		}
 	}
 	
-	/** Pruebas de la operación que obtiene los datos de un médico */
-	public void testObtenerMedico() {
-		Medico medico;
+	/** Pruebas de la operación que consulta un médico existente */
+	public void testConsultarMedico() {
+		Medico medicoGet;
 		
 		try {
-			// Intentamos consultar un médico nulo
-			medico = GestorMedicos.consultarMedico(sesionCitador.getId(), null);
-			fail("Se esperaba una excepcion NullPointerException");
+			// Intentamos consultar un médico con DNI nulo
+			servidor.getMedico(sesionCitador.getId(), null);
+			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion NullPointerException");
+			fail("Se esperaba una excepción NullPointerException");
 		}
 		
 		try {
-			// Obtenemos los datos de un médico existente
-			medico = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico1.getDni());
-			assertEquals(medico, medico1);
+			// Intentamos consultar los datos de un médico sin permisos
+			servidor.getMedico(sesionCitador.getId(), medico1.getDni());
+			fail("Se esperaba una excepción OperacionIncorrectaException");
+		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
-			fail(e.toString());
+			fail("Se esperaba una excepción OperacionIncorrectaException");
 		}
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			medico = GestorMedicos.consultarMedico(sesionCitador.getId() + 1, medico1.getDni());
-			fail("Se esperaba una excepcion SesionInvalidaException");
+			servidor.getMedico(-12345, medico1.getDni());
+			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion SesionInvalidaException");
+			fail("Se esperaba una excepción SesionInvalidaException");
 		}
 		
 		try {
-			// Intentamos obtener los datos de un usuario que no es médico
-			medico = GestorMedicos.consultarMedico(sesionAdmin.getId(), citador1.getDni());
-			fail("Se esperaba una excepcion MedicoInexistenteException");
+			// Intentamos obtener los datos de un médico que no existe
+			servidor.getMedico(sesionAdmin.getId(), "99001290W");
+			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion MedicoInexistenteException");
+			fail("Se esperaba una excepción MedicoInexistenteException");
 		}
 		
 		try {
-			// Intentamos obtener los datos de un usuario que no existe
-			medico = GestorMedicos.consultarMedico(sesionAdmin.getId(), "94821491");
-			fail("Se esperaba una excepcion MedicoInexistenteException");
-		} catch(MedicoInexistenteException e) {
+			// Obtenemos los datos de un médico existente
+			medicoGet = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getDni());
+			assertEquals(medico1, medicoGet);
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion MedicoInexistenteException");
+			fail(e.toString());
 		}
 	}
 
@@ -154,132 +180,121 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos crear un médico nulo
-			GestorMedicos.crearMedico(sesionCitador.getId(), null);
-			fail("Se esperaba una excepcion NullPointerException");
+			servidor.crear(sesionCitador.getId(), (Medico)null);
+			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion NullPointerException");
+			fail("Se esperaba una excepción NullPointerException");
 		}
 		
 		try {
+			// Intentamos crear un médico con la sesión del citador
+			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
+			servidor.crear(sesionCitador.getId(), medico);
+			fail("Se esperaba una excepción OperacionIncorrectaException");
+		} catch(OperacionIncorrectaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción OperacionIncorrectaException");
+		}
+		
+		try {
+			// Intentamos acceder al servidor con un id de sesión erróneo
+			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
+			servidor.crear(-12345, medico);
+			fail("Se esperaba una excepción SesionInvalidaException");
+		} catch(SesionInvalidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SesionInvalidaException");
+		}
+		
+		try {
+			// Intentamos añadir un médico con un DNI que ya existe en la BD
+			medico = new Medico(citador1.getDni(), "error", "error", "", "", especialista);
+			servidor.crear(sesionAdmin.getId(), medico);
+			fail("Se esperaba una excepción MedicoYaExistenteException");
+		} catch(MedicoYaExistenteException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción MedicoYaExistenteException");
+		}
+
+		try {
 			// Creamos un nuevo médico con la sesión del administrador
 			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
-			medico.setCentroSalud(centro1);
-			GestorMedicos.crearMedico(sesionAdmin.getId(), medico);
-			// Al crear el médico la contraseña se habrá encriptado
+			servidor.crear(sesionAdmin.getId(), medico);
+			// Comprobamos que el usuario se ha creado correctamente
+			medicoGet = (Medico)servidor.getMedico(sesionAdmin.getId(), medico.getDni());
 			medico.setPassword(Encriptacion.encriptarPasswordSHA1("medNuevo"));
-			// Comprobamos que el médico se ha creado correctamente
-			medicoGet = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico.getDni());
+			medico.setCentroSalud(centro1);
 			assertEquals(medico, medicoGet);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
 		try {
-			// Intentamos crear un nuevo médico con el rol de citador
-			medico = new Medico("77777777", "error", Encriptacion.encriptarPasswordSHA1("error"), "", "", especialista);
-			medico.setCentroSalud(centro1);
-			GestorMedicos.crearMedico(sesionCitador.getId(), medico);
-			fail("Se esperaba una excepcion OperacionIncorrectaException");
-		} catch(OperacionIncorrectaException e) {
+			// Intentamos crear un médico sin haber ningún centro
+			AgenteFrontend.getAgente().getConexion().prepareStatement("DELETE FROM centros").executeUpdate();
+			medico = new Medico("34712394", "otromas", "error", "Juan", "P. C.", especialista);
+			servidor.crear(sesionAdmin.getId(), medico);
+			fail("Se esperaba una excepción SQLException");
+		} catch(SQLException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion OperacionIncorrectaException");
-		}
-		
-		try {
-			// Intentamos añadir un médico con un DNI que ya existe en la BD
-			medico = new Medico(citador1.getDni(), Encriptacion.encriptarPasswordSHA1("error"), "error", "", "", cabecera);
-			medico.setCentroSalud(centro1);
-			GestorMedicos.crearMedico(sesionAdmin.getId(), medico);
-			fail("Se esperaba una excepcion MedicoYaExistenteException");
-		} catch(MedicoYaExistenteException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepcion MedicoYaExistenteException");
+			fail("Se esperaba una excepción SQLException");
 		}
 	}
-
+	
 	/** Pruebas de la operación que modifica médicos existentes */
 	public void testModificarMedico() {
 		Medico medico, medicoGet;
 		
 		try {
 			// Intentamos modificar un médico nulo
-			GestorMedicos.modificarMedico(sesionCitador.getId(), null);
-			fail("Se esperaba una excepcion NullPointerException");
+			servidor.modificar(sesionCitador.getId(), (Medico)null);
+			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion NullPointerException");
+			fail("Se esperaba una excepción NullPointerException");
 		}
 		
 		try {
-			// Intentamos modificar un medico inexistente
-			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", cabecera);
-			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico);
-			fail("Se esperaba una excepcion MedicoInexistenteException");
+			// Intentamos modificar un médico con la sesión del citador
+			servidor.modificar(sesionCitador.getId(), medico2);
+			fail("Se esperaba una excepción OperacionIncorrectaException");
+		} catch(OperacionIncorrectaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción OperacionIncorrectaException");
+		}
+		
+		try {
+			// Intentamos acceder al servidor con un id de sesión erróneo
+			servidor.modificar(-12345, medico2);
+			fail("Se esperaba una excepción SesionInvalidaException");
+		} catch(SesionInvalidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SesionInvalidaException");
+		}
+		
+		try {
+			// Intentamos modificar un médico inexistente
+			medico = new Medico("91295019", "mas", "mas", "Luis", "R. M.", pediatra);
+			servidor.modificar(sesionAdmin.getId(), medico);
+			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion MedicoInexistenteException");
+			fail("Se esperaba una excepción MedicoInexistenteException");
 		}
 		
 		try {
-			// Intentamos modificar un medico sin tener permiso
-			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", cabecera);
-			GestorMedicos.modificarMedico(sesionCitador.getId(), medico);
-			fail("Se esperaba una excepcion OperacionIncorrectaException");
-		} catch(OperacionIncorrectaException e) {
-		} catch(Exception e) {			
-			fail("Se esperaba una excepcion OperacionIncorrectaException");
-		}
-		
-		try {
-			// Modificamos los datos de un médico existente como administrador
-			// (como la contraseña no se quiere cambiar, se deja "")
-			medico1.setLogin("medCambiado");
-			medico1.setApellidos("P. D.");
-			medico1.getCalendario().remove(1);
+			// Modificamos los datos de un médico existente sin tocar la contraseña
+			medico1.setTipoMedico(cabecera);
+			medico1.getCalendario().clear();
 			medico1.setPassword("");
-			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico1);
+			servidor.modificar(sesionAdmin.getId(), medico1);
 			// Comprobamos que el médico se haya actualizado correctamente
-			// (la contraseña devuelta debe ser la original, "abcdef", encriptada)
-			medicoGet = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico1.getDni());
+			medicoGet = servidor.getMedico(sesionAdmin.getId(), medico1.getDni());
 			medico1.setPassword(Encriptacion.encriptarPasswordSHA1("abcdef"));
 			assertEquals(medico1, medicoGet);
 		} catch(Exception e) {
 			fail(e.toString());
-		}
-		
-		try {
-			// Modificamos los datos de un médico existente como administrador
-			// (cambiando también la contraseña)
-			medico1.setPassword("zzz123");
-			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico1);
-			// Comprobamos que el médico se haya actualizado correctamente
-			// (la contraseña devuelta debe ser la nueva, "zzz123", encriptada)
-			medicoGet = GestorMedicos.consultarMedico(sesionAdmin.getId(), medico1.getDni());
-			medico1.setPassword(Encriptacion.encriptarPasswordSHA1("zzz123"));
-			assertEquals(medico1, medicoGet);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Intentamos modificar un médico con el rol de citador
-			GestorMedicos.modificarMedico(sesionCitador.getId(), medico1);
-			fail("Se esperaba una excepcion OperacionIncorrectaException");
-		} catch(OperacionIncorrectaException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepcion OperacionIncorrectaException");
-		}
-		
-		try {
-			// Intentamos modificar un médico que aún no se ha creado
-			medico = new Medico("21412395", "error", Encriptacion.encriptarPasswordSHA1("error"), "", "", pediatra);
-			medico.setCentroSalud(centro1);
-			GestorMedicos.modificarMedico(sesionAdmin.getId(), medico);
-			fail("Se esperaba una excepcion MedicoInexistenteException");
-		} catch(MedicoInexistenteException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepcion MedicoInexistenteException");
 		}
 	}
 
@@ -289,54 +304,52 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos eliminar un médico nulo
-			GestorMedicos.eliminarMedico(sesionAdmin.getId(), null);
-			fail("Se esperaba una excepcion NullPointerException");
+			servidor.eliminar(sesionCitador.getId(), null);
+			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion NullPointerException");
+			fail("Se esperaba una excepción NullPointerException");
 		}
 		
 		try {
-			// Eliminamos un médico existente como administrador
-			GestorMedicos.eliminarMedico(sesionAdmin.getId(), medico2);
-		} catch(Exception e) {
-			e.printStackTrace();
-			fail(e.toString());
-		}
-
-		try {
-			// Comprobamos que el médico borrado ya no exista en el sistema
-			GestorMedicos.consultarMedico(sesionAdmin.getId(), medico2.getDni());
-			fail("Se esperaba una excepcion MedicoInexistenteException");
-		} catch(MedicoInexistenteException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepcion MedicoInexistenteException");
-		}
-		
-		try {
-			// Intentamos borrar un médico con el rol de citador
-			GestorMedicos.eliminarMedico(sesionCitador.getId(), medico1);
-			fail("Se esperaba una excepcion OperacionIncorrectaException");
+			// Intentamos eliminar un médico con la sesión del citador
+			servidor.eliminar(sesionCitador.getId(), medico2);
+			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion OperacionIncorrectaException");
+			fail("Se esperaba una excepción OperacionIncorrectaException");
+		}
+		
+		try {
+			// Intentamos acceder al servidor con un id de sesión erróneo
+			servidor.eliminar(-12345, medico2);
+			fail("Se esperaba una excepción SesionInvalidaException");
+		} catch(SesionInvalidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SesionInvalidaException");
 		}
 		
 		try {
 			// Intentamos eliminar un médico que aún no se ha creado
-			medico = new Medico("78256514", "error", Encriptacion.encriptarPasswordSHA1("error"), "", "", pediatra);
-			medico.setCentroSalud(centro1);
-			GestorMedicos.eliminarMedico(sesionAdmin.getId(), medico);
-			fail("Se esperaba una excepcion MedicoInexistenteException");
+			medico = new Medico("78256514", "error", "error", "", "", pediatra);
+			servidor.eliminar(sesionAdmin.getId(), medico);
+			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepcion MedicoInexistenteException");
+			fail("Se esperaba una excepción MedicoInexistenteException");
+		}
+		
+		try {
+			// Eliminamos un médico existente como administrador
+			servidor.eliminar(sesionAdmin.getId(), medico2);
+		} catch(Exception e) {
+			fail(e.toString());
 		}
 	}
 	
-	/** Pruebas relacionadas con los calendarios de los médicos */
+	/** Pruebas de la operación que devuelve el horario de un médico */
 	@SuppressWarnings("deprecation")
-	public void testCalendariosMedico() {
+	public void testConsultarHorarioMedico() {
 		Date fecha;
 		Hashtable<DiaSemana, Vector<String>> horario;
 		Medico medico;
@@ -370,38 +383,38 @@ public class PruebasMedicos extends PruebasBase {
 			try {
 				// Intentamos obtener el horario de un médico nulo
 				GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), null);
-				fail("Se esperaba una excepcion NullPointerException");
+				fail("Se esperaba una excepción NullPointerException");
 			} catch(NullPointerException e) {
 			} catch(Exception e) {
-				fail("Se esperaba una excepcion NullPointerException");
+				fail("Se esperaba una excepción NullPointerException");
 			}
 			
 			try {
 				// Intentamos consultar el horario de un médico con el rol de citador
 				GestorMedicos.consultarHorarioMedico(sesionCitador.getId(), medico1.getDni());
-				fail("Se esperaba una excepcion OperacionIncorrectaException");
+				fail("Se esperaba una excepción OperacionIncorrectaException");
 			} catch(OperacionIncorrectaException e) {
 			} catch(Exception e) {
-				fail("Se esperaba una excepcion OperacionIncorrectaException");
+				fail("Se esperaba una excepción OperacionIncorrectaException");
 			}
 			
 			try {
 				// Intentamos obtener el horario de un medico inexistente
 				medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", cabecera);
 				GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), medico.getDni());
-				fail("Se esperaba una excepcion MedicoInexistenteException");
+				fail("Se esperaba una excepción MedicoInexistenteException");
 			} catch(MedicoInexistenteException e) {
 			} catch(Exception e) {
-				fail("Se esperaba una excepcion MedicoInexistenteException");
+				fail("Se esperaba una excepción MedicoInexistenteException");
 			}
 			
 			try {
 				// Intentamos obtener el horario de un usuario que no es médico
 				GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), admin1.getDni());
-				fail("Se esperaba una excepcion MedicoInexistenteException");
+				fail("Se esperaba una excepción MedicoInexistenteException");
 			} catch(MedicoInexistenteException e) {
 			} catch(Exception e) {
-				fail("Se esperaba una excepcion MedicoInexistenteException");
+				fail("Se esperaba una excepción MedicoInexistenteException");
 			}
 			
 			try {

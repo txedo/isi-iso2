@@ -2,6 +2,10 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 
+/**
+ * Clase de tipo de médico que representa un pediatra para los beneficiarios
+ * de menos de 14 años.
+ */
 public class Pediatra extends TipoMedico implements Serializable {
 
 	private static final long serialVersionUID = 5571521599727300482L;

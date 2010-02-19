@@ -1,5 +1,8 @@
 package dominio.conocimiento;
 
+/**
+ * Clase base para los tipos de médico.
+ */
 public abstract class TipoMedico {
 
 	public TipoMedico() {

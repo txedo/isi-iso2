@@ -4,13 +4,17 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Vector;
 
+import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Encriptacion;
+import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Usuario;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import persistencia.UtilidadesPersistencia;
+import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludInexistenteException;
 import excepciones.DireccionInexistenteException;
 import excepciones.OperacionIncorrectaException;
@@ -63,8 +67,8 @@ public class GestorUsuarios {
 		
 		// Encriptamos la contraseña del usuario (hacemos una
 		// copia del usuario para no modificar el original)
+		usuarioReal = (Usuario)usuario.clone();
 		try {
-			usuarioReal = (Usuario)usuario.clone();
 			usuarioReal.setPassword(Encriptacion.encriptarPasswordSHA1(usuario.getPassword()));
 		} catch(NoSuchAlgorithmException e) {
 			throw new SQLException("No se puede encriptar la contraseña del usuario.");
@@ -79,7 +83,7 @@ public class GestorUsuarios {
 		
 		// Consultamos si ya existe otro usuario con el mismo login
 		try {
-			FPUsuario.consultar(usuarioReal.getLogin(), usuarioReal.getPassword());
+			FPUsuario.consultarPorLogin(usuarioReal.getLogin());
 			throw new UsuarioYaExistenteException("El login " + usuarioReal.getLogin() + " ya existe en el sistema para otro usuario y no se puede utilizar de nuevo.");
 		} catch(UsuarioIncorrectoException e) {
 			// Lo normal es que se lance esta excepción
@@ -117,20 +121,18 @@ public class GestorUsuarios {
 			throw new UsuarioInexistenteException(e.getMessage());
 		}
 		
-		// Vemos si es necesario cambiar la contraseña
+		// Vemos si es necesario cambiar la contraseña (siempre
+		// hacemos una copia del usuario para no modificar el original)
+		usuarioReal = (Usuario)usuario.clone();
 		if(!usuario.getPassword().trim().equals("")) {
-			// Encriptamos la nueva contraseña del usuario (hacemos
-			// una copia del usuario para no modificar el original)
+			// Encriptamos la nueva contraseña del usuario
 			try {
-				usuarioReal = (Usuario)usuario.clone();
 				usuarioReal.setPassword(Encriptacion.encriptarPasswordSHA1(usuario.getPassword()));
 			} catch(NoSuchAlgorithmException e) {
 				throw new SQLException("No se puede encriptar la contraseña del usuario.");
 			}
 		} else {
-			// Mantenemos la contraseña antigua (hacemos una
-			// copia del usuario para no modificar el original)
-			usuarioReal = (Usuario)usuario.clone();
+			// Mantenemos la contraseña antigua
 			usuarioReal.setPassword(usuarioAntiguo.getPassword());
 		}
 		
@@ -139,7 +141,10 @@ public class GestorUsuarios {
 	}
 
 	// Método para eliminar un usuario del sistema
-	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
+		Vector<Beneficiario> beneficiarios = null;
+		Medico nuevoMedico;
+
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
 			throw new NullPointerException("El usuario que se va a eliminar no puede ser nulo.");
@@ -155,8 +160,25 @@ public class GestorUsuarios {
 			throw new UsuarioInexistenteException(e.getMessage());
 		}
 		
+		// Si se va a eliminar es un médico, obtenemos su lista de beneficiarios
+		if(usuario.getRol() == RolesUsuarios.Medico) {
+			beneficiarios = GestorBeneficiarios.consultarBeneficiariosMedico(idSesion, usuario.getDni());
+		}
+		
 		// Borramos los datos del usuario
 		FPUsuario.eliminar(usuario);
+		
+		// Si el usuario eliminado era un médico, intentamos asignar un nuevo
+		// médico a los beneficiarios que lo tenían como médico de cabecera
+		if(usuario.getRol() == RolesUsuarios.Medico) {
+			for(Beneficiario beneficiario : beneficiarios) {
+				nuevoMedico = GestorBeneficiarios.obtenerMedicoBeneficiario(beneficiario);
+				if(nuevoMedico != null) {
+					beneficiario.setMedicoAsignado(nuevoMedico);
+					GestorBeneficiarios.modificarBeneficiario(idSesion, beneficiario);
+				}
+			}
+		}
 	}
 
 	// Método para obtener la lista de centros de salud de los usuarios
