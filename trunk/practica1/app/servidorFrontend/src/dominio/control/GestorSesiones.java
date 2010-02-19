@@ -213,6 +213,7 @@ public class GestorSesiones {
 	}
 
 	public static void actualizarClientes(long idSesion, int operacion, Object dato) throws RemoteException {
+		// Actualizamos todos los clientes menos el que lanzó la operación
 		for(Long id : clientes.keySet()) {
 			if(id != idSesion) {
 				clientes.get(id).actualizarVentanas(operacion, dato);

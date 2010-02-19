@@ -114,6 +114,7 @@ public class GestorBeneficiarios {
 		// Intentamos asignar al beneficiario un médico del centro
 		// elegido por él; si no hay ningún médico disponible, se lanza
 		// una excepción para que el beneficiario pueda elegir otro centro
+		beneficiario = (Beneficiario)beneficiario.clone();
 		medico = obtenerMedicoBeneficiario(beneficiario);
 		beneficiario.setMedicoAsignado(medico);
 		if(medico == null) {
@@ -143,6 +144,7 @@ public class GestorBeneficiarios {
 		FPBeneficiario.consultarPorNIF(beneficiario.getNif());
 
 		// Miramos si es necesario cambiar el médico asignado al beneficiario
+		beneficiario = (Beneficiario)beneficiario.clone();
 		medico = obtenerMedicoBeneficiario(beneficiario);
 		if(medico == null) {
 			throw new UsuarioIncorrectoException("No existe ningún médico que se pueda asignar al beneficiario en el centro " + beneficiario.getCentroSalud().getNombre() + ".");
@@ -173,7 +175,33 @@ public class GestorBeneficiarios {
 		FPBeneficiario.eliminar(beneficiario);
 	}
 	
+	// Método que devuelve todos los beneficiarios que tiene un médico
+	public static Vector<Beneficiario> consultarBeneficiariosMedico(long idSesion, String dniMedico) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		Vector<Beneficiario> beneficiarios;
+		Vector<String> nifs;
+		
+		// Comprobamos los parámetros pasados
+		if(dniMedico == null) {
+			throw new NullPointerException("El DNI del médico del que se quieren buscar sus beneficiarios no puede ser nulo.");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiariosMedico);
+		
+		// Obtenemos los NIFs de todos los beneficiarios asociados a ese médico
+		nifs = FPBeneficiario.consultarBeneficiariosMedico(dniMedico);
+		
+		// Recuperamos los beneficiarios con los NIFs anteriores
+		beneficiarios = new Vector<Beneficiario>();
+		for(String nif : nifs) {
+			beneficiarios.add(FPBeneficiario.consultarPorNIF(nif));
+		}
+		
+		return beneficiarios;
+	}
+	
 	// Método que devuelve el médico que se le debe asignar a un beneficiario
+	// (es público porque se utiliza desde otro gestor, no es accesible a los clientes)
 	public static Medico obtenerMedicoBeneficiario(Beneficiario beneficiario) throws SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException {
 		String nifMedico;
 		Medico medico;
@@ -213,25 +241,6 @@ public class GestorBeneficiarios {
 		}
 		
 		return medico;
-	}
-	
-	public static Vector<Beneficiario> getBeneficiariosMedico(long idSesion, String dniMedico) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		Vector<Beneficiario> beneficiarios;
-		Vector<String> nifs;
-		
-		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiariosMedico);
-		
-		// Obtenemos los NIFs de todos los beneficiarios asociados a ese médico
-		nifs = FPBeneficiario.consultarBeneficiariosMedico(dniMedico);
-		
-		// Recuperamos los beneficiarios con los NIFs anteriores
-		beneficiarios = new Vector<Beneficiario>();
-		for(String nif : nifs) {
-			beneficiarios.add(FPBeneficiario.consultarPorNIF(nif));
-		}
-		
-		return beneficiarios;
 	}
 	
 }

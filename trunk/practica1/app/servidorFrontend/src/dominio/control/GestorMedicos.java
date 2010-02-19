@@ -127,7 +127,7 @@ public class GestorMedicos {
 		}
 		
 		// Tomamos la lista de beneficiarios del medico
-		beneficiarios = GestorBeneficiarios.getBeneficiariosMedico(idSesion, medico.getDni());
+		beneficiarios = GestorBeneficiarios.consultarBeneficiariosMedico(idSesion, medico.getDni());
 
 		// Intentamos asignar un nuevo médico a los beneficiarios afectados
 		for(Beneficiario beneficiario : beneficiarios) {

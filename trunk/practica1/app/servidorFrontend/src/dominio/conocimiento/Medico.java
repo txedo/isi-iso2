@@ -227,12 +227,13 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 		return horas;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Object clone() {
 		Medico m;
 		
 		m = new Medico(dni, login, password, nombre, apellidos, tipoMedico);
-		m.setCentroSalud(centro);
-		m.setCalendario(calendario);
+		m.setCentroSalud((CentroSalud)centro.clone());
+		m.setCalendario((Vector<PeriodoTrabajo>)calendario.clone());
 		return m;
 	}
 	
