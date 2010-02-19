@@ -883,5 +883,35 @@ public class PruebasCitas extends PruebasBase {
 			fail(e.toString());
 		}
 	}
+
+	/** Pruebas de las operaciones de la clase Cita */
+	@SuppressWarnings("deprecation")
+	public void testClaseCita() {
+		Calendar calend;
+		Date hora;
+		String cadena;
+		
+		try {
+			// Comprobamos que las horas de las citas tienen el formato esperado
+			calend = Calendar.getInstance();
+			hora = Cita.horaCadenaCita("22:45");
+			calend.setTime(hora);
+			assertTrue(calend.get(Calendar.HOUR_OF_DAY) == 22);
+			assertTrue(calend.get(Calendar.MINUTE) == 45);
+			assertTrue(calend.get(Calendar.SECOND) == 0);
+			calend = Calendar.getInstance();
+			hora = Cita.horaCadenaCita("09:00");
+			calend.setTime(hora);
+			assertTrue(calend.get(Calendar.HOUR_OF_DAY) == 9);
+			assertTrue(calend.get(Calendar.MINUTE) == 0);
+			assertTrue(calend.get(Calendar.SECOND) == 0);
+			cadena = Cita.cadenaHoraCita(new Date(2010 - 1900, 0, 1, 16, 30, 0));
+			assertEquals("16:30", cadena);
+			cadena = Cita.cadenaHoraCita(new Date(2010 - 1900, 0, 1, 1, 50, 0));
+			assertEquals("01:50", cadena);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
 	
 }

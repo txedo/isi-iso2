@@ -2,6 +2,10 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 
+/**
+ * Clase de tipo de médico que representa un médico de cabecera para los
+ * beneficiarios de 14 o más años.
+ */
 public class Cabecera extends TipoMedico implements Serializable {
 
 	private static final long serialVersionUID = -6691515760167451968L;

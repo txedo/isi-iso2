@@ -3,8 +3,8 @@ package dominio.conocimiento;
 import java.io.Serializable;
 
 /**
- * Clase que representa un centro de salud en el que pueden trabajan
- * los usuarios (incluidos médicos) del sistema.
+ * Clase que representa un centro de salud en el que pueden trabajar los
+ * usuarios (incluidos médicos) del sistema.
  */
 public class CentroSalud implements Serializable, Cloneable {
 	

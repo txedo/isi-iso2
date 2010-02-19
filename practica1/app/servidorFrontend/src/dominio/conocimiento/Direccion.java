@@ -2,6 +2,9 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 
+/**
+ * Clase que representa la dirección en la que vive un beneficiario.
+ */
 public class Direccion implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -8460925743520811251L;

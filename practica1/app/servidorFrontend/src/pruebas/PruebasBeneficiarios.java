@@ -1,7 +1,9 @@
 package pruebas;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Vector;
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
@@ -529,6 +531,33 @@ public class PruebasBeneficiarios extends PruebasBase {
 			assertTrue(beneficiarios.get(0).equals(beneficiario1));
 			beneficiarios = (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico1.getDni());
 			assertTrue(beneficiarios.size() == 0);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de las operaciones de la clase Beneficiario */
+	public void testClaseBeneficiario() {
+		GregorianCalendar calend;
+		Beneficiario beneficiario;
+		
+		try {
+			// Creamos un beneficiario nacido ayer
+			calend = new GregorianCalendar();
+			calend.roll(Calendar.DAY_OF_MONTH, false);
+			beneficiario = new Beneficiario("11223344P", "001199881100", "ABC", "DEF", calend.getTime(), direccion1, "", "", "");
+			assertTrue(beneficiario.getEdad() == 0);
+			// Creamos un beneficiario de 1 año
+			calend = new GregorianCalendar();
+			calend.roll(Calendar.YEAR, false);
+			beneficiario.setFechaNacimiento(calend.getTime());
+			assertTrue(beneficiario.getEdad() == 1);
+			// Creamos un beneficiario de 50 años
+			calend = new GregorianCalendar();
+			calend.add(Calendar.YEAR, -50);
+			calend.add(Calendar.DAY_OF_MONTH, 3);
+			beneficiario.setFechaNacimiento(calend.getTime());
+			assertTrue(beneficiario.getEdad() == 50);
 		} catch(Exception e) {
 			fail(e.toString());
 		}

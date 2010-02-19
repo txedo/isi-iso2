@@ -2,6 +2,10 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 
+/**
+ * Clase de tipo de médico que representa un médico especialista para el
+ * que se puede pedir cita teniendo un volante.
+ */
 public class Especialista extends TipoMedico implements Serializable{
 
 	private static final long serialVersionUID = 8975103923917109469L;
