@@ -95,7 +95,7 @@ public class Direccion implements Serializable, Cloneable {
 	
 	public String toString() {
 		String direccion = domicilio;
-		if (numero.equals("s/n"))
+		if (numero.equals(""))
 			direccion += " s/n";
 		else
 			direccion += ", nº " + numero;

@@ -17,11 +17,15 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Especialidades;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
@@ -59,6 +63,8 @@ public class JPEmitirVolante extends JPBase {
 	private JButton btnAceptar;
 	private JLabel lblSelectl;
 	private JList lstEspecialistas;
+	private JTextField txtCentro;
+	private JLabel lblCentro;
 	private JScrollPane jScrollPane1;
 	private JComboBox cbEspecialidad;
 	private ListModel lstEspecialistasModel; 
@@ -84,7 +90,20 @@ public class JPEmitirVolante extends JPBase {
 				AnchorLayout jPanelMedicoLayout = new AnchorLayout();
 				jPanelMedico.setLayout(jPanelMedicoLayout);
 				this.add(jPanelMedico, new AnchorConstraint(252, 5, 885, 6, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				jPanelMedico.setPreferredSize(new java.awt.Dimension(544, 185));
+				jPanelMedico.setPreferredSize(new java.awt.Dimension(554, 198));
+				{
+					txtCentro = new JTextField();
+					jPanelMedico.add(txtCentro, new AnchorConstraint(118, 6, 714, 318, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					txtCentro.setPreferredSize(new java.awt.Dimension(230, 23));
+					txtCentro.setEditable(false);
+					txtCentro.setFocusable(false);
+				}
+				{
+					lblCentro = new JLabel();
+					jPanelMedico.add(lblCentro, new AnchorConstraint(121, 241, 694, 229, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					lblCentro.setText("Centro de salud");
+					lblCentro.setPreferredSize(new java.awt.Dimension(84, 16));
+				}
 				{
 					lblEspecialidad = new JLabel();
 					jPanelMedico.add(lblEspecialidad, new AnchorConstraint(12, 374, 154, 4, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
@@ -104,19 +123,19 @@ public class JPEmitirVolante extends JPBase {
 				}
 				{
 					jScrollPane1 = new JScrollPane();
-					jPanelMedico.add(jScrollPane1, new AnchorConstraint(34, 15, 316, 229, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-					jScrollPane1.setPreferredSize(new java.awt.Dimension(310, 110));
+					jPanelMedico.add(jScrollPane1, new AnchorConstraint(34, 6, 316, 229, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+					jScrollPane1.setPreferredSize(new java.awt.Dimension(319, 75));
 					{
 						
 						lstEspecialistas = new JList();
 						jScrollPane1.setViewportView(lstEspecialistas);
 						lstEspecialistas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-						lstEspecialistas.setPreferredSize(new java.awt.Dimension(306, 107));
+						lstEspecialistas.setPreferredSize(new java.awt.Dimension(306, 58));
 					}
 				}
 				{
 					btnAceptar = new JButton();
-					jPanelMedico.add(btnAceptar, new AnchorConstraint(156, 11, 996, 842, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+					jPanelMedico.add(btnAceptar, new AnchorConstraint(164, 6, 996, 842, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 					btnAceptar.setText("Aceptar");
 					btnAceptar.setPreferredSize(new java.awt.Dimension(77, 23));
 					btnAceptar.addActionListener(new ActionListener() {
@@ -144,6 +163,12 @@ public class JPEmitirVolante extends JPBase {
 			}
 			// Inicializaciones de algunos controles
 			lstEspecialistas.setEnabled(false);
+			lstEspecialistas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			lstEspecialistas.addListSelectionListener(new ListSelectionListener() {
+				public void valueChanged(ListSelectionEvent evt) {
+					lstEspecialistasValueChanged(evt);
+				}
+			});
 			crearModelos(new String [] {""});
 			rellenarModeloComboBox(new String [] {""});
 			cbEspecialidad.setFocusable(false);
@@ -160,7 +185,16 @@ public class JPEmitirVolante extends JPBase {
 	}
 	
 	private void cbEspecialidadActionPerformed(ActionEvent evt) {
-			inicializarEspecialistas();
+		txtCentro.setText("");
+		inicializarEspecialistas();
+	}
+	
+	private void lstEspecialistasValueChanged(ListSelectionEvent evt) {
+		CentroSalud centro;
+		if (especialistas.size()!=0 && lstEspecialistas.getSelectedIndex()!=-1) {
+			centro = especialistas.get(lstEspecialistas.getSelectedIndex()).getCentroSalud();
+			txtCentro.setText(centro.getNombre() + " " + centro.getDireccion());
+		}
 	}
 
 	//$hide>>$
@@ -255,6 +289,7 @@ public class JPEmitirVolante extends JPBase {
 		cbEspecialidad.setEnabled(false);
 		cbEspecialidad.setFocusable(false);
 		lstEspecialistas.setEnabled(false);
+		txtCentro.setText("");
 	}
 
 	// Métodos públicos
