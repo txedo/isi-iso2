@@ -13,6 +13,11 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import presentacion.auxiliares.OperacionCambiadaEvent;
+import presentacion.auxiliares.OperacionCambiadaListener;
+import presentacion.auxiliares.OperacionesInterfaz;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 

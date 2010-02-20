@@ -3,6 +3,8 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cita;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +16,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
+
+import presentacion.auxiliares.TableCellRendererCitas;
+import presentacion.auxiliares.TableModelNoEditable;
+import presentacion.auxiliares.UtilidadesTablaCitas;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -124,6 +130,15 @@ public class JFAvisos extends javax.swing.JFrame {
 			tblTablaAvisos.setValueAt((beneficiario.getMedicoAsignado() == null) ? "" : beneficiario.getMedicoAsignado().getDni(), fila, col++);
 			fila++;
 		}
+		
+		// Mostramos la ventana
+		setVisible(true);
+	}
+	
+	public void mostrarCitas(String titulo, Vector<Cita> citas) {
+		lblTitulo.setText(titulo);
+		UtilidadesTablaCitas.crearTabla(tblTablaAvisos, citas.size());
+		UtilidadesTablaCitas.rellenarTabla(tblTablaAvisos, citas);		
 		
 		// Mostramos la ventana
 		setVisible(true);

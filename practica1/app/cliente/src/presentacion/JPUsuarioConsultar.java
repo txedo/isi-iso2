@@ -20,6 +20,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
+
+import presentacion.auxiliares.UsuarioBuscadoListener;
+import presentacion.auxiliares.Validacion;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Administrador;
@@ -563,6 +567,12 @@ public class JPUsuarioConsultar extends JPBase {
 							frmAviso.mostrarBeneficiarios("Los siguientes beneficiarios han cambiado de médico:", beneficiariosCamb);
 						}
 						
+						// Mostramos las citas que se han anulado al eliminar el médico
+						if (citas.size() > 0) {
+							frmAviso = new JFAvisos();
+							frmAviso.mostrarCitas("Las siguientes citas se han anulado:", citas);
+						}
+						
 					}
 					
 				} else {
@@ -577,10 +587,12 @@ public class JPUsuarioConsultar extends JPBase {
 				}
 				
 			} catch(SQLException e) {
+				e.printStackTrace();
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			} catch(RemoteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());		
 			} catch(Exception e) {
+				e.printStackTrace();
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			}
 		}

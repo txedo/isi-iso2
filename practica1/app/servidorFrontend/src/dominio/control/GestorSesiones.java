@@ -165,6 +165,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.TramitarCitaVolante);
 			operaciones.add(Operaciones.AnularCita);
 			operaciones.add(Operaciones.ConsultarVolante);
+			operaciones.add(Operaciones.ConsultarMedico);
 		}
 		
 		// Agregamos las operaciones permitidas para administradores
@@ -173,7 +174,6 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.RegistrarUsuario);
 			operaciones.add(Operaciones.ModificarUsuario);
 			operaciones.add(Operaciones.EliminarUsuario);
-			operaciones.add(Operaciones.ConsultarMedico);
 			operaciones.add(Operaciones.RegistrarMedico);
 			operaciones.add(Operaciones.ModificarMedico);
 			operaciones.add(Operaciones.EliminarMedico);

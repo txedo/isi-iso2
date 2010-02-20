@@ -1,4 +1,4 @@
-package presentacion;
+package presentacion.auxiliares;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,6 +8,7 @@ import excepciones.ApellidoIncorrectoException;
 import excepciones.CodigoPostalIncorrectoException;
 import excepciones.CadenaIncorrectaException;
 import excepciones.CadenaVaciaException;
+import excepciones.IdVolanteIncorrectoException;
 import excepciones.LocalidadIncorrectaException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
@@ -84,7 +85,7 @@ public class Validacion {
 		}
 	}
 	
-	// Un nombre sólo puede tener letras o espacios TODO:¿y guiones?
+	// Un nombre sólo puede tener letras, espacios o guiones
 	public static void comprobarNombre(String cadena) throws NombreIncorrectoException {
 		try {
 			comprobarCadena(cadena);
@@ -95,7 +96,7 @@ public class Validacion {
 		}
 	}
 
-	// Los apellidos sólo pueden tener letras o espacios TODO:¿y guiones?
+	// Los apellidos sólo pueden tener letras, espacios o guiones
 	public static void comprobarApellidos(String cadena) throws ApellidoIncorrectoException {
 		try {
 			comprobarCadena(cadena);
@@ -136,7 +137,7 @@ public class Validacion {
 			throw new DomicilioIncorrectoException();
 	}
 	
-	// Una cadena es válida si todos sus caracteres son alfabéticos o espacios
+	// Una cadena es válida si todos sus caracteres son alfabéticos, espacios o guiones
 	public static void comprobarCadena(String cadena) throws CadenaIncorrectaException, CadenaVaciaException {
 		boolean bCorrecto = false;
 		boolean bAux = true;
@@ -144,11 +145,16 @@ public class Validacion {
 		// El primer caracter debe ser una letra
 		if(cadena.length() > 0) {
 			if(Character.isLetter(cadena.charAt(0))) {
-				// El resto de caracteres pueden ser letra o espacio
+				// El resto de caracteres pueden ser letra, espacio o guion
 				for(int i = 1; i < cadena.length() && bAux; i++) {
-					bAux = Character.isLetter(cadena.charAt(i)) || Character.isWhitespace(cadena.charAt(i));
+					bAux = Character.isLetter(cadena.charAt(i)) || Character.isWhitespace(cadena.charAt(i)) || cadena.charAt(i) == '-';
 				}
 				bCorrecto = bAux;
+				
+				// No se puede terminar la cadena con un guión
+				if (bCorrecto && cadena.charAt(cadena.length()-1) == '-')
+					bCorrecto = false;
+				
 			}
 			if(!bCorrecto) {
 				throw new CadenaIncorrectaException();
@@ -160,12 +166,26 @@ public class Validacion {
 	
 	// El número del domicilio debe ser un número acabado opcionalmente en una letra
 	public static void comprobarNumero(String text) throws NumeroDomicilioIncorrectoException {
-//TODO: cambiar para que el número pueda acabar en una letra
-		try {
-			comprobarEntero(text);
-		} catch(EnteroIncorrectoException e) {
-			throw new NumeroDomicilioIncorrectoException ();
+		boolean bAux = true;
+		boolean bCorrecto = false;
+		
+		if (text.length() > 0) {
+			for (int i = 0; i < text.length() && bAux; i++) {
+				// Solo puede aparecer una letra en la última posición de la cadena
+				if (Character.isLetter(text.charAt(i))) {
+					if (i == text.length()-1)
+						bAux = true;
+					else
+						bAux = false;
+				} else
+					bAux = Character.isDigit(text.charAt(i));
+			}
+			bCorrecto = bAux;
+			
 		}
+		if (!bCorrecto)
+			throw new NumeroDomicilioIncorrectoException();
+		
 	}
 
 	// El piso del domicilio debe ser un número
@@ -257,24 +277,14 @@ public class Validacion {
 	
 	public static void comprobarCorreoElectronico (String correo) throws CorreoElectronicoIncorrectoException {
 		boolean bCorrecto = false;
-		boolean bAux = true;
 		
-		// Obtenemos la posicion del caracter @
-		int indexArroba = correo.indexOf("@");
-		// Obtenemos la posicion del "." separador de dominio. Debe ir despues de la @ y no consecutivo
-		int indexPunto = correo.indexOf(".", indexArroba+2);
-		
-		// El primer y ultimo caracter debe ser una letra
-		if (Character.isLetter(correo.charAt(0)) && Character.isLetter(correo.charAt(correo.length()-1))) {
-			// Si el correo tiene arroba y punto (despues de la arroba)
-			if (indexArroba != -1 && indexPunto != -1) {
-				// El resto de caracteres NO pueden ser espacios
-				for (int i = 1; i < correo.length()-1 && bAux; i++) {
-					bAux = !Character.isWhitespace(correo.charAt(i));
-				}
-				bCorrecto = bAux;
-			}
-		}
+		// Creamos un patrón para definir el formato de un e-mail
+		// Formato de e-mail siguiendo la norma RFC 2822
+		// Referencia: http://www.regular-expressions.info/email.html
+		Pattern p = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
+		Matcher m = p.matcher(correo);
+	    if (m.matches())
+	    	bCorrecto = true;
 
 		if(!bCorrecto) {
 			throw new CorreoElectronicoIncorrectoException();
@@ -309,16 +319,19 @@ public class Validacion {
 		if (!bCorrecto)
 			throw new TelefonoMovilIncorrectoException();
 	}
-
-
-	
-
 	
 	public static void comprobarUsuario(String usuario) throws LoginIncorrectoException {
-		//TODO:Por hacer
-		if(usuario.length() == 0) {
-			throw new LoginIncorrectoException();
+		boolean bCorrecto = false;
+		boolean bAux = true;
+		
+		// El nombre de usuario sólo puede contener letras
+		if(usuario.length() > 0) {
+			for (int i=0; i<usuario.length() && bAux; i++)
+				bAux = Character.isLetter(usuario.charAt(i));
+			bCorrecto = bAux;
 		}
+		if (!bCorrecto)
+			throw new LoginIncorrectoException();
 	}
 	
 	public static void comprobarContraseña(String pass) throws ContraseñaIncorrectaException {
@@ -364,6 +377,17 @@ public class Validacion {
 				throw new PuertoInvalidoException();
 			}
 		}
+	}
+
+	// El id. del volante debe ser un número
+	public static void comprobarVolante(String idVolante) throws IdVolanteIncorrectoException {
+		try {
+			comprobarEntero(idVolante);
+		}
+		catch (EnteroIncorrectoException e) {
+			throw new IdVolanteIncorrectoException("El identificador del volante debe ser un número entero");
+		}
+		
 	}
 	
 }

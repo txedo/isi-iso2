@@ -22,6 +22,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import presentacion.auxiliares.Validacion;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Administrador;
@@ -305,6 +308,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			Validacion.comprobarNIF(txtNIF.getText().trim().toUpperCase());
 			Validacion.comprobarNombre(txtNombre.getText().trim());
 			Validacion.comprobarApellidos(txtApellidos.getText().trim());
+			Validacion.comprobarUsuario(txtLogin.getText().trim());
 			Validacion.comprobarContraseña(new String(txtPassword.getPassword()));	
 			if(!(new String(txtPassword.getPassword())).equals(new String(txtPasswordConf.getPassword()))) {
 				throw new ContraseñaIncorrectaException("Las contraseñas no coinciden.");

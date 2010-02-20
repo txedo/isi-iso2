@@ -1,4 +1,4 @@
-package presentacion;
+package presentacion.auxiliares;
 
 /**
  * Enumeración con todas las operaciones disponibles en la interfaz

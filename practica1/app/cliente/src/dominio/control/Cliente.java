@@ -3,6 +3,7 @@ package dominio.control;
 import java.rmi.RemoteException;
 import comunicaciones.ICliente;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cita;
 import dominio.conocimiento.ICodigosOperacionesCliente;
 
 /**
@@ -49,6 +50,10 @@ public class Cliente implements ICliente {
  
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
 		switch(operacion) {
+		case ICodigosOperacionesCliente.INSERTAR:
+			if (dato instanceof Cita)
+				controlador.citaRegistrada((Cita)dato);
+			break;
 		case ICodigosOperacionesCliente.MODIFICAR:
 			if(dato instanceof Beneficiario) {
 				controlador.beneficiarioActualizado((Beneficiario)dato);

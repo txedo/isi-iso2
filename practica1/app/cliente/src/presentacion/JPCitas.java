@@ -4,8 +4,16 @@ import javax.swing.JFrame;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
+
+import presentacion.auxiliares.OperacionCambiadaEvent;
+import presentacion.auxiliares.OperacionCambiadaListener;
+import presentacion.auxiliares.OperacionesInterfaz;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cita;
 import dominio.control.ControladorCliente;
 
 /**
@@ -193,6 +201,26 @@ public class JPCitas extends JPBase {
 	
 	// <métodos del observador>
 
+	public void citaRegistrada(Cita cita) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+			jPanelTramitar.citaRegistrada(cita);
+			break;
+		/*case TramitarCitaVolante:
+			jPanelVolanteTramitar.citaRegistrada(cita);
+			break;
+		case ConsultarAnularCitaBeneficiario:
+			jPanelConsultarCitasBeneficiario.citaRegistrada(cita);
+			break;
+		case ConsultarCitaMedico:
+			jPanelConsultarCitasMedico.citaRegistrada(cita);
+			break;*/
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
 	public void restablecerPaneles() {
 		jPanelConsultarCitasBeneficiario.restablecerPanel();
 		jPanelConsultarCitasMedico.restablecerPanel();

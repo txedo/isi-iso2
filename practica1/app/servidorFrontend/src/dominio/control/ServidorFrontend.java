@@ -554,6 +554,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			cita = GestorCitas.pedirCita(idSesion, beneficiario, idMedico, fechaYHora, duracion);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Tramitada una cita para el beneficiario con NIF " + beneficiario.getNif() + ".");
+			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, cita);
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se tramitaba una cita para el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());

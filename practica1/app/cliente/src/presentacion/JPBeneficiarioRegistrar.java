@@ -14,6 +14,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import presentacion.auxiliares.Validacion;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
@@ -401,7 +404,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			beneficiario.setFechaNacimiento(dtcFechaNacimiento.getDate());
 			dir = new Direccion();
 			dir.setDomicilio(txtDomicilio.getText().trim());
-			dir.setNumero(txtNumero.getText().trim());
+			dir.setNumero(txtNumero.getText().trim().toUpperCase());
 			dir.setPiso(txtPiso.getText().trim());
 			dir.setPuerta(txtPuerta.getText().trim());
 			dir.setCiudad(txtLocalidad.getText().trim());

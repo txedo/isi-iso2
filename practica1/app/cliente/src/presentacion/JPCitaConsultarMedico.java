@@ -16,6 +16,11 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+
+import presentacion.auxiliares.TableCellRendererCitas;
+import presentacion.auxiliares.UsuarioBuscadoListener;
+import presentacion.auxiliares.UtilidadesTablaCitas;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.CategoriasMedico;
@@ -44,13 +49,8 @@ public class JPCitaConsultarMedico extends JPBase {
 
 	private static final long serialVersionUID = 117161427277876393L;
 
-	private TableModelNoEditable modeloTabla;
 	private Medico medico;
 	private Vector<Cita> citas;
-	private SimpleDateFormat formatoDia;
-	private SimpleDateFormat formatoHora;
-	private boolean viendoHistorico;
-
 	private JButton btnHistoricoCitas;
 	private JScrollPane scpTablaCitas;
 	private JButton btnRestablecer;
@@ -68,10 +68,7 @@ public class JPCitaConsultarMedico extends JPBase {
 	public JPCitaConsultarMedico(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
-		formatoDia = new SimpleDateFormat("dd/MM/yyyy");
-		formatoHora = new SimpleDateFormat("HH:mm");
-		crearTabla(0);
-		viendoHistorico = false;
+		UtilidadesTablaCitas.crearTabla(tblTablaCitas, 0);
 	}
 	
 	private void initGUI() {
@@ -158,12 +155,11 @@ public class JPCitaConsultarMedico extends JPBase {
 				// Obtenemos y mostramos las citas del medico
 				// (por defecto, sólo las pendientes)
 				citas = getControlador().consultarCitasPendientesMedico(medico.getDni());
-				crearTabla(citas.size());
-				rellenarTabla(citas);
+				UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
+				UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas);
 				
 				// Indicamos que estamos mostrando sólo las citas pendientes
 				lblCitas.setText("Citas pendientes encontradas:");
-				viendoHistorico = false;
 				btnHistoricoCitas.setEnabled(true);
 				
 				// Seleccionamos la primera cita de la lista (si la hay)
@@ -191,12 +187,11 @@ public class JPCitaConsultarMedico extends JPBase {
 			// marcando en azul las que son pasadas
 			citas = getControlador().consultarCitasMedico(medico.getDni());
 			pendientes = getControlador().consultarCitasPendientesMedico(medico.getDni());
-			crearTabla(citas.size());
-			rellenarTabla(citas, pendientes);
+			UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
+			UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas, pendientes);
 			
 			// Indicamos que estamos mostrando todas las citas
 			lblCitas.setText("Citas encontradas:");
-			viendoHistorico = true;
 			btnHistoricoCitas.setEnabled(false);
 
 			// Seleccionamos la primera cita de la lista (si la hay)
@@ -212,86 +207,15 @@ public class JPCitaConsultarMedico extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
 	}
-		
-	private void crearTabla(int nfilas) {
-		Vector<String> encabezado;
-
-		// Inicializamos una nueva tabla de citas
-		encabezado = new Vector<String>();
-		encabezado.add("Día");
-		encabezado.add("Hora");
-		encabezado.add("Médico");
-		encabezado.add("DNI Médico");
-		encabezado.add("Tipo Médico");
-		encabezado.add("Especialidad");
-		modeloTabla = new TableModelNoEditable(encabezado, nfilas);
-		tblTablaCitas.setModel(modeloTabla);
-		tblTablaCitas.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(200);
-		tblTablaCitas.getTableHeader().getColumnModel().getColumn(1).setMaxWidth(200);
-		tblTablaCitas.getTableHeader().getColumnModel().getColumn(2).setMinWidth(200);
-		tblTablaCitas.getTableHeader().getColumnModel().getColumn(3).setMaxWidth(200);
-		tblTablaCitas.getTableHeader().getColumnModel().getColumn(4).setMaxWidth(200);
-		tblTablaCitas.getTableHeader().getColumnModel().getColumn(5).setMaxWidth(200);
-	}
-	
-	private void rellenarTabla(Vector<Cita> citas) {
-		Date fecha;
-		TipoMedico tipo;
-		int fila, col;
-		
-		// Eliminamos la lista de citas pendientes
-		((TableCellRendererCitas)tblTablaCitas.getDefaultRenderer(Object.class)).getFilasDesactivadas().clear();
-		
-		for(fila = 0; fila < citas.size(); fila++) {
-			col = 0;
-			fecha = citas.get(fila).getFechaYHora();
-			tipo = citas.get(fila).getMedico().getTipoMedico();
-			tblTablaCitas.setValueAt(formatoDia.format(fecha), fila, col++);			
-			tblTablaCitas.setValueAt(formatoHora.format(fecha), fila, col++);
-			tblTablaCitas.setValueAt(citas.get(fila).getMedico().getApellidos() + ", " + citas.get(fila).getMedico().getNombre(), fila, col++);
-			tblTablaCitas.setValueAt(citas.get(fila).getMedico().getDni(), fila, col++);
-			tblTablaCitas.setValueAt(tipo.getClass().getSimpleName(), fila, col++);
-			if(tipo.getCategoria() == CategoriasMedico.Especialista) {
-				tblTablaCitas.setValueAt(((Especialista)tipo).getEspecialidad(), fila, col++);
-			} else {
-				tblTablaCitas.setValueAt("", fila, col++);
-			}
-		}
-	}
-	
-	private void rellenarTabla(Vector<Cita> citas, Vector<Cita> pendientes) {
-		int fila;
-
-		// Rellenamos la tabla con las citas
-		rellenarTabla(citas);
-		
-		// Guardamos una lista con las citas que deben desactivarse
-		for(fila = 0; fila < citas.size(); fila++) {
-			if(!pendientes.contains(citas.get(fila))) {
-				// Eliminamos la lista de citas pendientes
-				((TableCellRendererCitas)tblTablaCitas.getDefaultRenderer(Object.class)).getFilasDesactivadas().add(fila);
-			}
-		}
-	}
-	
-	private void limpiarTabla() {
-		DefaultTableModel modelo;
-		
-		modelo = (DefaultTableModel)tblTablaCitas.getModel();
-		while(modelo.getRowCount() > 0){
-			modelo.removeRow(0);
-		}
-	}
 	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {
 		restablecerPanel();
 	}
 	
 	private void limpiarCamposConsulta() {
-		limpiarTabla();
+		UtilidadesTablaCitas.limpiarTabla(tblTablaCitas);
 		btnHistoricoCitas.setEnabled(false);
 		lblCitas.setText("Citas pendientes encontradas:");
-		viendoHistorico = false;
 	}
 	
 	// Métodos públicos

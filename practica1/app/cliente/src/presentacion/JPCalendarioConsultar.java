@@ -19,6 +19,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import presentacion.auxiliares.HoraNoSeleccionadaListener;
+import presentacion.auxiliares.HoraSeleccionadaListener;
+
 /**
 * This code was edited or generated using CloudGarden's Jigloo
 * SWT/Swing GUI Builder, which is free for non-commercial

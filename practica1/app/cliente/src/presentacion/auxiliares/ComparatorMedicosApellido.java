@@ -1,4 +1,4 @@
-package presentacion;
+package presentacion.auxiliares;
 
 import dominio.conocimiento.Medico;
 

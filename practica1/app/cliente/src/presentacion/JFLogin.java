@@ -25,6 +25,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import presentacion.auxiliares.Validacion;
+
 /**
 * This code was edited or generated using CloudGarden's Jigloo
 * SWT/Swing GUI Builder, which is free for non-commercial
@@ -218,12 +220,12 @@ public class JFLogin extends javax.swing.JFrame {
 		try {
 			
 			// Comprobamos los campos de la ventana
-			Validacion.comprobarUsuario(txtUsuario.getText());
-			//TODO:quitadotemporalmente... Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
-			Validacion.comprobarDireccionIP(txtIPServidor.getText());
-			Validacion.comprobarPuerto(txtPuertoServidor.getText());
+			Validacion.comprobarUsuario(txtUsuario.getText().trim());
+			//TODO:quitado temporalmente... Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
+			Validacion.comprobarDireccionIP(txtIPServidor.getText().trim());
+			Validacion.comprobarPuerto(txtPuertoServidor.getText().trim());
 			
-			int puerto = Integer.parseInt(txtPuertoServidor.getText());
+			int puerto = Integer.parseInt(txtPuertoServidor.getText().trim());
 			controlador.iniciarSesion(txtIPServidor.getText(), puerto, txtUsuario.getText(), new String(txtPassword.getPassword()));
 		
 		} catch(UsuarioIncorrectoException e) {

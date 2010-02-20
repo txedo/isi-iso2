@@ -3,6 +3,7 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cita;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
 import dominio.control.ControladorCliente;
@@ -28,6 +29,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import presentacion.auxiliares.OperacionCambiadaEvent;
+import presentacion.auxiliares.OperacionCambiadaListener;
+import presentacion.auxiliares.OperacionesInterfaz;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -515,6 +520,17 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case ConsultarModificarBeneficiario:
 		case RegistrarBeneficiario:
 			jPanelGestionarBeneficiarios.beneficiarioEliminado(beneficiario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void citaRegistrada(Cita cita) {
+		// Redirigimos la operación al grupo de paneles seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+			jPanelGestionarCitas.citaRegistrada(cita);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
