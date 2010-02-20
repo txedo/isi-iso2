@@ -167,42 +167,8 @@ public class JPCitaTramitar extends JPBase {
 		beneficiario = pnlBeneficiario.getBeneficiario();
 		
 		if(beneficiario != null) {
-			
-			try {
-				
-				// Consultamos al servidor toda la información
-				// necesaria para el panel de tramitación
-				diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
-				citasOcupadas = getControlador().consultarHorasCitasMedico(beneficiario.getMedicoAsignado().getDni());
-				horasCitas = getControlador().consultarHorarioMedico(beneficiario.getMedicoAsignado().getDni());
-				
-				// Deshabilitamos los días de la semana que no son
-				// laborables para el médico del beneficiario
-				dtcDiaCita.quitarDiasSemanaDesactivados();
-				for(DiaSemana dia : DiaSemana.values()) {
-					if(horasCitas.get(dia) == null || horasCitas.get(dia).size() == 0) {
-						dtcDiaCita.ponerDiaSemanaDesactivado(dia);
-					}
-				}
-				
-				// Deshabilitamos los días que el médico no puede
-				// pasar consulta en el calendario del panel
-				dtcDiaCita.quitarFechasDesactivadas();
-				dtcDiaCita.setMinSelectableDate(new Date());
-				for(Date dia : diasOcupados) {
-					dtcDiaCita.ponerFechaDesactivada(dia);
-				}
-				
-				// Activamos el registro de citas
-				cambiarEstado(true);
-
-			} catch(SQLException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			} catch(RemoteException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			} catch(Exception e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			}
+			cambiarEstado(true);
+			mostrarFechasyHorasLaborablesMedico();
 		
 		}
 	}
@@ -290,16 +256,52 @@ public class JPCitaTramitar extends JPBase {
 		cambiarEstado(false);
 	}
 	
+	private void mostrarFechasyHorasLaborablesMedico() {
+		try {
+			// Consultamos al servidor toda la información
+			// necesaria para el panel de tramitación
+			diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
+			citasOcupadas = getControlador().consultarHorasCitasMedico(beneficiario.getMedicoAsignado().getDni());
+			horasCitas = getControlador().consultarHorarioMedico(beneficiario.getMedicoAsignado().getDni());
+			
+			// Deshabilitamos los días de la semana que no son
+			// laborables para el médico del beneficiario
+			dtcDiaCita.quitarDiasSemanaDesactivados();
+			for(DiaSemana dia : DiaSemana.values()) {
+				if(horasCitas.get(dia) == null || horasCitas.get(dia).size() == 0) {
+					dtcDiaCita.ponerDiaSemanaDesactivado(dia);
+				}
+			}
+			
+			// Deshabilitamos los días que el médico no puede
+			// pasar consulta en el calendario del panel
+			dtcDiaCita.quitarFechasDesactivadas();
+			dtcDiaCita.setMinSelectableDate(new Date());
+			for(Date dia : diasOcupados) {
+				dtcDiaCita.ponerFechaDesactivada(dia);
+			}
+			
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		}
+	}
+	
 	// Métodos públicos
 	
 	// <métodos del observador>
 	
 	public void citaRegistrada(Cita cita) {
 		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
-			// Otro cliente ha registrado una cita para el mismo médico que este beneficiario
+			// Otro cliente ha registrado una cita para el mismo médico que este beneficiario.
+			// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado otra cita para este médico.");
-			
-	}}
+			mostrarFechasyHorasLaborablesMedico();
+		}
+	}
 	
 	public void restablecerPanel() {
 		pnlBeneficiario.restablecerPanel();

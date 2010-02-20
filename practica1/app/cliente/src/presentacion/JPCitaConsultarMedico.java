@@ -58,6 +58,8 @@ public class JPCitaConsultarMedico extends JPBase {
 	private JPUsuarioConsultar pnlUsuario;
 	private JLabel lblCitas;
 	private JTable tblTablaCitas;
+	
+	private boolean viendoHistorico;
 
 	public JPCitaConsultarMedico() {
 		this(null, null);
@@ -69,6 +71,7 @@ public class JPCitaConsultarMedico extends JPBase {
 		super(frame, controlador);
 		initGUI();
 		UtilidadesTablaCitas.crearTabla(tblTablaCitas, 0);
+		viendoHistorico = false;
 	}
 	
 	private void initGUI() {
@@ -150,37 +153,49 @@ public class JPCitaConsultarMedico extends JPBase {
 		
 		if(medico != null) {
 
-			try {
-				
-				// Obtenemos y mostramos las citas del medico
-				// (por defecto, sólo las pendientes)
-				citas = getControlador().consultarCitasPendientesMedico(medico.getDni());
-				UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
-				UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas);
-				
-				// Indicamos que estamos mostrando sólo las citas pendientes
-				lblCitas.setText("Citas pendientes encontradas:");
-				btnHistoricoCitas.setEnabled(true);
-				
-				// Seleccionamos la primera cita de la lista (si la hay)
-				if(citas.size() > 0) {
-					tblTablaCitas.getSelectionModel().setSelectionInterval(0, 0);
-				}
-
-			} catch(SQLException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			} catch(RemoteException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			} catch(Exception e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			}
-		
+			mostrarCitasPendientes();
 		}
 	}
 	
 	private void btnHistoricoCitasActionPerformed(ActionEvent evt) {
+		mostrarHistoricoCitas();
+	}
+	
+	private void btnRestablecerActionPerformed(ActionEvent evt) {
+		restablecerPanel();
+	}
+	
+	private void mostrarCitasPendientes() {
+		try {
+			
+			// Obtenemos y mostramos las citas del medico
+			// (por defecto, sólo las pendientes)
+			citas = getControlador().consultarCitasPendientesMedico(medico.getDni());
+			UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
+			UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas);
+			
+			// Indicamos que estamos mostrando sólo las citas pendientes
+			lblCitas.setText("Citas pendientes encontradas:");
+			viendoHistorico = false;
+			btnHistoricoCitas.setEnabled(true);
+			
+			// Seleccionamos la primera cita de la lista (si la hay)
+			if(citas.size() > 0) {
+				tblTablaCitas.getSelectionModel().setSelectionInterval(0, 0);
+			}
+
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		}
+	
+	}
+	
+	private void mostrarHistoricoCitas() {
 		Vector<Cita> pendientes;
-		
 		try {
 			
 			// Obtenemos y mostramos todas las citas del medico,
@@ -192,6 +207,7 @@ public class JPCitaConsultarMedico extends JPBase {
 			
 			// Indicamos que estamos mostrando todas las citas
 			lblCitas.setText("Citas encontradas:");
+			viendoHistorico = true;
 			btnHistoricoCitas.setEnabled(false);
 
 			// Seleccionamos la primera cita de la lista (si la hay)
@@ -208,19 +224,28 @@ public class JPCitaConsultarMedico extends JPBase {
 		}
 	}
 	
-	private void btnRestablecerActionPerformed(ActionEvent evt) {
-		restablecerPanel();
-	}
-	
 	private void limpiarCamposConsulta() {
 		UtilidadesTablaCitas.limpiarTabla(tblTablaCitas);
 		btnHistoricoCitas.setEnabled(false);
 		lblCitas.setText("Citas pendientes encontradas:");
+		viendoHistorico = false;
 	}
 	
 	// Métodos públicos
 	
 	// <métodos del observador>
+	
+	public void citaRegistrada(Cita cita) {
+		if(medico != null && medico.equals(cita.getMedico())) {
+			// Otro cliente ha registrado una cita para este médico.
+			// Se vuelven a recuperar las citas para mostrar la nueva
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado otra cita para este médico.");
+			if (!viendoHistorico)
+				mostrarCitasPendientes();
+			else
+				mostrarHistoricoCitas();
+		}
+	}
 	
 	public void restablecerPanel() {
 		pnlUsuario.restablecerPanel();

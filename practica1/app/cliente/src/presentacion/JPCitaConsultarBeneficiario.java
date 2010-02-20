@@ -166,67 +166,12 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 		beneficiario = pnlBeneficiario.getBeneficiario();
 		
 		if(beneficiario != null) {
-
-			try {
-				
-				// Obtenemos y mostramos las citas del beneficiario
-				// (por defecto, sólo las pendientes)
-				citas = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
-				UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
-				UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas);
-				
-				// Indicamos que estamos mostrando sólo las citas pendientes
-				lblCitas.setText("Citas pendientes encontradas:");
-				viendoHistorico = false;
-				btnHistoricoCitas.setEnabled(true);
-				
-				// Seleccionamos la primera cita de la lista (si la hay)
-				if(citas.size() > 0) {
-					tblTablaCitas.getSelectionModel().setSelectionInterval(0, 0);
-					btnAnular.setEnabled(true);
-				}
-
-			} catch(SQLException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			} catch(RemoteException e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			} catch(Exception e) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-			}
-		
+			mostrarCitasPendientes();
 		}
 	}
 	
 	private void btnHistoricoCitasActionPerformed(ActionEvent evt) {
-		Vector<Cita> pendientes;
-		
-		try {
-			
-			// Obtenemos y mostramos todas las citas del beneficiario,
-			// marcando en azul las que son pasadas
-			citas = getControlador().consultarHistoricoCitas(beneficiario.getNif());
-			pendientes = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
-			UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
-			UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas, pendientes);
-			
-			// Indicamos que estamos mostrando todas las citas
-			lblCitas.setText("Citas encontradas:");
-			viendoHistorico = true;
-			btnHistoricoCitas.setEnabled(false);
-
-			// Seleccionamos la primera cita de la lista (si la hay)
-			if(citas.size() > 0) {
-				tblTablaCitas.getSelectionModel().setSelectionInterval(0, 0);
-				btnAnular.setEnabled(true);
-			}
-
-		} catch(SQLException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch(RemoteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		} catch(Exception e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
-		}
+		mostrarHistoricoCitas();
 	}
 	
 	private void btnAnularActionPerformed(ActionEvent evt) {
@@ -285,6 +230,67 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 		}
 	}
 		
+	private void mostrarCitasPendientes() {
+		try {
+			
+			// Obtenemos y mostramos las citas del beneficiario
+			// (por defecto, sólo las pendientes)
+			citas = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
+			UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
+			UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas);
+			
+			// Indicamos que estamos mostrando sólo las citas pendientes
+			lblCitas.setText("Citas pendientes encontradas:");
+			viendoHistorico = false;
+			btnHistoricoCitas.setEnabled(true);
+			
+			// Seleccionamos la primera cita de la lista (si la hay)
+			if(citas.size() > 0) {
+				tblTablaCitas.getSelectionModel().setSelectionInterval(0, 0);
+				btnAnular.setEnabled(true);
+			}
+
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		}
+	
+	}
+	
+	private void mostrarHistoricoCitas() {
+Vector<Cita> pendientes;
+		
+		try {
+			
+			// Obtenemos y mostramos todas las citas del beneficiario,
+			// marcando en azul las que son pasadas
+			citas = getControlador().consultarHistoricoCitas(beneficiario.getNif());
+			pendientes = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
+			UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
+			UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas, pendientes);
+			
+			// Indicamos que estamos mostrando todas las citas
+			lblCitas.setText("Citas encontradas:");
+			viendoHistorico = true;
+			btnHistoricoCitas.setEnabled(false);
+
+			// Seleccionamos la primera cita de la lista (si la hay)
+			if(citas.size() > 0) {
+				tblTablaCitas.getSelectionModel().setSelectionInterval(0, 0);
+				btnAnular.setEnabled(true);
+			}
+
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+		}
+	}
 	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {
 		restablecerPanel();
@@ -301,6 +307,18 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	// Métodos públicos
 	
 	// <métodos del observador>
+	
+	public void citaRegistrada(Cita cita) {
+		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
+			// Otro cliente ha registrado una cita para el médico de este beneficiario
+			// Se vuelven a recuperar las citas para mostrar la nueva
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado otra cita para este médico.");
+			if (!viendoHistorico)
+				mostrarCitasPendientes();
+			else
+				mostrarHistoricoCitas();
+		}
+	}
 	
 	public void restablecerPanel() {
 		pnlBeneficiario.restablecerPanel();
