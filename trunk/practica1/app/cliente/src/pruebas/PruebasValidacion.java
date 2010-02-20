@@ -2,7 +2,7 @@ package pruebas;
 
 import java.util.Date;
 
-import presentacion.Validacion;
+import presentacion.auxiliares.Validacion;
 
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CodigoPostalIncorrectoException;

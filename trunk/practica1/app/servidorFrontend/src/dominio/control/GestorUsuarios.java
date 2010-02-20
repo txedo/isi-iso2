@@ -158,18 +158,16 @@ public class GestorUsuarios {
 			FPUsuario.consultar(usuario.getDni());
 		} catch(UsuarioIncorrectoException e) {
 			throw new UsuarioInexistenteException(e.getMessage());
-		}
-		
-		// Si se va a eliminar es un médico, obtenemos su lista de beneficiarios
-		if(usuario.getRol() == RolesUsuarios.Medico) {
-			beneficiarios = GestorBeneficiarios.consultarBeneficiariosMedico(idSesion, usuario.getDni());
-		}
+		}	
 		
 		// Borramos los datos del usuario
 		FPUsuario.eliminar(usuario);
 		
-		// Si el usuario eliminado era un médico, intentamos asignar un nuevo
-		// médico a los beneficiarios que lo tenían como médico de cabecera
+		// Si se ha eliminado un médico, obtenemos su lista de beneficiarios para intentar asignar un nuevo médico
+		if(usuario.getRol() == RolesUsuarios.Medico) {
+			beneficiarios = GestorBeneficiarios.consultarBeneficiariosMedico(idSesion, usuario.getDni());
+		}
+		
 		if(usuario.getRol() == RolesUsuarios.Medico) {
 			for(Beneficiario beneficiario : beneficiarios) {
 				nuevoMedico = GestorBeneficiarios.obtenerMedicoBeneficiario(beneficiario);

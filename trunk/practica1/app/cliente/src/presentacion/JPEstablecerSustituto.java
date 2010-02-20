@@ -16,6 +16,9 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.ListModel;
 import javax.swing.SpinnerNumberModel;
+
+import presentacion.auxiliares.UsuarioBuscadoListener;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.DiaSemana;

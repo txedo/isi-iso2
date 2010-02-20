@@ -9,7 +9,7 @@ public class ContraseñaIncorrectaException extends Exception {
 	private static final long serialVersionUID = -6560620333476127287L;
 
 	public ContraseñaIncorrectaException() {
-		super("La contraseña debe ser alfnumérica y tener como mínimo 8 caracteres.");
+		super("La contraseña debe ser alfanumérica y tener como mínimo 8 caracteres.");
 	}
 	
 	public ContraseñaIncorrectaException(String mensaje) {

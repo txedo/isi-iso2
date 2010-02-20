@@ -166,7 +166,11 @@ public class ControladorCliente {
 	}
 	
 	public void beneficiarioEliminado(Beneficiario beneficiario) {
-		//TODO
+		ventanaPrincipal.beneficiarioEliminado(beneficiario);
+	}
+
+	public void citaRegistrada(Cita cita) {
+		ventanaPrincipal.citaRegistrada(cita);
 	}
 	
 	// ---------------------------

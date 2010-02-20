@@ -22,6 +22,10 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import presentacion.auxiliares.BeneficiarioBuscadoListener;
+import presentacion.auxiliares.ComparatorMedicosApellido;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
@@ -238,7 +242,6 @@ public class JPEmitirVolante extends JPBase {
 			lstEspecialistas.setEnabled(false);
 
 		} catch(Exception e) {
-			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		}
 	}

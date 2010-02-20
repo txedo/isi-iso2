@@ -1,4 +1,4 @@
-package presentacion;
+package presentacion.auxiliares;
 
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;

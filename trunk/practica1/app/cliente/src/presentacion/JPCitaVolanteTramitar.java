@@ -20,6 +20,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+
+import presentacion.auxiliares.BeneficiarioBuscadoListener;
+import presentacion.auxiliares.UtilidadesListaHoras;
+import presentacion.auxiliares.Validacion;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
@@ -247,12 +252,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 		limpiarCamposTramitacion();
 		
 		try {
-			
-			//TODO: Comprobamos el id del volante
-			//Validacion.comprobarVolante(txtNumeroVolante.getText().trim());
-			
-			//TODO: Creo que ahora mismo no se comprueba si el volante
-			// está asociado al beneficiario, hacer!
+			Validacion.comprobarVolante(txtNumeroVolante.getText().trim());
 			
 			// Recuperamos los datos del volante del servidor
 			volante = getControlador().consultarVolante(Long.parseLong(txtNumeroVolante.getText().trim()));
@@ -261,6 +261,9 @@ public class JPCitaVolanteTramitar extends JPBase {
 			if(volante.getCita() != null) {
 				throw new IdVolanteIncorrectoException("El volante seleccionado ya se ha utilizado para pedir una cita y no se puede usar de nuevo.");
 			}
+			
+			if (beneficiario != null && !volante.getBeneficiario().equals(beneficiario))
+				throw new IdVolanteIncorrectoException("El volante introducio no corresponde al beneficiario seleccionado.");
 			
 			// Mostramos los datos del volante encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Volante encontrado.");
@@ -310,63 +313,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 	
 	@SuppressWarnings("deprecation")
 	private void dtcDiaCitaPropertyChange(PropertyChangeEvent evt) {
-		Vector<String> horas;
-		Vector<String> horasOcupadas;
-		Date fecha;
-		Calendar cal;
-		int añoAct, mesAct, diaAct;
-		
-		// Obtenemos la fecha de hoy
-		cal = Calendar.getInstance();
-		añoAct = cal.get(Calendar.YEAR);
-		mesAct = cal.get(Calendar.MONTH);
-		diaAct = cal.get(Calendar.DAY_OF_MONTH);
-		
-		fecha = dtcDiaCita.getDate();
-		if(fecha != null) {
-			// Comprobamos si el día seleccionado es anterior a hoy
-			cal.setTime(fecha);
-			if(cal.get(Calendar.YEAR) < añoAct
-			 || (cal.get(Calendar.YEAR) == añoAct && cal.get(Calendar.MONTH) < mesAct)
-			 || (cal.get(Calendar.YEAR) == añoAct && cal.get(Calendar.MONTH) == mesAct && cal.get(Calendar.DAY_OF_MONTH) < diaAct)) {
-				desactivarListaHoras("El día seleccionado no es válido");
-			} else {
-				// Obtenemos la lista de horas disponibles para
-				// el día de la semana correspondiente
-				horas = new Vector<String>();
-				cal.setTime(fecha);
-				switch(cal.get(Calendar.DAY_OF_WEEK)) {
-				case Calendar.MONDAY:
-					horas.addAll(horasCitas.get(DiaSemana.Lunes));
-					break;
-				case Calendar.TUESDAY:
-					horas.addAll(horasCitas.get(DiaSemana.Martes));
-					break;
-				case Calendar.WEDNESDAY:
-					horas.addAll(horasCitas.get(DiaSemana.Miercoles));
-					break;
-				case Calendar.THURSDAY:
-					horas.addAll(horasCitas.get(DiaSemana.Jueves));
-					break;
-				case Calendar.FRIDAY:
-					horas.addAll(horasCitas.get(DiaSemana.Viernes));
-					break;
-				default:
-					// Los médicos no trabajan los fines de semana
-					break;
-				}
-				// Si la lista no tiene ninguna hora, desactivamos
-				// la selección de hora para la cita
-				if(horas.size() == 0) {
-					desactivarListaHoras("El día seleccionado no es laboral para el médico");
-				} else {
-					// Obtenemos las horas del día que el médico ya tiene ocupadas
-					horasOcupadas = citasOcupadas.get(new Date(cal.get(Calendar.YEAR) - 1900, cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)));
-					// Rellenamos la lista de horas
-					rellenarListaHoras(horas, horasOcupadas);
-				}
-			}
-		}
+		UtilidadesListaHoras.obtenerListaHoras(dtcDiaCita, horasCitas, citasOcupadas, cmbHorasCitas);
 	}
 		
 	@SuppressWarnings("deprecation")
@@ -412,45 +359,6 @@ public class JPCitaVolanteTramitar extends JPBase {
 		}
 	}
 
-	private void rellenarListaHoras(Vector<String> horas, Vector<String> horasOcupadas) {
-		int i;
-		
-		// Actualizamos la lista de horas
-		cmbHorasCitas.removeAllItems();
-		if(horas != null) {
-			for(String hora : horas) {
-				if(horasOcupadas != null && horasOcupadas.contains(hora)) {
-					cmbHorasCitas.addItem("<html><font color=\"#FF0000\">" + hora + "</font></html>");
-				} else {
-					cmbHorasCitas.addItem(hora);
-				}
-			}
-		}
-		
-		// Seleccionamos la primera hora no ocupada
-		if(horas != null && horas.size() > 0) {
-			i = 0;
-			while(i < horas.size() && ((String)cmbHorasCitas.getItemAt(i)).startsWith("<html>")) {
-				i++;
-			}
-			if(i >= horas.size()) {
-				cmbHorasCitas.setSelectedIndex(-1);
-			} else {
-				cmbHorasCitas.setSelectedIndex(i);
-			}
-		} else {
-			cmbHorasCitas.setSelectedIndex(-1);
-		}
-		
-		// Activamos el control
-		cmbHorasCitas.setEnabled(true);
-	}
-
-	private void desactivarListaHoras(String mensaje) {
-		cmbHorasCitas.removeAllItems();
-		cmbHorasCitas.addItem(mensaje);
-		cmbHorasCitas.setEnabled(false);
-	}
 	
 	private boolean horaSeleccionadaValida() {
 		boolean valido;
@@ -493,7 +401,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 	
 	private void limpiarCamposTramitacion() {
 		dtcDiaCita.setDate(null);
-		rellenarListaHoras(null, null);
+		UtilidadesListaHoras.rellenarListaHoras(cmbHorasCitas, null, null);
 		cambiarEstadoTramitacion(false);
 	}
 
