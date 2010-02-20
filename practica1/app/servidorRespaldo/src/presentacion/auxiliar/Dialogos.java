@@ -1,4 +1,4 @@
-package presentacion;
+package presentacion.auxiliar;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;

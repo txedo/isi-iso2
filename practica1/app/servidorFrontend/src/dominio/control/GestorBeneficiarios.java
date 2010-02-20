@@ -112,14 +112,11 @@ public class GestorBeneficiarios {
 		}
 
 		// Intentamos asignar al beneficiario un médico del centro
-		// elegido por él; si no hay ningún médico disponible, se lanza
-		// una excepción para que el beneficiario pueda elegir otro centro
+		// elegido por él; si no hay ningún médico disponible,
+		// registramos los datos del beneficiario igualmente
 		beneficiario = (Beneficiario)beneficiario.clone();
 		medico = obtenerMedicoBeneficiario(beneficiario);
 		beneficiario.setMedicoAsignado(medico);
-		if(medico == null) {
-			throw new UsuarioIncorrectoException("No existe ningún médico que se pueda asignar al beneficiario en el centro " + beneficiario.getCentroSalud().getNombre() + ".");
-		}
 		
 		// Añadimos el beneficiario al sistema
 		FPBeneficiario.insertar(beneficiario);
@@ -146,13 +143,7 @@ public class GestorBeneficiarios {
 		// Miramos si es necesario cambiar el médico asignado al beneficiario
 		beneficiario = (Beneficiario)beneficiario.clone();
 		medico = obtenerMedicoBeneficiario(beneficiario);
-		if(medico == null) {
-			throw new UsuarioIncorrectoException("No existe ningún médico que se pueda asignar al beneficiario en el centro " + beneficiario.getCentroSalud().getNombre() + ".");
-		}
-		if(!medico.equals(beneficiario.getMedicoAsignado())) {
-			// Cambiamos el médico antes de guardarlo en la base de datos
-			beneficiario.setMedicoAsignado(medico);
-		}
+		beneficiario.setMedicoAsignado(medico);
 
 		// Modificamos los datos del beneficiario
 		FPBeneficiario.modificar(beneficiario);

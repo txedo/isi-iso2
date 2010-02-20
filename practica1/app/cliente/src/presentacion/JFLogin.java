@@ -25,7 +25,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import presentacion.auxiliares.Validacion;
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.Validacion;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo

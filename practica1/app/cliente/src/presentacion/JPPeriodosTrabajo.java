@@ -13,8 +13,8 @@ import java.util.Vector;
 import javax.swing.JCheckBox;
 import javax.swing.event.EventListenerList;
 
-import presentacion.auxiliares.HoraNoSeleccionadaListener;
-import presentacion.auxiliares.HoraSeleccionadaListener;
+import presentacion.auxiliar.HoraNoSeleccionadaListener;
+import presentacion.auxiliar.HoraSeleccionadaListener;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo

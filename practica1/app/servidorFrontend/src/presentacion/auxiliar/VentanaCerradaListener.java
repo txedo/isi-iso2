@@ -1,4 +1,4 @@
-package presentacion;
+package presentacion.auxiliar;
 
 import java.util.EventListener;
 import java.util.EventObject;

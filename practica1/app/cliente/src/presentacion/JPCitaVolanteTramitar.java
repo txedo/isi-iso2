@@ -7,7 +7,6 @@ import java.beans.PropertyChangeListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.Hashtable;
@@ -21,9 +20,11 @@ import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
-import presentacion.auxiliares.BeneficiarioBuscadoListener;
-import presentacion.auxiliares.UtilidadesListaHoras;
-import presentacion.auxiliares.Validacion;
+import presentacion.auxiliar.BeneficiarioBuscadoListener;
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.JDateChooserCitas;
+import presentacion.auxiliar.UtilidadesListaHoras;
+import presentacion.auxiliar.Validacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
@@ -242,8 +243,14 @@ public class JPCitaVolanteTramitar extends JPBase {
 		beneficiario = pnlBeneficiario.getBeneficiario();
 		
 		if(beneficiario != null) {
-			// Activamos la búsqueda de volantes
-			cambiarEstadoConsulta(true);
+			// Para poder pedir cita, el beneficiario debe tener
+			// un médico asignado
+			if(beneficiario.getMedicoAsignado() == null) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario con NIF " + beneficiario.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.");
+			} else {
+				// Activamos la búsqueda de volantes
+				cambiarEstadoConsulta(true);
+			}
 		}
 	}
 	

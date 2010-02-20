@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -15,19 +13,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
 
-import presentacion.auxiliares.TableCellRendererCitas;
-import presentacion.auxiliares.UsuarioBuscadoListener;
-import presentacion.auxiliares.UtilidadesTablaCitas;
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.TableCellRendererCitas;
+import presentacion.auxiliar.UsuarioBuscadoListener;
+import presentacion.auxiliar.UtilidadesTablas;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
-import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.TipoMedico;
 import dominio.control.ControladorCliente;
 
 /**
@@ -70,7 +65,7 @@ public class JPCitaConsultarMedico extends JPBase {
 	public JPCitaConsultarMedico(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
-		UtilidadesTablaCitas.crearTabla(tblTablaCitas, 0);
+		UtilidadesTablas.crearTablaCitasMedico(tblTablaCitas, 0);
 		viendoHistorico = false;
 	}
 	
@@ -171,8 +166,8 @@ public class JPCitaConsultarMedico extends JPBase {
 			// Obtenemos y mostramos las citas del medico
 			// (por defecto, sólo las pendientes)
 			citas = getControlador().consultarCitasPendientesMedico(medico.getDni());
-			UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
-			UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas);
+			UtilidadesTablas.crearTablaCitasMedico(tblTablaCitas, citas.size());
+			UtilidadesTablas.rellenarTablaCitasMedico(tblTablaCitas, citas);
 			
 			// Indicamos que estamos mostrando sólo las citas pendientes
 			lblCitas.setText("Citas pendientes encontradas:");
@@ -202,8 +197,8 @@ public class JPCitaConsultarMedico extends JPBase {
 			// marcando en azul las que son pasadas
 			citas = getControlador().consultarCitasMedico(medico.getDni());
 			pendientes = getControlador().consultarCitasPendientesMedico(medico.getDni());
-			UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
-			UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas, pendientes);
+			UtilidadesTablas.crearTablaCitasMedico(tblTablaCitas, citas.size());
+			UtilidadesTablas.rellenarTablaCitasMedico(tblTablaCitas, citas, pendientes);
 			
 			// Indicamos que estamos mostrando todas las citas
 			lblCitas.setText("Citas encontradas:");
@@ -225,7 +220,7 @@ public class JPCitaConsultarMedico extends JPBase {
 	}
 	
 	private void limpiarCamposConsulta() {
-		UtilidadesTablaCitas.limpiarTabla(tblTablaCitas);
+		UtilidadesTablas.limpiarTabla(tblTablaCitas);
 		btnHistoricoCitas.setEnabled(false);
 		lblCitas.setText("Citas pendientes encontradas:");
 		viendoHistorico = false;

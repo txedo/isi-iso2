@@ -1,6 +1,6 @@
 package excepciones;
 
-import presentacion.Validacion;
+import presentacion.auxiliar.Validacion;
 
 public class PuertoInvalidoException extends Exception {
 

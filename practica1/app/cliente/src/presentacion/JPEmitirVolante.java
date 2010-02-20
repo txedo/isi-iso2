@@ -23,8 +23,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import presentacion.auxiliares.BeneficiarioBuscadoListener;
-import presentacion.auxiliares.ComparatorMedicosApellido;
+import presentacion.auxiliar.BeneficiarioBuscadoListener;
+import presentacion.auxiliar.ComparatorMedicosApellido;
+import presentacion.auxiliar.Dialogos;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;

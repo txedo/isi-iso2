@@ -375,4 +375,46 @@ public class GestorMedicos {
 		}
 	}
 	
+	// Método que devuelve el médico que daría realmente una cita
+	// teniendo en cuenta las sustituciones
+	public Medico consultarMedicoCita(long idSesion, Medico medico, Date fechaYHora) throws NullPointerException, SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		Vector<Sustitucion> sustituciones;
+		Medico medicoReal;
+		boolean comprobar;
+		
+		// Comprobamos los parámetros pasados
+		if(medico == null) {
+			throw new NullPointerException("El médico para el que se pretende pedir cita no puede ser nulo.");
+		}
+		if(fechaYHora == null) {
+			throw new NullPointerException("La hora en la que se pretende pedir cita no puede ser nula.");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicoCita);
+	
+		// En principio dará la cita el médico previsto
+		medicoReal = medico;
+		
+		do {
+			// Consultamos las sustituciones del médico
+			comprobar = false;
+			sustituciones = FPSustitucion.consultarPorSustituido(medico.getDni());
+			for(Sustitucion sustitucion : sustituciones) {
+				// Si alguien va a sustituir al médico en el día y hora
+				// de la cita, nos quedamos con el médico sustituto
+				if(comprobar && Utilidades.fechaIgual(sustitucion.getDia(), fechaYHora, false)) {
+					if(sustitucion.horaEnSustitucion(fechaYHora)) {
+						medicoReal = sustitucion.getSustituto();
+						// Volvemos a repetir el bucle por si alguien va
+						// a sustituir al médico sustituto
+						comprobar = true;
+					}
+				}
+			}
+		} while(comprobar);
+		
+		return medicoReal;
+	}
+	
 }

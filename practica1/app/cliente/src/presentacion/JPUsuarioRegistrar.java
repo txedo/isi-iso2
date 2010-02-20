@@ -23,7 +23,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import presentacion.auxiliares.Validacion;
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.Validacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;

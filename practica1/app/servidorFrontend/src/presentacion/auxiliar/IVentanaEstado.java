@@ -1,4 +1,4 @@
-package presentacion;
+package presentacion.auxiliar;
 
 /**
  * Interfaz para las ventanas que muestran el estado del servidor

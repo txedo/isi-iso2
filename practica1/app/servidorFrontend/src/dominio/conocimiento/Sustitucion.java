@@ -1,6 +1,7 @@
 package dominio.conocimiento;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -85,6 +86,19 @@ public class Sustitucion implements Serializable {
 		dev = (horaInicio >= this.horaInicio && horaInicio < this.horaFinal);
 		dev = dev || (horaFinal > this.horaInicio && horaFinal <= this.horaFinal);
 		dev = dev || (horaInicio <= this.horaInicio && horaFinal >= this.horaFinal);
+		return dev;
+	}
+	
+	public boolean horaEnSustitucion(Date hora) {
+		Calendar calend;
+		boolean dev;
+		int horaD;
+
+		// Devuelve true si la hora está contenida en las horas de la sustitución
+		calend = Calendar.getInstance();
+		calend.setTime(hora);
+		horaD = calend.get(Calendar.HOUR_OF_DAY);
+		dev = (horaD >= horaInicio && horaD < horaFinal);
 		return dev;
 	}
 	

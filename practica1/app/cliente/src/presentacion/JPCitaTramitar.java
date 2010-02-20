@@ -7,7 +7,6 @@ import java.beans.PropertyChangeListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.Hashtable;
@@ -19,9 +18,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 
-import presentacion.auxiliares.BeneficiarioBuscadoListener;
-import presentacion.auxiliares.ListCellRendererCitas;
-import presentacion.auxiliares.UtilidadesListaHoras;
+import presentacion.auxiliar.BeneficiarioBuscadoListener;
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.JDateChooserCitas;
+import presentacion.auxiliar.ListCellRendererCitas;
+import presentacion.auxiliar.UtilidadesListaHoras;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
@@ -167,9 +168,55 @@ public class JPCitaTramitar extends JPBase {
 		beneficiario = pnlBeneficiario.getBeneficiario();
 		
 		if(beneficiario != null) {
-			cambiarEstado(true);
+			
 			mostrarFechasyHorasLaborablesMedico();
 		
+		}
+	}
+	
+	private void mostrarFechasyHorasLaborablesMedico() {
+		try {
+			
+			// Para poder pedir cita, el beneficiario debe tener
+			// un médico asignado
+			if(beneficiario.getMedicoAsignado() == null) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario con NIF " + beneficiario.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.");
+			} else {
+				
+				// Consultamos al servidor toda la información
+				// necesaria para el panel de tramitación
+				diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
+				citasOcupadas = getControlador().consultarHorasCitasMedico(beneficiario.getMedicoAsignado().getDni());
+				horasCitas = getControlador().consultarHorarioMedico(beneficiario.getMedicoAsignado().getDni());
+				
+				// Deshabilitamos los días de la semana que no son
+				// laborables para el médico del beneficiario
+				dtcDiaCita.quitarDiasSemanaDesactivados();
+				for(DiaSemana dia : DiaSemana.values()) {
+					if(horasCitas.get(dia) == null || horasCitas.get(dia).size() == 0) {
+						dtcDiaCita.ponerDiaSemanaDesactivado(dia);
+					}
+				}
+				
+				// Deshabilitamos los días que el médico no puede
+				// pasar consulta en el calendario del panel
+				dtcDiaCita.quitarFechasDesactivadas();
+				dtcDiaCita.setMinSelectableDate(new Date());
+				for(Date dia : diasOcupados) {
+					dtcDiaCita.ponerFechaDesactivada(dia);
+				}
+				
+				// Activamos el registro de citas
+				cambiarEstado(true);
+				
+			}
+			
+		} catch(SQLException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
 	}
 	
@@ -254,40 +301,6 @@ public class JPCitaTramitar extends JPBase {
 		dtcDiaCita.setDate(null);
 		UtilidadesListaHoras.rellenarListaHoras(cmbHorasCitas, null, null);
 		cambiarEstado(false);
-	}
-	
-	private void mostrarFechasyHorasLaborablesMedico() {
-		try {
-			// Consultamos al servidor toda la información
-			// necesaria para el panel de tramitación
-			diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
-			citasOcupadas = getControlador().consultarHorasCitasMedico(beneficiario.getMedicoAsignado().getDni());
-			horasCitas = getControlador().consultarHorarioMedico(beneficiario.getMedicoAsignado().getDni());
-			
-			// Deshabilitamos los días de la semana que no son
-			// laborables para el médico del beneficiario
-			dtcDiaCita.quitarDiasSemanaDesactivados();
-			for(DiaSemana dia : DiaSemana.values()) {
-				if(horasCitas.get(dia) == null || horasCitas.get(dia).size() == 0) {
-					dtcDiaCita.ponerDiaSemanaDesactivado(dia);
-				}
-			}
-			
-			// Deshabilitamos los días que el médico no puede
-			// pasar consulta en el calendario del panel
-			dtcDiaCita.quitarFechasDesactivadas();
-			dtcDiaCita.setMinSelectableDate(new Date());
-			for(Date dia : diasOcupados) {
-				dtcDiaCita.ponerFechaDesactivada(dia);
-			}
-			
-		} catch(SQLException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-		} catch(RemoteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-		} catch(Exception e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-		}
 	}
 	
 	// Métodos públicos
