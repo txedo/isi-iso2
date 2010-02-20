@@ -361,7 +361,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		try {
 			
 			// Comprobamos todos los campos
-			Validacion.comprobarNIF(txtNIF.getText().trim());
+			Validacion.comprobarNIF(txtNIF.getText().trim().toUpperCase());
 			Validacion.comprobarNSS(txtNSS.getText().trim());
 			Validacion.comprobarNombre(txtNombre.getText().trim());
 			Validacion.comprobarApellidos(txtApellidos.getText().trim());

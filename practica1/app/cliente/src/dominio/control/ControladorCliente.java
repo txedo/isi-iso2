@@ -75,10 +75,12 @@ public class ControladorCliente {
 		if (ventanaLogin != null) {
 			ventanaLogin.setVisible(false);
 			ventanaLogin.dispose();
+			ventanaLogin = null;
 		}
 		if (ventanaPrincipal != null) {
 			ventanaPrincipal.setVisible(false);
 			ventanaPrincipal.dispose();
+			ventanaPrincipal = null;
 		}
 		// Creamos la ventana de login y la mostramos
 		ventanaLogin = new JFLogin();
@@ -139,6 +141,7 @@ public class ControladorCliente {
 		}
 		if(ventanaPrincipal != null) {
 			ventanaPrincipal.dispose();
+			ventanaPrincipal = null;
 		}
 		ventanaPrincipal = new JFPrincipal(this);
 		ventanaPrincipal.iniciar();
@@ -150,8 +153,12 @@ public class ControladorCliente {
 	// Métodos servidor -> cliente
 	// ---------------------------
 	
-	public void forzarCierreSesion() {
-		ventanaPrincipal.forzarCierreSesion();
+	public void forzarCierreSesionDuplicada() {
+		ventanaPrincipal.forzarCierreSesionDuplicada();
+	}
+	
+	public void forzarCierreServidorDesconectado() {
+		ventanaPrincipal.forzarCierreServidorDesconectado();
 	}
 	
 	public void beneficiarioActualizado(Beneficiario beneficiario) {

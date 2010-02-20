@@ -45,6 +45,14 @@ public class ProxyCliente implements ICliente {
 		hilo.start();
 	}
 	
+	public void servidorInaccesible() throws RemoteException {
+		Thread hilo;
+		
+		// Lanzamos la operación en otro hilo para no detener el servidor
+		hilo = new Thread(new HiloServidorInaccesible(cliente));
+		hilo.start();
+	}
+	
 	/**
 	 * Hilo utilizado para lanzar la operación cerrarSesion en un cliente.
 	 */
@@ -91,4 +99,24 @@ public class ProxyCliente implements ICliente {
 		
 	}
 	
+	/**
+	 * Hilo utilizado para lanzar la operación servidorInaccesible en un cliente.
+	 */
+	private class HiloServidorInaccesible implements Runnable {
+	
+		private ICliente cliente;
+		
+		public HiloServidorInaccesible(ICliente cliente) {
+			this.cliente = cliente;
+		}
+		
+		public void run() {
+			try {
+				cliente.servidorInaccesible();
+			} catch(RemoteException e) {
+				// Aquí no se puede manejar la excepción
+			}
+		}
+		
+	}
 }

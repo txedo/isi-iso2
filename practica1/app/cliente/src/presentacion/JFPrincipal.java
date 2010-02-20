@@ -485,8 +485,13 @@ public class JFPrincipal extends javax.swing.JFrame {
 	
 	// Métodos públicos
 	
-	public void forzarCierreSesion() {
+	public void forzarCierreSesionDuplicada() {
 		Dialogos.mostrarDialogoAdvertencia(this, "Aviso", "Se ha iniciado una sesión con el mismo nombre de usuario en otro equipo.\nEsta sesión se cerrará automáticamente.");
+		controlador.identificarse();
+	}
+	
+	public void forzarCierreServidorDesconectado() {
+		Dialogos.mostrarDialogoAdvertencia(this, "Aviso", "Se ha perdido la conexión con el servidor principal.\nEsta sesión se cerrará automáticamente.");
 		controlador.identificarse();
 	}
 
