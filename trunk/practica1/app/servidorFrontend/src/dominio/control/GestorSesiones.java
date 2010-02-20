@@ -212,6 +212,18 @@ public class GestorSesiones {
 		}
 	}
 
+	public static void desconectarClientes () throws RemoteException {
+		// Cerramos todos los clientes que hay conectados al servidor
+		for(Long id : clientes.keySet()) {
+			// Notificamos al cliente que el servidor ha sido desconectado
+			clientes.get(id).servidorInaccesible();
+		}
+		// Reseteamos la tabla de sesiones y clientes
+		// Se hace aquí al final -y no iteración a iteración en el bucle anterior- para evitar el problema de tablas mutantes
+		sesiones = new Hashtable<Long, Sesion>();
+		clientes = new Hashtable<Long, ICliente>();
+	}
+	
 	public static void actualizarClientes(long idSesion, int operacion, Object dato) throws RemoteException {
 		// Actualizamos todos los clientes menos el que lanzó la operación
 		for(Long id : clientes.keySet()) {

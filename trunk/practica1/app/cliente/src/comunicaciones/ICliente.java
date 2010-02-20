@@ -18,6 +18,8 @@ public interface ICliente extends Remote {
 	
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException;
 	
+	public void servidorInaccesible () throws RemoteException;
+	
 	public void cerrarSesion() throws RemoteException;
 	
 }

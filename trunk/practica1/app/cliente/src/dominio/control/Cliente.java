@@ -63,7 +63,11 @@ public class Cliente implements ICliente {
 	}
 	
 	public void cerrarSesion() throws RemoteException {
-		controlador.forzarCierreSesion();
+		controlador.forzarCierreSesionDuplicada();
+	}
+
+	public void servidorInaccesible() throws RemoteException {
+		controlador.forzarCierreServidorDesconectado();
 	}
 
 }

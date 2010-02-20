@@ -297,7 +297,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	}
 	
 	private void btnDesconectarActionPerformed(ActionEvent evt) {
-		desactivarServidor();
+		desconectarServidor();
 	}
 
 	private void thisWindowClosing(WindowEvent evt) {
@@ -373,7 +373,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		
 		ok = false;
 		try {
-			// Detenemos el servidor frontend y la conexión con el de respaldo
+			// Desconectamos a los clientes, detenemos el servidor frontend y la conexión con el de respaldo
 			controlador.detenerServidor(configuracion);
 			// Cambiamos el estado de la ventana
 			btnDesconectar.setEnabled(false);
@@ -381,6 +381,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 			btnConectar.setEnabled(true);
 			mniConectar.setEnabled(true);
 			mniConfigurar.setEnabled(true);
+			actualizarClientesEscuchando(controlador.getNumeroClientesConectados());
 			lblBarraEstado.setText("Servidor desconectado (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 			ok = true;
 		} catch(SQLException e) {
@@ -394,6 +395,15 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		}
 		
 		return ok;
+	}
+	
+	private void desconectarServidor () {
+		// Si el servidor está activo, preguntamos antes de desconectarlo
+		if(controlador.isServidorActivo() && controlador.getNumeroClientesConectados() > 0) {
+			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si desconecta el servidor front-end se perderá la conexión con todos los clientes.\n¿Realmente quiere desconectarlo?")) {
+				desactivarServidor();
+			}
+		}
 	}
 	
 	private void cerrarServidor() {

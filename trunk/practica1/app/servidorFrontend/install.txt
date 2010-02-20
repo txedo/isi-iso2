@@ -9,7 +9,7 @@ CREATE TABLE centros (
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE usuarios (
-       nif VARCHAR(255) NOT NULL, 
+       nif CHAR(9) NOT NULL, 
        login VARCHAR(255) UNIQUE NOT NULL default '',
        password VARCHAR(255) NOT NULL default '', 
        rol INT NOT NULL default '-1',
@@ -21,7 +21,7 @@ CREATE TABLE usuarios (
 ) TYPE=InnoDB;
 
 CREATE TABLE tiposMedico (
-       dniMedico VARCHAR(255) NOT NULL,
+       dniMedico CHAR(9) NOT NULL,
        tipo INT NOT NULL default '-1',
        especialidad VARCHAR(255) NOT NULL default '',
        PRIMARY KEY (dniMedico),
@@ -30,7 +30,7 @@ CREATE TABLE tiposMedico (
 
 CREATE TABLE periodosTrabajo (
        id INT NOT NULL AUTO_INCREMENT,
-       dniMedico VARCHAR(255) NOT NULL,
+       dniMedico CHAR(9) NOT NULL,
        horaInicio INT NOT NULL,
        horaFinal INT NOT NULL,
        dia INT NOT NULL,
@@ -48,15 +48,15 @@ CREATE TABLE entradasLog (
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE beneficiarios (
-       nif VARCHAR(255) NOT NULL,
-       nss VARCHAR(255) UNIQUE NOT NULL,
+       nif CHAR(9) NOT NULL,
+       nss CHAR(12) UNIQUE NOT NULL,
        nombre VARCHAR(255) NOT NULL default '', 
        apellidos VARCHAR(255) NOT NULL default '',
        correo VARCHAR(255) default '',
        fechaNacimiento DATETIME NOT NULL,
-       telefono VARCHAR(255) default '',
-       movil VARCHAR(255) default '',
-       dniMedico VARCHAR(255) default '',
+       telefono VARCHAR(9) default '',
+       movil VARCHAR(9) default '',
+       dniMedico CHAR(9) default '',
        idCentro INT default -1,
        PRIMARY KEY (nif),
        FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -64,7 +64,7 @@ CREATE TABLE beneficiarios (
 ) TYPE=InnoDB;
 
 CREATE TABLE direcciones (
-       nifBeneficiario VARCHAR(255) NOT NULL,
+       nifBeneficiario CHAR(9) NOT NULL,
        domicilio VARCHAR(255) NOT NULL default '', 
        numero VARCHAR(255) NOT NULL default '',
        piso VARCHAR(255) NOT NULL default '',
@@ -80,8 +80,8 @@ CREATE TABLE citas (
        id INT NOT NULL AUTO_INCREMENT,
        fecha DATETIME NOT NULL,
        duracion INT NOT NULL,
-       nifBeneficiario VARCHAR(255) NOT NULL,
-       dniMedico VARCHAR(255) NOT NULL,
+       nifBeneficiario CHAR(9) NOT NULL,
+       dniMedico CHAR(9) NOT NULL,
        PRIMARY KEY (id),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
        FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
@@ -89,9 +89,9 @@ CREATE TABLE citas (
 
 CREATE TABLE volantes (
        id INT NOT NULL AUTO_INCREMENT,
-       nifBeneficiario VARCHAR(255) NOT NULL,
-       dniMedicoEmisor VARCHAR(255) NOT NULL,
-       dniMedicoReceptor VARCHAR(255) NOT NULL,
+       nifBeneficiario CHAR(9) NOT NULL,
+       dniMedicoEmisor CHAR(9) NOT NULL,
+       dniMedicoReceptor CHAR(9) NOT NULL,
        idCita INT,
        PRIMARY KEY (id),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -105,8 +105,8 @@ CREATE TABLE sustituciones (
        dia DATETIME NOT NULL,
        horaInicio INT NOT NULL,
        horaFinal INT NOT NULL,
-       dniMedico VARCHAR(255) NOT NULL,
-       dniSustituto VARCHAR(255) NOT NULL,
+       dniMedico CHAR(9) NOT NULL,
+       dniSustituto CHAR(9) NOT NULL,
        PRIMARY KEY (id),
        FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
        FOREIGN KEY (dniSustituto) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE

@@ -302,7 +302,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		try {
 			
 			// Comprobamos todos los campos
-			Validacion.comprobarNIF(txtNIF.getText().trim());
+			Validacion.comprobarNIF(txtNIF.getText().trim().toUpperCase());
 			Validacion.comprobarNombre(txtNombre.getText().trim());
 			Validacion.comprobarApellidos(txtApellidos.getText().trim());
 			Validacion.comprobarContraseña(new String(txtPassword.getPassword()));	
@@ -327,7 +327,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 					usuario = new Medico();
 					break;
 			}
-			usuario.setDni(txtNIF.getText().trim());
+			usuario.setDni(txtNIF.getText().trim().toUpperCase());
 			usuario.setNombre(txtNombre.getText().trim());
 			usuario.setApellidos(txtApellidos.getText().trim());
 			usuario.setLogin(txtLogin.getText().trim());
@@ -362,7 +362,8 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			
 		} catch(UsuarioYaExistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());	
-
+			txtLogin.selectAll();
+			txtLogin.grabFocus();
 		} catch(NIFIncorrectoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtNIF.selectAll();
@@ -385,7 +386,6 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			txtPassword.grabFocus();
 		} catch(UsuarioNoSeleccionadoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
-
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(RemoteException e) {

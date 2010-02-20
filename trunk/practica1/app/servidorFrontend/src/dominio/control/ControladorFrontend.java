@@ -124,6 +124,10 @@ public class ControladorFrontend {
 		servidorActivo = true;
 	}
 	
+	public int getNumeroClientesConectados () {
+		return GestorSesiones.getClientes().size();
+	}
+	
 	public void detenerServidor(ConfiguracionFrontend configuracion) throws RemoteException, MalformedURLException, UnknownHostException, SQLException {
 		// Generamos un mensaje indicando que el servidor está inactivo
 		// (ignoramos los errores que pudieran producirse)
@@ -132,6 +136,8 @@ public class ControladorFrontend {
 		} catch(RemoteException e) {
 		} catch(SQLException e) {
 		}
+		// Notificamos a los cliente que el servidor ha sido desconectado
+		GestorSesiones.desconectarClientes();
 
 		// Cerramos las conexiones con las BD y vaciamos la lista
 		// (ignoramos los errores que pudieran producirse)

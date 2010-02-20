@@ -105,6 +105,10 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 		cliente.actualizarVentanas(operacion, dato);
 	}
 	
+	public void servidorInaccesible () throws RemoteException {
+		cliente.servidorInaccesible();
+	}
+	
 	public void cerrarSesion() throws RemoteException {
 		cliente.cerrarSesion();
 	}
