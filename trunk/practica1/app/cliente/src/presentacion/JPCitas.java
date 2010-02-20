@@ -207,15 +207,15 @@ public class JPCitas extends JPBase {
 		case TramitarCita:
 			jPanelTramitar.citaRegistrada(cita);
 			break;
-		/*case TramitarCitaVolante:
-			jPanelVolanteTramitar.citaRegistrada(cita);
+		case ConsultarCitaMedico:
+			jPanelConsultarCitasMedico.citaRegistrada(cita);
 			break;
 		case ConsultarAnularCitaBeneficiario:
 			jPanelConsultarCitasBeneficiario.citaRegistrada(cita);
-			break;
-		case ConsultarCitaMedico:
-			jPanelConsultarCitasMedico.citaRegistrada(cita);
-			break;*/
+			break;	
+		/*case TramitarCitaVolante:
+			jPanelVolanteTramitar.citaRegistrada(cita);
+			break;*/			
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
 		}

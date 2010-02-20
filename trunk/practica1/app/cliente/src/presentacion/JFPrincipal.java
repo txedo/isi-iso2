@@ -530,6 +530,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 		// Redirigimos la operación al grupo de paneles seleccionado
 		switch(operacionSeleccionada) {
 		case TramitarCita:
+		case TramitarCitaVolante:
+		case ConsultarAnularCitaBeneficiario:
+		case ConsultarCitaMedico:
 			jPanelGestionarCitas.citaRegistrada(cita);
 			break;
 		default:
