@@ -5,9 +5,9 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
 
-import presentacion.auxiliares.OperacionCambiadaEvent;
-import presentacion.auxiliares.OperacionCambiadaListener;
-import presentacion.auxiliares.OperacionesInterfaz;
+import presentacion.auxiliar.OperacionCambiadaEvent;
+import presentacion.auxiliar.OperacionCambiadaListener;
+import presentacion.auxiliar.OperacionesInterfaz;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;

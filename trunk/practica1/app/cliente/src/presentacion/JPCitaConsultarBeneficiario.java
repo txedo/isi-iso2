@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -15,19 +13,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
 
-import presentacion.auxiliares.BeneficiarioBuscadoListener;
-import presentacion.auxiliares.TableCellRendererCitas;
-import presentacion.auxiliares.UtilidadesTablaCitas;
+import presentacion.auxiliar.BeneficiarioBuscadoListener;
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.TableCellRendererCitas;
+import presentacion.auxiliar.UtilidadesTablas;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
-import dominio.conocimiento.Especialista;
-import dominio.conocimiento.TipoMedico;
 import dominio.control.ControladorCliente;
 import excepciones.CitaNoValidaException;
 
@@ -72,7 +67,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	public JPCitaConsultarBeneficiario(JFrame frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
-		UtilidadesTablaCitas.crearTabla(tblTablaCitas, 0);
+		UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, 0);
 		viendoHistorico = false;
 	}
 	
@@ -193,22 +188,22 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 				} else {
 					// Obtenemos la cita seleccionada
 					cita = citas.get(tblTablaCitas.getSelectedRow());
-					respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Seguro que desea eliminar la cita seleccionada?");
+					respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "¿Seguro que desea anular la cita seleccionada?");
 					if (respuesta) {
 						// Solicitamos al servidor que se anule la cita
 						getControlador().anularCita(cita);
 						// Mostramos de nuevo todas las citas
-						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita se ha eliminado correctamente.");
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita se ha anulado correctamente.");
 					}
 					if(viendoHistorico) {
 						citas = getControlador().consultarHistoricoCitas(beneficiario.getNif());
 						pendientes = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
-						UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
-						UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas, pendientes);
+						UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
+						UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas, pendientes);
 					} else {
 						citas = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
-						UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
-						UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas);
+						UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
+						UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas);
 					}
 					// Seleccionamos la primera cita de la lista (si la hay)
 					if(citas.size() > 0) {
@@ -236,8 +231,8 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 			// Obtenemos y mostramos las citas del beneficiario
 			// (por defecto, sólo las pendientes)
 			citas = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
-			UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
-			UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas);
+			UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
+			UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas);
 			
 			// Indicamos que estamos mostrando sólo las citas pendientes
 			lblCitas.setText("Citas pendientes encontradas:");
@@ -269,8 +264,8 @@ Vector<Cita> pendientes;
 			// marcando en azul las que son pasadas
 			citas = getControlador().consultarHistoricoCitas(beneficiario.getNif());
 			pendientes = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
-			UtilidadesTablaCitas.crearTabla(tblTablaCitas, citas.size());
-			UtilidadesTablaCitas.rellenarTabla(tblTablaCitas, citas, pendientes);
+			UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
+			UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas, pendientes);
 			
 			// Indicamos que estamos mostrando todas las citas
 			lblCitas.setText("Citas encontradas:");
@@ -297,7 +292,7 @@ Vector<Cita> pendientes;
 	}
 	
 	private void limpiarCamposConsulta() {
-		UtilidadesTablaCitas.limpiarTabla(tblTablaCitas);
+		UtilidadesTablas.limpiarTabla(tblTablaCitas);
 		btnAnular.setEnabled(false);
 		btnHistoricoCitas.setEnabled(false);
 		lblCitas.setText("Citas pendientes encontradas:");

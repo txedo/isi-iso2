@@ -21,8 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
 
-import presentacion.auxiliares.UsuarioBuscadoListener;
-import presentacion.auxiliares.Validacion;
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.UsuarioBuscadoListener;
+import presentacion.auxiliar.Validacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
@@ -175,9 +176,9 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				lblRol = new JLabel();
-				this.add(lblRol, new AnchorConstraint(244, 321, 452, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblRol.setText("Rol asignado");
-				lblRol.setPreferredSize(new java.awt.Dimension(99, 16));
+				this.add(lblRol, new AnchorConstraint(244, 301, 452, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblRol.setText("Tipo de usuario *");
+				lblRol.setPreferredSize(new java.awt.Dimension(119, 16));
 			}
 			{
 				txtCentro = new JTextField();
@@ -668,7 +669,7 @@ public class JPUsuarioConsultar extends JPBase {
 			lblLogin.setText("Usuario *");
 			lblPassword.setText("Contraseña *");
 			lblPasswordConf.setText("Confirmar contraseña *");
-			lblRol.setText("Rol asignado *");
+			lblRol.setText("Tipo de usuario *");
 			lblCalendario.setText("Calendario laboral *");
 			lblCentro.setText("Centro asignado *");
 			btnCalendario.setText("Configurar...");
@@ -679,7 +680,7 @@ public class JPUsuarioConsultar extends JPBase {
 			lblLogin.setText("Usuario");
 			lblPassword.setText("Contraseña");
 			lblPasswordConf.setText("Confirmar contraseña");
-			lblRol.setText("Rol asignado");
+			lblRol.setText("Tipo de usuario");
 			lblCalendario.setText("Calendario laboral");
 			lblCentro.setText("Centro asignado");
 			btnCalendario.setText("Ver...");

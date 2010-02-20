@@ -27,6 +27,11 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
+
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.IVentanaEstado;
+import presentacion.auxiliar.VentanaCerradaListener;
+
 import java.util.EventObject;
 
 /**
@@ -297,7 +302,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	}
 	
 	private void btnDesconectarActionPerformed(ActionEvent evt) {
-		desconectarServidor();
+		confirmarDesactivarServidor();
 	}
 
 	private void thisWindowClosing(WindowEvent evt) {
@@ -397,10 +402,14 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		return ok;
 	}
 	
-	private void desconectarServidor () {
+	private void confirmarDesactivarServidor() {
 		// Si el servidor está activo, preguntamos antes de desconectarlo
-		if(controlador.isServidorActivo() && controlador.getNumeroClientesConectados() > 0) {
-			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si desconecta el servidor front-end se perderá la conexión con todos los clientes.\n¿Realmente quiere desconectarlo?")) {
+		if(controlador.isServidorActivo()) {
+			if(controlador.getNumeroClientesConectados() > 0) {
+				if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si desconecta el servidor front-end se perderá la conexión con los clientes.\n¿Realmente quiere desconectarlo?")) {
+					desactivarServidor();
+				}
+			} else {
 				desactivarServidor();
 			}
 		}
@@ -412,7 +421,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		// Si el servidor está activo, preguntamos antes de salir
 		salir = false;
 		if(controlador.isServidorActivo()) {
-			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierra el servidor front-end, éste se desconectará automáticamente. ¿Realmente quiere salir?")) {
+			if(Dialogos.mostrarDialogoPregunta(this, "Aviso", "Si cierra el servidor front-end, éste se desconectará automáticamente.\n¿Realmente quiere salir?")) {
 				if(desactivarServidor()) {
 					salir = true;
 				}

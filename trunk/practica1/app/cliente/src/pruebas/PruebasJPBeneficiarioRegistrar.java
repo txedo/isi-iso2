@@ -15,7 +15,7 @@ import com.toedter.calendar.JDateChooser;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 import presentacion.JPBeneficiarioRegistrar;
-import presentacion.auxiliares.Validacion;
+import presentacion.auxiliar.Validacion;
 
 /**
  * Pruebas del panel de registro de beneficiarios.

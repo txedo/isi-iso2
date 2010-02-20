@@ -30,9 +30,10 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import presentacion.auxiliares.OperacionCambiadaEvent;
-import presentacion.auxiliares.OperacionCambiadaListener;
-import presentacion.auxiliares.OperacionesInterfaz;
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.OperacionCambiadaEvent;
+import presentacion.auxiliar.OperacionCambiadaListener;
+import presentacion.auxiliar.OperacionesInterfaz;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -84,7 +85,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JButton btnCerrarAplicacion;
 	private JLabel lblBarraEstado;
 	private JSeparator jSeparator1;
-	private JMenuItem menuitemContenidoAyuda;
+	private JMenuItem menuitemManualUsuario;
 	private JPBienvenida jPanelBienvenida;
 	private JTabbedPane jTabbedPaneOperaciones;
 
@@ -144,9 +145,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 					jMenuBar.add(jMenu4);
 					jMenu4.setText("Ayuda");
 					{
-						menuitemContenidoAyuda = new JMenuItem();
-						jMenu4.add(menuitemContenidoAyuda);
-						menuitemContenidoAyuda.setText("Contenido de la ayuda");
+						menuitemManualUsuario = new JMenuItem();
+						jMenu4.add(menuitemManualUsuario);
+						menuitemManualUsuario.setText("Manual de usuario");
 					}
 					{
 						jSeparator1 = new JSeparator();
@@ -167,14 +168,15 @@ public class JFPrincipal extends javax.swing.JFrame {
 				jPanelOperaciones.setPreferredSize(new java.awt.Dimension(692, 479));
 				{
 					lblPuertoEscucha = new JLabel();
-					jPanelOperaciones.add(lblPuertoEscucha, new AnchorConstraint(961, 567, 4, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					jPanelOperaciones.add(lblPuertoEscucha, new AnchorConstraint(961, 567, 7, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblPuertoEscucha.setPreferredSize(new java.awt.Dimension(382, 17));
+					lblPuertoEscucha.setText("Puerto de escucha: XXXX");
 				}
 				{
 					btnCerrarSesion = new JButton();
-					jPanelOperaciones.add(btnCerrarSesion, new AnchorConstraint(930, 160, 11, 590, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+					jPanelOperaciones.add(btnCerrarSesion, new AnchorConstraint(930, 155, 11, 590, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnCerrarSesion.setText("Cerrar sesión");
-					btnCerrarSesion.setPreferredSize(new java.awt.Dimension(124, 22));
+					btnCerrarSesion.setPreferredSize(new java.awt.Dimension(124, 30));
 					btnCerrarSesion.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnCerrarSesionActionPerformed(evt);
@@ -185,7 +187,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 					btnCerrarAplicacion = new JButton();
 					jPanelOperaciones.add(btnCerrarAplicacion, new AnchorConstraint(930, 16, 11, 799, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnCerrarAplicacion.setText("Cerrar aplicación");
-					btnCerrarAplicacion.setPreferredSize(new java.awt.Dimension(123, 22));
+					btnCerrarAplicacion.setPreferredSize(new java.awt.Dimension(124, 30));
 					btnCerrarAplicacion.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnCerrarAplicacionActionPerformed(evt);
@@ -194,13 +196,14 @@ public class JFPrincipal extends javax.swing.JFrame {
 				}
 				{
 					lblBarraEstado = new JLabel();
-					jPanelOperaciones.add(lblBarraEstado, new AnchorConstraint(928, 568, 21, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					jPanelOperaciones.add(lblBarraEstado, new AnchorConstraint(928, 568, 26, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
 					lblBarraEstado.setPreferredSize(new java.awt.Dimension(383, 17));
+					lblBarraEstado.setText("X clientes conectados");
 				}
 				{
 					jTabbedPaneOperaciones = new JTabbedPane();
-					jPanelOperaciones.add(jTabbedPaneOperaciones, new AnchorConstraint(8, 16, 46, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					jTabbedPaneOperaciones.setPreferredSize(new java.awt.Dimension(656, 387));
+					jPanelOperaciones.add(jTabbedPaneOperaciones, new AnchorConstraint(8, 16, 51, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					jTabbedPaneOperaciones.setPreferredSize(new java.awt.Dimension(806, 582));
 					jTabbedPaneOperaciones.setFont(new java.awt.Font("Tahoma",0,12));
 					jTabbedPaneOperaciones.addChangeListener(new ChangeListener() {
 						public void stateChanged(ChangeEvent evt) {

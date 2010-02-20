@@ -4,7 +4,6 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,9 +16,8 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
-import presentacion.auxiliares.TableCellRendererCitas;
-import presentacion.auxiliares.TableModelNoEditable;
-import presentacion.auxiliares.UtilidadesTablaCitas;
+import presentacion.auxiliar.TableCellRendererCitas;
+import presentacion.auxiliar.UtilidadesTablas;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -40,7 +38,6 @@ public class JFAvisos extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = 1172495276588177828L;
 	
-	private TableModelNoEditable modeloTabla;
 	private JPanel pnlPanel;
 	private JLabel lblTitulo;
 	private JScrollPane scpTablaAvisos;
@@ -103,42 +100,20 @@ public class JFAvisos extends javax.swing.JFrame {
 	//$hide>>$
 	
 	public void mostrarBeneficiarios(String titulo, Vector<Beneficiario> beneficiarios) {
-		Vector<String> encabezado;
-		int fila, col;
-		
-		// Inicializamos la tabla de beneficiarios
-		encabezado = new Vector<String>();
-		encabezado.add("Beneficiario");
-		encabezado.add("NIF");
-		encabezado.add("Nuevo médico");
-		encabezado.add("DNI Médico");
-		modeloTabla = new TableModelNoEditable(encabezado, beneficiarios.size());
-		tblTablaAvisos.setModel(modeloTabla);
-		tblTablaAvisos.getTableHeader().getColumnModel().getColumn(0).setMinWidth(200);
-		tblTablaAvisos.getTableHeader().getColumnModel().getColumn(1).setMaxWidth(200);
-		tblTablaAvisos.getTableHeader().getColumnModel().getColumn(2).setMinWidth(200);
-		tblTablaAvisos.getTableHeader().getColumnModel().getColumn(3).setMaxWidth(200);
-
-		// Mostramos los beneficiarios
+		// Mostramos la tabla de beneficiarios
 		lblTitulo.setText(titulo);
-		fila = 0;
-		for(Beneficiario beneficiario : beneficiarios) {
-			col = 0;
-			tblTablaAvisos.setValueAt(beneficiario.getApellidos() + ", " + beneficiario.getNombre(), fila, col++);			
-			tblTablaAvisos.setValueAt(beneficiario.getNif(), fila, col++);
-			tblTablaAvisos.setValueAt((beneficiario.getMedicoAsignado() == null) ? "(ninguno)" : (beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre()), fila, col++);
-			tblTablaAvisos.setValueAt((beneficiario.getMedicoAsignado() == null) ? "" : beneficiario.getMedicoAsignado().getDni(), fila, col++);
-			fila++;
-		}
+		UtilidadesTablas.crearTablaBeneficiarios(tblTablaAvisos, beneficiarios.size());
+		UtilidadesTablas.rellenarTablaBeneficiarios(tblTablaAvisos, beneficiarios);
 		
 		// Mostramos la ventana
 		setVisible(true);
 	}
 	
 	public void mostrarCitas(String titulo, Vector<Cita> citas) {
+		// Mostramos la tabla de citas
 		lblTitulo.setText(titulo);
-		UtilidadesTablaCitas.crearTabla(tblTablaAvisos, citas.size());
-		UtilidadesTablaCitas.rellenarTabla(tblTablaAvisos, citas);		
+		UtilidadesTablas.crearTablaCitasMedico(tblTablaAvisos, citas.size());
+		UtilidadesTablas.rellenarTablaCitasMedico(tblTablaAvisos, citas);		
 		
 		// Mostramos la ventana
 		setVisible(true);

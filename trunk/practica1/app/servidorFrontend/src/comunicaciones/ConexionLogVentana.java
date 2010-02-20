@@ -3,7 +3,8 @@ package comunicaciones;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import presentacion.IVentanaEstado;
+
+import presentacion.auxiliar.IVentanaEstado;
 
 /**
  * Clase que recibe los mensajes generados por el servidor y los

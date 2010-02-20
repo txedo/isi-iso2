@@ -30,6 +30,9 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.VentanaCerradaListener;
+
 /**
 * This code was edited or generated using CloudGarden's Jigloo
 * SWT/Swing GUI Builder, which is free for non-commercial

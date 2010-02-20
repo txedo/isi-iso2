@@ -15,7 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import presentacion.auxiliares.Validacion;
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.Validacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
@@ -424,7 +425,11 @@ public class JPBeneficiarioRegistrar extends JPBase {
 			
 			// Mostramos un mensaje indicando que el beneficiario se ha
 			// creado correctamente y cuál es el médico asignado
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema y se\nle ha asignado automáticamente el siguiente médico:\n" + medico.getApellidos() + ", " + medico.getNombre());
+			if(medico == null) {
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema pero no\nse le ha podido asignar ningún médico del centro seleccionado.\nEl beneficiario no podrá pedir cita hasta que se le asigne un médico.");
+			} else {
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido dado de alta en el sistema y se\nle ha asignado automáticamente el siguiente médico:\n" + medico.getApellidos() + ", " + medico.getNombre());
+			}
 			limpiarCamposRegistro();
 			
 		} catch(BeneficiarioYaExistenteException e) {

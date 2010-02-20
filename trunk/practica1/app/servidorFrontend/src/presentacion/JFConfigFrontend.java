@@ -16,6 +16,10 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
+
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.Validacion;
+import presentacion.auxiliar.VentanaCerradaListener;
 import dominio.conocimiento.ConfiguracionFrontend;
 import excepciones.IPInvalidaException;
 import excepciones.PuertoInvalidoException;

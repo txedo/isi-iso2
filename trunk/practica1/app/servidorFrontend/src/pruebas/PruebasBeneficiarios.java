@@ -29,7 +29,6 @@ import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
-import excepciones.UsuarioIncorrectoException;
 
 /**
  * Pruebas del Gestor de Beneficiarios.
@@ -299,18 +298,6 @@ public class PruebasBeneficiarios extends PruebasBase {
 		}
 		
 		try {
-			// Intentamos añadir un beneficiario al que se le tiene que
-			// asignar un médico de cabecera del centro2 pero no existe ninguno
-			beneficiario = new Beneficiario("12345678D", "112266772211", "error", "error", fecha1, direccion1, "", "123456789", "987654321");
-			beneficiario.setCentroSalud(centro2);
-			servidor.crear(sesionAdmin.getId(), beneficiario);
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(UsuarioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		}
-		
-		try {
 			// Creamos un nuevo beneficiario con la sesión del administrador
 			beneficiario = new Beneficiario("66666666A", "141414141414", "beNuevo", "nuevos", fecha2, direccion2, "luna@hotmail.com", "34698124", "67912312");
 			beneficiario.setCentroSalud(centro1);
@@ -399,17 +386,6 @@ public class PruebasBeneficiarios extends PruebasBase {
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
 			fail("Se esperaba una excepción BeneficiarioInexistenteException");
-		}
-		
-		try {
-			// Intentamos modificar un beneficiario con un nuevo centro
-			// que no tiene médico que se pueda asignar
-			beneficiario1.setCentroSalud(centro2);
-			servidor.modificar(sesionAdmin.getId(), beneficiario1);
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(UsuarioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
 		}
 		
 		try {

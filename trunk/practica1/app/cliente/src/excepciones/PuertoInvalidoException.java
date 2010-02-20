@@ -1,6 +1,6 @@
 package excepciones;
 
-import presentacion.auxiliares.Validacion;
+import presentacion.auxiliar.Validacion;
 
 /**
  * Excepción lanzada al introducir un número de puerto con un formato
