@@ -21,8 +21,11 @@ import presentacion.auxiliar.UtilidadesTablas;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
 /**
@@ -230,11 +233,76 @@ public class JPCitaConsultarMedico extends JPBase {
 	
 	// <métodos del observador>
 	
+	public void beneficiarioActualizado(Beneficiario beneficiario) {
+		boolean actualizado = false;
+		Cita c;
+		// Si alguno de los beneficiarios que se muestran en la tabla de citas ha cambiado, se refresca la tabla
+		if (medico != null && citas.size()>0) {
+			for (int i=0; i<citas.size() && !actualizado; i++) {
+				c = citas.get(i);
+				if (c.getBeneficiario().getNif().equals(beneficiario.getNif())) {
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se han modificado los datos de algún beneficiario desde otro cliente.");
+					actualizado = true;
+					if (!viendoHistorico)
+						mostrarCitasPendientes();
+					else
+						mostrarHistoricoCitas();
+				}
+			}
+		}
+	}
+	
+	public void beneficiarioEliminado(Beneficiario beneficiario) {
+		boolean actualizado = false;
+		Cita c;
+		// Si alguno de los beneficiarios que se muestran en la tabla de citas se ha eliminado, se refresca la tabla
+		if (medico != null && citas.size()>0) {
+			for (int i=0; i<citas.size() && !actualizado; i++) {
+				c = citas.get(i);
+				if (c.getBeneficiario().getNif().equals(beneficiario.getNif())) {
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha eliminado algún beneficiario desde otro cliente.");
+					actualizado = true;
+					if (!viendoHistorico)
+						mostrarCitasPendientes();
+					else
+						mostrarHistoricoCitas();
+				}
+			}
+		}
+	}
+	
+	public void usuarioActualizado(Usuario usuario) {
+		if(this.medico != null && medico.getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha actualizado el médico del que se están consultando las citas
+			pnlUsuario.usuarioActualizado(usuario);
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		if(this.medico != null && medico.getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha eliminado el médico del que se están consultando las citas
+			pnlUsuario.usuarioEliminado(usuario);
+			limpiarCamposConsulta();
+		}
+	}
+	
 	public void citaRegistrada(Cita cita) {
 		if(medico != null && medico.equals(cita.getMedico())) {
 			// Otro cliente ha registrado una cita para este médico.
 			// Se vuelven a recuperar las citas para mostrar la nueva
-			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado otra cita para este médico.");
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico.");
+			if (!viendoHistorico)
+				mostrarCitasPendientes();
+			else
+				mostrarHistoricoCitas();
+		}
+	}
+	
+	public void citaAnulada(Cita cita) {
+		if(medico != null && medico.equals(cita.getMedico())) {
+			// Otro cliente ha anulado una cita para este médico.
+			// Se vuelven a recuperar las citas para mostrar las citas restantes
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico.");
 			if (!viendoHistorico)
 				mostrarCitasPendientes();
 			else

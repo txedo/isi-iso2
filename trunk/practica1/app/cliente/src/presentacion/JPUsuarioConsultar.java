@@ -344,7 +344,6 @@ public class JPUsuarioConsultar extends JPBase {
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
 		Object[] listeners;
-		int horas;
 		int i;
 
 		// Borramos la información del antiguo usuario consultado
@@ -358,48 +357,8 @@ public class JPUsuarioConsultar extends JPBase {
 
 			// Mostramos los datos del usuario encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Usuario encontrado.");
-			txtNIFBuscado.setText("");
-			txtNIF.setText(usuario.getDni());
-			txtLogin.setText(usuario.getLogin());
-			txtPassword.setText("*****");
-			txtPasswordConf.setText("");
-			txtNombre.setText(usuario.getNombre());
-			txtApellidos.setText(usuario.getApellidos());
-			txtCentro.setText(usuario.getCentroSalud().getNombre() + " (" + usuario.getCentroSalud().getDireccion() + ")");
-			if(usuario.getRol().equals(RolesUsuarios.Medico)) {
-				rellenarTiposUsuario(new String[] { RolesUsuarios.Medico.name() + " (" + ((Medico)usuario).getTipoMedico().getCategoria().name() + ")" });
-				lblCalendario.setVisible(true);
-				btnCalendario.setVisible(true);
-				btnCalendario.setEnabled(true);
-				lblHorasSemanales.setVisible(true);
-				periodos = ((Medico)usuario).getCalendario();
-				horas = 0;
-				for(PeriodoTrabajo periodo : periodos) {
-					horas += periodo.numeroHoras();
-				}
-				if(horas == 1) {
-					lblHorasSemanales.setText("1 hora semanal");
-				} else {
-					lblHorasSemanales.setText(horas + " horas semanales");
-				}
-				if(((Medico)usuario).getTipoMedico().getCategoria() == CategoriasMedico.Especialista) {
-					lblEspecialidad.setVisible(true);
-					txtEspecialidad.setVisible(true);
-					txtEspecialidad.setText(((Especialista)((Medico)usuario).getTipoMedico()).getEspecialidad());
-				} else {
-					lblEspecialidad.setVisible(false);
-					txtEspecialidad.setVisible(false);
-				}
-			} else {
-				rellenarTiposUsuarioNoMedico();
-				lblCalendario.setVisible(false);
-				btnCalendario.setVisible(false);
-				lblHorasSemanales.setVisible(false);
-				lblEspecialidad.setVisible(false);
-				txtEspecialidad.setVisible(false);
-			}
-			cmbRol.setSelectedItem(usuario.getRol().name());
-			chkEditar.setEnabled(true);
+			
+			mostrarDatosUsuario(usuario);
 			
 		} catch(UsuarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
@@ -429,6 +388,55 @@ public class JPUsuarioConsultar extends JPBase {
 				((UsuarioBuscadoListener)listeners[i + 1]).usuarioBuscado(new EventObject(this));
 			}
 		}
+	}
+	
+	private void mostrarDatosUsuario(Usuario usuario) {
+		int horas;
+		
+		this.usuario = usuario;
+		
+		txtNIFBuscado.setText("");
+		txtNIF.setText(usuario.getDni());
+		txtLogin.setText(usuario.getLogin());
+		txtPassword.setText("*****");
+		txtPasswordConf.setText("");
+		txtNombre.setText(usuario.getNombre());
+		txtApellidos.setText(usuario.getApellidos());
+		txtCentro.setText(usuario.getCentroSalud().getNombre() + " (" + usuario.getCentroSalud().getDireccion() + ")");
+		if(usuario.getRol().equals(RolesUsuarios.Medico)) {
+			rellenarTiposUsuario(new String[] { RolesUsuarios.Medico.name() + " (" + ((Medico)usuario).getTipoMedico().getCategoria().name() + ")" });
+			lblCalendario.setVisible(true);
+			btnCalendario.setVisible(true);
+			btnCalendario.setEnabled(true);
+			lblHorasSemanales.setVisible(true);
+			periodos = ((Medico)usuario).getCalendario();
+			horas = 0;
+			for(PeriodoTrabajo periodo : periodos) {
+				horas += periodo.numeroHoras();
+			}
+			if(horas == 1) {
+				lblHorasSemanales.setText("1 hora semanal");
+			} else {
+				lblHorasSemanales.setText(horas + " horas semanales");
+			}
+			if(((Medico)usuario).getTipoMedico().getCategoria() == CategoriasMedico.Especialista) {
+				lblEspecialidad.setVisible(true);
+				txtEspecialidad.setVisible(true);
+				txtEspecialidad.setText(((Especialista)((Medico)usuario).getTipoMedico()).getEspecialidad());
+			} else {
+				lblEspecialidad.setVisible(false);
+				txtEspecialidad.setVisible(false);
+			}
+		} else {
+			rellenarTiposUsuarioNoMedico();
+			lblCalendario.setVisible(false);
+			btnCalendario.setVisible(false);
+			lblHorasSemanales.setVisible(false);
+			lblEspecialidad.setVisible(false);
+			txtEspecialidad.setVisible(false);
+		}
+		cmbRol.setSelectedItem(usuario.getRol().name());
+		chkEditar.setEnabled(true);
 	}
 	
 	private void btnGuardarActionPerformed(ActionEvent evt) {
@@ -775,6 +783,22 @@ public class JPUsuarioConsultar extends JPBase {
 	}
 	
 	// <métodos del observador>
+	
+	public void usuarioActualizado(Usuario usuario) {
+		if(this.usuario != null && this.usuario.getDni().equals(usuario.getDni())) {
+			// Otro cliente ha actualizado el beneficiario mostrado
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El usuario mostrado ha sido modificado por otro cliente.");
+			mostrarDatosUsuario(usuario);
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		if(this.usuario != null && this.usuario.getDni().equals(usuario.getDni())) {
+			// Otro cliente ha eliminado el beneficiario mostrado
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El usuario mostrado ha sido eliminado por otro cliente.");
+			restablecerPanel();
+		}
+	}
 	
 	public void restablecerPanel() {
 		txtNIFBuscado.setText("");

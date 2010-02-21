@@ -11,6 +11,9 @@ import presentacion.auxiliar.OperacionesInterfaz;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
 /**
@@ -184,6 +187,34 @@ public class JPUsuarios extends JPBase {
 	
 	// <métodos del observador>
 
+	public void usuarioActualizado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case ConsultarUsuario:
+			jPanelConsultar.usuarioActualizado(usuario);
+			break;
+		case ConsultarModificarUsuario:
+			jPanelConsultarModificar.usuarioActualizado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case ConsultarUsuario:
+			jPanelConsultar.usuarioEliminado(usuario);
+			break;
+		case ConsultarModificarUsuario:
+			jPanelConsultarModificar.usuarioEliminado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
 	public void restablecerPaneles() {
 		jPanelConsultar.restablecerPanel();
 		jPanelConsultarModificar.restablecerPanel();

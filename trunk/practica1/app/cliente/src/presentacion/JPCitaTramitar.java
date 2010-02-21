@@ -30,6 +30,8 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.FechaNoValidaException;
@@ -307,15 +309,53 @@ public class JPCitaTramitar extends JPBase {
 	
 	// <métodos del observador>
 	
-	public void citaRegistrada(Cita cita) {
-		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
-			// Otro cliente ha registrado una cita para el mismo médico que este beneficiario.
-			// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
-			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado otra cita para este médico.");
+	public void beneficiarioActualizado(Beneficiario beneficiario) {
+		pnlBeneficiario.beneficiarioActualizado(beneficiario);
+	}
+	
+	public void beneficiarioEliminado(Beneficiario beneficiario) {
+		if (this.beneficiario!=null && beneficiario.getNif().equals(this.beneficiario.getNif())) {
+			pnlBeneficiario.beneficiarioEliminado(beneficiario);
+			limpiarCamposTramitacion();
+		}
+		
+	}
+	
+	public void usuarioActualizado(Usuario usuario) {
+		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha actualizado el médico asignado al beneficiario que pide la cita
+			pnlBeneficiario.usuarioActualizado(usuario);
+			// Se puede haber modificado el horario del médico, por lo que recargamos las horas disponibles para dar cita
 			mostrarFechasyHorasLaborablesMedico();
 		}
 	}
 	
+	public void usuarioEliminado(Usuario usuario) {
+		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha eliminado el médico asignado al beneficiario que pide la cita
+			pnlBeneficiario.usuarioEliminado(usuario);
+			limpiarCamposTramitacion();
+		}
+	}
+	
+	public void citaRegistrada(Cita cita) {
+		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
+			// Otro cliente ha registrado una cita para el mismo médico que este beneficiario.
+			// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico.");
+			mostrarFechasyHorasLaborablesMedico();
+		}
+	}
+	
+	public void citaAnulada(Cita cita) {
+		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
+			// Otro cliente ha anulado una cita para el mismo médico que este beneficiario.
+			// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico.");
+			mostrarFechasyHorasLaborablesMedico();
+		}
+	}
+		
 	public void restablecerPanel() {
 		pnlBeneficiario.restablecerPanel();
 		limpiarCamposTramitacion();		

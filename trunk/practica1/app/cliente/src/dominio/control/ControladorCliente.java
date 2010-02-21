@@ -168,9 +168,21 @@ public class ControladorCliente {
 	public void beneficiarioEliminado(Beneficiario beneficiario) {
 		ventanaPrincipal.beneficiarioEliminado(beneficiario);
 	}
+	
+	public void usuarioActualizado (Usuario usuario) {
+		ventanaPrincipal.usuarioActualizado(usuario);
+	}
+	
+	public void usuarioEliminado (Usuario usuario){
+		ventanaPrincipal.usuarioEliminado(usuario);
+	}
 
 	public void citaRegistrada(Cita cita) {
 		ventanaPrincipal.citaRegistrada(cita);
+	}
+	
+	public void citaAnulada(Cita cita) {
+		ventanaPrincipal.citaAnulada(cita);
 	}
 	
 	// ---------------------------
