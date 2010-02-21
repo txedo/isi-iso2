@@ -9,6 +9,9 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 import javax.swing.event.EventListenerList;
+
+import presentacion.auxiliar.VentanaCerradaListener;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.PeriodoTrabajo;

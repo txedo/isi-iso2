@@ -24,6 +24,7 @@ import javax.swing.event.EventListenerList;
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.UsuarioBuscadoListener;
 import presentacion.auxiliar.Validacion;
+import presentacion.auxiliar.VentanaCerradaListener;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
