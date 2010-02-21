@@ -28,6 +28,7 @@ import excepciones.BeneficiarioInexistenteException;
 
 public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas {
 	
+	private boolean eliminado;
 	private Beneficiario beneficiarioPrueba;
 	private ControladorCliente controlador;
 	private JPBeneficiarioConsultar panel;
@@ -98,6 +99,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(controlador.consultarCentros().firstElement());
 			controlador.crearBeneficiario(beneficiarioPrueba);
+			eliminado = false;
 			// Creamos el panel
 			panel = new JPBeneficiarioConsultar(controlador.getVentanaPrincipal(), controlador);
 			// Obtenemos los componentes del panel
@@ -150,8 +152,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	
 	public void tearDown() {
 		try {
-			// No hace falta eliminar el beneficiario en el tearDown porque se elimina en las pruebas
-			controlador.eliminarBeneficiario(beneficiarioPrueba);
+			if (!eliminado)
+				controlador.eliminarBeneficiario(beneficiarioPrueba);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
 			winPrincipal.dispose();
@@ -304,6 +306,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			assertTrue(btnEliminar.isEnabled());
 			// Eliminamos el beneficiario
 			btnEliminar.click();
+			eliminado = true;
 			// Comprobamos que el beneficiario ha sido eliminado correctamente
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
