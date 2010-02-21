@@ -6,6 +6,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.SesionInvalidaException;
 import java.awt.BorderLayout;
@@ -508,8 +509,13 @@ public class JFPrincipal extends javax.swing.JFrame {
 		switch(operacionSeleccionada) {
 		case ConsultarBeneficiario:
 		case ConsultarModificarBeneficiario:
-		case RegistrarBeneficiario:
 			jPanelGestionarBeneficiarios.beneficiarioActualizado(beneficiario);
+			break;
+		case TramitarCita:
+		case TramitarCitaVolante:
+		case ConsultarAnularCitaBeneficiario:
+		case ConsultarCitaMedico:
+			jPanelGestionarCitas.beneficiarioActualizado(beneficiario);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
@@ -521,8 +527,54 @@ public class JFPrincipal extends javax.swing.JFrame {
 		switch(operacionSeleccionada) {
 		case ConsultarBeneficiario:
 		case ConsultarModificarBeneficiario:
-		case RegistrarBeneficiario:
 			jPanelGestionarBeneficiarios.beneficiarioEliminado(beneficiario);
+			break;
+		case TramitarCita:
+		case TramitarCitaVolante:
+		case ConsultarAnularCitaBeneficiario:
+		case ConsultarCitaMedico:
+			jPanelGestionarCitas.beneficiarioEliminado(beneficiario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void usuarioActualizado(Usuario usuario) {
+		// Redirigimos la operación al grupo de paneles seleccionado
+		switch(operacionSeleccionada) {
+		case ConsultarUsuario:
+		case ConsultarModificarUsuario:
+			jPanelGestionarUsuarios.usuarioActualizado(usuario);
+			break;
+		case ConsultarBeneficiario:
+		case ConsultarModificarBeneficiario:
+			jPanelGestionarBeneficiarios.usuarioActualizado(usuario);
+		case TramitarCita:
+		case TramitarCitaVolante:
+		case ConsultarAnularCitaBeneficiario:
+		case ConsultarCitaMedico:
+			jPanelGestionarCitas.usuarioActualizado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+
+	public void usuarioEliminado(Usuario usuario) {
+		// Redirigimos la operación al grupo de paneles seleccionado
+		switch(operacionSeleccionada) {
+		case ConsultarUsuario:
+		case ConsultarModificarUsuario:
+			jPanelGestionarUsuarios.usuarioEliminado(usuario);
+			break;
+		case ConsultarModificarBeneficiario:
+			jPanelGestionarBeneficiarios.usuarioEliminado(usuario);
+		case TramitarCita:
+		case TramitarCitaVolante:
+		case ConsultarAnularCitaBeneficiario:
+		case ConsultarCitaMedico:
+			jPanelGestionarCitas.usuarioEliminado(usuario);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
@@ -537,6 +589,20 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case ConsultarAnularCitaBeneficiario:
 		case ConsultarCitaMedico:
 			jPanelGestionarCitas.citaRegistrada(cita);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void citaAnulada(Cita cita) {
+		// Redirigimos la operación al grupo de paneles seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+		case TramitarCitaVolante:
+		case ConsultarAnularCitaBeneficiario:
+		case ConsultarCitaMedico:
+			jPanelGestionarCitas.citaAnulada(cita);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado

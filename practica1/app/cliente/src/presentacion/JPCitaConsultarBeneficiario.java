@@ -23,6 +23,8 @@ import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.CitaNoValidaException;
 
@@ -303,11 +305,50 @@ Vector<Cita> pendientes;
 	
 	// <métodos del observador>
 	
+	public void beneficiarioActualizado(Beneficiario beneficiario) {
+		if (this.beneficiario!=null && beneficiario.getNif().equals(this.beneficiario.getNif()))
+			pnlBeneficiario.beneficiarioActualizado(beneficiario);
+	}
+	
+	public void beneficiarioEliminado(Beneficiario beneficiario) {
+		if (this.beneficiario!=null && beneficiario.getNif().equals(this.beneficiario.getNif())) {
+			pnlBeneficiario.beneficiarioEliminado(beneficiario);
+			limpiarCamposConsulta();
+		}
+	}
+	
+	public void usuarioActualizado(Usuario usuario) {
+		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha actualizado el médico asignado al beneficiario que está consultando las citas
+			pnlBeneficiario.usuarioActualizado(usuario);
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha eliminado el médico asignado al beneficiario que está consultando las citas
+			pnlBeneficiario.usuarioEliminado(usuario);
+			limpiarCamposConsulta();
+		}
+	}
+	
 	public void citaRegistrada(Cita cita) {
-		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
-			// Otro cliente ha registrado una cita para el médico de este beneficiario
+		if(beneficiario != null && cita.getBeneficiario().equals(beneficiario)) {
+			// Otro cliente ha registrado una cita para este beneficiario
 			// Se vuelven a recuperar las citas para mostrar la nueva
-			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado otra cita para este médico.");
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este beneficiario.");
+			if (!viendoHistorico)
+				mostrarCitasPendientes();
+			else
+				mostrarHistoricoCitas();
+		}
+	}
+	
+	public void citaAnulada(Cita cita) {
+		if(beneficiario != null && cita.getBeneficiario().equals(beneficiario)) {
+			// Otro cliente ha anulado una cita para el médico de este beneficiario
+			// Se vuelven a recuperar las citas para mostrar las restantes
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este beneficiario.");
 			if (!viendoHistorico)
 				mostrarCitasPendientes();
 			else

@@ -29,6 +29,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioInexistenteException;
@@ -905,6 +906,23 @@ public class JPBeneficiarioConsultar extends JPBase {
 		if(this.beneficiario != null & this.beneficiario.getNif().equals(beneficiario.getNif())) {
 			// Otro cliente ha eliminado el beneficiario mostrado
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El beneficiario mostrado ha sido eliminado por otro cliente.");
+			restablecerPanel();
+		}
+	}
+	
+	public void usuarioActualizado(Usuario usuario) {
+		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha actualizado el médico asignado al beneficiario
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido modificado por otro cliente");
+			beneficiario.setMedicoAsignado((Medico)usuario);
+			mostrarDatosBeneficiario(beneficiario);
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha eliminado el médico asignado al beneficiario
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido eliminado por otro cliente");
 			restablecerPanel();
 		}
 	}

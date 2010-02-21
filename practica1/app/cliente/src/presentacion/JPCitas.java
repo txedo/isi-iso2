@@ -11,7 +11,10 @@ import presentacion.auxiliar.OperacionesInterfaz;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
 /**
@@ -199,21 +202,121 @@ public class JPCitas extends JPBase {
 	
 	// <métodos del observador>
 
+	public void beneficiarioActualizado(Beneficiario beneficiario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+			jPanelTramitar.beneficiarioActualizado(beneficiario);
+			break;
+		case TramitarCitaVolante:
+			jPanelVolanteTramitar.beneficiarioActualizado(beneficiario);
+			break;
+		case ConsultarAnularCitaBeneficiario:
+			jPanelConsultarCitasBeneficiario.beneficiarioActualizado(beneficiario);
+			break;
+		case ConsultarCitaMedico:
+			jPanelConsultarCitasMedico.beneficiarioActualizado(beneficiario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void beneficiarioEliminado(Beneficiario beneficiario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+			jPanelTramitar.beneficiarioEliminado(beneficiario);
+			break;
+		case TramitarCitaVolante:
+			jPanelVolanteTramitar.beneficiarioEliminado(beneficiario);
+			break;
+		case ConsultarAnularCitaBeneficiario:
+			jPanelConsultarCitasBeneficiario.beneficiarioEliminado(beneficiario);
+			break;
+		case ConsultarCitaMedico:
+			jPanelConsultarCitasMedico.beneficiarioEliminado(beneficiario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void usuarioActualizado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+			jPanelTramitar.usuarioActualizado(usuario);
+			break;
+		//case TramitarCitaVolante:
+		//	jPanelVolanteTramitar.usuarioActualizado(usuario);
+		//	break;
+		case ConsultarAnularCitaBeneficiario:
+			jPanelConsultarCitasBeneficiario.usuarioActualizado(usuario);
+			break;
+		case ConsultarCitaMedico:
+			jPanelConsultarCitasMedico.usuarioActualizado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+			jPanelTramitar.usuarioEliminado(usuario);
+			break;
+		//case TramitarCitaVolante:
+		//	jPanelVolanteTramitar.usuarioEliminado(usuario);
+		//	break;
+		case ConsultarAnularCitaBeneficiario:
+			jPanelConsultarCitasBeneficiario.usuarioEliminado(usuario);
+			break;
+		case ConsultarCitaMedico:
+			jPanelConsultarCitasMedico.usuarioEliminado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
 	public void citaRegistrada(Cita cita) {
 		// Redirigimos la operación al panel seleccionado
 		switch(operacionSeleccionada) {
 		case TramitarCita:
 			jPanelTramitar.citaRegistrada(cita);
 			break;
+		case TramitarCitaVolante:
+			jPanelVolanteTramitar.citaRegistrada(cita);
+			break;	
 		case ConsultarCitaMedico:
 			jPanelConsultarCitasMedico.citaRegistrada(cita);
 			break;
 		case ConsultarAnularCitaBeneficiario:
 			jPanelConsultarCitasBeneficiario.citaRegistrada(cita);
+			break;		
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void citaAnulada(Cita cita) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+			jPanelTramitar.citaAnulada(cita);
+			break;
+		case TramitarCitaVolante:
+			jPanelVolanteTramitar.citaAnulada(cita);
+			break;
+		case ConsultarCitaMedico:
+			jPanelConsultarCitasMedico.citaAnulada(cita);
+			break;
+		case ConsultarAnularCitaBeneficiario:
+			jPanelConsultarCitasBeneficiario.citaAnulada(cita);
 			break;	
-		/*case TramitarCitaVolante:
-			jPanelVolanteTramitar.citaRegistrada(cita);
-			break;*/			
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
 		}
@@ -225,6 +328,7 @@ public class JPCitas extends JPBase {
 		jPanelTramitar.restablecerPanel();
 		jPanelVolanteTramitar.restablecerPanel();
 	}
+
 	
 	//$hide<<$
 	

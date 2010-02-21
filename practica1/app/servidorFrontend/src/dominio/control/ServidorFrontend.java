@@ -406,6 +406,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			GestorMedicos.modificarMedico(idSesion, medico);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Modificado el médico con DNI " + medico.getDni() + ".");
+			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.MODIFICAR, medico);
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error SQL mientras se modificaba el médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());
@@ -447,6 +448,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			GestorMedicos.eliminarMedico(idSesion, medico);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Eliminado el médico con DNI " + medico.getDni() + ".");
+			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.ELIMINAR, medico);
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL mientras se eliminaba el médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());
@@ -615,6 +617,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			cita = GestorCitas.pedirCita(idSesion, beneficiario, idVolante, fechaYHora, duracion);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Tramitada una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ".");
+			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, cita);
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se tramitaba una cita para el beneficiario con NIF " + beneficiario.getNif() + " a partir del volante con id " + idVolante + ": " + se.getLocalizedMessage());
@@ -726,6 +729,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			GestorCitas.anularCita(idSesion, cita);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Anulada una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ".");
+			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.ELIMINAR, cita);
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL mientras se anulaba una cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + ": " + se.getLocalizedMessage());
@@ -986,6 +990,7 @@ public class ServidorFrontend implements IServidorFrontend {
 				GestorUsuarios.modificarUsuario(idSesion, (Usuario)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Modificado el usuario con DNI " + ((Usuario)informacion).getDni() + ".");
+				GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.MODIFICAR, (Usuario)informacion);
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error SQL mientras se modificaba el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + se.getLocalizedMessage());
@@ -1025,6 +1030,7 @@ public class ServidorFrontend implements IServidorFrontend {
 				GestorUsuarios.eliminarUsuario(idSesion, (Usuario)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Eliminado el usuario con DNI " + ((Usuario)informacion).getDni() + ".");
+				GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.ELIMINAR, (Usuario)informacion);
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL mientras se eliminaba el usuario con DNI " + ((Usuario)informacion).getDni() + ": " + se.getLocalizedMessage());

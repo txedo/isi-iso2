@@ -2,9 +2,13 @@ package dominio.control;
 
 import java.rmi.RemoteException;
 import comunicaciones.ICliente;
+import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.Citador;
 import dominio.conocimiento.ICodigosOperacionesCliente;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.Usuario;
 
 /**
  * Clase utilizada por el servidor front-end que implementa las
@@ -58,10 +62,19 @@ public class Cliente implements ICliente {
 			if(dato instanceof Beneficiario) {
 				controlador.beneficiarioActualizado((Beneficiario)dato);
 			}
+			else if (dato instanceof Medico || dato instanceof Administrador || dato instanceof Citador) {
+				controlador.usuarioActualizado((Usuario)dato);
+			}
 			break;
 		case ICodigosOperacionesCliente.ELIMINAR:
 			if(dato instanceof Beneficiario) {
 				controlador.beneficiarioEliminado((Beneficiario)dato);
+			}
+			else if (dato instanceof Medico || dato instanceof Administrador || dato instanceof Citador) {
+				controlador.usuarioEliminado((Usuario)dato);
+			}
+			else if (dato instanceof Cita) {
+				controlador.citaAnulada((Cita)dato);
 			}
 			break;
 		}

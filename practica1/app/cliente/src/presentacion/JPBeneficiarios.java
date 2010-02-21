@@ -12,6 +12,7 @@ import presentacion.auxiliar.OperacionesInterfaz;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
 /**
@@ -205,6 +206,34 @@ public class JPBeneficiarios extends JPBase {
 			break;
 		case ConsultarModificarBeneficiario:
 			jPanelConsultarModificar.beneficiarioEliminado(beneficiario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void usuarioActualizado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case ConsultarBeneficiario:
+			jPanelConsultar.usuarioActualizado(usuario);
+			break;
+		case ConsultarModificarBeneficiario:
+			jPanelConsultarModificar.usuarioActualizado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case ConsultarBeneficiario:
+			jPanelConsultar.usuarioEliminado(usuario);
+			break;
+		case ConsultarModificarBeneficiario:
+			jPanelConsultarModificar.usuarioEliminado(usuario);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
