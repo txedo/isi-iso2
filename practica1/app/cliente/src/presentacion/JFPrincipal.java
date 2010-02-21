@@ -18,6 +18,7 @@ import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -35,6 +36,7 @@ import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.OperacionCambiadaEvent;
 import presentacion.auxiliar.OperacionCambiadaListener;
 import presentacion.auxiliar.OperacionesInterfaz;
+import presentacion.auxiliar.VentanaCerradaListener;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -68,6 +70,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private ControladorCliente controlador;
 	private OperacionesInterfaz operacionSeleccionada;
 	
+	private JFAcercaDe frmAcercaDe;
 	private JPBeneficiarios jPanelGestionarBeneficiarios;
 	private JPUsuarios jPanelGestionarUsuarios;
 	private JPCitas jPanelGestionarCitas;
@@ -158,6 +161,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 						menuitemAcercaDe = new JMenuItem();
 						jMenu4.add(menuitemAcercaDe);
 						menuitemAcercaDe.setText("Acerca de...");
+						menuitemAcercaDe.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								menuitemAcercaDeActionPerformed(evt);
+							}
+						});
 					}
 				}
 			}
@@ -268,7 +276,25 @@ public class JFPrincipal extends javax.swing.JFrame {
 		}
 	}
 	
-	//$hide>>$
+	private void menuitemAcercaDeActionPerformed(ActionEvent evt) {
+		frmAcercaDe = new JFAcercaDe();
+		frmAcercaDe.addVentanaCerradaListener(new VentanaCerradaListener() {
+			public void ventanaCerrada(EventObject evt) {    
+				frmAcercaDeVentanaCerrada(evt);
+			}
+		});
+		frmAcercaDe.setLocationRelativeTo(this);
+		this.setEnabled(false);
+		frmAcercaDe.setVisible(true);
+	}
+	
+	private void frmAcercaDeVentanaCerrada(EventObject evt) {
+		// Reactivamos la ventana 
+		setEnabled(true);
+		frmAcercaDe.setVisible(false);
+		frmAcercaDe.dispose();
+		frmAcercaDe = null;
+	}
 	
 	private void btnCerrarSesionActionPerformed(ActionEvent evt) {
 		confirmarCerrarSesion();

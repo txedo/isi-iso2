@@ -65,6 +65,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	private ControladorFrontend controlador;
 	private ConfiguracionFrontend configuracion;
 	private JFConfigFrontend frmConfiguracion;
+	private JFAcercaDe frmAcercaDe;
 	
 	private JLabel lblConfigRespaldo;
 	private JLabel lblConfigBD;
@@ -174,6 +175,11 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 						mniAcercaDe = new JMenuItem();
 						mnuAyuda.add(mniAcercaDe);
 						mniAcercaDe.setText("Acerca de...");
+						mniAcercaDe.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								mniAcercaDeActionPerformed(evt);
+							}
+						});
 					}
 				}
 			}
@@ -270,7 +276,25 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		}
 	}
 	
-	//$hide>>$
+	private void mniAcercaDeActionPerformed(ActionEvent evt) {
+		frmAcercaDe = new JFAcercaDe();
+		frmAcercaDe.addVentanaCerradaListener(new VentanaCerradaListener() {
+			public void ventanaCerrada(EventObject evt) {    
+				frmAcercaDeVentanaCerrada(evt);
+			}
+		});
+		frmAcercaDe.setLocationRelativeTo(this);
+		this.setEnabled(false);
+		frmAcercaDe.setVisible(true);
+	}
+	
+	private void frmAcercaDeVentanaCerrada(EventObject evt) {
+		// Reactivamos la ventana 
+		setEnabled(true);
+		frmAcercaDe.setVisible(false);
+		frmAcercaDe.dispose();
+		frmAcercaDe = null;
+	}
 	
 	private void mniConfigurarActionPerformed(ActionEvent evt) {
 		// Creamos la ventana de configuración
