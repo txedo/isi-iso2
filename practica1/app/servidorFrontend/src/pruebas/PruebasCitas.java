@@ -133,8 +133,8 @@ public class PruebasCitas extends PruebasBase {
 			beneficiario2.setMedicoAsignado(medico1);
 			beneficiario3 = new Beneficiario("63139010S", "134171-de", "bene3", "sdffsdsd", fecha2, direccion2, "tres@gmail.com", "923456789", "687654322");
 			beneficiario3.setCentroSalud(centro2);
-			volante1 = new Volante(medico1,medico3,beneficiario1,null);
-			volante2 = new Volante(medico1,medico3,beneficiario1,null);
+			volante1 = new Volante(medico1,medico3,beneficiario1,null,new Date());
+			volante2 = new Volante(medico1,medico3,beneficiario1,null,new Date());
 			FPCentroSalud.insertar(centro1);
 			FPCentroSalud.insertar(centro2);
 			FPUsuario.insertar(medico1);

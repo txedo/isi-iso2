@@ -105,8 +105,8 @@ public class PruebasVolantes extends PruebasBase {
 			beneficiario2.setMedicoAsignado(medico1);
 			beneficiario3 = new Beneficiario("63139010S", "134171-de", "bene3", "sdffsdsd", fecha2, direccion2, "tres@gmail.com", "923456789", "687654322");
 			beneficiario3.setCentroSalud(centro2);
-			volante1 = new Volante(medico1,medico3,beneficiario1,null);
-			volante2 = new Volante(medico1,medico3,beneficiario1,null);
+			volante1 = new Volante(medico1,medico3,beneficiario1,null, new Date());
+			volante2 = new Volante(medico1,medico3,beneficiario1,null, new Date());
 			FPCentroSalud.insertar(centro1);
 			FPCentroSalud.insertar(centro2);
 			FPUsuario.insertar(medico1);
@@ -144,15 +144,6 @@ public class PruebasVolantes extends PruebasBase {
 	/** Pruebas de la operación que consulta volantes existentes */
 	public void testConsultarVolante() {
 		Volante volanteGet;
-		
-		try {
-			// Intentamos consultar un volante con una sesión sin permisos
-			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.CONSULTAR_VOLANTE, volante1.getId());
-			fail("Se esperaba una excepción OperacionIncorrectaException");
-		} catch(OperacionIncorrectaException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción OperacionIncorrectaException");
-		}
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo

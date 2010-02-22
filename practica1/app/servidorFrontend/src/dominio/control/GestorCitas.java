@@ -13,6 +13,7 @@ import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Utilidades;
 import dominio.conocimiento.Volante;
@@ -28,6 +29,7 @@ import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
 import persistencia.FPBeneficiario;
 import persistencia.FPCita;
+import persistencia.FPSustitucion;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
 
@@ -92,7 +94,8 @@ public class GestorCitas {
 	// Método para obtener todas las citas de un médico
 	@SuppressWarnings("deprecation")
 	public static Vector<Cita> consultarCitasMedico(long idSesion, String dniMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException {
-		Vector<Cita> citas;
+		Vector<Sustitucion> sustituciones;
+		Vector<Cita> citas, citas2, citasSust;
 		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
@@ -116,16 +119,48 @@ public class GestorCitas {
 		// Obtenemos las citas que ya tiene asignadas el médico
 		citas = FPCita.consultarPorMedico(dniMedico);
 		
+		// Quitamos las citas que no va a dar el médico por estar sustituido
+		citasSust = new Vector<Cita>();
+		sustituciones = FPSustitucion.consultarPorSustituido(dniMedico);
+		for(Sustitucion sustitucion : sustituciones) {
+			for(Cita cita : citas) {
+				if(Utilidades.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
+					citasSust.add(cita);
+				}
+			}
+		}
+		for(Cita cita : citasSust) {
+			citas.remove(cita);
+		}
+		
+		// Añadimos las citas que va a dar el médico por estar sustituyendo a otro
+		citasSust = new Vector<Cita>();
+		sustituciones = FPSustitucion.consultarPorSustituto(dniMedico);
+		for(Sustitucion sustitucion : sustituciones) {
+			citas2 = FPCita.consultarPorMedico(sustitucion.getMedico().getDni());
+			for(Cita cita : citas2) {
+				if(Utilidades.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
+					citasSust.add(cita);
+				}
+			}
+		}
+		for(Cita cita : citasSust) {
+			citas.add(cita);
+		}
+		
 		return citas;
 	}
 	
 	// Método para obtener todas las citas pendientes de un médico
-	public static Vector<Cita> consultarCitasPendientesMedico(long idSesion, String dni) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException {
-		Vector<Cita> citas, pendientes;
+	public static Vector<Cita> consultarCitasPendientesMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException {
+		Vector<Sustitucion> sustituciones;
+		Vector<Cita> citas, citas2, citasSust, pendientes;
 		Date fechaActual;
 		
 		// Comprobamos los parámetros pasados
-		if(dni == null) {
+		if(dniMedico == null) {
 			throw new NullPointerException("El NIF del médico para el que se quieren buscar las citas no puede ser nulo.");
 		}
 		
@@ -133,10 +168,41 @@ public class GestorCitas {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasMedico);
 
 		// Comprobamos que exista el médico
-		FPUsuario.consultar(dni);
+		FPUsuario.consultar(dniMedico);
 		
 		// Recuperamos las citas del médico
-		citas = FPCita.consultarPorMedico(dni);
+		citas = FPCita.consultarPorMedico(dniMedico);
+		
+		// Quitamos las citas que no va a dar el médico por estar sustituido
+		citasSust = new Vector<Cita>();
+		sustituciones = FPSustitucion.consultarPorSustituido(dniMedico);
+		for(Sustitucion sustitucion : sustituciones) {
+			for(Cita cita : citas) {
+				if(Utilidades.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
+					citasSust.add(cita);
+				}
+			}
+		}
+		for(Cita cita : citasSust) {
+			citas.remove(cita);
+		}
+		
+		// Añadimos las citas que va a dar el médico por estar sustituyendo a otro
+		citasSust = new Vector<Cita>();
+		sustituciones = FPSustitucion.consultarPorSustituto(dniMedico);
+		for(Sustitucion sustitucion : sustituciones) {
+			citas2 = FPCita.consultarPorMedico(sustitucion.getMedico().getDni());
+			for(Cita cita : citas2) {
+				if(Utilidades.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
+					citasSust.add(cita);
+				}
+			}
+		}
+		for(Cita cita : citasSust) {
+			citas.add(cita);
+		}
 		
 		// Nos quedamos con las citas posteriores a la fecha y hora actuales
 		fechaActual = new Date();
@@ -475,6 +541,7 @@ public class GestorCitas {
 			cal.set(Calendar.HOUR, 0);
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
 			if(!Utilidades.fechaAnterior(cita.getFechaYHora(), new Date(), false)) {
 				if(citasPorFecha.containsKey(cal.getTime())) {
 					citasPorFecha.put(cal.getTime(), citasPorFecha.get(cal.getTime()) + 1);

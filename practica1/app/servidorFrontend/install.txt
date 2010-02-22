@@ -95,6 +95,7 @@ CREATE TABLE volantes (
        nifBeneficiario CHAR(9) NOT NULL,
        dniMedicoEmisor CHAR(9) NOT NULL,
        dniMedicoReceptor CHAR(9) NOT NULL,
+       fechaCaducidad DATETIME NOT NULL,
        idCita INT,
        PRIMARY KEY (id),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,

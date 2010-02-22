@@ -90,7 +90,7 @@ public class JPEstablecerSustituto extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(430, 528));
+			this.setPreferredSize(new java.awt.Dimension(430, 521));
 			{
 				scpSustitutos = new JScrollPane();
 				this.add(scpSustitutos, new AnchorConstraint(360, 12, 924, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));

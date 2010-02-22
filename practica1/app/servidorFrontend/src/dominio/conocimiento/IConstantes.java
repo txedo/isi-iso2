@@ -12,4 +12,6 @@ public interface IConstantes {
 	public static final int DIAS_LABORABLES = 5;
 	public static final int HORA_INICIO_JORNADA = 9;
 	public static final int HORA_FIN_JORNADA = 21;
+	public static final int DIAS_CADUCIDAD_VOLANTE = 6 * 30;
+	
 }
