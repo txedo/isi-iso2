@@ -11,6 +11,9 @@ import presentacion.auxiliar.OperacionesInterfaz;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
 /**
@@ -144,6 +147,49 @@ public class JPVolantes extends JPBase {
 	}
 	
 	// <métodos del observador>
+	
+	public void beneficiarioActualizado(Beneficiario beneficiario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case EmitirVolante:
+			jPanelEmitir.beneficiarioActualizado(beneficiario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void beneficiarioEliminado(Beneficiario beneficiario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case EmitirVolante:
+			jPanelEmitir.beneficiarioEliminado(beneficiario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void usuarioActualizado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case EmitirVolante:
+			jPanelEmitir.usuarioActualizado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case EmitirVolante:
+			jPanelEmitir.usuarioEliminado(usuario);
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
 	
 	public void restablecerPaneles() {
 		jPanelEmitir.restablecerPanel();
