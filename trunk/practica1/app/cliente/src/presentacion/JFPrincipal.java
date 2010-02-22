@@ -550,6 +550,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case ConsultarCitasMedico:
 			jPanelGestionarCitas.beneficiarioActualizado(beneficiario);
 			break;
+		case EmitirVolante:
+			jPanelGestionarVolantes.beneficiarioActualizado(beneficiario);
+			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
 		}
@@ -567,6 +570,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case ConsultarAnularCitasBeneficiario:
 		case ConsultarCitasMedico:
 			jPanelGestionarCitas.beneficiarioEliminado(beneficiario);
+			break;
+		case EmitirVolante:
+			jPanelGestionarVolantes.beneficiarioEliminado(beneficiario);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
@@ -592,6 +598,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case EstablecerSustituto:
 			jPanelGestionarSustituciones.usuarioActualizado(usuario);
 			break;
+		case EmitirVolante:
+			jPanelGestionarVolantes.usuarioActualizado(usuario);
+			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
 		}
@@ -614,6 +623,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 			break;
 		case EstablecerSustituto:
 			jPanelGestionarSustituciones.usuarioEliminado(usuario);
+			break;
+		case EmitirVolante:
+			jPanelGestionarVolantes.usuarioEliminado(usuario);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
