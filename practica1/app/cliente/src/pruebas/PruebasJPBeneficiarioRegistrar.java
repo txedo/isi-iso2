@@ -61,7 +61,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 	private JComboBox jcmbCentros;
 	private Window winPrincipal;
 	
-	public void setUp() {
+	protected void setUp() {
 		try {
 			// Establecemos conexión con el servidor front-end
 			controlador = new ControladorCliente();
@@ -117,7 +117,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		}
 	}
 	
-	public void tearDown() {
+	protected void tearDown() {
 		try {
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
