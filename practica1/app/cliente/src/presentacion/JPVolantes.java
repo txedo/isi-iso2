@@ -1,6 +1,8 @@
 package presentacion;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
@@ -41,6 +43,7 @@ public class JPVolantes extends JPBase {
 	private JPEmitirVolante jPanelEmitir;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
+	private JScrollPane jScrollEmitir;
 	
 	public JPVolantes() {
 		this(null, null);
@@ -81,9 +84,15 @@ public class JPVolantes extends JPBase {
 				jSeparator.setPreferredSize(new java.awt.Dimension(5, 390));
 			}
 			{
-				jPanelEmitir = new JPEmitirVolante(this.getFrame(), this.getControlador());
-				this.add(jPanelEmitir, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelEmitir.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollEmitir = new JScrollPane();
+				this.add(jScrollEmitir, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollEmitir.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollEmitir.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollEmitir.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelEmitir = new JPEmitirVolante(this.getFrame(), this.getControlador());
+					jScrollEmitir.setViewportView(jPanelEmitir);
+				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -98,7 +107,7 @@ public class JPVolantes extends JPBase {
 	
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.EmitirVolante);
-		jPanelEmitir.setVisible(true);
+		jScrollEmitir.setVisible(true);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(OperacionCambiadaEvent evt) {
@@ -107,12 +116,12 @@ public class JPVolantes extends JPBase {
 
 		operacionSeleccionada = evt.getOperacion();
 		
-		if(jPanelEmitir != null) {
-			jPanelEmitir.setVisible(false);
+		if(jScrollEmitir != null) {
+			jScrollEmitir.setVisible(false);
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.EmitirVolante) {
-			jPanelEmitir.setVisible(true);
-			jPanelEmitir.repaint();
+			jScrollEmitir.setVisible(true);
+			jScrollEmitir.repaint();
 		}
 
 		// Notificamos que ha cambiado la operación seleccionada
