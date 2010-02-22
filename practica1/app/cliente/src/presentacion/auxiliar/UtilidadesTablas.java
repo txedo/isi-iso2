@@ -10,6 +10,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Especialista;
+import dominio.conocimiento.Medico;
 import dominio.conocimiento.TipoMedico;
 
 /**
@@ -41,7 +42,7 @@ public class UtilidadesTablas {
 		tabla.getTableHeader().getColumnModel().getColumn(4).setMaxWidth(300);
 	}
 	
-	public static void rellenarTablaCitasBeneficiario(JTable tabla, Vector<Cita> citas) {
+	public static void rellenarTablaCitasBeneficiario(JTable tabla, Vector<Cita> citas, Vector<Medico> medicosReales) {
 		Date fecha;
 		TipoMedico tipo;
 		int fila, col;
@@ -55,8 +56,13 @@ public class UtilidadesTablas {
 			tipo = citas.get(fila).getMedico().getTipoMedico();
 			tabla.setValueAt(formatoDia.format(fecha), fila, col++);			
 			tabla.setValueAt(formatoHora.format(fecha), fila, col++);
-			tabla.setValueAt(citas.get(fila).getMedico().getApellidos() + ", " + citas.get(fila).getMedico().getNombre(), fila, col++);
-			tabla.setValueAt(citas.get(fila).getMedico().getDni(), fila, col++);
+			if(!citas.get(fila).getMedico().equals(medicosReales.get(fila))) {
+				tabla.setValueAt(medicosReales.get(fila).getApellidos() + ", " + medicosReales.get(fila).getNombre() + " (sustituye a " + citas.get(fila).getMedico().getApellidos() + ", " + citas.get(fila).getMedico().getNombre() + ")", fila, col++);
+				tabla.setValueAt(medicosReales.get(fila).getDni(), fila, col++);
+			} else {
+				tabla.setValueAt(citas.get(fila).getMedico().getApellidos() + ", " + citas.get(fila).getMedico().getNombre(), fila, col++);
+				tabla.setValueAt(citas.get(fila).getMedico().getDni(), fila, col++);
+			}
 			if(tipo.getCategoria() == CategoriasMedico.Especialista) {
 				tabla.setValueAt(tipo.getCategoria().name() + " (" + ((Especialista)tipo).getEspecialidad() + ")", fila, col++);
 			} else {
@@ -65,11 +71,11 @@ public class UtilidadesTablas {
 		}
 	}
 	
-	public static void rellenarTablaCitasBeneficiario(JTable tabla, Vector<Cita> citas, Vector<Cita> pendientes) {
+	public static void rellenarTablaCitasBeneficiario(JTable tabla, Vector<Cita> citas, Vector<Cita> pendientes, Vector<Medico> medicosReales) {
 		int fila;
 
 		// Rellenamos la tabla con las citas
-		rellenarTablaCitasBeneficiario(tabla, citas);
+		rellenarTablaCitasBeneficiario(tabla, citas, medicosReales);
 		
 		// Guardamos una lista con las citas que deben desactivarse
 		for(fila = 0; fila < citas.size(); fila++) {

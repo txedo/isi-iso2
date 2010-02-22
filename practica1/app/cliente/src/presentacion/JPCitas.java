@@ -14,6 +14,7 @@ import com.cloudgarden.layout.AnchorLayout;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
@@ -204,8 +205,6 @@ public class JPCitas extends JPBase {
 	public boolean hayOperacionesDisponibles() {
 		return (jPanelListaOperaciones.getNumeroOperaciones() > 0);
 	}
-	
-	// <métodos del observador>
 
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		// Redirigimos la operación al panel seleccionado
@@ -322,6 +321,26 @@ public class JPCitas extends JPBase {
 		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.citaAnulada(cita);
 			break;	
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void sustitucionRegistrada(Sustitucion sustitucion) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+			jPanelTramitar.sustitucionRegistrada(sustitucion);
+			break;
+		case TramitarCitaVolante:
+			jPanelVolanteTramitar.sustitucionRegistrada(sustitucion);
+			break;
+/*		case ConsultarCitasMedico:
+			jPanelConsultarCitasMedico.citaAnulada(cita);
+			break;
+		case ConsultarAnularCitasBeneficiario:
+			jPanelConsultarCitasBeneficiario.citaAnulada(cita);
+			break;*/	
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
 		}

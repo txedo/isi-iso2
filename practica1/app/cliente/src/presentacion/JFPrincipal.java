@@ -6,6 +6,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.SesionInvalidaException;
@@ -588,6 +589,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case ConsultarCitasMedico:
 			jPanelGestionarCitas.usuarioActualizado(usuario);
 			break;
+		case EstablecerSustituto:
+			jPanelGestionarSustituciones.usuarioActualizado(usuario);
+			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
 		}
@@ -607,6 +611,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case ConsultarAnularCitasBeneficiario:
 		case ConsultarCitasMedico:
 			jPanelGestionarCitas.usuarioEliminado(usuario);
+			break;
+		case EstablecerSustituto:
+			jPanelGestionarSustituciones.usuarioEliminado(usuario);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
@@ -635,6 +642,20 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case ConsultarAnularCitasBeneficiario:
 		case ConsultarCitasMedico:
 			jPanelGestionarCitas.citaAnulada(cita);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void sustitucionRegistrada(Sustitucion sustitucion) {
+		// Redirigimos la operación al grupo de paneles seleccionado
+		switch(operacionSeleccionada) {
+		case TramitarCita:
+		case TramitarCitaVolante:
+		case ConsultarAnularCitasBeneficiario:
+		case ConsultarCitasMedico:
+			jPanelGestionarCitas.sustitucionRegistrada(sustitucion);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado

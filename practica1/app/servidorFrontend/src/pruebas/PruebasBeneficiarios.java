@@ -68,8 +68,8 @@ public class PruebasBeneficiarios extends PruebasBase {
 			direccion2 = new Direccion("calle 2", "10", "2", "A", "aadsfaada", "afafssafad", 13500);
 			centro1 = new CentroSalud("Centro A", "Calle 1, nº1");
 			centro2 = new CentroSalud("Centro B", "Calle 2, nº2");
-			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
-			medico2 = new Medico("87654321A", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", cabecera);
+			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
+			medico2 = new Medico("87654321A", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "666123123", cabecera);
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			periodo1 = new PeriodoTrabajo(10, 14, DiaSemana.Miercoles);
@@ -78,8 +78,8 @@ public class PruebasBeneficiarios extends PruebasBase {
 			medico1.getCalendario().add(periodo1);
 			medico1.getCalendario().add(periodo2);
 			medico2.getCalendario().add(periodo3);
-			citador1 = new Citador("11223344A", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.");
-			admin1 = new Administrador("55667788A", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.");
+			citador1 = new Citador("11223344A", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "", "926111222", "");
+			admin1 = new Administrador("55667788A", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.", "marilf@yahoo.es", "", "666000000");
 			citador1.setCentroSalud(centro1);
 			admin1.setCentroSalud(centro1);
 			beneficiario1 = new Beneficiario("12345678A", "123456-ab", "bene1", "asdfg", fecha1, direccion1, "add@sf.com", "123456789", "987654321");
@@ -317,7 +317,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Creamos un nuevo beneficiario con la sesión del administrador
-			beneficiario = new Beneficiario("88888888B", "26262626262626", "beNuevo", "nuevos", fecha1, direccion2, "luna@hotmail.com", "34698124", "67912312");
+			beneficiario = new Beneficiario("88888888B", "262626262626", "beNuevo", "nuevos", fecha1, direccion2, "luna@hotmail.com", "34698124", "67912312");
 			beneficiario.setCentroSalud(centro1);
 			beneficiario.setMedicoAsignado(null);
 			servidor.crear(sesionAdmin.getId(), beneficiario);

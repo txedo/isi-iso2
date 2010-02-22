@@ -32,7 +32,10 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
+import dominio.conocimiento.Utilidades;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.FechaNoValidaException;
@@ -240,20 +243,24 @@ public class JPCitaTramitar extends JPBase {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void dtcDiaCitaPropertyChange(PropertyChangeEvent evt) {
 		UtilidadesListaHoras.obtenerListaHoras(dtcDiaCita, horasCitas, citasOcupadas, cmbHorasCitas);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void cmbHorasCitasItemStateChanged(ItemEvent evt) {
+		if(evt.getStateChange() == ItemEvent.SELECTED) {
+			mostrarMedicoCita();
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void mostrarMedicoCita() {
 		Date fecha, hora, diaCita;
 		Medico medico;
 		
 		try {
 			
-			if(evt.getStateChange() == ItemEvent.SELECTED
-			  && horaSeleccionadaValida() && cmbHorasCitas.getSelectedItem() != null) {
+			if(cmbHorasCitas.getSelectedItem() != null && horaSeleccionadaValida()) {
 				// Obtenemos la hora de la cita
 				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
 				fecha = dtcDiaCita.getDate();
@@ -372,7 +379,8 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+		if(beneficiario != null && usuario.getRol() == RolesUsuarios.Medico
+		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario que pide la cita
 			pnlBeneficiario.usuarioActualizado(usuario);
 			// Se puede haber modificado el horario del médico, por lo que recargamos las horas disponibles para dar cita
@@ -381,7 +389,8 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+		if(beneficiario != null && usuario.getRol() == RolesUsuarios.Medico
+		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario que pide la cita
 			pnlBeneficiario.usuarioEliminado(usuario);
 			limpiarCamposTramitacion();
@@ -404,6 +413,16 @@ public class JPCitaTramitar extends JPBase {
 			// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico.");
 			mostrarHorasCitasMedico();
+		}
+	}
+	
+	public void sustitucionRegistrada(Sustitucion sustitucion) {
+		if(beneficiario != null && beneficiario.getMedicoAsignado().equals(sustitucion.getMedico())
+		 && Utilidades.fechaIgual(sustitucion.getDia(), dtcDiaCita.getDate(), false)) {
+			// Otro cliente ha registrado una sustitución para el médico
+			// con el que se quiere pedir cita en el día seleccionado
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una sustitución desde otro cliente para el médico del beneficiario en el día seleccionado.");
+			mostrarMedicoCita();
 		}
 	}
 		

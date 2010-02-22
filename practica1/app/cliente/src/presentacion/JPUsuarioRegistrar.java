@@ -22,11 +22,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.Validacion;
 import presentacion.auxiliar.VentanaCerradaListener;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Administrador;
@@ -46,11 +44,13 @@ import dominio.conocimiento.IConstantes;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.ContraseñaIncorrectaException;
+import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.LoginIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NombreIncorrectoException;
+import excepciones.TelefonoFijoIncorrectoException;
+import excepciones.TelefonoMovilIncorrectoException;
 import excepciones.UsuarioNoSeleccionadoException;
-import excepciones.UsuarioYaExistenteException;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -87,6 +87,12 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	private JComboBox cmbEspecialidad;
 	private JLabel lblNombre;
 	private JLabel lblPasswordConf;
+	private JLabel lblTelefonoMovil;
+	private JTextField txtTelefonoMovil;
+	private JTextField txtTelefonoFijo;
+	private JTextField txtCorreoElectronico;
+	private JLabel lblTelefonoFijo;
+	private JLabel lblCorreoElectronico;
 	private JLabel lblHorasSemanales;
 	private JLabel lblPassword;
 	private JLabel lblLogin;
@@ -112,22 +118,24 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		periodos = new Vector<PeriodoTrabajo>();
 		initGUI();
 		rellenarTiposUsuario();
+		cambiarEstadoEspecialidad(false);
+		cambiarEstadoConfiguracionCalendario(false);
 	}
 	
 	private void initGUI() {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(430, 390));
+			this.setPreferredSize(new java.awt.Dimension(430, 490));
 			{
 				lblHorasSemanales = new JLabel();
-				this.add(lblHorasSemanales, new AnchorConstraint(235, 973, 644, 268, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblHorasSemanales, new AnchorConstraint(316, 973, 644, 268, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblHorasSemanales.setText("0 horas semanales");
 				lblHorasSemanales.setPreferredSize(new java.awt.Dimension(150, 16));
 			}
 			{
 				btnCalendario = new JButton();
-				this.add(btnCalendario, new AnchorConstraint(231, 905, 650, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnCalendario, new AnchorConstraint(312, 905, 650, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnCalendario.setText("Configurar...");
 				btnCalendario.setPreferredSize(new java.awt.Dimension(110, 23));
 				btnCalendario.addActionListener(new ActionListener() {
@@ -138,24 +146,24 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			}
 			{
 				lblCalendario = new JLabel();
-				this.add(lblCalendario, new AnchorConstraint(235, 292, 675, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCalendario, new AnchorConstraint(316, 292, 675, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCalendario.setText("Calendario laboral *");
 				lblCalendario.setPreferredSize(new java.awt.Dimension(126, 14));
 			}
 			{
 				lblEspecialidad = new JLabel();
-				this.add(lblEspecialidad, new AnchorConstraint(262, 292, 680, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblEspecialidad, new AnchorConstraint(343, 292, 680, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblEspecialidad.setText("Especialidad *");
 				lblEspecialidad.setPreferredSize(new java.awt.Dimension(126, 16));
 			}
 			{
 				cmbEspecialidad = new JComboBox();
-				this.add(cmbEspecialidad, new AnchorConstraint(259, 12, 691, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(cmbEspecialidad, new AnchorConstraint(340, 12, 691, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				cmbEspecialidad.setPreferredSize(new java.awt.Dimension(268, 22));
 			}
 			{
 				btnRestablecer = new JButton();
-				this.add(btnRestablecer, new AnchorConstraint(309, 308, 957, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnRestablecer, new AnchorConstraint(390, 308, 957, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnRestablecer.addActionListener(new ActionListener() {
@@ -166,7 +174,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			}
 			{
 				btnCrearUsuario = new JButton();
-				this.add(btnCrearUsuario, new AnchorConstraint(309, 12, 957, 603, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnCrearUsuario, new AnchorConstraint(390, 12, 957, 603, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnCrearUsuario.setText("Crear usuario");
 				btnCrearUsuario.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnCrearUsuario.addActionListener(new ActionListener() {
@@ -177,7 +185,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			}
 			{
 				lstTipoMedico = new JList();
-				this.add(lstTipoMedico, new AnchorConstraint(172, 961, 601, 268, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lstTipoMedico, new AnchorConstraint(253, 961, 601, 268, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lstTipoMedico.setPreferredSize(new java.awt.Dimension(110, 54));
 				lstTipoMedico.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 				lstTipoMedico.setVisible(false);
@@ -189,7 +197,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			}
 			{
 				lstTipoUsuario = new JList();
-				this.add(lstTipoUsuario, new AnchorConstraint(172, 684, 773, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lstTipoUsuario, new AnchorConstraint(253, 684, 773, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lstTipoUsuario.setPreferredSize(new java.awt.Dimension(110, 54));
 				lstTipoUsuario.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				lstTipoUsuario.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
@@ -231,7 +239,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			}
 			{
 				lblTipoUsuario = new JLabel();
-				this.add(lblTipoUsuario, new AnchorConstraint(176, 292, 604, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblTipoUsuario, new AnchorConstraint(257, 292, 604, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblTipoUsuario.setText("Tipo de usuario *");
 				lblTipoUsuario.setPreferredSize(new java.awt.Dimension(126, 14));
 			}
@@ -273,27 +281,54 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			}
 			{
 				lblCamposOblig = new JLabel();
-				this.add(lblCamposOblig, new AnchorConstraint(284, 13, 900, 696, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(lblCamposOblig, new AnchorConstraint(365, 13, 900, 696, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				lblCamposOblig.setText("* Campos obligatorios");
 				lblCamposOblig.setPreferredSize(new java.awt.Dimension(129, 17));
 				lblCamposOblig.setHorizontalAlignment(SwingConstants.TRAILING);
 				lblCamposOblig.setFont(lblCamposOblig.getFont().deriveFont(10.0f));
 			}
-			cambiarEstadoEspecialidad(false);
-			cambiarEstadoConfiguracionCalendario(false);
-			rellenarModelo(new String [] {""});
-			
+			{
+				lblTelefonoMovil = new JLabel();
+				this.add(lblTelefonoMovil, new AnchorConstraint(231, 431, 790, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblTelefonoMovil.setText("Teléfono móvil");
+				lblTelefonoMovil.setPreferredSize(new java.awt.Dimension(126, 14));
+			}
+			{
+				lblTelefonoFijo = new JLabel();
+				this.add(lblTelefonoFijo, new AnchorConstraint(204, 431, 692, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblTelefonoFijo.setText("Teléfono fijo");
+				lblTelefonoFijo.setPreferredSize(new java.awt.Dimension(126, 14));
+			}
+			{
+				lblCorreoElectronico = new JLabel();
+				this.add(lblCorreoElectronico, new AnchorConstraint(177, 431, 594, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblCorreoElectronico.setText("Correo electrónico");
+				lblCorreoElectronico.setPreferredSize(new java.awt.Dimension(126, 14));
+			}
+			{
+				txtTelefonoMovil = new JTextField();
+				this.add(txtTelefonoMovil, new AnchorConstraint(227, 12, 805, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtTelefonoMovil.setPreferredSize(new java.awt.Dimension(268, 22));
+				txtTelefonoMovil.setName("txtTelefonoMovil");
+			}
+			{
+				txtTelefonoFijo = new JTextField();
+				this.add(txtTelefonoFijo, new AnchorConstraint(200, 12, 710, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtTelefonoFijo.setPreferredSize(new java.awt.Dimension(268, 22));
+				txtTelefonoFijo.setName("txtTelefonoFijo");
+			}
+			{
+				txtCorreoElectronico = new JTextField();
+				this.add(txtCorreoElectronico, new AnchorConstraint(173, 12, 612, 150, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtCorreoElectronico.setPreferredSize(new java.awt.Dimension(268, 22));
+				txtCorreoElectronico.setName("txtCorreoElectronico");
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	//$hide>>$
-	
-	private void rellenarModelo(String [] informacion) {
-		ComboBoxModel cbEspecialidadModel = new DefaultComboBoxModel(informacion);
-		cmbEspecialidad.setModel(cbEspecialidadModel);	
-	}
 	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {
 		limpiarCamposRegistro();
@@ -311,7 +346,16 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			Validacion.comprobarNombre(txtNombre.getText().trim());
 			Validacion.comprobarApellidos(txtApellidos.getText().trim());
 			Validacion.comprobarUsuario(txtLogin.getText().trim());
-			Validacion.comprobarContraseña(new String(txtPassword.getPassword()));	
+			Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
+			if(!campoVacio(txtCorreoElectronico)) {
+				Validacion.comprobarCorreoElectronico(txtCorreoElectronico.getText().trim());
+			}
+			if(!campoVacio(txtTelefonoFijo)) {
+				Validacion.comprobarTelefonoFijo(txtTelefonoFijo.getText().trim());
+			}
+			if(!campoVacio(txtTelefonoMovil)) {
+				Validacion.comprobarTelefonoMovil(txtTelefonoMovil.getText().trim());
+			}
 			if(!(new String(txtPassword.getPassword())).equals(new String(txtPasswordConf.getPassword()))) {
 				throw new ContraseñaIncorrectaException("Las contraseñas no coinciden.");
 			}
@@ -338,6 +382,9 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			usuario.setApellidos(txtApellidos.getText().trim());
 			usuario.setLogin(txtLogin.getText().trim());
 			usuario.setPassword(new String(txtPassword.getPassword()));
+			usuario.setCorreo(txtCorreoElectronico.getText().trim());
+			usuario.setTelefono(txtTelefonoFijo.getText().trim());
+			usuario.setMovil(txtTelefonoMovil.getText().trim());
 			
 			// Creamos el tipo de médico si es necesario
 			if(usuario.getRol() == RolesUsuarios.Medico) {
@@ -365,11 +412,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			// Mostramos el resultado de la operación y limpiamos el panel
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido dado de alta en el sistema y se\nle ha asignado automáticamente el siguiente centro:\n" + centro.getNombre() + " (" + centro.getDireccion() + ")");
 			restablecerPanel();
-			
-		} catch(UsuarioYaExistenteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());	
-			txtLogin.selectAll();
-			txtLogin.grabFocus();
+		
 		} catch(NIFIncorrectoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtNIF.selectAll();
@@ -390,8 +433,21 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtPassword.selectAll();
 			txtPassword.grabFocus();
+		} catch(CorreoElectronicoIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtCorreoElectronico.selectAll();
+			txtCorreoElectronico.grabFocus();
+		} catch(TelefonoFijoIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtTelefonoFijo.selectAll();
+			txtTelefonoFijo.grabFocus();
+		} catch(TelefonoMovilIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtTelefonoMovil.selectAll();
+			txtTelefonoMovil.grabFocus();
 		} catch(UsuarioNoSeleccionadoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(RemoteException e) {
@@ -431,6 +487,10 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		// Eliminamos la ventana de configuración
 		frmCalendario.dispose();
 	}
+	
+	private boolean campoVacio(JTextField campo) {
+		return campo.getText().trim().equals("");
+	}
 
 	private void rellenarTiposUsuario() {
 		lstTipoUsuarioModel = new DefaultListModel();
@@ -446,16 +506,22 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 	}
 
 	private void cambiarEstadoEspecialidad(boolean estado) {
+		ComboBoxModel cmbEspecialidadModel;
+		String[] valores;
+		int i;
+		
 		lblEspecialidad.setVisible(estado);
 		cmbEspecialidad.setVisible(estado);
-		String [] valores = new String [Especialidades.values().length]; 
-		if (!estado)
-			rellenarModelo(new String [] {""});
-		else {
-			for (int i=0; i<Especialidades.values().length; i++) 
-				valores[i] = Especialidades.values()[i].toString();
-			rellenarModelo(valores);
+		valores = new String[Especialidades.values().length]; 
+		if(!estado) {
+			cmbEspecialidadModel = new DefaultComboBoxModel();
+		} else {
+			for(i = 0; i < Especialidades.values().length; i++) { 
+				valores[i] = Especialidades.values()[i].name();
+			}
+			cmbEspecialidadModel = new DefaultComboBoxModel(valores);
 		}
+		cmbEspecialidad.setModel(cmbEspecialidadModel);	
 	}
 	
 	private void lstTipoUsuarioValueChanged(ListSelectionEvent evt) {
@@ -494,6 +560,9 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		txtLogin.setText("");
 		txtPassword.setText("");
 		txtPasswordConf.setText("");
+		txtCorreoElectronico.setText("");
+		txtTelefonoFijo.setText("");
+		txtTelefonoMovil.setText("");
 		lblHorasSemanales.setText("0 horas semanales");
 		lstTipoUsuario.clearSelection();
 		lstTipoMedico.clearSelection();

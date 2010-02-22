@@ -8,6 +8,7 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 
 /**
@@ -55,25 +56,26 @@ public class Cliente implements ICliente {
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
 		switch(operacion) {
 		case ICodigosOperacionesCliente.INSERTAR:
-			if (dato instanceof Cita)
+			if(dato instanceof Cita) {
 				controlador.citaRegistrada((Cita)dato);
+			} else if(dato instanceof Sustitucion) {
+				controlador.sustitucionRegistrada((Sustitucion)dato);
+			}
 			break;
 		case ICodigosOperacionesCliente.MODIFICAR:
 			if(dato instanceof Beneficiario) {
 				controlador.beneficiarioActualizado((Beneficiario)dato);
-			}
-			else if (dato instanceof Medico || dato instanceof Administrador || dato instanceof Citador) {
+			} else if(dato instanceof Medico || dato instanceof Administrador || dato instanceof Citador) {
 				controlador.usuarioActualizado((Usuario)dato);
 			}
 			break;
 		case ICodigosOperacionesCliente.ELIMINAR:
 			if(dato instanceof Beneficiario) {
 				controlador.beneficiarioEliminado((Beneficiario)dato);
-			}
-			else if (dato instanceof Medico || dato instanceof Administrador || dato instanceof Citador) {
+				//TODO:no vale instanceof usuario?
+			} else if(dato instanceof Medico || dato instanceof Administrador || dato instanceof Citador) {
 				controlador.usuarioEliminado((Usuario)dato);
-			}
-			else if (dato instanceof Cita) {
+			} else if(dato instanceof Cita) {
 				controlador.citaAnulada((Cita)dato);
 			}
 			break;

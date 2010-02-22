@@ -12,17 +12,23 @@ public abstract class Usuario implements Serializable, Cloneable {
 	protected String password;
 	protected String nombre;
 	protected String apellidos;
+	protected String correo;
+	protected String telefono;
+	protected String movil;
 	protected CentroSalud centro;
 	
 	public Usuario() {
 	}
 	
-	public Usuario(String dni, String login, String password, String nombre, String apellidos) {
+	public Usuario(String dni, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil) {
 		this.dni = dni;
 		this.login = login;
 		this.password = password;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
+		this.correo = correo;
+		this.telefono = telefono;
+		this.movil = movil;
 	}
 
 	public abstract RolesUsuarios getRol();
@@ -67,6 +73,30 @@ public abstract class Usuario implements Serializable, Cloneable {
 		this.apellidos = apellidos;
 	}
 	
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
+	}
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public String getMovil() {
+		return movil;
+	}
+
+	public void setMovil(String movil) {
+		this.movil = movil;
+	}
+	
 	public CentroSalud getCentroSalud() {
 		return centro;
 	}
@@ -84,7 +114,7 @@ public abstract class Usuario implements Serializable, Cloneable {
 		dev = false;
 		if(o != null && o instanceof Usuario) {
 			u = (Usuario)o;
-			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos());
+			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && correo.equals(u.getCorreo()) && telefono.equals(u.getTelefono()) && movil.equals(u.getMovil());
 			if(centro == null) {
 				dev = dev & (u.getCentroSalud() == null);
 			} else {

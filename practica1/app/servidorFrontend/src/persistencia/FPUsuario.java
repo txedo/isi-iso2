@@ -30,6 +30,9 @@ public class FPUsuario {
 	private static final String COL_ROL = "rol";
 	private static final String COL_NOMBRE = "nombre";
 	private static final String COL_APELLIDOS = "apellidos";
+	private static final String COL_CORREO = "correo";
+	private static final String COL_TELEFONO = "telefono";
+	private static final String COL_MOVIL = "movil";
 	private static final String COL_ID_CENTRO = "idCentro";
 
 	public static Usuario consultar(String dni) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
@@ -72,6 +75,9 @@ public class FPUsuario {
 			usuario.setPassword(datos.getString(COL_PASSWORD));			
 			usuario.setNombre(datos.getString(COL_NOMBRE));
 			usuario.setApellidos(datos.getString(COL_APELLIDOS));
+			usuario.setCorreo(datos.getString(COL_CORREO));
+			usuario.setTelefono(datos.getString(COL_TELEFONO));
+			usuario.setMovil(datos.getString(COL_MOVIL));
 			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
 			usuario.setCentroSalud(centro);
 			// Establecemos datos adicionales de los médicos
@@ -129,6 +135,9 @@ public class FPUsuario {
 			usuario.setPassword(datos.getString(COL_PASSWORD));
 			usuario.setNombre(datos.getString(COL_NOMBRE));
 			usuario.setApellidos(datos.getString(COL_APELLIDOS));
+			usuario.setCorreo(datos.getString(COL_CORREO));
+			usuario.setTelefono(datos.getString(COL_TELEFONO));
+			usuario.setMovil(datos.getString(COL_MOVIL));
 			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
 			usuario.setCentroSalud(centro);
 			// Establecemos datos adicionales de los médicos
@@ -179,10 +188,12 @@ public class FPUsuario {
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_USUARIOS
 				+ " (" + COL_NIF + ", " + COL_LOGIN + ", " + COL_PASSWORD + ", "
 				+ COL_ROL + ", " + COL_NOMBRE + ", " + COL_APELLIDOS + ", "
-				+ COL_ID_CENTRO + ") VALUES (?, ?, ?, ?, ?, ?, ?)",
+				+ COL_CORREO + ", " + COL_TELEFONO + ", " + COL_MOVIL + ", "
+				+ COL_ID_CENTRO + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				usuario.getDni(), usuario.getLogin(), usuario.getPassword(),
 				usuario.getRol().ordinal(), usuario.getNombre(),
-				usuario.getApellidos(), usuario.getCentroSalud().getId());
+				usuario.getApellidos(), usuario.getCorreo(), usuario.getTelefono(),
+				usuario.getMovil(), usuario.getCentroSalud().getId());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Insertamos datos adicionales de los médicos
@@ -203,11 +214,13 @@ public class FPUsuario {
 		// (el DNI no se puede cambiar)
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_USUARIOS + " SET "
 				+ COL_LOGIN + " = ?, " + COL_PASSWORD + " = ?, " + COL_ROL + " = ?, "
-				+ COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_ID_CENTRO
+				+ COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_CORREO + " = ?, "
+				+ COL_TELEFONO + " = ?, " + COL_MOVIL + " = ?, " + COL_ID_CENTRO
 				+ " = ? WHERE " + COL_NIF + " = ?",
 				usuario.getLogin(), usuario.getPassword(), usuario.getRol().ordinal(),
-				usuario.getNombre(), usuario.getApellidos(),
-				usuario.getCentroSalud().getId(), usuario.getDni());
+				usuario.getNombre(), usuario.getApellidos(), usuario.getCorreo(),
+				usuario.getTelefono(), usuario.getMovil(), usuario.getCentroSalud().getId(),
+				usuario.getDni());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Modificamos datos adicionales de los médicos

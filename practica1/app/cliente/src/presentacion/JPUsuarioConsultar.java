@@ -42,9 +42,12 @@ import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaVaciaException;
 import excepciones.ContraseñaIncorrectaException;
+import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.LoginIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NombreIncorrectoException;
+import excepciones.TelefonoFijoIncorrectoException;
+import excepciones.TelefonoMovilIncorrectoException;
 import excepciones.UsuarioInexistenteException;
 
 /**
@@ -72,6 +75,12 @@ public class JPUsuarioConsultar extends JPBase {
 	private boolean passwordCambiada;
 	
 	private JLabel lblNIFBuscado;
+	private JLabel lblTelefonoMovil;
+	private JLabel lblTelefonoFijo;
+	private JLabel lblCorreoElectronico;
+	private JTextField txtTelefonoMovil;
+	private JTextField txtTelefonoFijo;
+	private JTextField txtCorreoElectronico;
 	private JPasswordField txtPassword;
 	private JLabel lblPassword;
 	private JLabel lblEspecialidad;
@@ -121,16 +130,17 @@ public class JPUsuarioConsultar extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(430, 459));
+			this.setSize(430, 459);
+			this.setPreferredSize(new java.awt.Dimension(430, 499));
 			{
 				lblHorasSemanales = new JLabel();
-				this.add(lblHorasSemanales, new AnchorConstraint(301, 770, 742, 259, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblHorasSemanales, new AnchorConstraint(382, 770, 742, 259, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblHorasSemanales.setText("0 horas semanales");
 				lblHorasSemanales.setPreferredSize(new java.awt.Dimension(97, 16));
 			}
 			{
 				btnCalendario = new JButton();
-				this.add(btnCalendario, new AnchorConstraint(298, 508, 601, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnCalendario, new AnchorConstraint(379, 508, 601, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnCalendario.setText("Ver...");
 				btnCalendario.setPreferredSize(new java.awt.Dimension(110, 23));
 				btnCalendario.setToolTipText("Sólo tienen definido un calendario laboral los usuarios de tipo Médico");
@@ -143,13 +153,13 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				lblCalendario = new JLabel();
-				this.add(lblCalendario, new AnchorConstraint(302, 309, 591, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCalendario, new AnchorConstraint(383, 309, 591, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCalendario.setText("Calendario laboral");
 				lblCalendario.setPreferredSize(new java.awt.Dimension(111, 14));
 			}
 			{
 				cmbRol = new JComboBox();
-				this.add(cmbRol, new AnchorConstraint(241, 12, 462, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(cmbRol, new AnchorConstraint(322, 12, 462, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				cmbRol.setPreferredSize(new java.awt.Dimension(277, 23));
 				cmbRol.setEnabled(false);
 				cmbRol.addItemListener(new ItemListener() {
@@ -160,7 +170,7 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				btnEliminar = new JButton();
-				this.add(btnEliminar, new AnchorConstraint(380, 161, 673, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(btnEliminar, new AnchorConstraint(461, 161, 673, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnEliminar.setText("Eliminar usuario");
 				btnEliminar.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnEliminar.addActionListener(new ActionListener() {
@@ -171,19 +181,19 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				lblCentro = new JLabel();
-				this.add(lblCentro, new AnchorConstraint(272, 321, 526, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCentro, new AnchorConstraint(353, 321, 526, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCentro.setText("Centro asignado");
 				lblCentro.setPreferredSize(new java.awt.Dimension(99, 16));
 			}
 			{
 				lblRol = new JLabel();
-				this.add(lblRol, new AnchorConstraint(244, 301, 452, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblRol, new AnchorConstraint(325, 301, 452, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblRol.setText("Tipo de usuario *");
 				lblRol.setPreferredSize(new java.awt.Dimension(119, 16));
 			}
 			{
 				txtCentro = new JTextField();
-				this.add(txtCentro, new AnchorConstraint(269, 12, 462, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtCentro, new AnchorConstraint(350, 12, 462, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtCentro.setPreferredSize(new java.awt.Dimension(277, 23));
 				txtCentro.setEditable(false);
 			}
@@ -261,7 +271,7 @@ public class JPUsuarioConsultar extends JPBase {
 				btnGuardar = new JButton();
 				btnGuardar.setText("Guardar cambios");
 				btnGuardar.setPreferredSize(new java.awt.Dimension(120, 26));
-				this.add(btnGuardar, new AnchorConstraint(378, 11, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnGuardar, new AnchorConstraint(459, 11, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnGuardar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnGuardarActionPerformed(evt);
@@ -270,10 +280,10 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				chkEditar = new JCheckBox();
-				this.add(chkEditar, new AnchorConstraint(381, 141, 665, 419, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(chkEditar, new AnchorConstraint(462, 141, 665, 419, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				chkEditar.setText("Habilitar edición");
 				chkEditar.setEnabled(false);
-				chkEditar.setPreferredSize(new java.awt.Dimension(106, 19));
+				chkEditar.setPreferredSize(new java.awt.Dimension(106, 14));
 				chkEditar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						chkEditarActionPerformed(evt);
@@ -288,7 +298,7 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				lblCamposOblig = new JLabel();
-				this.add(lblCamposOblig, new AnchorConstraint(354, 12, 875, 673, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(lblCamposOblig, new AnchorConstraint(435, 12, 875, 673, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				lblCamposOblig.setText("* Campos obligatorios");
 				lblCamposOblig.setHorizontalAlignment(SwingConstants.TRAILING);
 				lblCamposOblig.setPreferredSize(new java.awt.Dimension(129, 17));
@@ -308,13 +318,13 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			{
 				txtEspecialidad = new JTextField();
-				this.add(txtEspecialidad, new AnchorConstraint(326, 12, 760, 139, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(txtEspecialidad, new AnchorConstraint(407, 12, 760, 139, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtEspecialidad.setEditable(false);
 				txtEspecialidad.setPreferredSize(new java.awt.Dimension(279, 23));
 			}
 			{
 				lblEspecialidad = new JLabel();
-				this.add(lblEspecialidad, new AnchorConstraint(331, 282, 811, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblEspecialidad, new AnchorConstraint(412, 282, 811, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblEspecialidad.setText("Especialidad *");
 				lblEspecialidad.setPreferredSize(new java.awt.Dimension(111, 13));
 			}
@@ -334,6 +344,42 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(lblPassword, new AnchorConstraint(188, 254, 445, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblPassword.setText("Contraseña *");
 				lblPassword.setPreferredSize(new java.awt.Dimension(99, 16));
+			}
+			{
+				txtTelefonoMovil = new JTextField();
+				this.add(txtTelefonoMovil, new AnchorConstraint(295, 12, 874, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtTelefonoMovil.setPreferredSize(new java.awt.Dimension(277, 23));
+				txtTelefonoMovil.setEditable(false);
+			}
+			{
+				txtTelefonoFijo = new JTextField();
+				this.add(txtTelefonoFijo, new AnchorConstraint(268, 12, 788, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtTelefonoFijo.setPreferredSize(new java.awt.Dimension(277, 23));
+				txtTelefonoFijo.setEditable(false);
+			}
+			{
+				txtCorreoElectronico = new JTextField();
+				this.add(txtCorreoElectronico, new AnchorConstraint(240, 12, 700, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtCorreoElectronico.setPreferredSize(new java.awt.Dimension(277, 23));
+				txtCorreoElectronico.setEditable(false);
+			}
+			{
+				lblTelefonoMovil = new JLabel();
+				this.add(lblTelefonoMovil, new AnchorConstraint(299, 277, 861, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblTelefonoMovil.setText("Teléfono móvil");
+				lblTelefonoMovil.setPreferredSize(new java.awt.Dimension(110, 15));
+			}
+			{
+				lblTelefonoFijo = new JLabel();
+				this.add(lblTelefonoFijo, new AnchorConstraint(272, 277, 776, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblTelefonoFijo.setText("Teléfono fijo");
+				lblTelefonoFijo.setPreferredSize(new java.awt.Dimension(110, 15));
+			}
+			{
+				lblCorreoElectronico = new JLabel();
+				this.add(lblCorreoElectronico, new AnchorConstraint(244, 273, 690, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblCorreoElectronico.setText("Correo electrónico");
+				lblCorreoElectronico.setPreferredSize(new java.awt.Dimension(108, 15));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -402,6 +448,9 @@ public class JPUsuarioConsultar extends JPBase {
 		txtPasswordConf.setText("");
 		txtNombre.setText(usuario.getNombre());
 		txtApellidos.setText(usuario.getApellidos());
+		txtCorreoElectronico.setText(usuario.getCorreo());
+		txtTelefonoFijo.setText(usuario.getTelefono());
+		txtTelefonoMovil.setText(usuario.getMovil());
 		txtCentro.setText(usuario.getCentroSalud().getNombre() + " (" + usuario.getCentroSalud().getDireccion() + ")");
 		if(usuario.getRol().equals(RolesUsuarios.Medico)) {
 			rellenarTiposUsuario(new String[] { RolesUsuarios.Medico.name() + " (" + ((Medico)usuario).getTipoMedico().getCategoria().name() + ")" });
@@ -454,6 +503,15 @@ public class JPUsuarioConsultar extends JPBase {
 					throw new ContraseñaIncorrectaException("Las contraseñas no coinciden.");
 				}
 			}
+			if(!campoVacio(txtCorreoElectronico)) {
+				Validacion.comprobarCorreoElectronico(txtCorreoElectronico.getText().trim());
+			}
+			if(!campoVacio(txtTelefonoFijo)) {
+				Validacion.comprobarTelefonoFijo(txtTelefonoFijo.getText().trim());
+			}
+			if(!campoVacio(txtTelefonoMovil)) {
+				Validacion.comprobarTelefonoMovil(txtTelefonoMovil.getText().trim());
+			}
 			
 			// Creamos un nuevo usuario con los datos introducidos
 			// (si el usuario era médico no puede cambiar de rol)
@@ -475,8 +533,11 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			usuarioModif.setNombre(txtNombre.getText().trim());
 			usuarioModif.setApellidos(txtApellidos.getText().trim());
+			usuarioModif.setCorreo(txtCorreoElectronico.getText().trim());
+			usuarioModif.setTelefono(txtTelefonoFijo.getText().trim());
+			usuarioModif.setMovil(txtTelefonoMovil.getText().trim());
 			
-			// Dejamos el mismo médico
+			// Dejamos el mismo centro de salud
 			usuarioModif.setCentroSalud(usuario.getCentroSalud());
 			
 			// Modificamos el tipo de médico si es necesario
@@ -496,11 +557,11 @@ public class JPUsuarioConsultar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());	
 
 		} catch(NombreIncorrectoException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "El nombre del usuario sólo puede contener letras y espacios.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtNombre.selectAll();
 			txtNombre.grabFocus();
 		} catch(ApellidoIncorrectoException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Los apellidos del usuario sólo pueden contener letras y espacios.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtApellidos.selectAll();
 			txtApellidos.grabFocus();
 		} catch(LoginIncorrectoException e) {
@@ -511,13 +572,24 @@ public class JPUsuarioConsultar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtPassword.selectAll();
 			txtPassword.grabFocus();
-			
+		} catch(CorreoElectronicoIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtCorreoElectronico.selectAll();
+			txtCorreoElectronico.grabFocus();
+		} catch(TelefonoFijoIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtTelefonoFijo.selectAll();
+			txtTelefonoFijo.grabFocus();
+		} catch(TelefonoMovilIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
+			txtTelefonoMovil.selectAll();
+			txtTelefonoMovil.grabFocus();
+		
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());		
 		} catch(Exception e) {
-			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
 	}
@@ -661,12 +733,19 @@ public class JPUsuarioConsultar extends JPBase {
 		}
 	}
 
+	private boolean campoVacio(JTextField campo) {
+		return campo.getText().trim().equals("");
+	}
+	
 	private void cambiarEdicion(boolean activar) {
 		txtNombre.setEditable(activar);
 		txtApellidos.setEditable(activar);
 		txtLogin.setEditable(activar);
 		txtPassword.setEditable(activar);
 		txtPasswordConf.setEditable(activar);
+		txtCorreoElectronico.setEditable(activar);
+		txtTelefonoFijo.setEditable(activar);
+		txtTelefonoMovil.setEditable(activar);
 		cmbRol.setEnabled(activar);
 		btnGuardar.setEnabled(activar);
 		btnEliminar.setEnabled(activar);
@@ -706,6 +785,9 @@ public class JPUsuarioConsultar extends JPBase {
 		txtNombre.setText("");
 		txtApellidos.setText("");
 		txtCentro.setText("");
+		txtCorreoElectronico.setText("");
+		txtTelefonoFijo.setText("");
+		txtTelefonoMovil.setText("");
 		chkEditar.setEnabled(false);
 		chkEditar.setSelected(false);
 		cmbRol.setSelectedIndex(-1);
@@ -761,6 +843,12 @@ public class JPUsuarioConsultar extends JPBase {
 		txtPassword.setVisible(false);
 		lblPasswordConf.setVisible(false);
 		txtPasswordConf.setVisible(false);
+		lblCorreoElectronico.setVisible(false);
+		txtCorreoElectronico.setVisible(false);
+		lblTelefonoFijo.setVisible(false);
+		txtTelefonoFijo.setVisible(false);
+		lblTelefonoMovil.setVisible(false);
+		txtTelefonoMovil.setVisible(false);
 		lblRol.setVisible(false);
 		cmbRol.setVisible(false);
 		lblCalendario.setVisible(false);

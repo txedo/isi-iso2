@@ -64,12 +64,12 @@ public class PruebasUsuarios extends PruebasBase {
 			cabecera = new Cabecera();
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro Provincial", "Calle Ninguna, s/n");
-			medico1 = new Medico("12345678", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
-			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", cabecera);
-			medico3 = new Medico("58782350", "jjj", Encriptacion.encriptarPasswordSHA1("jjj"), "Juan", "P. F.", especialista);
-			medico4 = new Medico("91295016", "otro", Encriptacion.encriptarPasswordSHA1("otro"), "Ana", "R. M.", cabecera);
-			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.");
-			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.");
+			medico1 = new Medico("12345678", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
+			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "", cabecera);
+			medico3 = new Medico("58782350", "jjj", Encriptacion.encriptarPasswordSHA1("jjj"), "Juan", "P. F.", "", "987654321", "678901234", especialista);
+			medico4 = new Medico("91295016", "otro", Encriptacion.encriptarPasswordSHA1("otro"), "Ana", "R. M.", "anarm87@uclm.es", "", "666777012", cabecera);
+			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "", "", "");
+			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.", "mari@terra.com", "", "666111222");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro1);
@@ -184,7 +184,7 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Intentamos crear un usuario con la sesión del citador
-			usuario = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
+			usuario = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "", "", "", especialista);
 			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
@@ -194,7 +194,7 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			usuario = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
+			usuario = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "", "", "", especialista);
 			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
@@ -204,7 +204,7 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Intentamos añadir un usuario con un DNI que ya existe en la BD
-			usuario = new Administrador(citador1.getDni(), "error", "error", "", "");
+			usuario = new Administrador(citador1.getDni(), "error", "error", "", "", "", "", "");
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			fail("Se esperaba una excepción UsuarioYaExistenteException");
 		} catch(UsuarioYaExistenteException e) {
@@ -214,7 +214,7 @@ public class PruebasUsuarios extends PruebasBase {
 
 		try {
 			// Intentamos añadir un usuario con el NIF de un beneficiario
-			usuario = new Medico(beneficiario1.getNif(), "error", "error", "", "", cabecera);
+			usuario = new Medico(beneficiario1.getNif(), "error", "error", "", "", "", "", "", cabecera);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			fail("Se esperaba una excepción UsuarioYaExistenteException");
 		} catch(UsuarioYaExistenteException e) {
@@ -224,7 +224,7 @@ public class PruebasUsuarios extends PruebasBase {
 
 		try {
 			// Intentamos añadir un usuario con un login existente
-			usuario = new Citador("11884654L", medico3.getLogin(), "error", "", "");
+			usuario = new Citador("11884654L", medico3.getLogin(), "error", "", "", "", "", "");
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			fail("Se esperaba una excepción UsuarioYaExistenteException");
 		} catch(UsuarioYaExistenteException e) {
@@ -234,7 +234,7 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Creamos un nuevo usuario con la sesión del administrador
-			usuario = new Administrador("77777777", "adminnuevo", "nuevoadmin", "Pepe", "A. B.");
+			usuario = new Administrador("77777777", "adminnuevo", "nuevoadmin", "Pepe", "A. B.", "pepeadmin@yahoo.es", "987111111", "678111111");
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			// Comprobamos que el usuario se ha creado correctamente
 			// (al crear el usuario su contraseña se habrá encriptado
@@ -244,7 +244,7 @@ public class PruebasUsuarios extends PruebasBase {
 			usuario.setCentroSalud(centro1);
 			assertEquals(usuario, usuarioGet);
 			// Creamos un nuevo médico con la sesión del administrador
-			usuario = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
+			usuario = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "", "", "", especialista);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			// Comprobamos que el usuario se ha creado correctamente
 			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, usuario.getDni());
@@ -258,7 +258,7 @@ public class PruebasUsuarios extends PruebasBase {
 		try {
 			// Intentamos crear un usuario sin haber ningún centro
 			AgenteFrontend.getAgente().getConexion().prepareStatement("DELETE FROM centros").executeUpdate();
-			usuario = new Medico("34712394", "otromas", "error", "Juan", "P. C.", especialista);
+			usuario = new Medico("34712394", "otromas", "error", "Juan", "P. C.", "", "", "", especialista);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
@@ -300,7 +300,7 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Intentamos modificar un usuario inexistente
-			usuario = new Citador("91295019", "otro2", "otro", "Anaasa", "R. M.");
+			usuario = new Citador("91295019", "otro2", "otro", "Anaasa", "R. M.", "", "", "");
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.MODIFICAR_USUARIO, usuario);
 			fail("Se esperaba una excepción UsuarioInexistenteException");
 		} catch(UsuarioInexistenteException e) {
@@ -372,7 +372,7 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Intentamos eliminar un médico que aún no se ha creado
-			usuario = new Medico("78256514", "error", "error", "", "", pediatra);
+			usuario = new Medico("78256514", "error", "error", "", "", "", "", "", pediatra);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, usuario);
 			fail("Se esperaba una excepción UsuarioInexistenteException");
 		} catch(UsuarioInexistenteException e) {
