@@ -1,6 +1,8 @@
 package presentacion;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
@@ -39,6 +41,9 @@ public class JPUsuarios extends JPBase {
 	private JPUsuarioConsultar jPanelConsultarModificar;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
+	private JScrollPane jScrollConsultar;
+	private JScrollPane jScrollRegistrar;
+	private JScrollPane jScrollConsultarModificar;
 
 	public JPUsuarios() {
 		this(null, null);
@@ -79,20 +84,38 @@ public class JPUsuarios extends JPBase {
 				jSeparator.setPreferredSize(new java.awt.Dimension(5, 390));
 			}
 			{
-				jPanelRegistrar = new JPUsuarioRegistrar(this.getFrame(), this.getControlador());
-				this.add(jPanelRegistrar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelRegistrar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollConsultar = new JScrollPane();
+				this.add(jScrollConsultar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollConsultar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollConsultar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollConsultar.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelConsultar = new JPUsuarioConsultar(this.getFrame(), this.getControlador());
+					jScrollConsultar.setViewportView(jPanelConsultar);
+					jPanelConsultar.desactivarModificacion();					
+				}
 			}
 			{
-				jPanelConsultarModificar = new JPUsuarioConsultar(this.getFrame(), this.getControlador());
-				this.add(jPanelConsultarModificar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelConsultarModificar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollRegistrar = new JScrollPane();
+				this.add(jScrollRegistrar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollRegistrar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollRegistrar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollRegistrar.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelRegistrar = new JPUsuarioRegistrar(this.getFrame(), this.getControlador());
+					jScrollRegistrar.setViewportView(jPanelRegistrar);
+				}
 			}
 			{
-				jPanelConsultar = new JPUsuarioConsultar(this.getFrame(), this.getControlador());
-				this.add(jPanelConsultar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelConsultar.setPreferredSize(new java.awt.Dimension(406, 390));
-				jPanelConsultar.desactivarModificacion();
+				jScrollConsultarModificar = new JScrollPane();
+				this.add(jScrollConsultarModificar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollConsultarModificar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollConsultarModificar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollConsultarModificar.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelConsultarModificar = new JPUsuarioConsultar(this.getFrame(), this.getControlador());
+					jScrollConsultarModificar.setViewportView(jPanelConsultarModificar);
+				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -120,26 +143,26 @@ public class JPUsuarios extends JPBase {
 		
 		operacionSeleccionada = evt.getOperacion();
 		
-		if(jPanelRegistrar != null) {
-			jPanelRegistrar.setVisible(false);
+		if(jScrollRegistrar != null) {
+			jScrollRegistrar.setVisible(false);
 		}
-		if(jPanelConsultarModificar != null) {
-			jPanelConsultarModificar.setVisible(false);
+		if(jScrollConsultarModificar != null) {
+			jScrollConsultarModificar.setVisible(false);
 		}
-		if(jPanelConsultar != null) {
-			jPanelConsultar.setVisible(false);
+		if(jScrollConsultar != null) {
+			jScrollConsultar.setVisible(false);
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.RegistrarUsuario) {
-			jPanelRegistrar.setVisible(true);
-			jPanelRegistrar.repaint();
-		}	
+			jScrollRegistrar.setVisible(true);
+			jScrollRegistrar.repaint();
+		}
 		if(operacionSeleccionada == OperacionesInterfaz.ConsultarModificarUsuario) {
-			jPanelConsultarModificar.setVisible(true);
-			jPanelConsultarModificar.repaint();
+			jScrollConsultarModificar.setVisible(true);
+			jScrollConsultarModificar.repaint();
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.ConsultarUsuario) {
-			jPanelConsultar.setVisible(true);
-			jPanelConsultar.repaint();
+			jScrollConsultar.setVisible(true);
+			jScrollConsultar.repaint();
 		}
 		
 		// Notificamos que ha cambiado la operación seleccionada

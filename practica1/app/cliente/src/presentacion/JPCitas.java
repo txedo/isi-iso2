@@ -252,9 +252,9 @@ public class JPCitas extends JPBase {
 		case TramitarCita:
 			jPanelTramitar.usuarioActualizado(usuario);
 			break;
-		//case TramitarCitaVolante:
-		//	jPanelVolanteTramitar.usuarioActualizado(usuario);
-		//	break;
+		case TramitarCitaVolante:
+			jPanelVolanteTramitar.usuarioActualizado(usuario);
+			break;
 		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.usuarioActualizado(usuario);
 			break;
@@ -272,9 +272,9 @@ public class JPCitas extends JPBase {
 		case TramitarCita:
 			jPanelTramitar.usuarioEliminado(usuario);
 			break;
-		//case TramitarCitaVolante:
-		//	jPanelVolanteTramitar.usuarioEliminado(usuario);
-		//	break;
+		case TramitarCitaVolante:
+			jPanelVolanteTramitar.usuarioEliminado(usuario);
+			break;
 		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.usuarioEliminado(usuario);
 			break;

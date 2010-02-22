@@ -131,5 +131,6 @@ INSERT INTO usuarios VALUES ("12345678E", "especialista", "c185fca5199a0e535100a
 INSERT INTO tiposmedico VALUES ("12345678E", 2, "Neurologia");
 INSERT INTO periodostrabajo (dniMedico, horaInicio, horaFinal, dia) VALUES ("12345678C", 9, 14, 2);
 INSERT INTO periodostrabajo (dniMedico, horaInicio, horaFinal, dia) VALUES ("12345678P", 9, 14, 2);
+INSERT INTO periodostrabajo (dniMedico, horaInicio, horaFinal, dia) VALUES ("12345678E", 9, 14, 2);
 INSERT INTO beneficiarios VALUES ("01233210A", "112233332211", "abcdef", "ghijkl", "", "1980-01-01", "900000000", "600000000", "12345678C", 1);
 INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp) VALUES ("01233210A", "calle prueba", "", "", "", "Ciudad Real", "Ciudad Real", 13003);
