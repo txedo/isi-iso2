@@ -578,7 +578,7 @@ public class JPUsuarioConsultar extends JPBase {
 						}
 						
 						// Mostramos las citas que se han anulado al eliminar el médico
-						if (citas.size() > 0) {
+						if(citas.size() > 0) {
 							frmAviso = new JFAvisos();
 							frmAviso.mostrarCitas("Las siguientes citas se han anulado:", citas);
 						}

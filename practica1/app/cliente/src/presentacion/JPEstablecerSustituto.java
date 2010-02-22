@@ -23,6 +23,8 @@ import presentacion.auxiliar.UsuarioBuscadoListener;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
@@ -145,7 +147,6 @@ public class JPEstablecerSustituto extends JPBase {
 					}
 				});
 			}
-			
 			{
 				lblHora = new JLabel();
 				this.add(lblHora, new AnchorConstraint(256, 252, 657, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
@@ -174,7 +175,7 @@ public class JPEstablecerSustituto extends JPBase {
 				this.add(dtcDiaSustitucion, new AnchorConstraint(226, 12, 144, 116, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				dtcDiaSustitucion.setPreferredSize(new java.awt.Dimension(302, 23));
 				dtcDiaSustitucion.setDateFormatString("dd/MM/yyyy");
-				dtcDiaSustitucion.setToolTipText("Formato dd/MM/yyyy. Para más ayuda haga clic en el icono de la derecha.");
+				dtcDiaSustitucion.setToolTipText("Formato dd/MM/yyyy. Haga clic en el icono de la derecha para desplegar un calendario.");
 				dtcDiaSustitucion.setMinSelectableDate(new Date());
 			}
 			{
@@ -327,6 +328,8 @@ public class JPEstablecerSustituto extends JPBase {
 	}
 
 	private void btnAsignarSustitutoActionPerformed(ActionEvent evt) {
+		JFAvisos frmAviso;
+		Vector<Cita> citas;
 		Vector<Date> dias;
 		Medico sustituto;
 
@@ -344,9 +347,18 @@ public class JPEstablecerSustituto extends JPBase {
 				// Solicitamos que se asigne la sustitución
 				getControlador().asignarSustituto(medico, dias, (Integer)spnHoraDesde.getValue(), (Integer)spnHoraHasta.getValue(), sustituto);
 
+				// Obtenemos las citas que se ven afectadas por la sustitución
+				citas = getControlador().consultarCitasFechaMedico(medico.getDni(), dtcDiaSustitucion.getDate(), (Integer)spnHoraDesde.getValue(), (Integer)spnHoraHasta.getValue());
+
 				// Mostramos el resultado de la operación y limpiamos el panel
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La sustitución se ha almacenado correctamente.");
 				restablecerPanel();
+
+				// Mostramos las citas afectadas
+				if(citas.size() > 0) {
+					frmAviso = new JFAvisos();
+					frmAviso.mostrarCitas("Las siguientes citas ahora serán atendidas por el médico sustituto:", citas);
+				}
 				
 			}
 			

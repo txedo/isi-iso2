@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import persistencia.AgenteFrontend;
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
@@ -25,17 +24,13 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Sesion;
-import dominio.conocimiento.Usuario;
 import dominio.control.GestorMedicos;
 import dominio.control.GestorSesiones;
-import dominio.control.GestorUsuarios;
 import dominio.control.ServidorFrontend;
 import excepciones.MedicoInexistenteException;
 import excepciones.MedicoYaExistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
-import excepciones.UsuarioInexistenteException;
-import excepciones.UsuarioYaExistenteException;
 
 /**
  * Pruebas del Gestor de Médicos.
@@ -53,6 +48,7 @@ public class PruebasMedicos extends PruebasBase {
 	private Beneficiario beneficiario1;
 	private Direccion direccion1;
 	private ISesion sesionCitador;
+	private ISesion sesionMedico;
 	private ISesion sesionAdmin;
 	private Pediatra pediatra;
 	private Especialista especialista;
@@ -105,8 +101,9 @@ public class PruebasMedicos extends PruebasBase {
 			FPUsuario.insertar(citador1);
 			FPUsuario.insertar(admin1);
 			FPBeneficiario.insertar(beneficiario1);
-			// Iniciamos dos sesiones con roles de citador y administrador
+			// Iniciamos tres sesiones con roles de citador y administrador
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
+			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
 			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "nimda");
 		} catch(Exception e) {
 			fail(e.toString());
@@ -390,8 +387,8 @@ public class PruebasMedicos extends PruebasBase {
 			}
 			
 			try {
-				// Intentamos consultar el horario de un médico con el rol de citador
-				GestorMedicos.consultarHorarioMedico(sesionCitador.getId(), medico1.getDni());
+				// Intentamos consultar el horario de un médico con el rol de médico
+				GestorMedicos.consultarHorarioMedico(sesionMedico.getId(), medico1.getDni());
 				fail("Se esperaba una excepción OperacionIncorrectaException");
 			} catch(OperacionIncorrectaException e) {
 			} catch(Exception e) {

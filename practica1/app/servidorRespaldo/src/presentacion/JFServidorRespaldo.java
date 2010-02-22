@@ -2,7 +2,6 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.ConfiguracionRespaldo;
 import dominio.control.ControladorRespaldo;
 import java.awt.BorderLayout;
@@ -29,8 +28,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-
 import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.IVentanaEstado;
 import presentacion.auxiliar.VentanaCerradaListener;
 
 /**

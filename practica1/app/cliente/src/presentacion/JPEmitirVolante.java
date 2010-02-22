@@ -275,7 +275,7 @@ public class JPEmitirVolante extends JPBase {
 		if (valido)
 			try {
 				idVolante = getControlador().emitirVolante(beneficiario, ((Medico)((Sesion)(getControlador().getSesion())).getUsuario()), especialistas.get(lstEspecialistas.getSelectedIndex()));
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante se ha emitido para el beneficiario. El identificador de dicho volante es " + idVolante);
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante del beneficiario se ha emitido correctamente.\nEl identificador asignado al volante es: " + idVolante + ".");
 				restablecerPanel();
 			} catch (RemoteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
