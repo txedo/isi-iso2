@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.EventObject;
 import java.util.Vector;
@@ -22,11 +23,9 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import presentacion.auxiliar.BeneficiarioBuscadoListener;
 import presentacion.auxiliar.ComparatorMedicosApellido;
 import presentacion.auxiliar.Dialogos;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
@@ -37,6 +36,7 @@ import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Sesion;
+import dominio.conocimiento.Volante;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.MedicoInexistenteException;
@@ -92,7 +92,7 @@ public class JPEmitirVolante extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(565, 450));
+			this.setPreferredSize(new java.awt.Dimension(565, 483));
 			{
 				jPanelMedico = new JPanel();
 				AnchorLayout jPanelMedicoLayout = new AnchorLayout();
@@ -144,8 +144,8 @@ public class JPEmitirVolante extends JPBase {
 				{
 					btnAceptar = new JButton();
 					jPanelMedico.add(btnAceptar, new AnchorConstraint(192, 11, 932, 842, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
-					btnAceptar.setText("Aceptar");
-					btnAceptar.setPreferredSize(new java.awt.Dimension(77, 23));
+					btnAceptar.setText("Emitir volante");
+					btnAceptar.setPreferredSize(new java.awt.Dimension(129, 26));
 					btnAceptar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnAceptarActionPerformed(evt);
@@ -269,16 +269,23 @@ public class JPEmitirVolante extends JPBase {
 	}
 	
 	private void btnAceptarActionPerformed(ActionEvent evt) {
-		boolean valido = true;
+		SimpleDateFormat formatoFecha;
+		Volante volante;
+		boolean valido;
 		
-		if (valido && lstEspecialistas.getSelectedIndex()==-1) {
+		valido = true;
+		if(lstEspecialistas.getSelectedIndex()==-1) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe seleccionar un especialista");
 			valido = false;
 		}
-		if (valido)
+		if(valido) {
 			try {
+				// Solicitamos al servidor que se cree el volante
 				idVolante = getControlador().emitirVolante(beneficiario, ((Medico)((Sesion)(getControlador().getSesion())).getUsuario()), especialistas.get(lstEspecialistas.getSelectedIndex()));
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante del beneficiario se ha emitido correctamente.\nEl identificador asignado al volante es: " + idVolante + ".");
+				volante = getControlador().consultarVolante(idVolante);
+				// Recuperamos el volante y mostramos sus datos
+				formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante del beneficiario se ha emitido correctamente.\nEl identificador asignado al volante es " + idVolante + "y se podrá\nutilizar hasta el " + formatoFecha.format(volante.getFechaCaducidad()) + ".");
 				restablecerPanel();
 			} catch (RemoteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
@@ -287,6 +294,7 @@ public class JPEmitirVolante extends JPBase {
 			} catch (Exception e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 			}
+		}
 	}
 	
 	private void limpiarPanelMedico() {

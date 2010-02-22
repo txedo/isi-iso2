@@ -9,6 +9,8 @@ import java.beans.PropertyChangeListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.Hashtable;
@@ -107,7 +109,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
 			this.setSize(430, 390);
-			this.setPreferredSize(new java.awt.Dimension(430, 501));
+			this.setPreferredSize(new java.awt.Dimension(430, 493));
 			{
 				btnBuscarVolante = new JButton();
 				this.add(btnBuscarVolante, new AnchorConstraint(228, 11, 557, 822, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
@@ -278,6 +280,8 @@ public class JPCitaVolanteTramitar extends JPBase {
 	}
 	
 	private void btnBuscarVolanteActionPerformed(ActionEvent evt) {
+		SimpleDateFormat formatoFecha;
+		
 		// Borramos los datos de la última tramitación de cita
 		limpiarCamposTramitacion();
 		txtMedicoAsignado.setText("");
@@ -299,6 +303,10 @@ public class JPCitaVolanteTramitar extends JPBase {
 			if(beneficiario != null && !volante.getBeneficiario().equals(beneficiario)) {
 				throw new IdVolanteIncorrectoException("El volante seleccionado no fue emitido para el beneficiario con NIF " + beneficiario.getNif() + ".");
 			}
+			if(volante.getFechaCaducidad().before(new Date())) {
+				formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+				throw new IdVolanteIncorrectoException("El volante seleccionado caducó el " + formatoFecha.format(volante.getFechaCaducidad()) + ".");
+			}
 			
 			// Mostramos los datos del volante encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Volante encontrado.");
@@ -306,10 +314,8 @@ public class JPCitaVolanteTramitar extends JPBase {
 			txtMedicoAsignado.setText(volante.getReceptor().getApellidos() + ", " + volante.getReceptor().getNombre() + " (" + volante.getReceptor().getDni() + ")");
 			txtCentro.setText(volante.getReceptor().getCentroSalud().getNombre() + "; " + volante.getReceptor().getCentroSalud().getDireccion());
 			
-			mostrarFechasyHorasLaborablesMedico();
-			
-			// Activamos la tramitación de citas
-			cambiarEstadoTramitacion(true);
+			// Mostramos las fechas y horas disponibles para pedir una cita
+			mostrarHorasCitasMedico();
 
 		} catch(IdVolanteIncorrectoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
@@ -325,8 +331,12 @@ public class JPCitaVolanteTramitar extends JPBase {
 		}
 	}
 	
-	private void mostrarFechasyHorasLaborablesMedico() {
+	private void mostrarHorasCitasMedico() {
+		Vector<DiaSemana> diasDesactivados;
+		Calendar cal;
+		
 		try {
+			
 			// Consultamos al servidor toda la información
 			// necesaria para el panel de tramitación
 			diasOcupados = getControlador().consultarDiasCompletos(volante.getReceptor().getDni());
@@ -336,9 +346,11 @@ public class JPCitaVolanteTramitar extends JPBase {
 			// Deshabilitamos los días de la semana que no son
 			// laborables para el médico del beneficiario
 			dtcDiaCita.quitarDiasSemanaDesactivados();
+			diasDesactivados = new Vector<DiaSemana>();
 			for(DiaSemana dia : DiaSemana.values()) {
 				if(horasCitas.get(dia) == null || horasCitas.get(dia).size() == 0) {
 					dtcDiaCita.ponerDiaSemanaDesactivado(dia);
+					diasDesactivados.add(dia);
 				}
 			}
 			
@@ -349,6 +361,22 @@ public class JPCitaVolanteTramitar extends JPBase {
 			for(Date dia : diasOcupados) {
 				dtcDiaCita.ponerFechaDesactivada(dia);
 			}
+			
+			// Buscamos el primer día y hora disponible para una cita
+			cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			cal.set(Calendar.HOUR, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			while(diasDesactivados.contains(Utilidades.diaFecha(cal.getTime())) || diasOcupados.contains(cal.getTime())) {
+				cal.add(Calendar.DAY_OF_MONTH, 1);
+			}
+			dtcDiaCita.setDate(cal.getTime());
+			UtilidadesListaHoras.obtenerListaHoras(dtcDiaCita, horasCitas, citasOcupadas, cmbHorasCitas);
+
+			// Activamos la tramitación de citas
+			cambiarEstadoTramitacion(true);
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -387,7 +415,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				diaCita = new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes());
 				// Consultamos qué médico daría realmente la cita
 				medico = getControlador().consultarMedicoCita(volante.getReceptor().getDni(), diaCita);
-				if(medico.equals(volante.getReceptor())) {
+				if(medico.getDni().equals(volante.getReceptor().getDni())) {
 					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + ")");
 				} else {
 					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + "), sustituye a " + volante.getReceptor().getApellidos() + ", " + volante.getReceptor().getNombre() + " (" + volante.getReceptor().getDni() + ")");
@@ -529,7 +557,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 					// Otro cliente ha registrado una cita para el mismo médico del volante
 					// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico.");
-					mostrarFechasyHorasLaborablesMedico();
+					mostrarHorasCitasMedico();
 				}
 			} catch(SQLException e) {
 				e.printStackTrace();
@@ -548,13 +576,13 @@ public class JPCitaVolanteTramitar extends JPBase {
 		if(beneficiario != null && volante != null) {
 			if(volante.getCita() != null && volante.getCita().equals(cita)) {
 				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado la cita desde otro cliente para este volante.");
-				mostrarFechasyHorasLaborablesMedico();
+				mostrarHorasCitasMedico();
 			}
 			else if (cita.getMedico().equals(volante.getReceptor())) {
 				// Otro cliente ha anulado una cita para el mismo médico del volante
 				// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
 				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico.");
-				mostrarFechasyHorasLaborablesMedico();
+				mostrarHorasCitasMedico();
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 package dominio.conocimiento;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Clase que representa un volante que relaciona un beneficiario, un médico
@@ -15,15 +16,17 @@ public class Volante implements Serializable {
 	private Medico receptor;
 	private Beneficiario beneficiario;
 	private Cita cita;
+	private Date fechaCaducidad;
 	
 	public Volante() {
 	}
 	
-	public Volante(Medico emisor, Medico receptor, Beneficiario beneficiario, Cita cita) {
+	public Volante(Medico emisor, Medico receptor, Beneficiario beneficiario, Cita cita, Date fechaCaducidad) {
 		this.emisor = emisor;
 		this.receptor = receptor;
 		this.beneficiario = beneficiario;
 		this.cita = cita;
+		this.fechaCaducidad = fechaCaducidad;
 	}
 
 	public long getId() {
@@ -66,6 +69,14 @@ public class Volante implements Serializable {
 		this.cita = cita;
 	}
 
+	public Date getFechaCaducidad() {
+		return fechaCaducidad;
+	}
+
+	public void setFechaCaducidad(Date fechaCaducidad) {
+		this.fechaCaducidad = fechaCaducidad;
+	}
+	
 	public boolean equals(Object o) {
 		Volante v;
 		boolean dev;
@@ -73,7 +84,7 @@ public class Volante implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Volante) {
 			v = (Volante)o;
-			dev = receptor.equals(v.getReceptor()) && emisor.equals(v.getEmisor()) && beneficiario.equals(v.getBeneficiario());
+			dev = receptor.equals(v.getReceptor()) && emisor.equals(v.getEmisor()) && beneficiario.equals(v.getBeneficiario()) && Utilidades.fechaIgual(fechaCaducidad, v.getFechaCaducidad(), false);
 			if(cita == null) {
 				dev = dev && v.getCita() == null;
 			} else {

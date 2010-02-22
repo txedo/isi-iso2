@@ -154,6 +154,7 @@ public class GestorSesiones {
 		operaciones = new Vector<Operaciones>();
 		operaciones.add(Operaciones.ConsultarBeneficiario);
 		operaciones.add(Operaciones.ConsultarCentros);
+		operaciones.add(Operaciones.ConsultarVolante);
 		
 		// Agregamos las operaciones permitidas para citadores y administradores
 		if(sesion.getRol() == RolesUsuarios.Administrador.ordinal() || sesion.getRol() == RolesUsuarios.Citador.ordinal()) {
@@ -166,7 +167,6 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.TramitarCitaVolante);
 			operaciones.add(Operaciones.AnularCita);
-			operaciones.add(Operaciones.ConsultarVolante);
 			operaciones.add(Operaciones.ConsultarMedico);
 		}
 		

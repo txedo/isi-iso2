@@ -234,7 +234,17 @@ public class GestorMedicos {
 				throw new FechaNoValidaException("El médico que se quiere sustituir ya está siendo sustituido por otro médico en todas o algunas de las horas indicadas.");
 			}
 		}
-		 
+		
+		// Comprobamos que el médico no esté sustituyendo a otro
+		// médico en todo o parte del rango de horas indicado
+		sustituciones = FPSustitucion.consultarPorSustituto(medico.getDni());
+		for(Sustitucion sustitucion : sustituciones) {
+			if(Utilidades.fechaIgual(dia, sustitucion.getDia(), false)
+			 && sustitucion.horaEnSustitucion(horaDesde, horaHasta)) {
+				throw new FechaNoValidaException("El médico que se quiere sustituir tiene una sustitución asignada en todas o algunas de las horas indicadas.");
+			}
+		}
+		
 		// Obtenemos los médicos del sistema que son del mismo tipo
 		// que el médico pasado como parámetro, para limitar un
 		// poco la búsqueda de sustitutos

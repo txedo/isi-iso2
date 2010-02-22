@@ -27,6 +27,7 @@ public class FPVolante {
 	private static final String COL_DNI_MEDICO_EMISOR = "dniMedicoEmisor";
 	private static final String COL_DNI_MEDICO_RECEPTOR = "dniMedicoReceptor";
 	private static final String COL_ID_CITA = "idCita";
+	private static final String COL_FECHA_CADUCIDAD = "fechaCaducidad";
 	
 	public static Volante consultar(long id) throws SQLException, VolanteNoValidoException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
@@ -63,6 +64,7 @@ public class FPVolante {
 			volante.setEmisor(medEmisor);
 			volante.setReceptor(medReceptor);
 			volante.setCita(cita);
+			volante.setFechaCaducidad(datos.getDate(COL_FECHA_CADUCIDAD));
 		}
 		
 		return volante;
@@ -75,10 +77,10 @@ public class FPVolante {
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_VOLANTES
 				+ " (" + COL_NIF_BENEFICIARIO + ", " + COL_DNI_MEDICO_EMISOR
-				+ ", " + COL_DNI_MEDICO_RECEPTOR + ", " + COL_ID_CITA
-				+ ") VALUES (?, ?, ?, ?)",
+				+ ", " + COL_DNI_MEDICO_RECEPTOR + ", " + COL_FECHA_CADUCIDAD
+				+ ", " + COL_ID_CITA + ") VALUES (?, ?, ?, ?, ?)",
 				volante.getBeneficiario().getNif(), volante.getEmisor().getDni(),
-				volante.getReceptor().getDni(),
+				volante.getReceptor().getDni(), volante.getFechaCaducidad(),
 				(volante.getCita() == null ? null : volante.getCita().getId()));
 		GestorConexionesBD.ejecutar(comando);
 		
@@ -96,10 +98,10 @@ public class FPVolante {
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_VOLANTES + " SET "
 				+ COL_NIF_BENEFICIARIO + " = ?, " + COL_DNI_MEDICO_EMISOR + " = ?, "
-				+ COL_DNI_MEDICO_RECEPTOR + " = ?, " + COL_ID_CITA + "= ? WHERE "
-				+ COL_ID_VOLANTE + " = ?",
+				+ COL_DNI_MEDICO_RECEPTOR + " = ?, " + COL_FECHA_CADUCIDAD + " = ?, "
+				+ COL_ID_CITA + "= ? WHERE " + COL_ID_VOLANTE + " = ?",
 				volante.getBeneficiario().getNif(), volante.getEmisor().getDni(),
-				volante.getReceptor().getDni(),
+				volante.getReceptor().getDni(), volante.getFechaCaducidad(),
 				(volante.getCita() == null ? null : volante.getCita().getId()),
 				volante.getId());
 		GestorConexionesBD.ejecutar(comando);

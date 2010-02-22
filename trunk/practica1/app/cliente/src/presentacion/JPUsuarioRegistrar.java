@@ -126,7 +126,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(430, 490));
+			this.setPreferredSize(new java.awt.Dimension(430, 428));
 			{
 				lblHorasSemanales = new JLabel();
 				this.add(lblHorasSemanales, new AnchorConstraint(316, 973, 644, 268, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));

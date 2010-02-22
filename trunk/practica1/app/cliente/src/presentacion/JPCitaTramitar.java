@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.Hashtable;
@@ -92,7 +93,7 @@ public class JPCitaTramitar extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(430, 435));
+			this.setPreferredSize(new java.awt.Dimension(430, 416));
 			{
 				txtMedico = new JTextField();
 				this.add(txtMedico, new AnchorConstraint(339, 12, 833, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
@@ -198,6 +199,9 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	private void mostrarHorasCitasMedico() {
+		Vector<DiaSemana> diasDesactivados;
+		Calendar cal;
+
 		try {
 			
 			// Para poder pedir cita, el beneficiario debe tener
@@ -215,9 +219,11 @@ public class JPCitaTramitar extends JPBase {
 				// Deshabilitamos los días de la semana que no son
 				// laborables para el médico del beneficiario
 				dtcDiaCita.quitarDiasSemanaDesactivados();
+				diasDesactivados = new Vector<DiaSemana>();
 				for(DiaSemana dia : DiaSemana.values()) {
 					if(horasCitas.get(dia) == null || horasCitas.get(dia).size() == 0) {
 						dtcDiaCita.ponerDiaSemanaDesactivado(dia);
+						diasDesactivados.add(dia);
 					}
 				}
 				
@@ -228,7 +234,20 @@ public class JPCitaTramitar extends JPBase {
 				for(Date dia : diasOcupados) {
 					dtcDiaCita.ponerFechaDesactivada(dia);
 				}
-				
+
+				// Buscamos el primer día y hora disponible para una cita
+				cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				while(diasDesactivados.contains(Utilidades.diaFecha(cal.getTime())) || diasOcupados.contains(cal.getTime())) {
+					cal.add(Calendar.DAY_OF_MONTH, 1);
+				}
+				dtcDiaCita.setDate(cal.getTime());
+				UtilidadesListaHoras.obtenerListaHoras(dtcDiaCita, horasCitas, citasOcupadas, cmbHorasCitas);
+
 				// Activamos el registro de citas
 				cambiarEstado(true);
 				
@@ -267,7 +286,7 @@ public class JPCitaTramitar extends JPBase {
 				diaCita = new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes());
 				// Consultamos qué médico daría realmente la cita
 				medico = getControlador().consultarMedicoCita(beneficiario.getMedicoAsignado().getDni(), diaCita);
-				if(medico.equals(beneficiario.getMedicoAsignado())) {
+				if(medico.getDni().equals(beneficiario.getMedicoAsignado().getDni())) {
 					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + ")");
 				} else {
 					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + "), sustituye a " + beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
@@ -375,7 +394,6 @@ public class JPCitaTramitar extends JPBase {
 			pnlBeneficiario.beneficiarioEliminado(beneficiario);
 			limpiarCamposTramitacion();
 		}
-		
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
@@ -404,6 +422,7 @@ public class JPCitaTramitar extends JPBase {
 			// para marcar la hora que se ha registrado en otro cliente
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico.");
 			mostrarHorasCitasMedico();
+			
 		}
 	}
 	

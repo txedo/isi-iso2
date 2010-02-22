@@ -105,8 +105,8 @@ public class PruebasPersistencia extends PruebasBase {
 			cita3 = new Cita(new Date(2010 - 1900, 2, 24), 15, beneficiario2, medico1);
 			sustitucion1 = new Sustitucion(new Date(2009 - 1900, 11, 1), 10, 14, medico1, medico2);
 			sustitucion2 = new Sustitucion(new Date(2009 - 1900, 11, 2), 9, 12, medico1, medico2);
-			volante1 = new Volante(medico1, medico2, beneficiario1, null);
-			volante2 = new Volante(medico2, medico3, beneficiario2, cita1);
+			volante1 = new Volante(medico1, medico2, beneficiario1, null, new Date());
+			volante2 = new Volante(medico2, medico3, beneficiario2, cita1, new Date());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -987,6 +987,7 @@ public class PruebasPersistencia extends PruebasBase {
 	}
 	
 	/** Pruebas de la tabla de volantes */
+	@SuppressWarnings("deprecation")
 	public void testVolantes() {
 		Volante volante;
 		
@@ -1035,6 +1036,7 @@ public class PruebasPersistencia extends PruebasBase {
 			volante1.setEmisor(medico2);
 			volante1.setReceptor(medico1);
 			volante1.setBeneficiario(beneficiario2);
+			volante1.setFechaCaducidad(new Date(2010 - 1900, 4, 4));
 			FPVolante.modificar(volante1);
 			// Comprobamos que los cambios han tenido efecto
 			volante = FPVolante.consultar(volante1.getId());

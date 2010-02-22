@@ -2,11 +2,14 @@ package dominio.control;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.Calendar;
+
 import persistencia.FPBeneficiario;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CategoriasMedico;
+import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuarios;
@@ -43,6 +46,7 @@ public class GestorVolantes {
 	
 	// Método para emitir un volante para un beneficiario para un especialista
 	public static long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+		Calendar calend;
 		Usuario usuario;
 		Volante volante;
 		
@@ -99,6 +103,9 @@ public class GestorVolantes {
 		volante.setEmisor(emisor);
 		volante.setReceptor(destino);
 		volante.setCita(null);
+		calend = Calendar.getInstance();
+		calend.add(Calendar.DAY_OF_MONTH, IConstantes.DIAS_CADUCIDAD_VOLANTE);
+		volante.setFechaCaducidad(calend.getTime());
 		FPVolante.insertar(volante);
 		
 		return volante.getId();
