@@ -285,7 +285,7 @@ public class JPEmitirVolante extends JPBase {
 				volante = getControlador().consultarVolante(idVolante);
 				// Recuperamos el volante y mostramos sus datos
 				formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante del beneficiario se ha emitido correctamente.\nEl identificador asignado al volante es " + idVolante + "y se podrá\nutilizar hasta el " + formatoFecha.format(volante.getFechaCaducidad()) + ".");
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El volante del beneficiario se ha emitido correctamente.\nEl identificador asignado al volante es " + idVolante + " y se podrá\nutilizar hasta el " + formatoFecha.format(volante.getFechaCaducidad()) + ".");
 				restablecerPanel();
 			} catch (RemoteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());

@@ -31,11 +31,14 @@ import presentacion.auxiliar.Validacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Sustitucion;
+import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Utilidades;
 import dominio.conocimiento.Volante;
 import dominio.control.ControladorCliente;
@@ -541,6 +544,32 @@ public class JPCitaVolanteTramitar extends JPBase {
 			limpiarCamposTramitacion();
 		}
 		
+	}
+	
+	public void usuarioActualizado(Usuario usuario) {
+		if(beneficiario != null) {
+			if (volante != null) {
+				if (usuario.getRol() == RolesUsuarios.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha modificado el especialista asociado al volante desde otro cliente.");
+					// Otro cliente ha actualizado el especialista asignado al volante
+					txtMedicoAsignado.setText(usuario.getApellidos() + ", " + usuario.getNombre() + " (" + usuario.getDni() + ")");
+					// Se puede haber modificado el horario del médico, por lo que recargamos las horas disponibles para dar cita
+					mostrarHorasCitasMedico();
+				}
+			}
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		if(beneficiario != null) {
+			if (volante != null) {
+				if (usuario.getRol() == RolesUsuarios.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
+					// Otro cliente ha eliminado el médico especialista asociado al volante
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha eliminado el especialista asociado al volante desde otro cliente.");
+					restablecerPanel();
+				}
+			}
+		}
 	}
 	
 	public void citaRegistrada(Cita cita) {
