@@ -13,18 +13,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.TableCellRendererCitas;
 import presentacion.auxiliar.UsuarioBuscadoListener;
 import presentacion.auxiliar.UtilidadesTablas;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
@@ -272,14 +270,16 @@ public class JPCitaConsultarMedico extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(this.medico != null && medico.getDni().equals(((Medico)usuario).getDni())) {
+		if(this.medico != null && usuario.getRol() == RolesUsuarios.Medico
+		 && medico.getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha actualizado el médico del que se están consultando las citas
 			pnlUsuario.usuarioActualizado(usuario);
 		}
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(this.medico != null && medico.getDni().equals(((Medico)usuario).getDni())) {
+		if(this.medico != null && usuario.getRol() == RolesUsuarios.Medico
+		 && medico.getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha eliminado el médico del que se están consultando las citas
 			pnlUsuario.usuarioEliminado(usuario);
 			limpiarCamposConsulta();

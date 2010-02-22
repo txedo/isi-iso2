@@ -29,6 +29,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.RolesUsuarios;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
@@ -911,7 +912,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+		if(beneficiario != null && usuario.getRol() == RolesUsuarios.Medico
+		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido modificado por otro cliente");
 			beneficiario.setMedicoAsignado((Medico)usuario);
@@ -920,7 +922,8 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(beneficiario != null && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+		if(beneficiario != null && usuario.getRol() == RolesUsuarios.Medico
+		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido eliminado por otro cliente");
 			restablecerPanel();

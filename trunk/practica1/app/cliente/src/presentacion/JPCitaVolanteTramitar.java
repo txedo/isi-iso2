@@ -33,6 +33,8 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Sustitucion;
+import dominio.conocimiento.Utilidades;
 import dominio.conocimiento.Volante;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
@@ -365,15 +367,20 @@ public class JPCitaVolanteTramitar extends JPBase {
 		UtilidadesListaHoras.obtenerListaHoras(dtcDiaCita, horasCitas, citasOcupadas, cmbHorasCitas);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void cmbHorasCitasItemStateChanged(ItemEvent evt) {
+		if(evt.getStateChange() == ItemEvent.SELECTED) {
+			mostrarMedicoCita();
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void mostrarMedicoCita() {
 		Date fecha, hora, diaCita;
 		Medico medico;
 		
 		try {
 			
-			if(evt.getStateChange() == ItemEvent.SELECTED
-			  && horaSeleccionadaValida() && cmbHorasCitas.getSelectedItem() != null) {
+			if(cmbHorasCitas.getSelectedItem() != null && horaSeleccionadaValida()) {
 				// Obtenemos la hora de la cita
 				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
 				fecha = dtcDiaCita.getDate();
@@ -510,53 +517,58 @@ public class JPCitaVolanteTramitar extends JPBase {
 	
 	public void citaRegistrada(Cita cita) {
 		Volante vol;
-		if(beneficiario != null) {		
-			if (volante != null) {
-				// Se vuelve a consultar el volante, para ver si la cita que se ha registrado corresponde a este volante o no
-				try {
-					vol = getControlador().consultarVolante(volante.getId());
-					if (vol.getCita()!= null && vol.getCita().equals(cita)) {
-						Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este volante, por lo que éste ya no se puede utilizar.");
-						restablecerPanel();
-					}
-					else if (cita.getMedico().equals(vol.getReceptor())) {
-						// Otro cliente ha registrado una cita para el mismo médico del volante
-						// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
-						Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico.");
-						mostrarFechasyHorasLaborablesMedico();
-					}
-				} catch(SQLException e) {
-					e.printStackTrace();
-					Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-				} catch(RemoteException e) {
-					e.printStackTrace();
-					Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-				} catch(Exception e) {
-					e.printStackTrace();
-					Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		if(beneficiario != null && volante != null) {	
+			// Se vuelve a consultar el volante, para ver si la cita que se ha registrado corresponde a este volante o no
+			try {
+				vol = getControlador().consultarVolante(volante.getId());
+				if (vol.getCita()!= null && vol.getCita().equals(cita)) {
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este volante, por lo que éste ya no se puede utilizar.");
+					restablecerPanel();
 				}
+				else if (cita.getMedico().equals(vol.getReceptor())) {
+					// Otro cliente ha registrado una cita para el mismo médico del volante
+					// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico.");
+					mostrarFechasyHorasLaborablesMedico();
+				}
+			} catch(SQLException e) {
+				e.printStackTrace();
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+			} catch(RemoteException e) {
+				e.printStackTrace();
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+			} catch(Exception e) {
+				e.printStackTrace();
+				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			}
 		}
 	}
 	
 	public void citaAnulada(Cita cita) {
-		if(beneficiario != null) {		
-			if (volante != null){
-				if (volante.getCita()!= null && volante.getCita().equals(cita)) {
-					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado la cita desde otro cliente para este volante.");
-					mostrarFechasyHorasLaborablesMedico();
-				}
-				else if (cita.getMedico().equals(volante.getReceptor())) {
-					// Otro cliente ha anulado una cita para el mismo médico del volante
-					// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
-					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico.");
-					mostrarFechasyHorasLaborablesMedico();
-				}
-				
+		if(beneficiario != null && volante != null) {
+			if(volante.getCita() != null && volante.getCita().equals(cita)) {
+				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado la cita desde otro cliente para este volante.");
+				mostrarFechasyHorasLaborablesMedico();
+			}
+			else if (cita.getMedico().equals(volante.getReceptor())) {
+				// Otro cliente ha anulado una cita para el mismo médico del volante
+				// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
+				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico.");
+				mostrarFechasyHorasLaborablesMedico();
 			}
 		}
 	}
 
+	public void sustitucionRegistrada(Sustitucion sustitucion) {
+		if(beneficiario != null && volante.getReceptor().equals(sustitucion.getMedico())
+		 && Utilidades.fechaIgual(sustitucion.getDia(), dtcDiaCita.getDate(), false)) {
+			// Otro cliente ha registrado una sustitución para el médico
+			// con el que se quiere pedir cita en el día seleccionado
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una sustitución desde otro cliente para el médico del volante en el día seleccionado.");
+			mostrarMedicoCita();
+		}
+	}
+	
 	public void restablecerPanel() {
 		pnlBeneficiario.restablecerPanel();
 		limpiarCamposConsulta();

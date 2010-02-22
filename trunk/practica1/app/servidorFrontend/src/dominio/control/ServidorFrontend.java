@@ -15,6 +15,7 @@ import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.ITiposMensajeLog;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
@@ -491,13 +492,17 @@ public class ServidorFrontend implements IServidorFrontend {
 	}
 	
 	public void modificarCalendario(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws RemoteException, MedicoInexistenteException, SQLException, Exception {
+		Vector<Sustitucion> sustituciones;
 		String login;
 		
 		try {
 			// Asignamos un sustituto a un médico
-			GestorMedicos.establecerSustituto(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
+			sustituciones = GestorMedicos.establecerSustituto(idSesion, medico, dias, horaDesde, horaHasta, sustituto);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Asignada una sustitución del médico con DNI " + sustituto.getDni() + " al médico con DNI " + medico.getDni() + ".");
+			for(Sustitucion sustitucion : sustituciones) {
+				GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, sustitucion);
+			}
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se asignaba una sustitución al médico con DNI " + medico.getDni() + ": " + se.getLocalizedMessage());

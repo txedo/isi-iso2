@@ -298,7 +298,8 @@ public class GestorMedicos {
 	}
 	
 	// Método que asigna un sustituto a un médico en una determinada fecha
-	public static void establecerSustituto(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws NullPointerException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException, SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException, FechaNoValidaException, SustitucionInvalidaException {
+	public static Vector<Sustitucion> establecerSustituto(long idSesion, Medico medico, Vector<Date> dias, Date horaDesde, Date horaHasta, IMedico sustituto) throws NullPointerException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException, SQLException, CentroSaludInexistenteException, DireccionInexistenteException, UsuarioIncorrectoException, FechaNoValidaException, SustitucionInvalidaException {
+		Vector<Sustitucion> sustituciones;
 		Vector<Medico> medicos;
 		Usuario usuario;
 		Medico sustitutoReal;
@@ -367,6 +368,7 @@ public class GestorMedicos {
 		
 		// Si el médico puede hacer la sustitución todos los días,
 		// generamos y guardamos las sustituciones en la base de datos
+		sustituciones = new Vector<Sustitucion>();
 		for(Date dia : dias) {
 			sustitucion = new Sustitucion();
 			sustitucion.setDia(dia);
@@ -375,7 +377,10 @@ public class GestorMedicos {
 			sustitucion.setMedico(medico);
 			sustitucion.setSustituto(sustitutoReal);
 			FPSustitucion.insertar(sustitucion);
+			sustituciones.add(sustitucion);
 		}
+		
+		return sustituciones;
 	}
 	
 	// Método que devuelve el médico que daría realmente una cita

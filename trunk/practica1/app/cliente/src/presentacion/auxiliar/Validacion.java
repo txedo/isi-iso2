@@ -275,7 +275,7 @@ public class Validacion {
 			throw new EnteroIncorrectoException();
 	}
 	
-	public static void comprobarCorreoElectronico (String correo) throws CorreoElectronicoIncorrectoException {
+	public static void comprobarCorreoElectronico(String correo) throws CorreoElectronicoIncorrectoException {
 		boolean bCorrecto = false;
 		
 		// Creamos un patrón para definir el formato de un e-mail

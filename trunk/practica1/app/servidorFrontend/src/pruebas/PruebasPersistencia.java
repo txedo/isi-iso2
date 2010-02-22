@@ -72,13 +72,13 @@ public class PruebasPersistencia extends PruebasBase {
 			entrada4 = new EntradaLog("carmen", new Timestamp(109, 8, 10, 8, 0, 0, 0), ITiposMensajeLog.TIPO_DELETE, "Entrada DELETE.");
 			entrada5 = new EntradaLog("ana", new Timestamp(109, 1, 10, 8, 0, 0, 0), ITiposMensajeLog.TIPO_INFO, "Entrada INFO.");
 			entrada6 = new EntradaLog("mal", new Timestamp(109, 9, 7, 20, 0, 0, 0), "mal", "Entrada con errores.");
-			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", new Especialista("ninguna"));
-			medico2 = new Medico("87654321A", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", new Cabecera());
-			medico3 = new Medico("29478569A", "otroMedico", Encriptacion.encriptarPasswordSHA1("xxx"), "José", "R. B.", new Cabecera());
-			medico4 = new Medico("89123479A", "especial", Encriptacion.encriptarPasswordSHA1("especial"), "Isabel", "P. G.", new Pediatra());
-			citador1 = new Citador("1112223A", "citador", Encriptacion.encriptarPasswordSHA1("abcdef"), "Luis", "E. G.");
-			citador2 = new Citador("9998887A", "citador", Encriptacion.encriptarPasswordSHA1("abcdef"), "Ana", "B. E.");
-			administrador1 = new Administrador("12121212A", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "Administrador", "");
+			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", new Especialista("ninguna"));
+			medico2 = new Medico("87654321A", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "666123123", new Cabecera());
+			medico3 = new Medico("29478569A", "otroMedico", Encriptacion.encriptarPasswordSHA1("xxx"), "José", "R. B.", "josejose@uclm.es", "900112233", "600112233", new Cabecera());
+			medico4 = new Medico("89123479A", "especial", Encriptacion.encriptarPasswordSHA1("especial"), "Isabel", "P. G.", "", "", "", new Pediatra());
+			citador1 = new Citador("1112223A", "citador", Encriptacion.encriptarPasswordSHA1("abcdef"), "Luis", "E. G.", "luiseg55@yahoo.com", "", "612121212");
+			citador2 = new Citador("9998887A", "citador", Encriptacion.encriptarPasswordSHA1("abcdef"), "Ana", "B. E.", "", "989989989", "");
+			administrador1 = new Administrador("12121212A", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "Administrador", "", "adminssca@ssca.com", "900000000", "600000000");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro2);
@@ -203,9 +203,14 @@ public class PruebasPersistencia extends PruebasBase {
 		try {
 			// Modificamos un beneficiario
 			beneficiario1.setApellidos("V. L.");
+			beneficiario1.setCentroSalud(centro2);
+			beneficiario1.setCorreo("nuevocorreo@terra.com");
+			beneficiario1.getDireccion().setCiudad("Nueva cuidad");
+			beneficiario1.getDireccion().setCP(15000);
 			beneficiario1.setFechaNacimiento(new Date(1985 - 1900, 4, 2));
-			beneficiario1.getDireccion().setProvincia("Nueva provincia");
-			beneficiario1.getDireccion().setCP(20000);
+			beneficiario1.setMovil("612312333");
+			beneficiario1.setNombre("Pedro");
+			beneficiario1.setTelefono("912312333");
 			beneficiario1.setMedicoAsignado(medico2);
 			FPBeneficiario.modificar(beneficiario1);
 			// Comprobamos si los cambios han tenido efecto
@@ -480,6 +485,11 @@ public class PruebasPersistencia extends PruebasBase {
 			// Modificamos una dirección existente
 			direccion2.setCiudad("Más lejos");
 			direccion2.setCP(9001);
+			direccion2.setDomicilio("Nuevo domicilio");
+			direccion2.setNumero("8A");
+			direccion2.setPiso("5");
+			direccion2.setProvincia("Nueva provincia");
+			direccion2.setPuerta("L");
 			FPDireccion.modificar(beneficiario2.getNif(), direccion2);
 			// Comprobamos que los cambios han tenido efecto
 			direccion = FPDireccion.consultar(beneficiario2.getNif());
@@ -602,6 +612,7 @@ public class PruebasPersistencia extends PruebasBase {
 			// Modificamos un período de trabajo existente
 			periodo1.setHoraInicio(9);
 			periodo1.setHoraFinal(11);
+			periodo1.setDia(DiaSemana.Viernes);
 			FPPeriodoTrabajo.modificar(periodo1);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -881,8 +892,13 @@ public class PruebasPersistencia extends PruebasBase {
 		
 		try {
 			// Modificamos un usuario que no sea médico
+			citador1.setApellidos("U. L.");
+			citador1.setCorreo("abc@abc.abc");
+			citador1.setLogin("ramoncitador");
+			citador1.setMovil("666777888");
 			citador1.setNombre("Ramón");
 			citador1.setPassword(Encriptacion.encriptarPasswordSHA1("nuevapass"));
+			citador1.setTelefono("999888777");
 			FPUsuario.modificar(citador1);
 			// Comprobamos si los cambios han tenido efecto
 			usuario = FPUsuario.consultar(citador1.getDni());
@@ -1015,8 +1031,10 @@ public class PruebasPersistencia extends PruebasBase {
 
 		try {
 			// Modificamos un volante existente
-			volante1.setReceptor(medico1);
 			volante1.setCita(cita2);
+			volante1.setEmisor(medico2);
+			volante1.setReceptor(medico1);
+			volante1.setBeneficiario(beneficiario2);
 			FPVolante.modificar(volante1);
 			// Comprobamos que los cambios han tenido efecto
 			volante = FPVolante.consultar(volante1.getId());

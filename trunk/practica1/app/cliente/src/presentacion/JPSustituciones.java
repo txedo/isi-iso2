@@ -11,6 +11,8 @@ import presentacion.auxiliar.OperacionesInterfaz;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
 /**
@@ -143,7 +145,27 @@ public class JPSustituciones extends JPBase {
 		return (jPanelListaOperaciones.getNumeroOperaciones() > 0);
 	}
 	
-	// <métodos del observador>
+	public void usuarioActualizado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case EstablecerSustituto:
+			jPanelEstablecer.usuarioActualizado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case EstablecerSustituto:
+			jPanelEstablecer.usuarioEliminado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
 	
 	public void restablecerPaneles() {
 		jPanelEstablecer.restablecerPanel();

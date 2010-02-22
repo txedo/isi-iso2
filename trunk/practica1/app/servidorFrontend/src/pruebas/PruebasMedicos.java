@@ -67,12 +67,12 @@ public class PruebasMedicos extends PruebasBase {
 			cabecera = new Cabecera();
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro Provincial", "Calle Ninguna, s/n");
-			medico1 = new Medico("12345678", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
-			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", cabecera);
-			medico3 = new Medico("58782350", "jjj", Encriptacion.encriptarPasswordSHA1("jjj"), "Juan", "P. F.", especialista);
-			medico4 = new Medico("91295016", "otro", Encriptacion.encriptarPasswordSHA1("otro"), "Ana", "R. M.", cabecera);
-			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.");
-			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.");
+			medico1 = new Medico("12345678", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
+			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "", cabecera);
+			medico3 = new Medico("58782350", "jjj", Encriptacion.encriptarPasswordSHA1("jjj"), "Juan", "P. F.", "", "", "", especialista);
+			medico4 = new Medico("91295016", "otro", Encriptacion.encriptarPasswordSHA1("otro"), "Ana", "R. M.", "", "", "", cabecera);
+			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "fernan@gmail.com", "", "681871340");
+			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.", "", "911222333", "");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro1);
@@ -186,7 +186,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos crear un médico con la sesión del citador
-			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
+			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "", "", "", especialista);
 			servidor.crear(sesionCitador.getId(), medico);
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
@@ -196,7 +196,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
+			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "", "", "", especialista);
 			servidor.crear(-12345, medico);
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
@@ -206,7 +206,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos añadir un médico con un DNI que ya existe en la BD
-			medico = new Medico(citador1.getDni(), "error", "error", "", "", especialista);
+			medico = new Medico(citador1.getDni(), "error", "error", "", "", "", "", "", especialista);
 			servidor.crear(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepción MedicoYaExistenteException");
 		} catch(MedicoYaExistenteException e) {
@@ -216,7 +216,7 @@ public class PruebasMedicos extends PruebasBase {
 
 		try {
 			// Creamos un nuevo médico con la sesión del administrador
-			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", especialista);
+			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "juan67@otro.com", "", "", especialista);
 			servidor.crear(sesionAdmin.getId(), medico);
 			// Comprobamos que el usuario se ha creado correctamente
 			medicoGet = (Medico)servidor.getMedico(sesionAdmin.getId(), medico.getDni());
@@ -230,7 +230,7 @@ public class PruebasMedicos extends PruebasBase {
 		try {
 			// Intentamos crear un médico sin haber ningún centro
 			AgenteFrontend.getAgente().getConexion().prepareStatement("DELETE FROM centros").executeUpdate();
-			medico = new Medico("34712394", "otromas", "error", "Juan", "P. C.", especialista);
+			medico = new Medico("34712394", "otromas", "error", "Juan", "P. C.", "", "", "", especialista);
 			servidor.crear(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
@@ -272,7 +272,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos modificar un médico inexistente
-			medico = new Medico("91295019", "mas", "mas", "Luis", "R. M.", pediatra);
+			medico = new Medico("91295019", "mas", "mas", "Luis", "R. M.", "", "999111333", "", pediatra);
 			servidor.modificar(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
@@ -328,7 +328,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos eliminar un médico que aún no se ha creado
-			medico = new Medico("78256514", "error", "error", "", "", pediatra);
+			medico = new Medico("78256514", "error", "error", "", "", "", "", "", pediatra);
 			servidor.eliminar(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
@@ -397,7 +397,7 @@ public class PruebasMedicos extends PruebasBase {
 			
 			try {
 				// Intentamos obtener el horario de un medico inexistente
-				medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", cabecera);
+				medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
 				GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), medico.getDni());
 				fail("Se esperaba una excepción MedicoInexistenteException");
 			} catch(MedicoInexistenteException e) {

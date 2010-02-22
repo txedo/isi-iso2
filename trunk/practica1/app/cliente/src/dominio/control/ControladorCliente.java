@@ -24,6 +24,7 @@ import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Volante;
@@ -169,11 +170,11 @@ public class ControladorCliente {
 		ventanaPrincipal.beneficiarioEliminado(beneficiario);
 	}
 	
-	public void usuarioActualizado (Usuario usuario) {
+	public void usuarioActualizado(Usuario usuario) {
 		ventanaPrincipal.usuarioActualizado(usuario);
 	}
 	
-	public void usuarioEliminado (Usuario usuario){
+	public void usuarioEliminado(Usuario usuario){
 		ventanaPrincipal.usuarioEliminado(usuario);
 	}
 
@@ -183,6 +184,10 @@ public class ControladorCliente {
 	
 	public void citaAnulada(Cita cita) {
 		ventanaPrincipal.citaAnulada(cita);
+	}
+	
+	public void sustitucionRegistrada(Sustitucion sustitucion) {
+		ventanaPrincipal.sustitucionRegistrada(sustitucion);
 	}
 	
 	// ---------------------------

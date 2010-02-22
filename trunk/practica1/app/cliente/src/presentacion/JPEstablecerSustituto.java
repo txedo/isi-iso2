@@ -16,14 +16,11 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.ListModel;
 import javax.swing.SpinnerNumberModel;
-
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.JDateChooserCitas;
 import presentacion.auxiliar.UsuarioBuscadoListener;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
@@ -280,6 +277,10 @@ public class JPEstablecerSustituto extends JPBase {
 	}
 	
 	private void btnBuscarSustitutosActionPerformed(ActionEvent evt) {
+		buscarSustitutos();
+	}
+	
+	private void buscarSustitutos() {
 		Vector<String> nombres;
 		
 		// Borramos los datos de la última selección de sustituto
@@ -405,6 +406,47 @@ public class JPEstablecerSustituto extends JPBase {
 	}
 	
 	// Métodos públicos
+	
+	public void usuarioActualizado(Usuario usuario) {
+		boolean actualizado;
+		
+		if(this.medico != null && usuario.getRol() == RolesUsuarios.Medico
+		 && medico.getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha actualizado el médico que se va a sustituir
+			pnlMedico.usuarioActualizado(usuario);
+		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuarios.Medico) {
+			actualizado = false;
+			for(Medico sustituto : sustitutos) {
+				if(!actualizado && sustituto.getDni().equals(usuario.getDni())) {
+					// Otro cliente ha actualizado alguno de los posibles médicos sustitutos
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Alguno de los posibles sustitutos ha sido modificado por otro cliente.");
+					buscarSustitutos();
+					actualizado = true;
+				}
+			}
+		}
+	}
+	
+	public void usuarioEliminado(Usuario usuario) {
+		boolean actualizado;
+
+		if(this.medico != null && usuario.getRol() == RolesUsuarios.Medico
+		 && medico.getDni().equals(((Medico)usuario).getDni())) {
+			// Otro cliente ha eliminado el médico que se va a sustituir
+			pnlMedico.usuarioEliminado(usuario);
+			limpiarCamposConsulta();
+		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuarios.Medico) {
+			actualizado = false;
+			for(Medico sustituto : sustitutos) {
+				if(!actualizado && sustituto.getDni().equals(usuario.getDni())) {
+					// Otro cliente ha eliminado alguno de los posibles médicos sustitutos
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Alguno de los posibles sustitutos ha sido eliminado por otro cliente.");
+					buscarSustitutos();
+					actualizado = true;
+				}
+			}
+		}
+	}
 	
 	public void restablecerPanel() {
 		pnlMedico.restablecerPanel();

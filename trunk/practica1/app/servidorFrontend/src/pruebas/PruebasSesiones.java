@@ -27,8 +27,8 @@ public class PruebasSesiones extends PruebasBase {
 			pediatra = new Pediatra();
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle 3, nº3");
-			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", pediatra);
-			administrador1 = new Administrador("12121212A", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "Administrador", "Apellidos");
+			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
+			administrador1 = new Administrador("12121212A", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "Administrador", "Apellidos", "", "999888777", "667788888");
 			medico1.setCentroSalud(centro1);
 			administrador1.setCentroSalud(centro1);
 			FPCentroSalud.insertar(centro1);
