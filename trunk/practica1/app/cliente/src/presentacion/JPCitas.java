@@ -115,14 +115,15 @@ public class JPCitas extends JPBase {
 	private void inicializarOperaciones() {
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCita);
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCitaVolante);
-		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarAnularCitaBeneficiario);
-		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarCitaMedico);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarAnularCitasBeneficiario);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarCitasMedico);
 	}
 	
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.TramitarCita);
 		jPanelTramitar.setVisible(true);
 		jPanelConsultarCitasBeneficiario.setVisible(false);
+		jPanelConsultarCitasMedico.setVisible(false);
 		jPanelVolanteTramitar.setVisible(false);
 	}
 	
@@ -152,11 +153,11 @@ public class JPCitas extends JPBase {
 			jPanelVolanteTramitar.setVisible(true);
 			jPanelVolanteTramitar.repaint();
 		}
-		if(operacionSeleccionada == OperacionesInterfaz.ConsultarAnularCitaBeneficiario) {
+		if(operacionSeleccionada == OperacionesInterfaz.ConsultarAnularCitasBeneficiario) {
 			jPanelConsultarCitasBeneficiario.setVisible(true);
 			jPanelConsultarCitasBeneficiario.repaint();
 		}
-		if(operacionSeleccionada == OperacionesInterfaz.ConsultarCitaMedico) {
+		if(operacionSeleccionada == OperacionesInterfaz.ConsultarCitasMedico) {
 			jPanelConsultarCitasMedico.setVisible(true);
 			jPanelConsultarCitasMedico.repaint();
 		}
@@ -192,8 +193,12 @@ public class JPCitas extends JPBase {
 		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.TramitarCitaVolante);
 	}
 
-	public void desactivarConsultarAnularCita() {
-		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarAnularCitaBeneficiario);
+	public void desactivarConsultarAnularCitaBeneficiario() {
+		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarAnularCitasBeneficiario);
+	}
+
+	public void desactivarConsultarCitaMedico() {
+		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarCitasMedico);
 	}
 
 	public boolean hayOperacionesDisponibles() {
@@ -211,10 +216,10 @@ public class JPCitas extends JPBase {
 		case TramitarCitaVolante:
 			jPanelVolanteTramitar.beneficiarioActualizado(beneficiario);
 			break;
-		case ConsultarAnularCitaBeneficiario:
+		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.beneficiarioActualizado(beneficiario);
 			break;
-		case ConsultarCitaMedico:
+		case ConsultarCitasMedico:
 			jPanelConsultarCitasMedico.beneficiarioActualizado(beneficiario);
 			break;
 		default:
@@ -231,10 +236,10 @@ public class JPCitas extends JPBase {
 		case TramitarCitaVolante:
 			jPanelVolanteTramitar.beneficiarioEliminado(beneficiario);
 			break;
-		case ConsultarAnularCitaBeneficiario:
+		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.beneficiarioEliminado(beneficiario);
 			break;
-		case ConsultarCitaMedico:
+		case ConsultarCitasMedico:
 			jPanelConsultarCitasMedico.beneficiarioEliminado(beneficiario);
 			break;
 		default:
@@ -251,10 +256,10 @@ public class JPCitas extends JPBase {
 		//case TramitarCitaVolante:
 		//	jPanelVolanteTramitar.usuarioActualizado(usuario);
 		//	break;
-		case ConsultarAnularCitaBeneficiario:
+		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.usuarioActualizado(usuario);
 			break;
-		case ConsultarCitaMedico:
+		case ConsultarCitasMedico:
 			jPanelConsultarCitasMedico.usuarioActualizado(usuario);
 			break;
 		default:
@@ -271,10 +276,10 @@ public class JPCitas extends JPBase {
 		//case TramitarCitaVolante:
 		//	jPanelVolanteTramitar.usuarioEliminado(usuario);
 		//	break;
-		case ConsultarAnularCitaBeneficiario:
+		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.usuarioEliminado(usuario);
 			break;
-		case ConsultarCitaMedico:
+		case ConsultarCitasMedico:
 			jPanelConsultarCitasMedico.usuarioEliminado(usuario);
 			break;
 		default:
@@ -291,10 +296,10 @@ public class JPCitas extends JPBase {
 		case TramitarCitaVolante:
 			jPanelVolanteTramitar.citaRegistrada(cita);
 			break;	
-		case ConsultarCitaMedico:
+		case ConsultarCitasMedico:
 			jPanelConsultarCitasMedico.citaRegistrada(cita);
 			break;
-		case ConsultarAnularCitaBeneficiario:
+		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.citaRegistrada(cita);
 			break;		
 		default:
@@ -311,10 +316,10 @@ public class JPCitas extends JPBase {
 		case TramitarCitaVolante:
 			jPanelVolanteTramitar.citaAnulada(cita);
 			break;
-		case ConsultarCitaMedico:
+		case ConsultarCitasMedico:
 			jPanelConsultarCitasMedico.citaAnulada(cita);
 			break;
-		case ConsultarAnularCitaBeneficiario:
+		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.citaAnulada(cita);
 			break;	
 		default:

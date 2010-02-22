@@ -1,20 +1,29 @@
 package presentacion;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.EventObject;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.EventListenerList;
-import presentacion.auxiliar.VentanaCerradaListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
+import presentacion.auxiliar.Dialogos;
+import presentacion.auxiliar.VentanaCerradaListener;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -44,8 +53,8 @@ public class JFAcercaDe extends javax.swing.JFrame {
 	private EventListenerList listenerList;
 	private JButton btnAceptar;
 	private JPanel jPanel1;
-	private JTextPane txtTitulo2;
-	private JTextPane txtTitulo;
+	private JLabel lblTitulo2;
+	private JLabel lblTitulo;
 	private JTextPane txtAcercaDe;
 	
 	public JFAcercaDe() {
@@ -59,7 +68,7 @@ public class JFAcercaDe extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			AnchorLayout thisLayout = new AnchorLayout();
 			getContentPane().setLayout(thisLayout);
-			this.setTitle("Acerca de Servidor Frontend (SSCA)");
+			this.setTitle("Acerca del Servidor Front-End (SSCA)");
 			{
 				jPanel1 = new JPanel();
 				AnchorLayout jPanel1Layout = new AnchorLayout();
@@ -67,24 +76,24 @@ public class JFAcercaDe extends javax.swing.JFrame {
 				jPanel1.setPreferredSize(new java.awt.Dimension(394, 275));
 				jPanel1.setLayout(jPanel1Layout);
 				{
-					txtTitulo2 = new JTextPane();
-					jPanel1.add(txtTitulo2, new AnchorConstraint(37, 89, 209, 101, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					txtTitulo2.setText("Servidor Frontend");
-					txtTitulo2.setPreferredSize(new java.awt.Dimension(204, 30));
-					txtTitulo2.setFont(new java.awt.Font("Tahoma",1,20));
-					txtTitulo2.setOpaque(false);
-					txtTitulo2.setFocusable(false);
-					txtTitulo2.setEditable(false);
+					lblTitulo2 = new JLabel();
+					jPanel1.add(lblTitulo2, new AnchorConstraint(36, 15, 210, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					lblTitulo2.setText("Servidor Front-End");
+					lblTitulo2.setPreferredSize(new java.awt.Dimension(389, 26));
+					lblTitulo2.setFont(new java.awt.Font("Tahoma",1,20));
+					lblTitulo2.setOpaque(false);
+					lblTitulo2.setFocusable(false);
+					lblTitulo2.setHorizontalAlignment(SwingConstants.CENTER);
 				}
 				{
-					txtTitulo = new JTextPane();
-					jPanel1.add(txtTitulo, new AnchorConstraint(12, 29, 246, 33, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					txtTitulo.setText("Sistema de Salud de Comunidades Autónomas");
-					txtTitulo.setPreferredSize(new java.awt.Dimension(352, 17));
-					txtTitulo.setOpaque(false);
-					txtTitulo.setEditable(false);
-					txtTitulo.setFont(new java.awt.Font("Tahoma",1,14));
-					txtTitulo.setFocusable(false);
+					lblTitulo = new JLabel();
+					jPanel1.add(lblTitulo, new AnchorConstraint(12, 10, 241, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					lblTitulo.setText("Sistema de Salud de Comunidades Autónomas");
+					lblTitulo.setPreferredSize(new java.awt.Dimension(394, 19));
+					lblTitulo.setOpaque(false);
+					lblTitulo.setFont(new java.awt.Font("Tahoma",1,14));
+					lblTitulo.setFocusable(false);
+					lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 				}
 				{
 					txtAcercaDe = new JTextPane();
@@ -92,10 +101,15 @@ public class JFAcercaDe extends javax.swing.JFrame {
 					txtAcercaDe.setPreferredSize(new java.awt.Dimension(370, 155));
 					txtAcercaDe.setOpaque(false);
 					txtAcercaDe.setContentType("text/html");
-					txtAcercaDe.setText("Versión: 1.0<br>\nPágina web: <a href=\"http://www.inf-cr.uclm.es\" target=_blank>ESI@UCLM</a><br>\nDesarrolladores:<br>\n<ul>Juan Andrada Romero (<a href=\"mailto:juan.andrada@alu.uclm.es\">juan.andrada@alu.uclm.es</a>)<br>\nJuan Gallardo Casero (<a href=\"mailto:juan.gallardo@alu.uclm.es\">juan.gallardo@alu.uclm.es</a>)<br>\nJose Domingo López López (<a href=\"mailto:josed.lopez1@alu.uclm.es\">josed.lopez1@alu.uclm.es</a>)<br>");
+					txtAcercaDe.setText("Versión: 1.0<br>\nPágina web: <a href=\"http://www.inf-cr.uclm.es\">ESI@UCLM</a><br><br>\nDesarrolladores:\n<ul>Juan Andrada Romero (<a href=\"mailto:juan.andrada@alu.uclm.es\">juan.andrada@alu.uclm.es</a>)<br>\nJuan Gallardo Casero (<a href=\"mailto:juan.gallardo@alu.uclm.es\">juan.gallardo@alu.uclm.es</a>)<br>\nJose Domingo López López (<a href=\"mailto:josed.lopez1@alu.uclm.es\">josed.lopez1@alu.uclm.es</a>)<br>");
 					txtAcercaDe.setEditable(false);
 					txtAcercaDe.setFocusable(false);
 					txtAcercaDe.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+					txtAcercaDe.addHyperlinkListener(new HyperlinkListener() {
+						public void hyperlinkUpdate(HyperlinkEvent evt) {
+							txtAcercaDeHyperlinkUpdate(evt);
+						}
+					});
 				}
 				{
 					btnAceptar = new JButton();
@@ -124,6 +138,20 @@ public class JFAcercaDe extends javax.swing.JFrame {
 		}
 	}
 	
+	//$hide>>$
+	
+	private void txtAcercaDeHyperlinkUpdate(HyperlinkEvent evt) {
+		if(evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			try {
+				Desktop.getDesktop().browse(evt.getURL().toURI());
+			} catch(IOException e) {
+				Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
+			} catch(URISyntaxException e) {
+				Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
+			}
+		}
+	}
+	
 	private void btnAceptarActionPerformed(ActionEvent evt) {
 		cerrarVentana();
 	}
@@ -145,6 +173,8 @@ public class JFAcercaDe extends javax.swing.JFrame {
 		}
 	}
 	
+	// Métodos públicos
+	
 	public void addVentanaCerradaListener(VentanaCerradaListener listener) {
 		listenerList.add(VentanaCerradaListener.class, listener);
 	}
@@ -152,4 +182,7 @@ public class JFAcercaDe extends javax.swing.JFrame {
 	public void removeVentanaCerradaListener(VentanaCerradaListener listener) {
 		listenerList.remove(VentanaCerradaListener.class, listener);
 	}
+
+	//$hide<<$
+
 }

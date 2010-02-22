@@ -2,6 +2,8 @@ package presentacion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.rmi.RemoteException;
@@ -17,13 +19,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
-
+import javax.swing.JTextField;
 import presentacion.auxiliar.BeneficiarioBuscadoListener;
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.JDateChooserCitas;
 import presentacion.auxiliar.ListCellRendererCitas;
 import presentacion.auxiliar.UtilidadesListaHoras;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
@@ -58,6 +59,8 @@ public class JPCitaTramitar extends JPBase {
 
 	private Beneficiario beneficiario;
 	private Vector<Date> diasOcupados;
+	private JTextField txtMedico;
+	private JLabel lblMedico;
 	private Hashtable<Date, Vector<String>> citasOcupadas;
 	private Hashtable<DiaSemana, Vector<String>> horasCitas;
 
@@ -86,8 +89,13 @@ public class JPCitaTramitar extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setSize(430, 390);
 			this.setPreferredSize(new java.awt.Dimension(430, 435));
+			{
+				txtMedico = new JTextField();
+				this.add(txtMedico, new AnchorConstraint(339, 12, 833, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtMedico.setPreferredSize(new java.awt.Dimension(280, 23));
+				txtMedico.setEditable(false);
+			}
 			{
 				lblDatos = new JLabel();
 				this.add(lblDatos, new AnchorConstraint(259, 215, 633, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
@@ -125,7 +133,7 @@ public class JPCitaTramitar extends JPBase {
 			}
 			{
 				btnRegistrar = new JButton();
-				this.add(btnRegistrar, new AnchorConstraint(354, 12, 855, 798, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnRegistrar, new AnchorConstraint(378, 11, 855, 798, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnRegistrar.setText("Registrar cita");
 				btnRegistrar.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnRegistrar.addActionListener(new ActionListener() {
@@ -140,13 +148,18 @@ public class JPCitaTramitar extends JPBase {
 				cmbHorasCitas.setModel(new DefaultComboBoxModel(new String[] {}));
 				cmbHorasCitas.setRenderer(new ListCellRendererCitas());
 				cmbHorasCitas.setPreferredSize(new java.awt.Dimension(280, 23));
+				cmbHorasCitas.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						cmbHorasCitasItemStateChanged(evt);
+					}
+				});
 			}
 			{
 				dtcDiaCita = new JDateChooserCitas();
 				this.add(dtcDiaCita, new AnchorConstraint(284, 12, 144, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				dtcDiaCita.setPreferredSize(new java.awt.Dimension(280, 23));
 				dtcDiaCita.setDateFormatString("dd/MM/yyyy");
-				dtcDiaCita.setToolTipText("Formato dd/MM/yyyy. Para más ayuda haga clic en el icono de la derecha.");
+				dtcDiaCita.setToolTipText("Formato dd/MM/yyyy. Haga clic en el icono de la derecha para desplegar un calendario.");
 				dtcDiaCita.setMinSelectableDate(new Date());
 				dtcDiaCita.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
@@ -154,11 +167,17 @@ public class JPCitaTramitar extends JPBase {
 					}
 				});
 			}
+			{
+				lblMedico = new JLabel();
+				this.add(lblMedico, new AnchorConstraint(342, 252, 824, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblMedico.setText("Médico");
+				lblMedico.setPreferredSize(new java.awt.Dimension(99, 16));
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	//$hide>>$
 
 	private void pnlBeneficiarioBeneficiarioBuscado(EventObject evt) {
@@ -170,13 +189,12 @@ public class JPCitaTramitar extends JPBase {
 		beneficiario = pnlBeneficiario.getBeneficiario();
 		
 		if(beneficiario != null) {
-			
-			mostrarFechasyHorasLaborablesMedico();
-		
+			// Mostramos las fechas y horas disponibles para pedir una cita
+			mostrarHorasCitasMedico();
 		}
 	}
 	
-	private void mostrarFechasyHorasLaborablesMedico() {
+	private void mostrarHorasCitasMedico() {
 		try {
 			
 			// Para poder pedir cita, el beneficiario debe tener
@@ -226,7 +244,38 @@ public class JPCitaTramitar extends JPBase {
 	private void dtcDiaCitaPropertyChange(PropertyChangeEvent evt) {
 		UtilidadesListaHoras.obtenerListaHoras(dtcDiaCita, horasCitas, citasOcupadas, cmbHorasCitas);
 	}
+	
+	@SuppressWarnings("deprecation")
+	private void cmbHorasCitasItemStateChanged(ItemEvent evt) {
+		Date fecha, hora, diaCita;
+		Medico medico;
 		
+		try {
+			
+			if(evt.getStateChange() == ItemEvent.SELECTED
+			  && horaSeleccionadaValida() && cmbHorasCitas.getSelectedItem() != null) {
+				// Obtenemos la hora de la cita
+				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
+				fecha = dtcDiaCita.getDate();
+				diaCita = new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes());
+				// Consultamos qué médico daría realmente la cita
+				medico = getControlador().consultarMedicoCita(beneficiario.getMedicoAsignado().getDni(), diaCita);
+				if(medico.equals(beneficiario.getMedicoAsignado())) {
+					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + ")");
+				} else {
+					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + "), sustituye a " + beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+				}
+			} else {
+				txtMedico.setText("(fecha no válida)");
+			}
+			
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		}
+	}
+	
 	@SuppressWarnings("deprecation")
 	private void btnRegistrarActionPerformed(ActionEvent evt) {
 		Date fecha, hora;
@@ -302,6 +351,7 @@ public class JPCitaTramitar extends JPBase {
 	private void limpiarCamposTramitacion() {
 		dtcDiaCita.setDate(null);
 		UtilidadesListaHoras.rellenarListaHoras(cmbHorasCitas, null, null);
+		txtMedico.setText("");
 		cambiarEstado(false);
 	}
 	
@@ -326,7 +376,7 @@ public class JPCitaTramitar extends JPBase {
 			// Otro cliente ha actualizado el médico asignado al beneficiario que pide la cita
 			pnlBeneficiario.usuarioActualizado(usuario);
 			// Se puede haber modificado el horario del médico, por lo que recargamos las horas disponibles para dar cita
-			mostrarFechasyHorasLaborablesMedico();
+			mostrarHorasCitasMedico();
 		}
 	}
 	
@@ -340,10 +390,11 @@ public class JPCitaTramitar extends JPBase {
 	
 	public void citaRegistrada(Cita cita) {
 		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
-			// Otro cliente ha registrado una cita para el mismo médico que este beneficiario.
-			// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
+			// Otro cliente ha registrado una cita para el mismo médico que
+			// este beneficiario; se vuelven a recuperar las horas de ese médico,
+			// para marcar la hora que se ha registrado en otro cliente
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico.");
-			mostrarFechasyHorasLaborablesMedico();
+			mostrarHorasCitasMedico();
 		}
 	}
 	
@@ -352,7 +403,7 @@ public class JPCitaTramitar extends JPBase {
 			// Otro cliente ha anulado una cita para el mismo médico que este beneficiario.
 			// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico.");
-			mostrarFechasyHorasLaborablesMedico();
+			mostrarHorasCitasMedico();
 		}
 	}
 		
