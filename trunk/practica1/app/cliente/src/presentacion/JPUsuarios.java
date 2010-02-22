@@ -4,15 +4,11 @@ import javax.swing.JFrame;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
-
 import presentacion.auxiliar.OperacionCambiadaEvent;
 import presentacion.auxiliar.OperacionCambiadaListener;
 import presentacion.auxiliar.OperacionesInterfaz;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
-import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 

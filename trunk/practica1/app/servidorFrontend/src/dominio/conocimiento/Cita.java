@@ -3,6 +3,7 @@ package dominio.conocimiento;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -68,6 +69,20 @@ public class Cita implements Serializable {
 	
 	public void setMedico(Medico medico) {
 		this.medico = medico;
+	}
+	
+	public boolean citaEnHoras(int horaDesde, int horaHasta) {
+		Calendar calend;
+		boolean dev;
+		int horaD;
+
+		// Devuelve true si la hora de la cita está contenida en
+		// el rango de horas pasado como parémtro
+		calend = Calendar.getInstance();
+		calend.setTime(fechaYHora);
+		horaD = calend.get(Calendar.HOUR_OF_DAY);
+		dev = (horaD >= horaDesde && horaD < horaHasta);
+		return dev;
 	}
 	
 	public static String cadenaHoraCita(Date fechaYHora) {

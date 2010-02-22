@@ -107,7 +107,7 @@ public class JPCitaConsultarMedico extends JPBase {
 			}
 			{
 				btnRestablecer = new JButton();
-				this.add(btnRestablecer, new AnchorConstraint(916, 164, 11, 673, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnRestablecer, new AnchorConstraint(916, 163, 11, 673, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnRestablecer.addActionListener(new ActionListener() {

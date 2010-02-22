@@ -47,7 +47,7 @@ public class GestorCitas {
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasBeneficiario);
 
 		// Comprobamos que exista el beneficiario
 		FPBeneficiario.consultarPorNIF(dni);
@@ -69,7 +69,7 @@ public class GestorCitas {
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasBeneficiario);
 
 		// Comprobamos que exista el beneficiario
 		FPBeneficiario.consultarPorNIF(dni);
@@ -101,7 +101,7 @@ public class GestorCitas {
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasMedico);
 		
 		// Comprobamos que exista el médico
 		try {
@@ -130,7 +130,7 @@ public class GestorCitas {
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasMedico);
 
 		// Comprobamos que exista el médico
 		FPUsuario.consultar(dni);
@@ -148,6 +148,46 @@ public class GestorCitas {
 		}
 		
 		return pendientes;
+	}
+	
+	// Método para obtener las citas de un médico en una fecha y rango de horas
+	@SuppressWarnings("deprecation")
+	public static Vector<Cita> consultarCitasFechaMedico(long idSesion, String dniMedico, Date dia, int horaDesde, int horaHasta) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException {
+		Vector<Cita> citas, citasFecha;
+		Usuario usuario;
+		
+		// Comprobamos los parámetros pasados
+		if(dniMedico == null) {
+			throw new NullPointerException("El DNI del médico para el que se quieren buscar las citas puede ser nulo.");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasMedico);
+		
+		// Comprobamos que exista el médico
+		try {
+			usuario = FPUsuario.consultar(dniMedico);
+			if(usuario.getRol() != RolesUsuarios.Medico) {
+				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+			}
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		// Obtenemos las citas que ya tiene asignadas el médico
+		citas = FPCita.consultarPorMedico(dniMedico);
+		
+		// Nos quedamos con las citas del día indicado y cuya
+		// hora está dentro del rango de horas especificado
+		citasFecha = new Vector<Cita>();
+		for(Cita cita : citas) {
+			if(Utilidades.fechaIgual(dia, cita.getFechaYHora(), false)
+			 && cita.citaEnHoras(horaDesde, horaHasta)) {
+				citasFecha.add(cita);
+			}
+		}
+		
+		return citasFecha;
 	}
 	
 	// Método para pedir una nueva cita para un cierto beneficiario y médico
@@ -355,7 +395,7 @@ public class GestorCitas {
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
-		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitas);
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasMedico);
 		
 		// Comprobamos que exista el médico
 		try {

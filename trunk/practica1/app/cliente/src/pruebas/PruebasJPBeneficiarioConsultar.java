@@ -76,6 +76,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	private JCheckBox jchkEditar;
 	private Window winPrincipal;
 	
+	@SuppressWarnings("deprecation")
 	public void setUp() {
 		try {
 			// Establecemos conexión con el servidor front-end

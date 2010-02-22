@@ -16,8 +16,8 @@ public enum OperacionesInterfaz {
 	// Panel de citas
 	TramitarCita,
 	TramitarCitaVolante,
-	ConsultarAnularCitaBeneficiario,
-	ConsultarCitaMedico,
+	ConsultarAnularCitasBeneficiario,
+	ConsultarCitasMedico,
 	// Panel de sustituciones
 	EstablecerSustituto,
 	// Panel de volantes

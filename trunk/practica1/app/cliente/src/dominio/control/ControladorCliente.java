@@ -302,6 +302,10 @@ public class ControladorCliente {
 		return (Vector<Medico>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { dniMedico, dia, horaDesde, horaHasta });
 	}
 	
+	public Medico consultarMedicoCita(String dniMedico, Date dia) throws RemoteException, Exception {
+		return (Medico)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { dniMedico, dia });
+	}
+	
 	// Métodos de gestión de citas
 	
 	public Vector<Cita> consultarHistoricoCitas(String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
@@ -318,6 +322,11 @@ public class ControladorCliente {
 		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES_MEDICO, dni);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public Vector<Cita> consultarCitasFechaMedico(String dni, Date dia, int horaDesde, int horaHasta) throws RemoteException, Exception {
+		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_FECHA_MEDICO, new Object[] { dni, dia, horaDesde, horaHasta });
+	}
+
 	public Cita pedirCita(Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception { 
 		return servidor.pedirCita(sesion.getId(), beneficiario, idMedico, fechaYHora, duracion);
 	}
@@ -329,7 +338,7 @@ public class ControladorCliente {
 	public void anularCita(Cita cita) throws RemoteException, CitaNoValidaException, SQLException, Exception {
 		servidor.anularCita(sesion.getId(), cita);
 	}
-	
+		
 	// Métodos de gestión de volantes
 	
 	public Volante consultarVolante(long idVolante) throws RemoteException, Exception {

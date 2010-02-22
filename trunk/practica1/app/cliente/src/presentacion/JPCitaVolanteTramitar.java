@@ -2,6 +2,8 @@ package presentacion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.rmi.RemoteException;
@@ -12,26 +14,25 @@ import java.util.EventObject;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-
 import presentacion.auxiliar.BeneficiarioBuscadoListener;
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.JDateChooserCitas;
+import presentacion.auxiliar.ListCellRendererCitas;
 import presentacion.auxiliar.UtilidadesListaHoras;
 import presentacion.auxiliar.Validacion;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
+import dominio.conocimiento.Medico;
 import dominio.conocimiento.Volante;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
@@ -67,6 +68,8 @@ public class JPCitaVolanteTramitar extends JPBase {
 	
 	private JLabel lblBuscarVolante;
 	private JTextField txtNumeroVolante;
+	private JLabel lblMedico;
+	private JTextField txtMedico;
 	private JTextField txtMedicoAsignado;
 	private JLabel lblMedicoAsignado;
 	private JTextField txtCentro;
@@ -102,7 +105,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
 			this.setSize(430, 390);
-			this.setPreferredSize(new java.awt.Dimension(430, 485));
+			this.setPreferredSize(new java.awt.Dimension(430, 501));
 			{
 				btnBuscarVolante = new JButton();
 				this.add(btnBuscarVolante, new AnchorConstraint(228, 11, 557, 822, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
@@ -156,7 +159,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 			
 			{
 				lblHora = new JLabel();
-				this.add(lblHora, new AnchorConstraint(393, 252, 657, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblHora, new AnchorConstraint(391, 252, 657, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblHora.setText("Hora");
 				lblHora.setPreferredSize(new java.awt.Dimension(99, 16));
 			}
@@ -168,7 +171,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 			}
 			{
 				btnRegistrar = new JButton();
-				this.add(btnRegistrar, new AnchorConstraint(432, 12, 855, 798, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				this.add(btnRegistrar, new AnchorConstraint(455, 11, 855, 798, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnRegistrar.setText("Registrar cita");
 				btnRegistrar.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnRegistrar.addActionListener(new ActionListener() {
@@ -179,17 +182,22 @@ public class JPCitaVolanteTramitar extends JPBase {
 			}
 			{
 				cmbHorasCitas = new JComboBox();
-				this.add(cmbHorasCitas, new AnchorConstraint(390, 12, 262, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(cmbHorasCitas, new AnchorConstraint(388, 12, 262, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				cmbHorasCitas.setModel(new DefaultComboBoxModel(new String[] {}));
-				cmbHorasCitas.setRenderer(new DefaultListCellRenderer());
+				cmbHorasCitas.setRenderer(new ListCellRendererCitas());
 				cmbHorasCitas.setPreferredSize(new java.awt.Dimension(280, 23));
+				cmbHorasCitas.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						cmbHorasCitasItemStateChanged(evt);
+					}
+				});
 			}
 			{
 				dtcDiaCita = new JDateChooserCitas();
 				this.add(dtcDiaCita, new AnchorConstraint(361, 12, 144, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				dtcDiaCita.setPreferredSize(new java.awt.Dimension(280, 23));
 				dtcDiaCita.setDateFormatString("dd/MM/yyyy");
-				dtcDiaCita.setToolTipText("Formato dd/MM/yyyy. Para más ayuda haga clic en el icono de la derecha.");
+				dtcDiaCita.setToolTipText("Formato dd/MM/yyyy. Haga clic en el icono de la derecha para desplegar un calendario.");
 				dtcDiaCita.setMinSelectableDate(new Date());
 				dtcDiaCita.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
@@ -226,6 +234,18 @@ public class JPCitaVolanteTramitar extends JPBase {
 				lblMedicoAsignado.setText("Médico");
 				lblMedicoAsignado.setPreferredSize(new java.awt.Dimension(110, 18));
 			}
+			{
+				lblMedico = new JLabel();
+				this.add(lblMedico, new AnchorConstraint(418, 252, 895, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				lblMedico.setText("Médico");
+				lblMedico.setPreferredSize(new java.awt.Dimension(99, 16));
+			}
+			{
+				txtMedico = new JTextField();
+				this.add(txtMedico, new AnchorConstraint(415, 12, 904, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				txtMedico.setEditable(false);
+				txtMedico.setPreferredSize(new java.awt.Dimension(280, 23));
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -258,20 +278,25 @@ public class JPCitaVolanteTramitar extends JPBase {
 	private void btnBuscarVolanteActionPerformed(ActionEvent evt) {
 		// Borramos los datos de la última tramitación de cita
 		limpiarCamposTramitacion();
+		txtMedicoAsignado.setText("");
+		txtCentro.setText("");
 		
 		try {
+			
+			// Comprobamos los datos del volante
 			Validacion.comprobarVolante(txtNumeroVolante.getText().trim());
 			
 			// Recuperamos los datos del volante del servidor
 			volante = getControlador().consultarVolante(Long.parseLong(txtNumeroVolante.getText().trim()));
 			
-			// Si el volante ya se ha usado para dar una cita, mostramos un error
+			// Comprobamos si el volante ya se ha usado para dar una cita
+			// o si no está asociado al beneficiario seleccionado
 			if(volante.getCita() != null) {
 				throw new IdVolanteIncorrectoException("El volante seleccionado ya se ha utilizado para pedir una cita y no se puede usar de nuevo.");
 			}
-			
-			if (beneficiario != null && !volante.getBeneficiario().equals(beneficiario))
-				throw new IdVolanteIncorrectoException("El volante introducio no corresponde al beneficiario seleccionado.");
+			if(beneficiario != null && !volante.getBeneficiario().equals(beneficiario)) {
+				throw new IdVolanteIncorrectoException("El volante seleccionado no fue emitido para el beneficiario con NIF " + beneficiario.getNif() + ".");
+			}
 			
 			// Mostramos los datos del volante encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Volante encontrado.");
@@ -339,7 +364,38 @@ public class JPCitaVolanteTramitar extends JPBase {
 	private void dtcDiaCitaPropertyChange(PropertyChangeEvent evt) {
 		UtilidadesListaHoras.obtenerListaHoras(dtcDiaCita, horasCitas, citasOcupadas, cmbHorasCitas);
 	}
+	
+	@SuppressWarnings("deprecation")
+	private void cmbHorasCitasItemStateChanged(ItemEvent evt) {
+		Date fecha, hora, diaCita;
+		Medico medico;
 		
+		try {
+			
+			if(evt.getStateChange() == ItemEvent.SELECTED
+			  && horaSeleccionadaValida() && cmbHorasCitas.getSelectedItem() != null) {
+				// Obtenemos la hora de la cita
+				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
+				fecha = dtcDiaCita.getDate();
+				diaCita = new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes());
+				// Consultamos qué médico daría realmente la cita
+				medico = getControlador().consultarMedicoCita(volante.getReceptor().getDni(), diaCita);
+				if(medico.equals(volante.getReceptor())) {
+					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + ")");
+				} else {
+					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + "), sustituye a " + volante.getReceptor().getApellidos() + ", " + volante.getReceptor().getNombre() + " (" + volante.getReceptor().getDni() + ")");
+				}
+			} else {
+				txtMedico.setText("(fecha no válida)");
+			}
+			
+		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch(Exception e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		}
+	}
+	
 	@SuppressWarnings("deprecation")
 	private void btnRegistrarActionPerformed(ActionEvent evt) {
 		Date fecha, hora;
@@ -385,6 +441,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 
 	
 	private boolean horaSeleccionadaValida() {
+		Vector<Object> desactivadas;
 		boolean valido;
 		
 		// Sólo se devuelve true si hay una hora seleccionada
@@ -395,8 +452,11 @@ public class JPCitaVolanteTramitar extends JPBase {
 		} else {
 			if(cmbHorasCitas.getSelectedIndex() == -1) {
 				valido = false;
-			} else if(((String)cmbHorasCitas.getSelectedItem()).startsWith("<html>")) {
-				valido = false;
+			} else {
+				desactivadas = ((ListCellRendererCitas)cmbHorasCitas.getRenderer()).getElementosDesactivados();
+				if(desactivadas.contains(cmbHorasCitas.getSelectedItem())) {
+					valido = false;
+				}
 			}
 		}
 		
@@ -426,6 +486,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 	private void limpiarCamposTramitacion() {
 		dtcDiaCita.setDate(null);
 		UtilidadesListaHoras.rellenarListaHoras(cmbHorasCitas, null, null);
+		txtMedico.setText("");
 		cambiarEstadoTramitacion(false);
 	}
 

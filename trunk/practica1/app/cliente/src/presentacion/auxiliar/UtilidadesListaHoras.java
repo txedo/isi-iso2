@@ -4,10 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import javax.swing.JComboBox;
-
-
 import dominio.conocimiento.DiaSemana;
 
 public class UtilidadesListaHoras {
@@ -74,25 +71,31 @@ public class UtilidadesListaHoras {
 	}
 	
 	public static void rellenarListaHoras(JComboBox cmbHorasCitas, Vector<String> horas, Vector<String> horasOcupadas) {
+		ListCellRendererCitas renderer;
 		int i;
+		
+		// Establecemos la lista de horas no disponibles
+		renderer = (ListCellRendererCitas)cmbHorasCitas.getRenderer();
+		renderer.getElementosDesactivados().clear();
+		if(horasOcupadas != null) {
+			renderer.getElementosDesactivados().addAll(horasOcupadas);
+		}
 		
 		// Actualizamos la lista de horas
 		cmbHorasCitas.removeAllItems();
 		if(horas != null) {
 			for(String hora : horas) {
-				if(horasOcupadas != null && horasOcupadas.contains(hora)) {
-					cmbHorasCitas.addItem("<html><font color=\"#FF0000\">" + hora + "</font></html>");
-				} else {
-					cmbHorasCitas.addItem(hora);
-				}
+				cmbHorasCitas.addItem(hora);
 			}
 		}
 		
 		// Seleccionamos la primera hora no ocupada
 		if(horas != null && horas.size() > 0) {
 			i = 0;
-			while(i < horas.size() && ((String)cmbHorasCitas.getItemAt(i)).startsWith("<html>")) {
-				i++;
+			if(horasOcupadas != null) {
+				while(i < horas.size() && horasOcupadas.contains(horas.get(i))) {
+					i++;
+				}
 			}
 			if(i >= horas.size()) {
 				cmbHorasCitas.setSelectedIndex(-1);

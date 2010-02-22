@@ -324,10 +324,12 @@ public class Validacion {
 		boolean bCorrecto = false;
 		boolean bAux = true;
 		
-		// El nombre de usuario sólo puede contener letras
+		// El nombre de usuario sólo puede contener letras o números
+		// pero debe empezar por una letra
 		if(usuario.length() > 0) {
-			for (int i=0; i<usuario.length() && bAux; i++)
-				bAux = Character.isLetter(usuario.charAt(i));
+			bAux = Character.isLetter(usuario.charAt(0));
+			for (int i=1; i<usuario.length() && bAux; i++)
+				bAux = Character.isLetter(usuario.charAt(i)) || Character.isDigit(usuario.charAt(i));
 			bCorrecto = bAux;
 		}
 		if (!bCorrecto)

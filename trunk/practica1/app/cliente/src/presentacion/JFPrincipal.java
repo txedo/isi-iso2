@@ -251,7 +251,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 						});
 					}
 					{
-						jPanelGestionarSustituciones = new JPSustituciones();
+						jPanelGestionarSustituciones = new JPSustituciones(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Sustituciones", null, jPanelGestionarSustituciones, null);
 						jPanelGestionarSustituciones.addOperacionCambiadaListener(new OperacionCambiadaListener() {
 							public void operacionCambiada(OperacionCambiadaEvent evt) {
@@ -386,11 +386,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 		try {
 			operaciones = controlador.operacionesDisponibles();
 			this.configurarInterfaz(operaciones);
-		} catch (RemoteException e) {
+		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
-		} catch (SesionInvalidaException e) {
-			Dialogos.mostrarDialogoError(this, "Error", "Sesión inválida.");
-		} catch (Exception e) {
+		} catch(SesionInvalidaException e) {
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
+		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
 		}
 	}
@@ -441,8 +441,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 		}
 		
 		// Inicializamos los paneles de gestión de citas
-		if(!operaciones.contains(Operaciones.ConsultarCitas)) {
-			jPanelGestionarCitas.desactivarConsultarAnularCita();
+		if(!operaciones.contains(Operaciones.ConsultarCitasBeneficiario)) {
+			jPanelGestionarCitas.desactivarConsultarAnularCitaBeneficiario();
+		}
+		if(!operaciones.contains(Operaciones.ConsultarCitasMedico)) {
+			jPanelGestionarCitas.desactivarConsultarCitaMedico();
 		}
 		if(!operaciones.contains(Operaciones.TramitarCita)) {
 			jPanelGestionarCitas.desactivarTramitarCita();
@@ -504,10 +507,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 		}
 	}
 
-	private void cerrarSesion () {
+	private void cerrarSesion() {
 		try {
-			if (controlador != null) {
-				controlador.cerrarSesion ();
+			if(controlador != null) {
+				controlador.cerrarSesion();
+				restablecerPaneles();
 				lblBarraEstado.setText("La sesión ha finalizado con éxito.");
 				lblPuertoEscucha.setText("");
 			}
@@ -522,11 +526,13 @@ public class JFPrincipal extends javax.swing.JFrame {
 	
 	public void forzarCierreSesionDuplicada() {
 		Dialogos.mostrarDialogoAdvertencia(this, "Aviso", "Se ha iniciado una sesión con el mismo nombre de usuario en otro equipo.\nEsta sesión se cerrará automáticamente.");
+		restablecerPaneles();
 		controlador.identificarse();
 	}
 	
 	public void forzarCierreServidorDesconectado() {
 		Dialogos.mostrarDialogoAdvertencia(this, "Aviso", "Se ha perdido la conexión con el servidor principal.\nEsta sesión se cerrará automáticamente.");
+		restablecerPaneles();
 		controlador.identificarse();
 	}
 
@@ -539,8 +545,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 			break;
 		case TramitarCita:
 		case TramitarCitaVolante:
-		case ConsultarAnularCitaBeneficiario:
-		case ConsultarCitaMedico:
+		case ConsultarAnularCitasBeneficiario:
+		case ConsultarCitasMedico:
 			jPanelGestionarCitas.beneficiarioActualizado(beneficiario);
 			break;
 		default:
@@ -557,8 +563,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 			break;
 		case TramitarCita:
 		case TramitarCitaVolante:
-		case ConsultarAnularCitaBeneficiario:
-		case ConsultarCitaMedico:
+		case ConsultarAnularCitasBeneficiario:
+		case ConsultarCitasMedico:
 			jPanelGestionarCitas.beneficiarioEliminado(beneficiario);
 			break;
 		default:
@@ -578,8 +584,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jPanelGestionarBeneficiarios.usuarioActualizado(usuario);
 		case TramitarCita:
 		case TramitarCitaVolante:
-		case ConsultarAnularCitaBeneficiario:
-		case ConsultarCitaMedico:
+		case ConsultarAnularCitasBeneficiario:
+		case ConsultarCitasMedico:
 			jPanelGestionarCitas.usuarioActualizado(usuario);
 			break;
 		default:
@@ -598,8 +604,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jPanelGestionarBeneficiarios.usuarioEliminado(usuario);
 		case TramitarCita:
 		case TramitarCitaVolante:
-		case ConsultarAnularCitaBeneficiario:
-		case ConsultarCitaMedico:
+		case ConsultarAnularCitasBeneficiario:
+		case ConsultarCitasMedico:
 			jPanelGestionarCitas.usuarioEliminado(usuario);
 			break;
 		default:
@@ -612,8 +618,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 		switch(operacionSeleccionada) {
 		case TramitarCita:
 		case TramitarCitaVolante:
-		case ConsultarAnularCitaBeneficiario:
-		case ConsultarCitaMedico:
+		case ConsultarAnularCitasBeneficiario:
+		case ConsultarCitasMedico:
 			jPanelGestionarCitas.citaRegistrada(cita);
 			break;
 		default:
@@ -626,8 +632,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 		switch(operacionSeleccionada) {
 		case TramitarCita:
 		case TramitarCitaVolante:
-		case ConsultarAnularCitaBeneficiario:
-		case ConsultarCitaMedico:
+		case ConsultarAnularCitasBeneficiario:
+		case ConsultarCitasMedico:
 			jPanelGestionarCitas.citaAnulada(cita);
 			break;
 		default:

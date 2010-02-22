@@ -161,7 +161,8 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.ModificarBeneficiario);
 			operaciones.add(Operaciones.EliminarBeneficiario);
 			operaciones.add(Operaciones.ConsultarMedicoCita);
-			operaciones.add(Operaciones.ConsultarCitas);
+			operaciones.add(Operaciones.ConsultarCitasBeneficiario);
+			operaciones.add(Operaciones.ConsultarCitasMedico);
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.TramitarCitaVolante);
 			operaciones.add(Operaciones.AnularCita);
