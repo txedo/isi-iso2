@@ -132,9 +132,9 @@ public class JPUsuarios extends JPBase {
 
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.RegistrarUsuario);
-		jPanelRegistrar.setVisible(true);
-		jPanelConsultarModificar.setVisible(false);
-		jPanelConsultar.setVisible(false);
+		jScrollRegistrar.setVisible(true);
+		jScrollConsultarModificar.setVisible(false);
+		jScrollConsultar.setVisible(false);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(OperacionCambiadaEvent evt) {

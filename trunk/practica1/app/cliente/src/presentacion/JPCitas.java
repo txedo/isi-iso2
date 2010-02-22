@@ -1,6 +1,8 @@
 package presentacion;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
@@ -46,6 +48,10 @@ public class JPCitas extends JPBase {
 	private JPCitaConsultarMedico jPanelConsultarCitasMedico;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
+	private JScrollPane jScrollTramitar;
+	private JScrollPane jScrollTramitarConVolante;
+	private JScrollPane jScrollConsultarCitasBeneficiario;
+	private JScrollPane jScrollConsultarCitasMedico;
 	
 	public JPCitas() {
 		this(null, null);
@@ -86,24 +92,48 @@ public class JPCitas extends JPBase {
 				jSeparator.setPreferredSize(new java.awt.Dimension(5, 390));
 			}
 			{
-				jPanelTramitar = new JPCitaTramitar(this.getFrame(), this.getControlador());
-				this.add(jPanelTramitar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelTramitar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollTramitar = new JScrollPane();
+				this.add(jScrollTramitar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollTramitar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollTramitar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollTramitar.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelTramitar = new JPCitaTramitar(this.getFrame(), this.getControlador());
+					jScrollTramitar.setViewportView(jPanelTramitar);
+				}
 			}
 			{
-				jPanelVolanteTramitar = new JPCitaVolanteTramitar(this.getFrame(), this.getControlador());
-				this.add(jPanelVolanteTramitar, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelVolanteTramitar.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollTramitarConVolante = new JScrollPane();
+				this.add(jScrollTramitarConVolante, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollTramitarConVolante.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollTramitarConVolante.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollTramitarConVolante.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelVolanteTramitar = new JPCitaVolanteTramitar(this.getFrame(), this.getControlador());
+					jScrollTramitarConVolante.setViewportView(jPanelVolanteTramitar);
+				}
 			}
 			{
-				jPanelConsultarCitasBeneficiario = new JPCitaConsultarBeneficiario(this.getFrame(), this.getControlador());
-				this.add(jPanelConsultarCitasBeneficiario, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelConsultarCitasBeneficiario.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollConsultarCitasBeneficiario = new JScrollPane();
+				this.add(jScrollConsultarCitasBeneficiario, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollConsultarCitasBeneficiario.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollConsultarCitasBeneficiario.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollConsultarCitasBeneficiario.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelConsultarCitasBeneficiario = new JPCitaConsultarBeneficiario(this.getFrame(), this.getControlador());
+					jScrollConsultarCitasBeneficiario.setViewportView(jPanelConsultarCitasBeneficiario);
+				}
 			}
 			{
-				jPanelConsultarCitasMedico = new JPCitaConsultarMedico(this.getFrame(), this.getControlador());
-				this.add(jPanelConsultarCitasMedico, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelConsultarCitasMedico.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollConsultarCitasMedico = new JScrollPane();
+				this.add(jScrollConsultarCitasMedico, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollConsultarCitasMedico.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollConsultarCitasMedico.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollConsultarCitasMedico.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelConsultarCitasMedico = new JPCitaConsultarMedico(this.getFrame(), this.getControlador());
+					jScrollConsultarCitasMedico.setViewportView(jPanelConsultarCitasMedico);
+				}
 			}
 			
 		} catch(Exception e) {
@@ -122,10 +152,10 @@ public class JPCitas extends JPBase {
 	
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.TramitarCita);
-		jPanelTramitar.setVisible(true);
-		jPanelConsultarCitasBeneficiario.setVisible(false);
-		jPanelConsultarCitasMedico.setVisible(false);
-		jPanelVolanteTramitar.setVisible(false);
+		jScrollTramitar.setVisible(true);
+		jScrollTramitarConVolante.setVisible(false);
+		jScrollConsultarCitasBeneficiario.setVisible(false);
+		jScrollConsultarCitasMedico.setVisible(false);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(OperacionCambiadaEvent evt) {
@@ -134,33 +164,33 @@ public class JPCitas extends JPBase {
 
 		operacionSeleccionada = evt.getOperacion();
 		
-		if(jPanelTramitar != null) {
-			jPanelTramitar.setVisible(false);
+		if(jScrollTramitar != null) {
+			jScrollTramitar.setVisible(false);
 		}
-		if(jPanelVolanteTramitar != null) {
-			jPanelVolanteTramitar.setVisible(false);
+		if(jScrollTramitarConVolante != null) {
+			jScrollTramitarConVolante.setVisible(false);
 		}
-		if(jPanelConsultarCitasBeneficiario != null) {
-			jPanelConsultarCitasBeneficiario.setVisible(false);
+		if(jScrollConsultarCitasBeneficiario != null) {
+			jScrollConsultarCitasBeneficiario.setVisible(false);
 		}
-		if(jPanelConsultarCitasMedico != null) {
-			jPanelConsultarCitasMedico.setVisible(false);
+		if(jScrollConsultarCitasMedico != null) {
+			jScrollConsultarCitasMedico.setVisible(false);
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.TramitarCita) {
-			jPanelTramitar.setVisible(true);
-			jPanelTramitar.repaint();
+			jScrollTramitar.setVisible(true);
+			jScrollTramitar.repaint();
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.TramitarCitaVolante) {
-			jPanelVolanteTramitar.setVisible(true);
-			jPanelVolanteTramitar.repaint();
+			jScrollTramitarConVolante.setVisible(true);
+			jScrollTramitarConVolante.repaint();
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.ConsultarAnularCitasBeneficiario) {
-			jPanelConsultarCitasBeneficiario.setVisible(true);
-			jPanelConsultarCitasBeneficiario.repaint();
+			jScrollConsultarCitasBeneficiario.setVisible(true);
+			jScrollConsultarCitasBeneficiario.repaint();
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.ConsultarCitasMedico) {
-			jPanelConsultarCitasMedico.setVisible(true);
-			jPanelConsultarCitasMedico.repaint();
+			jScrollConsultarCitasMedico.setVisible(true);
+			jScrollConsultarCitasMedico.repaint();
 		}
 		
 		// Notificamos que ha cambiado la operación seleccionada

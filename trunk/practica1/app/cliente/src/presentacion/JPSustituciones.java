@@ -1,6 +1,8 @@
 package presentacion;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
@@ -40,6 +42,7 @@ public class JPSustituciones extends JPBase {
 	private JPEstablecerSustituto jPanelEstablecer;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
+	private JScrollPane jScrollEstablecer;
 	
 	public JPSustituciones() {
 		this(null, null);
@@ -80,9 +83,15 @@ public class JPSustituciones extends JPBase {
 				jSeparator.setPreferredSize(new java.awt.Dimension(5, 390));
 			}
 			{
-				jPanelEstablecer = new JPEstablecerSustituto(this.getFrame(), this.getControlador());
-				this.add(jPanelEstablecer, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				jPanelEstablecer.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollEstablecer = new JScrollPane();
+				this.add(jScrollEstablecer, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollEstablecer.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollEstablecer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollEstablecer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelEstablecer = new JPEstablecerSustituto(this.getFrame(), this.getControlador());
+					jScrollEstablecer.setViewportView(jPanelEstablecer);
+				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -97,7 +106,7 @@ public class JPSustituciones extends JPBase {
 	
 	private void ocultarPaneles() {
 		jPanelListaOperaciones.setOperacion(OperacionesInterfaz.EstablecerSustituto);
-		jPanelEstablecer.setVisible(true);
+		jScrollEstablecer.setVisible(true);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(OperacionCambiadaEvent evt) {
@@ -106,12 +115,12 @@ public class JPSustituciones extends JPBase {
 
 		operacionSeleccionada = evt.getOperacion();
 		
-		if(jPanelEstablecer != null) {
-			jPanelEstablecer.setVisible(false);
+		if(jScrollEstablecer != null) {
+			jScrollEstablecer.setVisible(false);
 		}
 		if(operacionSeleccionada == OperacionesInterfaz.EstablecerSustituto) {
-			jPanelEstablecer.setVisible(true);
-			jPanelEstablecer.repaint();
+			jScrollEstablecer.setVisible(true);
+			jScrollEstablecer.repaint();
 		}
 
 		// Notificamos que ha cambiado la operación seleccionada
