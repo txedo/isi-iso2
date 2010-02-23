@@ -10,7 +10,7 @@ import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludInexistenteException;
@@ -71,7 +71,7 @@ public class FPBeneficiario {
 				beneficiario.setMedicoAsignado(null);
 			} else {
 				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-				if(medico.getRol() != RolesUsuarios.Medico) {
+				if(medico.getRol() != RolesUsuario.Medico) {
 					datos.close();
 					throw new UsuarioIncorrectoException("El beneficiario con NIF " + nif + " no tiene asignado un usuario con rol de médico.");
 				}
@@ -118,7 +118,7 @@ public class FPBeneficiario {
 				beneficiario.setMedicoAsignado(null);
 			} else {
 				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-				if(medico.getRol() != RolesUsuarios.Medico) {
+				if(medico.getRol() != RolesUsuario.Medico) {
 					datos.close();
 					throw new UsuarioIncorrectoException("El beneficiario con NSS " + nss + " no tiene asignado un usuario con rol de médico.");
 				}

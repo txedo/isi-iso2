@@ -13,11 +13,11 @@ import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.IMedico;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.UtilidadesDominio;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludInexistenteException;
 import excepciones.DireccionInexistenteException;
@@ -57,7 +57,7 @@ public class GestorMedicos {
 		}
 		
 		// Nos aseguramos de que el usuario devuelto tenga el rol esperado
-		if(usuario.getRol() != RolesUsuarios.Medico) {
+		if(usuario.getRol() != RolesUsuario.Medico) {
 			throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
 		}
 
@@ -136,7 +136,7 @@ public class GestorMedicos {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(dniMedico);
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
 			}
 			medico = (Medico)usuario;
@@ -197,7 +197,7 @@ public class GestorMedicos {
 		// Recuperamos los datos del médico
 		try {
 			usuario = FPUsuario.consultar(dniMedico);
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
 			}
 			medico = (Medico)usuario;
@@ -206,7 +206,7 @@ public class GestorMedicos {
 		}
 		
 		// Comprobamos que los datos de la sustitución sean válidos
-		if(Utilidades.fechaAnterior(dia, new Date(), false)) {
+		if(UtilidadesDominio.fechaAnterior(dia, new Date(), false)) {
 			throw new FechaNoValidaException("No se pueden buscar sustitutos para días anteriores al actual.");
 		}
 		if(horaDesde < 0 || horaDesde > 23) {
@@ -229,7 +229,7 @@ public class GestorMedicos {
 		// en todo o parte del rango de horas indicado
 		sustituciones = FPSustitucion.consultarPorSustituido(medico.getDni());
 		for(Sustitucion sustitucion : sustituciones) {
-			if(Utilidades.fechaIgual(dia, sustitucion.getDia(), false)
+			if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)
 			 && sustitucion.horaEnSustitucion(horaDesde, horaHasta)) {
 				throw new FechaNoValidaException("El médico que se quiere sustituir ya está siendo sustituido por otro médico en todas o algunas de las horas indicadas.");
 			}
@@ -239,7 +239,7 @@ public class GestorMedicos {
 		// médico en todo o parte del rango de horas indicado
 		sustituciones = FPSustitucion.consultarPorSustituto(medico.getDni());
 		for(Sustitucion sustitucion : sustituciones) {
-			if(Utilidades.fechaIgual(dia, sustitucion.getDia(), false)
+			if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)
 			 && sustitucion.horaEnSustitucion(horaDesde, horaHasta)) {
 				throw new FechaNoValidaException("El médico que se quiere sustituir tiene una sustitución asignada en todas o algunas de las horas indicadas.");
 			}
@@ -268,7 +268,7 @@ public class GestorMedicos {
 				ok = true;
 				sustituciones = FPSustitucion.consultarPorSustituido(medicoSust.getDni());
 				for(Sustitucion sustitucion : sustituciones) {
-					if(Utilidades.fechaIgual(dia, sustitucion.getDia(), false)
+					if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)
 					 && sustitucion.horaEnSustitucion(horaDesde, horaHasta)) {
 						// Este médico no está disponible para
 						// hacer la sustitución
@@ -343,7 +343,7 @@ public class GestorMedicos {
 		// Comprobamos que existan los médicos sustituto y sustituido
 		try {
 			usuario = FPUsuario.consultar(medico.getDni());
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El médico sustituido no es un usuario del sistema con rol de médico.");
 			}
 			medico = (Medico)usuario;
@@ -352,7 +352,7 @@ public class GestorMedicos {
 		}
 		try {
 			usuario = FPUsuario.consultar(sustituto.getDni());
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El médico sustituto no es un usuario del sistema con rol de médico.");
 			}
 			sustitutoReal = (Medico)usuario;
@@ -415,7 +415,7 @@ public class GestorMedicos {
 		// En principio dará la cita el médico previsto
 		try {
 			usuario = FPUsuario.consultar(dniMedico);
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El médico para el que se pretende pedir cita no es un usuario del sistema con rol de médico.");
 			}
 			medico = (Medico)usuario;
@@ -430,7 +430,7 @@ public class GestorMedicos {
 			for(Sustitucion sustitucion : sustituciones) {
 				// Si alguien va a sustituir al médico en el día y hora
 				// de la cita, nos quedamos con el médico sustituto
-				if(!comprobar && Utilidades.fechaIgual(sustitucion.getDia(), fechaYHora, false)) {
+				if(!comprobar && UtilidadesDominio.fechaIgual(sustitucion.getDia(), fechaYHora, false)) {
 					if(sustitucion.horaEnSustitucion(fechaYHora)) {
 						medico = sustitucion.getSustituto();
 						// Volvemos a repetir el bucle por si alguien va
@@ -450,14 +450,14 @@ public class GestorMedicos {
 		
 		// Obtenemos las horas en los que el médico sustituto
 		// tiene que pasar sus citas en el día indicado
-		horasCitas = medico.horasCitas(Utilidades.diaFecha(dia), horaDesde, horaHasta, IConstantes.DURACION_CITA);
+		horasCitas = medico.horasCitas(UtilidadesDominio.diaFecha(dia), horaDesde, horaHasta, IConstantes.DURACION_CITA);
 		// Añadimos a la lista de horas aquellas en las que el médico
 		// también tiene que trabajar por sustituir a otro médico,
 		// y esto lo hacemos recursivamente por si ese médico estaba
 		// sustituyendo a otro médico diferente
 		sustituciones = FPSustitucion.consultarPorSustituto(medico.getDni());
 		for(Sustitucion sustitucion : sustituciones) {
-			if(Utilidades.fechaIgual(dia, sustitucion.getDia(), false)) {
+			if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)) {
 				horasCitas.addAll(horasTrabajo(sustitucion.getMedico(), dia, horaDesde, horaHasta));
 			}
 		}

@@ -34,7 +34,7 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Especialidades;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Sesion;
 import dominio.conocimiento.Volante;
 import dominio.conocimiento.Usuario;
@@ -325,7 +325,7 @@ public class JPEmitirVolante extends JPBase {
 	
 	public void usuarioActualizado(Usuario usuario) {
 		if(beneficiario != null) {
-			if (usuario.getRol() == RolesUsuarios.Medico) {
+			if (usuario.getRol() == RolesUsuario.Medico) {
 				if (beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 					// Otro cliente ha actualizado el médico asignado al beneficiario
 					pnlBeneficiario.usuarioActualizado(usuario);
@@ -343,7 +343,7 @@ public class JPEmitirVolante extends JPBase {
 	
 	public void usuarioEliminado(Usuario usuario) {
 		if(beneficiario != null) {
-			if (usuario.getRol() == RolesUsuarios.Medico) {
+			if (usuario.getRol() == RolesUsuario.Medico) {
 				if (beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 					// Otro cliente ha eliminado el médico asignado al beneficiario
 					pnlBeneficiario.usuarioEliminado(usuario);

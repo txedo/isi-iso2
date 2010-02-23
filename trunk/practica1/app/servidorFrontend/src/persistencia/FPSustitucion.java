@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludInexistenteException;
@@ -41,7 +41,7 @@ public class FPSustitucion {
 		
 		// Obtenemos los datos del médico sustituido
 		medico = FPUsuario.consultar(dniMedico);
-		if(medico.getRol() != RolesUsuarios.Medico) {
+		if(medico.getRol() != RolesUsuario.Medico) {
 			datos.close();
 			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones del usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
 		}
@@ -56,7 +56,7 @@ public class FPSustitucion {
 			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
 			sustitucion.setMedico((Medico)medico);
 			sustituto = FPUsuario.consultar(datos.getString(COL_DNI_SUSTITUTO));
-			if(sustituto.getRol() != RolesUsuarios.Medico) {
+			if(sustituto.getRol() != RolesUsuario.Medico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("Alguna de las sustituciones del médico con DNI " + String.valueOf(dniMedico) + " no tiene asociado un usuario con rol de médico.");
 			}
@@ -82,7 +82,7 @@ public class FPSustitucion {
 		
 		// Obtenemos los datos del médico sustituto
 		sustituto = FPUsuario.consultar(dniMedico);
-		if(sustituto.getRol() != RolesUsuarios.Medico) {
+		if(sustituto.getRol() != RolesUsuario.Medico) {
 			datos.close();
 			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones hechas por el usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
 		}
@@ -96,7 +96,7 @@ public class FPSustitucion {
 			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
 			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
 			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			if(medico.getRol() != RolesUsuarios.Medico) {
+			if(medico.getRol() != RolesUsuario.Medico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("Alguna de las sustituciones hechas por el médico con DNI " + String.valueOf(dniMedico) + " no tiene asociado un usuario con rol de médico.");
 			}

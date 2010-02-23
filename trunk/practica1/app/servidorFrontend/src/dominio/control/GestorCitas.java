@@ -12,10 +12,10 @@ import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.UtilidadesDominio;
 import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludInexistenteException;
@@ -109,7 +109,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(dniMedico);
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
@@ -124,7 +124,7 @@ public class GestorCitas {
 		sustituciones = FPSustitucion.consultarPorSustituido(dniMedico);
 		for(Sustitucion sustitucion : sustituciones) {
 			for(Cita cita : citas) {
-				if(Utilidades.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
 				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
 					citasSust.add(cita);
 				}
@@ -140,7 +140,7 @@ public class GestorCitas {
 		for(Sustitucion sustitucion : sustituciones) {
 			citas2 = FPCita.consultarPorMedico(sustitucion.getMedico().getDni());
 			for(Cita cita : citas2) {
-				if(Utilidades.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
 				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
 					citasSust.add(cita);
 				}
@@ -178,7 +178,7 @@ public class GestorCitas {
 		sustituciones = FPSustitucion.consultarPorSustituido(dniMedico);
 		for(Sustitucion sustitucion : sustituciones) {
 			for(Cita cita : citas) {
-				if(Utilidades.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
 				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
 					citasSust.add(cita);
 				}
@@ -194,7 +194,7 @@ public class GestorCitas {
 		for(Sustitucion sustitucion : sustituciones) {
 			citas2 = FPCita.consultarPorMedico(sustitucion.getMedico().getDni());
 			for(Cita cita : citas2) {
-				if(Utilidades.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
 				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
 					citasSust.add(cita);
 				}
@@ -233,7 +233,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(dniMedico);
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
@@ -247,7 +247,7 @@ public class GestorCitas {
 		// hora está dentro del rango de horas especificado
 		citasFecha = new Vector<Cita>();
 		for(Cita cita : citas) {
-			if(Utilidades.fechaIgual(dia, cita.getFechaYHora(), false)
+			if(UtilidadesDominio.fechaIgual(dia, cita.getFechaYHora(), false)
 			 && cita.citaEnHoras(horaDesde, horaHasta)) {
 				citasFecha.add(cita);
 			}
@@ -287,7 +287,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(idMedico);
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
@@ -302,7 +302,7 @@ public class GestorCitas {
 		}
 
 		// Comprobamos que la fecha de la cita sea posterior a la actual
-		if(Utilidades.fechaAnterior(fechaYHora, new Date(), true)) {
+		if(UtilidadesDominio.fechaAnterior(fechaYHora, new Date(), true)) {
 			throw new FechaNoValidaException("No se pueden solicitar citas para fechas anteriores a la actual.");
 		}
 		
@@ -381,7 +381,7 @@ public class GestorCitas {
 		}
 		
 		// Comprobamos que la fecha de la cita sea posterior a la actual
-		if(Utilidades.fechaAnterior(fechaYHora, new Date(), true)) {
+		if(UtilidadesDominio.fechaAnterior(fechaYHora, new Date(), true)) {
 			throw new FechaNoValidaException("No se pueden solicitar citas para fechas anteriores a la actual.");
 		}
 		
@@ -466,7 +466,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(dniMedico);
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
@@ -483,7 +483,7 @@ public class GestorCitas {
 		for(Cita cita : citas) {
 			fecha = cita.getFechaYHora();
 			// Si la cita tiene una fecha pasada no se devuelve
-			if(!Utilidades.fechaAnterior(fecha, new Date(), true)) {
+			if(!UtilidadesDominio.fechaAnterior(fecha, new Date(), true)) {
 				cal.setTime(fecha);
 				fechaDia = new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).getTime();
 				// Inicializamos la lista de días si no se ha creado antes
@@ -521,7 +521,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(dniMedico);
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
 			}
 			medico = (Medico)usuario; 
@@ -542,7 +542,7 @@ public class GestorCitas {
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
-			if(!Utilidades.fechaAnterior(cita.getFechaYHora(), new Date(), false)) {
+			if(!UtilidadesDominio.fechaAnterior(cita.getFechaYHora(), new Date(), false)) {
 				if(citasPorFecha.containsKey(cal.getTime())) {
 					citasPorFecha.put(cal.getTime(), citasPorFecha.get(cal.getTime()) + 1);
 				} else {
@@ -563,7 +563,7 @@ public class GestorCitas {
 		// que el médico no puede pasar más citas de las que ya tiene asignadas
 		dias = new Vector<Date>();
 		for(Date dia : citasPorFecha.keySet()) {
-			if(citasPorFecha.get(dia) == citasPorDiaSemana.get(Utilidades.diaFecha(dia))) {
+			if(citasPorFecha.get(dia) == citasPorDiaSemana.get(UtilidadesDominio.diaFecha(dia))) {
 				dias.add(dia);
 			}
 		}

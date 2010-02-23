@@ -8,7 +8,7 @@ import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludInexistenteException;
@@ -55,7 +55,7 @@ public class FPCita {
 			beneficiario = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
 			cita.setBeneficiario(beneficiario);
 			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			if(medico.getRol() != RolesUsuarios.Medico) {
+			if(medico.getRol() != RolesUsuario.Medico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("La cita con id " + String.valueOf(id) + " no tiene asociado un usuario con rol de médico.");
 			}
@@ -94,7 +94,7 @@ public class FPCita {
 			beneficiario = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
 			cita.setBeneficiario(beneficiario);
 			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-			if(medico.getRol() != RolesUsuarios.Medico) {
+			if(medico.getRol() != RolesUsuario.Medico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("La cita con los datos indicados no tiene asociado un usuario con rol de médico.");
 			}
@@ -136,7 +136,7 @@ public class FPCita {
 				cita.setDuracion(datos.getInt(COL_DURACION));
 				cita.setBeneficiario(beneficiario);
 				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
-				if(medico.getRol() != RolesUsuarios.Medico) {
+				if(medico.getRol() != RolesUsuario.Medico) {
 					datos.close();
 					throw new UsuarioIncorrectoException("Alguna de las citas del beneficiario con NIF " + nifBeneficiario + " no tiene asociado un usuario con rol de médico.");
 				}
@@ -166,7 +166,7 @@ public class FPCita {
 
 		// Obtenemos los datos del médico
 		medico = FPUsuario.consultar(dniMedico);
-		if(medico.getRol() != RolesUsuarios.Medico) {
+		if(medico.getRol() != RolesUsuario.Medico) {
 			datos.close();
 			throw new UsuarioIncorrectoException("No se pueden consultar las citas del usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
 		}

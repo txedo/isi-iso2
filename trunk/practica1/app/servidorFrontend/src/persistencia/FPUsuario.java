@@ -9,7 +9,7 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.CentroSaludInexistenteException;
@@ -55,7 +55,7 @@ public class FPUsuario {
 			throw new UsuarioIncorrectoException("El usuario con DNI " + dni + " no se encuentra dado de alta en el sistema.");
 		} else {
 			// Creamos un usuario del tipo adecuado
-			switch(RolesUsuarios.values()[datos.getInt(COL_ROL)]) {
+			switch(RolesUsuario.values()[datos.getInt(COL_ROL)]) {
 			case Citador:
 				usuario = new Citador();
 				break;
@@ -81,7 +81,7 @@ public class FPUsuario {
 			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
 			usuario.setCentroSalud(centro);
 			// Establecemos datos adicionales de los médicos
-			if(usuario.getRol() == RolesUsuarios.Medico) {
+			if(usuario.getRol() == RolesUsuario.Medico) {
 				// Obtenemos el calendario del médico
 				calendario = FPPeriodoTrabajo.consultarHorario(usuario.getDni());
 				((Medico)usuario).setCalendario(calendario);
@@ -115,7 +115,7 @@ public class FPUsuario {
 			throw new UsuarioIncorrectoException("El nombre de usuario o contraseña introducidos no son válidos.");
 		} else {
 			// Creamos un usuario del tipo adecuado
-			switch(RolesUsuarios.values()[datos.getInt(COL_ROL)]) {
+			switch(RolesUsuario.values()[datos.getInt(COL_ROL)]) {
 			case Citador:
 				usuario = new Citador();
 				break;
@@ -141,7 +141,7 @@ public class FPUsuario {
 			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
 			usuario.setCentroSalud(centro);
 			// Establecemos datos adicionales de los médicos
-			if(usuario.getRol() == RolesUsuarios.Medico) {
+			if(usuario.getRol() == RolesUsuario.Medico) {
 				// Obtenemos el calendario del médico
 				calendario = FPPeriodoTrabajo.consultarHorario(usuario.getDni());
 				((Medico)usuario).setCalendario(calendario);
@@ -197,7 +197,7 @@ public class FPUsuario {
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Insertamos datos adicionales de los médicos
-		if(usuario.getRol() == RolesUsuarios.Medico) {
+		if(usuario.getRol() == RolesUsuario.Medico) {
 			calendario = ((Medico)usuario).getCalendario();
 			for(PeriodoTrabajo periodo : calendario) {
 				FPPeriodoTrabajo.insertar(usuario.getDni(), periodo);
@@ -224,7 +224,7 @@ public class FPUsuario {
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Modificamos datos adicionales de los médicos
-		if(usuario.getRol() == RolesUsuarios.Medico) {
+		if(usuario.getRol() == RolesUsuario.Medico) {
 			// Borramos el calendario antiguo del médico y añadimos el nuevo
 			calendario = FPPeriodoTrabajo.consultarHorario(usuario.getDni());
 			for(PeriodoTrabajo periodo : calendario) {
@@ -245,7 +245,7 @@ public class FPUsuario {
 		Vector<PeriodoTrabajo> calendario;
 		
 		// Borramos datos adicionales de los médicos
-		if(usuario.getRol() == RolesUsuarios.Medico) {
+		if(usuario.getRol() == RolesUsuario.Medico) {
 			calendario = ((Medico)usuario).getCalendario();
 			for(PeriodoTrabajo periodo : calendario) {
 				FPPeriodoTrabajo.eliminar(periodo);
