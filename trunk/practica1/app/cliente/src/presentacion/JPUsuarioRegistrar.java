@@ -559,7 +559,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 
 	private void lstTipoMedicoValueChanged(ListSelectionEvent evt) {
 		if (lstTipoUsuario.getSelectedIndex()!=-1)
-			if (lstTipoMedico.getSelectedValue().equals(CategoriasMedico.Especialista.name())) {
+			if (lstTipoMedico.getSelectedIndex()!=-1 && lstTipoMedico.getSelectedValue().equals(CategoriasMedico.Especialista.name())) {
 				cambiarEstadoEspecialidad(true);
 			} else {
 				cambiarEstadoEspecialidad(false);
