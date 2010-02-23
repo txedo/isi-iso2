@@ -334,7 +334,7 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(txtEspecialidad, new AnchorConstraint(407, 12, 760, 139, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtEspecialidad.setEditable(false);
 				txtEspecialidad.setPreferredSize(new java.awt.Dimension(279, 23));
-				txtEspecialidad.setName("cmbEspecialidad");
+				txtEspecialidad.setName("txtEspecialidad");
 			}
 			{
 				lblEspecialidad = new JLabel();

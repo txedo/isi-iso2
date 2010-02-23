@@ -132,6 +132,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 				this.add(lblHorasSemanales, new AnchorConstraint(316, 973, 644, 268, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblHorasSemanales.setText("0 horas semanales");
 				lblHorasSemanales.setPreferredSize(new java.awt.Dimension(150, 16));
+				lblHorasSemanales.setName("lblHorasSemanales");
 			}
 			{
 				btnCalendario = new JButton();
