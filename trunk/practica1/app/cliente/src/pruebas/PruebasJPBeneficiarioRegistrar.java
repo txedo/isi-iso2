@@ -1,7 +1,5 @@
 package pruebas;
 
-import java.util.Random;
-
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import org.uispec4j.Button;
@@ -12,17 +10,20 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 import com.toedter.calendar.JDateChooser;
+
+import dominio.conocimiento.Beneficiario;
 import dominio.control.ControladorCliente;
-import excepciones.BeneficiarioInexistenteException;
 import presentacion.JPBeneficiarioRegistrar;
-import presentacion.auxiliar.Validacion;
 
 /**
  * Pruebas del panel de registro de beneficiarios.
  */
 public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas {
 	
+	private String nif;
+	private boolean beneficiarioCreado = false;
 	private ControladorCliente controlador;
+	
 	private JPBeneficiarioRegistrar panel;
 	private Panel pnlPanel;
 	private TextBox txtNIF;
@@ -119,6 +120,10 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 	
 	protected void tearDown() {
 		try {
+			if (beneficiarioCreado) {
+				Beneficiario beneficiario = controlador.consultarBeneficiarioPorNIF(nif);
+				controlador.eliminarBeneficiario(beneficiario);
+			}
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
 			winPrincipal.dispose();
@@ -228,13 +233,15 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 
 	/** Pruebas con datos válidos */
 	@SuppressWarnings("deprecation")
-	public void testDatosValidos() {
-		String nif = "", nss = "", otroNif, otroNss;
+	public void testCrearBeneficiarioValido1() {
+		String nss = "";
+		String otroNif;
+		String otroNss;
 		
 		try {
 			// Creamos un beneficiario con todos los datos válidos
-			nif = generarNIF();
-			nss = generarNSS();
+			nif = UtilidadesPruebas.generarNIF();
+			nss = UtilidadesPruebas.generarNSS();
 			txtNIF.setText(nif);
 			txtNSS.setText(nss);
 			txtNombre.setText("Pedro");
@@ -253,6 +260,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			jcmbCentros.setSelectedIndex(0);
 			btnCrear.click();
 			comprobarCamposVacios();
+			beneficiarioCreado = true;
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -260,7 +268,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		try {
 			// Intentamos crear un beneficiario con el mismo NIF
 			// y comprobamos que los campos no se han borrado
-			otroNss = generarNSS();
+			otroNss = UtilidadesPruebas.generarNSS();
 			txtNIF.setText(nif);
 			txtNSS.setText(otroNss);
 			txtNombre.setText("Pedro");
@@ -281,7 +289,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			assertEquals(txtNIF.getText(), nif);
 			// Intentamos crear un beneficiario con el mismo NSS
 			// y comprobamos que los campos no se han borrado
-			otroNif = generarNIF();
+			otroNif = UtilidadesPruebas.generarNIF();
 			txtNIF.setText(otroNif);
 			txtNSS.setText(nss);
 			btnCrear.click();
@@ -289,12 +297,16 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+	}
+	
+	public void testCrearBeneficiarioValido2() {
+		String nss = "";
 		
 		try {
 			// Creamos un beneficiario con datos válidos omitiendo
 			// el correo electrónico y los teléfonos
-			nif = generarNIF();
-			nss = generarNSS();
+			nif = UtilidadesPruebas.generarNIF();
+			nss = UtilidadesPruebas.generarNSS();
 			txtNIF.setText(nif);
 			txtNSS.setText(nss);
 			txtNombre.setText("Pedro  ");
@@ -313,15 +325,20 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			jcmbCentros.setSelectedIndex(0);
 			btnCrear.click();
 			comprobarCamposVacios();
+			beneficiarioCreado = true;
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+	}
+	
+	public void testCrearBeneficiarioValido3() {
+		String nss = "";
 		
 		try {
 			// Creamos un beneficiario con datos válidos omitiendo
 			// el número, el piso y la puerta del domicilio
-			nif = generarNIF();
-			nss = generarNSS();
+			nif = UtilidadesPruebas.generarNIF();
+			nss = UtilidadesPruebas.generarNSS();
 			txtNIF.setText(nif);
 			txtNSS.setText(nss);
 			txtNombre.setText("Pedro");
@@ -340,6 +357,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			jcmbCentros.setSelectedIndex(0);
 			btnCrear.click();
 			comprobarCamposVacios();
+			beneficiarioCreado = true;
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -347,13 +365,13 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 	
 	/** Pruebas de restablecimiento de los datos */
 	public void testRestablecer() {
-		String nif, nss;
+		String nss;
 		
 		try {
 			// Ponemos datos válidos pero borramos todos los
 			// campos pulsando el botón Restablecer 
-			nif = generarNIF();
-			nss = generarNSS();
+			nif = UtilidadesPruebas.generarNIF();
+			nss = UtilidadesPruebas.generarNSS();
 			txtNIF.setText(nif);
 			txtNSS.setText(nss);
 			txtNombre.setText("Pedro");
@@ -372,6 +390,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			jcmbCentros.setSelectedIndex(0);
 			btnRestablecer.click();
 			comprobarCamposVacios();
+			beneficiarioCreado = false;
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -396,65 +415,6 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		assertTrue(jcmbCentros.getSelectedIndex() == -1);
 	}
 	
-	private String generarNIF() {
-		Random r;
-		String nif;
-		boolean existe;
-		int i;
-		
-		nif = "";
-		r = new Random();
-		try {
-			do {
-				// Generamos un NIF aleatorio
-				nif = "";
-				for(i = 0; i < Validacion.NIF_LONGITUD - 1; i++) {
-					nif = nif + String.valueOf(r.nextInt(10));
-				}
-				nif = nif + "X";
-				// Comprobamos si ya hay un beneficiario con ese NIF
-				try {
-					controlador.consultarBeneficiarioPorNIF(nif);
-					existe = true;
-				} catch(BeneficiarioInexistenteException e) {
-					existe = false;
-				}
-			} while(existe);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		return nif;
-	}
-	
-	private String generarNSS() {
-		Random r;
-		String nss;
-		boolean existe;
-		int i;
-		
-		nss = "";
-		r = new Random();
-		try {
-			do {
-				// Generamos un NSS aleatorio
-				nss = "";
-				for(i = 0; i < Validacion.NSS_LONGITUD; i++) {
-					nss = nss + String.valueOf(r.nextInt(10));
-				}
-				// Comprobamos si ya hay un beneficiario con ese NSS
-				try {
-					controlador.consultarBeneficiarioPorNSS(nss);
-					existe = true;
-				} catch(BeneficiarioInexistenteException e) {
-					existe = false;
-				}
-			} while(existe);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		return nss;
-	}
+
 	
 }

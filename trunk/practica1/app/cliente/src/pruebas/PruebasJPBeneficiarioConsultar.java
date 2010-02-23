@@ -29,7 +29,7 @@ import excepciones.BeneficiarioInexistenteException;
 
 public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
 	
-	boolean eliminado;
+	boolean eliminado = false;
 	private Beneficiario beneficiarioPrueba;
 	private ControladorCliente controlador;
 	private JPBeneficiarioConsultar panel;
@@ -93,15 +93,14 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			});
 			// Creamos un beneficiario de prueba
 			beneficiarioPrueba = new Beneficiario ();
-			beneficiarioPrueba.setNif(generarNIF());
-			beneficiarioPrueba.setNss(generarNSS());
+			beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());
+			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
 			beneficiarioPrueba.setNombre("beneficiario");
 			beneficiarioPrueba.setApellidos("de prueba");
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(controlador.consultarCentros().firstElement());
 			controlador.crearBeneficiario(beneficiarioPrueba);
-			eliminado = false;
 			// Creamos el panel
 			panel = new JPBeneficiarioConsultar(controlador.getVentanaPrincipal(), controlador);
 			// Obtenemos los componentes del panel
@@ -416,67 +415,6 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		assertTrue(txtTelefonoFijo.getText().equals(""));
 		assertTrue(txtTelefonoMovil.getText().equals(""));
 		assertTrue(jcmbCentros.getSelectedIndex() == -1);
-	}
-	
-	private String generarNIF() {
-		Random r;
-		String nif;
-		boolean existe;
-		int i;
-		
-		nif = "";
-		r = new Random();
-		try {
-			do {
-				// Generamos un NIF aleatorio
-				nif = "";
-				for(i = 0; i < Validacion.NIF_LONGITUD - 1; i++) {
-					nif = nif + String.valueOf(r.nextInt(10));
-				}
-				nif = nif + "X";
-				// Comprobamos si ya hay un beneficiario con ese NIF
-				try {
-					controlador.consultarBeneficiarioPorNIF(nif);
-					existe = true;
-				} catch(BeneficiarioInexistenteException e) {
-					existe = false;
-				}
-			} while(existe);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		return nif;
-	}
-	
-	private String generarNSS() {
-		Random r;
-		String nss;
-		boolean existe;
-		int i;
-		
-		nss = "";
-		r = new Random();
-		try {
-			do {
-				// Generamos un NSS aleatorio
-				nss = "";
-				for(i = 0; i < Validacion.NSS_LONGITUD; i++) {
-					nss = nss + String.valueOf(r.nextInt(10));
-				}
-				// Comprobamos si ya hay un beneficiario con ese NSS
-				try {
-					controlador.consultarBeneficiarioPorNSS(nss);
-					existe = true;
-				} catch(BeneficiarioInexistenteException e) {
-					existe = false;
-				}
-			} while(existe);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		return nss;
 	}
 	
 }
