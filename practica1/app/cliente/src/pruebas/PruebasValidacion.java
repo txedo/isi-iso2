@@ -110,7 +110,6 @@ public class PruebasValidacion extends TestCase {
 				}
 			}
 			// Probamos nombres correctos
-			// TODO: ¿Se deben soportar nombres con guiones, como "Juan-Luis"?
 			validos = new String[] { "Juan", "José Luis", "ÁÉÍÓÚ áéíóú ÑñÇç" };
 			for(String nombre : validos) {
 				try {
@@ -312,7 +311,6 @@ public class PruebasValidacion extends TestCase {
 				}
 			}
 			// Probamos localidades correctas
-			// TODO: ¿Deben soportarse ciudades con guiones, tipo "Aaaaa-bbbb"?
 			validos = new String[] { "Mérida", "Ciudad Real", "ÁÉÍÓÚ áéíóú ÑñÇç" };
 			for(String localidad : validos) {
 				try {
@@ -369,7 +367,6 @@ public class PruebasValidacion extends TestCase {
 				}
 			}
 			// Probamos provincias correctas
-			// TODO: ¿Deben soportarse provincias con guiones, tipo "Aaaaa-bbbb"?
 			validos = new String[] { "Barcelona", "Ciudad Real", "ÁÉÍÓÚ áéíóú ÑñÇç" };
 			for(String provincia : validos) {
 				try {
@@ -389,7 +386,6 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos correos electrónicos incorrectos
-			// TODO: No debe constar sólo de espacios
 			invalidos = new String[] { "", "  ", "1234", "abcd", "pedro@novale", "pedro.garcia@novale", "pedro.com", "a@.c", "maria@yahoo.es  ", "  maria@yahoo.es" };
 			for(String correo : invalidos) {
 				try {

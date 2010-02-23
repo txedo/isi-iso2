@@ -5,7 +5,6 @@ import java.util.Random;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import org.uispec4j.Button;
@@ -27,7 +26,6 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Direccion;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
-import excepciones.TituloIncorrectoException;
 
 public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
 	

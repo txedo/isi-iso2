@@ -145,6 +145,7 @@ public class JPUsuarioConsultar extends JPBase {
 				btnCalendario.setPreferredSize(new java.awt.Dimension(110, 23));
 				btnCalendario.setToolTipText("Sólo tienen definido un calendario laboral los usuarios de tipo Médico");
 				btnCalendario.setEnabled(false);
+				btnCalendario.setName("btnCalendario");
 				btnCalendario.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnCalendarioActionPerformed(evt);
@@ -162,6 +163,7 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(cmbRol, new AnchorConstraint(322, 12, 462, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				cmbRol.setPreferredSize(new java.awt.Dimension(277, 23));
 				cmbRol.setEnabled(false);
+				cmbRol.setName("cmbRol");
 				cmbRol.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent evt) {
 						cmbRolesItemStateChanged(evt);
@@ -173,6 +175,7 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(btnEliminar, new AnchorConstraint(461, 161, 673, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnEliminar.setText("Eliminar usuario");
 				btnEliminar.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnEliminar.setName("btnEliminar");
 				btnEliminar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnEliminarActionPerformed(evt);
@@ -196,35 +199,41 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(txtCentro, new AnchorConstraint(350, 12, 462, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtCentro.setPreferredSize(new java.awt.Dimension(277, 23));
 				txtCentro.setEditable(false);
+				txtCentro.setName("txtCentro");
 			}
 			{
 				txtLogin = new JTextField();
 				this.add(txtLogin, new AnchorConstraint(157, 12, 314, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtLogin.setPreferredSize(new java.awt.Dimension(277, 23));
 				txtLogin.setEditable(false);
+				txtLogin.setName("txtLogin");
 			}
 			{
 				txtApellidos = new JTextField();
 				this.add(txtApellidos, new AnchorConstraint(129, 12, 226, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtApellidos.setPreferredSize(new java.awt.Dimension(277, 23));				
 				txtApellidos.setEditable(false);
+				txtApellidos.setName("txtApellidos");
 			}
 			{
 				txtNombre = new JTextField();
 				this.add(txtNombre, new AnchorConstraint(101, 12, 162, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNombre.setPreferredSize(new java.awt.Dimension(277, 23));
 				txtNombre.setEditable(false);
+				txtNombre.setName("txtNombre");
 			}
 			{
 				txtNIFBuscado = new JTextField();
 				this.add(txtNIFBuscado, new AnchorConstraint(36, 83, 91, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNIFBuscado.setPreferredSize(new java.awt.Dimension(206, 23));
+				txtNIFBuscado.setName("txtNifBuscado");
 			}
 			{
 				btnBuscar = new JButton();
 				this.add(btnBuscar, new AnchorConstraint(36, 11, 91, 829, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnBuscar.setText("Buscar");
 				btnBuscar.setPreferredSize(new java.awt.Dimension(66, 23));
+				btnBuscar.setName("btnBuscar");
 				btnBuscar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnBuscarActionPerformed(evt);
@@ -236,6 +245,7 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(txtPasswordConf, new AnchorConstraint(213, 12, 388, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtPasswordConf.setPreferredSize(new java.awt.Dimension(277, 23));
 				txtPasswordConf.setEditable(false);
+				txtPasswordConf.setName("txtPasswordConf");
 			}
 			{
 				lblApellidos = new JLabel();
@@ -272,6 +282,7 @@ public class JPUsuarioConsultar extends JPBase {
 				btnGuardar.setText("Guardar cambios");
 				btnGuardar.setPreferredSize(new java.awt.Dimension(120, 26));
 				this.add(btnGuardar, new AnchorConstraint(459, 11, 534, 670, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
+				btnGuardar.setName("btnGuardar");
 				btnGuardar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnGuardarActionPerformed(evt);
@@ -284,6 +295,7 @@ public class JPUsuarioConsultar extends JPBase {
 				chkEditar.setText("Habilitar edición");
 				chkEditar.setEnabled(false);
 				chkEditar.setPreferredSize(new java.awt.Dimension(106, 14));
+				chkEditar.setName("chkEditar");
 				chkEditar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						chkEditarActionPerformed(evt);
@@ -309,6 +321,7 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(txtNIF, new AnchorConstraint(73, 12, 219, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNIF.setEditable(false);
 				txtNIF.setPreferredSize(new java.awt.Dimension(277, 23));
+				txtNIF.setName("txtNif");
 			}
 			{
 				lblNIF = new JLabel();
@@ -321,6 +334,7 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(txtEspecialidad, new AnchorConstraint(407, 12, 760, 139, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtEspecialidad.setEditable(false);
 				txtEspecialidad.setPreferredSize(new java.awt.Dimension(279, 23));
+				txtEspecialidad.setName("cmbEspecialidad");
 			}
 			{
 				lblEspecialidad = new JLabel();
@@ -333,6 +347,7 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(txtPassword, new AnchorConstraint(185, 12, 454, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtPassword.setEditable(false);
 				txtPassword.setPreferredSize(new java.awt.Dimension(277, 23));
+				txtPassword.setName("txtPassword");
 				txtPassword.addFocusListener(new FocusAdapter() {
 					public void focusGained(FocusEvent evt) {
 						txtPasswordFocusGained(evt);
@@ -350,18 +365,21 @@ public class JPUsuarioConsultar extends JPBase {
 				this.add(txtTelefonoMovil, new AnchorConstraint(295, 12, 874, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtTelefonoMovil.setPreferredSize(new java.awt.Dimension(277, 23));
 				txtTelefonoMovil.setEditable(false);
+				txtTelefonoMovil.setName("txtTelefonoMovil");
 			}
 			{
 				txtTelefonoFijo = new JTextField();
 				this.add(txtTelefonoFijo, new AnchorConstraint(268, 12, 788, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtTelefonoFijo.setPreferredSize(new java.awt.Dimension(277, 23));
 				txtTelefonoFijo.setEditable(false);
+				txtTelefonoFijo.setName("txtTelefonoFijo");
 			}
 			{
 				txtCorreoElectronico = new JTextField();
 				this.add(txtCorreoElectronico, new AnchorConstraint(240, 12, 700, 141, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtCorreoElectronico.setPreferredSize(new java.awt.Dimension(277, 23));
 				txtCorreoElectronico.setEditable(false);
+				txtCorreoElectronico.setName("txtCorreoElectronico");
 			}
 			{
 				lblTelefonoMovil = new JLabel();
