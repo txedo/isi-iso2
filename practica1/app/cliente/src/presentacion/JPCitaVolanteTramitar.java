@@ -36,10 +36,10 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.UtilidadesDominio;
 import dominio.conocimiento.Volante;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
@@ -372,7 +372,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
-			while(diasDesactivados.contains(Utilidades.diaFecha(cal.getTime())) || diasOcupados.contains(cal.getTime())) {
+			while(diasDesactivados.contains(UtilidadesDominio.diaFecha(cal.getTime())) || diasOcupados.contains(cal.getTime())) {
 				cal.add(Calendar.DAY_OF_MONTH, 1);
 			}
 			dtcDiaCita.setDate(cal.getTime());
@@ -549,7 +549,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 	public void usuarioActualizado(Usuario usuario) {
 		if(beneficiario != null) {
 			if (volante != null) {
-				if (usuario.getRol() == RolesUsuarios.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
+				if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha modificado el especialista asociado al volante desde otro cliente.");
 					// Otro cliente ha actualizado el especialista asignado al volante
 					txtMedicoAsignado.setText(usuario.getApellidos() + ", " + usuario.getNombre() + " (" + usuario.getDni() + ")");
@@ -563,7 +563,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 	public void usuarioEliminado(Usuario usuario) {
 		if(beneficiario != null) {
 			if (volante != null) {
-				if (usuario.getRol() == RolesUsuarios.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
+				if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
 					// Otro cliente ha eliminado el médico especialista asociado al volante
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha eliminado el especialista asociado al volante desde otro cliente.");
 					restablecerPanel();
@@ -618,7 +618,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 
 	public void sustitucionRegistrada(Sustitucion sustitucion) {
 		if(beneficiario != null && volante.getReceptor().equals(sustitucion.getMedico())
-		 && Utilidades.fechaIgual(sustitucion.getDia(), dtcDiaCita.getDate(), false)) {
+		 && UtilidadesDominio.fechaIgual(sustitucion.getDia(), dtcDiaCita.getDate(), false)) {
 			// Otro cliente ha registrado una sustitución para el médico
 			// con el que se quiere pedir cita en el día seleccionado
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una sustitución desde otro cliente para el médico del volante en el día seleccionado.");
