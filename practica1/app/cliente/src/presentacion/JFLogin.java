@@ -66,7 +66,7 @@ public class JFLogin extends javax.swing.JFrame {
 	private JLabel lblDireccionServidor;
 	private JTextField txtPuertoServidor;
 	private JLabel lblPuertoServidor;
-	private JTextField txtIPServidor;
+	private JTextField txtDireccionServidor;
 	private JPanel pnlPanel;
 	private JButton btnAvanzado;
 	private JButton btnConectar;
@@ -101,6 +101,7 @@ public class JFLogin extends javax.swing.JFrame {
 				AnchorLayout jPanel1Layout = new AnchorLayout();
 				getContentPane().add(pnlPanel, BorderLayout.CENTER);
 				pnlPanel.setLayout(jPanel1Layout);
+				pnlPanel.setName("pnlPanel");
 				{
 					pnlDatosServidor = new JPanel();
 					pnlDatosServidor.setLayout(null);
@@ -108,30 +109,35 @@ public class JFLogin extends javax.swing.JFrame {
 					pnlDatosServidor.setBorder(BorderFactory.createTitledBorder("Datos del servidor"));
 					pnlDatosServidor.setPreferredSize(new java.awt.Dimension(259, 89));
 					pnlDatosServidor.setVisible(false);
+					pnlDatosServidor.setName("pnlDatosServidor");
 					{
 						txtPuertoServidor = new JTextField();
 						pnlDatosServidor.add(txtPuertoServidor, new AnchorConstraint(580, 950, 846, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtPuertoServidor.setText("2995");
 						txtPuertoServidor.setBounds(115, 53, 125, 20);
+						txtPuertoServidor.setName("txtPuertoServidor");
 					}
 					{
 						lblPuertoServidor = new JLabel();
 						pnlDatosServidor.add(lblPuertoServidor, new AnchorConstraint(593, 483, 780, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						lblPuertoServidor.setText("Puerto");
 						lblPuertoServidor.setBounds(13, 57, 91, 14);
+						lblPuertoServidor.setName("lblPuertoServidor");
 					}
 					{
-						txtIPServidor = new JTextField();
-						pnlDatosServidor.add(txtIPServidor, new AnchorConstraint(246, 950, 513, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-						txtIPServidor.setText("127.0.0.1");
-						txtIPServidor.setBounds(115, 24, 125, 20);
-						txtIPServidor.setLayout(null);
+						txtDireccionServidor = new JTextField();
+						pnlDatosServidor.add(txtDireccionServidor, new AnchorConstraint(246, 950, 513, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
+						txtDireccionServidor.setText("127.0.0.1");
+						txtDireccionServidor.setBounds(115, 24, 125, 20);
+						txtDireccionServidor.setLayout(null);
+						txtDireccionServidor.setName("txtDireccionServidor");
 					}
 					{
 						lblDireccionServidor = new JLabel();
 						pnlDatosServidor.add(lblDireccionServidor, new AnchorConstraint(286, 483, 473, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						lblDireccionServidor.setBounds(13, 28, 91, 14);
 						lblDireccionServidor.setText("Dirección IP");
+						lblDireccionServidor.setName("lblDireccionServidor");
 					}
 				}
 				{
@@ -140,29 +146,34 @@ public class JFLogin extends javax.swing.JFrame {
 					pnlPanel.add(pnlDatosUsuario, new AnchorConstraint(10, 905, 630, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 					pnlDatosUsuario.setPreferredSize(new java.awt.Dimension(259, 86));
 					pnlDatosUsuario.setBorder(BorderFactory.createTitledBorder("Datos de usuario"));
+					pnlDatosUsuario.setName("pnlDatosUsuario");
 					{
 						txtPassword = new JPasswordField();
 						pnlDatosUsuario.add(txtPassword, new AnchorConstraint(580, 950, 846, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtPassword.setLayout(null);
 						txtPassword.setBounds(115, 50, 125, 20);
+						txtPassword.setName("txtPassword");
 					}
 					{
 						lblPassword = new JLabel();
 						pnlDatosUsuario.add(lblPassword, new AnchorConstraint(593, 483, 780, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						lblPassword.setText("Contraseña");
 						lblPassword.setBounds(13, 54, 85, 14);
+						lblPassword.setName("lblPassword");
 					}
 					{
 						txtUsuario = new JTextField();
 						pnlDatosUsuario.add(txtUsuario, new AnchorConstraint(246, 950, 513, 487, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						txtUsuario.setLayout(null);
 						txtUsuario.setBounds(115, 22, 125, 20);
+						txtUsuario.setName("txtUsuario");
 					}
 					{
 						lblUsuario = new JLabel();
 						pnlDatosUsuario.add(lblUsuario, new AnchorConstraint(286, 483, 473, 38, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 						lblUsuario.setText("Usuario");
 						lblUsuario.setBounds(13, 26, 85, 14);
+						lblUsuario.setName("lblUsuario");
 					}
 				}
 				{
@@ -172,6 +183,7 @@ public class JFLogin extends javax.swing.JFrame {
 					btnAvanzado.setText("Avanzado >>");
 					btnAvanzado.setPreferredSize(new java.awt.Dimension(103, 30));
 					btnAvanzado.setRequestFocusEnabled(false);
+					btnAvanzado.setName("btnAvanzado");
 					btnAvanzado.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnAvanzadoActionPerformed(evt);
@@ -186,6 +198,7 @@ public class JFLogin extends javax.swing.JFrame {
 					btnConectar.setText("Iniciar sesión");
 					btnConectar.setSelected(true);
 					btnConectar.setPreferredSize(new java.awt.Dimension(107, 30));
+					btnConectar.setName("btnConectar");
 					btnConectar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnConectarActionPerformed(evt);
@@ -223,11 +236,11 @@ public class JFLogin extends javax.swing.JFrame {
 			// Comprobamos los campos de la ventana
 			Validacion.comprobarUsuario(txtUsuario.getText().trim());
 			//TODO:quitado temporalmente... Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
-			Validacion.comprobarDireccionIP(txtIPServidor.getText().trim());
+			Validacion.comprobarDireccionIP(txtDireccionServidor.getText().trim());
 			Validacion.comprobarPuerto(txtPuertoServidor.getText().trim());
 			
 			int puerto = Integer.parseInt(txtPuertoServidor.getText().trim());
-			controlador.iniciarSesion(txtIPServidor.getText(), puerto, txtUsuario.getText(), new String(txtPassword.getPassword()));
+			controlador.iniciarSesion(txtDireccionServidor.getText(), puerto, txtUsuario.getText(), new String(txtPassword.getPassword()));
 		
 		} catch(UsuarioIncorrectoException e) {
 			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
@@ -242,8 +255,8 @@ public class JFLogin extends javax.swing.JFrame {
 			txtPassword.grabFocus();
 		} catch(IPInvalidaException e) {
 			Dialogos.mostrarDialogoError(this, "Error", "La dirección IP del servidor tiene un formato incorrecto.");
-			txtIPServidor.selectAll();
-			txtIPServidor.grabFocus();
+			txtDireccionServidor.selectAll();
+			txtDireccionServidor.grabFocus();
 		} catch(PuertoInvalidoException e) {
 			Dialogos.mostrarDialogoError(this, "Error", "El puerto del servidor tiene un formato incorrecto.");
 			txtPuertoServidor.selectAll();
@@ -264,7 +277,7 @@ public class JFLogin extends javax.swing.JFrame {
 			this.setSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
 			pnlPanel.setSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
 			pnlDatosServidor.setVisible(true);
-			txtIPServidor.setVisible(true);
+			txtDireccionServidor.setVisible(true);
 			lblDireccionServidor.setVisible(true);
 			txtPuertoServidor.setVisible(true);
 			lblPuertoServidor.setVisible(true);
@@ -274,7 +287,7 @@ public class JFLogin extends javax.swing.JFrame {
 				this.setSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
 				pnlPanel.setSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
 				pnlDatosServidor.setVisible(false);
-				txtIPServidor.setVisible(false);
+				txtDireccionServidor.setVisible(false);
 				lblDireccionServidor.setVisible(false);
 				txtPuertoServidor.setVisible(false);
 				lblPuertoServidor.setVisible(false);

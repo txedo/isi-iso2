@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import org.uispec4j.Button;
@@ -14,6 +15,7 @@ import org.uispec4j.Panel;
 import org.uispec4j.TextBox;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
+import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JPBeneficiarioConsultar;
@@ -25,6 +27,7 @@ import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Direccion;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
+import excepciones.TituloIncorrectoException;
 
 public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
 	
@@ -156,10 +159,10 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			if (!eliminado) controlador.eliminarBeneficiario(beneficiarioPrueba);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
-			winPrincipal.dispose();
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+		winPrincipal.dispose();
 	}
 	
 	/** Pruebas con datos no válidos */
@@ -374,14 +377,23 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			// Comprobamos que el boton de Eliminar ahora sí está habilitado
 			assertTrue(btnEliminar.isEnabled());
 			// Eliminamos el beneficiario confirmando la operación en el diálogo de confirmación
-			OperacionesAuxiliares.interceptarDialogo(btnEliminar, YES_OPTION);
+			WindowInterceptor.init(btnEliminar.triggerClick()).process(new WindowHandler() {
+				public Trigger process (Window window) {
+					return window.getButton(YES_OPTION).triggerClick();
+				}
+			}).run();
 			eliminado = true;
 			comprobarCamposVacios();
 			// Comprobamos que el beneficiario ha sido eliminado correctamente
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			btnBuscar.click();
+			WindowInterceptor.init(btnBuscar.triggerClick()).process(new WindowHandler() {
+				public Trigger process (Window window) {
+					assertTrue(window.titleContains("Error"));
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
 			// Como no se encuentra al usuario, el boton Editar tiene que estar deshabilitado
 			assertFalse(chkEditar.isEnabled());
 		} catch(Exception e) {
