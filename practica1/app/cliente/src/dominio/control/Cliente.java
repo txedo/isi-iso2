@@ -72,7 +72,6 @@ public class Cliente implements ICliente {
 		case ICodigosOperacionesCliente.ELIMINAR:
 			if(dato instanceof Beneficiario) {
 				controlador.beneficiarioEliminado((Beneficiario)dato);
-				//TODO:no vale instanceof usuario?
 			} else if(dato instanceof Usuario) {
 				controlador.usuarioEliminado((Usuario)dato);
 			} else if(dato instanceof Cita) {

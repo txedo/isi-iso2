@@ -28,7 +28,7 @@ CREATE TABLE tiposMedico (
        tipo INT NOT NULL default '-1',
        especialidad VARCHAR(255) NOT NULL default '',
        PRIMARY KEY (dniMedico),
-       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE NO ACTION ON UPDATE CASCADE
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE periodosTrabajo (
@@ -38,7 +38,7 @@ CREATE TABLE periodosTrabajo (
        horaFinal INT NOT NULL,
        dia INT NOT NULL,
        PRIMARY KEY (id),
-       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE NO ACTION ON UPDATE CASCADE
+       FOREIGN KEY (dniMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE entradasLog (

@@ -96,6 +96,7 @@ public class JFCalendarioLaboral extends javax.swing.JFrame {
 				getContentPane().add(btnAceptar, new AnchorConstraint(911, 10, 11, 779, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnAceptar.setText("Aceptar");
 				btnAceptar.setPreferredSize(new java.awt.Dimension(117, 24));
+				btnAceptar.setName("btnAceptar");
 				btnAceptar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnAceptarActionPerformed(evt);
