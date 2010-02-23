@@ -154,9 +154,14 @@ public class GestorMedicos {
 	}
 	
 	// Método que devuelve todos los médicos de un determinado tipo 
-	public static Vector<Medico> consultarMedicosPorTipo(long idSesion, TipoMedico tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Vector<Medico> consultarMedicosPorTipo(long idSesion, TipoMedico tipo) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, NullPointerException {
 		Vector<Medico> medicos;
 		Vector<String> nifs;
+		
+		// Comprobamos los parámetros pasados
+		if(tipo == null) {
+			throw new NullPointerException("El tipo de los médicos que se quieren buscar no puede ser nulo.");
+		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
@@ -209,13 +214,13 @@ public class GestorMedicos {
 		if(UtilidadesDominio.fechaAnterior(dia, new Date(), false)) {
 			throw new FechaNoValidaException("No se pueden buscar sustitutos para días anteriores al actual.");
 		}
-		if(horaDesde < 0 || horaDesde > 23) {
+		if(horaDesde < IConstantes.HORA_INICIO_JORNADA || horaDesde > IConstantes.HORA_FIN_JORNADA) {
 			throw new FechaNoValidaException("La hora inicial de la sustitución no es válida.");
 		}
-		if(horaHasta < 0 || horaHasta > 23) {
+		if(horaHasta < IConstantes.HORA_INICIO_JORNADA || horaHasta > IConstantes.HORA_FIN_JORNADA) {
 			throw new FechaNoValidaException("La hora final de la sustitución no es válida.");
 		}
-		if(horaHasta == horaDesde || (horaHasta < horaDesde && horaHasta != 0)) {
+		if(horaHasta <= horaDesde) {
 			throw new FechaNoValidaException("La hora final de la sustitución no es superior a la inicial.");
 		}
 		
@@ -369,6 +374,8 @@ public class GestorMedicos {
 		
 		// Vemos si el médico sustituto propuesto es uno de los
 		// que devuelve el método 'obtenerPosiblesSustitutos'
+		// (dentro de este método se comprobará que la fecha y
+		// las horas de la sustitución son válidas)
 		for(Date dia : dias) {
 			medicos = obtenerPosiblesSustitutos(idSesion, medico.getDni(), dia, horaDesdeN, horaHastaN);
 			if(!medicos.contains(sustituto)) {
@@ -395,7 +402,7 @@ public class GestorMedicos {
 	
 	// Método que devuelve el médico que daría realmente una cita
 	// teniendo en cuenta las sustituciones
-	public static Medico consultarMedicoCita(long idSesion, String dniMedico, Date fechaYHora) throws NullPointerException, SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, MedicoInexistenteException {
+	public static Medico consultarMedicoCita(long idSesion, String dniMedico, Date fechaYHora) throws NullPointerException, SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, MedicoInexistenteException, FechaNoValidaException {
 		Vector<Sustitucion> sustituciones;
 		Medico medico;
 		Usuario usuario;
@@ -421,6 +428,11 @@ public class GestorMedicos {
 			medico = (Medico)usuario;
 		} catch(UsuarioIncorrectoException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
+		}
+		
+		// Comprobamos si el médico realmente podría dar una cita en la fecha indicada
+		if(!medico.fechaEnCalendario(fechaYHora, IConstantes.DURACION_CITA)) {
+			throw new FechaNoValidaException("El médico con DNI " + dniMedico + " no trabaja en la fecha y horas indicadas.");
 		}
 		
 		do {

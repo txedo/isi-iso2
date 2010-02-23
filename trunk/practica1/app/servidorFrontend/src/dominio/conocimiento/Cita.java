@@ -77,7 +77,7 @@ public class Cita implements Serializable {
 		int horaD;
 
 		// Devuelve true si la hora de la cita está contenida en
-		// el rango de horas pasado como parémtro
+		// el rango de horas pasado como parámtro
 		calend = Calendar.getInstance();
 		calend.setTime(fechaYHora);
 		horaD = calend.get(Calendar.HOUR_OF_DAY);

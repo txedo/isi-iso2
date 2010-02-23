@@ -479,7 +479,7 @@ public class JPUsuarioConsultar extends JPBase {
 			periodos = ((Medico)usuario).getCalendario();
 			horas = 0;
 			for(PeriodoTrabajo periodo : periodos) {
-				horas += periodo.numeroHoras();
+				horas += periodo.getNumeroHoras();
 			}
 			if(horas == 1) {
 				lblHorasSemanales.setText("1 hora semanal");

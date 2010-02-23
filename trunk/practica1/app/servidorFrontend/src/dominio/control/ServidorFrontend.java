@@ -1124,6 +1124,10 @@ public class ServidorFrontend implements IServidorFrontend {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar una dirección mientras se consultaban los médicos de tipo " + ((TipoMedico)informacion).toString() + ": " + die.getLocalizedMessage());
 				throw die;
+			} catch(NullPointerException npe) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar consultar los médicos de un tipo con datos no válidos: " + npe.getLocalizedMessage());
+				throw npe;
 			} catch(OperacionIncorrectaException oie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta de los médicos de tipo " + ((TipoMedico)informacion).toString() + ": " + oie.getLocalizedMessage());
@@ -1283,6 +1287,10 @@ public class ServidorFrontend implements IServidorFrontend {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar una dirección mientras se consultaba el médico que daría realmente una cita del médico con DNI " + (String)((Object[])informacion)[0] + ": " + die.getLocalizedMessage());
 				throw die;
+			} catch(FechaNoValidaException fnve) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al analizar la fecha del día para el que se quería consultar el médico que daría realmente una cita del médico con DNI " + (String)((Object[])informacion)[0] + ": " + fnve.getLocalizedMessage());
+				throw fnve;
 			} catch(NullPointerException npe) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar consultar el médico que daría realmente una cita de un cierto médico con datos no válidos: " + npe.getLocalizedMessage());
@@ -1500,6 +1508,10 @@ public class ServidorFrontend implements IServidorFrontend {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un beneficiario mientras se consultaban las citas pendientes del médico con NIF " + (String)informacion + ": " + bie.getLocalizedMessage());
 				throw bie;
+			} catch(MedicoInexistenteException mie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar un médico mientras se consultaban las citas pendientes del médico con DNI " + (String)informacion + ": " + mie.getLocalizedMessage());
+				throw mie;
 			} catch(UsuarioIncorrectoException uie) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al recuperar el médico con NIF " + (String)informacion + " para el que se querían consultar sus citas pendientes: " + uie.getLocalizedMessage());

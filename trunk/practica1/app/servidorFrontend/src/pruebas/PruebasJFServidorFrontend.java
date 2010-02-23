@@ -28,6 +28,7 @@ public class PruebasJFServidorFrontend extends org.uispec4j.UISpecTestCase {
 	private MenuItem mniConectar;
 	private MenuItem mniDesconectar;
 	private MenuItem mniConfigurar;
+	private MenuItem mniAcercaDe;
 	private MenuItem mniSalir;
 
 	public void setUp() {
@@ -45,6 +46,7 @@ public class PruebasJFServidorFrontend extends org.uispec4j.UISpecTestCase {
 			mniConectar = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Conectar");
 			mniDesconectar = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Desconectar");
 			mniSalir = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Salir");
+			mniAcercaDe = winVentana.getMenuBar().getMenu("Ayuda").getSubMenu("Acerca de...");
 			mniConfigurar = winVentana.getMenuBar().getMenu("Opciones").getSubMenu("Configurar...");
 		} catch(Exception e) {
 			fail(e.toString());
@@ -157,6 +159,19 @@ public class PruebasJFServidorFrontend extends org.uispec4j.UISpecTestCase {
 			// Comprobamos que el cambio se ha reflejado en la ventana
 			ip = (new ConfiguracionFrontend()).getIPBDPrincipal();
 			assertEquals(lblConfigBD.getText(), "BD Principal: IP " + ip + ", puerto 8888");
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de la ventana 'Acerca de' */
+	public void testAcercaDe() {
+		Window dialogo;
+		
+		try {
+			// Abrimos la ventana de 'Acerca de' y la cerramos
+			dialogo = WindowInterceptor.run(mniAcercaDe.triggerClick());
+			dialogo.getButton("btnAceptar").click();
 		} catch(Exception e) {
 			fail(e.toString());
 		}

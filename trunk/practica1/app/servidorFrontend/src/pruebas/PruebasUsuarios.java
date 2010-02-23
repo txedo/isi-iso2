@@ -51,6 +51,7 @@ public class PruebasUsuarios extends PruebasBase {
 	private Especialista especialista;
 	private Cabecera cabecera;
 	
+	@SuppressWarnings("deprecation")
 	protected void setUp() {
 		try {
 			// Preparamos la base de datos
@@ -87,7 +88,7 @@ public class PruebasUsuarios extends PruebasBase {
 			medico3.getCalendario().add(periodo31);
 			medico3.getCalendario().add(periodo32);
 			direccion1 = new Direccion("calle 1", "", "", "", "aadsfaada", "afafssafad", 13500);
-			beneficiario1 = new Beneficiario("88484848L", "123456-ab", "bene1", "asdfg", new Date(), direccion1, "add@sf.com", "123456789", "987654321");
+			beneficiario1 = new Beneficiario("88484848L", "123456-ab", "bene1", "asdfg", new Date(1950 - 1900, 7, 20), direccion1, "add@sf.com", "123456789", "987654321");
 			beneficiario1.setCentroSalud(medico2.getCentroSalud());
 			beneficiario1.setMedicoAsignado(medico2);
 			FPCentroSalud.insertar(centro1);
@@ -384,6 +385,10 @@ public class PruebasUsuarios extends PruebasBase {
 			// Eliminamos un usuario y un médico existentes como administrador
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, medico2);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, citador1);
+			// Comprobamos que al beneficiario que tenía asignado el médico
+			// borrado se le ha asignado otro médico disponible
+			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario1.getNif());
+			assertEquals(medico4, beneficiario.getMedicoAsignado());
 		} catch(Exception e) {
 			fail(e.toString());
 		}

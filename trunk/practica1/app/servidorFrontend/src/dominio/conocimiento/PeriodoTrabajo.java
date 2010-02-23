@@ -56,6 +56,10 @@ public class PeriodoTrabajo implements Serializable {
 		this.dia = dia;
 	}
 	
+	public int getNumeroHoras() {
+		return (horaFinal - horaInicio);
+	}
+
 	public boolean horaEnPeriodo(int horaInicio, int horaFinal) {
 		boolean dev;
 		
@@ -66,11 +70,7 @@ public class PeriodoTrabajo implements Serializable {
 		dev = dev || (horaInicio <= this.horaInicio && horaFinal >= this.horaFinal);
 		return dev;
 	}
-	
-	public int numeroHoras() {
-		return (horaFinal - horaInicio);
-	}
-	
+		
 	public boolean equals(Object o) {
 		PeriodoTrabajo p;
 		boolean dev;

@@ -37,6 +37,9 @@ import presentacion.auxiliar.VentanaCerradaListener;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+/**
+ * Ventana Acerca De del servidor 
+ */
 public class JFAcercaDe extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -4903915570854306815L;
@@ -116,6 +119,7 @@ public class JFAcercaDe extends javax.swing.JFrame {
 					jPanel1.add(btnAceptar, new AnchorConstraint(866, 14, 12, 753, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnAceptar.setText("Aceptar");
 					btnAceptar.setPreferredSize(new java.awt.Dimension(83, 25));
+					btnAceptar.setName("btnAceptar");
 					btnAceptar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnAceptarActionPerformed(evt);

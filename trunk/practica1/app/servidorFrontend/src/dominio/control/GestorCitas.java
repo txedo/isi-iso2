@@ -154,10 +154,11 @@ public class GestorCitas {
 	}
 	
 	// Método para obtener todas las citas pendientes de un médico
-	public static Vector<Cita> consultarCitasPendientesMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException {
+	public static Vector<Cita> consultarCitasPendientesMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException, MedicoInexistenteException {
 		Vector<Sustitucion> sustituciones;
 		Vector<Cita> citas, citas2, citasSust, pendientes;
 		Date fechaActual;
+		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
 		if(dniMedico == null) {
@@ -168,7 +169,14 @@ public class GestorCitas {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasMedico);
 
 		// Comprobamos que exista el médico
-		FPUsuario.consultar(dniMedico);
+		try {
+			usuario = FPUsuario.consultar(dniMedico);
+			if(usuario.getRol() != RolesUsuario.Medico) {
+				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+			}
+		} catch(UsuarioIncorrectoException ex) {
+			throw new MedicoInexistenteException(ex.getMessage());
+		}
 		
 		// Recuperamos las citas del médico
 		citas = FPCita.consultarPorMedico(dniMedico);
@@ -225,6 +233,9 @@ public class GestorCitas {
 		// Comprobamos los parámetros pasados
 		if(dniMedico == null) {
 			throw new NullPointerException("El DNI del médico para el que se quieren buscar las citas puede ser nulo.");
+		}
+		if(dia == null) {
+			throw new NullPointerException("El día para el que se quieren buscar las fechas del médico no puede ser nulo.");			
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
