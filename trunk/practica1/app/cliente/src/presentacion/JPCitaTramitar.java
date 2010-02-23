@@ -33,10 +33,10 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.UtilidadesDominio;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.FechaNoValidaException;
@@ -242,7 +242,7 @@ public class JPCitaTramitar extends JPBase {
 				cal.set(Calendar.MINUTE, 0);
 				cal.set(Calendar.SECOND, 0);
 				cal.set(Calendar.MILLISECOND, 0);
-				while(diasDesactivados.contains(Utilidades.diaFecha(cal.getTime())) || diasOcupados.contains(cal.getTime())) {
+				while(diasDesactivados.contains(UtilidadesDominio.diaFecha(cal.getTime())) || diasOcupados.contains(cal.getTime())) {
 					cal.add(Calendar.DAY_OF_MONTH, 1);
 				}
 				dtcDiaCita.setDate(cal.getTime());
@@ -397,7 +397,7 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuarios.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
 		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario que pide la cita
 			pnlBeneficiario.usuarioActualizado(usuario);
@@ -407,7 +407,7 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuarios.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
 		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario que pide la cita
 			pnlBeneficiario.usuarioEliminado(usuario);
@@ -437,7 +437,7 @@ public class JPCitaTramitar extends JPBase {
 	
 	public void sustitucionRegistrada(Sustitucion sustitucion) {
 		if(beneficiario != null && beneficiario.getMedicoAsignado().equals(sustitucion.getMedico())
-		 && Utilidades.fechaIgual(sustitucion.getDia(), dtcDiaCita.getDate(), false)) {
+		 && UtilidadesDominio.fechaIgual(sustitucion.getDia(), dtcDiaCita.getDate(), false)) {
 			// Otro cliente ha registrado una sustitución para el médico
 			// con el que se quiere pedir cita en el día seleccionado
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una sustitución desde otro cliente para el médico del beneficiario en el día seleccionado.");
