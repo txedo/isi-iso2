@@ -447,7 +447,8 @@ public class JPCitaTramitar extends JPBase {
 		
 	public void restablecerPanel() {
 		pnlBeneficiario.restablecerPanel();
-		limpiarCamposTramitacion();		
+		limpiarCamposTramitacion();
+		beneficiario = null;
 	}
 	
 	//$hide<<$

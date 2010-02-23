@@ -313,6 +313,7 @@ public class JPCitaConsultarMedico extends JPBase {
 	public void restablecerPanel() {
 		pnlUsuario.restablecerPanel();
 		limpiarCamposConsulta();
+		medico = null;
 	}
 
 	//$hide<<$
