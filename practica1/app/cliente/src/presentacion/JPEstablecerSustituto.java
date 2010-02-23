@@ -452,6 +452,7 @@ public class JPEstablecerSustituto extends JPBase {
 		pnlMedico.restablecerPanel();
 		limpiarCamposConsulta();
 		limpiarCamposSustitucion();	
+		medico = null;
 	}
 	
 	//$hide<<$

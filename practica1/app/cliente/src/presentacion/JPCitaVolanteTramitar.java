@@ -629,7 +629,8 @@ public class JPCitaVolanteTramitar extends JPBase {
 	public void restablecerPanel() {
 		pnlBeneficiario.restablecerPanel();
 		limpiarCamposConsulta();
-		limpiarCamposTramitacion();		
+		limpiarCamposTramitacion();
+		beneficiario = null;
 	}
 	
 	//$hide<<$

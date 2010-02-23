@@ -388,6 +388,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	public void restablecerPanel() {
 		pnlBeneficiario.restablecerPanel();
 		limpiarCamposConsulta();
+		beneficiario = null;
 	}
 
 	//$hide<<$

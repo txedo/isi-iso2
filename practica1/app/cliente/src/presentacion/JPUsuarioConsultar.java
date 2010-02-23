@@ -38,6 +38,7 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.RolesUsuario;
+import dominio.conocimiento.UtilidadesDominio;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaVaciaException;
@@ -508,6 +509,10 @@ public class JPUsuarioConsultar extends JPBase {
 	
 	private void btnGuardarActionPerformed(ActionEvent evt) {
 		Usuario usuarioModif = null;
+		Vector<Cita> citas = null;
+		Vector<Cita> citasAfectadas = new Vector<Cita>();
+		boolean respuesta = false;
+		JFAvisos frmAviso;
 		
 		try {
 			
@@ -558,19 +563,49 @@ public class JPUsuarioConsultar extends JPBase {
 			// Dejamos el mismo centro de salud
 			usuarioModif.setCentroSalud(usuario.getCentroSalud());
 			
-			// Modificamos el tipo de médico si es necesario
+			// Si el usuario es un médico y ha cambiado su horario de trabajo, 
+			// se comprueba que ésto no afecte a las citas que ya tenía asignadas.
+			// Si afecta, se pide confirmación para anular las citas afectadas
 			if(usuarioModif.getRol().equals(RolesUsuario.Medico)) {
 				((Medico)usuarioModif).setCalendario(periodos);
 				((Medico)usuarioModif).setTipoMedico(((Medico)usuario).getTipoMedico());
+				citas = getControlador().consultarCitasMedico(usuario.getDni());
+				// Si se ha limpiado todo el calendario, todas las citas están afectadas
+				if (((Medico)usuarioModif).getCalendario().size()==0)
+					citasAfectadas.addAll(citas);
+				else {
+					for (int i=0; i<citas.size(); i++) {
+						for (PeriodoTrabajo p: ((Medico)usuarioModif).getCalendario()) {
+							// Si la cita que ya tenia asignado, no está en ningun periodo, se inserta en la lista de citas afectadas
+							if (!citas.get(i).citaEnHoras(p.getHoraInicio(), p.getHoraFinal()))
+								citasAfectadas.add(citas.get(i));
+						}
+					}
+					if (citasAfectadas.size()>0)
+						respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Aviso", "Si se modifican los períodos de trabajo del médico, algunas citas se verán afectadas y serán eliminadas.\n¿Desea continuar?");
+				}
 			}
 			
-			// Solicitamos al servidor que se modifique el usuario
-			getControlador().modificarUsuario(usuarioModif);
-
-			// Mostramos el resultado de la operación y limpiamos el panel
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
-			restablecerPanel();
-		
+			if (respuesta || !(usuarioModif instanceof Medico)) {
+				// Solicitamos al servidor que se modifique el usuario
+				getControlador().modificarUsuario(usuarioModif);
+				// Mostramos el resultado de la operación y limpiamos el panel
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
+				restablecerPanel();
+				// Anulamos las citas
+				if (respuesta) {
+					// Se muestran las citas eliminadas
+					if (citasAfectadas.size()>0) {
+						frmAviso = new JFAvisos();
+						frmAviso.mostrarCitas("Las siguientes citas han sido eliminadas:", citasAfectadas);
+					}
+					for (Cita c : citasAfectadas) {
+						getControlador().anularCita(c);
+					}
+				}
+				
+			}
+			
 		} catch(UsuarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());	
 
@@ -909,6 +944,7 @@ public class JPUsuarioConsultar extends JPBase {
 	public void restablecerPanel() {
 		txtNIFBuscado.setText("");
 		limpiarCamposConsulta();
+		usuario = null;
 	}
 	
 	//$hide<<$

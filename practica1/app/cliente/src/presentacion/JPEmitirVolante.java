@@ -361,6 +361,7 @@ public class JPEmitirVolante extends JPBase {
 	public void restablecerPanel() {
 		pnlBeneficiario.restablecerPanel();
 		limpiarPanelMedico();
+		beneficiario = null;
 	}
 	
 	//$hide<<$

@@ -966,6 +966,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 	public void restablecerPanel() {
 		txtIdentificacion.setText("");
 		limpiarCamposConsulta();
+		beneficiario = null;
 	}
 	
 	//$hide<<$
