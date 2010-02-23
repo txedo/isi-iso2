@@ -12,7 +12,7 @@ import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
@@ -73,7 +73,7 @@ public class GestorVolantes {
 		// Comprobamos que exista el médico emisor
 		try {
 			usuario = FPUsuario.consultar(emisor.getDni());
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El médico emisor no es un usuario del sistema con rol de médico.");
 			}
 			emisor = (Medico)usuario; 
@@ -84,7 +84,7 @@ public class GestorVolantes {
 		// Comprobamos que exista el médico receptor
 		try {
 			usuario = FPUsuario.consultar(destino.getDni());
-			if(usuario.getRol() != RolesUsuarios.Medico) {
+			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El médico receptor no es un usuario del sistema con rol de médico.");
 			}
 			destino = (Medico)usuario; 

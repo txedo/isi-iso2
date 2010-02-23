@@ -25,7 +25,7 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import java.awt.event.ActionEvent;
@@ -241,7 +241,7 @@ public class JPEstablecerSustituto extends JPBase {
 			try {
 				
 				// Comprobamos que el usuario es un médico
-				if(usuario.getRol() != RolesUsuarios.Medico) {
+				if(usuario.getRol() != RolesUsuario.Medico) {
 					Dialogos.mostrarDialogoError(getFrame(), "Error", "Sólo se pueden planificar sustituciones para usuarios del sistema que sean médicos.");
 				} else {
 					
@@ -410,11 +410,11 @@ public class JPEstablecerSustituto extends JPBase {
 	public void usuarioActualizado(Usuario usuario) {
 		boolean actualizado;
 		
-		if(this.medico != null && usuario.getRol() == RolesUsuarios.Medico
+		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
 		 && medico.getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha actualizado el médico que se va a sustituir
 			pnlMedico.usuarioActualizado(usuario);
-		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuarios.Medico) {
+		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuario.Medico) {
 			actualizado = false;
 			for(Medico sustituto : sustitutos) {
 				if(!actualizado && sustituto.getDni().equals(usuario.getDni())) {
@@ -430,12 +430,12 @@ public class JPEstablecerSustituto extends JPBase {
 	public void usuarioEliminado(Usuario usuario) {
 		boolean actualizado;
 
-		if(this.medico != null && usuario.getRol() == RolesUsuarios.Medico
+		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
 		 && medico.getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha eliminado el médico que se va a sustituir
 			pnlMedico.usuarioEliminado(usuario);
 			limpiarCamposConsulta();
-		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuarios.Medico) {
+		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuario.Medico) {
 			actualizado = false;
 			for(Medico sustituto : sustitutos) {
 				if(!actualizado && sustituto.getDni().equals(usuario.getDni())) {

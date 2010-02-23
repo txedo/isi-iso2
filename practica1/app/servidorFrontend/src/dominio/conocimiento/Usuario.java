@@ -31,7 +31,7 @@ public abstract class Usuario implements Serializable, Cloneable {
 		this.movil = movil;
 	}
 
-	public abstract RolesUsuarios getRol();
+	public abstract RolesUsuario getRol();
 	
 	public String getDni() {
 		return dni;

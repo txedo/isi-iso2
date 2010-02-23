@@ -5,7 +5,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
@@ -398,7 +398,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	
 	private void configurarInterfaz(Vector<Operaciones> operaciones) {
 		// Inicializamos la barra de estado
-		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + RolesUsuarios.values()[(int)controlador.getSesion().getRol()]);
+		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + RolesUsuario.values()[(int)controlador.getSesion().getRol()]);
 		lblPuertoEscucha.setText("Puerto de escucha: " + controlador.getPuertoEscucha());
 
 		// Inicializamos los paneles de gestión de beneficiarios

@@ -65,7 +65,7 @@ public class Cliente implements ICliente {
 		case ICodigosOperacionesCliente.MODIFICAR:
 			if(dato instanceof Beneficiario) {
 				controlador.beneficiarioActualizado((Beneficiario)dato);
-			} else if(dato instanceof Medico || dato instanceof Administrador || dato instanceof Citador) {
+			} else if(dato instanceof Usuario) {
 				controlador.usuarioActualizado((Usuario)dato);
 			}
 			break;
@@ -73,7 +73,7 @@ public class Cliente implements ICliente {
 			if(dato instanceof Beneficiario) {
 				controlador.beneficiarioEliminado((Beneficiario)dato);
 				//TODO:no vale instanceof usuario?
-			} else if(dato instanceof Medico || dato instanceof Administrador || dato instanceof Citador) {
+			} else if(dato instanceof Usuario) {
 				controlador.usuarioEliminado((Usuario)dato);
 			} else if(dato instanceof Cita) {
 				controlador.citaAnulada((Cita)dato);

@@ -37,7 +37,7 @@ import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaVaciaException;
@@ -470,8 +470,8 @@ public class JPUsuarioConsultar extends JPBase {
 		txtTelefonoFijo.setText(usuario.getTelefono());
 		txtTelefonoMovil.setText(usuario.getMovil());
 		txtCentro.setText(usuario.getCentroSalud().getNombre() + " (" + usuario.getCentroSalud().getDireccion() + ")");
-		if(usuario.getRol().equals(RolesUsuarios.Medico)) {
-			rellenarTiposUsuario(new String[] { RolesUsuarios.Medico.name() + " (" + ((Medico)usuario).getTipoMedico().getCategoria().name() + ")" });
+		if(usuario.getRol().equals(RolesUsuario.Medico)) {
+			rellenarTiposUsuario(new String[] { RolesUsuario.Medico.name() + " (" + ((Medico)usuario).getTipoMedico().getCategoria().name() + ")" });
 			lblCalendario.setVisible(true);
 			btnCalendario.setVisible(true);
 			btnCalendario.setEnabled(true);
@@ -533,12 +533,12 @@ public class JPUsuarioConsultar extends JPBase {
 			
 			// Creamos un nuevo usuario con los datos introducidos
 			// (si el usuario era médico no puede cambiar de rol)
-			if(usuario.getRol() == RolesUsuarios.Medico) {
+			if(usuario.getRol() == RolesUsuario.Medico) {
 				usuarioModif = new Medico();
 			} else {
-				if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Administrador.name())) {
+				if(cmbRol.getSelectedItem().toString().equals(RolesUsuario.Administrador.name())) {
 					usuarioModif = new Administrador();
-				} else if(cmbRol.getSelectedItem().toString().equals(RolesUsuarios.Citador.name())) {
+				} else if(cmbRol.getSelectedItem().toString().equals(RolesUsuario.Citador.name())) {
 					usuarioModif = new Citador();
 				}
 			}
@@ -559,7 +559,7 @@ public class JPUsuarioConsultar extends JPBase {
 			usuarioModif.setCentroSalud(usuario.getCentroSalud());
 			
 			// Modificamos el tipo de médico si es necesario
-			if(usuarioModif.getRol().equals(RolesUsuarios.Medico)) {
+			if(usuarioModif.getRol().equals(RolesUsuario.Medico)) {
 				((Medico)usuarioModif).setCalendario(periodos);
 				((Medico)usuarioModif).setTipoMedico(((Medico)usuario).getTipoMedico());
 			}
@@ -625,7 +625,7 @@ public class JPUsuarioConsultar extends JPBase {
 		if(respuesta) {
 			try {
 				
-				if(usuario.getRol().equals(RolesUsuarios.Medico)) {
+				if(usuario.getRol().equals(RolesUsuario.Medico)) {
 					
 					// Si el usuario a borrar es un médico, vemos si tiene
 					// beneficiarios asignados o citas pendientes
@@ -735,7 +735,7 @@ public class JPUsuarioConsultar extends JPBase {
 	
 	private void cmbRolesItemStateChanged(ItemEvent evt) {
 		if(evt.getStateChange() == ItemEvent.SELECTED) {
-			if(evt.getItem().equals(RolesUsuarios.Medico.name())) {
+			if(evt.getItem().equals(RolesUsuario.Medico.name())) {
 				btnCalendario.setEnabled(true);
 			} else {
 				btnCalendario.setEnabled(false);
@@ -828,8 +828,8 @@ public class JPUsuarioConsultar extends JPBase {
 		DefaultComboBoxModel cmbRolesModel;
 		
 		cmbRolesModel = new DefaultComboBoxModel();
-		for(RolesUsuarios rol : RolesUsuarios.values()) {
-			if(rol != RolesUsuarios.Medico) {
+		for(RolesUsuario rol : RolesUsuario.values()) {
+			if(rol != RolesUsuario.Medico) {
 				cmbRolesModel.addElement(rol.name());
 			}
 		}

@@ -25,8 +25,8 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 		tipoMedico = tipo;
 	}
 	
-	public RolesUsuarios getRol() {
-		return RolesUsuarios.Medico;
+	public RolesUsuario getRol() {
+		return RolesUsuario.Medico;
 	}
 	
 	public Vector<PeriodoTrabajo> getCalendario() {

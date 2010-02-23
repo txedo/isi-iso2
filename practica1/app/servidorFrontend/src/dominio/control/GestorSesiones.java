@@ -14,7 +14,7 @@ import comunicaciones.ProxyCliente;
 import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Sesion;
 import dominio.conocimiento.Usuario;
 import persistencia.FPUsuario;
@@ -157,7 +157,7 @@ public class GestorSesiones {
 		operaciones.add(Operaciones.ConsultarVolante);
 		
 		// Agregamos las operaciones permitidas para citadores y administradores
-		if(sesion.getRol() == RolesUsuarios.Administrador.ordinal() || sesion.getRol() == RolesUsuarios.Citador.ordinal()) {
+		if(sesion.getRol() == RolesUsuario.Administrador.ordinal() || sesion.getRol() == RolesUsuario.Citador.ordinal()) {
 			operaciones.add(Operaciones.RegistrarBeneficiario);
 			operaciones.add(Operaciones.ModificarBeneficiario);
 			operaciones.add(Operaciones.EliminarBeneficiario);
@@ -171,7 +171,7 @@ public class GestorSesiones {
 		}
 		
 		// Agregamos las operaciones permitidas para administradores
-		if(sesion.getRol() == RolesUsuarios.Administrador.ordinal()) {
+		if(sesion.getRol() == RolesUsuario.Administrador.ordinal()) {
 			operaciones.add(Operaciones.ConsultarUsuario);
 			operaciones.add(Operaciones.RegistrarUsuario);
 			operaciones.add(Operaciones.ModificarUsuario);
@@ -186,7 +186,7 @@ public class GestorSesiones {
 		}
 		
 		// Agregamos las operaciones permitidas para médicos
-		if(sesion.getRol() == RolesUsuarios.Medico.ordinal()) {
+		if(sesion.getRol() == RolesUsuario.Medico.ordinal()) {
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
 			operaciones.add(Operaciones.EmitirVolante);
 		}
@@ -210,7 +210,7 @@ public class GestorSesiones {
 
 		// Comprobamos si se tienen permisos para realizar la operación
 		if(!operaciones.contains(operacion)) {
-			throw new OperacionIncorrectaException("El rol " + RolesUsuarios.values()[(int)sesion.getRol()] + " no tiene permiso para realizar la operación " + operacion.toString() + ".");
+			throw new OperacionIncorrectaException("El rol " + RolesUsuario.values()[(int)sesion.getRol()] + " no tiene permiso para realizar la operación " + operacion.toString() + ".");
 		}
 	}
 

@@ -24,7 +24,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.CitaNoValidaException;
@@ -345,7 +345,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuarios.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
 		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario que está consultando las citas
 			pnlBeneficiario.usuarioActualizado(usuario);
@@ -353,7 +353,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuarios.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
 		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario que está consultando las citas
 			pnlBeneficiario.usuarioEliminado(usuario);

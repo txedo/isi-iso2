@@ -28,7 +28,7 @@ import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Sesion;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.Utilidades;
+import dominio.conocimiento.UtilidadesDominio;
 import dominio.conocimiento.Volante;
 import dominio.control.GestorSesiones;
 import dominio.control.ServidorFrontend;
@@ -878,7 +878,7 @@ public class PruebasCitas extends PruebasBase {
 			dias = (Vector<Date>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_DIAS_COMPLETOS, medico2.getDni());
 			// Comprobamos que se ha devuelto el día completo
 			assertTrue(dias.size() == 1);
-			assertTrue(Utilidades.fechaIgual(dias.get(0), new GregorianCalendar(2011, 1 - 1, 10).getTime(), false));
+			assertTrue(UtilidadesDominio.fechaIgual(dias.get(0), new GregorianCalendar(2011, 1 - 1, 10).getTime(), false));
 		} catch(Exception e) {
 			fail(e.toString());
 		}

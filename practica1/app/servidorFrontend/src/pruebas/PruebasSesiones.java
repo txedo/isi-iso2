@@ -8,7 +8,7 @@ import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.control.GestorSesiones;
 import excepciones.UsuarioIncorrectoException;
 
@@ -54,7 +54,7 @@ public class PruebasSesiones extends PruebasBase {
 			ISesion s = GestorSesiones.identificar("admin", "nimda");
 			// Comprobamos que la sesion no es nula y que el rol es el que corresponde
 			assertNotNull(s);
-			assertEquals(RolesUsuarios.Administrador.ordinal(), s.getRol());
+			assertEquals(RolesUsuario.Administrador.ordinal(), s.getRol());
 		} catch(Exception e) {
 			fail("No se esperaba ninguna excepcion " + e.getMessage());
 		}
@@ -65,12 +65,12 @@ public class PruebasSesiones extends PruebasBase {
 		try {
 			ISesion s = GestorSesiones.identificar("medPrueba", "abcdef");
 			assertNotNull(s);
-			assertEquals(RolesUsuarios.Medico.ordinal(), s.getRol());
+			assertEquals(RolesUsuario.Medico.ordinal(), s.getRol());
 			ISesion ns = GestorSesiones.identificar("medPrueba", "abcdef");
 			assertNotNull(ns);
 			assertNotSame(s,ns);
 			//assertEquals(s,ns);
-			assertEquals(RolesUsuarios.Medico.ordinal(), ns.getRol());
+			assertEquals(RolesUsuario.Medico.ordinal(), ns.getRol());
 		} catch(Exception e) {
 			fail(e.toString());
 		}

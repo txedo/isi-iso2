@@ -22,7 +22,7 @@ import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
@@ -270,7 +270,7 @@ public class JPCitaConsultarMedico extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(this.medico != null && usuario.getRol() == RolesUsuarios.Medico
+		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
 		 && medico.getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha actualizado el médico del que se están consultando las citas
 			pnlUsuario.usuarioActualizado(usuario);
@@ -278,7 +278,7 @@ public class JPCitaConsultarMedico extends JPBase {
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(this.medico != null && usuario.getRol() == RolesUsuarios.Medico
+		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
 		 && medico.getDni().equals(((Medico)usuario).getDni())) {
 			// Otro cliente ha eliminado el médico del que se están consultando las citas
 			pnlUsuario.usuarioEliminado(usuario);

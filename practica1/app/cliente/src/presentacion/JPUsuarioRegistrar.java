@@ -37,7 +37,7 @@ import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.IConstantes;
@@ -373,12 +373,12 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			}
 			if(lstTipoUsuario.getSelectedIndex() == -1) {
 				throw new UsuarioNoSeleccionadoException("No se ha seleccionado el tipo de usuario.");
-			} else if(lstTipoMedico.getSelectedIndex() == -1 && lstTipoUsuario.getSelectedValue().equals(RolesUsuarios.Medico.name())) {
+			} else if(lstTipoMedico.getSelectedIndex() == -1 && lstTipoUsuario.getSelectedValue().equals(RolesUsuario.Medico.name())) {
 				throw new UsuarioNoSeleccionadoException("No se ha seleccionado el tipo de médico.");
 			}
 
 			// Creamos un nuevo usuario con los datos introducidos
-			switch (RolesUsuarios.valueOf(lstTipoUsuario.getSelectedValue().toString())) {
+			switch (RolesUsuario.valueOf(lstTipoUsuario.getSelectedValue().toString())) {
 				case Administrador:
 					usuario = new Administrador();
 					break;
@@ -399,7 +399,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			usuario.setMovil(txtTelefonoMovil.getText().trim());
 			
 			// Creamos el tipo de médico si es necesario
-			if(usuario.getRol() == RolesUsuarios.Medico) {
+			if(usuario.getRol() == RolesUsuario.Medico) {
 				switch(CategoriasMedico.valueOf(lstTipoMedico.getSelectedValue().toString())) {
 				case Cabecera:
 					tipo = new Cabecera();
@@ -506,7 +506,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 
 	private void rellenarTiposUsuario() {
 		lstTipoUsuarioModel = new DefaultListModel();
-		for(RolesUsuarios rol : RolesUsuarios.values()) {
+		for(RolesUsuario rol : RolesUsuario.values()) {
 			lstTipoUsuarioModel.addElement(rol.name());			
 		}
 		lstTipoUsuario.setModel(lstTipoUsuarioModel);
@@ -540,7 +540,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		cambiarEstadoEspecialidad(false);
 		cambiarEstadoConfiguracionCalendario(false);
 		if (lstTipoUsuario.getSelectedIndex()!=-1)
-			if (lstTipoUsuario.getSelectedValue().equals(RolesUsuarios.Medico.name())) {
+			if (lstTipoUsuario.getSelectedValue().equals(RolesUsuario.Medico.name())) {
 				lstTipoMedico.setSelectedIndex(0);
 				lstTipoMedico.setVisible(true);
 				cambiarEstadoConfiguracionCalendario(true);

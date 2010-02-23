@@ -9,7 +9,7 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.RolesUsuarios;
+import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Usuario;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
@@ -164,11 +164,11 @@ public class GestorUsuarios {
 		FPUsuario.eliminar(usuario);
 		
 		// Si se ha eliminado un médico, obtenemos su lista de beneficiarios para intentar asignar un nuevo médico
-		if(usuario.getRol() == RolesUsuarios.Medico) {
+		if(usuario.getRol() == RolesUsuario.Medico) {
 			beneficiarios = GestorBeneficiarios.consultarBeneficiariosMedico(idSesion, usuario.getDni());
 		}
 		
-		if(usuario.getRol() == RolesUsuarios.Medico) {
+		if(usuario.getRol() == RolesUsuario.Medico) {
 			for(Beneficiario beneficiario : beneficiarios) {
 				nuevoMedico = GestorBeneficiarios.obtenerMedicoBeneficiario(beneficiario);
 				if(nuevoMedico != null) {
