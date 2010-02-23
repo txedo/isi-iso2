@@ -119,13 +119,22 @@ public class PruebasBeneficiarios extends PruebasBase {
 		}
 	}
 	
-	/** Pruebas de la operación que obtiene los datos de un beneficiario por NIF */
-	public void testConsultarBeneficiarioPorNIF() {
+	/** Pruebas de la operación que obtiene los datos de un beneficiario */
+	public void testConsultarBeneficiario() {
 		Beneficiario beneficiario;
 		
 		try {
 			// Intentamos obtener un beneficiario con NIF nulo
 			servidor.getBeneficiario(sesionCitador.getId(), null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch (NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos obtener un beneficiario con NSS nulo
+			servidor.getBeneficiarioPorNSS(sesionCitador.getId(), null);
 			fail("Se esperaba una excepción NullPointerException");
 		} catch (NullPointerException e) {
 		} catch(Exception e) {
@@ -142,8 +151,26 @@ public class PruebasBeneficiarios extends PruebasBase {
 		}
 		
 		try {
+			// Intentamos acceder al servidor con un id de sesión erróneo
+			servidor.getBeneficiarioPorNSS(-12345, beneficiario2.getNss());
+			fail("Se esperaba una excepción SesionInvalidaException");
+		} catch(SesionInvalidaException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SesionInvalidaException");
+		}
+		
+		try {
 			// Intentamos obtener los datos de un usuario que no es beneficiario
 			servidor.getBeneficiario(sesionCitador.getId(), citador1.getDni());
+			fail("Se esperaba una excepción BeneficiarioInexistenteException");
+		} catch(BeneficiarioInexistenteException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción BeneficiarioInexistenteException");
+		}
+		
+		try {
+			// Intentamos obtener los datos de un usuario que no es beneficiario
+			servidor.getBeneficiarioPorNSS(sesionCitador.getId(), citador1.getDni());
 			fail("Se esperaba una excepción BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
@@ -164,39 +191,6 @@ public class PruebasBeneficiarios extends PruebasBase {
 			assertEquals(beneficiario, beneficiario2);
 		} catch(Exception e) {
 			fail(e.toString());
-		}
-	}
-
-
-	/** Pruebas de la operación que obtiene los datos de un beneficiario por NSS */
-	public void testConsultarBeneficiarioPorNSS() {
-		Beneficiario beneficiario;
-		
-		try {
-			// Intentamos obtener un beneficiario con NSS nulo
-			servidor.getBeneficiarioPorNSS(sesionCitador.getId(), null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch (NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
-			// Intentamos acceder al servidor con un id de sesión erróneo
-			servidor.getBeneficiarioPorNSS(-12345, beneficiario2.getNss());
-			fail("Se esperaba una excepción SesionInvalidaException");
-		} catch(SesionInvalidaException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción SesionInvalidaException");
-		}
-		
-		try {
-			// Intentamos obtener los datos de un usuario que no es beneficiario
-			servidor.getBeneficiarioPorNSS(sesionCitador.getId(), citador1.getDni());
-			fail("Se esperaba una excepción BeneficiarioInexistenteException");
-		} catch(BeneficiarioInexistenteException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción BeneficiarioInexistenteException");
 		}
 		
 		try {
@@ -534,6 +528,16 @@ public class PruebasBeneficiarios extends PruebasBase {
 			calend.add(Calendar.DAY_OF_MONTH, 3);
 			beneficiario.setFechaNacimiento(calend.getTime());
 			assertTrue(beneficiario.getEdad() == 50);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Comprobamos que los métodos toString y equals no producen
+			// excepción si el centro de salud o el médico son nulos
+			beneficiario = new Beneficiario("11223344P", "001199881100", "ABC", "DEF", new Date(), direccion1, "", "", "");
+			assertNotNull(beneficiario.toString());
+			assertTrue(beneficiario.equals(beneficiario));
 		} catch(Exception e) {
 			fail(e.toString());
 		}

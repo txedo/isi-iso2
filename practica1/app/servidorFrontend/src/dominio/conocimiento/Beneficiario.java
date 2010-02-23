@@ -34,7 +34,7 @@ public class Beneficiario implements Serializable, Cloneable {
 		this.correo = correo;
 		this.telefono = telefono;
 		this.movil = movil;
-		this.fechaNacimiento=fecha;
+		this.fechaNacimiento = fecha;
 		this.medicoAsignado = null;
 		this.centroSalud = null;
 	}
@@ -162,18 +162,23 @@ public class Beneficiario implements Serializable, Cloneable {
 		dev = false;
 		if(o != null && o instanceof Beneficiario) {
 			b = (Beneficiario)o;
-			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && direccion.equals(b.getDireccion()) && correo.equals(b.getCorreo()) && telefono.equals(b.getTelefono()) && movil.equals(b.getMovil()) && centroSalud.equals(b.getCentroSalud());
-			if(medicoAsignado == null) {
-				dev = dev & (b.getMedicoAsignado() == null); 
+			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && direccion.equals(b.getDireccion()) && correo.equals(b.getCorreo()) && telefono.equals(b.getTelefono()) && movil.equals(b.getMovil());
+			if(centroSalud == null) {
+				dev = dev && (b.getCentroSalud() == null);
 			} else {
-				dev = dev & medicoAsignado.equals(b.getMedicoAsignado());
+				dev = dev && centroSalud.equals(b.getCentroSalud());
+			}
+			if(medicoAsignado == null) {
+				dev = dev && (b.getMedicoAsignado() == null); 
+			} else {
+				dev = dev && medicoAsignado.equals(b.getMedicoAsignado());
 			}
 		}
 		return dev;
 	}
 	
 	public String toString() {
-		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", M:" + ((medicoAsignado == null) ? "(ninguno)" : medicoAsignado.getDni()); 
+		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion.toString() + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", C: " + ((centroSalud == null) ? "(ninguno)" : centroSalud.getNombre()) + ", M:" + ((medicoAsignado == null) ? "(ninguno)" : medicoAsignado.getDni()); 
 	}
 
 }

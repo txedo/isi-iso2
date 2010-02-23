@@ -93,21 +93,7 @@ public class Direccion implements Serializable, Cloneable {
 		return d;
 	}
 	
-	public String toString() {
-		String direccion = domicilio;
-		if (numero.equals(""))
-			direccion += " s/n";
-		else
-			direccion += ", nº " + numero;
-		if (!piso.equals(""))
-			direccion += ", " + piso + "º";
-		if (!puerta.equals(""))
-			direccion += " " + puerta;
-		direccion += ". " + ciudad + ", " + provincia + ". " + cp;
-		return direccion;
-	}
-	
-	public boolean equals (Object o) {
+	public boolean equals(Object o) {
 		Direccion d;
 		boolean dev;
 		
@@ -117,6 +103,25 @@ public class Direccion implements Serializable, Cloneable {
 			dev = d.getDomicilio().equals(domicilio) && d.getNumero().equals(numero) && d.getPiso().equals(piso) && d.getPuerta().equals(puerta) && d.getCiudad().equals(ciudad) && d.getProvincia().equals(provincia) && d.getCP() == cp; 
 		}
 		return dev;
+	}
+
+	public String toString() {
+		String direccion;
+		
+		direccion = domicilio;
+		if(numero.equals("")) {
+			direccion += " s/n";
+		} else {
+			direccion += " " + numero;
+		}
+		if(!piso.equals("")) {
+			direccion += ", " + piso + "º";
+		}
+		if(!puerta.equals("")) {
+			direccion += " " + puerta;
+		}
+		direccion += ". " + ciudad + " (" + cp + "), " + provincia;
+		return direccion;
 	}
 	
 }
