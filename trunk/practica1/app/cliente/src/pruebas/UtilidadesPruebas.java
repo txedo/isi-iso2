@@ -1,10 +1,46 @@
 package pruebas;
 
+import java.util.Date;
 import java.util.Random;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
+import org.uispec4j.Button;
+import org.uispec4j.Trigger;
+import org.uispec4j.Window;
+import org.uispec4j.interception.WindowHandler;
+import org.uispec4j.interception.WindowInterceptor;
+
+import presentacion.JFCalendarioLaboral;
 import presentacion.auxiliar.Validacion;
 
 public class UtilidadesPruebas {
+	
+	public static String obtenerTextoDialogo (Button btn) {
+		String mensaje = "";
+		final Window [] windows = new Window[1];
+		JOptionPane optionPane = null;
+		JDialog dialogo = null;
+		WindowInterceptor.init(btn.triggerClick()).process(
+				new WindowHandler() {
+					public Trigger process(Window window) {
+						windows[0] = window;
+						return Trigger.DO_NOTHING;
+					}
+				}).run();
+		// El JOptionPane está encapsulado dentro del dialogo (JDialog) que devuelve el WindowInterceptor
+		dialogo = ((JDialog)windows[0].getAwtComponent()); 
+		optionPane = (JOptionPane) dialogo.getContentPane().getComponents()[0];
+		mensaje = optionPane.getMessage().toString();
+		return mensaje;
+	}
+	
+	public static String generarLoginAleatorio() {
+		Random r = new Random();
+		r.setSeed(new Date().getTime());
+		return ("usuario"+r.nextInt());
+	}			
 	
 	public static String generarNIF() {
 		Random r = new Random();

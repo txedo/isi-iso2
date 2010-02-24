@@ -42,7 +42,19 @@ import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
+import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioInexistenteException;
+import excepciones.CadenaVaciaException;
+import excepciones.ContraseñaIncorrectaException;
+import excepciones.CorreoElectronicoIncorrectoException;
+import excepciones.LoginIncorrectoException;
+import excepciones.NIFIncorrectoException;
+import excepciones.NombreIncorrectoException;
+import excepciones.TelefonoFijoIncorrectoException;
+import excepciones.TelefonoMovilIncorrectoException;
+import excepciones.UsuarioIncorrectoException;
+import excepciones.UsuarioInexistenteException;
+import excepciones.UsuarioYaExistenteException;
 
 public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas,IConstantes {
 
@@ -95,6 +107,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	private PeriodoTrabajo periodo1;
 	
 	protected void setUp() {
+		boolean valido = true;
 		try {
 			// Establecemos conexión con el servidor front-end
 			controlador = new ControladorCliente();
@@ -108,30 +121,75 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 				}
 			});
 			// Creamos e insertamos usuarios de prueba, para poder consultarlos
-			admin = new Administrador(generarNIF(), "as110", Encriptacion.encriptarPasswordSHA1("admin"), "administrador", "administra", "", "", "");
-			citador = new Citador(generarNIF(), "citador121", Encriptacion.encriptarPasswordSHA1("citador"), "citador", "cita", "adad@gmail.com", "912312312", "612131212");
+			admin = new Administrador(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("admin"), "administrador", "administra", "", "", "");
+			citador = new Citador(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("citador"), "citador", "cita", "adad@gmail.com", "912312312", "612131212");
 			tCabecera = new Cabecera();
 			tEspecialista = new Especialista("Neurologia");
 			tPediatra = new Pediatra();
-			centro = new CentroSalud("Centro Provincial", "Calle Ninguna, s/n");
-			cabecera = new Medico(generarNIF(), "medCabecera", Encriptacion.encriptarPasswordSHA1("medCabecera"), "Eduardo", "P. C.", "", "", "", tCabecera);
-			pediatra = new Medico(generarNIF(), "medPediatra", Encriptacion.encriptarPasswordSHA1("medPediatra"), "Carmen", "G. G.", "carmen@gmail.com", "", "", tPediatra);
-			especialista = new Medico(generarNIF(), "medEspecialista", Encriptacion.encriptarPasswordSHA1("medEspecialista"), "Juan", "P. F.", "asdsad@yahoo.es", "987654321", "678901234", tEspecialista);
-			cabecera.setCentroSalud(centro);
-			pediatra.setCentroSalud(centro);
-			especialista.setCentroSalud(centro);
-			citador.setCentroSalud(centro);
-			admin.setCentroSalud(centro);
+			cabecera = new Medico(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("medCabecera"), "Eduardo", "PC", "", "", "", tCabecera);
+			pediatra = new Medico(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("medPediatra"), "Carmen", "GG", "carmen@gmail.com", "", "", tPediatra);
+			especialista = new Medico(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("medEspecialista"), "Juan", "PF", "asdsad@yahoo.es", "987654321", "678901234", tEspecialista);
+			cabecera.setCentroSalud(controlador.consultarCentros().firstElement());
+			pediatra.setCentroSalud(controlador.consultarCentros().firstElement());
+			especialista.setCentroSalud(controlador.consultarCentros().firstElement());
+			citador.setCentroSalud(controlador.consultarCentros().firstElement());
+			admin.setCentroSalud(controlador.consultarCentros().firstElement());
 			periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
 			cabecera.getCalendario().add(periodo1);
 			pediatra.getCalendario().add(periodo1);
 			especialista.getCalendario().add(periodo1);
 			
-			controlador.crearUsuario(admin);
-			controlador.crearUsuario(citador);
-			controlador.crearMedico(cabecera);
-			controlador.crearMedico(pediatra);
-			controlador.crearMedico(especialista);
+			// Mientras existan los usuarios, se genera otro login y otro NIF
+			do {
+				try {
+					controlador.crearUsuario(admin);
+					valido = true;
+				} catch (UsuarioYaExistenteException e) {
+					admin.setDni(UtilidadesPruebas.generarNIF());
+					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					valido = false;
+				}
+			}while(!valido);
+			do {
+				try {
+					controlador.crearUsuario(citador);
+					valido = true;
+				} catch (UsuarioYaExistenteException e) {
+					admin.setDni(UtilidadesPruebas.generarNIF());
+					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					valido = false;
+				}
+			}while(!valido);
+			do {
+				try {
+					controlador.crearUsuario(cabecera);
+					valido = true;
+				} catch (UsuarioYaExistenteException e) {
+					admin.setDni(UtilidadesPruebas.generarNIF());
+					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					valido = false;
+				}
+			}while(!valido);
+			do {
+				try {
+					controlador.crearUsuario(pediatra);
+					valido = true;
+				} catch (UsuarioYaExistenteException e) {
+					admin.setDni(UtilidadesPruebas.generarNIF());
+					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					valido = false;
+				}
+			}while(!valido);
+			do {
+				try {
+					controlador.crearUsuario(especialista);
+					valido = true;
+				} catch (UsuarioYaExistenteException e) {
+					admin.setDni(UtilidadesPruebas.generarNIF());
+					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					valido = false;
+				}
+			}while(!valido);
 			
 			// Creamos el panel
 			panel = new JPUsuarioConsultar(controlador.getVentanaPrincipal(), controlador);
@@ -189,8 +247,8 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			if (!eliminadoAdmin) controlador.eliminarUsuario(admin);
 			controlador.eliminarUsuario(citador);
 			if (!eliminadoMedico) controlador.eliminarMedico(cabecera);
-			controlador.eliminarMedico(pediatra);
-			controlador.eliminarMedico(especialista);
+			if (!eliminadoMedico) controlador.eliminarMedico(pediatra);
+			if (!eliminadoMedico) controlador.eliminarMedico(especialista);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
 			winPrincipal.dispose();
@@ -205,17 +263,14 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Ponemos un NIF nulo
 			txtNIFBuscado.setText("");
-			btnBuscar.click();
-			assertEquals(txtNIFBuscado.getText(), "");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NIFIncorrectoException().getMessage());
 			// Ponemos un NIF incorrecto y comprobamos que el campo de
 			// identificacion se selecciona por tener un formato inválido
 			txtNIFBuscado.setText("111111");
-			btnBuscar.click();
-			assertEquals(jtxtNIFBuscado.getSelectedText(), txtNIFBuscado.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NIFIncorrectoException().getMessage());
 			// Probamos con un NIF que no esté dado de alta en el sistema
 			txtNIFBuscado.setText("00000000a");
-			btnBuscar.click();
-			assertEquals(jtxtNIFBuscado.getSelectedText(), txtNIFBuscado.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "No existe ningún usuario con el DNI introducido.");
 			// Ponemos un NIF correcto
 			txtNIFBuscado.setText(admin.getDni());
 			btnBuscar.click();
@@ -229,48 +284,37 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			assertTrue(!txtNIF.isEditable().isTrue());
 			assertTrue(!txtCentro.isEditable().isTrue());
 			// Escribimos un nombre incorrecto y comprobamos que se selecciona
-			// Ponemos un nombre incorrecto y comprobamos que se selecciona
 			txtNombre.setText("Pedro$");
-			btnGuardar.click();
-			assertEquals(jtxtNombre.getSelectedText(), txtNombre.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new NombreIncorrectoException().getMessage());
 			txtNombre.setText("Pedro");
 			// Ponemos unos apellidos incorrectos y comprobamos que se seleccionan
 			txtApellidos.setText("---");
-			btnGuardar.click();
-			assertEquals(jtxtApellidos.getSelectedText(), txtApellidos.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new ApellidoIncorrectoException().getMessage());
 			txtApellidos.setText("Jiménez Serrano");
 			// Ponemos un nombre de usuario incorrecto y comprobamos que se selecciona
 			txtLogin.setText("admin- ");
-			btnGuardar.click();
-			assertEquals(jtxtLogin.getSelectedText(), txtLogin.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new LoginIncorrectoException().getMessage());
 			txtLogin.setText("admin87");
 			// Ponemos una contraseña invalida y comprobamos que se selecciona
-			/* 
-			// TODO: revisar porque no coinciden los campos de las contraseñas y da un null
-			jtxtPassword.setText("123456");
-			btnGuardar.click();
-			assertEquals(jtxtPassword.getSelectedText(), new String(jtxtPassword.getPassword()));
+			// TODO: sigue fallando la contraseña. Ahora me dice que se almacena correctamente
+			/*txtPassword.setPassword("123456");			
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new ContraseñaIncorrectaException().getMessage());
 			jtxtPassword.setText("12345678");
 			// Comprobamos que al no coincidir las contraseñas, se selecciona la primera contraseña
-			jtxtPasswordConf.setText("123456");
-			btnGuardar.click();
-			assertEquals(jtxtPassword.getSelectedText(), new String(jtxtPassword.getPassword()));*/
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new ContraseñaIncorrectaException().getMessage());*/
 			jtxtPassword.setText("12345678");
 			jtxtPasswordConf.setText("12345678");
 			// Probamos un e-mail invalido y comprobamos que se selecciona (este campo es opcional)
-			txtCorreoElectronico .setText("pjs80@gmail");
-			btnGuardar.click();
-			assertTrue(jtxtCorreoElectronico.getSelectionStart() == 0 && jtxtCorreoElectronico.getSelectionEnd() == txtCorreoElectronico.getText().length());
+			txtCorreoElectronico.setText("pjs80@gmail");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new CorreoElectronicoIncorrectoException().getMessage());
 			txtCorreoElectronico.setText("pjs80@gmail.com");
 			// Ponemos un teléfono fijo incorrecto y comprobamos que se selecciona
 			txtTelefonoFijo.setText("926 147 130");
-			btnGuardar.click();
-			assertTrue(jtxtTelefonoFijo.getSelectionStart() == 0 && jtxtTelefonoFijo.getSelectionEnd() == txtTelefonoFijo.getText().length());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new TelefonoFijoIncorrectoException().getMessage());
 			txtTelefonoFijo.setText("926147130");
 			// Ponemos un teléfono móvil incorrecto y comprobamos que se selecciona
 			txtTelefonoMovil.setText("61011122");
-			btnGuardar.click();
-			assertTrue(jtxtTelefonoMovil.getSelectionStart() == 0 && jtxtTelefonoMovil.getSelectionEnd() == txtTelefonoMovil.getText().length());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new TelefonoMovilIncorrectoException().getMessage());
 			txtTelefonoMovil.setText("626405060");
 			// Como se ha buscado un administrador, intentamos cambiar su rol a uno no válido
 			jcmbRol.grabFocus();
@@ -278,6 +322,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			btnGuardar.click();
 			assertTrue(txtNIF.getText().length()!=0);
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
@@ -671,7 +716,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	public void testEliminarMedico2() {
 		eliminadoMedico = false;
 		Beneficiario beneficiarioPrueba;
-		Cita c;
+		final Window [] windows = new Window[1];
 		
 		try {
 			
@@ -687,7 +732,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			controlador.crearBeneficiario(beneficiarioPrueba);
 			
 			// Creamos una cita de prueba		
-			controlador.pedirCita(beneficiarioPrueba, cabecera.getDni(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
+			Cita c = controlador.pedirCita(beneficiarioPrueba, controlador.consultarBeneficiarioPorNIF(beneficiarioPrueba.getNif()).getMedicoAsignado().getDni(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
 
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getDni());
@@ -704,13 +749,20 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			assertTrue(chkEditar.isSelected().isTrue());
 			// Comprobamos que el boton de Eliminar ahora sí está habilitado
 			assertTrue(btnEliminar.isEnabled().isTrue());
-			// Capturamos el primer mensaje de confirmaicion
+			// Capturamos el primer mensaje de confirmacion
 			WindowInterceptor.init(btnEliminar.triggerClick()).process(new WindowHandler() {
+				public Trigger process (Window window) {
+					windows[0]=window;
+					return window.getButton(YES_OPTION).triggerClick();
+				}
+			}).run();
+			// TODO: no funciona bien
+			// Capturamos el segundo mensaje de confirmacion
+			WindowInterceptor.init(windows[0].getButton(YES_OPTION).triggerClick()).process(new WindowHandler() {
 				public Trigger process (Window window) {
 					return window.getButton(YES_OPTION).triggerClick();
 				}
 			}).run();
-			// TODO: capturar el aviso de confirmacion para que se elimine realmente
 			comprobarCamposVacios();
 			// Comprobamos que el usuario ha sido eliminado correctamente
 			// Buscamos el usuario
@@ -724,7 +776,9 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			}).run();
 			// Como no se encuentra al usuario, el boton Editar tiene que estar deshabilitado
 			assertFalse(chkEditar.isEnabled());
+			controlador.anularCita(c);
 			eliminadoMedico = true;
+			System.out.println(eliminadoMedico);
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.toString());

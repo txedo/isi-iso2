@@ -8,6 +8,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
@@ -578,8 +579,8 @@ public class JPUsuarioConsultar extends JPBase {
 					else {
 						for (int i=0; i<citas.size(); i++) {
 							for (PeriodoTrabajo p: ((Medico)usuarioModif).getCalendario()) {
-								// Si la cita que ya tenia asignado, no está en ningun periodo, se inserta en la lista de citas afectadas
-								if (!citas.get(i).citaEnHoras(p.getHoraInicio(), p.getHoraFinal()))
+								// Si la cita que ya tenia asignado, no está en ningun periodo y es posterior a la fecha de hoy, se inserta en la lista de citas afectadas
+								if (!citas.get(i).citaEnHoras(p.getHoraInicio(), p.getHoraFinal()) && citas.get(i).getFechaYHora().after(new Date()))
 									citasAfectadas.add(citas.get(i));
 							}
 						}
