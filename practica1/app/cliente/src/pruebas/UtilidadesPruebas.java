@@ -39,7 +39,7 @@ public class UtilidadesPruebas {
 	public static String generarLoginAleatorio() {
 		Random r = new Random();
 		r.setSeed(new Date().getTime());
-		return ("usuario"+r.nextInt());
+		return ("usuario"+r.nextInt(999999999));
 	}			
 	
 	public static String generarNIF() {
