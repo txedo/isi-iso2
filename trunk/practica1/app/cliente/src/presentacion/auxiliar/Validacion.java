@@ -281,7 +281,7 @@ public class Validacion {
 		// Creamos un patrón para definir el formato de un e-mail
 		// Formato de e-mail siguiendo la norma RFC 2822
 		// Referencia: http://www.regular-expressions.info/email.html
-		Pattern p = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
+		Pattern p = Pattern.compile("[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?");
 		Matcher m = p.matcher(correo);
 	    if (m.matches())
 	    	bCorrecto = true;
