@@ -35,7 +35,7 @@ import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
 
-public class PruebasJPusuarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas {
+public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas {
 
 	private ControladorCliente controlador;
 	private JPUsuarioConsultar panel;

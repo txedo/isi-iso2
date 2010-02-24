@@ -20,7 +20,8 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasJFLogin.class);
 		suite.addTestSuite(PruebasJPBeneficiarioRegistrar.class);
 		suite.addTestSuite(PruebasJPBeneficiarioConsultar.class);
-
+		suite.addTestSuite(PruebasJPUsuarioRegistrar.class);
+		suite.addTestSuite(PruebasJPUsuarioConsultar.class);
 		
 		return suite;
 	}

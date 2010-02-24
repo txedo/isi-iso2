@@ -38,7 +38,6 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.RolesUsuario;
-import dominio.conocimiento.UtilidadesDominio;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CadenaVaciaException;
