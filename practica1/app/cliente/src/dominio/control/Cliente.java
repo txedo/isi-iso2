@@ -2,12 +2,9 @@ package dominio.control;
 
 import java.rmi.RemoteException;
 import comunicaciones.ICliente;
-import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
-import dominio.conocimiento.Citador;
 import dominio.conocimiento.ICodigosOperacionesCliente;
-import dominio.conocimiento.Medico;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 

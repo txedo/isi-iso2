@@ -116,6 +116,9 @@ public class JFLogin extends javax.swing.JFrame {
 						txtPuertoServidor.setText("2995");
 						txtPuertoServidor.setBounds(115, 53, 125, 20);
 						txtPuertoServidor.setName("txtPuertoServidor");
+						txtPuertoServidor.setEditable(false);
+						txtPuertoServidor.setEnabled(false);
+						txtPuertoServidor.setVisible(false);
 					}
 					{
 						lblPuertoServidor = new JLabel();
@@ -123,6 +126,7 @@ public class JFLogin extends javax.swing.JFrame {
 						lblPuertoServidor.setText("Puerto");
 						lblPuertoServidor.setBounds(13, 57, 91, 14);
 						lblPuertoServidor.setName("lblPuertoServidor");
+						lblPuertoServidor.setVisible(false);
 					}
 					{
 						txtDireccionServidor = new JTextField();
@@ -131,6 +135,9 @@ public class JFLogin extends javax.swing.JFrame {
 						txtDireccionServidor.setBounds(115, 24, 125, 20);
 						txtDireccionServidor.setLayout(null);
 						txtDireccionServidor.setName("txtDireccionServidor");
+						txtDireccionServidor.setEditable(false);
+						txtDireccionServidor.setEnabled(false);
+						txtDireccionServidor.setVisible(false);
 					}
 					{
 						lblDireccionServidor = new JLabel();
@@ -138,6 +145,7 @@ public class JFLogin extends javax.swing.JFrame {
 						lblDireccionServidor.setBounds(13, 28, 91, 14);
 						lblDireccionServidor.setText("Dirección IP");
 						lblDireccionServidor.setName("lblDireccionServidor");
+						lblDireccionServidor.setVisible(false);
 					}
 				}
 				{
@@ -276,23 +284,27 @@ public class JFLogin extends javax.swing.JFrame {
 			btnAvanzado.setText("<< Avanzado");
 			this.setSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
 			pnlPanel.setSize(new java.awt.Dimension(WIDTH, MAX_HEIGHT));
-			pnlDatosServidor.setVisible(true);
-			txtDireccionServidor.setVisible(true);
-			lblDireccionServidor.setVisible(true);
-			txtPuertoServidor.setVisible(true);
-			lblPuertoServidor.setVisible(true);
+			setOpcionesVisibles(true);
 		} else {
 			if(btnAvanzado.getText().equals("<< Avanzado")) {
 				btnAvanzado.setText("Avanzado >>");
 				this.setSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
 				pnlPanel.setSize(new java.awt.Dimension(WIDTH, MIN_HEIGHT));
-				pnlDatosServidor.setVisible(false);
-				txtDireccionServidor.setVisible(false);
-				lblDireccionServidor.setVisible(false);
-				txtPuertoServidor.setVisible(false);
-				lblPuertoServidor.setVisible(false);
+				setOpcionesVisibles(false);
 			}
 		}
+	}
+	
+	private void setOpcionesVisibles (boolean b) {
+		pnlDatosServidor.setVisible(b);
+		txtDireccionServidor.setEditable(b);
+		txtDireccionServidor.setEnabled(b);
+		txtDireccionServidor.setVisible(b);
+		lblDireccionServidor.setVisible(b);
+		txtPuertoServidor.setEditable(b);
+		txtPuertoServidor.setEnabled(b);
+		txtPuertoServidor.setVisible(b);
+		lblPuertoServidor.setVisible(b);
 	}
 
 	//$hide<<$
