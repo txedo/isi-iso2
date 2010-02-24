@@ -712,6 +712,8 @@ public class PruebasJPUsuarioRegistrar extends org.uispec4j.UISpecTestCase imple
 		assertTrue(txtNombre.getText().equals(""));
 		assertTrue(txtApellidos.getText().equals(""));
 		assertTrue(txtLogin.getText().equals(""));
+		assertTrue(new String(jtxtPassword.getPassword()).equals(""));
+		assertTrue(new String(jtxtPasswordConf.getPassword()).equals(""));
 		assertTrue(txtCorreoElectronico.getText().equals(""));
 		assertTrue(txtTelefonoFijo.getText().equals(""));
 		assertTrue(txtTelefonoMovil.getText().equals(""));
