@@ -36,6 +36,25 @@ public class UtilidadesPruebas {
 		return mensaje;
 	}
 	
+	public static String obtenerTextoDialogo (Button btn, final String btnQueCierra) {
+		String mensaje = "";
+		final Window [] windows = new Window[1];
+		JOptionPane optionPane = null;
+		JDialog dialogo = null;
+		WindowInterceptor.init(btn.triggerClick()).process(
+				new WindowHandler() {
+					public Trigger process(Window window) {
+						windows[0] = window;
+						return window.getButton(btnQueCierra).triggerClick();
+					}
+				}).run();
+		// El JOptionPane está encapsulado dentro del dialogo (JDialog) que devuelve el WindowInterceptor
+		dialogo = ((JDialog)windows[0].getAwtComponent()); 
+		optionPane = (JOptionPane) dialogo.getContentPane().getComponents()[0];
+		mensaje = optionPane.getMessage().toString();
+		return mensaje;
+	}
+	
 	public static String generarLoginAleatorio() {
 		Random r = new Random();
 		r.setSeed(new Date().getTime());

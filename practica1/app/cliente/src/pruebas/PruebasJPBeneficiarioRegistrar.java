@@ -14,12 +14,27 @@ import comunicaciones.ConfiguracionCliente;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.control.ControladorCliente;
+import excepciones.ApellidoIncorrectoException;
+import excepciones.CentroSaludIncorrectoException;
+import excepciones.CodigoPostalIncorrectoException;
+import excepciones.CorreoElectronicoIncorrectoException;
+import excepciones.DomicilioIncorrectoException;
+import excepciones.LocalidadIncorrectaException;
+import excepciones.NIFIncorrectoException;
+import excepciones.NSSIncorrectoException;
+import excepciones.NombreIncorrectoException;
+import excepciones.NumeroDomicilioIncorrectoException;
+import excepciones.PisoDomicilioIncorrectoException;
+import excepciones.ProvinciaIncorrectaException;
+import excepciones.PuertaDomicilioIncorrectoException;
+import excepciones.TelefonoFijoIncorrectoException;
+import excepciones.TelefonoMovilIncorrectoException;
 import presentacion.JPBeneficiarioRegistrar;
 
 /**
  * Pruebas del panel de registro de beneficiarios.
  */
-public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas {
+public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
 	
 	private String nif;
 	private boolean beneficiarioCreado = false;
@@ -136,28 +151,29 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 	/** Pruebas con datos no válidos */
 	public void testDatosInvalidos() {
 		String[] invalidos;
+		String mensaje;
 		
 		try {
 			// Ponemos un NIF incorrecto y comprobamos que el campo del
 			// NIF se selecciona por tener un formato inválido
 			txtNIF.setText("11223344");
-			btnCrear.click();
-			assertEquals(jtxtNIF.getSelectedText(), txtNIF.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new NIFIncorrectoException().getMessage(), mensaje);
 			txtNIF.setText("11223344B");
-			// Ponemos un NSS incorrecto y comprobamos que se selecciona
+			// Ponemos un NSS incorrecto y comprobamos el mensaje de error
 			txtNSS.setText("1234567890ABCD");
-			btnCrear.click();
-			assertEquals(jtxtNSS.getSelectedText(), txtNSS.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new NSSIncorrectoException().getMessage(), mensaje);
 			txtNSS.setText("112233445566");
-			// Ponemos un nombre incorrecto y comprobamos que se selecciona
+			// Ponemos un nombre incorrecto y comprobamos el mensaje de error
 			txtNombre.setText("Pedro$");
-			btnCrear.click();
-			assertEquals(jtxtNombre.getSelectedText(), txtNombre.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new NombreIncorrectoException().getMessage(), mensaje);
 			txtNombre.setText("Pedro");
-			// Ponemos unos apellidos incorrectos y comprobamos que se seleccionan
+			// Ponemos unos apellidos incorrectos y el mensaje de error
 			txtApellidos.setText("---");
-			btnCrear.click();
-			assertEquals(jtxtApellidos.getSelectedText(), txtApellidos.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new ApellidoIncorrectoException().getMessage(), mensaje);
 			txtApellidos.setText("Jiménez Serrano");
 			// Ponemos fechas de nacimientos incorrectas y comprobamos que
 			// se seleccionan (la validación de las fechas la hace en gran
@@ -173,59 +189,59 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			txtFechaNacimiento.setText("01/01/1980");
 			// Ponemos un domicilio incorrecto y comprobamos que se selecciona
 			txtDomicilio.setText("*");
-			btnCrear.click();
-			assertEquals(jtxtDomicilio.getSelectedText(), txtDomicilio.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new DomicilioIncorrectoException().getMessage(), mensaje);
 			txtDomicilio.setText("C/Cervantes");
-			// Ponemos un número incorrecto y comprobamos que se selecciona
+			// Ponemos un número incorrecto y comprobamos el mensaje de error
 			txtNumero.setText("10 A");
-			btnCrear.click();
-			assertEquals(jtxtNumero.getSelectedText(), txtNumero.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new NumeroDomicilioIncorrectoException().getMessage(), mensaje);
 			txtNumero.setText("38");
-			// Ponemos un piso incorrecto y comprobamos que se selecciona
+			// Ponemos un piso incorrecto y comprobamos el mensaje de error
 			txtPiso.setText("4ºF");
-			btnCrear.click();
-			assertEquals(jtxtPiso.getSelectedText(), txtPiso.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new PisoDomicilioIncorrectoException().getMessage(), mensaje);
 			txtPiso.setText("4");
-			// Ponemos una puerta incorrecta y comprobamos que se selecciona
+			// Ponemos una puerta incorrecta y comprobamos el mensaje de error
 			txtPuerta.setText("5");
-			btnCrear.click();
-			assertEquals(jtxtPuerta.getSelectedText(), txtPuerta.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new PuertaDomicilioIncorrectoException().getMessage(), mensaje);
 			txtPuerta.setText("F");
-			// Ponemos una localidad incorrecta y comprobamos que se selecciona
+			// Ponemos una localidad incorrecta y comprobamos el mensaje de error
 			txtLocalidad.setText("<ninguna>");
-			btnCrear.click();
-			assertEquals(jtxtLocalidad.getSelectedText(), txtLocalidad.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new LocalidadIncorrectaException().getMessage(), mensaje);
 			txtLocalidad.setText("Ciudad Real");
-			// Ponemos un código postal incorrecto y comprobamos que se selecciona
+			// Ponemos un código postal incorrecto y comprobamos el mensaje de error
 			txtCP.setText("130000");
-			btnCrear.click();
-			assertEquals(jtxtCP.getSelectedText(), txtCP.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new CodigoPostalIncorrectoException().getMessage(), mensaje);
 			txtCP.setText("12345");
-			// Ponemos una provincia incorrecta y comprobamos que se selecciona
+			// Ponemos una provincia incorrecta y comprobamos el mensaje de error
 			txtProvincia.setText("900");
-			btnCrear.click();
-			assertEquals(jtxtProvincia.getSelectedText(), txtProvincia.getText());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new ProvinciaIncorrectaException().getMessage(), mensaje);
 			txtProvincia.setText("Ciudad Real");
-			// Ponemos un correo incorrecto y comprobamos que se selecciona
+			// Ponemos un correo incorrecto y comprobamos el mensaje de error
 			txtCorreo.setText("pjs80@gmail");
-			btnCrear.click();
-			assertTrue(jtxtCorreo.getSelectionStart() == 0 && jtxtCorreo.getSelectionEnd() == txtCorreo.getText().length());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new CorreoElectronicoIncorrectoException().getMessage(), mensaje);
 			txtCorreo.setText("pjs80@gmail.com");
-			// Ponemos un teléfono fijo incorrecto y comprobamos que se selecciona
+			// Ponemos un teléfono fijo incorrecto y comprobamos el mensaje de error
 			txtTelefonoFijo.setText("926 147 130");
-			btnCrear.click();
-			assertTrue(jtxtTelefonoFijo.getSelectionStart() == 0 && jtxtTelefonoFijo.getSelectionEnd() == txtTelefonoFijo.getText().length());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new TelefonoFijoIncorrectoException().getMessage(), mensaje);
 			txtTelefonoFijo.setText("926147130");
-			// Ponemos un teléfono móvil incorrecto y comprobamos que se selecciona
+			// Ponemos un teléfono móvil incorrecto y comprobamos el mensaje de error
 			txtTelefonoMovil.setText("61011122");
-			btnCrear.click();
-			assertTrue(jtxtTelefonoMovil.getSelectionStart() == 0 && jtxtTelefonoMovil.getSelectionEnd() == txtTelefonoMovil.getText().length());
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new TelefonoMovilIncorrectoException().getMessage(), mensaje);
 			txtTelefonoMovil.setText("626405060");
 			// Ponemos un centro de salud incorrecto y comprobamos que se produce un error
 			jcmbCentros.grabFocus();
 			jcmbCentros.setSelectedIndex(-1);
-			btnCrear.click();
-			assertTrue(txtNIF.getText().length() != 0);
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION);
+			assertEquals(new CentroSaludIncorrectoException().getMessage(), mensaje);
 			jcmbCentros.setSelectedIndex(0);
 		} catch(Exception e) {
 			fail(e.toString());

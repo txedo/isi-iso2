@@ -19,6 +19,7 @@ import org.uispec4j.interception.WindowInterceptor;
 import presentacion.JFLogin;
 import dominio.control.ControladorCliente;
 import excepciones.LoginIncorrectoException;
+import excepciones.UsuarioIncorrectoException;
 
 public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
 
@@ -86,26 +87,18 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 	
 	// Intenta loguear un usuario incorrecto con la IP y el puerto del servidor por defecto
 	public void testLoginUsuarioIncorrecto () {
-		String [] login = { "", " ", "sdkjafdskjdsañfka" };
+		String [] login = { "sdkjafdskjdska", "eoisek27" };
 		String [] password = login.clone();
+		String mensaje;
 		
 		for (int i = 0; i < login.length; i++) {
 			for (int j = 0; j < password.length; j++) {
 				txtUsuario.setText(login[i]);
 				txtPassword.setPassword(password[j]);
-				/*
-				WindowInterceptor.init(btnConectar.triggerClick()).process(new WindowHandler() {
-					public Trigger process (Window window) {
-						// TODO Comprobar que es el error de LoginIncorrectoException
-						return window.getButton(OK_OPTION).triggerClick();
-					}
-				}).run();
-				*/
-				btnConectar.click();
-				// TODO interceptar la excepcion
-				// Comprobamos que no ha cambiado nada
-				assertEquals(txtUsuario.getText(), login[i]);
-				assertTrue(txtPassword.passwordEquals(password[j]));
+				// Pulsamos el botón Conectar y capturamos el texto de la ventana de error
+				mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnConectar, OK_OPTION);
+				String esperado = "El nombre de usuario o contraseña introducidos no son válidos.";
+				assertEquals(esperado, mensaje);
 			}
 		}
 	}
@@ -113,6 +106,8 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 	// Direccion IP del servidor inválida
 	public void testIPInvalida () {
 		String [] direcciones = { "", " ", "aaaa", "-441", "213", "0.0.0", "127.0.0.0.0" };
+		String mensaje;
+		
 		txtUsuario.setText(usuarioAdmin);
 		txtPassword.setPassword(passwordAdmin);
 		// Abrimos las opciones avanzadas
@@ -120,56 +115,50 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 		for (int i = 0; i < direcciones.length; i++) {
 			// Ponemos una IP inválida
 			txtDireccionServidor.setText(direcciones[i]);
-			// Intentamos conectar
-			btnConectar.click();
-			// TODO interceptar la excepcion
-			// Comprobamos que no ha cambiado nada
-			assertEquals(txtUsuario.getText(), usuarioAdmin);
-			assertTrue(txtPassword.passwordEquals(passwordAdmin));
+			// Pulsamos el botón Conectar y capturamos el texto de la ventana de error
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnConectar, OK_OPTION);
+			String esperado = "La dirección IP del servidor tiene un formato incorrecto.";
+			assertEquals(esperado, mensaje);
 		}
 	}
 	
 	// Puerto inválido
 	public void testPuertoInvalido () {
-		String [] puertos = { "", " ", "aaaa", "-441", "213", "0.0.0", "127.0.0.0.0" };
+		String [] puertos = { "", " ", "aaaa", "-441", "0.0.0", "127.0.0.0.0" };
+		String mensaje;
+		
 		txtUsuario.setText(usuarioAdmin);
 		txtPassword.setPassword(passwordAdmin);
 		// Abrimos las opciones avanzadas
 		btnAvanzado.click();
 		for (int i = 0; i < puertos.length; i++) {
 			// Ponemos un puerto inválido
-			txtPuertoServidor.setText("-5");
-			// Intentamos conectar
-			btnConectar.click();
-			// TODO interceptar la excepcion
-			// Comprobamos que no ha cambiado nada
-			assertEquals(txtUsuario.getText(), usuarioAdmin);
-			assertTrue(txtPassword.passwordEquals(passwordAdmin));
+			txtPuertoServidor.setText(puertos[i]);
+			// Pulsamos el botón Conectar y capturamos el texto de la ventana de error
+			mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnConectar, OK_OPTION);
+			String esperado = "El puerto del servidor tiene un formato incorrecto.";
+			assertEquals(esperado, mensaje);
 		}
 	}
 	
 	// Servidor no alcanzable
 	public void testServidorInalcanzable () {
+		String mensaje;
+		
 		txtUsuario.setText(usuarioAdmin);
 		txtPassword.setPassword(passwordAdmin);
 		// Abrimos las opciones avanzadas
 		btnAvanzado.click();
 		// Ponemos una IP en la que no hay un servidor a la escucha
 		txtDireccionServidor.setText("1.0.0.1");
-		// Intentamos conectar
-		WindowInterceptor.init(btnConectar.triggerClick()).process(new WindowHandler() {
-			public Trigger process (Window window) {
-				// TODO Comprobar que es el error de LoginIncorrectoException
-				return window.getButton(OK_OPTION).triggerClick();
-			}
-		}).run();
-		// TODO interceptar la excepcion
-		// Comprobamos que no ha cambiado nada
-		assertEquals(txtUsuario.getText(), usuarioAdmin);
-		assertTrue(txtPassword.passwordEquals(passwordAdmin));
+		// Pulsamos el botón Conectar y capturamos el texto de la ventana de error
+		mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnConectar, OK_OPTION);
+		String esperado = "No se puede conectar con el servidor front-end (IP " + txtDireccionServidor.getText() + ", puerto " + txtPuertoServidor.getText() + ").";
+		assertEquals(esperado, mensaje);
 	}
 	
 	// Loguea un usuario con la IP y el puerto del servidor por defecto
+	@SuppressWarnings("deprecation")
 	public void testLoginUsuarioCorrecto () {
 		txtUsuario.setText(usuarioAdmin);
 		txtPassword.setPassword(passwordAdmin);
