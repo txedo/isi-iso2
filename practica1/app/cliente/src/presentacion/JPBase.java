@@ -1,8 +1,6 @@
 package presentacion;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import dominio.control.ControladorCliente;
 
 /**
@@ -13,7 +11,7 @@ public class JPBase extends JPanel {
 
 	private static final long serialVersionUID = -8138352814844589253L;
 	
-	private JFrame frame;
+	private JFPrincipal frame;
 	private ControladorCliente controlador;
 	
 	public JPBase() {
@@ -22,12 +20,12 @@ public class JPBase extends JPanel {
 		// con el Jigloo los formularios heredados de JPBase
 	}
 	
-	public JPBase(JFrame frame, ControladorCliente controlador) {
+	public JPBase(JFPrincipal frame, ControladorCliente controlador) {
 		this.frame = frame;
 		this.controlador = controlador;
 	}
 
-	public JFrame getFrame() {
+	public JFPrincipal getFrame() {
 		return frame;
 	}
 

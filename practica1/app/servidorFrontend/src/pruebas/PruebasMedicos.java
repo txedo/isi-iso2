@@ -137,7 +137,7 @@ public class PruebasMedicos extends PruebasBase {
 		Medico medicoGet;
 		
 		try {
-			// Intentamos consultar un médico con DNI nulo
+			// Intentamos consultar un médico con NIF nulo
 			servidor.getMedico(sesionCitador.getId(), null);
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
@@ -147,7 +147,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos consultar los datos de un médico sin permisos
-			servidor.getMedico(sesionCitador.getId(), medico1.getDni());
+			servidor.getMedico(sesionCitador.getId(), medico1.getNif());
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -156,7 +156,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			servidor.getMedico(-12345, medico1.getDni());
+			servidor.getMedico(-12345, medico1.getNif());
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -174,7 +174,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Obtenemos los datos de un médico existente
-			medicoGet = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getDni());
+			medicoGet = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getNif());
 			assertEquals(medico1, medicoGet);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -215,8 +215,8 @@ public class PruebasMedicos extends PruebasBase {
 		}
 		
 		try {
-			// Intentamos añadir un médico con un DNI que ya existe en la BD
-			medico = new Medico(citador1.getDni(), "error", "error", "", "", "", "", "", especialista);
+			// Intentamos añadir un médico con un NIF que ya existe en la BD
+			medico = new Medico(citador1.getNif(), "error", "error", "", "", "", "", "", especialista);
 			servidor.crear(sesionAdmin.getId(), medico);
 			fail("Se esperaba una excepción MedicoYaExistenteException");
 		} catch(MedicoYaExistenteException e) {
@@ -229,7 +229,7 @@ public class PruebasMedicos extends PruebasBase {
 			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "juan67@otro.com", "", "", especialista);
 			servidor.crear(sesionAdmin.getId(), medico);
 			// Comprobamos que el usuario se ha creado correctamente
-			medicoGet = (Medico)servidor.getMedico(sesionAdmin.getId(), medico.getDni());
+			medicoGet = (Medico)servidor.getMedico(sesionAdmin.getId(), medico.getNif());
 			medico.setPassword(Encriptacion.encriptarPasswordSHA1("medNuevo"));
 			medico.setCentroSalud(medicoGet.getCentroSalud().equals(centro1) ? centro1 : centro2);
 			assertEquals(medico, medicoGet);
@@ -297,7 +297,7 @@ public class PruebasMedicos extends PruebasBase {
 			medico1.setPassword("");
 			servidor.modificar(sesionAdmin.getId(), medico1);
 			// Comprobamos que el médico se haya actualizado correctamente
-			medicoGet = servidor.getMedico(sesionAdmin.getId(), medico1.getDni());
+			medicoGet = servidor.getMedico(sesionAdmin.getId(), medico1.getNif());
 			medico1.setPassword(Encriptacion.encriptarPasswordSHA1("abcdef"));
 			assertEquals(medico1, medicoGet);
 		} catch(Exception e) {
@@ -371,7 +371,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos consultar el horario de un médico con una sesión sin permisos
-			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, medico1.getDni());
+			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, medico1.getNif());
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -380,7 +380,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, medico1.getDni());
+			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, medico1.getNif());
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -390,7 +390,7 @@ public class PruebasMedicos extends PruebasBase {
 		try {
 			// Intentamos obtener el horario de un médico inexistente
 			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, medico.getDni());
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, medico.getNif());
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -399,7 +399,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos obtener el horario de un usuario que no es médico
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, admin1.getDni());
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, admin1.getNif());
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -408,7 +408,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Consultamos el horario de un médico correcto				
-			horario = GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), medico1.getDni());
+			horario = GestorMedicos.consultarHorarioMedico(sesionAdmin.getId(), medico1.getNif());
 			// Según el calendario de medico1, sólo se deben
 			// devolver horas los miércoles y los viernes
 			assertTrue(horario.size() != 0);
@@ -494,7 +494,7 @@ public class PruebasMedicos extends PruebasBase {
 
 		try {
 			// Intentamos obtener quién daría una cita en un día nulo
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getDni(), null });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getNif(), null });
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -503,7 +503,7 @@ public class PruebasMedicos extends PruebasBase {
 	
 		try {
 			// Intentamos obtener quién daría una cita con una sesión sin permisos
-			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getDni(), new Date() });
+			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getNif(), new Date() });
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -512,7 +512,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getDni(), new Date() });
+			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getNif(), new Date() });
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -522,7 +522,7 @@ public class PruebasMedicos extends PruebasBase {
 		try {
 			// Intentamos obtener quién daría la cita de un médico inexistente
 			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico.getDni(), new Date() });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico.getNif(), new Date() });
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -531,7 +531,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos obtener quién daría la cita de un usuario que no es médico
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { admin1.getDni(), new Date() });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { admin1.getNif(), new Date() });
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -542,7 +542,7 @@ public class PruebasMedicos extends PruebasBase {
 			// Intentamos obtener quién daría la cita de un médico en una
 			// fecha en la que el médico no tiene trabajo
 			calend = new GregorianCalendar(2010, 1, 24, 17, 0); // Miércoles 24/2/2010
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getDni(), calend.getTime() });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getNif(), calend.getTime() });
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -552,7 +552,7 @@ public class PruebasMedicos extends PruebasBase {
 		try {
 			// Obtenemos quién daría la cita de un médico sin sustituciones 
 			calend = new GregorianCalendar(2010, 1, 24, 12, 0); // Miércoles 24/2/2010
-			medico = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getDni(), calend.getTime() });
+			medico = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getNif(), calend.getTime() });
 			assertEquals(medico, medico1);
 			// Añadimos una sustitución y comprobamos que el médico sustituido
 			// ya no es el que daría la cita que no puede dar pero sí otra diferente
@@ -560,17 +560,17 @@ public class PruebasMedicos extends PruebasBase {
 			sustitucion = new Sustitucion(calend.getTime(), 13, 17, medico3, medico2);
 			FPSustitucion.insertar(sustitucion);
 			calend = new GregorianCalendar(2010, 1, 26, 16, 30); // Viernes 26/2/2010
-			medico = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico3.getDni(), calend.getTime() });
+			medico = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico3.getNif(), calend.getTime() });
 			assertEquals(medico, medico2);
 			calend = new GregorianCalendar(2010, 1, 26, 17, 30); // Viernes 26/2/2010
-			medico = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico3.getDni(), calend.getTime() });
+			medico = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico3.getNif(), calend.getTime() });
 			assertEquals(medico, medico3);
 			// Comprobamos que el método funciona con sustituciones recursivas
 			calend = new GregorianCalendar(2010, 1, 26); // Viernes 26/2/2010
 			sustitucion = new Sustitucion(calend.getTime(), 13, 17, medico2, medico1);
 			FPSustitucion.insertar(sustitucion);
 			calend = new GregorianCalendar(2010, 1, 26, 16, 30); // Viernes 26/2/2010
-			medico = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico3.getDni(), calend.getTime() });
+			medico = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico3.getNif(), calend.getTime() });
 			assertEquals(medico, medico1);
 		} catch(Exception e) {
 			fail(e.toString());

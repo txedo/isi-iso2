@@ -24,10 +24,10 @@ public class FPSustitucion {
 	private static final String COL_DIA = "dia";
 	private static final String COL_HORA_INICIO = "horaInicio";
 	private static final String COL_HORA_FINAL = "horaFinal";
-	private static final String COL_DNI_MEDICO = "dniMedico";
-	private static final String COL_DNI_SUSTITUTO = "dniSustituto";
+	private static final String COL_NIF_MEDICO = "nifMedico";
+	private static final String COL_NIF_SUSTITUTO = "nifSustituto";
 	
-	public static Vector<Sustitucion> consultarPorSustituido(String dniMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Vector<Sustitucion> consultarPorSustituido(String nifMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<Sustitucion> lista;
@@ -36,14 +36,14 @@ public class FPSustitucion {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_SUSTITUCIONES
-				+ " WHERE " + COL_DNI_MEDICO + " = ?", dniMedico);
+				+ " WHERE " + COL_NIF_MEDICO + " = ?", nifMedico);
 		datos = GestorConexionesBD.consultar(comando);
 		
 		// Obtenemos los datos del médico sustituido
-		medico = FPUsuario.consultar(dniMedico);
+		medico = FPUsuario.consultar(nifMedico);
 		if(medico.getRol() != RolesUsuario.Medico) {
 			datos.close();
-			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones del usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
+			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones del usuario con NIF " + String.valueOf(nifMedico) + " porque no es un médico.");
 		}
 		
 		// Devolvemos la lista de sustituciones que tiene el médico
@@ -55,10 +55,10 @@ public class FPSustitucion {
 			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
 			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
 			sustitucion.setMedico((Medico)medico);
-			sustituto = FPUsuario.consultar(datos.getString(COL_DNI_SUSTITUTO));
+			sustituto = FPUsuario.consultar(datos.getString(COL_NIF_SUSTITUTO));
 			if(sustituto.getRol() != RolesUsuario.Medico) {
 				datos.close();
-				throw new UsuarioIncorrectoException("Alguna de las sustituciones del médico con DNI " + String.valueOf(dniMedico) + " no tiene asociado un usuario con rol de médico.");
+				throw new UsuarioIncorrectoException("Alguna de las sustituciones del médico con NIF " + String.valueOf(nifMedico) + " no tiene asociado un usuario con rol de médico.");
 			}
 			sustitucion.setSustituto((Medico)sustituto);
 			lista.add(sustitucion);
@@ -68,7 +68,7 @@ public class FPSustitucion {
 		return lista;
 	}
 	
-	public static Vector<Sustitucion> consultarPorSustituto(String dniMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Vector<Sustitucion> consultarPorSustituto(String nifMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<Sustitucion> lista;
@@ -77,14 +77,14 @@ public class FPSustitucion {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_SUSTITUCIONES
-				+ " WHERE " + COL_DNI_SUSTITUTO + " = ?", dniMedico);
+				+ " WHERE " + COL_NIF_SUSTITUTO + " = ?", nifMedico);
 		datos = GestorConexionesBD.consultar(comando);
 		
 		// Obtenemos los datos del médico sustituto
-		sustituto = FPUsuario.consultar(dniMedico);
+		sustituto = FPUsuario.consultar(nifMedico);
 		if(sustituto.getRol() != RolesUsuario.Medico) {
 			datos.close();
-			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones hechas por el usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
+			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones hechas por el usuario con NIF " + String.valueOf(nifMedico) + " porque no es un médico.");
 		}
 		
 		// Devolvemos la lista de sustituciones que va a hacer el médico
@@ -95,10 +95,10 @@ public class FPSustitucion {
 			sustitucion.setDia(datos.getDate(COL_DIA));
 			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
 			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
-			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
 			if(medico.getRol() != RolesUsuario.Medico) {
 				datos.close();
-				throw new UsuarioIncorrectoException("Alguna de las sustituciones hechas por el médico con DNI " + String.valueOf(dniMedico) + " no tiene asociado un usuario con rol de médico.");
+				throw new UsuarioIncorrectoException("Alguna de las sustituciones hechas por el médico con NIF " + String.valueOf(nifMedico) + " no tiene asociado un usuario con rol de médico.");
 			}
 			sustitucion.setMedico((Medico)medico);
 			sustitucion.setSustituto((Medico)sustituto);
@@ -116,11 +116,11 @@ public class FPSustitucion {
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_SUSTITUCIONES
 				+ " (" + COL_DIA + ", " + COL_HORA_INICIO + ", " + COL_HORA_FINAL
-				+ ", " + COL_DNI_MEDICO + ", " + COL_DNI_SUSTITUTO
+				+ ", " + COL_NIF_MEDICO + ", " + COL_NIF_SUSTITUTO
 				+ ") VALUES (?, ?, ?, ?, ?)",
 				sustitucion.getDia(), sustitucion.getHoraInicio(),
-				sustitucion.getHoraFinal(), sustitucion.getMedico().getDni(),
-				sustitucion.getSustituto().getDni());
+				sustitucion.getHoraFinal(), sustitucion.getMedico().getNif(),
+				sustitucion.getSustituto().getNif());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Recuperamos el id autonumérico asignado a la nueva cita

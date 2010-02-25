@@ -35,7 +35,7 @@ public class FPUsuario {
 	private static final String COL_MOVIL = "movil";
 	private static final String COL_ID_CENTRO = "idCentro";
 
-	public static Usuario consultar(String dni) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Usuario consultar(String nif) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<PeriodoTrabajo> calendario;
@@ -45,14 +45,14 @@ public class FPUsuario {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_USUARIOS
-				+ " WHERE " + COL_NIF + " = ?", dni);
+				+ " WHERE " + COL_NIF + " = ?", nif);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
 		// Si no se obtienen datos, es porque no existe el usuario
 		if(datos.getRow() == 0) {
 			datos.close();
-			throw new UsuarioIncorrectoException("El usuario con DNI " + dni + " no se encuentra dado de alta en el sistema.");
+			throw new UsuarioIncorrectoException("El usuario con NIF " + nif + " no se encuentra dado de alta en el sistema.");
 		} else {
 			// Creamos un usuario del tipo adecuado
 			switch(RolesUsuario.values()[datos.getInt(COL_ROL)]) {
@@ -67,10 +67,10 @@ public class FPUsuario {
 				break;
 			default:
 				datos.close();
-				throw new UsuarioIncorrectoException("El tipo del usuario con DNI " + dni + " es inválido.");
+				throw new UsuarioIncorrectoException("El tipo del usuario con NIF " + nif + " es inválido.");
 			}
 			// Establecemos los datos del usuario
-			usuario.setDni(datos.getString(COL_NIF));
+			usuario.setNif(datos.getString(COL_NIF));
 			usuario.setLogin(datos.getString(COL_LOGIN));
 			usuario.setPassword(datos.getString(COL_PASSWORD));			
 			usuario.setNombre(datos.getString(COL_NOMBRE));
@@ -83,9 +83,9 @@ public class FPUsuario {
 			// Establecemos datos adicionales de los médicos
 			if(usuario.getRol() == RolesUsuario.Medico) {
 				// Obtenemos el calendario del médico
-				calendario = FPPeriodoTrabajo.consultarHorario(usuario.getDni());
+				calendario = FPPeriodoTrabajo.consultarHorario(usuario.getNif());
 				((Medico)usuario).setCalendario(calendario);
-				tipo = FPTipoMedico.consultar(usuario.getDni());
+				tipo = FPTipoMedico.consultar(usuario.getNif());
 				((Medico)usuario).setTipoMedico(tipo);
 			}
 			datos.close();
@@ -130,7 +130,7 @@ public class FPUsuario {
 				throw new UsuarioIncorrectoException("El tipo del usuario con login " + login + " es inválido.");
 			}
 			// Establecemos los datos del usuario
-			usuario.setDni(datos.getString(COL_NIF));
+			usuario.setNif(datos.getString(COL_NIF));
 			usuario.setLogin(datos.getString(COL_LOGIN));
 			usuario.setPassword(datos.getString(COL_PASSWORD));
 			usuario.setNombre(datos.getString(COL_NOMBRE));
@@ -143,9 +143,9 @@ public class FPUsuario {
 			// Establecemos datos adicionales de los médicos
 			if(usuario.getRol() == RolesUsuario.Medico) {
 				// Obtenemos el calendario del médico
-				calendario = FPPeriodoTrabajo.consultarHorario(usuario.getDni());
+				calendario = FPPeriodoTrabajo.consultarHorario(usuario.getNif());
 				((Medico)usuario).setCalendario(calendario);
-				tipo = FPTipoMedico.consultar(usuario.getDni());
+				tipo = FPTipoMedico.consultar(usuario.getNif());
 				((Medico)usuario).setTipoMedico(tipo);
 			}
 			datos.close();
@@ -190,7 +190,7 @@ public class FPUsuario {
 				+ COL_ROL + ", " + COL_NOMBRE + ", " + COL_APELLIDOS + ", "
 				+ COL_CORREO + ", " + COL_TELEFONO + ", " + COL_MOVIL + ", "
 				+ COL_ID_CENTRO + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				usuario.getDni(), usuario.getLogin(), usuario.getPassword(),
+				usuario.getNif(), usuario.getLogin(), usuario.getPassword(),
 				usuario.getRol().ordinal(), usuario.getNombre(),
 				usuario.getApellidos(), usuario.getCorreo(), usuario.getTelefono(),
 				usuario.getMovil(), usuario.getCentroSalud().getId());
@@ -200,9 +200,9 @@ public class FPUsuario {
 		if(usuario.getRol() == RolesUsuario.Medico) {
 			calendario = ((Medico)usuario).getCalendario();
 			for(PeriodoTrabajo periodo : calendario) {
-				FPPeriodoTrabajo.insertar(usuario.getDni(), periodo);
+				FPPeriodoTrabajo.insertar(usuario.getNif(), periodo);
 			}
-			FPTipoMedico.insertar(usuario.getDni(), ((Medico)usuario).getTipoMedico());
+			FPTipoMedico.insertar(usuario.getNif(), ((Medico)usuario).getTipoMedico());
 		}
 	}
 	
@@ -211,7 +211,7 @@ public class FPUsuario {
 		ComandoSQL comando;
 		
 		// Modificamos la base de datos
-		// (el DNI no se puede cambiar)
+		// (el NIF no se puede cambiar)
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_USUARIOS + " SET "
 				+ COL_LOGIN + " = ?, " + COL_PASSWORD + " = ?, " + COL_ROL + " = ?, "
 				+ COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_CORREO + " = ?, "
@@ -220,23 +220,23 @@ public class FPUsuario {
 				usuario.getLogin(), usuario.getPassword(), usuario.getRol().ordinal(),
 				usuario.getNombre(), usuario.getApellidos(), usuario.getCorreo(),
 				usuario.getTelefono(), usuario.getMovil(), usuario.getCentroSalud().getId(),
-				usuario.getDni());
+				usuario.getNif());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Modificamos datos adicionales de los médicos
 		if(usuario.getRol() == RolesUsuario.Medico) {
 			// Borramos el calendario antiguo del médico y añadimos el nuevo
-			calendario = FPPeriodoTrabajo.consultarHorario(usuario.getDni());
+			calendario = FPPeriodoTrabajo.consultarHorario(usuario.getNif());
 			for(PeriodoTrabajo periodo : calendario) {
 				FPPeriodoTrabajo.eliminar(periodo);
 			}
 			calendario = ((Medico)usuario).getCalendario();
 			for(PeriodoTrabajo periodo : calendario) {
-				FPPeriodoTrabajo.insertar(usuario.getDni(), periodo);
+				FPPeriodoTrabajo.insertar(usuario.getNif(), periodo);
 			}
 			// Borramos el tipo de médico antiguo y añadimos el nuevo
-			FPTipoMedico.eliminar(usuario.getDni());
-			FPTipoMedico.insertar(usuario.getDni(), ((Medico)usuario).getTipoMedico());
+			FPTipoMedico.eliminar(usuario.getNif());
+			FPTipoMedico.insertar(usuario.getNif(), ((Medico)usuario).getTipoMedico());
 		}
 	}
 	
@@ -250,12 +250,12 @@ public class FPUsuario {
 			for(PeriodoTrabajo periodo : calendario) {
 				FPPeriodoTrabajo.eliminar(periodo);
 			}
-			FPTipoMedico.eliminar(usuario.getDni());
+			FPTipoMedico.eliminar(usuario.getNif());
 		}
 		
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_USUARIOS
-				+ " WHERE " + COL_NIF + " = ?", usuario.getDni());
+				+ " WHERE " + COL_NIF + " = ?", usuario.getNif());
 		GestorConexionesBD.ejecutar(comando);
 	}
 	

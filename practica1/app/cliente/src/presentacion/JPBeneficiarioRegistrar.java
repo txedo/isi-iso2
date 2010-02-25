@@ -10,14 +10,11 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.Validacion;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import com.toedter.calendar.JDateChooser;
@@ -109,7 +106,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 		// los formularios o paneles que utilizan JPBeneficiarioRegistrar
 	}
 	
-	public JPBeneficiarioRegistrar(JFrame frame, ControladorCliente controlador) {
+	public JPBeneficiarioRegistrar(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 		rellenarListaCentros();

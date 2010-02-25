@@ -124,7 +124,7 @@ public class PruebasUsuarios extends PruebasBase {
 		Usuario usuario;
 		
 		try {
-			// Intentamos consultar un usuario con DNI nulo
+			// Intentamos consultar un usuario con NIF nulo
 			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, null);
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
@@ -134,7 +134,7 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Intentamos consultar los datos de un usuario sin permisos
-			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getDni());
+			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getNif());
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -143,7 +143,7 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getDni());
+			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getNif());
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -161,9 +161,9 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Obtenemos los datos de varios usuarios existentes
-			usuario = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getDni());
+			usuario = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getNif());
 			assertEquals(medico1, usuario);
-			usuario = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, admin1.getDni());
+			usuario = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, admin1.getNif());
 			assertEquals(admin1, usuario);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -204,8 +204,8 @@ public class PruebasUsuarios extends PruebasBase {
 		}
 		
 		try {
-			// Intentamos añadir un usuario con un DNI que ya existe en la BD
-			usuario = new Administrador(citador1.getDni(), "error", "error", "", "", "", "", "");
+			// Intentamos añadir un usuario con un NIF que ya existe en la BD
+			usuario = new Administrador(citador1.getNif(), "error", "error", "", "", "", "", "");
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			fail("Se esperaba una excepción UsuarioYaExistenteException");
 		} catch(UsuarioYaExistenteException e) {
@@ -240,7 +240,7 @@ public class PruebasUsuarios extends PruebasBase {
 			// Comprobamos que el usuario se ha creado correctamente
 			// (al crear el usuario su contraseña se habrá encriptado
 			// y se le habrá asignado el único centro que hay)
-			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, usuario.getDni());
+			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, usuario.getNif());
 			usuario.setPassword(Encriptacion.encriptarPasswordSHA1("nuevoadmin"));
 			usuario.setCentroSalud(centro1);
 			assertEquals(usuario, usuarioGet);
@@ -248,7 +248,7 @@ public class PruebasUsuarios extends PruebasBase {
 			usuario = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "", "", "", especialista);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
 			// Comprobamos que el usuario se ha creado correctamente
-			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, usuario.getDni());
+			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, usuario.getNif());
 			usuario.setPassword(Encriptacion.encriptarPasswordSHA1("medNuevo"));
 			usuario.setCentroSalud(centro1);
 			assertEquals(usuario, usuarioGet);
@@ -318,7 +318,7 @@ public class PruebasUsuarios extends PruebasBase {
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.MODIFICAR_USUARIO, medico1);
 			// Comprobamos que el médico se haya actualizado correctamente
 			// (la contraseña devuelta debe ser la original, "abcdef", encriptada)
-			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getDni());
+			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getNif());
 			medico1.setPassword(Encriptacion.encriptarPasswordSHA1("abcdef"));
 			assertEquals(medico1, usuarioGet);
 		} catch(Exception e) {
@@ -331,7 +331,7 @@ public class PruebasUsuarios extends PruebasBase {
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.MODIFICAR_USUARIO, admin1);
 			// Comprobamos que el usuario se haya actualizado correctamente
 			// (la contraseña devuelta debe ser la nueva, "zzz123", encriptada)
-			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, admin1.getDni());
+			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, admin1.getNif());
 			admin1.setPassword(Encriptacion.encriptarPasswordSHA1("zzz123"));
 			assertEquals(admin1, usuarioGet);
 		} catch(Exception e) {
@@ -395,7 +395,7 @@ public class PruebasUsuarios extends PruebasBase {
 
 		try {
 			// Comprobamos que el usuario borrado ya no exista en el sistema
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, citador1.getDni());
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, citador1.getNif());
 			fail("Se esperaba una excepción UsuarioInexistenteException");
 		} catch(UsuarioInexistenteException e) {
 		} catch(Exception e) {
@@ -404,7 +404,7 @@ public class PruebasUsuarios extends PruebasBase {
 		
 		try {
 			// Comprobamos que el médico borrado ya no exista en el sistema
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico2.getDni());
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico2.getNif());
 			fail("Se esperaba una excepción UsuarioInexistenteException");
 		} catch(UsuarioInexistenteException e) {
 		} catch(Exception e) {

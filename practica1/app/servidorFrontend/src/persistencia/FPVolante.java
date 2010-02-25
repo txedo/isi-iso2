@@ -24,8 +24,8 @@ public class FPVolante {
 	
 	private static final String COL_ID_VOLANTE = "id";
 	private static final String COL_NIF_BENEFICIARIO = "nifBeneficiario";
-	private static final String COL_DNI_MEDICO_EMISOR = "dniMedicoEmisor";
-	private static final String COL_DNI_MEDICO_RECEPTOR = "dniMedicoReceptor";
+	private static final String COL_NIF_MEDICO_EMISOR = "nifMedicoEmisor";
+	private static final String COL_NIF_MEDICO_RECEPTOR = "nifMedicoReceptor";
 	private static final String COL_ID_CITA = "idCita";
 	private static final String COL_FECHA_CADUCIDAD = "fechaCaducidad";
 	
@@ -52,8 +52,8 @@ public class FPVolante {
 			// Establecemos los datos del volante
 			volante = new Volante();
 			bene = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
-			medEmisor = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO_EMISOR));
-			medReceptor = (Medico)FPUsuario.consultar(datos.getString(COL_DNI_MEDICO_RECEPTOR));
+			medEmisor = (Medico)FPUsuario.consultar(datos.getString(COL_NIF_MEDICO_EMISOR));
+			medReceptor = (Medico)FPUsuario.consultar(datos.getString(COL_NIF_MEDICO_RECEPTOR));
 			if(datos.getString(COL_ID_CITA) == null) {
 				cita = null;
 			} else {
@@ -76,11 +76,11 @@ public class FPVolante {
 
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_VOLANTES
-				+ " (" + COL_NIF_BENEFICIARIO + ", " + COL_DNI_MEDICO_EMISOR
-				+ ", " + COL_DNI_MEDICO_RECEPTOR + ", " + COL_FECHA_CADUCIDAD
+				+ " (" + COL_NIF_BENEFICIARIO + ", " + COL_NIF_MEDICO_EMISOR
+				+ ", " + COL_NIF_MEDICO_RECEPTOR + ", " + COL_FECHA_CADUCIDAD
 				+ ", " + COL_ID_CITA + ") VALUES (?, ?, ?, ?, ?)",
-				volante.getBeneficiario().getNif(), volante.getEmisor().getDni(),
-				volante.getReceptor().getDni(), volante.getFechaCaducidad(),
+				volante.getBeneficiario().getNif(), volante.getEmisor().getNif(),
+				volante.getReceptor().getNif(), volante.getFechaCaducidad(),
 				(volante.getCita() == null ? null : volante.getCita().getId()));
 		GestorConexionesBD.ejecutar(comando);
 		
@@ -97,11 +97,11 @@ public class FPVolante {
 
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_VOLANTES + " SET "
-				+ COL_NIF_BENEFICIARIO + " = ?, " + COL_DNI_MEDICO_EMISOR + " = ?, "
-				+ COL_DNI_MEDICO_RECEPTOR + " = ?, " + COL_FECHA_CADUCIDAD + " = ?, "
+				+ COL_NIF_BENEFICIARIO + " = ?, " + COL_NIF_MEDICO_EMISOR + " = ?, "
+				+ COL_NIF_MEDICO_RECEPTOR + " = ?, " + COL_FECHA_CADUCIDAD + " = ?, "
 				+ COL_ID_CITA + "= ? WHERE " + COL_ID_VOLANTE + " = ?",
-				volante.getBeneficiario().getNif(), volante.getEmisor().getDni(),
-				volante.getReceptor().getDni(), volante.getFechaCaducidad(),
+				volante.getBeneficiario().getNif(), volante.getEmisor().getNif(),
+				volante.getReceptor().getNif(), volante.getFechaCaducidad(),
 				(volante.getCita() == null ? null : volante.getCita().getId()),
 				volante.getId());
 		GestorConexionesBD.ejecutar(comando);

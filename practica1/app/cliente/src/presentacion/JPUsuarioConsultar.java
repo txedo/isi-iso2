@@ -15,18 +15,15 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
-
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.UsuarioBuscadoListener;
 import presentacion.auxiliar.Validacion;
 import presentacion.auxiliar.VentanaCerradaListener;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Administrador;
@@ -74,6 +71,7 @@ public class JPUsuarioConsultar extends JPBase {
 	private Vector<PeriodoTrabajo> periodos;
 	private Usuario usuario;
 	private boolean passwordCambiada;
+	private boolean soloMedicos;
 	
 	private JLabel lblNIFBuscado;
 	private JLabel lblTelefonoMovil;
@@ -119,11 +117,12 @@ public class JPUsuarioConsultar extends JPBase {
 		// los formularios o paneles que utilizan JPUsuarioConsultar
 	}
 	
-	public JPUsuarioConsultar(JFrame frame, ControladorCliente controlador) {
+	public JPUsuarioConsultar(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 		listenerList = new EventListenerList();
 		usuario = null;
+		soloMedicos = false;
 		cambiarEdicion(false);
 	}
 	
@@ -419,7 +418,11 @@ public class JPUsuarioConsultar extends JPBase {
 			
 			// Buscamos el usuario solicitado
 			Validacion.comprobarNIF(txtNIFBuscado.getText().trim().toUpperCase());
-			usuario = getControlador().consultarUsuario(txtNIFBuscado.getText().trim().toUpperCase());
+			if(soloMedicos) {
+				usuario = getControlador().consultarMedico(txtNIFBuscado.getText().trim().toUpperCase());
+			} else {
+				usuario = getControlador().consultarUsuario(txtNIFBuscado.getText().trim().toUpperCase());
+			}
 
 			// Mostramos los datos del usuario encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Usuario encontrado.");
@@ -432,7 +435,7 @@ public class JPUsuarioConsultar extends JPBase {
 			txtNIFBuscado.grabFocus();			
 
 		} catch(CadenaVaciaException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un DNI.");
+			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NIF.");
 			txtNIFBuscado.grabFocus();	
 		} catch(NIFIncorrectoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
@@ -462,7 +465,7 @@ public class JPUsuarioConsultar extends JPBase {
 		this.usuario = usuario;
 		
 		txtNIFBuscado.setText("");
-		txtNIF.setText(usuario.getDni());
+		txtNIF.setText(usuario.getNif());
 		txtLogin.setText(usuario.getLogin());
 		txtPassword.setText("*****");
 		txtPasswordConf.setText("");
@@ -548,7 +551,7 @@ public class JPUsuarioConsultar extends JPBase {
 					usuarioModif = new Citador();
 				}
 			}
-			usuarioModif.setDni(txtNIF.getText().trim().toUpperCase());
+			usuarioModif.setNif(txtNIF.getText().trim().toUpperCase());
 			usuarioModif.setLogin(txtLogin.getText().trim());
 			if(passwordCambiada && txtPassword.getPassword().length > 0) { 
 				usuarioModif.setPassword(new String(txtPassword.getPassword()));
@@ -570,7 +573,7 @@ public class JPUsuarioConsultar extends JPBase {
 			if(usuarioModif.getRol().equals(RolesUsuario.Medico)) {
 				((Medico)usuarioModif).setCalendario(periodos);
 				((Medico)usuarioModif).setTipoMedico(((Medico)usuario).getTipoMedico());
-				citas = getControlador().consultarCitasMedico(usuario.getDni());
+				citas = getControlador().consultarCitasMedico(usuario.getNif());
 				if (citas.size()>0) {
 					// Si se ha limpiado todo el calendario, todas las citas están afectadas
 					if (((Medico)usuarioModif).getCalendario().size()==0) {
@@ -673,8 +676,8 @@ public class JPUsuarioConsultar extends JPBase {
 					
 					// Si el usuario a borrar es un médico, vemos si tiene
 					// beneficiarios asignados o citas pendientes
-					beneficiarios = getControlador().obtenerBeneficiariosMedico(usuario.getDni());
-					citas = getControlador().consultarCitasMedico(usuario.getDni());
+					beneficiarios = getControlador().obtenerBeneficiariosMedico(usuario.getNif());
+					citas = getControlador().consultarCitasMedico(usuario.getNif());
 					mensaje = "";
 					if(beneficiarios.size() > 0 && citas.size() > 0) {
 						mensaje = "El médico que va a borrar tiene beneficiarios asignados y citas pendientes.\n";
@@ -885,6 +888,15 @@ public class JPUsuarioConsultar extends JPBase {
 	public Usuario getUsuario() {
 		return usuario;
 	}
+	
+	public void setSoloMedicos(boolean soloMedicos) {
+		this.soloMedicos = soloMedicos;
+		if(soloMedicos) {
+			lblBuscar.setText("Buscar médico:");
+		} else {
+			lblBuscar.setText("Buscar usuario:");
+		}
+	}
 
 	public void addUsuarioBuscadoListener(UsuarioBuscadoListener listener) {
 		listenerList.add(UsuarioBuscadoListener.class, listener);
@@ -935,7 +947,7 @@ public class JPUsuarioConsultar extends JPBase {
 	// <métodos del observador>
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(this.usuario != null && this.usuario.getDni().equals(usuario.getDni())) {
+		if(this.usuario != null && this.usuario.getNif().equals(usuario.getNif())) {
 			// Otro cliente ha actualizado el beneficiario mostrado
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El usuario mostrado ha sido modificado por otro cliente.");
 			mostrarDatosUsuario(usuario);
@@ -943,7 +955,7 @@ public class JPUsuarioConsultar extends JPBase {
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(this.usuario != null && this.usuario.getDni().equals(usuario.getDni())) {
+		if(this.usuario != null && this.usuario.getNif().equals(usuario.getNif())) {
 			// Otro cliente ha eliminado el beneficiario mostrado
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El usuario mostrado ha sido eliminado por otro cliente.");
 			restablecerPanel();

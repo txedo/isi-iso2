@@ -155,6 +155,9 @@ public class JPOperaciones extends JPanel {
 		case ConsultarCitasMedico:
 			nombre = "Consultar citas<br>de médicos";
 			break;
+		case ConsultarCitasPropias:
+			nombre = "Consultar citas";
+			break;
 		case EmitirVolante:
 			nombre = "Emitir volante";
 			break;

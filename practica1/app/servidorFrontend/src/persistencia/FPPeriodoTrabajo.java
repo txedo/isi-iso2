@@ -16,12 +16,12 @@ public class FPPeriodoTrabajo {
 	private static final String TABLA_PERIODOS = "periodosTrabajo";
 	
 	private static final String COL_ID = "id";
-	private static final String COL_DNI_MEDICO = "dniMedico";
+	private static final String COL_NIF_MEDICO = "nifMedico";
 	private static final String COL_HORA_INICIO = "horaInicio";
 	private static final String COL_HORA_FINAL = "horaFinal";
 	private static final String COL_DIA = "dia";
 	
-	public static Vector<PeriodoTrabajo> consultarHorario(String dniMedico) throws SQLException {
+	public static Vector<PeriodoTrabajo> consultarHorario(String nifMedico) throws SQLException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<PeriodoTrabajo> lista;
@@ -29,7 +29,7 @@ public class FPPeriodoTrabajo {
 		
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_PERIODOS
-				+ " WHERE " + COL_DNI_MEDICO + " = ?", dniMedico);
+				+ " WHERE " + COL_NIF_MEDICO + " = ?", nifMedico);
 		datos = GestorConexionesBD.consultar(comando);
 		
 		// Devolvemos la lista de períodos de trabajo del médico
@@ -47,15 +47,15 @@ public class FPPeriodoTrabajo {
 		return lista;
 	}
 	
-	public static void insertar(String dniMedico, PeriodoTrabajo periodo) throws SQLException {
+	public static void insertar(String nifMedico, PeriodoTrabajo periodo) throws SQLException {
 		ComandoSQL comando;
 		ResultSet datos;
 
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_PERIODOS
-				+ " (" + COL_DNI_MEDICO + ", " + COL_HORA_INICIO + ", "
+				+ " (" + COL_NIF_MEDICO + ", " + COL_HORA_INICIO + ", "
 				+ COL_HORA_FINAL + ", " + COL_DIA + ") VALUES (?, ?, ?, ?)",
-				dniMedico, periodo.getHoraInicio(), periodo.getHoraFinal(),
+				nifMedico, periodo.getHoraInicio(), periodo.getHoraFinal(),
 				periodo.getDia().ordinal());
 		GestorConexionesBD.ejecutar(comando);
 		

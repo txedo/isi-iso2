@@ -30,7 +30,7 @@ public class UtilidadesTablas {
 		encabezado.add("Día");
 		encabezado.add("Hora");
 		encabezado.add("Médico");
-		encabezado.add("DNI Médico");
+		encabezado.add("NIF Médico");
 		encabezado.add("Tipo Médico");
 		modeloTabla = new TableModelNoEditable(encabezado, nfilas);
 		tabla.setModel(modeloTabla);
@@ -58,10 +58,10 @@ public class UtilidadesTablas {
 			tabla.setValueAt(formatoHora.format(fecha), fila, col++);
 			if(!citas.get(fila).getMedico().equals(medicosReales.get(fila))) {
 				tabla.setValueAt(medicosReales.get(fila).getApellidos() + ", " + medicosReales.get(fila).getNombre() + " (sustituye a " + citas.get(fila).getMedico().getApellidos() + ", " + citas.get(fila).getMedico().getNombre() + ")", fila, col++);
-				tabla.setValueAt(medicosReales.get(fila).getDni(), fila, col++);
+				tabla.setValueAt(medicosReales.get(fila).getNif(), fila, col++);
 			} else {
 				tabla.setValueAt(citas.get(fila).getMedico().getApellidos() + ", " + citas.get(fila).getMedico().getNombre(), fila, col++);
-				tabla.setValueAt(citas.get(fila).getMedico().getDni(), fila, col++);
+				tabla.setValueAt(citas.get(fila).getMedico().getNif(), fila, col++);
 			}
 			if(tipo.getCategoria() == CategoriasMedico.Especialista) {
 				tabla.setValueAt(tipo.getCategoria().name() + " (" + ((Especialista)tipo).getEspecialidad() + ")", fila, col++);
@@ -145,7 +145,7 @@ public class UtilidadesTablas {
 		encabezado.add("Beneficiario");
 		encabezado.add("NIF");
 		encabezado.add("Nuevo médico");
-		encabezado.add("DNI Médico");
+		encabezado.add("NIF Médico");
 		modeloTabla = new TableModelNoEditable(encabezado, nfilas);
 		tabla.setModel(modeloTabla);
 		tabla.getTableHeader().getColumnModel().getColumn(0).setMinWidth(200);
@@ -163,7 +163,7 @@ public class UtilidadesTablas {
 			tabla.setValueAt(beneficiario.getApellidos() + ", " + beneficiario.getNombre(), fila, col++);			
 			tabla.setValueAt(beneficiario.getNif(), fila, col++);
 			tabla.setValueAt((beneficiario.getMedicoAsignado() == null) ? "(ninguno)" : (beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre()), fila, col++);
-			tabla.setValueAt((beneficiario.getMedicoAsignado() == null) ? "" : beneficiario.getMedicoAsignado().getDni(), fila, col++);
+			tabla.setValueAt((beneficiario.getMedicoAsignado() == null) ? "" : beneficiario.getMedicoAsignado().getNif(), fila, col++);
 			fila++;
 		}		
 	}

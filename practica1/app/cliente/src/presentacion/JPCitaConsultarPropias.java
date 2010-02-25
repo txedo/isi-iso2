@@ -4,25 +4,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.TableCellRendererCitas;
-import presentacion.auxiliar.UsuarioBuscadoListener;
 import presentacion.auxiliar.UtilidadesTablas;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Medico;
-import dominio.conocimiento.RolesUsuario;
-import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 
 /**
@@ -38,31 +33,28 @@ import dominio.control.ControladorCliente;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
- * Panel que permite consultar citas existentes de médicos.
+ * Panel que permite consultar las citas existentes del médico que ha iniciado sesión.
  */
-public class JPCitaConsultarMedico extends JPBase {
+public class JPCitaConsultarPropias extends JPBase {
 
 	private static final long serialVersionUID = 117161427277876393L;
 
-	private Medico medico;
 	private Vector<Cita> citas;
-	private JButton btnHistoricoCitas;
 	private JScrollPane scpTablaCitas;
-	private JButton btnRestablecer;
-	private JSeparator sepSeparador;
-	private JPUsuarioConsultar pnlUsuario;
+	private JButton btnCitasHistoricas;
+	private JButton btnCitasPendientes;
 	private JLabel lblCitas;
 	private JTable tblTablaCitas;
 	
 	private boolean viendoHistorico;
 
-	public JPCitaConsultarMedico() {
+	public JPCitaConsultarPropias() {
 		this(null, null);
 		// Este constructor evita que aparezca un error al editar
 		// los formularios o paneles que utilizan JPCitaConsultar
 	}
 	
-	public JPCitaConsultarMedico(JFPrincipal frame, ControladorCliente controlador) {
+	public JPCitaConsultarPropias(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 		UtilidadesTablas.crearTablaCitasMedico(tblTablaCitas, 0);
@@ -74,57 +66,28 @@ public class JPCitaConsultarMedico extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(430, 471));
+			this.setPreferredSize(new java.awt.Dimension(430, 280));
 			{
-				btnHistoricoCitas = new JButton();
-				this.add(btnHistoricoCitas, new AnchorConstraint(916, 11, 11, 645, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
-				btnHistoricoCitas.setText("Ver histórico de citas");
-				btnHistoricoCitas.setPreferredSize(new java.awt.Dimension(142, 26));
-				btnHistoricoCitas.setEnabled(false);
-				btnHistoricoCitas.addActionListener(new ActionListener() {
+				btnCitasPendientes = new JButton();
+				this.add(btnCitasPendientes, new AnchorConstraint(888, 164, 12, 289, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+				btnCitasPendientes.setText("Ver citas pendientes");
+				btnCitasPendientes.setPreferredSize(new java.awt.Dimension(142, 26));
+				btnCitasPendientes.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
-						btnHistoricoCitasActionPerformed(evt);
-					}
-				});
-			}
-			{
-				sepSeparador = new JSeparator();
-				this.add(sepSeparador, new AnchorConstraint(189, 6, 548, 5, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				sepSeparador.setPreferredSize(new java.awt.Dimension(419, 10));
-			}
-			{
-				pnlUsuario = new JPUsuarioConsultar(this.getFrame(), this.getControlador());
-				this.add(pnlUsuario, new AnchorConstraint(0, 0, 511, 0, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				pnlUsuario.setPreferredSize(new java.awt.Dimension(430, 183));
-				pnlUsuario.reducirPanel();
-				pnlUsuario.setSoloMedicos(true);
-				pnlUsuario.addUsuarioBuscadoListener(new UsuarioBuscadoListener() {
-					public void usuarioBuscado(EventObject evt) {
-						pnlUsuarioUsuarioBuscado(evt);
-					}
-				});
-			}
-			{
-				btnRestablecer = new JButton();
-				this.add(btnRestablecer, new AnchorConstraint(916, 163, 11, 673, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
-				btnRestablecer.setText("Restablecer");
-				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 26));
-				btnRestablecer.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						btnRestablecerActionPerformed(evt);
+						btnCitasPendientesActionPerformed(evt);
 					}
 				});
 			}
 			{
 				lblCitas = new JLabel();
-				this.add(lblCitas, new AnchorConstraint(200, 273, 506, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
+				this.add(lblCitas, new AnchorConstraint(12, 273, 506, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCitas.setText("Citas pendientes encontradas:");
 				lblCitas.setPreferredSize(new java.awt.Dimension(228, 16));
 			}
 			{
 				scpTablaCitas = new JScrollPane();
-				this.add(scpTablaCitas, new AnchorConstraint(222, 12, 49, 9, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-				scpTablaCitas.setPreferredSize(new java.awt.Dimension(409, 200));
+				this.add(scpTablaCitas, new AnchorConstraint(34, 12, 50, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				scpTablaCitas.setPreferredSize(new java.awt.Dimension(408, 251));
 				{
 					tblTablaCitas = new JTable();
 					scpTablaCitas.setViewportView(tblTablaCitas);				
@@ -133,48 +96,44 @@ public class JPCitaConsultarMedico extends JPBase {
 					tblTablaCitas.setDefaultRenderer(Object.class, new TableCellRendererCitas());
 				}
 			}
+			{
+				btnCitasHistoricas = new JButton();
+				this.add(btnCitasHistoricas, new AnchorConstraint(888, 11, 12, 643, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
+				btnCitasHistoricas.setText("Ver histórico de citas");
+				btnCitasHistoricas.setPreferredSize(new java.awt.Dimension(142, 26));
+				btnCitasHistoricas.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						btnCitasHistoricasActionPerformed(evt);
+					}
+				});
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	//$hide>>$
 
-	private void pnlUsuarioUsuarioBuscado(EventObject evt) {
-		// Borramos los datos de la última consulta de citas
-		limpiarCamposConsulta();
-
-		// Obtenemos el medico que se ha buscado en el panel de consulta
-		// (puede ser null si ocurrió un error al buscar el usuario)
-		medico = (Medico)pnlUsuario.getUsuario();
-		
-		if(medico != null) {
-			// Mostramos, por defecto, las citas pendientes del médico
-			mostrarCitasPendientes();
-		}
-	}
-	
-	private void btnHistoricoCitasActionPerformed(ActionEvent evt) {
+	private void btnCitasHistoricasActionPerformed(ActionEvent evt) {
 		mostrarHistoricoCitas();
 	}
 	
-	private void btnRestablecerActionPerformed(ActionEvent evt) {
-		restablecerPanel();
+	private void btnCitasPendientesActionPerformed(ActionEvent evt) {
+		mostrarCitasPendientes();
 	}
-	
+
 	private void mostrarCitasPendientes() {
 		try {
 			
-			// Obtenemos y mostramos las citas del medico
+			// Obtenemos y mostramos las citas del médico
 			// (por defecto, sólo las pendientes)
-			citas = getControlador().consultarCitasPendientesMedico(medico.getNif());
+			citas = getControlador().consultarCitasPendientesPropiasMedico();
 			UtilidadesTablas.crearTablaCitasMedico(tblTablaCitas, citas.size());
 			UtilidadesTablas.rellenarTablaCitasMedico(tblTablaCitas, citas);
 			
 			// Indicamos que estamos mostrando sólo las citas pendientes
 			lblCitas.setText("Citas pendientes encontradas:");
 			viendoHistorico = false;
-			btnHistoricoCitas.setEnabled(true);
 			
 			// Seleccionamos la primera cita de la lista (si la hay)
 			if(citas.size() > 0) {
@@ -182,11 +141,11 @@ public class JPCitaConsultarMedico extends JPBase {
 			}
 
 		} catch(SQLException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(RemoteException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(Exception e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
 	
 	}
@@ -195,17 +154,16 @@ public class JPCitaConsultarMedico extends JPBase {
 		Vector<Cita> pendientes;
 		try {
 			
-			// Obtenemos y mostramos todas las citas del medico,
+			// Obtenemos y mostramos todas las citas del médico,
 			// marcando en azul las que son pasadas
-			citas = getControlador().consultarCitasMedico(medico.getNif());
-			pendientes = getControlador().consultarCitasPendientesMedico(medico.getNif());
+			citas = getControlador().consultarCitasPropiasMedico();
+			pendientes = getControlador().consultarCitasPendientesPropiasMedico();
 			UtilidadesTablas.crearTablaCitasMedico(tblTablaCitas, citas.size());
 			UtilidadesTablas.rellenarTablaCitasMedico(tblTablaCitas, citas, pendientes);
 			
 			// Indicamos que estamos mostrando todas las citas
 			lblCitas.setText("Citas encontradas:");
 			viendoHistorico = true;
-			btnHistoricoCitas.setEnabled(false);
 
 			// Seleccionamos la primera cita de la lista (si la hay)
 			if(citas.size() > 0) {
@@ -223,7 +181,6 @@ public class JPCitaConsultarMedico extends JPBase {
 	
 	private void limpiarCamposConsulta() {
 		UtilidadesTablas.limpiarTabla(tblTablaCitas);
-		btnHistoricoCitas.setEnabled(false);
 		lblCitas.setText("Citas pendientes encontradas:");
 		viendoHistorico = false;
 		citas.clear();
@@ -231,11 +188,16 @@ public class JPCitaConsultarMedico extends JPBase {
 	
 	// Métodos públicos
 	
-	// <métodos del observador>
-	
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		boolean actualizado = false;
+		Medico medico;
 		Cita c;
+
+		medico = null;
+		if(citas.size() > 0) {
+			medico = citas.get(0).getMedico();
+		}
+		
 		// Si alguno de los beneficiarios que se muestran en la tabla de citas ha cambiado, se refresca la tabla
 		if (medico != null && citas.size()>0) {
 			for (int i=0; !actualizado && i<citas.size(); i++) {
@@ -254,7 +216,14 @@ public class JPCitaConsultarMedico extends JPBase {
 	
 	public void beneficiarioEliminado(Beneficiario beneficiario) {
 		boolean actualizado = false;
+		Medico medico;
 		Cita c;
+		
+		medico = null;
+		if(citas.size() > 0) {
+			medico = citas.get(0).getMedico();
+		}
+
 		// Si alguno de los beneficiarios que se muestran en la tabla de citas se ha eliminado, se refresca la tabla
 		if (medico != null && citas.size()>0) {
 			for (int i=0; !actualizado && i<citas.size(); i++) {
@@ -271,24 +240,14 @@ public class JPCitaConsultarMedico extends JPBase {
 		}
 	}
 	
-	public void usuarioActualizado(Usuario usuario) {
-		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
-		 && medico.getNif().equals(((Medico)usuario).getNif())) {
-			// Otro cliente ha actualizado el médico del que se están consultando las citas
-			pnlUsuario.usuarioActualizado(usuario);
-		}
-	}
-	
-	public void usuarioEliminado(Usuario usuario) {
-		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
-		 && medico.getNif().equals(((Medico)usuario).getNif())) {
-			// Otro cliente ha eliminado el médico del que se están consultando las citas
-			pnlUsuario.usuarioEliminado(usuario);
-			limpiarCamposConsulta();
-		}
-	}
-	
 	public void citaRegistrada(Cita cita) {
+		Medico medico;
+		
+		medico = null;
+		if(citas.size() > 0) {
+			medico = citas.get(0).getMedico();
+		}
+
 		if(medico != null && medico.equals(cita.getMedico())) {
 			// Otro cliente ha registrado una cita para este médico.
 			// Se vuelven a recuperar las citas para mostrar la nueva
@@ -301,6 +260,13 @@ public class JPCitaConsultarMedico extends JPBase {
 	}
 	
 	public void citaAnulada(Cita cita) {
+		Medico medico;
+		
+		medico = null;
+		if(citas.size() > 0) {
+			medico = citas.get(0).getMedico();
+		}
+
 		if(medico != null && medico.equals(cita.getMedico())) {
 			// Otro cliente ha anulado una cita para este médico.
 			// Se vuelven a recuperar las citas para mostrar las citas restantes
@@ -313,11 +279,9 @@ public class JPCitaConsultarMedico extends JPBase {
 	}
 	
 	public void restablecerPanel() {
-		pnlUsuario.restablecerPanel();
 		limpiarCamposConsulta();
-		medico = null;
 	}
-
+	
 	//$hide<<$
 
 }

@@ -41,11 +41,11 @@ import persistencia.FPVolante;
 public class GestorCitas {
 
 	// Método para obtener todas las citas de un beneficiario
-	public static Vector<Cita> consultarCitas(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
+	public static Vector<Cita> consultarCitas(long idSesion, String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
 		Vector<Cita> citas;
 		
 		// Comprobamos los parámetros pasados
-		if(dni == null) {
+		if(nif == null) {
 			throw new NullPointerException("El NIF del beneficiario para el que se quieren buscar las citas no puede ser nulo.");
 		}
 		
@@ -53,21 +53,21 @@ public class GestorCitas {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasBeneficiario);
 
 		// Comprobamos que exista el beneficiario
-		FPBeneficiario.consultarPorNIF(dni);
+		FPBeneficiario.consultarPorNIF(nif);
 		
 		// Recuperamos las citas del beneficiario
-		citas = FPCita.consultarPorBeneficiario(dni);
+		citas = FPCita.consultarPorBeneficiario(nif);
 		
 		return citas;
 	}
 	
 	// Método para obtener todas las citas pendientes de un beneficiario
-	public static Vector<Cita> consultarCitasPendientesBeneficiario(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
+	public static Vector<Cita> consultarCitasPendientesBeneficiario(long idSesion, String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
 		Vector<Cita> citas, pendientes;
 		Date fechaActual;
 		
 		// Comprobamos los parámetros pasados
-		if(dni == null) {
+		if(nif == null) {
 			throw new NullPointerException("El NIF del beneficiario para el que se quieren buscar las citas no puede ser nulo.");
 		}
 		
@@ -75,10 +75,10 @@ public class GestorCitas {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasBeneficiario);
 
 		// Comprobamos que exista el beneficiario
-		FPBeneficiario.consultarPorNIF(dni);
+		FPBeneficiario.consultarPorNIF(nif);
 		
 		// Recuperamos las citas del beneficiario
-		citas = FPCita.consultarPorBeneficiario(dni);
+		citas = FPCita.consultarPorBeneficiario(nif);
 		
 		// Nos quedamos con las citas posteriores a la fecha y hora actuales
 		fechaActual = new Date();
@@ -94,14 +94,13 @@ public class GestorCitas {
 	
 	// Método para obtener todas las citas de un médico
 	@SuppressWarnings("deprecation")
-	public static Vector<Cita> consultarCitasMedico(long idSesion, String dniMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException {
-		Vector<Sustitucion> sustituciones;
-		Vector<Cita> citas, citas2, citasSust;
+	public static Vector<Cita> consultarCitasMedico(long idSesion, String nifMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException, NullPointerException {
+		Vector<Cita> citas;
 		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
-		if(dniMedico == null) {
-			throw new NullPointerException("El DNI del médico para el que se quieren buscar las citas puede ser nulo.");
+		if(nifMedico == null) {
+			throw new NullPointerException("El NIF del médico para el que se quieren buscar las citas puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -109,60 +108,28 @@ public class GestorCitas {
 		
 		// Comprobamos que exista el médico
 		try {
-			usuario = FPUsuario.consultar(dniMedico);
+			usuario = FPUsuario.consultar(nifMedico);
 			if(usuario.getRol() != RolesUsuario.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
 		
 		// Obtenemos las citas que ya tiene asignadas el médico
-		citas = FPCita.consultarPorMedico(dniMedico);
-		
-		// Quitamos las citas que no va a dar el médico por estar sustituido
-		citasSust = new Vector<Cita>();
-		sustituciones = FPSustitucion.consultarPorSustituido(dniMedico);
-		for(Sustitucion sustitucion : sustituciones) {
-			for(Cita cita : citas) {
-				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
-				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
-					citasSust.add(cita);
-				}
-			}
-		}
-		for(Cita cita : citasSust) {
-			citas.remove(cita);
-		}
-		
-		// Añadimos las citas que va a dar el médico por estar sustituyendo a otro
-		citasSust = new Vector<Cita>();
-		sustituciones = FPSustitucion.consultarPorSustituto(dniMedico);
-		for(Sustitucion sustitucion : sustituciones) {
-			citas2 = FPCita.consultarPorMedico(sustitucion.getMedico().getDni());
-			for(Cita cita : citas2) {
-				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
-				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
-					citasSust.add(cita);
-				}
-			}
-		}
-		for(Cita cita : citasSust) {
-			citas.add(cita);
-		}
+		citas = consultarCitasMedico(nifMedico);
 		
 		return citas;
 	}
 	
 	// Método para obtener todas las citas pendientes de un médico
-	public static Vector<Cita> consultarCitasPendientesMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException, MedicoInexistenteException {
-		Vector<Sustitucion> sustituciones;
-		Vector<Cita> citas, citas2, citasSust, pendientes;
+	public static Vector<Cita> consultarCitasPendientesMedico(long idSesion, String nifMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException, MedicoInexistenteException, NullPointerException {
+		Vector<Cita> citas, pendientes;
 		Date fechaActual;
 		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
-		if(dniMedico == null) {
+		if(nifMedico == null) {
 			throw new NullPointerException("El NIF del médico para el que se quieren buscar las citas no puede ser nulo.");
 		}
 		
@@ -171,49 +138,69 @@ public class GestorCitas {
 
 		// Comprobamos que exista el médico
 		try {
-			usuario = FPUsuario.consultar(dniMedico);
+			usuario = FPUsuario.consultar(nifMedico);
 			if(usuario.getRol() != RolesUsuario.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
 		
 		// Recuperamos las citas del médico
-		citas = FPCita.consultarPorMedico(dniMedico);
+		citas = consultarCitasMedico(nifMedico);
 		
-		// Quitamos las citas que no va a dar el médico por estar sustituido
-		citasSust = new Vector<Cita>();
-		sustituciones = FPSustitucion.consultarPorSustituido(dniMedico);
-		for(Sustitucion sustitucion : sustituciones) {
-			for(Cita cita : citas) {
-				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
-				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
-					citasSust.add(cita);
-				}
+		// Nos quedamos sólo con las citas posteriores a la fecha y hora actuales
+		fechaActual = new Date();
+		pendientes = new Vector<Cita>();
+		for(Cita cita : citas) {
+			if(cita.getFechaYHora().after(fechaActual)) {
+				pendientes.add(cita);
 			}
 		}
-		for(Cita cita : citasSust) {
-			citas.remove(cita);
-		}
 		
-		// Añadimos las citas que va a dar el médico por estar sustituyendo a otro
-		citasSust = new Vector<Cita>();
-		sustituciones = FPSustitucion.consultarPorSustituto(dniMedico);
-		for(Sustitucion sustitucion : sustituciones) {
-			citas2 = FPCita.consultarPorMedico(sustitucion.getMedico().getDni());
-			for(Cita cita : citas2) {
-				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
-				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
-					citasSust.add(cita);
-				}
-			}
-		}
-		for(Cita cita : citasSust) {
-			citas.add(cita);
-		}
+		return pendientes;
+	}
+	
+	// Método para obtener todas las citas del médico que realiza la operación
+	@SuppressWarnings("deprecation")
+	public static Vector<Cita> consultarCitasPropiasMedico(long idSesion) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException {
+		Vector<Cita> citas;
+		Usuario usuario;
 		
-		// Nos quedamos con las citas posteriores a la fecha y hora actuales
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasPropiasMedico);
+
+		// Obtenemos el usuario que ha ejecutado la operación a partir de su sesión
+		usuario = GestorSesiones.getSesion(idSesion).getUsuario();
+		if(usuario.getRol() != RolesUsuario.Medico) {
+			throw new MedicoInexistenteException("Sólo los usuarios con rol de médico pueden consultar sus propias citas.");
+		}
+
+		// Obtenemos las citas que tiene asignadas el médico
+		citas = consultarCitasMedico(usuario.getNif());
+		
+		return citas;
+	}
+	
+	// Método para obtener todas las citas pendientes de un médico
+	public static Vector<Cita> consultarCitasPendientesPropiasMedico(long idSesion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException, MedicoInexistenteException {
+		Vector<Cita> citas, pendientes;
+		Date fechaActual;
+		Usuario usuario;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasPropiasMedico);
+
+		// Obtenemos el usuario que ha ejecutado la operación a partir de su sesión
+		usuario = GestorSesiones.getSesion(idSesion).getUsuario();
+		if(usuario.getRol() != RolesUsuario.Medico) {
+			throw new MedicoInexistenteException("Sólo los usuarios con rol de médico pueden consultar sus propias citas pendientes.");
+		}
+
+		// Obtenemos las citas que tiene asignadas el médico
+		citas = consultarCitasMedico(usuario.getNif());
+		
+		// Nos quedamos sólo con las citas posteriores a la fecha y hora actuales
 		fechaActual = new Date();
 		pendientes = new Vector<Cita>();
 		for(Cita cita : citas) {
@@ -227,13 +214,13 @@ public class GestorCitas {
 	
 	// Método para obtener las citas de un médico en una fecha y rango de horas
 	@SuppressWarnings("deprecation")
-	public static Vector<Cita> consultarCitasFechaMedico(long idSesion, String dniMedico, Date dia, int horaDesde, int horaHasta) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException {
+	public static Vector<Cita> consultarCitasFechaMedico(long idSesion, String nifMedico, Date dia, int horaDesde, int horaHasta) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, SesionInvalidaException, OperacionIncorrectaException, MedicoInexistenteException {
 		Vector<Cita> citas, citasFecha;
 		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
-		if(dniMedico == null) {
-			throw new NullPointerException("El DNI del médico para el que se quieren buscar las citas puede ser nulo.");
+		if(nifMedico == null) {
+			throw new NullPointerException("El NIF del médico para el que se quieren buscar las citas puede ser nulo.");
 		}
 		if(dia == null) {
 			throw new NullPointerException("El día para el que se quieren buscar las fechas del médico no puede ser nulo.");			
@@ -244,16 +231,16 @@ public class GestorCitas {
 		
 		// Comprobamos que exista el médico
 		try {
-			usuario = FPUsuario.consultar(dniMedico);
+			usuario = FPUsuario.consultar(nifMedico);
 			if(usuario.getRol() != RolesUsuario.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
 		
-		// Obtenemos las citas que ya tiene asignadas el médico
-		citas = FPCita.consultarPorMedico(dniMedico);
+		// Recuperamos las citas del médico
+		citas = FPCita.consultarPorMedico(nifMedico);
 		
 		// Nos quedamos con las citas del día indicado y cuya
 		// hora está dentro del rango de horas especificado
@@ -300,7 +287,7 @@ public class GestorCitas {
 		try {
 			usuario = FPUsuario.consultar(idMedico);
 			if(usuario.getRol() != RolesUsuario.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
@@ -309,7 +296,7 @@ public class GestorCitas {
 		// Comprobamos que el médico para el que se va a pedir cita
 		// sea el médico que el beneficiario tiene asignado
 		medico = (Medico)usuario;
-		if(!medico.getDni().equals(beneficiario.getMedicoAsignado().getDni())) {
+		if(!medico.getNif().equals(beneficiario.getMedicoAsignado().getNif())) {
 			throw new CitaNoValidaException("El médico con el que se desea pedir cita no se corresponde con el médico asignado al beneficiario con NIF " + beneficiario.getNif() + ".");
 		}
 
@@ -330,7 +317,7 @@ public class GestorCitas {
 		// Comprobamos que, según el horario del médico, se pase
 		// consulta a la fecha y hora introducidas
 		if(!medico.fechaEnCalendario(fechaYHora, duracion)) {
-			throw new FechaNoValidaException("La cita solicitada queda fuera del horario de trabajo del médico con DNI " + idMedico + ".");
+			throw new FechaNoValidaException("La cita solicitada queda fuera del horario de trabajo del médico con NIF " + idMedico + ".");
 		}
 		
 		// Recuperamos las citas del médico para comprobar que no
@@ -338,7 +325,7 @@ public class GestorCitas {
 		citas = FPCita.consultarPorMedico(idMedico);	
 		for(Cita c : citas) {
 			if(c.getFechaYHora().equals(fechaYHora)) {
-				throw new CitaNoValidaException("El médico con DNI " + idMedico + " ya tiene una cita en la fecha y hora indicadas.");
+				throw new CitaNoValidaException("El médico con NIF " + idMedico + " ya tiene una cita en la fecha y hora indicadas.");
 			}
 		}
 		
@@ -410,15 +397,15 @@ public class GestorCitas {
 		// consulta a la fecha y hora introducidas
 		medico = volante.getReceptor();
 		if(!medico.fechaEnCalendario(fechaYHora, duracion)) {
-			throw new FechaNoValidaException("La cita solicitada queda fuera del horario de trabajo del médico con DNI " + medico.getDni() + ".");
+			throw new FechaNoValidaException("La cita solicitada queda fuera del horario de trabajo del médico con NIF " + medico.getNif() + ".");
 		}
 		
 		// Recuperamos las citas del médico para comprobar que no
 		// tiene ya una cita en esa misma fecha y hora
-		citas = FPCita.consultarPorMedico(medico.getDni());	
+		citas = FPCita.consultarPorMedico(medico.getNif());	
 		for(Cita c : citas) {
 			if(c.getFechaYHora().equals(fechaYHora)) {
-				throw new CitaNoValidaException("El médico con DNI " + medico.getDni() + " ya tiene una cita en la fecha y hora indicadas.");
+				throw new CitaNoValidaException("El médico con NIF " + medico.getNif() + " ya tiene una cita en la fecha y hora indicadas.");
 			}
 		}
 		
@@ -450,9 +437,9 @@ public class GestorCitas {
 		// Comprobamos si realmente existe la cita que se quiere
 		// eliminar y a la vez obtenemos su identificador único
 		try {
-			cita = FPCita.consultar(cita.getFechaYHora(), cita.getDuracion(), cita.getMedico().getDni(), cita.getBeneficiario().getNif());
+			cita = FPCita.consultar(cita.getFechaYHora(), cita.getDuracion(), cita.getMedico().getNif(), cita.getBeneficiario().getNif());
 		} catch(CitaNoValidaException e) {
-			throw new CitaNoValidaException("No existe ninguna cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + " para el médico con DNI " + cita.getMedico().getDni()+ " en el día " + cita.getFechaYHora().toString() + ".");
+			throw new CitaNoValidaException("No existe ninguna cita del beneficiario con NIF " + cita.getBeneficiario().getNif() + " para el médico con NIF " + cita.getMedico().getNif()+ " en el día " + cita.getFechaYHora().toString() + ".");
 		}
 		
 		// Eliminamos la cita de la base de datos
@@ -460,7 +447,7 @@ public class GestorCitas {
 	}
 	
 	// Método para obtener las horas de las citas que tiene un médico en cada día
-	public static Hashtable<Date, Vector<String>> consultarHorasCitasMedico(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, MedicoInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static Hashtable<Date, Vector<String>> consultarHorasCitasMedico(long idSesion, String nifMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, MedicoInexistenteException, NullPointerException, DireccionInexistenteException {
 		Hashtable<Date, Vector<String>> citasOcupadas;
 		Vector<Cita> citas;
 		Calendar cal;
@@ -468,8 +455,8 @@ public class GestorCitas {
 		Usuario usuario;
 		
 		// Comprobamos los parámetros pasados
-		if(dniMedico == null) {
-			throw new NullPointerException("El DNI del médico para el que se quieren buscar las fechas de sus citas no puede ser nulo.");
+		if(nifMedico == null) {
+			throw new NullPointerException("El NIF del médico para el que se quieren buscar las fechas de sus citas no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -477,16 +464,16 @@ public class GestorCitas {
 		
 		// Comprobamos que exista el médico
 		try {
-			usuario = FPUsuario.consultar(dniMedico);
+			usuario = FPUsuario.consultar(nifMedico);
 			if(usuario.getRol() != RolesUsuario.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
 		
 		// Obtenemos las citas que ya tiene asignadas el médico
-		citas = FPCita.consultarPorMedico(dniMedico);
+		citas = FPCita.consultarPorMedico(nifMedico);
 		
 		// Generamos una tabla que asigna a cada fecha las horas
 		// de las citas que el médico ya tiene asignadas
@@ -512,7 +499,7 @@ public class GestorCitas {
 
 	// Método para obtener los días en los que un médico podría pasar
 	// consulta pero ya tiene citas en todas las horas posibles
-	public static Vector<Date> consultarDiasCompletos(long idSesion, String dniMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, CentroSaludInexistenteException, MedicoInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException, NullPointerException, DireccionInexistenteException {
+	public static Vector<Date> consultarDiasCompletos(long idSesion, String nifMedico) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, CentroSaludInexistenteException, MedicoInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException, NullPointerException, DireccionInexistenteException {
 		Hashtable<Date, Integer> citasPorFecha;
 		Hashtable<DiaSemana, Integer> citasPorDiaSemana;
 		Vector<Date> dias;
@@ -523,8 +510,8 @@ public class GestorCitas {
 		Usuario usuario;
 
 		// Comprobamos los parámetros pasados
-		if(dniMedico == null) {
-			throw new NullPointerException("El DNI del médico para el que se quieren calcular los días completos no puede ser nulo.");
+		if(nifMedico == null) {
+			throw new NullPointerException("El NIF del médico para el que se quieren calcular los días completos no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
@@ -532,9 +519,9 @@ public class GestorCitas {
 		
 		// Comprobamos que exista el médico
 		try {
-			usuario = FPUsuario.consultar(dniMedico);
+			usuario = FPUsuario.consultar(nifMedico);
 			if(usuario.getRol() != RolesUsuario.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 			medico = (Medico)usuario; 
 		} catch(UsuarioIncorrectoException ex) {
@@ -542,7 +529,7 @@ public class GestorCitas {
 		}
 
 		// Recuperamos todas las citas del médico
-		citas = FPCita.consultarPorMedico(dniMedico);
+		citas = FPCita.consultarPorMedico(nifMedico);
 
 		// Calculamos cuántas citas tiene tramitadas el médico en cada fecha
 		// (los fechas anteriores a la fecha actual se ignoran)
@@ -583,4 +570,45 @@ public class GestorCitas {
 		return dias;
 	}
 
+	private static Vector<Cita> consultarCitasMedico(String nifMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+		Vector<Sustitucion> sustituciones;
+		Vector<Cita> citas, citas2, citasSust;
+		
+		// Obtenemos las citas que ya tiene asignadas el médico
+		citas = FPCita.consultarPorMedico(nifMedico);
+		
+		// Quitamos las citas que no va a dar el médico por estar sustituido
+		citasSust = new Vector<Cita>();
+		sustituciones = FPSustitucion.consultarPorSustituido(nifMedico);
+		for(Sustitucion sustitucion : sustituciones) {
+			for(Cita cita : citas) {
+				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
+					citasSust.add(cita);
+				}
+			}
+		}
+		for(Cita cita : citasSust) {
+			citas.remove(cita);
+		}
+		
+		// Añadimos las citas que va a dar el médico por estar sustituyendo a otro
+		citasSust = new Vector<Cita>();
+		sustituciones = FPSustitucion.consultarPorSustituto(nifMedico);
+		for(Sustitucion sustitucion : sustituciones) {
+			citas2 = FPCita.consultarPorMedico(sustitucion.getMedico().getNif());
+			for(Cita cita : citas2) {
+				if(UtilidadesDominio.fechaIgual(cita.getFechaYHora(), sustitucion.getDia(), false)
+				 && sustitucion.horaEnSustitucion(cita.getFechaYHora())) {
+					citasSust.add(cita);
+				}
+			}
+		}
+		for(Cita cita : citasSust) {
+			citas.add(cita);
+		}
+		
+		return citas;
+	}
+	
 }

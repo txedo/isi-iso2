@@ -12,7 +12,6 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -83,7 +82,7 @@ public class JPEmitirVolante extends JPBase {
 		// los formularios o paneles que utilizan JPEmitirVolante
 	}
 	
-	public JPEmitirVolante(JFrame frame, ControladorCliente controlador) {
+	public JPEmitirVolante(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 	}
@@ -225,9 +224,9 @@ public class JPEmitirVolante extends JPBase {
 			if (especialistas.size()>0) {
 				Collections.sort(especialistas, new ComparatorMedicosApellido());
 				info = new String[especialistas.size()];
-				// Mostramos los nombres y DNIs de los especialistas existentes en la especialidad indicada
+				// Mostramos los nombres y NIFs de los especialistas existentes en la especialidad indicada
 				for (int i=0; i<especialistas.size(); i++)
-					info[i] = especialistas.get(i).getApellidos() + ", " + especialistas.get(i).getNombre() + " (" + especialistas.get(i).getDni() + ")";
+					info[i] = especialistas.get(i).getApellidos() + ", " + especialistas.get(i).getNombre() + " (" + especialistas.get(i).getNif() + ")";
 				crearModelos(info);
 				lstEspecialistas.setFocusable(true);
 				lstEspecialistas.setEnabled(true);
@@ -326,13 +325,13 @@ public class JPEmitirVolante extends JPBase {
 	public void usuarioActualizado(Usuario usuario) {
 		if(beneficiario != null) {
 			if (usuario.getRol() == RolesUsuario.Medico) {
-				if (beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+				if (beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 					// Otro cliente ha actualizado el médico asignado al beneficiario
 					pnlBeneficiario.usuarioActualizado(usuario);
 				}
 				else if (especialistas.size()>0 && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
 					for (Medico e: especialistas) {
-						if (e.getDni().equals(((Medico)usuario).getDni()))
+						if (e.getNif().equals(((Medico)usuario).getNif()))
 							Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha actualizado un especialista desde otro cliente.");
 							inicializarEspecialistas();
 					}
@@ -344,7 +343,7 @@ public class JPEmitirVolante extends JPBase {
 	public void usuarioEliminado(Usuario usuario) {
 		if(beneficiario != null) {
 			if (usuario.getRol() == RolesUsuario.Medico) {
-				if (beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+				if (beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 					// Otro cliente ha eliminado el médico asignado al beneficiario
 					pnlBeneficiario.usuarioEliminado(usuario);
 					limpiarPanelMedico();

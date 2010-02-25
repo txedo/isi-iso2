@@ -253,8 +253,8 @@ public class ControladorCliente {
 
 	// Métodos de gestión de usuarios
 
-	public Usuario consultarUsuario(String dni) throws RemoteException, Exception {
-		return (Usuario)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, dni);
+	public Usuario consultarUsuario(String nif) throws RemoteException, Exception {
+		return (Usuario)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, nif);
 	}
 	
 	public void crearUsuario(Usuario usu) throws RemoteException, Exception {
@@ -276,8 +276,8 @@ public class ControladorCliente {
 	
 	// Métodos de gestión de médicos
 	
-	public Medico consultarMedico(String dni) throws RemoteException, MedicoInexistenteException, Exception {
-		return servidor.getMedico(sesion.getId(), dni);
+	public Medico consultarMedico(String nif) throws RemoteException, MedicoInexistenteException, Exception {
+		return servidor.getMedico(sesion.getId(), nif);
 	}
 	
 	public void crearMedico(Medico medico) throws RemoteException, MedicoYaExistenteException, Exception {
@@ -302,58 +302,68 @@ public class ControladorCliente {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Vector<Beneficiario> obtenerBeneficiariosMedico(String dniMedico) throws RemoteException, Exception {
-		return (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, dniMedico);
+	public Vector<Beneficiario> obtenerBeneficiariosMedico(String nifMedico) throws RemoteException, Exception {
+		return (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, nifMedico);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Hashtable<DiaSemana, Vector<String>> consultarHorarioMedico(String dniMedico) throws RemoteException, Exception {
-		return (Hashtable<DiaSemana, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, dniMedico);
+	public Hashtable<DiaSemana, Vector<String>> consultarHorarioMedico(String nifMedico) throws RemoteException, Exception {
+		return (Hashtable<DiaSemana, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, nifMedico);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Hashtable<Date, Vector<String>> consultarHorasCitasMedico(String dniMedico) throws RemoteException, Exception {
-		return (Hashtable<Date, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS_MEDICO, dniMedico);
+	public Hashtable<Date, Vector<String>> consultarHorasCitasMedico(String nifMedico) throws RemoteException, Exception {
+		return (Hashtable<Date, Vector<String>>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS_MEDICO, nifMedico);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Vector<Cita> consultarCitasMedico(String dniMedico) throws RemoteException, Exception {
-		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO, dniMedico);
+	public Vector<Cita> consultarCitasMedico(String nifMedico) throws RemoteException, Exception {
+		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_MEDICO, nifMedico);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Vector<Date> consultarDiasCompletos(String dniMedico) throws RemoteException, Exception {
-		return (Vector<Date>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_DIAS_COMPLETOS, dniMedico);
+	public Vector<Date> consultarDiasCompletos(String nifMedico) throws RemoteException, Exception {
+		return (Vector<Date>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_DIAS_COMPLETOS, nifMedico);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Vector<Medico> obtenerPosiblesSustitutos(String dniMedico, Date dia, int horaDesde, int horaHasta) throws RemoteException, Exception {
-		return (Vector<Medico>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { dniMedico, dia, horaDesde, horaHasta });
+	public Vector<Medico> obtenerPosiblesSustitutos(String nifMedico, Date dia, int horaDesde, int horaHasta) throws RemoteException, Exception {
+		return (Vector<Medico>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { nifMedico, dia, horaDesde, horaHasta });
 	}
 	
-	public Medico consultarMedicoCita(String dniMedico, Date dia) throws RemoteException, Exception {
-		return (Medico)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { dniMedico, dia });
+	public Medico consultarMedicoCita(String nifMedico, Date dia) throws RemoteException, Exception {
+		return (Medico)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { nifMedico, dia });
 	}
 	
 	// Métodos de gestión de citas
 	
-	public Vector<Cita> consultarHistoricoCitas(String dni) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
-		return servidor.getCitas(sesion.getId(), dni);
+	public Vector<Cita> consultarHistoricoCitas(String nif) throws RemoteException, BeneficiarioInexistenteException, SQLException, Exception {
+		return servidor.getCitas(sesion.getId(), nif);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Vector<Cita> consultarCitasPendientesBeneficiario(String dni) throws RemoteException, Exception {
-		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES, dni);
+	public Vector<Cita> consultarCitasPendientesBeneficiario(String nif) throws RemoteException, Exception {
+		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES, nif);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Vector<Cita> consultarCitasPendientesMedico(String dni) throws RemoteException, Exception {
-		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES_MEDICO, dni);
+	public Vector<Cita> consultarCitasPendientesMedico(String nif) throws RemoteException, Exception {
+		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES_MEDICO, nif);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public Vector<Cita> consultarCitasFechaMedico(String dni, Date dia, int horaDesde, int horaHasta) throws RemoteException, Exception {
-		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_FECHA_MEDICO, new Object[] { dni, dia, horaDesde, horaHasta });
+	public Vector<Cita> consultarCitasPropiasMedico() throws RemoteException, Exception {
+		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PROPIAS_MEDICO, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Vector<Cita> consultarCitasPendientesPropiasMedico() throws RemoteException, Exception {
+		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_PENDIENTES_PROPIAS_MEDICO, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Vector<Cita> consultarCitasFechaMedico(String nif, Date dia, int horaDesde, int horaHasta) throws RemoteException, Exception {
+		return (Vector<Cita>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CITAS_FECHA_MEDICO, new Object[] { nif, dia, horaDesde, horaHasta });
 	}
 
 	public Cita pedirCita(Beneficiario beneficiario, String idMedico, Date fechaYHora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception { 

@@ -7,18 +7,15 @@ import java.sql.SQLException;
 import java.util.EventObject;
 import java.util.Vector;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-
 import presentacion.auxiliar.BeneficiarioBuscadoListener;
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.TableCellRendererCitas;
 import presentacion.auxiliar.UtilidadesTablas;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
@@ -42,7 +39,7 @@ import excepciones.CitaNoValidaException;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
- * Panel que permite consultar y anular citas existentes.
+ * Panel que permite consultar y anular citas existentes de beneficiarios.
  */
 public class JPCitaConsultarBeneficiario extends JPBase {
 
@@ -67,11 +64,12 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 		// los formularios o paneles que utilizan JPCitaConsultar
 	}
 	
-	public JPCitaConsultarBeneficiario(JFrame frame, ControladorCliente controlador) {
+	public JPCitaConsultarBeneficiario(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 		UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, 0);
 		viendoHistorico = false;
+		citas = new Vector<Cita>();
 	}
 	
 	private void initGUI() {
@@ -204,7 +202,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 						pendientes = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
 						medicosReales = new Vector<Medico>();
 						for(Cita citaB : citas) {
-							medicosReales.add(getControlador().consultarMedicoCita(citaB.getMedico().getDni(), citaB.getFechaYHora()));
+							medicosReales.add(getControlador().consultarMedicoCita(citaB.getMedico().getNif(), citaB.getFechaYHora()));
 						}
 						UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
 						UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas, pendientes, medicosReales);
@@ -212,14 +210,14 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 						citas = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
 						medicosReales = new Vector<Medico>();
 						for(Cita citaB : citas) {
-							medicosReales.add(getControlador().consultarMedicoCita(citaB.getMedico().getDni(), citaB.getFechaYHora()));
+							medicosReales.add(getControlador().consultarMedicoCita(citaB.getMedico().getNif(), citaB.getFechaYHora()));
 						}
 						UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
 						UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas, medicosReales);
 					}
 					for(Cita citaB : citas) {
-						Medico m = getControlador().consultarMedicoCita(citaB.getMedico().getDni(), citaB.getFechaYHora());
-						if(!m.equals(citaB.getMedico().getDni())) {
+						Medico m = getControlador().consultarMedicoCita(citaB.getMedico().getNif(), citaB.getFechaYHora());
+						if(!m.equals(citaB.getMedico().getNif())) {
 							
 						}
 					}
@@ -253,7 +251,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 			citas = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
 			medicosReales = new Vector<Medico>();
 			for(Cita citaB : citas) {
-				medicosReales.add(getControlador().consultarMedicoCita(citaB.getMedico().getDni(), citaB.getFechaYHora()));
+				medicosReales.add(getControlador().consultarMedicoCita(citaB.getMedico().getNif(), citaB.getFechaYHora()));
 			}
 			UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
 			UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas, medicosReales);
@@ -291,7 +289,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 			pendientes = getControlador().consultarCitasPendientesBeneficiario(beneficiario.getNif());
 			medicosReales = new Vector<Medico>();
 			for(Cita citaB : citas) {
-				medicosReales.add(getControlador().consultarMedicoCita(citaB.getMedico().getDni(), citaB.getFechaYHora()));
+				medicosReales.add(getControlador().consultarMedicoCita(citaB.getMedico().getNif(), citaB.getFechaYHora()));
 			}
 			UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
 			UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas, pendientes, medicosReales);
@@ -326,11 +324,10 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 		btnHistoricoCitas.setEnabled(false);
 		lblCitas.setText("Citas pendientes encontradas:");
 		viendoHistorico = false;
+		citas.clear();
 	}
 	
 	// Métodos públicos
-	
-	// <métodos del observador>
 	
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		if (this.beneficiario!=null && beneficiario.getNif().equals(this.beneficiario.getNif()))
@@ -346,7 +343,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	
 	public void usuarioActualizado(Usuario usuario) {
 		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
-		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario que está consultando las citas
 			pnlBeneficiario.usuarioActualizado(usuario);
 		}
@@ -354,7 +351,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	
 	public void usuarioEliminado(Usuario usuario) {
 		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
-		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario que está consultando las citas
 			pnlBeneficiario.usuarioEliminado(usuario);
 			limpiarCamposConsulta();

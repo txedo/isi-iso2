@@ -13,8 +13,8 @@ public class Administrador extends Citador implements Serializable, Cloneable {
 		super();
 	}
 	
-	public Administrador(String dni, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil) {
-		super(dni, login, password, nombre, apellidos, correo, telefono, movil);
+	public Administrador(String nif, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil) {
+		super(nif, login, password, nombre, apellidos, correo, telefono, movil);
 	}
 	
 	public RolesUsuario getRol() {
@@ -24,7 +24,7 @@ public class Administrador extends Citador implements Serializable, Cloneable {
 	public Object clone() {
 		Administrador a;
 		
-		a = new Administrador(dni, login, password, nombre, apellidos, correo, telefono, movil);
+		a = new Administrador(nif, login, password, nombre, apellidos, correo, telefono, movil);
 		a.setCentroSalud(centro);
 		return a;
 	}

@@ -71,7 +71,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private ControladorCliente controlador;
 	private OperacionesInterfaz operacionSeleccionada;
 	
-	private JFAcercaDe frmAcercaDe;
+	private JFAcercaDeCliente frmAcercaDe;
 	private JPBeneficiarios jPanelGestionarBeneficiarios;
 	private JPUsuarios jPanelGestionarUsuarios;
 	private JPCitas jPanelGestionarCitas;
@@ -280,7 +280,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	//$hide>>$
 	
 	private void menuitemAcercaDeActionPerformed(ActionEvent evt) {
-		frmAcercaDe = new JFAcercaDe();
+		frmAcercaDe = new JFAcercaDeCliente();
 		frmAcercaDe.addVentanaCerradaListener(new VentanaCerradaListener() {
 			public void ventanaCerrada(EventObject evt) {    
 				frmAcercaDeVentanaCerrada(evt);
@@ -456,6 +456,9 @@ public class JFPrincipal extends javax.swing.JFrame {
 		if(!operaciones.contains(Operaciones.TramitarCitaVolante)) {
 			jPanelGestionarCitas.desactivarTramitarCitaVolante();
 		}
+		if(!operaciones.contains(Operaciones.ConsultarCitasPropiasMedico)) {
+			jPanelGestionarCitas.desactivarConsultarCitaPropia();
+		}
 		
 		// Inicializamos los paneles de gestión de sustituciones
 		if(!operaciones.contains(Operaciones.EstablecerSustituto)) {
@@ -527,6 +530,47 @@ public class JFPrincipal extends javax.swing.JFrame {
 	
 	// Métodos públicos
 	
+	public OperacionesInterfaz getOperacionSeleccionada() {
+		return operacionSeleccionada;
+	}
+
+	public void setOperacionSeleccionada(OperacionesInterfaz operacion) {
+		switch(operacion) {
+		case RegistrarBeneficiario:
+		case ConsultarBeneficiario:
+		case ConsultarModificarBeneficiario:
+			jTabbedPaneOperaciones.setSelectedComponent(jPanelGestionarBeneficiarios);
+			jPanelGestionarBeneficiarios.setOperacionSeleccionada(operacion);
+			break;
+		case RegistrarUsuario:
+		case ConsultarUsuario:
+		case ConsultarModificarUsuario:
+			jTabbedPaneOperaciones.setSelectedComponent(jPanelGestionarUsuarios);
+			jPanelGestionarUsuarios.setOperacionSeleccionada(operacion);
+			break;
+		case TramitarCita:
+		case TramitarCitaVolante:
+		case ConsultarAnularCitasBeneficiario:
+		case ConsultarCitasMedico:
+		case ConsultarCitasPropias:
+			jTabbedPaneOperaciones.setSelectedComponent(jPanelGestionarCitas);
+			jPanelGestionarCitas.setOperacionSeleccionada(operacion);
+			break;
+		case EstablecerSustituto:
+			jTabbedPaneOperaciones.setSelectedComponent(jPanelGestionarCitas);
+			jPanelGestionarCitas.setOperacionSeleccionada(operacion);
+			break;
+		case EmitirVolante:
+			jTabbedPaneOperaciones.setSelectedComponent(jPanelGestionarCitas);
+			jPanelGestionarCitas.setOperacionSeleccionada(operacion);
+			break;
+		case OperacionInvalida:
+			jTabbedPaneOperaciones.setSelectedComponent(jPanelBienvenida);
+			jPanelBienvenida.repaint();
+			break;
+		}
+	}
+		
 	public void forzarCierreSesionDuplicada() {
 		Dialogos.mostrarDialogoAdvertencia(this, "Aviso", "Se ha iniciado una sesión con el mismo nombre de usuario en otro equipo.\nEsta sesión se cerrará automáticamente.");
 		restablecerPaneles();
@@ -550,6 +594,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case TramitarCitaVolante:
 		case ConsultarAnularCitasBeneficiario:
 		case ConsultarCitasMedico:
+		case ConsultarCitasPropias:
 			jPanelGestionarCitas.beneficiarioActualizado(beneficiario);
 			break;
 		case EmitirVolante:
@@ -571,6 +616,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case TramitarCitaVolante:
 		case ConsultarAnularCitasBeneficiario:
 		case ConsultarCitasMedico:
+		case ConsultarCitasPropias:
 			jPanelGestionarCitas.beneficiarioEliminado(beneficiario);
 			break;
 		case EmitirVolante:
@@ -641,6 +687,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case TramitarCitaVolante:
 		case ConsultarAnularCitasBeneficiario:
 		case ConsultarCitasMedico:
+		case ConsultarCitasPropias:
 			jPanelGestionarCitas.citaRegistrada(cita);
 			break;
 		default:
@@ -655,6 +702,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case TramitarCitaVolante:
 		case ConsultarAnularCitasBeneficiario:
 		case ConsultarCitasMedico:
+		case ConsultarCitasPropias:
 			jPanelGestionarCitas.citaAnulada(cita);
 			break;
 		default:
@@ -667,8 +715,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 		switch(operacionSeleccionada) {
 		case TramitarCita:
 		case TramitarCitaVolante:
-		case ConsultarAnularCitasBeneficiario:
-		case ConsultarCitasMedico:
 			jPanelGestionarCitas.sustitucionRegistrada(sustitucion);
 			break;
 		default:

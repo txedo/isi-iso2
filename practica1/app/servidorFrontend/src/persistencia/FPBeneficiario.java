@@ -33,7 +33,7 @@ public class FPBeneficiario {
 	private static final String COL_FECHA_NACIMIENTO = "fechaNacimiento";
 	private static final String COL_TELEFONO = "telefono";
 	private static final String COL_MOVIL = "movil";
-	private static final String COL_DNI_MEDICO = "dniMedico";
+	private static final String COL_NIF_MEDICO = "nifMedico";
 	private static final String COL_BENEFICIARIOS_NIF = "nif";
 	private static final String COL_ID_CENTRO = "idCentro";
 
@@ -67,10 +67,10 @@ public class FPBeneficiario {
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
 			direccion = FPDireccion.consultar(beneficiario.getNif());
 			beneficiario.setDireccion(direccion);
-			if(datos.getString(COL_DNI_MEDICO) == null) {
+			if(datos.getString(COL_NIF_MEDICO) == null) {
 				beneficiario.setMedicoAsignado(null);
 			} else {
-				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+				medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
 				if(medico.getRol() != RolesUsuario.Medico) {
 					datos.close();
 					throw new UsuarioIncorrectoException("El beneficiario con NIF " + nif + " no tiene asignado un usuario con rol de médico.");
@@ -114,10 +114,10 @@ public class FPBeneficiario {
 			beneficiario.setMovil(datos.getString(COL_MOVIL));
 			direccion = FPDireccion.consultar(beneficiario.getNif());
 			beneficiario.setDireccion(direccion);
-			if(datos.getString(COL_DNI_MEDICO) == null) {
+			if(datos.getString(COL_NIF_MEDICO) == null) {
 				beneficiario.setMedicoAsignado(null);
 			} else {
-				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+				medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
 				if(medico.getRol() != RolesUsuario.Medico) {
 					datos.close();
 					throw new UsuarioIncorrectoException("El beneficiario con NSS " + nss + " no tiene asignado un usuario con rol de médico.");
@@ -131,14 +131,14 @@ public class FPBeneficiario {
 		return beneficiario;
 	}
 	
-	public static Vector<String> consultarBeneficiariosMedico(String dniMedico) throws SQLException {
+	public static Vector<String> consultarBeneficiariosMedico(String nifMedico) throws SQLException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<String> nifsBeneficiarios;
      
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT " + COL_BENEFICIARIOS_NIF + " FROM "
-				+ TABLA_BENEFICIARIOS + " WHERE " + COL_DNI_MEDICO + " = ? ", dniMedico);
+				+ TABLA_BENEFICIARIOS + " WHERE " + COL_NIF_MEDICO + " = ? ", nifMedico);
 		datos = GestorConexionesBD.consultar(comando);
  
 		// Devolvemos la lista de beneficiarios
@@ -158,13 +158,13 @@ public class FPBeneficiario {
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_BENEFICIARIOS
 				+ " (" + COL_NIF + ", " + COL_NSS + ", " + COL_NOMBRE
 				+ ", " + COL_APELLIDOS  + ", " + COL_CORREO + ", " + COL_FECHA_NACIMIENTO
-				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_DNI_MEDICO + ", " + COL_ID_CENTRO
+				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_NIF_MEDICO + ", " + COL_ID_CENTRO
 				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				beneficiario.getNif(), beneficiario.getNss(), beneficiario.getNombre(),
 				beneficiario.getApellidos(), beneficiario.getCorreo(),
 				new Timestamp(beneficiario.getFechaNacimiento().getTime()),
 				beneficiario.getTelefono(), beneficiario.getMovil(),
-				(beneficiario.getMedicoAsignado() == null ? null : beneficiario.getMedicoAsignado().getDni()),
+				(beneficiario.getMedicoAsignado() == null ? null : beneficiario.getMedicoAsignado().getNif()),
 				beneficiario.getCentroSalud().getId());
 		GestorConexionesBD.ejecutar(comando);
 		
@@ -180,12 +180,12 @@ public class FPBeneficiario {
 		comando = new ComandoSQLSentencia("UPDATE " + TABLA_BENEFICIARIOS + " SET "
 				+ COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_CORREO + " = ?, "
 				+ COL_FECHA_NACIMIENTO + " = ?, " + COL_TELEFONO + " = ?, "
-				+ COL_MOVIL + " = ?, " + COL_DNI_MEDICO + " = ?, " + COL_ID_CENTRO
+				+ COL_MOVIL + " = ?, " + COL_NIF_MEDICO + " = ?, " + COL_ID_CENTRO
 				+ " = ? WHERE " + COL_NIF + " = ? ", 
 				beneficiario.getNombre(), beneficiario.getApellidos(),
 				beneficiario.getCorreo(), new Timestamp(beneficiario.getFechaNacimiento().getTime()),
 				beneficiario.getTelefono(), beneficiario.getMovil(),
-				(beneficiario.getMedicoAsignado() == null ? null : beneficiario.getMedicoAsignado().getDni()),
+				(beneficiario.getMedicoAsignado() == null ? null : beneficiario.getMedicoAsignado().getNif()),
 				beneficiario.getCentroSalud().getId(), beneficiario.getNif());
 		GestorConexionesBD.ejecutar(comando);
 		

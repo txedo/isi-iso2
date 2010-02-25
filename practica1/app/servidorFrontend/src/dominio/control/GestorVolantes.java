@@ -72,7 +72,7 @@ public class GestorVolantes {
 		
 		// Comprobamos que exista el médico emisor
 		try {
-			usuario = FPUsuario.consultar(emisor.getDni());
+			usuario = FPUsuario.consultar(emisor.getNif());
 			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El médico emisor no es un usuario del sistema con rol de médico.");
 			}
@@ -83,7 +83,7 @@ public class GestorVolantes {
 		
 		// Comprobamos que exista el médico receptor
 		try {
-			usuario = FPUsuario.consultar(destino.getDni());
+			usuario = FPUsuario.consultar(destino.getNif());
 			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El médico receptor no es un usuario del sistema con rol de médico.");
 			}

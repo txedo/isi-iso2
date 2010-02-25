@@ -92,8 +92,8 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 	
 	// Métodos de gestión de citas
 
-	public Cita pedirCita(long idSesion, Beneficiario bene, String dniMedico, Date fechaYhora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception {
-		return servidor.pedirCita(idSesion, bene, dniMedico, fechaYhora, duracion);
+	public Cita pedirCita(long idSesion, Beneficiario bene, String nifMedico, Date fechaYhora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, SQLException, Exception {
+		return servidor.pedirCita(idSesion, bene, nifMedico, fechaYhora, duracion);
 	}
 
 	public Cita pedirCita(long dniBeneficiario, Beneficiario bene, long idVolante, Date fechaYhora, long duracion) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, FechaNoValidaException, VolanteNoValidoException, SQLException, Exception {

@@ -1,19 +1,15 @@
 package presentacion;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
-
 import presentacion.auxiliar.OperacionCambiadaEvent;
 import presentacion.auxiliar.OperacionCambiadaListener;
 import presentacion.auxiliar.OperacionesInterfaz;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Sustitucion;
@@ -46,12 +42,14 @@ public class JPCitas extends JPBase {
 	private JPCitaVolanteTramitar jPanelVolanteTramitar;
 	private JPCitaConsultarBeneficiario jPanelConsultarCitasBeneficiario;
 	private JPCitaConsultarMedico jPanelConsultarCitasMedico;
+	private JPCitaConsultarPropias jPanelConsultarCitasPropias;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
 	private JScrollPane jScrollTramitar;
 	private JScrollPane jScrollTramitarConVolante;
 	private JScrollPane jScrollConsultarCitasBeneficiario;
 	private JScrollPane jScrollConsultarCitasMedico;
+	private JScrollPane jScrollConsultarCitasPropias;
 	
 	public JPCitas() {
 		this(null, null);
@@ -59,7 +57,7 @@ public class JPCitas extends JPBase {
 		// los formularios o paneles que utilizan JPCitas
 	}
 	
-	public JPCitas(JFrame frame, ControladorCliente controlador) {
+	public JPCitas(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		listenerList = new EventListenerList();
 		operacionSeleccionada = OperacionesInterfaz.OperacionInvalida;
@@ -135,7 +133,17 @@ public class JPCitas extends JPBase {
 					jScrollConsultarCitasMedico.setViewportView(jPanelConsultarCitasMedico);
 				}
 			}
-			
+			{
+				jScrollConsultarCitasPropias = new JScrollPane();
+				this.add(jScrollConsultarCitasPropias, new AnchorConstraint(0, 0, 0, 159, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+				jScrollConsultarCitasPropias.setPreferredSize(new java.awt.Dimension(406, 390));
+				jScrollConsultarCitasPropias.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				jScrollConsultarCitasPropias.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				{
+					jPanelConsultarCitasPropias = new JPCitaConsultarPropias(this.getFrame(), this.getControlador());
+					jScrollConsultarCitasPropias.setViewportView(jPanelConsultarCitasPropias);
+				}
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -148,6 +156,7 @@ public class JPCitas extends JPBase {
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.TramitarCitaVolante);
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarAnularCitasBeneficiario);
 		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarCitasMedico);
+		jPanelListaOperaciones.ponerOperacion(OperacionesInterfaz.ConsultarCitasPropias);
 	}
 	
 	private void ocultarPaneles() {
@@ -156,6 +165,7 @@ public class JPCitas extends JPBase {
 		jScrollTramitarConVolante.setVisible(false);
 		jScrollConsultarCitasBeneficiario.setVisible(false);
 		jScrollConsultarCitasMedico.setVisible(false);
+		jScrollConsultarCitasPropias.setVisible(false);
 	}
 	
 	private void jPanelListaOperacionesOperacionCambiada(OperacionCambiadaEvent evt) {
@@ -176,6 +186,9 @@ public class JPCitas extends JPBase {
 		if(jScrollConsultarCitasMedico != null) {
 			jScrollConsultarCitasMedico.setVisible(false);
 		}
+		if(jScrollConsultarCitasPropias != null) {
+			jScrollConsultarCitasPropias.setVisible(false);
+		}
 		if(operacionSeleccionada == OperacionesInterfaz.TramitarCita) {
 			jScrollTramitar.setVisible(true);
 			jScrollTramitar.repaint();
@@ -191,6 +204,10 @@ public class JPCitas extends JPBase {
 		if(operacionSeleccionada == OperacionesInterfaz.ConsultarCitasMedico) {
 			jScrollConsultarCitasMedico.setVisible(true);
 			jScrollConsultarCitasMedico.repaint();
+		}
+		if(operacionSeleccionada == OperacionesInterfaz.ConsultarCitasPropias) {
+			jScrollConsultarCitasPropias.setVisible(true);
+			jScrollConsultarCitasPropias.repaint();
 		}
 		
 		// Notificamos que ha cambiado la operación seleccionada
@@ -208,6 +225,10 @@ public class JPCitas extends JPBase {
 		return operacionSeleccionada;
 	}
 	
+	public void setOperacionSeleccionada(OperacionesInterfaz operacionSeleccionada) {
+		jPanelListaOperaciones.setOperacion(operacionSeleccionada);
+	}
+
 	public void addOperacionCambiadaListener(OperacionCambiadaListener listener) {
 		listenerList.add(OperacionCambiadaListener.class, listener);
 	}
@@ -232,6 +253,10 @@ public class JPCitas extends JPBase {
 		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarCitasMedico);
 	}
 
+	public void desactivarConsultarCitaPropia() {
+		jPanelListaOperaciones.quitarOperacion(OperacionesInterfaz.ConsultarCitasPropias);
+	}
+
 	public boolean hayOperacionesDisponibles() {
 		return (jPanelListaOperaciones.getNumeroOperaciones() > 0);
 	}
@@ -250,6 +275,9 @@ public class JPCitas extends JPBase {
 			break;
 		case ConsultarCitasMedico:
 			jPanelConsultarCitasMedico.beneficiarioActualizado(beneficiario);
+			break;
+		case ConsultarCitasPropias:
+			jPanelConsultarCitasPropias.beneficiarioActualizado(beneficiario);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
@@ -270,6 +298,9 @@ public class JPCitas extends JPBase {
 			break;
 		case ConsultarCitasMedico:
 			jPanelConsultarCitasMedico.beneficiarioEliminado(beneficiario);
+			break;
+		case ConsultarCitasPropias:
+			jPanelConsultarCitasPropias.beneficiarioEliminado(beneficiario);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
@@ -330,7 +361,10 @@ public class JPCitas extends JPBase {
 			break;
 		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.citaRegistrada(cita);
-			break;		
+			break;	
+		case ConsultarCitasPropias:
+			jPanelConsultarCitasPropias.citaRegistrada(cita);
+			break;	
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
 		}
@@ -351,6 +385,9 @@ public class JPCitas extends JPBase {
 		case ConsultarAnularCitasBeneficiario:
 			jPanelConsultarCitasBeneficiario.citaAnulada(cita);
 			break;	
+		case ConsultarCitasPropias:
+			jPanelConsultarCitasPropias.citaAnulada(cita);
+			break;	
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
 		}
@@ -365,12 +402,6 @@ public class JPCitas extends JPBase {
 		case TramitarCitaVolante:
 			jPanelVolanteTramitar.sustitucionRegistrada(sustitucion);
 			break;
-/*		case ConsultarCitasMedico:
-			jPanelConsultarCitasMedico.citaAnulada(cita);
-			break;
-		case ConsultarAnularCitasBeneficiario:
-			jPanelConsultarCitasBeneficiario.citaAnulada(cita);
-			break;*/	
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado
 		}
@@ -381,8 +412,8 @@ public class JPCitas extends JPBase {
 		jPanelConsultarCitasMedico.restablecerPanel();
 		jPanelTramitar.restablecerPanel();
 		jPanelVolanteTramitar.restablecerPanel();
+		jPanelConsultarCitasPropias.restablecerPanel();
 	}
-
 	
 	//$hide<<$
 	
