@@ -7,8 +7,8 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
-import dominio.conocimiento.ConfiguracionFrontend;
+import comunicaciones.ConfiguracionFrontend;
+import comunicaciones.UtilidadesComunicaciones;
 import dominio.control.ControladorFrontend;
 import presentacion.JFServidorFrontend;
 
@@ -79,7 +79,7 @@ public class PruebasJFServidorFrontend extends org.uispec4j.UISpecTestCase {
 			assertFalse(mniDesconectar.isEnabled());
 			// Activamos el servidor
 			btnConectar.click();
-			assertEquals(lblBarraEstado.getText(), "Servidor preparado (puerto " + String.valueOf(puerto) + ").");
+			assertEquals(lblBarraEstado.getText(), "Servidor preparado en " + UtilidadesComunicaciones.obtenerIPHost() + " (puerto " + String.valueOf(puerto) + ").");
 			assertTrue(controlador.isServidorActivo());
 			assertFalse(btnConectar.isEnabled());
 			assertFalse(mniConectar.isEnabled());

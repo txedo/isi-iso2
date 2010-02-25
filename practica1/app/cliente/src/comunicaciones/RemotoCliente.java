@@ -1,8 +1,6 @@
 package comunicaciones;
 
-import java.net.Inet4Address;
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NoSuchObjectException;
@@ -12,7 +10,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import dominio.control.Cliente;
-import dominio.control.ControladorCliente;
 
 /**
  * Clase que exporta la instancia que será utilizada por el servidor
@@ -21,60 +18,62 @@ import dominio.control.ControladorCliente;
 public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 
 	private static final long serialVersionUID = -6461417903923553869L;
-	
+
+	private final int PUERTO_INICIAL_CLIENTE = 3995;
+
 	private ICliente cliente;
+	private boolean registro;
+	private int puerto;
 	
 	private static RemotoCliente instancia;
 	
-	protected RemotoCliente() throws RemoteException, UnknownHostException {
+	protected RemotoCliente() throws RemoteException {
 		super();
-
-		boolean puertoUsado;
-		int puerto;
-		String direccionIP;
-		
-		// Buscamos un puerto que no esté en uso en el equipo
-		puertoUsado = true;
-		puerto = PUERTO_INICIAL_CLIENTE;
-		do {
-			try {
-				LocateRegistry.createRegistry(puerto);
-				puertoUsado = false;
-			}
-			catch (ExportException ee) {
-				puerto++;
-			}
-		} while(puertoUsado);
-		// Creamos el objeto Cliente
-		direccionIP = Inet4Address.getLocalHost().getHostAddress();
-		cliente = new Cliente(direccionIP, puerto);
+		cliente = new Cliente();
+		registro = false;
 	}
 	
-	public static RemotoCliente getCliente() throws RemoteException, UnknownHostException {
+	public static RemotoCliente getCliente() throws RemoteException {
 		if(instancia == null) {
 			instancia = new RemotoCliente();
 		}
 		return instancia;
 	}
 	
-    public void activar() throws RemoteException, MalformedURLException {
+    public void activar(String ip) throws RemoteException, MalformedURLException {
+		boolean puertoUsado;
+
 		// Si el objeto ya estaba exportado, controlamos las
 		// excepciones y no las lanzamos hacia arriba
     	try {
-    		exportObject(cliente, cliente.getPuerto());
+    		if(!registro) {
+    			// Buscamos un puerto que no esté ya en uso en el equipo
+    			puertoUsado = true;
+    			puerto = PUERTO_INICIAL_CLIENTE;
+    			do {
+    				try {
+    					LocateRegistry.createRegistry(puerto);
+    					puertoUsado = false;
+    				} catch(ExportException e) {
+    					puerto++;
+    				}
+    			} while(puertoUsado);
+    			registro = true;
+    		}
+    		exportObject(this, puerto);
         } catch(ExportException ex) {
         	if(!ex.getMessage().toLowerCase().equals("object already exported")) {
         		throw ex;
         	}
         }
         try {
-            Naming.bind("rmi://" + cliente.getDireccionIP() + ":" + String.valueOf(cliente.getPuerto()) + "/" + NOMBRE_CLIENTE, cliente);
+            Naming.bind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_CLIENTE, this);
         } catch(AlreadyBoundException ex) {
-            Naming.rebind("rmi://" + cliente.getDireccionIP() + ":" + String.valueOf(cliente.getPuerto()) + "/" + NOMBRE_CLIENTE, cliente);
+            Naming.rebind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_CLIENTE, this);
         }
     }
     
-    public void desactivar() throws RemoteException, MalformedURLException, NotBoundException {
+    public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {
 		// Si el objeto no estaba exportado, controlamos las
 		// excepciones y no las lanzamos hacia arriba
     	try {
@@ -82,13 +81,17 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
     	} catch(NoSuchObjectException ex) {
     	}
     	try {
-    		Naming.unbind("rmi://" + cliente.getDireccionIP() + ":" + String.valueOf(cliente.getPuerto()) + "/" + NOMBRE_CLIENTE);
+    		Naming.unbind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_CLIENTE);
     	} catch(NotBoundException ex) {
     	}
     }
     
-    public void setControlador(ControladorCliente controlador) {
-    	((Cliente)cliente).setControlador(controlador);
+    public ICliente getClienteExportado() {
+    	return cliente;
+    }
+    
+    public int getPuertoEscucha() {
+    	return puerto;
     }
 
     // Métodos del cliente
@@ -105,7 +108,7 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 		cliente.actualizarVentanas(operacion, dato);
 	}
 	
-	public void servidorInaccesible () throws RemoteException {
+	public void servidorInaccesible() throws RemoteException {
 		cliente.servidorInaccesible();
 	}
 	

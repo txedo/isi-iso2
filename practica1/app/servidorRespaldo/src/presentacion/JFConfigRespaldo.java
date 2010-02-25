@@ -15,10 +15,11 @@ import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.EventListenerList;
 
+import comunicaciones.ConfiguracionRespaldo;
+
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.Validacion;
 import presentacion.auxiliar.VentanaCerradaListener;
-import dominio.conocimiento.ConfiguracionRespaldo;
 import excepciones.IPInvalidaException;
 import excepciones.PuertoInvalidoException;
 

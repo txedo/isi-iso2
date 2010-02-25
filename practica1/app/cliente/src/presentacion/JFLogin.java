@@ -2,6 +2,8 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+import comunicaciones.ConfiguracionCliente;
+
 import dominio.control.ControladorCliente;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.IPInvalidaException;
@@ -248,7 +250,7 @@ public class JFLogin extends javax.swing.JFrame {
 			Validacion.comprobarPuerto(txtPuertoServidor.getText().trim());
 			
 			int puerto = Integer.parseInt(txtPuertoServidor.getText().trim());
-			controlador.iniciarSesion(txtDireccionServidor.getText(), puerto, txtUsuario.getText(), new String(txtPassword.getPassword()));
+			controlador.iniciarSesion(new ConfiguracionCliente(txtDireccionServidor.getText(), puerto), txtUsuario.getText(), new String(txtPassword.getPassword()));
 		
 		} catch(UsuarioIncorrectoException e) {
 			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());

@@ -23,6 +23,8 @@ import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
+import comunicaciones.ConfiguracionCliente;
+
 import presentacion.JFCalendarioLaboral;
 import presentacion.JPUsuarioConsultar;
 import presentacion.auxiliar.Validacion;
@@ -114,7 +116,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(IPServidorFrontend, puertoServidorFrontend, usuarioAdmin, passwordAdmin);
+						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
 					} catch(Exception e) {
 						fail(e.toString());
 					}

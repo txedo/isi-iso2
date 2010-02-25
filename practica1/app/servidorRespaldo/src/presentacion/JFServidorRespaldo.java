@@ -2,7 +2,8 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.conocimiento.ConfiguracionRespaldo;
+import comunicaciones.ConfiguracionRespaldo;
+
 import dominio.control.ControladorRespaldo;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -64,7 +65,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	private ControladorRespaldo controlador;
 	private ConfiguracionRespaldo configuracion;
 	private JFConfigRespaldo frmConfiguracion;
-	private JFAcercaDe frmAcercaDe;
+	private JFAcercaDeRespaldo frmAcercaDe;
 	
 	private JButton btnSalir;
 	private JLabel lblConfigBD;
@@ -91,14 +92,14 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		initGUI();
 		this.controlador = controlador;
 		configuracion = new ConfiguracionRespaldo();
-		actualizarConfiguracion();
+		actualizarEstado();
 	}
 	
 	private void initGUI() {
 		try {
 			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			this.setTitle("Servidor de Respaldo");
-			this.setPreferredSize(new java.awt.Dimension(550, 400));
+			this.setPreferredSize(new java.awt.Dimension(577, 409));
 			this.setMinimumSize(new java.awt.Dimension(500, 300));
 			setLocationRelativeTo(null);
 			this.addWindowListener(new WindowAdapter() { 
@@ -260,13 +261,16 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 				}
 			}
 			pack();
+			this.setSize(577, 409);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	//$hide>>$
+	
 	private void mniAcercaDeActionPerformed(ActionEvent evt) {
-		frmAcercaDe = new JFAcercaDe();
+		frmAcercaDe = new JFAcercaDeRespaldo();
 		frmAcercaDe.addVentanaCerradaListener(new VentanaCerradaListener() {
 			public void ventanaCerrada(EventObject evt) {    
 				frmAcercaDeVentanaCerrada(evt);
@@ -305,7 +309,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		setEnabled(true);
 		frmConfiguracion.setVisible(false);
 		configuracion = frmConfiguracion.getConfiguracion();
-		actualizarConfiguracion();
+		actualizarEstado();
 		// Eliminamos la ventana de configuración
 		frmConfiguracion.dispose();
 	}
@@ -338,9 +342,9 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		cerrarServidor();
 	}
 
-	private void actualizarConfiguracion() {
+	private void actualizarEstado() {
 		if(controlador != null && controlador.isServidorActivo()) {
-			lblBarraEstado.setText("Servidor preparado (puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
+			lblBarraEstado.setText("Servidor preparado en " + controlador.getIPServidor() + " (puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 		} else {
 			lblBarraEstado.setText("Servidor desconectado (puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 		}
@@ -360,7 +364,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			mniConfigurar.setEnabled(false);
 			btnDesconectar.setEnabled(true);
 			mniDesconectar.setEnabled(true);
-			lblBarraEstado.setText("Servidor preparado (puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
+			actualizarEstado();
 			ok = true;
 		} catch(SQLException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
@@ -394,7 +398,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			btnConectar.setEnabled(true);
 			mniConectar.setEnabled(true);
 			mniConfigurar.setEnabled(true);
-			lblBarraEstado.setText("Servidor desconectado (puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
+			actualizarEstado();
 			ok = true;
 		} catch(SQLException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
@@ -430,6 +434,8 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			System.exit(0);
 		}
 	}
+	
+	// Métodos públicos
 	
 	public void ponerMensaje(String mensaje) {
 		textLog.setText(textLog.getText() + mensaje + "\n");	

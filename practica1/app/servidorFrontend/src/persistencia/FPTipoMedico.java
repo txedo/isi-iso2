@@ -2,8 +2,6 @@ package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Random;
 import java.util.Vector;
 import comunicaciones.GestorConexionesBD;
 import dominio.conocimiento.Cabecera;
@@ -64,8 +62,6 @@ public class FPTipoMedico {
 		return tipo;
 	}
 	
-	// Este método recibe un número variable de argumentos. Un argumento es la categoria del médico (obligatorio)
-	// y otro es la especialidad, si la categoria del médico es especialista (opcional)
 	public static Vector<String> consultarMedicos(TipoMedico tipo) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
@@ -93,40 +89,7 @@ public class FPTipoMedico {
 
 		return lista;
 	}
-	
-	public static String consultarMedicoAleatorio(CategoriasMedico tipo) throws SQLException, UsuarioIncorrectoException {
-		ComandoSQL comando;
-		ResultSet datos;
-		ArrayList<String> listaDNIs;
-		Random rnd;
-		String dni;
-		
-		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_TIPOS_MEDICO
-				+ " WHERE " + COL_TIPO + " = ?", tipo.ordinal());
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
-		
-		// Si no se obtienen datos, es porque no hay ningún médico
-		// en el sistema de la categoría indicada
-		if(datos.getRow() == 0) {
-			datos.close();
-			throw new UsuarioIncorrectoException("No hay ningún médico de tipo " + tipo.name() + " registrado en el sistema.");
-		} else {
-			// Obtenemos los DNIs de todos los médicos del tipo indicado
-			listaDNIs = new ArrayList<String>();
-			do {
-				listaDNIs.add(datos.getString(COL_DNI_MEDICO));
-			} while(datos.next());
-			datos.close();
-			// Devolvemos un DNI aleatorio
-			rnd = new Random(System.currentTimeMillis());
-			dni = listaDNIs.get(rnd.nextInt(listaDNIs.size()));
-		}
-		
-		return dni;
-	}
-	
+
 	public static void insertar(String dniMedico, TipoMedico tipo) throws SQLException {
 		ComandoSQL comando;
 		

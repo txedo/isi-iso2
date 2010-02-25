@@ -7,7 +7,8 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-import dominio.conocimiento.ConfiguracionRespaldo;
+import comunicaciones.ConfiguracionRespaldo;
+import comunicaciones.UtilidadesComunicaciones;
 import dominio.control.ControladorRespaldo;
 import presentacion.JFServidorRespaldo;
 
@@ -27,6 +28,7 @@ public class PruebasJFServidorRespaldo extends org.uispec4j.UISpecTestCase {
 	private MenuItem mniConectar;
 	private MenuItem mniDesconectar;
 	private MenuItem mniConfigurar;
+	private MenuItem mniAcercaDe;
 	private MenuItem mniSalir;
 
 	public void setUp() {
@@ -43,8 +45,9 @@ public class PruebasJFServidorRespaldo extends org.uispec4j.UISpecTestCase {
 			lblConfigBD = winVentana.getTextBox("lblConfigBD");
 			mniConectar = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Conectar");
 			mniDesconectar = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Desconectar");
-			mniSalir = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Salir");
 			mniConfigurar = winVentana.getMenuBar().getMenu("Opciones").getSubMenu("Configurar...");
+			mniAcercaDe = winVentana.getMenuBar().getMenu("Ayuda").getSubMenu("Acerca de...");
+			mniSalir = winVentana.getMenuBar().getMenu("Archivo").getSubMenu("Salir");
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -76,7 +79,7 @@ public class PruebasJFServidorRespaldo extends org.uispec4j.UISpecTestCase {
 			assertFalse(mniDesconectar.isEnabled());
 			// Activamos el servidor
 			btnConectar.click();
-			assertEquals(lblBarraEstado.getText(), "Servidor preparado (puerto " + String.valueOf(puerto) + ").");
+			assertEquals(lblBarraEstado.getText(), "Servidor preparado en " + UtilidadesComunicaciones.obtenerIPHost() + " (puerto " + String.valueOf(puerto) + ").");
 			assertTrue(controlador.isServidorActivo());
 			assertFalse(btnConectar.isEnabled());
 			assertFalse(mniConectar.isEnabled());
@@ -156,6 +159,19 @@ public class PruebasJFServidorRespaldo extends org.uispec4j.UISpecTestCase {
 			// Comprobamos que el cambio se ha reflejado en la ventana
 			ip = (new ConfiguracionRespaldo()).getIPBDRespaldo();
 			assertEquals(lblConfigBD.getText(), "BD Respaldo: IP " + ip + ", puerto 8888");
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de la ventana 'Acerca de' */
+	public void testAcercaDe() {
+		Window dialogo;
+		
+		try {
+			// Abrimos la ventana de 'Acerca de' y la cerramos
+			dialogo = WindowInterceptor.run(mniAcercaDe.triggerClick());
+			dialogo.getButton("btnAceptar").click();
 		} catch(Exception e) {
 			fail(e.toString());
 		}

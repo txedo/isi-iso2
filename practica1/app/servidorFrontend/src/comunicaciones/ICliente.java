@@ -4,13 +4,11 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Interfaz con las operaciones que se pueden solicitar a los
- * clientes.
+ * Interfaz con las operaciones que se pueden solicitar a los clientes.
  */
 public interface ICliente extends Remote {
 	
 	public final String NOMBRE_CLIENTE = "cliente";
-	public final int PUERTO_INICIAL_CLIENTE = 3995;
 	
 	public String getDireccionIP() throws RemoteException;
 	
@@ -18,7 +16,7 @@ public interface ICliente extends Remote {
 	
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException;
 	
-	public void servidorInaccesible () throws RemoteException;
+	public void servidorInaccesible() throws RemoteException;
 	
 	public void cerrarSesion() throws RemoteException;
 	

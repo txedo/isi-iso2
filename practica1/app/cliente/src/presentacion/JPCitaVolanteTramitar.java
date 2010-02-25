@@ -39,7 +39,7 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.UtilidadesDominio;
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.Volante;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;

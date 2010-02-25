@@ -78,7 +78,7 @@ public class PruebasPersistencia extends PruebasBase {
 			medico4 = new Medico("89123479A", "especial", Encriptacion.encriptarPasswordSHA1("especial"), "Isabel", "P. G.", "", "", "", new Pediatra());
 			citador1 = new Citador("1112223A", "citador", Encriptacion.encriptarPasswordSHA1("abcdef"), "Luis", "E. G.", "luiseg55@yahoo.com", "", "612121212");
 			citador2 = new Citador("9998887A", "citador", Encriptacion.encriptarPasswordSHA1("abcdef"), "Ana", "B. E.", "", "989989989", "");
-			administrador1 = new Administrador("12121212A", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "Administrador", "", "adminssca@ssca.com", "900000000", "600000000");
+			administrador1 = new Administrador("12121212A", "admin", Encriptacion.encriptarPasswordSHA1("admin"), "Administrador", "", "adminssca@ssca.com", "900000000", "600000000");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro2);
@@ -731,15 +731,6 @@ public class PruebasPersistencia extends PruebasBase {
 		}
 		
 		try {
-			// Intentamos obtener un médico aleatorio antes de añadirlo
-			FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Pediatra);
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(UsuarioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		}
-		
-		try {
 			// Intentamos obtener una lista con los médicos especialistas
 			// antes de añadirlos para ver que se devuelve una lista vacía
 			medicos = FPTipoMedico.consultarMedicos(new Especialista(""));
@@ -776,9 +767,6 @@ public class PruebasPersistencia extends PruebasBase {
 			medicos = FPTipoMedico.consultarMedicos(new Pediatra());
 			assertTrue(medicos.size() == 1);
 			assertTrue(medicos.get(0).equals(medico4.getDni()));
-			// Obtenemos un médico de cabecera aleatorio
-			dni = FPTipoMedico.consultarMedicoAleatorio(CategoriasMedico.Cabecera);
-			assertTrue(dni.equals(medico2.getDni()) || dni.equals(medico3.getDni()));
 		} catch(Exception e) {
 			fail(e.toString());
 		}

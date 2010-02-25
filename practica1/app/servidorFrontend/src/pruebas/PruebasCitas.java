@@ -12,6 +12,7 @@ import persistencia.FPCita;
 import persistencia.FPSustitucion;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
@@ -30,7 +31,6 @@ import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Sesion;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.UtilidadesDominio;
 import dominio.conocimiento.Volante;
 import dominio.control.GestorSesiones;
 import dominio.control.ServidorFrontend;
@@ -109,7 +109,7 @@ public class PruebasCitas extends PruebasBase {
 			medico3 = new Medico("34581732", "medico3", Encriptacion.encriptarPasswordSHA1("pass"), "nombre", "apellido", "", "999000000", "666111111", especialista);
 			medico4 = new Medico("09761231", "medNoRegistrado", Encriptacion.encriptarPasswordSHA1("asas"), "E", "P", "", "", "", cabecera);
 			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "", "", "");
-			administrador1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.", "admin@terra.com", "911444111", "698098875");
+			administrador1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("admin"), "María", "L. F.", "admin@terra.com", "911444111", "698098875");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro1);
@@ -151,7 +151,7 @@ public class PruebasCitas extends PruebasBase {
 			FPVolante.insertar(volante2);
 			// Iniciamos tres sesiones con roles de citador, administrador y medico
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
-			sesionAdmin = GestorSesiones.identificar(administrador1.getLogin(), "nimda");
+			sesionAdmin = GestorSesiones.identificar(administrador1.getLogin(), "admin");
 			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
 		} catch(Exception e) {
 			fail(e.toString());

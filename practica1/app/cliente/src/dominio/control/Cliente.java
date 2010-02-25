@@ -45,11 +45,11 @@ public class Cliente implements ICliente {
 	public ControladorCliente getControlador() {
 		return controlador;
 	}
-	
+
 	public void setControlador(ControladorCliente controlador) {
 		this.controlador = controlador;
 	}
- 
+	
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
 		switch(operacion) {
 		case ICodigosOperacionesCliente.INSERTAR:

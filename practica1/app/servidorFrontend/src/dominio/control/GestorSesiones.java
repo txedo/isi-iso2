@@ -48,6 +48,14 @@ public class GestorSesiones {
 		boolean encontrado;
 		long idSesion;
 		
+		// Comprobamos los parámetros pasados
+		if(login == null) {
+			throw new NullPointerException("El nombre de usuario no puede ser nulo.");
+		}
+		if(password == null) {
+			throw new NullPointerException("La contraseña no puede ser nula.");
+		}
+		
 		// Encriptamos la contraseña del usuario
 		try {
 			passwordEncriptada = Encriptacion.encriptarPasswordSHA1(password);
@@ -78,11 +86,11 @@ public class GestorSesiones {
 				try {
 					// Forzamos a que el cliente antiguo salga del sistema
 					cliente.cerrarSesion();
-					ServidorFrontend.getServidor().liberar(sesionAbierta.getId());
 				} catch(RemoteException e) {
 					// Ignoramos la excepción
 				}
 			}
+			ServidorFrontend.getServidor().liberar(sesionAbierta.getId());
 		}
 
 		// Creamos un identificador único para la nueva sesión
@@ -103,6 +111,11 @@ public class GestorSesiones {
 	public static void registrar(long idSesion, ICliente cliente) throws SesionNoIniciadaException, RemoteException {
 		ProxyCliente proxyCliente;
 		Sesion sesion;
+		
+		// Comprobamos los parámetros pasados
+		if(cliente == null) {
+			throw new NullPointerException("El cliente que se quiere registrar no puede ser nulo.");
+		}
 		
 		// Comprobamos si la sesión es válida
 		sesion = sesiones.get(idSesion);

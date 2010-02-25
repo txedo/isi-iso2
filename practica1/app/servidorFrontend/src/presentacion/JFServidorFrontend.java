@@ -2,7 +2,8 @@ package presentacion;
 
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import dominio.conocimiento.ConfiguracionFrontend;
+import comunicaciones.ConfiguracionFrontend;
+
 import dominio.control.ControladorFrontend;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -93,14 +94,14 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		initGUI();
 		this.controlador = controlador;
 		configuracion = new ConfiguracionFrontend();
-		actualizarConfiguracion();
+		actualizarEstado();
 	}
 	
 	private void initGUI() {
 		try {
 			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			this.setTitle("Servidor Front-End");
-			this.setPreferredSize(new java.awt.Dimension(550, 400));
+			this.setPreferredSize(new java.awt.Dimension(577, 409));
 			this.setMinimumSize(new java.awt.Dimension(500, 300));
 			setLocationRelativeTo(null);
 			this.addWindowListener(new WindowAdapter() { 
@@ -316,7 +317,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		setEnabled(true);
 		frmConfiguracion.setVisible(false);
 		configuracion = frmConfiguracion.getConfiguracion();
-		actualizarConfiguracion();
+		actualizarEstado();
 		// Eliminamos la ventana de configuración
 		frmConfiguracion.dispose();
 	}
@@ -349,9 +350,9 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		cerrarServidor();
 	}
 	
-	private void actualizarConfiguracion() {
+	private void actualizarEstado() {
 		if(controlador != null && controlador.isServidorActivo()) {
-			lblBarraEstado.setText("Servidor preparado (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
+			lblBarraEstado.setText("Servidor preparado en " + controlador.getIPServidor() + " (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 		} else {
 			lblBarraEstado.setText("Servidor desconectado (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 		}
@@ -376,7 +377,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 			mniConfigurar.setEnabled(false);
 			btnDesconectar.setEnabled(true);
 			mniDesconectar.setEnabled(true);
-			lblBarraEstado.setText("Servidor preparado (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
+			actualizarEstado();
 			ok = true;
 		} catch(SQLException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
@@ -411,7 +412,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 			mniConectar.setEnabled(true);
 			mniConfigurar.setEnabled(true);
 			actualizarClientesEscuchando(controlador.getNumeroClientesConectados());
-			lblBarraEstado.setText("Servidor desconectado (puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
+			actualizarEstado();
 			ok = true;
 		} catch(SQLException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());

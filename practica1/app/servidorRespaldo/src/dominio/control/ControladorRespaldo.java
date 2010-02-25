@@ -1,6 +1,5 @@
 package dominio.control;
 
-import java.net.Inet4Address;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
@@ -8,8 +7,9 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import comunicaciones.ConfiguracionRespaldo;
 import comunicaciones.RemotoServidorRespaldo;
-import dominio.conocimiento.ConfiguracionRespaldo;
+import comunicaciones.UtilidadesComunicaciones;
 import presentacion.JFServidorRespaldo;
 
 /**
@@ -19,20 +19,14 @@ public class ControladorRespaldo {
 
 	private RemotoServidorRespaldo remotoServidor;
 	private JFServidorRespaldo ventana;
+	private String ipServidor;
 	private boolean servidorActivo;
 
 	public ControladorRespaldo() {
 		remotoServidor = null;
 		servidorActivo = false;
+		ipServidor = null;
 		ventana = new JFServidorRespaldo(this);
-	}
-	
-	public JFServidorRespaldo getVentana() {
-		return ventana;
-	}
-	
-	public boolean isServidorActivo() {
-		return servidorActivo;
 	}
 	
 	public void mostrarVentana() {
@@ -46,21 +40,26 @@ public class ControladorRespaldo {
 	
 	public void iniciarServidorRespaldo(ConfiguracionRespaldo configuracion) throws MalformedURLException, RemoteException, NotBoundException, SQLException, UnknownHostException {
 		SimpleDateFormat formatoFecha;
-		String ipLocal;
 
 		// Obtenemos la IP de la máquina local
-		ipLocal = Inet4Address.getLocalHost().getHostAddress();
+		ipServidor = UtilidadesComunicaciones.obtenerIPHost();
+		
+		// Indicamos a RMI que debe utilizar la IP obtenida como IP de este host
+		// en las comunicaciones remotas; esta instrucción es necesaria porque
+		// si el ordenador pertenece a más de una red, puede que RMI tome una IP
+		// privada como IP del host y las comunicaciones entrantes no funcionen
+		System.setProperty("java.rmi.server.hostname", ipServidor);
 		
 		// Configuramos y activamos la clase remota para
 		// acceder al servidor de respaldo
 		try {
-			ServidorRespaldo.getServidor().getConexionBD().getAgente().setIP(configuracion.getIPBDRespaldo());
-			ServidorRespaldo.getServidor().getConexionBD().getAgente().setPuerto(configuracion.getPuertoBDRespaldo());
-			ServidorRespaldo.getServidor().getConexionEstado().ponerVentana(ventana);
 			remotoServidor = RemotoServidorRespaldo.getServidor();
-			remotoServidor.activar(ipLocal, configuracion.getPuertoRespaldo());
+			((ServidorRespaldo)remotoServidor.getServidorExportado()).getConexionBD().getAgente().setIP(configuracion.getIPBDRespaldo());
+			((ServidorRespaldo)remotoServidor.getServidorExportado()).getConexionBD().getAgente().setPuerto(configuracion.getPuertoBDRespaldo());
+			((ServidorRespaldo)remotoServidor.getServidorExportado()).getConexionEstado().ponerVentana(ventana);
+			remotoServidor.activar(ipServidor, configuracion.getPuertoRespaldo());
 		} catch(RemoteException e) {
-			throw new RemoteException("No se puede poner a la escucha el servidor de respaldo en la dirección IP " + ipLocal + " y el puerto " + configuracion.getPuertoRespaldo() + ".");
+			throw new RemoteException("No se puede poner a la escucha el servidor de respaldo en la dirección IP " + ipServidor + " y el puerto " + configuracion.getPuertoRespaldo() + ".");
 		}
 
 		// Mostramos un mensaje indicando que el servidor está activo
@@ -73,14 +72,10 @@ public class ControladorRespaldo {
 	
 	public void detenerServidorRespaldo(ConfiguracionRespaldo configuracion) throws RemoteException, MalformedURLException, SQLException, UnknownHostException {
 		SimpleDateFormat formatoFecha;
-		String ipLocal;
-
-		// Obtenemos la IP de la máquina local
-		ipLocal = Inet4Address.getLocalHost().getHostAddress();
 		
 		// Desactivamos las clases remotas del servidor de respaldo
-		if(remotoServidor != null) {
-			remotoServidor.desactivar(ipLocal, configuracion.getPuertoRespaldo());
+		if(remotoServidor != null && ipServidor != null) {
+			remotoServidor.desactivar(ipServidor, configuracion.getPuertoRespaldo());
 		}
 
 		// Mostramos un mensaje indicando que el servidor está inactivo
@@ -90,5 +85,17 @@ public class ControladorRespaldo {
 		// El servidor no está activo
 		servidorActivo = false;
 	}
+
+	public JFServidorRespaldo getVentana() {
+		return ventana;
+	}
 	
+	public boolean isServidorActivo() {
+		return servidorActivo;
+	}
+	
+	public String getIPServidor() {
+		return ipServidor;
+	}
+
 }

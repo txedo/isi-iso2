@@ -16,6 +16,7 @@ public enum Operaciones {
 	RegistrarUsuario,
 	ModificarUsuario,
 	EliminarUsuario,
+	ConsultarCentros,
 	// Operaciones del Gestor de Médicos
 	ConsultarMedico,
 	RegistrarMedico,
@@ -34,6 +35,4 @@ public enum Operaciones {
 	// Operaciones del Gestor de Volantes
 	ConsultarVolante,
 	EmitirVolante,
-	// Operaciones del Gestor de Centros
-	ConsultarCentros
 }

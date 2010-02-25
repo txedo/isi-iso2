@@ -79,7 +79,7 @@ public class PruebasVolantes extends PruebasBase {
 			medico3 = new Medico("34581732", "medico3", Encriptacion.encriptarPasswordSHA1("pass"), "nombre", "apellido", "nombre@correos.es", "", "", especialista);
 			medico4 = new Medico("09761231", "medNoRegistrado", Encriptacion.encriptarPasswordSHA1("asas"), "E", "P", "", "999888777", "666555444", cabecera);
 			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "", "" ,"");
-			administrador1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.", "admin@yahoo.com", "999999999", "666666666");
+			administrador1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("admin"), "María", "L. F.", "admin@yahoo.com", "999999999", "666666666");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro1);
@@ -121,7 +121,7 @@ public class PruebasVolantes extends PruebasBase {
 			FPVolante.insertar(volante2);
 			// Iniciamos tres sesiones con roles de citador, administrador y medico
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
-			sesionAdmin = GestorSesiones.identificar(administrador1.getLogin(), "nimda");
+			sesionAdmin = GestorSesiones.identificar(administrador1.getLogin(), "admin");
 			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
 		} catch(Exception e) {
 			fail(e.toString());
