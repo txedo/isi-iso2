@@ -21,6 +21,7 @@ import presentacion.JPBeneficiarioConsultar;
 import presentacion.auxiliar.Validacion;
 
 import com.toedter.calendar.JDateChooser;
+import comunicaciones.ConfiguracionCliente;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Direccion;
@@ -85,7 +86,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(IPServidorFrontend, puertoServidorFrontend, usuarioAdmin, passwordAdmin);
+						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
 					} catch(Exception e) {
 						fail(e.toString());
 					}

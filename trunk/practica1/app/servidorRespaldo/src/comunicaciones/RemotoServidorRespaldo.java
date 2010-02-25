@@ -11,7 +11,6 @@ import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import dominio.control.ServidorRespaldo;
 import persistencia.ComandoSQL;
 
@@ -75,6 +74,10 @@ public class RemotoServidorRespaldo extends UnicastRemoteObject implements IServ
 		}
     }
 	
+    public IServidorRespaldo getServidorExportado() {
+    	return servidor;
+    }
+    
 	// Métodos de acceso a la base de datos
 	
 	public void abrir() throws RemoteException, SQLException {

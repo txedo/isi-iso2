@@ -7,7 +7,8 @@ import org.uispec4j.CheckBox;
 import org.uispec4j.TextBox;
 import org.uispec4j.Window;
 
-import dominio.conocimiento.ConfiguracionFrontend;
+import comunicaciones.ConfiguracionFrontend;
+
 import presentacion.JFConfigFrontend;
 
 /**

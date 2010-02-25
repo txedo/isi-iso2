@@ -3,6 +3,8 @@ package dominio.conocimiento;
 import java.io.Serializable;
 import java.util.Date;
 
+import dominio.UtilidadesDominio;
+
 /**
  * Clase que representa un volante que relaciona un beneficiario, un médico
  * emisor y un médico receptor.

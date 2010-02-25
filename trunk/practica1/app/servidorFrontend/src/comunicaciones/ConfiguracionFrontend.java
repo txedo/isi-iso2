@@ -1,7 +1,7 @@
-package dominio.conocimiento;
+package comunicaciones;
 
 /**
- * Clase con la configuración del servidor frontend.
+ * Clase con la configuración de conexión del servidor frontend.
  */
 public class ConfiguracionFrontend {
 

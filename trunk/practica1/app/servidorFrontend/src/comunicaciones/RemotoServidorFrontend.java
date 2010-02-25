@@ -32,7 +32,7 @@ import excepciones.VolanteNoValidoException;
  * Clase que exporta la instancia que será utilizada por los clientes
  * para ejecutar operaciones de la fachada del servidor front-end.
  */
-public class RemotoServidorFrontend extends UnicastRemoteObject implements IServidorFrontend{
+public class RemotoServidorFrontend extends UnicastRemoteObject implements IServidorFrontend {
 
 	private static final long serialVersionUID = 7735848879217866237L;
 	
@@ -86,6 +86,10 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
     		Naming.unbind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR);
     	} catch(NotBoundException ex) {
     	}
+    }
+    
+    public IServidorFrontend getServidorExportado() {
+    	return servidor;
     }
     
     // Métodos de gestión de sesiones

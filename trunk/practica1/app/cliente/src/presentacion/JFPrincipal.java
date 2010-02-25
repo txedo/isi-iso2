@@ -85,7 +85,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JMenu jMenu4;
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar;
-	private JLabel lblPuertoEscucha;
+	private JLabel lblIPPuerto;
 	private JButton btnCerrarSesion;
 	private JButton btnCerrarAplicacion;
 	private JLabel lblBarraEstado;
@@ -177,10 +177,10 @@ public class JFPrincipal extends javax.swing.JFrame {
 				jPanelOperaciones.setLayout(jPanelOperacionesLayout);
 				jPanelOperaciones.setPreferredSize(new java.awt.Dimension(692, 479));
 				{
-					lblPuertoEscucha = new JLabel();
-					jPanelOperaciones.add(lblPuertoEscucha, new AnchorConstraint(961, 567, 7, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					lblPuertoEscucha.setPreferredSize(new java.awt.Dimension(382, 17));
-					lblPuertoEscucha.setText("Puerto de escucha: XXXX");
+					lblIPPuerto = new JLabel();
+					jPanelOperaciones.add(lblIPPuerto, new AnchorConstraint(961, 567, 7, 12, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
+					lblIPPuerto.setPreferredSize(new java.awt.Dimension(382, 17));
+					lblIPPuerto.setText("Puerto de escucha: XXXX");
 				}
 				{
 					btnCerrarSesion = new JButton();
@@ -276,6 +276,8 @@ public class JFPrincipal extends javax.swing.JFrame {
 			e.printStackTrace();
 		}
 	}
+	
+	//$hide>>$
 	
 	private void menuitemAcercaDeActionPerformed(ActionEvent evt) {
 		frmAcercaDe = new JFAcercaDe();
@@ -399,7 +401,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private void configurarInterfaz(Vector<Operaciones> operaciones) {
 		// Inicializamos la barra de estado
 		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + RolesUsuario.values()[(int)controlador.getSesion().getRol()]);
-		lblPuertoEscucha.setText("Puerto de escucha: " + controlador.getPuertoEscucha());
+		lblIPPuerto.setText("Cliente preparado en " + controlador.getIPCliente() + " (puerto " + controlador.getPuertoEscucha() + ")");
 
 		// Inicializamos los paneles de gestión de beneficiarios
 		if(!operaciones.contains(Operaciones.ConsultarBeneficiario)) {
@@ -514,7 +516,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 				controlador.cerrarSesion();
 				restablecerPaneles();
 				lblBarraEstado.setText("La sesión ha finalizado con éxito.");
-				lblPuertoEscucha.setText("");
+				lblIPPuerto.setText("");
 			}
 		} catch (RemoteException e) {
 			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());

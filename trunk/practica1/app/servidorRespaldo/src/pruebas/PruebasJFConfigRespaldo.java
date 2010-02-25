@@ -6,7 +6,8 @@ import org.uispec4j.Button;
 import org.uispec4j.TextBox;
 import org.uispec4j.Window;
 
-import dominio.conocimiento.ConfiguracionRespaldo;
+import comunicaciones.ConfiguracionRespaldo;
+
 import presentacion.JFConfigRespaldo;
 
 /**

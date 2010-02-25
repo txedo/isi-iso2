@@ -11,10 +11,12 @@ import java.util.Hashtable;
 import java.util.Vector;
 import presentacion.JFLogin;
 import presentacion.JFPrincipal;
+import comunicaciones.ConfiguracionCliente;
 import comunicaciones.RemotoCliente;
 import comunicaciones.ICliente;
 import comunicaciones.IServidorFrontend;
 import comunicaciones.ProxyServidorFrontend;
+import comunicaciones.UtilidadesComunicaciones;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Cita;
@@ -48,37 +50,25 @@ public class ControladorCliente {
 	private JFLogin ventanaLogin;
 	private JFPrincipal ventanaPrincipal;
 	private String usuarioAutenticado;
+	private String ipCliente;
 	
 	public ControladorCliente() {
 		servidor = null;
+		ipCliente = null;
 	}
 	
 	public JFPrincipal getVentanaPrincipal() {
 		return ventanaPrincipal;
 	}
 	
-	public void cerrarControlador () throws RemoteException, MalformedURLException, NotBoundException {
-		if (cliente != null) {
-			cliente.desactivar();
-		}
-		if (ventanaLogin != null) {
-			ventanaLogin.setVisible(false);
-			ventanaLogin.dispose();
-		}
-		if (ventanaPrincipal != null) {
-			ventanaPrincipal.setVisible(false);
-			ventanaPrincipal.dispose();
-		}
-		System.exit(0);
-	}
-	
 	public void identificarse() {
-		if (ventanaLogin != null) {
+		// Ocultamos y cerramos las ventanas si todavía estaban abiertas
+		if(ventanaLogin != null) {
 			ventanaLogin.setVisible(false);
 			ventanaLogin.dispose();
 			ventanaLogin = null;
 		}
-		if (ventanaPrincipal != null) {
+		if(ventanaPrincipal != null) {
 			ventanaPrincipal.setVisible(false);
 			ventanaPrincipal.dispose();
 			ventanaPrincipal = null;
@@ -86,55 +76,52 @@ public class ControladorCliente {
 		// Creamos la ventana de login y la mostramos
 		ventanaLogin = new JFLogin();
 		ventanaLogin.setControlador(this);
+		ventanaLogin.setLocationRelativeTo(null);
 		ventanaLogin.setVisible(true);
 	}
 	
-	public ISesion getSesion() {
-		return sesion;
-	}	
-	
-	public IServidorFrontend getServidor() {
-		return servidor;
-	}
-	
-	public String getUsuarioAutenticado () {
-		return usuarioAutenticado;
-	}
-	
-	public int getPuertoEscucha () {
-		int puerto = ICliente.PUERTO_INICIAL_CLIENTE;
-		try {
-			puerto = cliente.getPuerto();
-		} catch (RemoteException e) {
-		}
-		return puerto;
-	}
-	
-	public void iniciarSesion(String direccionIP, int puerto, String login, String password) throws SQLException, UsuarioIncorrectoException, MalformedURLException, RemoteException, NotBoundException, UnknownHostException, Exception {
+	public void iniciarSesion(ConfiguracionCliente configuracion, String login, String password) throws SQLException, UsuarioIncorrectoException, MalformedURLException, RemoteException, NotBoundException, UnknownHostException, Exception {
+		// Obtenemos la IP de la máquina local
+		ipCliente = UtilidadesComunicaciones.obtenerIPHost();
+		
+		// Indicamos a RMI que debe utilizar la IP obtenida como IP de este host
+		// en las comunicaciones remotas; esta instrucción es necesaria porque
+		// si el ordenador pertenece a más de una red, puede que RMI tome una IP
+		// privada como IP del host y las comunicaciones entrantes no funcionen
+		System.setProperty("java.rmi.server.hostname", ipCliente);
+
 		try {
 			// Establecemos conexión con el servidor front-end
 			servidor = new ProxyServidorFrontend();
-			servidor.conectar(direccionIP, puerto);
+			servidor.conectar(configuracion.getIPFrontend(), configuracion.getPuertoFrontend());
 		} catch(NotBoundException e) {
-			throw new NotBoundException("No se puede conectar con el servidor front-end porque está desactivado (IP " + direccionIP + ", puerto " + String.valueOf(puerto) + ").");
+			throw new NotBoundException("No se puede conectar con el servidor front-end porque está desactivado (IP " + configuracion.getIPFrontend() + ", puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 		} catch(RemoteException e) {
-			throw new RemoteException("No se puede conectar con el servidor front-end (IP " + direccionIP + ", puerto " + String.valueOf(puerto) + ").");
+			throw new RemoteException("No se puede conectar con el servidor front-end (IP " + configuracion.getIPFrontend() + ", puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 		}
 		
 		try {
 			// Nos identificamos en el servidor
 			sesion = (ISesion)servidor.identificar(login, password);
 			usuarioAutenticado = login;
-			// Una vez que el cliente se ha identificado correctamente, registramos el cliente en el servidor
-			cliente = RemotoCliente.getCliente();
-			cliente.setControlador(this);
-			cliente.activar();
-			servidor.registrar((ICliente)cliente, sesion.getId());
 		} catch(RemoteException e) {
-			throw new RemoteException("No se puede conectar con el servidor front-end (IP " + direccionIP + ", puerto " + String.valueOf(puerto) + ").");
+			throw new RemoteException("No se puede identificar el usuario en el servidor front-end (IP " + configuracion.getIPFrontend() + ", puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 		}
 		
-		// Ocultamos la ventana de login y mostramos la ventana principal
+		try {
+			// Creamos y activamos el cliente remoto
+			cliente = RemotoCliente.getCliente();
+			cliente.activar(ipCliente);
+			((Cliente)cliente.getClienteExportado()).setDireccionIP(ipCliente);
+			((Cliente)cliente.getClienteExportado()).setPuerto(cliente.getPuertoEscucha());
+			((Cliente)cliente.getClienteExportado()).setControlador(this);
+			// Registramos el cliente en el servidor
+			servidor.registrar((ICliente)cliente, sesion.getId());
+		} catch(RemoteException e) {
+			throw new RemoteException("No se puede registrar el cliente en el servidor front-end (IP " + configuracion.getIPFrontend() + ", puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
+		}
+		
+		// Ocultamos y cerramos las ventanas si todavía estaban abiertas
 		if(ventanaLogin != null) {
 			ventanaLogin.setVisible(false);
 			ventanaLogin.dispose();
@@ -144,12 +131,49 @@ public class ControladorCliente {
 			ventanaPrincipal.dispose();
 			ventanaPrincipal = null;
 		}
+		// Creamos la ventana principal y la mostramos
 		ventanaPrincipal = new JFPrincipal(this);
 		ventanaPrincipal.iniciar();
 		ventanaPrincipal.setLocationRelativeTo(null);
 		ventanaPrincipal.setVisible(true);
 	}
 
+	public void cerrarControlador() throws RemoteException, MalformedURLException, NotBoundException {
+		if(cliente != null) {
+			cliente.desactivar(ipCliente);
+		}
+		if(ventanaLogin != null) {
+			ventanaLogin.setVisible(false);
+			ventanaLogin.dispose();
+		}
+		if(ventanaPrincipal != null) {
+			ventanaPrincipal.setVisible(false);
+			ventanaPrincipal.dispose();
+		}
+//		System.exit(0);
+	}
+	
+	public ISesion getSesion() {
+		return sesion;
+	}	
+	
+	public String getUsuarioAutenticado() {
+		return usuarioAutenticado;
+	}
+
+	public IServidorFrontend getServidor() {
+		return servidor;
+	}
+		
+	public int getPuertoEscucha() {
+		return cliente.getPuertoEscucha();
+	}
+	
+	public String getIPCliente() {
+		return ipCliente;
+	}
+	
+	
 	// ---------------------------
 	// Métodos servidor -> cliente
 	// ---------------------------

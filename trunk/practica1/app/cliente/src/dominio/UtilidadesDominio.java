@@ -1,7 +1,9 @@
-package dominio.conocimiento;
+package dominio;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import dominio.conocimiento.DiaSemana;
 
 /**
  * Clase con métodos estáticos auxiliares utilizados en otras clases.

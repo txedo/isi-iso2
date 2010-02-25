@@ -70,7 +70,7 @@ public class PruebasUsuarios extends PruebasBase {
 			medico3 = new Medico("58782350", "jjj", Encriptacion.encriptarPasswordSHA1("jjj"), "Juan", "P. F.", "", "987654321", "678901234", especialista);
 			medico4 = new Medico("91295016", "otro", Encriptacion.encriptarPasswordSHA1("otro"), "Ana", "R. M.", "anarm87@uclm.es", "", "666777012", cabecera);
 			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "", "", "");
-			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("nimda"), "María", "L. F.", "mari@terra.com", "", "666111222");
+			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("admin"), "María", "L. F.", "mari@terra.com", "", "666111222");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro1);
@@ -101,7 +101,7 @@ public class PruebasUsuarios extends PruebasBase {
 			FPBeneficiario.insertar(beneficiario1);
 			// Iniciamos dos sesiones con roles de citador y administrador
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
-			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "nimda");
+			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "admin");
 		} catch(Exception e) {
 			fail(e.toString());
 		}

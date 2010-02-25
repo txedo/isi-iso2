@@ -3,7 +3,9 @@ package pruebas;
 import java.rmi.RemoteException;
 import org.uispec4j.Trigger;
 import org.uispec4j.interception.WindowInterceptor;
-import dominio.conocimiento.ConfiguracionRespaldo;
+
+import comunicaciones.ConfiguracionRespaldo;
+
 import dominio.control.ControladorRespaldo;
 import junit.framework.TestCase;
 

@@ -1,7 +1,7 @@
-package dominio.conocimiento;
+package comunicaciones;
 
 /**
- * Clase con la configuración del servidor de respaldo.
+ * Clase con la configuración de la conexión del servidor de respaldo.
  */
 public class ConfiguracionRespaldo {
 
