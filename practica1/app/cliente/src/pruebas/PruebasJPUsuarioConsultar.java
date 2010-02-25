@@ -6,8 +6,10 @@ import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -718,6 +720,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	public void testEliminarMedico2() {
 		eliminadoMedico = false;
 		Beneficiario beneficiarioPrueba;
+		Medico medicoAsignado;
 		final Window [] windows = new Window[1];
 		
 		try {
@@ -733,14 +736,15 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			beneficiarioPrueba.setCentroSalud(controlador.consultarCentros().firstElement());
 			controlador.crearBeneficiario(beneficiarioPrueba);
 			
+			medicoAsignado = controlador.consultarBeneficiarioPorNIF(beneficiarioPrueba.getNif()).getMedicoAsignado();
 			// Creamos una cita de prueba		
-			Cita c = controlador.pedirCita(beneficiarioPrueba, controlador.consultarBeneficiarioPorNIF(beneficiarioPrueba.getNif()).getMedicoAsignado().getDni(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
+			Cita c = controlador.pedirCita(beneficiarioPrueba, medicoAsignado.getDni(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
 
 			// Buscamos el usuario
-			txtNIFBuscado.setText(cabecera.getDni());
+			txtNIFBuscado.setText(medicoAsignado.getDni());
 			btnBuscar.click();
 			assertEquals(txtNIFBuscado.getText(), "");
-			assertEquals(txtNIF.getText(), cabecera.getDni());
+			assertEquals(txtNIF.getText(), medicoAsignado.getDni());
 			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled().isTrue());
 			assertTrue(!chkEditar.isSelected().isTrue());
@@ -768,7 +772,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			comprobarCamposVacios();
 			// Comprobamos que el usuario ha sido eliminado correctamente
 			// Buscamos el usuario
-			txtNIFBuscado.setText(cabecera.getDni());
+			txtNIFBuscado.setText(medicoAsignado.getDni());
 			btnBuscar.click();
 			WindowInterceptor.init(btnBuscar.triggerClick()).process(new WindowHandler() {
 				public Trigger process (Window window) {

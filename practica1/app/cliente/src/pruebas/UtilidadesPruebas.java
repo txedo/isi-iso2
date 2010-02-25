@@ -12,7 +12,6 @@ import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
-import presentacion.JFCalendarioLaboral;
 import presentacion.auxiliar.Validacion;
 
 public class UtilidadesPruebas {
