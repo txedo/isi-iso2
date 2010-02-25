@@ -18,7 +18,6 @@ import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
@@ -99,7 +98,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 		// los formularios o paneles que utilizan JPCitaVolanteTramitar
 	}
 	
-	public JPCitaVolanteTramitar(JFrame frame, ControladorCliente controlador) {
+	public JPCitaVolanteTramitar(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 		cambiarEstadoConsulta(false);
@@ -157,6 +156,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				this.add(pnlBeneficiario, new AnchorConstraint(0, 0, 608, 0, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				pnlBeneficiario.setPreferredSize(new java.awt.Dimension(430, 182));
 				pnlBeneficiario.reducirPanel();
+				pnlBeneficiario.setPreguntarRegistro(true);
 				pnlBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
 					public void beneficiarioBuscado(EventObject evt) {
 						pnlBeneficiarioConsultarBeneficiarioBuscado(evt);
@@ -314,7 +314,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 			// Mostramos los datos del volante encontrado
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Volante encontrado.");
 			txtNumeroVolante.setText("");
-			txtMedicoAsignado.setText(volante.getReceptor().getApellidos() + ", " + volante.getReceptor().getNombre() + " (" + volante.getReceptor().getDni() + ")");
+			txtMedicoAsignado.setText(volante.getReceptor().getApellidos() + ", " + volante.getReceptor().getNombre() + " (" + volante.getReceptor().getNif() + ")");
 			txtCentro.setText(volante.getReceptor().getCentroSalud().getNombre() + "; " + volante.getReceptor().getCentroSalud().getDireccion());
 			
 			// Mostramos las fechas y horas disponibles para pedir una cita
@@ -342,9 +342,9 @@ public class JPCitaVolanteTramitar extends JPBase {
 			
 			// Consultamos al servidor toda la información
 			// necesaria para el panel de tramitación
-			diasOcupados = getControlador().consultarDiasCompletos(volante.getReceptor().getDni());
-			citasOcupadas = getControlador().consultarHorasCitasMedico(volante.getReceptor().getDni());
-			horasCitas = getControlador().consultarHorarioMedico(volante.getReceptor().getDni());
+			diasOcupados = getControlador().consultarDiasCompletos(volante.getReceptor().getNif());
+			citasOcupadas = getControlador().consultarHorasCitasMedico(volante.getReceptor().getNif());
+			horasCitas = getControlador().consultarHorarioMedico(volante.getReceptor().getNif());
 						
 			// Deshabilitamos los días de la semana que no son
 			// laborables para el médico del beneficiario
@@ -417,11 +417,11 @@ public class JPCitaVolanteTramitar extends JPBase {
 				fecha = dtcDiaCita.getDate();
 				diaCita = new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes());
 				// Consultamos qué médico daría realmente la cita
-				medico = getControlador().consultarMedicoCita(volante.getReceptor().getDni(), diaCita);
-				if(medico.getDni().equals(volante.getReceptor().getDni())) {
-					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + ")");
+				medico = getControlador().consultarMedicoCita(volante.getReceptor().getNif(), diaCita);
+				if(medico.getNif().equals(volante.getReceptor().getNif())) {
+					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getNif() + ")");
 				} else {
-					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + "), sustituye a " + volante.getReceptor().getApellidos() + ", " + volante.getReceptor().getNombre() + " (" + volante.getReceptor().getDni() + ")");
+					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getNif() + "), sustituye a " + volante.getReceptor().getApellidos() + ", " + volante.getReceptor().getNombre() + " (" + volante.getReceptor().getNif() + ")");
 				}
 			} else {
 				txtMedico.setText("(fecha no válida)");
@@ -552,7 +552,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha modificado el especialista asociado al volante desde otro cliente.");
 					// Otro cliente ha actualizado el especialista asignado al volante
-					txtMedicoAsignado.setText(usuario.getApellidos() + ", " + usuario.getNombre() + " (" + usuario.getDni() + ")");
+					txtMedicoAsignado.setText(usuario.getApellidos() + ", " + usuario.getNombre() + " (" + usuario.getNif() + ")");
 					// Se puede haber modificado el horario del médico, por lo que recargamos las horas disponibles para dar cita
 					mostrarHorasCitasMedico();
 				}

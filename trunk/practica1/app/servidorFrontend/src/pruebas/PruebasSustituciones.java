@@ -110,7 +110,7 @@ public class PruebasSustituciones extends PruebasBase {
 
 		try {
 			// Intentamos obtener los sustitutos de un médico en un día nulo
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getDni(), null, 0, 0 });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), null, 0, 0 });
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -119,7 +119,7 @@ public class PruebasSustituciones extends PruebasBase {
 	
 		try {
 			// Intentamos obtener los sustitutos de un médico con una sesión sin permisos
-			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getDni(), new Date(), 0, 0 });
+			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), new Date(), 0, 0 });
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -128,7 +128,7 @@ public class PruebasSustituciones extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getDni(), new Date(), 0, 0 });
+			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), new Date(), 0, 0 });
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -138,7 +138,7 @@ public class PruebasSustituciones extends PruebasBase {
 		try {
 			// Intentamos obtener los sustitutos de un médico inexistente
 			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico.getDni(), new Date(), 0, 0 });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico.getNif(), new Date(), 0, 0 });
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -147,7 +147,7 @@ public class PruebasSustituciones extends PruebasBase {
 		
 		try {
 			// Intentamos obtener los sustitutos de un usuario que no es médico
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { admin1.getDni(), new Date(), 0, 0 });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { admin1.getNif(), new Date(), 0, 0 });
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -158,7 +158,7 @@ public class PruebasSustituciones extends PruebasBase {
 			// Intentamos obtener los sustitutos de un médico en un día anterior a hoy
 			calend = Calendar.getInstance();
 			calend.add(Calendar.DAY_OF_MONTH, -3);
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getDni(), calend.getTime(), 9, 19 });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), calend.getTime(), 9, 19 });
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -167,7 +167,7 @@ public class PruebasSustituciones extends PruebasBase {
 		
 		try {
 			// Intentamos obtener los sustitutos de un médico en un rango de horas no válido
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getDni(), new Date(), 5, 19 });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), new Date(), 5, 19 });
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -176,7 +176,7 @@ public class PruebasSustituciones extends PruebasBase {
 
 		try {
 			// Intentamos obtener los sustitutos de un médico en un rango de horas no válido
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getDni(), new Date(), 9, 23 });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), new Date(), 9, 23 });
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -185,7 +185,7 @@ public class PruebasSustituciones extends PruebasBase {
 		
 		try {
 			// Intentamos obtener los sustitutos de un médico en un rango de horas no válido
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getDni(), new Date(), 19, 9 });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), new Date(), 19, 9 });
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -195,7 +195,7 @@ public class PruebasSustituciones extends PruebasBase {
 		try {
 			// Intentamos obtener los sustitutos de un médico en una fecha que no trabaja
 			calend = new GregorianCalendar(2015, 1, 11); // Miércoles 11/2/2015
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getDni(), calend.getTime(), 16, 19 });
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), calend.getTime(), 16, 19 });
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -241,7 +241,7 @@ public class PruebasSustituciones extends PruebasBase {
 			calend = new GregorianCalendar(2015, 1, 12); // Jueves 12/2/2015
 			sustitucion = new Sustitucion(calend.getTime(), 15, 18, m3, m6);
 			FPSustitucion.insertar(sustitucion);
-			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m3.getDni(), calend.getTime(), 16, 18 });
+			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m3.getNif(), calend.getTime(), 16, 18 });
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -254,7 +254,7 @@ public class PruebasSustituciones extends PruebasBase {
 			calend = new GregorianCalendar(2015, 1, 11); // Miércoles 11/2/2015
 			sustitucion = new Sustitucion(calend.getTime(), 15, 18, m1, m4);
 			FPSustitucion.insertar(sustitucion);
-			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m4.getDni(), calend.getTime(), 17, 20 });
+			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m4.getNif(), calend.getTime(), 17, 20 });
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -264,20 +264,20 @@ public class PruebasSustituciones extends PruebasBase {
 		try {
 			// Buscamos los sustitutos posibles para el médico m1 un lunes de 10 a 11
 			calend = new GregorianCalendar(2015, 1, 9); // Lunes 9/2/2015
-			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m1.getDni(), calend.getTime(), 10, 11 });
+			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m1.getNif(), calend.getTime(), 10, 11 });
 			assertTrue(medicos.size() == 0);
 			// Buscamos los sustitutos posibles para el médico m1 un lunes de 13 a 15
 			calend = new GregorianCalendar(2015, 1, 9); // Lunes 9/2/2015
-			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m1.getDni(), calend.getTime(), 13, 15 });
+			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m1.getNif(), calend.getTime(), 13, 15 });
 			assertTrue(medicos.size() == 0);
 			// Buscamos los sustitutos posibles para el médico m1 un lunes de 11 a 13
 			calend = new GregorianCalendar(2015, 1, 9); // Lunes 9/2/2015
-			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m1.getDni(), calend.getTime(), 11, 13 });
+			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m1.getNif(), calend.getTime(), 11, 13 });
 			assertTrue(medicos.size() == 1);
 			assertTrue(medicos.get(0).equals(m2));
 			// Buscamos los sustitutos posibles para el médico m2 un martes de 14 a 16
 			calend = new GregorianCalendar(2015, 1, 10); // Martes 10/2/2015
-			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m2.getDni(), calend.getTime(), 14, 16 });
+			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m2.getNif(), calend.getTime(), 14, 16 });
 			assertTrue(medicos.size() == 2);
 			assertTrue((medicos.get(0).equals(m1) && medicos.get(1).equals(m3))
 			            || (medicos.get(0).equals(m3) && medicos.get(1).equals(m1)));
@@ -287,7 +287,7 @@ public class PruebasSustituciones extends PruebasBase {
 			calend = new GregorianCalendar(2015, 1, 10); // Martes 10/2/2015
 			sustitucion = new Sustitucion(calend.getTime(), 14, 15, m4, m3);
 			FPSustitucion.insertar(sustitucion);
-			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m2.getDni(), calend.getTime(), 14, 16 });
+			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m2.getNif(), calend.getTime(), 14, 16 });
 			assertTrue(medicos.size() == 2);
 			assertTrue((medicos.get(0).equals(m1) && medicos.get(1).equals(m3))
 			            || (medicos.get(0).equals(m3) && medicos.get(1).equals(m1)));
@@ -297,7 +297,7 @@ public class PruebasSustituciones extends PruebasBase {
 			calend = new GregorianCalendar(2015, 1, 10); // Martes 10/2/2015
 			sustitucion = new Sustitucion(calend.getTime(), 14, 15, m5, m3);
 			FPSustitucion.insertar(sustitucion);
-			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m2.getDni(), calend.getTime(), 14, 16 });
+			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m2.getNif(), calend.getTime(), 14, 16 });
 			assertTrue(medicos.size() == 1);
 			assertTrue(medicos.get(0).equals(m1));
 			// Añadimos una sustitución del médico 1 el martes de 14 a 15
@@ -306,7 +306,7 @@ public class PruebasSustituciones extends PruebasBase {
 			calend = new GregorianCalendar(2015, 1, 10); // Martes 10/2/2015
 			sustitucion = new Sustitucion(calend.getTime(), 14, 15, m1, m6);
 			FPSustitucion.insertar(sustitucion);
-			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m2.getDni(), calend.getTime(), 14, 16 });
+			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m2.getNif(), calend.getTime(), 14, 16 });
 			assertTrue(medicos.size() == 0);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -481,7 +481,7 @@ public class PruebasSustituciones extends PruebasBase {
 			dias.add(calend.getTime());
 			servidor.modificarCalendario(sesionAdmin.getId(), m1, dias, new Date(2010 - 1900, 0, 1, 11, 0), new Date(2010 - 1900, 0, 1, 13, 0), m2);
 			// Comprobamos que la sustitución se ha añadido
-			sustituciones = FPSustitucion.consultarPorSustituido(m1.getDni());
+			sustituciones = FPSustitucion.consultarPorSustituido(m1.getNif());
 			assertTrue(sustituciones.contains(new Sustitucion(calend.getTime(), 11, 13, m1, m2)));
 		} catch(Exception e) {
 			fail(e.toString());

@@ -12,7 +12,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPasswordField;
@@ -113,7 +112,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		// los formularios o paneles que utilizan JPUsuarioRegistrar
 	}
 	
-	public JPUsuarioRegistrar(JFrame frame, ControladorCliente controlador) {
+	public JPUsuarioRegistrar(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		periodos = new Vector<PeriodoTrabajo>();
 		initGUI();
@@ -390,7 +389,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 					usuario = new Medico();
 					break;
 			}
-			usuario.setDni(txtNIF.getText().trim().toUpperCase());
+			usuario.setNif(txtNIF.getText().trim().toUpperCase());
 			usuario.setNombre(txtNombre.getText().trim());
 			usuario.setApellidos(txtApellidos.getText().trim());
 			usuario.setLogin(txtLogin.getText().trim());
@@ -420,7 +419,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			getControlador().crearUsuario(usuario);
 			
 			// Obtenemos el médico que se ha asignado al beneficiario
-			centro = getControlador().consultarUsuario(usuario.getDni()).getCentroSalud();
+			centro = getControlador().consultarUsuario(usuario.getNif()).getCentroSalud();
 
 			// Mostramos el resultado de la operación y limpiamos el panel
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido dado de alta en el sistema y se\nle ha asignado automáticamente el siguiente centro:\n" + centro.getNombre() + " (" + centro.getDireccion() + ")");

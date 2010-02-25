@@ -17,7 +17,6 @@ import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
@@ -83,7 +82,7 @@ public class JPCitaTramitar extends JPBase {
 		// los formularios o paneles que utilizan JPCitaTramitar
 	}
 	
-	public JPCitaTramitar(JFrame frame, ControladorCliente controlador) {
+	public JPCitaTramitar(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 		cambiarEstado(false);
@@ -116,6 +115,7 @@ public class JPCitaTramitar extends JPBase {
 				this.add(pnlBeneficiario, new AnchorConstraint(0, 0, 608, 0, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				pnlBeneficiario.setPreferredSize(new java.awt.Dimension(430, 237));
 				pnlBeneficiario.reducirPanel();
+				pnlBeneficiario.setPreguntarRegistro(true);
 				pnlBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
 					public void beneficiarioBuscado(EventObject evt) {
 						pnlBeneficiarioBeneficiarioBuscado(evt);
@@ -212,9 +212,9 @@ public class JPCitaTramitar extends JPBase {
 				
 				// Consultamos al servidor toda la información
 				// necesaria para el panel de tramitación
-				diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getDni());
-				citasOcupadas = getControlador().consultarHorasCitasMedico(beneficiario.getMedicoAsignado().getDni());
-				horasCitas = getControlador().consultarHorarioMedico(beneficiario.getMedicoAsignado().getDni());
+				diasOcupados = getControlador().consultarDiasCompletos(beneficiario.getMedicoAsignado().getNif());
+				citasOcupadas = getControlador().consultarHorasCitasMedico(beneficiario.getMedicoAsignado().getNif());
+				horasCitas = getControlador().consultarHorarioMedico(beneficiario.getMedicoAsignado().getNif());
 				
 				// Deshabilitamos los días de la semana que no son
 				// laborables para el médico del beneficiario
@@ -285,11 +285,11 @@ public class JPCitaTramitar extends JPBase {
 				fecha = dtcDiaCita.getDate();
 				diaCita = new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes());
 				// Consultamos qué médico daría realmente la cita
-				medico = getControlador().consultarMedicoCita(beneficiario.getMedicoAsignado().getDni(), diaCita);
-				if(medico.getDni().equals(beneficiario.getMedicoAsignado().getDni())) {
-					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + ")");
+				medico = getControlador().consultarMedicoCita(beneficiario.getMedicoAsignado().getNif(), diaCita);
+				if(medico.getNif().equals(beneficiario.getMedicoAsignado().getNif())) {
+					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getNif() + ")");
 				} else {
-					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + "), sustituye a " + beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getDni() + ")");
+					txtMedico.setText(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getNif() + "), sustituye a " + beneficiario.getMedicoAsignado().getApellidos() + ", " + beneficiario.getMedicoAsignado().getNombre() + " (" + beneficiario.getMedicoAsignado().getNif() + ")");
 				}
 			} else {
 				txtMedico.setText("(fecha no válida)");
@@ -318,7 +318,7 @@ public class JPCitaTramitar extends JPBase {
 				fecha = dtcDiaCita.getDate();
 				
 				// Solicitamos la cita
-				getControlador().pedirCita(beneficiario, beneficiario.getMedicoAsignado().getDni(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes()), IConstantes.DURACION_CITA);
+				getControlador().pedirCita(beneficiario, beneficiario.getMedicoAsignado().getNif(), new Date(fecha.getYear(), fecha.getMonth(), fecha.getDate(), hora.getHours(), hora.getMinutes()), IConstantes.DURACION_CITA);
 				
 				// Mostramos el resultado de la operación y limpiamos el panel
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita ha quedado registrada.");
@@ -398,7 +398,7 @@ public class JPCitaTramitar extends JPBase {
 	
 	public void usuarioActualizado(Usuario usuario) {
 		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
-		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario que pide la cita
 			pnlBeneficiario.usuarioActualizado(usuario);
 			// Se puede haber modificado el horario del médico, por lo que recargamos las horas disponibles para dar cita
@@ -408,7 +408,7 @@ public class JPCitaTramitar extends JPBase {
 	
 	public void usuarioEliminado(Usuario usuario) {
 		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
-		 && beneficiario.getMedicoAsignado().getDni().equals(((Medico)usuario).getDni())) {
+		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario que pide la cita
 			pnlBeneficiario.usuarioEliminado(usuario);
 			limpiarCamposTramitacion();

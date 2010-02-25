@@ -178,7 +178,7 @@ public class Beneficiario implements Serializable, Cloneable {
 	}
 	
 	public String toString() {
-		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion.toString() + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", C: " + ((centroSalud == null) ? "(ninguno)" : centroSalud.getNombre()) + ", M:" + ((medicoAsignado == null) ? "(ninguno)" : medicoAsignado.getDni()); 
+		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion.toString() + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", C: " + ((centroSalud == null) ? "(ninguno)" : centroSalud.getNombre()) + ", M:" + ((medicoAsignado == null) ? "(ninguno)" : medicoAsignado.getNif()); 
 	}
 
 }

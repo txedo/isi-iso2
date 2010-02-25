@@ -1,15 +1,12 @@
 package presentacion;
 
-import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
-
 import presentacion.auxiliar.OperacionCambiadaEvent;
 import presentacion.auxiliar.OperacionCambiadaListener;
 import presentacion.auxiliar.OperacionesInterfaz;
-
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
@@ -54,7 +51,7 @@ public class JPBeneficiarios extends JPBase {
 		// los formularios o paneles que utilizan JPBeneficiarios
 	}
 	
-	public JPBeneficiarios(JFrame frame, ControladorCliente controlador) {
+	public JPBeneficiarios(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		listenerList = new EventListenerList();
 		operacionSeleccionada = OperacionesInterfaz.OperacionInvalida;
@@ -181,6 +178,10 @@ public class JPBeneficiarios extends JPBase {
 	
 	public OperacionesInterfaz getOperacionSeleccionada() {
 		return operacionSeleccionada;
+	}
+	
+	public void setOperacionSeleccionada(OperacionesInterfaz operacionSeleccionada) {
+		jPanelListaOperaciones.setOperacion(operacionSeleccionada);
 	}
 	
 	public void addOperacionCambiadaListener(OperacionCambiadaListener listener) {

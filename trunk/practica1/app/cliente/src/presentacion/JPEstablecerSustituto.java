@@ -8,7 +8,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -79,7 +78,7 @@ public class JPEstablecerSustituto extends JPBase {
 		// los formularios o paneles que utilizan JPEstablecerSustituto
 	}
 	
-	public JPEstablecerSustituto(JFrame frame, ControladorCliente controlador) {
+	public JPEstablecerSustituto(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 		cambiarEstadoConsulta(false);
@@ -250,7 +249,7 @@ public class JPEstablecerSustituto extends JPBase {
 					
 					// Consultamos al servidor el horario completo del médico
 					// para saber qué días no va a trabajar
-					horasCitas = getControlador().consultarHorarioMedico(medico.getDni());
+					horasCitas = getControlador().consultarHorarioMedico(medico.getNif());
 					// Deshabilitamos los días de la semana que no son
 					// laborables para el médico
 					dtcDiaSustitucion.quitarDiasSemanaDesactivados();
@@ -296,7 +295,7 @@ public class JPEstablecerSustituto extends JPBase {
 				
 				// Obtenemos la lista de médicos que pueden sustituir
 				// al médico buscado en la fecha y hora dadas
-				sustitutos = getControlador().obtenerPosiblesSustitutos(medico.getDni(), dtcDiaSustitucion.getDate(), (Integer)spnHoraDesde.getValue(), (Integer)spnHoraHasta.getValue());
+				sustitutos = getControlador().obtenerPosiblesSustitutos(medico.getNif(), dtcDiaSustitucion.getDate(), (Integer)spnHoraDesde.getValue(), (Integer)spnHoraHasta.getValue());
 				if(sustitutos.size() == 0) {
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Búsqueda fallida", "No se ha encontrado ningún médico que pueda hacer la sustitución solicitada.");
 				} else {
@@ -309,7 +308,7 @@ public class JPEstablecerSustituto extends JPBase {
 					}
 					nombres = new Vector<String>();
 					for(Medico medico : sustitutos) {
-						nombres.add(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getDni() + ")");
+						nombres.add(medico.getApellidos() + ", " + medico.getNombre() + " (" + medico.getNif() + ")");
 					}
 					rellenarListaSustitutos(nombres);
 					
@@ -349,7 +348,7 @@ public class JPEstablecerSustituto extends JPBase {
 				getControlador().asignarSustituto(medico, dias, (Integer)spnHoraDesde.getValue(), (Integer)spnHoraHasta.getValue(), sustituto);
 
 				// Obtenemos las citas que se ven afectadas por la sustitución
-				citas = getControlador().consultarCitasFechaMedico(medico.getDni(), dtcDiaSustitucion.getDate(), (Integer)spnHoraDesde.getValue(), (Integer)spnHoraHasta.getValue());
+				citas = getControlador().consultarCitasFechaMedico(medico.getNif(), dtcDiaSustitucion.getDate(), (Integer)spnHoraDesde.getValue(), (Integer)spnHoraHasta.getValue());
 
 				// Mostramos el resultado de la operación y limpiamos el panel
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La sustitución se ha almacenado correctamente.");
@@ -411,13 +410,13 @@ public class JPEstablecerSustituto extends JPBase {
 		boolean actualizado;
 		
 		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
-		 && medico.getDni().equals(((Medico)usuario).getDni())) {
+		 && medico.getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha actualizado el médico que se va a sustituir
 			pnlMedico.usuarioActualizado(usuario);
 		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuario.Medico) {
 			actualizado = false;
 			for(Medico sustituto : sustitutos) {
-				if(!actualizado && sustituto.getDni().equals(usuario.getDni())) {
+				if(!actualizado && sustituto.getNif().equals(usuario.getNif())) {
 					// Otro cliente ha actualizado alguno de los posibles médicos sustitutos
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Alguno de los posibles sustitutos ha sido modificado por otro cliente.");
 					buscarSustitutos();
@@ -431,14 +430,14 @@ public class JPEstablecerSustituto extends JPBase {
 		boolean actualizado;
 
 		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
-		 && medico.getDni().equals(((Medico)usuario).getDni())) {
+		 && medico.getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha eliminado el médico que se va a sustituir
 			pnlMedico.usuarioEliminado(usuario);
 			limpiarCamposConsulta();
 		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuario.Medico) {
 			actualizado = false;
 			for(Medico sustituto : sustitutos) {
-				if(!actualizado && sustituto.getDni().equals(usuario.getDni())) {
+				if(!actualizado && sustituto.getNif().equals(usuario.getNif())) {
 					// Otro cliente ha eliminado alguno de los posibles médicos sustitutos
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Alguno de los posibles sustitutos ha sido eliminado por otro cliente.");
 					buscarSustitutos();

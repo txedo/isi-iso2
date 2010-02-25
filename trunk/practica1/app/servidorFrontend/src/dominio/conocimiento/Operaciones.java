@@ -32,7 +32,8 @@ public enum Operaciones {
 	TramitarCita,
 	TramitarCitaVolante,
 	AnularCita,
+	ConsultarCitasPropiasMedico,
 	// Operaciones del Gestor de Volantes
 	ConsultarVolante,
-	EmitirVolante,
+	EmitirVolante
 }

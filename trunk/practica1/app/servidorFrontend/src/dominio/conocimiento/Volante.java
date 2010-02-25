@@ -97,7 +97,7 @@ public class Volante implements Serializable {
 	}
 
 	public String toString() {
-		return "E:" + emisor.getDni() + ", R:" + receptor.getDni() + ", B:" + beneficiario.getNif() + ", " + (cita == null ? "(sin cita)" : cita.getFechaYHora().toString());
+		return "E:" + emisor.getNif() + ", R:" + receptor.getNif() + ", B:" + beneficiario.getNif() + ", " + (cita == null ? "(sin cita)" : cita.getFechaYHora().toString());
 	}
 	
 }

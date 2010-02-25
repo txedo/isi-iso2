@@ -19,8 +19,8 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 		super();
 	}
 	
-	public Medico(String dni, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil, TipoMedico tipo) {
-		super(dni, login, password, nombre, apellidos, correo, telefono, movil);
+	public Medico(String nif, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil, TipoMedico tipo) {
+		super(nif, login, password, nombre, apellidos, correo, telefono, movil);
 		calendario = new Vector<PeriodoTrabajo>();
 		tipoMedico = tipo;
 	}
@@ -172,7 +172,7 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 	public Object clone() {
 		Medico m;
 		
-		m = new Medico(dni, login, password, nombre, apellidos, correo, telefono, movil, tipoMedico);
+		m = new Medico(nif, login, password, nombre, apellidos, correo, telefono, movil, tipoMedico);
 		if(centro == null) {
 			m.setCentroSalud(null);
 		} else {

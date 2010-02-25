@@ -17,7 +17,7 @@ public class UtilidadesPersistencia {
 
 	private static final String COL_USUARIOS_NIF = "nif";
 	private static final String COL_BENEFICIARIOS_NIF = "nif";
-	private static final String COL_DNI_MEDICO = "dniMedico";
+	private static final String COL_NIF_MEDICO = "nifMedico";
 	private static final String COL_TIPO_MEDICO = "tipo";
 	private static final String COL_CENTRO = "idCentro";
 	
@@ -46,9 +46,9 @@ public class UtilidadesPersistencia {
 		String nif;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT " + COL_DNI_MEDICO + " FROM "
+		comando = new ComandoSQLSentencia("SELECT " + COL_NIF_MEDICO + " FROM "
 				+ TABLA_TIPOS_MEDICO + ", " + TABLA_USUARIOS + " WHERE " + 
-				COL_DNI_MEDICO + " = " + COL_USUARIOS_NIF + " AND " +
+				COL_NIF_MEDICO + " = " + COL_USUARIOS_NIF + " AND " +
 				COL_TIPO_MEDICO + " = ? AND " + COL_CENTRO + " = ? ORDER BY RAND() LIMIT 1",
 				tipoMedico.ordinal(), centro.getId()); 
 		datos = GestorConexionesBD.consultar(comando);
@@ -58,7 +58,7 @@ public class UtilidadesPersistencia {
 		// cadena vacía si no hay ningún médico que cumpla las condiciones
 		nif = "";
 		if(datos.getRow() != 0) {
-			nif = datos.getString(COL_DNI_MEDICO);
+			nif = datos.getString(COL_NIF_MEDICO);
 		}
 		
 		return nif;

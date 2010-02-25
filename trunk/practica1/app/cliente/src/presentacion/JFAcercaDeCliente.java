@@ -37,10 +37,7 @@ import presentacion.auxiliar.VentanaCerradaListener;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-/**
- * Ventana Acerca De del servidor 
- */
-public class JFAcercaDe extends javax.swing.JFrame {
+public class JFAcercaDeCliente extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -4903915570854306815L;
 
@@ -60,7 +57,7 @@ public class JFAcercaDe extends javax.swing.JFrame {
 	private JLabel lblTitulo;
 	private JTextPane txtAcercaDe;
 	
-	public JFAcercaDe() {
+	public JFAcercaDeCliente() {
 		super();
 		initGUI();
 		listenerList = new EventListenerList();
@@ -71,7 +68,7 @@ public class JFAcercaDe extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			AnchorLayout thisLayout = new AnchorLayout();
 			getContentPane().setLayout(thisLayout);
-			this.setTitle("Acerca del Servidor Front-End (SSCA)");
+			this.setTitle("Acerca de la Unidad de Citación (SSCA)");
 			{
 				jPanel1 = new JPanel();
 				AnchorLayout jPanel1Layout = new AnchorLayout();
@@ -81,7 +78,7 @@ public class JFAcercaDe extends javax.swing.JFrame {
 				{
 					lblTitulo2 = new JLabel();
 					jPanel1.add(lblTitulo2, new AnchorConstraint(36, 15, 210, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
-					lblTitulo2.setText("Servidor Front-End");
+					lblTitulo2.setText("Unidad de Citación");
 					lblTitulo2.setPreferredSize(new java.awt.Dimension(389, 26));
 					lblTitulo2.setFont(new java.awt.Font("Tahoma",1,20));
 					lblTitulo2.setOpaque(false);
@@ -119,7 +116,6 @@ public class JFAcercaDe extends javax.swing.JFrame {
 					jPanel1.add(btnAceptar, new AnchorConstraint(866, 14, 12, 753, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnAceptar.setText("Aceptar");
 					btnAceptar.setPreferredSize(new java.awt.Dimension(83, 25));
-					btnAceptar.setName("btnAceptar");
 					btnAceptar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnAceptarActionPerformed(evt);

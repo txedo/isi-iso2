@@ -30,18 +30,18 @@ import excepciones.UsuarioIncorrectoException;
 public class GestorSustituciones {
 
 	// Método que devuelve una lista de posibles sustitutos para un médico en una fecha
-	public static Vector<Medico> obtenerPosiblesSustitutos(long idSesion, String dniMedico, Date dia, int horaDesde, int horaHasta) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, CentroSaludInexistenteException, DireccionInexistenteException, MedicoInexistenteException, UsuarioIncorrectoException, NullPointerException, FechaNoValidaException {
+	public static Vector<Medico> obtenerPosiblesSustitutos(long idSesion, String nifMedico, Date dia, int horaDesde, int horaHasta) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, CentroSaludInexistenteException, DireccionInexistenteException, MedicoInexistenteException, UsuarioIncorrectoException, NullPointerException, FechaNoValidaException {
 		Vector<Medico> sustitutos;
 		Vector<String> horasCitas, horasSust;
 		Vector<Sustitucion> sustituciones;
-		Vector<String> dnis;
+		Vector<String> nifs;
 		Usuario usuario;
 		Medico medico, medicoSust;
 		boolean ok;
 		
 		// Comprobamos los parámetros pasados
-		if(dniMedico == null) {
-			throw new NullPointerException("El DNI del médico para el que se quiere buscar un sustituto no puede ser nulo.");
+		if(nifMedico == null) {
+			throw new NullPointerException("El NIF del médico para el que se quiere buscar un sustituto no puede ser nulo.");
 		}
 		if(dia == null) {
 			throw new NullPointerException("El día para el que se quiere buscar un sustituto a un médico no puede ser nulo.");			
@@ -52,9 +52,9 @@ public class GestorSustituciones {
 
 		// Recuperamos los datos del médico
 		try {
-			usuario = FPUsuario.consultar(dniMedico);
+			usuario = FPUsuario.consultar(nifMedico);
 			if(usuario.getRol() != RolesUsuario.Medico) {
-				throw new MedicoInexistenteException("El DNI introducido no pertenece a un médico.");
+				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 			medico = (Medico)usuario;
 		} catch(UsuarioIncorrectoException ex) {
@@ -83,7 +83,7 @@ public class GestorSustituciones {
 		
 		// Comprobamos que no haya ya alguien sustituyendo al médico
 		// en todo o parte del rango de horas indicado
-		sustituciones = FPSustitucion.consultarPorSustituido(medico.getDni());
+		sustituciones = FPSustitucion.consultarPorSustituido(medico.getNif());
 		for(Sustitucion sustitucion : sustituciones) {
 			if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)
 			 && sustitucion.horaEnSustitucion(horaDesde, horaHasta)) {
@@ -93,7 +93,7 @@ public class GestorSustituciones {
 		
 		// Comprobamos que el médico no esté sustituyendo a otro
 		// médico en todo o parte del rango de horas indicado
-		sustituciones = FPSustitucion.consultarPorSustituto(medico.getDni());
+		sustituciones = FPSustitucion.consultarPorSustituto(medico.getNif());
 		for(Sustitucion sustitucion : sustituciones) {
 			if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)
 			 && sustitucion.horaEnSustitucion(horaDesde, horaHasta)) {
@@ -104,17 +104,17 @@ public class GestorSustituciones {
 		// Obtenemos los médicos del sistema que son del mismo tipo
 		// que el médico pasado como parámetro, para limitar un
 		// poco la búsqueda de sustitutos
-		dnis = FPTipoMedico.consultarMedicos(medico.getTipoMedico());
+		nifs = FPTipoMedico.consultarMedicos(medico.getTipoMedico());
 		
 		// Nos quedamos con los médicos encontrados que realmente pueden
 		// hacer una sustitución en la fecha y hora dadas
 		sustitutos = new Vector<Medico>();
-		for(String dni : dnis) {
+		for(String nif : nifs) {
 			
 			// El médico sustituto debe ser exactamente del mismo tipo (p.ej.
 			// si son especialistas deben serlo de la misma especialidad) y
 			// trabajar en el mismo centro que el médico a sustituir
-			medicoSust = (Medico)FPUsuario.consultar(dni);
+			medicoSust = (Medico)FPUsuario.consultar(nif);
 			if(!medicoSust.equals(medico)
 			   && medicoSust.getCentroSalud().equals(medico.getCentroSalud())
 			   && medicoSust.getTipoMedico().equals(medico.getTipoMedico())) {
@@ -122,7 +122,7 @@ public class GestorSustituciones {
 				// Comprobamos que este médico no esté ya siendo sustituido
 				// en las horas en las que se debe hacer la sustitución
 				ok = true;
-				sustituciones = FPSustitucion.consultarPorSustituido(medicoSust.getDni());
+				sustituciones = FPSustitucion.consultarPorSustituido(medicoSust.getNif());
 				for(Sustitucion sustitucion : sustituciones) {
 					if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)
 					 && sustitucion.horaEnSustitucion(horaDesde, horaHasta)) {
@@ -198,7 +198,7 @@ public class GestorSustituciones {
 	
 		// Comprobamos que existan los médicos sustituto y sustituido
 		try {
-			usuario = FPUsuario.consultar(medico.getDni());
+			usuario = FPUsuario.consultar(medico.getNif());
 			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El médico sustituido no es un usuario del sistema con rol de médico.");
 			}
@@ -207,7 +207,7 @@ public class GestorSustituciones {
 			throw new MedicoInexistenteException(ex.getMessage());
 		}
 		try {
-			usuario = FPUsuario.consultar(sustituto.getDni());
+			usuario = FPUsuario.consultar(sustituto.getNif());
 			if(usuario.getRol() != RolesUsuario.Medico) {
 				throw new MedicoInexistenteException("El médico sustituto no es un usuario del sistema con rol de médico.");
 			}
@@ -228,7 +228,7 @@ public class GestorSustituciones {
 		// (dentro de este método se comprobará que la fecha y
 		// las horas de la sustitución son válidas)
 		for(Date dia : dias) {
-			medicos = obtenerPosiblesSustitutos(idSesion, medico.getDni(), dia, horaDesdeN, horaHastaN);
+			medicos = obtenerPosiblesSustitutos(idSesion, medico.getNif(), dia, horaDesdeN, horaHastaN);
 			if(!medicos.contains(sustituto)) {
 				throw new SustitucionInvalidaException("El médico sustituto propuesto no puede realizar la sustitución del día " + dia.toString() + ".");
 			}
@@ -262,7 +262,7 @@ public class GestorSustituciones {
 		// también tiene que trabajar por sustituir a otro médico,
 		// y esto lo hacemos recursivamente por si ese médico estaba
 		// sustituyendo a otro médico diferente
-		sustituciones = FPSustitucion.consultarPorSustituto(medico.getDni());
+		sustituciones = FPSustitucion.consultarPorSustituto(medico.getNif());
 		for(Sustitucion sustitucion : sustituciones) {
 			if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)) {
 				horasCitas.addAll(horasTrabajo(sustitucion.getMedico(), dia, horaDesde, horaHasta));

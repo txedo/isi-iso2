@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public abstract class Usuario implements Serializable, Cloneable {
 
-	protected String dni;
+	protected String nif;
 	protected String login;
 	protected String password;
 	protected String nombre;
@@ -20,8 +20,8 @@ public abstract class Usuario implements Serializable, Cloneable {
 	public Usuario() {
 	}
 	
-	public Usuario(String dni, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil) {
-		this.dni = dni;
+	public Usuario(String nif, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil) {
+		this.nif = nif;
 		this.login = login;
 		this.password = password;
 		this.nombre = nombre;
@@ -33,12 +33,12 @@ public abstract class Usuario implements Serializable, Cloneable {
 
 	public abstract RolesUsuario getRol();
 	
-	public String getDni() {
-		return dni;
+	public String getNif() {
+		return nif;
 	}
 
-	public void setDni(String dni) {
-		this.dni = dni;
+	public void setNif(String nif) {
+		this.nif = nif;
 	}
 
 	public String getLogin() {
@@ -114,7 +114,7 @@ public abstract class Usuario implements Serializable, Cloneable {
 		dev = false;
 		if(o != null && o instanceof Usuario) {
 			u = (Usuario)o;
-			dev = dni.equals(u.getDni()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && correo.equals(u.getCorreo()) && telefono.equals(u.getTelefono()) && movil.equals(u.getMovil());
+			dev = nif.equals(u.getNif()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && correo.equals(u.getCorreo()) && telefono.equals(u.getTelefono()) && movil.equals(u.getMovil());
 			if(centro == null) {
 				dev = dev & (u.getCentroSalud() == null);
 			} else {
@@ -125,7 +125,7 @@ public abstract class Usuario implements Serializable, Cloneable {
 	}
 
 	public String toString() {
-		return getRol().toString() + ": " + dni + ", " + login + ", " + password + ", " + nombre + ", " + apellidos;
+		return getRol().toString() + ": " + nif + ", " + login + ", " + password + ", " + nombre + ", " + apellidos;
 	}
 	
 }

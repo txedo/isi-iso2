@@ -1,7 +1,6 @@
 package presentacion;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
@@ -51,7 +50,7 @@ public class JPUsuarios extends JPBase {
 		// los formularios o paneles que utilizan JPUsuarios
 	}
 	
-	public JPUsuarios(JFrame frame, ControladorCliente controlador) {
+	public JPUsuarios(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		listenerList = new EventListenerList();
 		operacionSeleccionada = OperacionesInterfaz.OperacionInvalida;
@@ -178,6 +177,10 @@ public class JPUsuarios extends JPBase {
 	
 	public OperacionesInterfaz getOperacionSeleccionada() {
 		return operacionSeleccionada;
+	}
+
+	public void setOperacionSeleccionada(OperacionesInterfaz operacionSeleccionada) {
+		jPanelListaOperaciones.setOperacion(operacionSeleccionada);
 	}
 
 	public void addOperacionCambiadaListener(OperacionCambiadaListener listener) {

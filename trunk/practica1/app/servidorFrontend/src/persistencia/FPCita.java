@@ -27,7 +27,7 @@ public class FPCita {
 	private static final String COL_FECHA = "fecha";
 	private static final String COL_DURACION = "duracion";
 	private static final String COL_NIF_BENEFICIARIO = "nifBeneficiario";
-	private static final String COL_DNI_MEDICO = "dniMedico";
+	private static final String COL_NIF_MEDICO = "nifMedico";
 	
 	public static Cita consultar(long id) throws SQLException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
@@ -54,7 +54,7 @@ public class FPCita {
 			cita.setDuracion(datos.getInt(COL_DURACION));
 			beneficiario = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
 			cita.setBeneficiario(beneficiario);
-			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
 			if(medico.getRol() != RolesUsuario.Medico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("La cita con id " + String.valueOf(id) + " no tiene asociado un usuario con rol de médico.");
@@ -66,7 +66,7 @@ public class FPCita {
 		return cita;
 	}
 	
-	public static Cita consultar(Date fechaYHora, long duracion, String dniMedico, String nifBeneficiario) throws SQLException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Cita consultar(Date fechaYHora, long duracion, String nifMedico, String nifBeneficiario) throws SQLException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Beneficiario beneficiario;
@@ -76,8 +76,8 @@ public class FPCita {
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CITAS
 				+ " WHERE " + COL_FECHA + " = ? AND " + COL_DURACION + " = ? AND "
-				+ COL_DNI_MEDICO + " = ? AND " + COL_NIF_BENEFICIARIO + " = ?",
-				fechaYHora, duracion, dniMedico, nifBeneficiario);
+				+ COL_NIF_MEDICO + " = ? AND " + COL_NIF_BENEFICIARIO + " = ?",
+				fechaYHora, duracion, nifMedico, nifBeneficiario);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 		
@@ -93,7 +93,7 @@ public class FPCita {
 			cita.setDuracion(datos.getInt(COL_DURACION));
 			beneficiario = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
 			cita.setBeneficiario(beneficiario);
-			medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+			medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
 			if(medico.getRol() != RolesUsuario.Medico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("La cita con los datos indicados no tiene asociado un usuario con rol de médico.");
@@ -135,7 +135,7 @@ public class FPCita {
 				cita.setFechaYHora(new Date(datos.getTimestamp(COL_FECHA).getTime()));
 				cita.setDuracion(datos.getInt(COL_DURACION));
 				cita.setBeneficiario(beneficiario);
-				medico = FPUsuario.consultar(datos.getString(COL_DNI_MEDICO));
+				medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
 				if(medico.getRol() != RolesUsuario.Medico) {
 					datos.close();
 					throw new UsuarioIncorrectoException("Alguna de las citas del beneficiario con NIF " + nifBeneficiario + " no tiene asociado un usuario con rol de médico.");
@@ -149,7 +149,7 @@ public class FPCita {
 		return citas;
 	}
 
-	public static Vector<Cita> consultarPorMedico(String dniMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Vector<Cita> consultarPorMedico(String nifMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;
 		Vector<Cita> citas;
@@ -159,16 +159,16 @@ public class FPCita {
 
 		// Consultamos la base de datos
 		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CITAS
-				+ " WHERE " + COL_DNI_MEDICO + " = ? ORDER BY " + COL_FECHA
-				+ " ASC", dniMedico);
+				+ " WHERE " + COL_NIF_MEDICO + " = ? ORDER BY " + COL_FECHA
+				+ " ASC", nifMedico);
 		datos = GestorConexionesBD.consultar(comando);
 		datos.next();
 
 		// Obtenemos los datos del médico
-		medico = FPUsuario.consultar(dniMedico);
+		medico = FPUsuario.consultar(nifMedico);
 		if(medico.getRol() != RolesUsuario.Medico) {
 			datos.close();
-			throw new UsuarioIncorrectoException("No se pueden consultar las citas del usuario con DNI " + String.valueOf(dniMedico) + " porque no es un médico.");
+			throw new UsuarioIncorrectoException("No se pueden consultar las citas del usuario con NIF " + String.valueOf(nifMedico) + " porque no es un médico.");
 		}
 		
 		// Si no se obtienen datos, es porque el médico no tiene citas,
@@ -200,9 +200,9 @@ public class FPCita {
 		// Modificamos la base de datos
 		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CITAS
 				+ " (" + COL_FECHA + ", " + COL_DURACION + ", " + COL_NIF_BENEFICIARIO
-				+ ", " + COL_DNI_MEDICO + ") VALUES (?, ?, ?, ?)",
+				+ ", " + COL_NIF_MEDICO + ") VALUES (?, ?, ?, ?)",
 				cita.getFechaYHora(), cita.getDuracion(),
-				cita.getBeneficiario().getNif(), cita.getMedico().getDni());
+				cita.getBeneficiario().getNif(), cita.getMedico().getNif());
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Recuperamos el id autonumérico asignado a la nueva cita

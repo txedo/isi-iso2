@@ -27,12 +27,12 @@ public class GestorBeneficiarios {
 	private static final int EDAD_PEDIATRA = 14;
 	
 	// Método para obtener los datos de un beneficiario consultando por NIF
-	public static Beneficiario consultarBeneficiarioPorNIF(long idSesion, String dni) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
+	public static Beneficiario consultarBeneficiarioPorNIF(long idSesion, String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
 		Beneficiario beneficiario = null;
 		Medico medico;
 		
 		// Comprobamos los parámetros pasados
-		if(dni == null) {
+		if(nif == null) {
 			throw new NullPointerException("El NIF del beneficiario buscado no puede ser nulo.");
 		}
 		
@@ -40,7 +40,7 @@ public class GestorBeneficiarios {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiario);
 		
 		// Obtenemos el beneficiario con el NIF indicado
-		beneficiario = FPBeneficiario.consultarPorNIF(dni);
+		beneficiario = FPBeneficiario.consultarPorNIF(nif);
 				
 		// Miramos si es necesario cambiar el médico asignado al beneficiario
 		medico = obtenerMedicoBeneficiario(beneficiario);
@@ -97,7 +97,7 @@ public class GestorBeneficiarios {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.RegistrarBeneficiario);
 		
 		// Consultamos si ya existe otro usuario u otro
-		// beneficiario en el sistema con el mismo DNI
+		// beneficiario en el sistema con el mismo NIF
 		existe = UtilidadesPersistencia.existeNIF(beneficiario.getNif());
 		if(existe) {
 			throw new BeneficiarioYaExistenteException("Ya existe una persona en el sistema registrada con el NIF " + beneficiario.getNif() + "."); 
@@ -167,20 +167,20 @@ public class GestorBeneficiarios {
 	}
 	
 	// Método que devuelve todos los beneficiarios que tiene un médico
-	public static Vector<Beneficiario> consultarBeneficiariosMedico(long idSesion, String dniMedico) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
+	public static Vector<Beneficiario> consultarBeneficiariosMedico(long idSesion, String nifMedico) throws SQLException, SesionInvalidaException, OperacionIncorrectaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		Vector<Beneficiario> beneficiarios;
 		Vector<String> nifs;
 		
 		// Comprobamos los parámetros pasados
-		if(dniMedico == null) {
-			throw new NullPointerException("El DNI del médico del que se quieren buscar sus beneficiarios no puede ser nulo.");
+		if(nifMedico == null) {
+			throw new NullPointerException("El NIF del médico del que se quieren buscar sus beneficiarios no puede ser nulo.");
 		}
 		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarBeneficiariosMedico);
 		
 		// Obtenemos los NIFs de todos los beneficiarios asociados a ese médico
-		nifs = FPBeneficiario.consultarBeneficiariosMedico(dniMedico);
+		nifs = FPBeneficiario.consultarBeneficiariosMedico(nifMedico);
 		
 		// Recuperamos los beneficiarios con los NIFs anteriores
 		beneficiarios = new Vector<Beneficiario>();

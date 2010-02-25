@@ -66,7 +66,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	private ControladorFrontend controlador;
 	private ConfiguracionFrontend configuracion;
 	private JFConfigFrontend frmConfiguracion;
-	private JFAcercaDe frmAcercaDe;
+	private JFAcercaDeFrontend frmAcercaDe;
 	
 	private JLabel lblConfigRespaldo;
 	private JLabel lblConfigBD;
@@ -278,7 +278,7 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	}
 	
 	private void mniAcercaDeActionPerformed(ActionEvent evt) {
-		frmAcercaDe = new JFAcercaDe();
+		frmAcercaDe = new JFAcercaDeFrontend();
 		frmAcercaDe.addVentanaCerradaListener(new VentanaCerradaListener() {
 			public void ventanaCerrada(EventObject evt) {    
 				frmAcercaDeVentanaCerrada(evt);

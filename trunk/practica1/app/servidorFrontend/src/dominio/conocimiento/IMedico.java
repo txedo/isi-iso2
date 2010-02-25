@@ -5,6 +5,6 @@ package dominio.conocimiento;
  */
 public interface IMedico {
 
-	public String getDni();
+	public String getNif();
 	
 }

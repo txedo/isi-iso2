@@ -72,7 +72,7 @@ public class GestorSesiones {
 		encontrado = false;
 		while(sesionesAbiertas.hasMoreElements() && !encontrado) {
 			sesionAbierta = sesionesAbiertas.nextElement();
-			if(sesionAbierta.getUsuario().getDni().equals(usuario.getDni())) {
+			if(sesionAbierta.getUsuario().getNif().equals(usuario.getNif())) {
 				encontrado = true;
 			}
 		}
@@ -174,13 +174,13 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.RegistrarBeneficiario);
 			operaciones.add(Operaciones.ModificarBeneficiario);
 			operaciones.add(Operaciones.EliminarBeneficiario);
+			operaciones.add(Operaciones.ConsultarMedico);
 			operaciones.add(Operaciones.ConsultarMedicoCita);
 			operaciones.add(Operaciones.ConsultarCitasBeneficiario);
 			operaciones.add(Operaciones.ConsultarCitasMedico);
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.TramitarCitaVolante);
 			operaciones.add(Operaciones.AnularCita);
-			operaciones.add(Operaciones.ConsultarMedico);
 		}
 		
 		// Agregamos las operaciones permitidas para administradores
@@ -202,6 +202,7 @@ public class GestorSesiones {
 		if(sesion.getRol() == RolesUsuario.Medico.ordinal()) {
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
 			operaciones.add(Operaciones.EmitirVolante);
+			operaciones.add(Operaciones.ConsultarCitasPropiasMedico);
 		}
 		
 		return operaciones;

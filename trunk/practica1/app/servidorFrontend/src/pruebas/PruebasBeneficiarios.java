@@ -161,7 +161,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos obtener los datos de un usuario que no es beneficiario
-			servidor.getBeneficiario(sesionCitador.getId(), citador1.getDni());
+			servidor.getBeneficiario(sesionCitador.getId(), citador1.getNif());
 			fail("Se esperaba una excepción BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
@@ -170,7 +170,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos obtener los datos de un usuario que no es beneficiario
-			servidor.getBeneficiarioPorNSS(sesionCitador.getId(), citador1.getDni());
+			servidor.getBeneficiarioPorNSS(sesionCitador.getId(), citador1.getNif());
 			fail("Se esperaba una excepción BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
@@ -271,7 +271,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos añadir un beneficiario con el NIF de un usuario
-			beneficiario = new Beneficiario(medico1.getDni(), "009988009988", "error", "error", fecha1, direccion2, "", "123456789", "987654321");
+			beneficiario = new Beneficiario(medico1.getNif(), "009988009988", "error", "error", fecha1, direccion2, "", "123456789", "987654321");
 			beneficiario.setCentroSalud(centro1);
 			servidor.crear(sesionAdmin.getId(), beneficiario);
 			fail("Se esperaba una excepción BeneficiarioYaExistenteException");
@@ -303,7 +303,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			assertEquals(beneficiario, beneficiarioGet);			
 			// Vemos si se le ha asignado un pediatra como médico de cabecera
 			assertNotNull(beneficiarioGet.getMedicoAsignado());
-			assertEquals(FPTipoMedico.consultar(beneficiarioGet.getMedicoAsignado().getDni()), new Pediatra());
+			assertEquals(FPTipoMedico.consultar(beneficiarioGet.getMedicoAsignado().getNif()), new Pediatra());
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.toString());
@@ -321,7 +321,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			assertEquals(beneficiario, beneficiarioGet);			
 			// Vemos si se le ha asignado un médico de cabecera que no es pediatra
 			assertNotNull(beneficiarioGet.getMedicoAsignado());
-			assertEquals(FPTipoMedico.consultar(beneficiarioGet.getMedicoAsignado().getDni()), new Cabecera());
+			assertEquals(FPTipoMedico.consultar(beneficiarioGet.getMedicoAsignado().getNif()), new Cabecera());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -468,7 +468,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		Vector<Beneficiario> beneficiarios;
 		
 		try {
-			// Intentamos consultar los beneficiarios de un médico con DNI nulo
+			// Intentamos consultar los beneficiarios de un médico con NIF nulo
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, null);
 			fail("Se esperaba NullPointerException");
 		} catch(NullPointerException e) {
@@ -478,7 +478,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos consultar los beneficiarios de un médico con la sesión del citador
-			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico1.getDni());
+			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico1.getNif());
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -487,7 +487,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico1.getDni());
+			servidor.mensajeAuxiliar(-12345, ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico1.getNif());
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -496,10 +496,10 @@ public class PruebasBeneficiarios extends PruebasBase {
 		
 		try {
 			// Obtenemos los beneficiarios de los médicos del sistema
-			beneficiarios = (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico2.getDni());
+			beneficiarios = (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico2.getNif());
 			assertTrue(beneficiarios.size() == 1);
 			assertTrue(beneficiarios.get(0).equals(beneficiario1));
-			beneficiarios = (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico1.getDni());
+			beneficiarios = (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico1.getNif());
 			assertTrue(beneficiarios.size() == 0);
 		} catch(Exception e) {
 			fail(e.toString());
