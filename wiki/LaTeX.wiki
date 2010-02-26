@@ -31,3 +31,34 @@ Este paquete no viene por defecto en el entorno de MiKTeX (recomendado para Wind
     - Descargar chngctr.sty desde http://ctan.org/pkg/chngcntr y ponerlo en el mismo directorio de los archivos .tex. 
 
     - Descargar chngctr.sty desde la dirección anterior e instalarlo permanente en MikTeX. Su ubicación lógica es C:\Archivos de programa\MiKTeX 2.7\tex\latex\ltxmisc. Tras esto, ir a Inicio>Todos los programas>MikTeX>Settings y en la pestaña General, pulsar el botón Refresh FNDB. Con ello, se refresca la base de paquetes de MiKTeX. 
+
+=Formateo documento=
+
+Para darle el mismo formato a la documentación, os comento como teneis que hacerlo.
+
+1.- Cada sección del documento hacerla en un archivo .tex diferente, para luego irlos incluyendo en el "main" con el \input. Así, al escribir cada sección, sólo os teneis que preocupar del formato de esa sección: poner \section, \subsection, \paragraphg, listas, enumeraciones, etc.
+
+2.- Cuando querais hacer una lista de elementos (diferentes items marcados por "puntitos") teneis que usar el entorno \milista, de la siguiente forma: 
+    \begin{milista}
+      \itemize ...
+      \itemize ...
+    \end{milista}
+Además, cada uno de los "items" ponerlo en negrita (\textbf).
+
+3.- Si quereis hacer enumeraciones, usar \begin{enumerate} ... \end{enumerate}
+
+4.- Si quereis insertar un fragmento de código Java, copiar ese fragmento a un archivo .java e incluirlo de esta manera:
+
+\texttt{\lstinputlisting[inputencoding=latin1]{ruta_al_archivo_de_codigo.java}}.
+
+Si quereis insertar pseudocodigo, podeis usar el entorno \verbatim. Pero siempre que sea código o algo diferente al texto normal, utilizar la familia \texttt, para diferenciarlo del resto.
+
+5.- Para incluir imagenes, se hace asi:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.65]{ruta_imagen}
+\caption{leyenda_imagen}
+\label{etiqueta_imagen_para_referenciarla}
+\end{figure}
+
