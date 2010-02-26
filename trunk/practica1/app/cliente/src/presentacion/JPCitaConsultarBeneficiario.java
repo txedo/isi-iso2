@@ -83,6 +83,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 				btnHistoricoCitas.setText("Ver histórico de citas");
 				btnHistoricoCitas.setPreferredSize(new java.awt.Dimension(142, 26));
 				btnHistoricoCitas.setEnabled(false);
+				btnHistoricoCitas.setName("btnHistoricoCitas");
 				btnHistoricoCitas.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnHistoricoCitasActionPerformed(evt);
@@ -98,6 +99,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 				pnlBeneficiario = new JPBeneficiarioConsultar(this.getFrame(), this.getControlador());
 				this.add(pnlBeneficiario, new AnchorConstraint(0, 0, 511, 0, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				pnlBeneficiario.setPreferredSize(new java.awt.Dimension(430, 237));
+				pnlBeneficiario.setName("pnlBeneficiario");
 				pnlBeneficiario.reducirPanel();
 				pnlBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
 					public void beneficiarioBuscado(EventObject evt) {
@@ -110,6 +112,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 				this.add(btnRestablecer, new AnchorConstraint(916, 163, 14, 673, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnRestablecer.setName("btnRestablecer");
 				btnRestablecer.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnRestablecerActionPerformed(evt);
@@ -122,6 +125,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 				btnAnular.setText("Anular cita");
 				btnAnular.setPreferredSize(new java.awt.Dimension(120, 26));
 				btnAnular.setEnabled(false);
+				btnAnular.setName("btnAnular");
 				btnAnular.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnAnularActionPerformed(evt);
@@ -144,6 +148,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 					tblTablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					tblTablaCitas.setCellEditor(null);
 					tblTablaCitas.setDefaultRenderer(Object.class, new TableCellRendererCitas());
+					tblTablaCitas.setName("tblTablaCitas");
 				}
 			}
 		} catch(Exception e) {
@@ -215,18 +220,14 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 						UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
 						UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas, medicosReales);
 					}
-					// TODO: ¿esto qué hace aquí? ¿quién lo ha puesto? :P
-					for(Cita citaB : citas) {
-						Medico m = getControlador().consultarMedicoCita(citaB.getMedico().getNif(), citaB.getFechaYHora());
-						if(!m.equals(citaB.getMedico().getNif())) {
-							
-						}
-					}
+					
 					// Seleccionamos la primera cita de la lista (si la hay)
 					if(citas.size() > 0) {
 						tblTablaCitas.getSelectionModel().setSelectionInterval(0, 0);
 						btnAnular.setEnabled(true);
 					}
+					else
+						btnAnular.setEnabled(false);
 				}
 			}
 			

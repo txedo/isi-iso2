@@ -58,11 +58,10 @@ public class GestorSesiones {
 		
 		// Encriptamos la contraseña del usuario
 		try {
-			passwordEncriptada = Encriptacion.encriptarPasswordSHA1(password);
+			passwordEncriptada = Encriptacion.encriptarPasswordSHA1(password);			
 		} catch(NoSuchAlgorithmException e) {
 			throw new SQLException("No se puede encriptar la contraseña del usuario.");
 		}
-		
 		// Comprobamos el login y la contraseña encriptada del usuario
 		usuario = FPUsuario.consultar(login, passwordEncriptada);
 

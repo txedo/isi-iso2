@@ -73,6 +73,7 @@ public class JPCitaConsultarPropias extends JPBase {
 				this.add(btnCitasPendientes, new AnchorConstraint(888, 164, 12, 289, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnCitasPendientes.setText("Ver citas pendientes");
 				btnCitasPendientes.setPreferredSize(new java.awt.Dimension(142, 26));
+				btnCitasPendientes.setName("btnCitasPendientes");
 				btnCitasPendientes.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnCitasPendientesActionPerformed(evt);
@@ -95,6 +96,7 @@ public class JPCitaConsultarPropias extends JPBase {
 					tblTablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					tblTablaCitas.setCellEditor(null);
 					tblTablaCitas.setDefaultRenderer(Object.class, new TableCellRendererCitas());
+					tblTablaCitas.setName("tblTablaCitas");
 				}
 			}
 			{
@@ -102,6 +104,7 @@ public class JPCitaConsultarPropias extends JPBase {
 				this.add(btnCitasHistoricas, new AnchorConstraint(888, 11, 12, 643, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnCitasHistoricas.setText("Ver histórico de citas");
 				btnCitasHistoricas.setPreferredSize(new java.awt.Dimension(142, 26));
+				btnCitasHistoricas.setName("btnCitasHistorico");
 				btnCitasHistoricas.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnCitasHistoricasActionPerformed(evt);
@@ -196,6 +199,7 @@ public class JPCitaConsultarPropias extends JPBase {
 	
 	// Métodos públicos
 	
+	// < Metodos del observador >
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		boolean actualizado = false;
 		Cita c;
