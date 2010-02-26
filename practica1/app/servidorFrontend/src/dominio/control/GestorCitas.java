@@ -421,6 +421,7 @@ public class GestorCitas {
 		// se pueda usar el mismo volante varias veces
 		volante.setCita(cita);
 		FPVolante.modificar(volante);
+		
 		return cita; 
 	}
 	

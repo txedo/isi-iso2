@@ -80,7 +80,7 @@ public class GestorMedicos {
 	}
 	
 	// Método para modificar un médico existente del sistema
-	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
 			throw new NullPointerException("El médico que se va a modificar no puede ser nulo.");

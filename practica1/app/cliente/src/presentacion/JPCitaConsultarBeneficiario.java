@@ -215,6 +215,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 						UtilidadesTablas.crearTablaCitasBeneficiario(tblTablaCitas, citas.size());
 						UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas, medicosReales);
 					}
+					// TODO: ¿esto qué hace aquí? ¿quién lo ha puesto? :P
 					for(Cita citaB : citas) {
 						Medico m = getControlador().consultarMedicoCita(citaB.getMedico().getNif(), citaB.getFechaYHora());
 						if(!m.equals(citaB.getMedico().getNif())) {

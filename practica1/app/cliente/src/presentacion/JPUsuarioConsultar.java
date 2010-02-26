@@ -26,6 +26,7 @@ import presentacion.auxiliar.Validacion;
 import presentacion.auxiliar.VentanaCerradaListener;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CategoriasMedico;
@@ -512,11 +513,10 @@ public class JPUsuarioConsultar extends JPBase {
 	}
 	
 	private void btnGuardarActionPerformed(ActionEvent evt) {
-		Usuario usuarioModif = null;
-		Vector<Cita> citas = null;
-		Vector<Cita> citasAfectadas = new Vector<Cita>();
-		boolean actualizar = false;
 		JFAvisos frmAviso;
+		Usuario usuarioModif = null;
+		Vector<Cita> citas, citasAfectadas = null;
+		boolean actualizar = false, afectada;
 		
 		try {
 			
@@ -566,54 +566,50 @@ public class JPUsuarioConsultar extends JPBase {
 			
 			// Dejamos el mismo centro de salud
 			usuarioModif.setCentroSalud(usuario.getCentroSalud());
-			
-			// Si el usuario es un médico y ha cambiado su horario de trabajo, 
-			// se comprueba que ésto no afecte a las citas que ya tenía asignadas.
-			// Si afecta, se pide confirmación para anular las citas afectadas
-			if(usuarioModif.getRol().equals(RolesUsuario.Medico)) {
+
+			// Cambiamos los atributos propios de los médicos
+			if(usuarioModif.getRol() == RolesUsuario.Medico) {
 				((Medico)usuarioModif).setCalendario(periodos);
 				((Medico)usuarioModif).setTipoMedico(((Medico)usuario).getTipoMedico());
+			}
+
+			// Si el usuario es un médico y ha cambiado su horario de trabajo, 
+			// se comprueba que ésto no afecte a las citas que ya tenía asignadas;
+			// si afecta a alguna, se pide confirmación para anular las citas afectadas
+			actualizar = true;
+			if(usuarioModif.getRol() == RolesUsuario.Medico) {
 				citas = getControlador().consultarCitasMedico(usuario.getNif());
-				if (citas.size()>0) {
-					// Si se ha limpiado todo el calendario, todas las citas están afectadas
-					if (((Medico)usuarioModif).getCalendario().size()==0) {
-						citasAfectadas.addAll(citas);
-					}
-					else {
-						for (int i=0; i<citas.size(); i++) {
-							for (PeriodoTrabajo p: ((Medico)usuarioModif).getCalendario()) {
-								// Si la cita que ya tenia asignado, no está en ningun periodo y es posterior a la fecha de hoy, se inserta en la lista de citas afectadas
-								if (!citas.get(i).citaEnHoras(p.getHoraInicio(), p.getHoraFinal()) && citas.get(i).getFechaYHora().after(new Date()))
-									citasAfectadas.add(citas.get(i));
-							}
+				citasAfectadas = new Vector<Cita>();
+				for(Cita cita : citas) {
+					afectada = true;
+					for(PeriodoTrabajo periodo : ((Medico)usuarioModif).getCalendario()) {
+						if(UtilidadesDominio.diaFecha(cita.getFechaYHora()) == periodo.getDia()
+						 && cita.citaEnHoras(periodo.getHoraInicio(), periodo.getHoraFinal())
+						 && cita.getFechaYHora().after(new Date())) {
+							// La cita queda dentro del nuevo horario
+							afectada = false;
 						}
-						if (citasAfectadas.size()>0)
-							actualizar = Dialogos.mostrarDialogoPregunta(getFrame(), "Aviso", "Si se modifican los períodos de trabajo del médico, algunas citas se verán afectadas y serán eliminadas.\n¿Desea continuar?");
-						else
-							actualizar = true;
+					}
+					if(afectada) {
+						citasAfectadas.add(cita);
 					}
 				}
-				else
-					actualizar = true;
+				if(citasAfectadas.size() > 0) {
+					actualizar = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", "Si se modifica el calendario de trabajo del médico, algunas\ncitas pendientes se verán afectadas y serán anuladas.\n¿Desea continuar?");
+				}
 			}
 			
-			if (actualizar || !(usuarioModif instanceof Medico)) {
+			if(actualizar) {
 				// Solicitamos al servidor que se modifique el usuario
 				getControlador().modificarUsuario(usuarioModif);
 				// Mostramos el resultado de la operación y limpiamos el panel
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
 				restablecerPanel();
-				// Anulamos las citas
-				if (citasAfectadas.size()>0 && actualizar) {
-					// Se eliminan las citas afectadas
-					for (Cita c : citasAfectadas) {
-						getControlador().anularCita(c);
-					}
+				// Mostramos las citas afectadas si se ha modificado un médico
+				if(citasAfectadas != null && citasAfectadas.size() > 0) {
 					// Se avisa de las citas eliminadas
-					if (citasAfectadas.size()>0) {
-						frmAviso = new JFAvisos();
-						frmAviso.mostrarCitas("Las siguientes citas han sido eliminadas:", citasAfectadas);
-					}
+					frmAviso = new JFAvisos();
+					frmAviso.mostrarCitas("Las siguientes citas han sido anuladas:", citasAfectadas);
 				}
 				
 			}
