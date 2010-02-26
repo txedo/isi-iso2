@@ -45,7 +45,7 @@ public class GestorVolantes {
 	}
 	
 	// Método para emitir un volante para un beneficiario para un especialista
-	public static long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static Volante emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, SesionInvalidaException, OperacionIncorrectaException, VolanteNoValidoException, UsuarioIncorrectoException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
 		Calendar calend;
 		Usuario usuario;
 		Volante volante;
@@ -108,7 +108,7 @@ public class GestorVolantes {
 		volante.setFechaCaducidad(calend.getTime());
 		FPVolante.insertar(volante);
 		
-		return volante.getId();
+		return volante;
 	}
 	
 }

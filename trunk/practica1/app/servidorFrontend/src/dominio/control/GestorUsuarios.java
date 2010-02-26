@@ -2,17 +2,21 @@ package dominio.control;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Vector;
-
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Cita;
 import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
+import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.RolesUsuario;
 import dominio.conocimiento.Usuario;
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
+import persistencia.FPCita;
 import persistencia.FPUsuario;
 import persistencia.UtilidadesPersistencia;
 import excepciones.BeneficiarioInexistenteException;
@@ -63,7 +67,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para modificar un usuario existente del sistema
-	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
 			throw new NullPointerException("El usuario que se va a modificar no puede ser nulo.");
@@ -164,8 +168,10 @@ public class GestorUsuarios {
 	
 	// Método para modificar un usuario existente del sistema
 	// (es público porque se utiliza desde otro gestor, no es accesible a los clientes)
-	public static void modificarUsuario(Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static void modificarUsuario(Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
+		Vector<Cita> citas;
 		Usuario usuarioAntiguo, usuarioReal;
+		boolean afectada;
 		
 		// Comprobamos si realmente existe el usuario que se quiere modificar
 		try {
@@ -191,6 +197,27 @@ public class GestorUsuarios {
 		
 		// Modificamos los datos del usuario
 		FPUsuario.modificar(usuarioReal);
+		
+		// Si el usuario modificado es un médico, eliminamos aquellas citas
+		// pendientes que ahora no quedan dentro del nuevo horario del médico
+		if(usuarioReal.getRol() == RolesUsuario.Medico) {
+			citas = FPCita.consultarPorMedico(usuario.getNif());
+			for(Cita cita : citas) {
+				afectada = true;
+				for(PeriodoTrabajo periodo : ((Medico)usuarioReal).getCalendario()) {
+					if(UtilidadesDominio.diaFecha(cita.getFechaYHora()) == periodo.getDia()
+					 && cita.citaEnHoras(periodo.getHoraInicio(), periodo.getHoraFinal())
+					 && cita.getFechaYHora().after(new Date())) {
+						// La cita queda dentro del nuevo horario
+						afectada = false;
+					}
+				}
+				if(afectada) {
+					// La cita no queda dentro del nuevo horario
+					FPCita.eliminar(cita);
+				}
+			}
+		}
 	}
 
 	// Método para eliminar un usuario del sistema

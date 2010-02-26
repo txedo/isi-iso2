@@ -18,6 +18,7 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
+import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CentroSaludInexistenteException;
@@ -233,6 +234,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			GestorBeneficiarios.crearBeneficiario(idSesion, beneficiario);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Creado el beneficiario con NIF " + beneficiario.getNif() + ".");
+			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, beneficiario);
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se creaba el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
@@ -372,6 +374,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			GestorMedicos.crearMedico(idSesion, medico);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Creado el médico con NIF " + medico.getNif() + ".");
+			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, medico);
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se creaba el médico con NIF " + medico.getNif() + ": " + se.getLocalizedMessage());
@@ -420,7 +423,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			throw se;
 		} catch(MedicoInexistenteException mie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
-			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al consultar un médico mientras se modificaba el médico con NIF " + medico.getNif() + ": " + mie.getLocalizedMessage());
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar un médico mientras se modificaba el médico con NIF " + medico.getNif() + ": " + mie.getLocalizedMessage());
 			throw mie;
 		} catch(CentroSaludInexistenteException csie) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
@@ -430,6 +433,14 @@ public class ServidorFrontend implements IServidorFrontend {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar una dirección mientras se modificaba el médico con NIF " + medico.getNif() + ": " + die.getLocalizedMessage());
 			throw die;
+		} catch(BeneficiarioInexistenteException bie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar un beneficiario mientras se modificaba el médico con NIF " + medico.getNif() + ": " + bie.getLocalizedMessage());
+			throw bie;
+		} catch(UsuarioIncorrectoException uie) {
+			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar un usuario mientras se modificaba el médico con NIF " + medico.getNif() + ": " + uie.getLocalizedMessage());
+			throw uie;
 		} catch(NullPointerException npe) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al intentar modificar un médico con datos no válidos: " + npe.getLocalizedMessage());
@@ -791,14 +802,17 @@ public class ServidorFrontend implements IServidorFrontend {
 	// ------------------------------
 	
 	public long emitirVolante(long idSesion, Beneficiario beneficiario, Medico emisor, Medico destino) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception {
+		Volante volante;
 		long idVolante;
 		String login;
 		
 		try {
 			// Solicitamos un volante para un cierto beneficiario y médico
-			idVolante = GestorVolantes.emitirVolante(idSesion, beneficiario, emisor, destino);
+			volante = GestorVolantes.emitirVolante(idSesion, beneficiario, emisor, destino);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Emitido un volante para el beneficiario con NIF " + beneficiario.getNif() + ".");
+			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, volante);
+			idVolante = volante.getId();
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se emitía un volante para el beneficiario con NIF " + beneficiario.getNif() + ": " + se.getLocalizedMessage());
@@ -966,6 +980,7 @@ public class ServidorFrontend implements IServidorFrontend {
 				GestorUsuarios.crearUsuario(idSesion, (Usuario)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Creado el usuario con NIF " + ((Usuario)informacion).getNif() + ".");
+				GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, (Usuario)informacion);
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se creaba el usuario con NIF " + ((Usuario)informacion).getNif() + ": " + se.getLocalizedMessage());
@@ -1022,6 +1037,14 @@ public class ServidorFrontend implements IServidorFrontend {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar una dirección mientras se modificaba el usuario con NIF " + ((Usuario)informacion).getNif() + ": " + die.getLocalizedMessage());
 				throw die;
+			} catch(BeneficiarioInexistenteException bie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar un beneficiario mientras se modificaba el usuario con NIF " + ((Usuario)informacion).getNif() + ": " + bie.getLocalizedMessage());
+				throw bie;
+			} catch(UsuarioIncorrectoException uie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al recuperar un usuario mientras se modificaba el usuario con NIF " + ((Usuario)informacion).getNif() + ": " + uie.getLocalizedMessage());
+				throw uie;
 			} catch(NullPointerException npe) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_UPDATE, "Error al intentar modificar un usuario con datos no válidos: " + npe.getLocalizedMessage());
