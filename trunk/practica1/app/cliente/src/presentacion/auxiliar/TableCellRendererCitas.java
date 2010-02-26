@@ -2,6 +2,7 @@ package presentacion.auxiliar;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -28,9 +29,18 @@ public class TableCellRendererCitas extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
     	super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     	if(filasDesactivadas.contains(row)) {
-    		setForeground(Color.BLUE);
+    		if(isSelected) {
+        		setForeground(Color.WHITE);
+    		} else {
+        		setForeground(Color.BLUE);
+    		}
+    		setFont(getFont().deriveFont(Font.ITALIC));
     	} else {
-    		setForeground(Color.BLACK);
+    		if(isSelected) {
+        		setForeground(Color.WHITE);
+    		} else {
+        		setForeground(Color.BLACK);
+    		}
     	}
     	return this;
     }

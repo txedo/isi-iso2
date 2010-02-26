@@ -67,7 +67,7 @@ public class ProxyCliente implements ICliente {
 		public void run() {
 			try {
 				cliente.cerrarSesion();
-			} catch(RemoteException e) {
+			} catch(Exception e) {
 				// Aquí no se puede manejar la excepción
 			}
 		}
@@ -92,7 +92,7 @@ public class ProxyCliente implements ICliente {
 		public void run() {
 			try {
 				cliente.actualizarVentanas(operacion, dato);
-			} catch(RemoteException e) {
+			} catch(Exception e) {
 				// Aquí no se puede manejar la excepción
 			}
 		}
@@ -113,7 +113,7 @@ public class ProxyCliente implements ICliente {
 		public void run() {
 			try {
 				cliente.servidorInaccesible();
-			} catch(RemoteException e) {
+			} catch(Exception e) {
 				// Aquí no se puede manejar la excepción
 			}
 		}
