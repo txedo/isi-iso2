@@ -165,6 +165,7 @@ public class GestorSesiones {
 		
 		// Agregamos las operaciones permitidas para todos los usuarios
 		operaciones = new Vector<Operaciones>();
+		operaciones.add(Operaciones.ConsultarPropioUsuario);
 		operaciones.add(Operaciones.ConsultarBeneficiario);
 		operaciones.add(Operaciones.ConsultarCentros);
 		operaciones.add(Operaciones.ConsultarVolante);

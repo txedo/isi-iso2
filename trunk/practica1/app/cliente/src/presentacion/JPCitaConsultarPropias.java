@@ -40,14 +40,15 @@ public class JPCitaConsultarPropias extends JPBase {
 	private static final long serialVersionUID = 117161427277876393L;
 
 	private Vector<Cita> citas;
+	private boolean viendoHistorico;
+	private Medico medico;
+	
 	private JScrollPane scpTablaCitas;
 	private JButton btnCitasHistoricas;
 	private JButton btnCitasPendientes;
 	private JLabel lblCitas;
 	private JTable tblTablaCitas;
 	
-	private boolean viendoHistorico;
-
 	public JPCitaConsultarPropias() {
 		this(null, null);
 		// Este constructor evita que aparezca un error al editar
@@ -125,6 +126,9 @@ public class JPCitaConsultarPropias extends JPBase {
 	private void mostrarCitasPendientes() {
 		try {
 			
+			// Consultamos los datos del médico
+			medico = (Medico)getControlador().consultarPropioUsuario();
+			
 			// Obtenemos y mostramos las citas del médico
 			// (por defecto, sólo las pendientes)
 			citas = getControlador().consultarCitasPendientesPropiasMedico();
@@ -152,8 +156,12 @@ public class JPCitaConsultarPropias extends JPBase {
 	
 	private void mostrarHistoricoCitas() {
 		Vector<Cita> pendientes;
+		
 		try {
-			
+
+			// Consultamos los datos del médico
+			medico = (Medico)getControlador().consultarPropioUsuario();
+
 			// Obtenemos y mostramos todas las citas del médico,
 			// marcando en azul las que son pasadas
 			citas = getControlador().consultarCitasPropiasMedico();
@@ -190,13 +198,7 @@ public class JPCitaConsultarPropias extends JPBase {
 	
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		boolean actualizado = false;
-		Medico medico;
 		Cita c;
-
-		medico = null;
-		if(citas.size() > 0) {
-			medico = citas.get(0).getMedico();
-		}
 		
 		// Si alguno de los beneficiarios que se muestran en la tabla de citas ha cambiado, se refresca la tabla
 		if (medico != null && citas.size()>0) {
@@ -216,13 +218,7 @@ public class JPCitaConsultarPropias extends JPBase {
 	
 	public void beneficiarioEliminado(Beneficiario beneficiario) {
 		boolean actualizado = false;
-		Medico medico;
 		Cita c;
-		
-		medico = null;
-		if(citas.size() > 0) {
-			medico = citas.get(0).getMedico();
-		}
 
 		// Si alguno de los beneficiarios que se muestran en la tabla de citas se ha eliminado, se refresca la tabla
 		if (medico != null && citas.size()>0) {
@@ -241,13 +237,6 @@ public class JPCitaConsultarPropias extends JPBase {
 	}
 	
 	public void citaRegistrada(Cita cita) {
-		Medico medico;
-		
-		medico = null;
-		if(citas.size() > 0) {
-			medico = citas.get(0).getMedico();
-		}
-
 		if(medico != null && medico.equals(cita.getMedico())) {
 			// Otro cliente ha registrado una cita para este médico.
 			// Se vuelven a recuperar las citas para mostrar la nueva
@@ -260,13 +249,6 @@ public class JPCitaConsultarPropias extends JPBase {
 	}
 	
 	public void citaAnulada(Cita cita) {
-		Medico medico;
-		
-		medico = null;
-		if(citas.size() > 0) {
-			medico = citas.get(0).getMedico();
-		}
-
 		if(medico != null && medico.equals(cita.getMedico())) {
 			// Otro cliente ha anulado una cita para este médico.
 			// Se vuelven a recuperar las citas para mostrar las citas restantes
