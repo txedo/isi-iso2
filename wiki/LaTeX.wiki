@@ -66,6 +66,8 @@ Si quereis insertar pseudocodigo, podeis usar el entorno \verbatim. Pero siempre
 }}}
 
 
-*MUY IMPORTANTE: no poner barras bajas en los nombres de las imagenes ni de los archivos.tex!!!!!!!!!!*
+*MUY IMPORTANTE: no poner barras bajas en los nombres de las imagenes ni de los archivos.tex !!!!!!!!!!*
 
-Por cierto, para escapar la barra baja en una palabra es así: {{{$\_$}}}
+*IMPORTANTE: no subir al repositorio archivos generados por LaTeX, como los ficheros .log, .aux, el PDF, etc. Subir sólo las imagenes, los fragmentos de código, los .tex, etc.*
+
+Por cierto, para escapar la barra baja en una palabra es así: {{{\_}}}
