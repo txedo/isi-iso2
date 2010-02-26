@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
-
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -12,7 +11,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import org.uispec4j.Button;
 import org.uispec4j.CheckBox;
 import org.uispec4j.ComboBox;
@@ -24,9 +22,7 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
 import comunicaciones.ConfiguracionCliente;
-
 import presentacion.JFCalendarioLaboral;
 import presentacion.JPUsuarioConsultar;
 import presentacion.auxiliar.Validacion;
@@ -38,7 +34,6 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
-import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -125,14 +120,16 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 				}
 			});
 			// Creamos e insertamos usuarios de prueba, para poder consultarlos
-			admin = new Administrador(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("admin"), "administrador", "administra", "", "", "");
-			citador = new Citador(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("citador"), "citador", "cita", "adad@gmail.com", "912312312", "612131212");
+			admin = new Administrador(UtilidadesPruebas.generarNIF(), UtilidadesPruebas.generarLogin(), "admin", "administrador", "administra", "", "", "");
+			citador = new Citador(UtilidadesPruebas.generarNIF(), UtilidadesPruebas.generarLogin(), "citador", "citador", "cita", "adad@gmail.com", "912312312", "612131212");
 			tCabecera = new Cabecera();
 			tEspecialista = new Especialista("Neurologia");
 			tPediatra = new Pediatra();
-			cabecera = new Medico(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("medCabecera"), "Eduardo", "PC", "", "", "", tCabecera);
-			pediatra = new Medico(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("medPediatra"), "Carmen", "GG", "carmen@gmail.com", "", "", tPediatra);
-			especialista = new Medico(generarNIF(), UtilidadesPruebas.generarLoginAleatorio(), Encriptacion.encriptarPasswordSHA1("medEspecialista"), "Juan", "PF", "asdsad@yahoo.es", "987654321", "678901234", tEspecialista);
+			cabecera = new Medico(UtilidadesPruebas.generarNIF(), UtilidadesPruebas.generarLogin(), "medCabecera", "Eduardo", "PC", "", "", "", tCabecera);
+			pediatra = new Medico(UtilidadesPruebas.generarNIF(), UtilidadesPruebas.generarLogin(), "medPediatra", "Carmen", "GG", "carmen@gmail.com", "", "", tPediatra);
+			especialista = new Medico(UtilidadesPruebas.generarNIF(), UtilidadesPruebas.generarLogin(), "medEspecialista", "Juan", "PF", "asdsad@yahoo.es", "987654321", "678901234", tEspecialista);
+			// TODO: El servidor asigna centros aleatorios a los nuevos usuarios,
+			// estas líneas ahora mismo no tienen sentido !!!
 			cabecera.setCentroSalud(controlador.consultarCentros().firstElement());
 			pediatra.setCentroSalud(controlador.consultarCentros().firstElement());
 			especialista.setCentroSalud(controlador.consultarCentros().firstElement());
@@ -150,7 +147,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 					valido = true;
 				} catch (UsuarioYaExistenteException e) {
 					admin.setNif(UtilidadesPruebas.generarNIF());
-					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					admin.setLogin(UtilidadesPruebas.generarLogin());
 					valido = false;
 				}
 			}while(!valido);
@@ -160,7 +157,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 					valido = true;
 				} catch (UsuarioYaExistenteException e) {
 					admin.setNif(UtilidadesPruebas.generarNIF());
-					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					admin.setLogin(UtilidadesPruebas.generarLogin());
 					valido = false;
 				}
 			}while(!valido);
@@ -170,7 +167,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 					valido = true;
 				} catch (UsuarioYaExistenteException e) {
 					admin.setNif(UtilidadesPruebas.generarNIF());
-					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					admin.setLogin(UtilidadesPruebas.generarLogin());
 					valido = false;
 				}
 			}while(!valido);
@@ -180,7 +177,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 					valido = true;
 				} catch (UsuarioYaExistenteException e) {
 					admin.setNif(UtilidadesPruebas.generarNIF());
-					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					admin.setLogin(UtilidadesPruebas.generarLogin());
 					valido = false;
 				}
 			}while(!valido);
@@ -190,7 +187,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 					valido = true;
 				} catch (UsuarioYaExistenteException e) {
 					admin.setNif(UtilidadesPruebas.generarNIF());
-					admin.setLogin(UtilidadesPruebas.generarLoginAleatorio());
+					admin.setLogin(UtilidadesPruebas.generarLogin());
 					valido = false;
 				}
 			}while(!valido);
@@ -240,6 +237,8 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			}
 			textoHoras = jlblHoras.getText();
 			
+			Thread.sleep(50);
+			
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -256,12 +255,15 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
 			winPrincipal.dispose();
+
+			Thread.sleep(50);
+
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
-	
+
 	/** Pruebas con datos no válidos */
 	public void testDatosInvalidos() {			
 		try {
@@ -721,7 +723,6 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		eliminadoMedico = false;
 		Beneficiario beneficiarioPrueba;
 		Medico medicoAsignado;
-		final Window [] windows = new Window[1];
 		
 		try {
 			
@@ -755,18 +756,29 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			assertTrue(chkEditar.isSelected().isTrue());
 			// Comprobamos que el boton de Eliminar ahora sí está habilitado
 			assertTrue(btnEliminar.isEnabled().isTrue());
-			// Capturamos el primer mensaje de confirmacion
+			// Capturamos los mensajes de confirmacion
+			// y las ventanas de aviso
 			WindowInterceptor.init(btnEliminar.triggerClick()).process(new WindowHandler() {
-				public Trigger process (Window window) {
-					windows[0]=window;
+				public Trigger process(Window window) {
 					return window.getButton(YES_OPTION).triggerClick();
 				}
-			}).run();
-			// TODO: no funciona bien
-			// Capturamos el segundo mensaje de confirmacion
-			WindowInterceptor.init(windows[0].getButton(YES_OPTION).triggerClick()).process(new WindowHandler() {
-				public Trigger process (Window window) {
+			}).process(new WindowHandler() {
+				public Trigger process(Window window) {
 					return window.getButton(YES_OPTION).triggerClick();
+				}
+			}).process(new WindowHandler() {
+				public Trigger process(Window window) {
+					return window.getButton("Aceptar").triggerClick();
+				}
+			}).process(new WindowHandler() {
+				public Trigger process(Window window) {
+					// Aviso de los beneficiarios que cambian de médico
+					return window.getButton("Cerrar").triggerClick();
+				}
+			}).process(new WindowHandler() {
+				public Trigger process(Window window) {
+					// Aviso de las citas anuladas
+					return window.getButton("Cerrar").triggerClick();
 				}
 			}).run();
 			comprobarCamposVacios();
@@ -782,7 +794,9 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			}).run();
 			// Como no se encuentra al usuario, el boton Editar tiene que estar deshabilitado
 			assertFalse(chkEditar.isEnabled());
-			controlador.anularCita(c);
+			// TODO: Al borrar el usuario, se elimina también la cita
+			// Esta línea estaba antes y fallaba
+			// controlador.anularCita(c);
 			eliminadoMedico = true;
 			System.out.println(eliminadoMedico);
 		} catch(Exception e) {
@@ -806,35 +820,5 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		assertTrue(!btnCalendario.isVisible().isTrue());
 	}
 	
-	private String generarNIF() {
-		Random r;
-		String nif;
-		boolean existe;
-		int i;
-		
-		nif = "";
-		r = new Random();
-		try {
-			do {
-				// Generamos un NIF aleatorio
-				nif = "";
-				for(i = 0; i < Validacion.NIF_LONGITUD - 1; i++) {
-					nif = nif + String.valueOf(r.nextInt(10));
-				}
-				nif = nif + "X";
-				// Comprobamos si ya hay un beneficiario con ese NIF
-				try {
-					controlador.consultarBeneficiarioPorNIF(nif);
-					existe = true;
-				} catch(BeneficiarioInexistenteException e) {
-					existe = false;
-				}
-			} while(existe);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		return nif;
-	}
 
 }

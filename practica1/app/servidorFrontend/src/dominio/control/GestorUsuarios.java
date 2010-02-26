@@ -94,6 +94,19 @@ public class GestorUsuarios {
 		eliminarUsuario(usuario);
 	}
 
+	// Método para obtener los datos del usuario que ha iniciado sesión
+	public static Usuario consultarPropioUsuario(long idSesion) throws SesionInvalidaException, OperacionIncorrectaException {
+		Usuario usuario;
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarPropioUsuario);
+		
+		// Obtenemos el usuario que ha ejecutado la operación a partir de su sesión
+		usuario = GestorSesiones.getSesion(idSesion).getUsuario();
+
+		return usuario;
+	}
+	
 	// Método para obtener la lista de centros de salud de los usuarios
 	public static Vector<CentroSalud> consultarCentros(long idSesion) throws SesionInvalidaException, OperacionIncorrectaException, SQLException {
 		Vector<CentroSalud> centros;

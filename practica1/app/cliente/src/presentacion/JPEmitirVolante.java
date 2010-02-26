@@ -34,7 +34,6 @@ import dominio.conocimiento.Especialidades;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.RolesUsuario;
-import dominio.conocimiento.Sesion;
 import dominio.conocimiento.Volante;
 import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
@@ -269,6 +268,7 @@ public class JPEmitirVolante extends JPBase {
 	
 	private void btnAceptarActionPerformed(ActionEvent evt) {
 		SimpleDateFormat formatoFecha;
+		Usuario usuario;
 		Volante volante;
 		boolean valido;
 		
@@ -279,8 +279,10 @@ public class JPEmitirVolante extends JPBase {
 		}
 		if(valido) {
 			try {
+				// Consultamos los datos del propio usuario
+				usuario = getControlador().consultarPropioUsuario();
 				// Solicitamos al servidor que se cree el volante
-				idVolante = getControlador().emitirVolante(beneficiario, ((Medico)((Sesion)(getControlador().getSesion())).getUsuario()), especialistas.get(lstEspecialistas.getSelectedIndex()));
+				idVolante = getControlador().emitirVolante(beneficiario, (Medico)usuario, especialistas.get(lstEspecialistas.getSelectedIndex()));
 				volante = getControlador().consultarVolante(idVolante);
 				// Recuperamos el volante y mostramos sus datos
 				formatoFecha = new SimpleDateFormat("dd/MM/yyyy");

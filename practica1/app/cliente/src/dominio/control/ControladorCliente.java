@@ -269,6 +269,10 @@ public class ControladorCliente {
 		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, usu);
 	}
 
+	public Usuario consultarPropioUsuario() throws RemoteException, Exception {
+		return (Usuario)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_PROPIO_USUARIO, null);
+	}
+
 	@SuppressWarnings("unchecked")
 	public Vector<CentroSalud> consultarCentros() throws RemoteException, Exception {
 		return (Vector<CentroSalud>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_CENTROS, null);
