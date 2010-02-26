@@ -41,7 +41,6 @@ Para darle el mismo formato a la documentación, os comento como teneis que hace
 2.- Cuando querais hacer una lista de elementos (diferentes items marcados por "puntitos") teneis que usar el entorno \milista, de la siguiente forma: 
     \begin{milista}
       \itemize ...
-      \itemize ...
     \end{milista}
 Además, cada uno de los "items" ponerlo en negrita (\textbf).
 
@@ -49,7 +48,7 @@ Además, cada uno de los "items" ponerlo en negrita (\textbf).
 
 4.- Si quereis insertar un fragmento de código Java, copiar ese fragmento a un archivo .java e incluirlo de esta manera:
 
-\texttt{\lstinputlisting[inputencoding=latin1]{ruta_al_archivo_de_codigo.java}}.
+\texttt{\lstinputlisting[inputencoding=latin1 ]{ruta_al_archivo_de_codigo.java}}.
 
 Si quereis insertar pseudocodigo, podeis usar el entorno \verbatim. Pero siempre que sea código o algo diferente al texto normal, utilizar la familia \texttt, para diferenciarlo del resto.
 
@@ -57,8 +56,7 @@ Si quereis insertar pseudocodigo, podeis usar el entorno \verbatim. Pero siempre
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.65]{ruta_imagen}
+\includegraphics [scale=0.65] {ruta_imagen}
 \caption{leyenda_imagen}
 \label{etiqueta_imagen_para_referenciarla}
 \end{figure}
-
