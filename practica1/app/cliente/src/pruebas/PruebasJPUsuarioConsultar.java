@@ -798,7 +798,6 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			// Esta línea estaba antes y fallaba
 			// controlador.anularCita(c);
 			eliminadoMedico = true;
-			System.out.println(eliminadoMedico);
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.toString());
