@@ -48,15 +48,19 @@ Además, cada uno de los "items" ponerlo en negrita (\textbf).
 
 4.- Si quereis insertar un fragmento de código Java, copiar ese fragmento a un archivo .java e incluirlo de esta manera:
 
-\texttt{\lstinputlisting[inputencoding=latin1 ]{ruta_al_archivo_de_codigo.java}}.
+{{{
+\texttt{\lstinputlisting[inputencoding=latin1]{ruta_al_archivo_de_codigo.java}}.
+}}}
 
 Si quereis insertar pseudocodigo, podeis usar el entorno \verbatim. Pero siempre que sea código o algo diferente al texto normal, utilizar la familia \texttt, para diferenciarlo del resto.
 
 5.- Para incluir imagenes, se hace asi:
 
+{{{
 \begin{figure}[h]
 \centering
-\includegraphics [scale=0.65] {ruta_imagen}
+\includegraphics[scale=0.65]{./imagenes/nombre_imagen}
 \caption{leyenda_imagen}
 \label{etiqueta_imagen_para_referenciarla}
 \end{figure}
+}}}
