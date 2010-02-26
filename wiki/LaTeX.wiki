@@ -68,4 +68,4 @@ Si quereis insertar pseudocodigo, podeis usar el entorno \verbatim. Pero siempre
 
 *MUY IMPORTANTE: no poner barras bajas en los nombres de las imagenes ni de los archivos.tex!!!!!!!!!!*
 
-Por cierto, para escapar la barra baja en una palabra es así: $\_$
+Por cierto, para escapar la barra baja en una palabra es así: {{{$\_$}}}
