@@ -56,6 +56,28 @@ public class UtilidadesPruebas {
 		return mensaje;
 	}
 	
+	public static String obtenerTextoSegundoDialogo (Button btn, final String btnQueCierraPrimero, final String btnQueCierraSegundo) {
+		String mensaje = "";
+		JOptionPane optionPane = null;
+		JDialog dialogo = null;
+		WindowInterceptor.init(btn.triggerClick()).process(
+				new WindowHandler() {
+					public Trigger process(Window window) {
+						return window.getButton(btnQueCierraPrimero).triggerClick();
+					}
+				}).process(new WindowHandler() {
+					public Trigger process(Window window) {
+						ventanaMostrada = window;
+						return window.getButton(btnQueCierraSegundo).triggerClick();
+					}
+				}).run();
+		// El JOptionPane está encapsulado dentro del dialogo (JDialog) que devuelve el WindowInterceptor
+		dialogo = ((JDialog)ventanaMostrada.getAwtComponent()); 
+		optionPane = (JOptionPane) dialogo.getContentPane().getComponents()[0];
+		mensaje = optionPane.getMessage().toString();
+		return mensaje;
+	}
+	
 	public static String generarLogin() {
 		return ("usuario" + rnd.nextInt(999999999));
 	}			

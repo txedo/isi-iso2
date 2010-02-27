@@ -609,6 +609,7 @@ public class JPUsuarioConsultar extends JPBase {
 				if(citasAfectadas != null && citasAfectadas.size() > 0) {
 					// Se avisa de las citas eliminadas
 					frmAviso = new JFAvisos();
+					frmAviso.setLocationRelativeTo(this);
 					frmAviso.mostrarCitas("Las siguientes citas han sido anuladas:", citasAfectadas);
 				}
 				
@@ -703,6 +704,7 @@ public class JPUsuarioConsultar extends JPBase {
 						// para que les pueda avisar del cambio
 						if(beneficiarios.size() > 0) {
 							frmAviso = new JFAvisos();
+							frmAviso.setLocationRelativeTo(this);
 							beneficiariosCamb = new Vector<Beneficiario>();
 							for(Beneficiario beneficiario : beneficiarios) {
 								beneficiariosCamb.add(getControlador().consultarBeneficiarioPorNIF(beneficiario.getNif()));
@@ -713,6 +715,7 @@ public class JPUsuarioConsultar extends JPBase {
 						// Mostramos las citas que se han anulado al eliminar el médico
 						if(citas.size() > 0) {
 							frmAviso = new JFAvisos();
+							frmAviso.setLocationRelativeTo(this);
 							frmAviso.mostrarCitas("Las siguientes citas se han anulado:", citas);
 						}
 						
