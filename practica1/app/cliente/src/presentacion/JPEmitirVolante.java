@@ -109,6 +109,7 @@ public class JPEmitirVolante extends JPBase {
 					txtCentro.setPreferredSize(new java.awt.Dimension(409, 23));
 					txtCentro.setEditable(false);
 					txtCentro.setFocusable(false);
+					txtCentro.setName("txtCentro");
 				}
 				{
 					lblCentro = new JLabel();
@@ -144,6 +145,7 @@ public class JPEmitirVolante extends JPBase {
 					jPanelMedico.add(btnAceptar, new AnchorConstraint(192, 11, 932, 842, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 					btnAceptar.setText("Emitir volante");
 					btnAceptar.setPreferredSize(new java.awt.Dimension(129, 26));
+					btnAceptar.setName("btnEmitir");
 					btnAceptar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnAceptarActionPerformed(evt);
@@ -171,6 +173,7 @@ public class JPEmitirVolante extends JPBase {
 			// Inicializaciones de algunos controles
 			lstEspecialistas.setEnabled(false);
 			lstEspecialistas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			lstEspecialistas.setName("lstEspecialistas");
 			lstEspecialistas.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent evt) {
 					lstEspecialistasValueChanged(evt);
@@ -180,12 +183,14 @@ public class JPEmitirVolante extends JPBase {
 			rellenarModeloComboBox(new String [] {""});
 			cbEspecialidad.setFocusable(false);
 			cbEspecialidad.setEnabled(false);
+			cbEspecialidad.setName("cmbEspecialidad");
 			cbEspecialidad.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					cbEspecialidadActionPerformed(evt);
 				}
 			});
 
+			btnAceptar.setEnabled(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -230,9 +235,11 @@ public class JPEmitirVolante extends JPBase {
 				crearModelos(info);
 				lstEspecialistas.setFocusable(true);
 				lstEspecialistas.setEnabled(true);
+				btnAceptar.setEnabled(true);
 			}
 			else {
 				crearModelos(info);
+				btnAceptar.setEnabled(false);
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -364,6 +371,7 @@ public class JPEmitirVolante extends JPBase {
 		pnlBeneficiario.restablecerPanel();
 		limpiarPanelMedico();
 		beneficiario = null;
+		btnAceptar.setEnabled(false);
 	}
 	
 	//$hide<<$
