@@ -182,9 +182,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 	}
 	
 	/** Pruebas con datos no válidos */
-	public void testDatosInvalidos() {
-		String[] invalidos;
-		
+	public void testDatosInvalidos() {		
 		try {
 			// Buscamos un beneficiario por su NIF
 			jcmbIdentificacion.grabFocus();
