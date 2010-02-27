@@ -167,7 +167,6 @@ public class FPBeneficiario {
 				(beneficiario.getMedicoAsignado() == null ? null : beneficiario.getMedicoAsignado().getNif()),
 				beneficiario.getCentroSalud().getId());
 		GestorConexionesBD.ejecutar(comando);
-		
 		// Insertamos la dirección del beneficiario
 		FPDireccion.insertar(beneficiario.getNif(), beneficiario.getDireccion());
 	}

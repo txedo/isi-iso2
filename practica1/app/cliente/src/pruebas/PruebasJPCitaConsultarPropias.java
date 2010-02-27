@@ -77,6 +77,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(controlador.consultarCentros().firstElement());
+			beneficiarioPrueba.setMedicoAsignado(cabecera);
 			
 			// Mientras existan los usuarios, se genera otro login y otro NIF
 			do {
@@ -101,7 +102,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 					valido = false;
 				}
 			}while(!valido);
-			medicoAsignado = controlador.consultarBeneficiarioPorNIF(beneficiarioPrueba.getNif()).getMedicoAsignado();
+			medicoAsignado = cabecera;
 					
 			// Creamos el panel
 			panel = new JPCitaConsultarPropias(controlador.getVentanaPrincipal(), controlador);

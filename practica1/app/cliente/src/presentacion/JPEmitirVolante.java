@@ -160,6 +160,7 @@ public class JPEmitirVolante extends JPBase {
 				pnlBeneficiario = new JPBeneficiarioConsultar(getFrame(), getControlador());
 				this.add(pnlBeneficiario, new AnchorConstraint(0, 0, 437, 0, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				pnlBeneficiario.setPreferredSize(new java.awt.Dimension(565, 241));
+				pnlBeneficiario.setName("pnlBeneficiario");
 				pnlBeneficiario.reducirPanel();
 				pnlBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
 					public void beneficiarioBuscado(EventObject evt) {

@@ -66,4 +66,9 @@ public class CentroSalud implements Serializable, Cloneable {
 		return dev;
 	}
 	
+	public String toString() {
+		return id + " " + nombre + " " + direccion;
+	}
+	
+	
 }
