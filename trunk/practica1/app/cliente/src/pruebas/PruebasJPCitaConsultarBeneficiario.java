@@ -22,6 +22,7 @@ import comunicaciones.ConfiguracionCliente;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
+import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
@@ -45,6 +46,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 	private Button btnCitasHistorico;
 	private Button btnAnular;
 	private Button btnBuscar;
+	private Button btnRestablecer;
 	private ComboBox cmbIdentificacion;
 	private TextBox txtIdentificacion;
 	private TextBox txtNIF;
@@ -88,21 +90,12 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			});
 			
 			// Creamos e insertamos un médico y un beneficiario
+			
 			tCabecera = new Cabecera();
 			String login = UtilidadesPruebas.generarLogin();
 			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
-			cabecera.setCentroSalud(controlador.consultarCentros().firstElement());
 			periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
 			cabecera.getCalendario().add(periodo1);
-			
-			beneficiarioPrueba = new Beneficiario ();
-			beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());
-			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
-			beneficiarioPrueba.setNombre("beneficiario");
-			beneficiarioPrueba.setApellidos("de prueba");
-			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
-			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
-			beneficiarioPrueba.setCentroSalud(controlador.consultarCentros().firstElement());
 			
 			// Mientras existan los usuarios, se genera otro login y otro NIF
 			do {
@@ -117,8 +110,22 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 				}
 			}while(!valido);
 			
+			// Consultamos el médico de nuevo, porque el centro de salud que realmente se le asigna
+			// se hace de manera aleatoria
+			cabecera = controlador.consultarMedico(cabecera.getNif());
+
+			// Creamos el beneficiario en el mismo centro que el médico, para que no se le asigne otro diferente 
+			beneficiarioPrueba = new Beneficiario ();
+			beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());
+			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
+			beneficiarioPrueba.setNombre("beneficiario");
+			beneficiarioPrueba.setApellidos("de prueba");
+			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
+			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
+			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
+			beneficiarioPrueba.setMedicoAsignado(cabecera);
 			do {
-				try {
+				try {					
 					controlador.crearBeneficiario(beneficiarioPrueba);
 					valido = true;
 				} catch (BeneficiarioYaExistenteException e) {
@@ -127,7 +134,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 					valido = false;
 				}
 			}while(!valido);
-			medicoAsignado = controlador.consultarBeneficiarioPorNIF(beneficiarioPrueba.getNif()).getMedicoAsignado();
+			medicoAsignado = cabecera;
 			
 			// Creamos el panel
 			panelCita = new JPCitaConsultarBeneficiario(controlador.getVentanaPrincipal(), controlador);
@@ -145,6 +152,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			btnBuscar = panelBeneficiario.getButton("btnBuscar");
 			btnCitasHistorico = pnlPanel.getButton("btnHistoricoCitas");
 			btnAnular = pnlPanel.getButton("btnAnular");
+			btnRestablecer = pnlPanel.getButton("btnRestablecer");
 			tblCitas = pnlPanel.getTable("tblTablaCitas");
 			
 			jcmbIdentificacion = (JComboBox)cmbIdentificacion.getAwtComponent();
@@ -163,8 +171,8 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 	
 	protected void tearDown() {
 		try {
-			controlador.eliminarUsuario(cabecera);
 			controlador.eliminarBeneficiario(beneficiarioPrueba);
+			controlador.eliminarUsuario(cabecera);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
 		} catch(Exception e) {
@@ -314,7 +322,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
 			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
-			// La tabla de citas debe tener un elemento
+			// La tabla de citas debe tener dos elementos
 			assertTrue(tblCitas.getRowCount()==2);
 			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==2);
@@ -346,5 +354,14 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			fail(e.toString());
 		}
 	}	
+	
+	public void testRestablecer () {
+		btnRestablecer.click();
+		assertFalse(btnAnular.isEnabled());
+		assertTrue(tblCitas.getRowCount()==0);
+		assertTrue(txtIdentificacion.getText().equals(""));
+		assertTrue(txtNIF.getText().equals(""));
+		assertTrue(txtNSS.getText().equals(""));
+	}
 
 }

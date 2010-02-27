@@ -73,6 +73,7 @@ public class JFCalendarioLaboral extends javax.swing.JFrame {
 				btnRestablecerTodo.setText("Restablecer todo");
 				btnRestablecerTodo.setPreferredSize(new java.awt.Dimension(117, 24));
 				btnRestablecerTodo.setEnabled(false);
+				btnRestablecerTodo.setName("btnRestablecerTodo");
 				btnRestablecerTodo.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnRestablecerTodoActionPerformed(evt);

@@ -65,6 +65,7 @@ public class JFAvisos extends javax.swing.JFrame {
 					pnlPanel.add(btnCerrar, new AnchorConstraint(904, 11, 11, 0, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnCerrar.setText("Cerrar");
 					btnCerrar.setPreferredSize(new java.awt.Dimension(101, 25));
+					btnCerrar.setName("btnCerrar");
 					btnCerrar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnCerrarActionPerformed(evt);

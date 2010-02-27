@@ -81,6 +81,7 @@ public class JPCitaConsultarMedico extends JPBase {
 				btnHistoricoCitas.setText("Ver histórico de citas");
 				btnHistoricoCitas.setPreferredSize(new java.awt.Dimension(142, 26));
 				btnHistoricoCitas.setEnabled(false);
+				btnHistoricoCitas.setName("btnHistoricoCitas");
 				btnHistoricoCitas.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnHistoricoCitasActionPerformed(evt);
@@ -98,6 +99,7 @@ public class JPCitaConsultarMedico extends JPBase {
 				pnlUsuario.setPreferredSize(new java.awt.Dimension(430, 183));
 				pnlUsuario.reducirPanel();
 				pnlUsuario.setSoloMedicos(true);
+				pnlUsuario.setName("pnlUsuario");
 				pnlUsuario.addUsuarioBuscadoListener(new UsuarioBuscadoListener() {
 					public void usuarioBuscado(EventObject evt) {
 						pnlUsuarioUsuarioBuscado(evt);
@@ -109,6 +111,7 @@ public class JPCitaConsultarMedico extends JPBase {
 				this.add(btnRestablecer, new AnchorConstraint(916, 163, 11, 673, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnRestablecer.setName("btnRestablecer");
 				btnRestablecer.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnRestablecerActionPerformed(evt);
@@ -131,6 +134,7 @@ public class JPCitaConsultarMedico extends JPBase {
 					tblTablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					tblTablaCitas.setCellEditor(null);
 					tblTablaCitas.setDefaultRenderer(Object.class, new TableCellRendererCitas());
+					tblTablaCitas.setName("tblTablaCitas");
 				}
 			}
 		} catch(Exception e) {
