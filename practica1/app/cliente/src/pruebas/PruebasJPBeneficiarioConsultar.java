@@ -1,7 +1,6 @@
 package pruebas;
 
 import java.util.Date;
-import java.util.Random;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -18,7 +17,6 @@ import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JPBeneficiarioConsultar;
-import presentacion.auxiliar.Validacion;
 
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
@@ -26,7 +24,6 @@ import comunicaciones.ConfiguracionCliente;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Direccion;
 import dominio.control.ControladorCliente;
-import excepciones.BeneficiarioInexistenteException;
 
 public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
 	

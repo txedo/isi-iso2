@@ -98,6 +98,7 @@ public class JPCitaTramitar extends JPBase {
 				this.add(txtMedico, new AnchorConstraint(339, 12, 833, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtMedico.setPreferredSize(new java.awt.Dimension(280, 23));
 				txtMedico.setEditable(false);
+				txtMedico.setName("txtMedico");
 			}
 			{
 				lblDatos = new JLabel();
@@ -116,6 +117,7 @@ public class JPCitaTramitar extends JPBase {
 				pnlBeneficiario.setPreferredSize(new java.awt.Dimension(430, 237));
 				pnlBeneficiario.reducirPanel();
 				pnlBeneficiario.setPreguntarRegistro(true);
+				pnlBeneficiario.setName("pnlBeneficiario");
 				pnlBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
 					public void beneficiarioBuscado(EventObject evt) {
 						pnlBeneficiarioBeneficiarioBuscado(evt);
@@ -140,6 +142,7 @@ public class JPCitaTramitar extends JPBase {
 				this.add(btnRegistrar, new AnchorConstraint(378, 11, 855, 798, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnRegistrar.setText("Registrar cita");
 				btnRegistrar.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnRegistrar.setName("btnRegistrar");
 				btnRegistrar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnRegistrarActionPerformed(evt);
@@ -152,6 +155,7 @@ public class JPCitaTramitar extends JPBase {
 				cmbHorasCitas.setModel(new DefaultComboBoxModel(new String[] {}));
 				cmbHorasCitas.setRenderer(new ListCellRendererCitas());
 				cmbHorasCitas.setPreferredSize(new java.awt.Dimension(280, 23));
+				cmbHorasCitas.setName("cmbHorasCitas");
 				cmbHorasCitas.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent evt) {
 						cmbHorasCitasItemStateChanged(evt);
@@ -207,6 +211,7 @@ public class JPCitaTramitar extends JPBase {
 			// Para poder pedir cita, el beneficiario debe tener
 			// un médico asignado
 			if(beneficiario.getMedicoAsignado() == null) {
+				// TODO Comprobar si la búsqueda ha sido por NIF o NSS para mostrar bien el mensaje de error
 				Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario con NIF " + beneficiario.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.");
 			} else {
 				

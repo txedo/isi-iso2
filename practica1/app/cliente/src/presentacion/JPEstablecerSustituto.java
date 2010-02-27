@@ -357,6 +357,7 @@ public class JPEstablecerSustituto extends JPBase {
 				// Mostramos las citas afectadas
 				if(citas.size() > 0) {
 					frmAviso = new JFAvisos();
+					frmAviso.setLocationRelativeTo(this);
 					frmAviso.mostrarCitas("Las siguientes citas ahora serán atendidas por el médico sustituto:", citas);
 				}
 				

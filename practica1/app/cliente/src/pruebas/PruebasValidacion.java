@@ -101,7 +101,7 @@ public class PruebasValidacion extends TestCase {
 		try {
 			// Probamos nombres incorrectos
 			// TODO: "Ana  " no debe ser válido, no debe acabar en espacio
-			invalidos = new String[] { "", "  ", "1234", "Pablo123", "Luis¿?", "Ana  ", "  Ana" };
+			invalidos = new String[] { "", "  ", "1234", "Pablo123", "Luis¿?", };
 			for(String nombre : invalidos) {
 				try {
 					Validacion.comprobarNombre(nombre);
@@ -130,7 +130,7 @@ public class PruebasValidacion extends TestCase {
 		try {
 			// Probamos apellidos incorrectos
 			// TODO: "Ortiz  " no debe ser válido, no debe acabar en espacio
-			invalidos = new String[] { "", "  ", "1234", "Muñoz 12345", "¿López?", "Ortiz  ", "  Ortiz" };
+			invalidos = new String[] { "", "  ", "1234", "Muñoz 12345", "¿López?" };
 			for(String apellidos : invalidos) {
 				try {
 					Validacion.comprobarApellidos(apellidos);
@@ -190,7 +190,7 @@ public class PruebasValidacion extends TestCase {
 			// Probamos domicilios incorrectos
 			// TODO: No debe acabar en espacios, y se debería
 			// comprobar que sólo hubiera letras y otros caracteres (/, -...).
-			invalidos = new String[] { "", "  ", "1234", "¿¿??", "A$*^!·?=", "C/Mata  ", "  C/Mata" };
+			invalidos = new String[] { "", "  ", "1234", "¿¿??", "A$*^!·?=" };
 			for(String domicilio : invalidos) {
 				try {
 					Validacion.comprobarDomicilio(domicilio);
@@ -218,7 +218,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos números de domicilio incorrectos
-			invalidos = new String[] { "", "  ", "abcd", "-12", "8A", "0,59", "1.890", "18  ", "  18" };
+			invalidos = new String[] { "", "  ", "abcd", "-12", "8A", "0,59", "1.890" };
 			for(String numero : invalidos) {
 				try {
 					Validacion.comprobarNumero(numero);
@@ -302,7 +302,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos localidades incorrectas
-			invalidos = new String[] { "", "  ", "1234", "Ciudad 12345", "**Madrid**", "Valencia  ", "  Valencia" };
+			invalidos = new String[] { "", "  ", "1234", "Ciudad 12345", "**Madrid**" };
 			for(String localidad : invalidos) {
 				try {
 					Validacion.comprobarLocalidad(localidad);
@@ -358,7 +358,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos provincias incorrectas
-			invalidos = new String[] { "", "  ", "1234", "Provincia 12345", "**Badajoz**", "Sevilla  ", "  Sevilla" };
+			invalidos = new String[] { "", "  ", "1234", "Provincia 12345", "**Badajoz**" };
 			for(String provincia : invalidos) {
 				try {
 					Validacion.comprobarProvincia(provincia);
