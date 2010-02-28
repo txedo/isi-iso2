@@ -1,6 +1,7 @@
 package pruebas;
 
 import java.util.Date;
+import java.util.Vector;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -102,6 +103,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	private Medico cabecera;
 	private String login;
 	private PeriodoTrabajo periodo1;
+	
+	private Vector<Medico> medicosEliminados;
 	
 	@SuppressWarnings("deprecation")
 	protected void setUp() {
@@ -221,6 +224,9 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	protected void tearDown() {
 		try {
 			if (!eliminadoBeneficiario) controlador.eliminarBeneficiario(beneficiarioPrueba);
+			for (Medico m : medicosEliminados) {
+				controlador.crearMedico(m);
+			}
 			if (!eliminadoMedico) controlador.eliminarMedico(cabecera);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
@@ -367,8 +373,11 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	
 	public void testBuscarBeneficiarioSinMedicoAsignado () {
 		try {
-			// Borramos el médico de cabecera que se le asignó al beneficiario
-			controlador.eliminarMedico(cabecera);
+			// Borramos todos los médicos de cabecera para que no se le asigne ninguno
+			medicosEliminados = controlador.obtenerMedicosTipo(tCabecera);
+			for (Medico m : medicosEliminados) {
+				controlador.eliminarMedico(m);
+			}
 			eliminadoMedico = true;			
 			// Consultamos el beneficiario
 			jcmbIdentificacion.grabFocus();
