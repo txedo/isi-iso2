@@ -76,6 +76,9 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
 			beneficiarioPrueba.setNombre("beneficiario");
 			beneficiarioPrueba.setApellidos("de prueba");
+			beneficiarioPrueba.setCorreo(" ");
+			beneficiarioPrueba.setTelefono(" ");
+			beneficiarioPrueba.setMovil(" ");
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(controlador.consultarCentros().firstElement());

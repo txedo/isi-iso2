@@ -327,6 +327,10 @@ public class PruebasSesiones extends PruebasBase {
 		public boolean llamado() {
 			return llamado;
 		}
+
+		public void cerrarSesionEliminacion() throws RemoteException {
+			
+		}
 	    
 	}
 	

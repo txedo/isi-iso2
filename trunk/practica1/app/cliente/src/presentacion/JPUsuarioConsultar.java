@@ -341,7 +341,7 @@ public class JPUsuarioConsultar extends JPBase {
 			{
 				lblEspecialidad = new JLabel();
 				this.add(lblEspecialidad, new AnchorConstraint(412, 282, 811, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblEspecialidad.setText("Especialidad *");
+				lblEspecialidad.setText("Especialidad");
 				lblEspecialidad.setPreferredSize(new java.awt.Dimension(111, 13));
 			}
 			{
@@ -815,15 +815,13 @@ public class JPUsuarioConsultar extends JPBase {
 		btnEliminar.setEnabled(activar);
 		lblCamposOblig.setVisible(activar);
 		if(activar) {
-			lblNIF.setText("NIF *");
 			lblNombre.setText("Nombre *");
 			lblApellidos.setText("Apellidos *");
 			lblLogin.setText("Usuario *");
 			lblPassword.setText("Contraseña *");
 			lblPasswordConf.setText("Confirmar contraseña *");
-			lblRol.setText("Tipo de usuario *");
-			lblCalendario.setText("Calendario laboral *");
-			lblCentro.setText("Centro asignado *");
+			if (!usuario.getRol().equals(RolesUsuario.Medico))
+				lblRol.setText("Tipo de usuario *");
 			btnCalendario.setText("Configurar...");
 		} else {
 			lblNIF.setText("NIF");

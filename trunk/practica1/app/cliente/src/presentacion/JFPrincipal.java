@@ -577,6 +577,12 @@ public class JFPrincipal extends javax.swing.JFrame {
 		controlador.identificarse();
 	}
 	
+	public void forzarCierreSesionEliminacion() {
+		Dialogos.mostrarDialogoAdvertencia(this, "Aviso", "Se ha eliminado este usuario desde otro cliente.\nEsta sesión se cerrará automáticamente.");
+		restablecerPaneles();
+		controlador.identificarse();
+	}
+	
 	public void forzarCierreServidorDesconectado() {
 		Dialogos.mostrarDialogoAdvertencia(this, "Aviso", "Se ha perdido la conexión con el servidor principal.\nEsta sesión se cerrará automáticamente.");
 		restablecerPaneles();

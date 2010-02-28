@@ -115,5 +115,10 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 	public void cerrarSesion() throws RemoteException {
 		cliente.cerrarSesion();
 	}
+	
+	public void cerrarSesionEliminacion() throws RemoteException {
+		cliente.cerrarSesionEliminacion();
+		
+	}
     
 }

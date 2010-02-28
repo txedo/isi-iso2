@@ -20,4 +20,6 @@ public interface ICliente extends Remote {
 	
 	public void cerrarSesion() throws RemoteException;
 	
+	public void cerrarSesionEliminacion() throws RemoteException;
+	
 }

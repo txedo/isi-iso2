@@ -24,6 +24,7 @@ import excepciones.CentroSaludInexistenteException;
 import excepciones.DireccionInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
+import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.UsuarioInexistenteException;
 import excepciones.UsuarioYaExistenteException;
@@ -81,7 +82,7 @@ public class GestorUsuarios {
 	}
 
 	// Método para eliminar un usuario del sistema
-	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
+	public static void eliminarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException, SesionNoIniciadaException {
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
 			throw new NullPointerException("El usuario que se va a eliminar no puede ser nulo.");
@@ -92,6 +93,7 @@ public class GestorUsuarios {
 		
 		// Llamamos al método común para eliminar usuarios y médicos
 		eliminarUsuario(usuario);
+		
 	}
 
 	// Método para obtener los datos del usuario que ha iniciado sesión

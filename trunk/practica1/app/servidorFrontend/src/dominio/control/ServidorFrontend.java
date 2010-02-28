@@ -1064,11 +1064,21 @@ public class ServidorFrontend implements IServidorFrontend {
 		
 		case ICodigosMensajeAuxiliar.ELIMINAR_USUARIO:
 			try {
+				long idSesionUsuarioEliminado;
+				ICliente cliente;
 				// Eliminamos un usuario del sistema
 				GestorUsuarios.eliminarUsuario(idSesion, (Usuario)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Eliminado el usuario con NIF " + ((Usuario)informacion).getNif() + ".");
 				GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.ELIMINAR, (Usuario)informacion);
+				// Liberamos la sesión del usuario que acabamos de eliminar (si la tenía iniciada)
+				idSesionUsuarioEliminado = GestorSesiones.getIdSesionUsuario((Usuario)informacion);
+				if (idSesionUsuarioEliminado != -1) {
+					cliente = GestorSesiones.getClientes().get(idSesionUsuarioEliminado);
+					liberar(idSesionUsuarioEliminado);
+					// Avisamos al cliente que su sesión se ha cerrado
+					cliente.cerrarSesionEliminacion();
+				}
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL mientras se eliminaba el usuario con NIF " + ((Usuario)informacion).getNif() + ": " + se.getLocalizedMessage());

@@ -147,7 +147,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos consultar los datos de un médico sin permisos
-			servidor.getMedico(sesionCitador.getId(), medico1.getNif());
+			servidor.getMedico(sesionMedico.getId(), medico1.getNif());
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
