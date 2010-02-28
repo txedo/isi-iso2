@@ -256,26 +256,31 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		String otroNss;
 		
 		try {
-			// Creamos un beneficiario con todos los datos válidos
-			nif = UtilidadesPruebas.generarNIF();
-			nss = UtilidadesPruebas.generarNSS();
-			txtNIF.setText(nif);
-			txtNSS.setText(nss);
-			txtNombre.setText("Pedro");
-			txtApellidos.setText("Jiménez Serrano");
-			txtFechaNacimiento.setText("01/01/1980");
-			txtDomicilio.setText("C/Cervantes");
-			txtNumero.setText("38");
-			txtPiso.setText("4");
-			txtPuerta.setText("F");
-			txtLocalidad.setText("Ciudad Real");
-			txtCP.setText("13001");
-			txtProvincia.setText("Ciudad Real");
-			txtCorreo.setText("pjs80@gmail.com");
-			txtTelefonoFijo.setText("926147130");
-			txtTelefonoMovil.setText("626405060");
-			jcmbCentros.setSelectedIndex(0);
-			btnCrear.click();
+			do {
+				// Creamos un beneficiario con todos los datos válidos
+				nif = UtilidadesPruebas.generarNIF();
+				nss = UtilidadesPruebas.generarNSS();
+				txtNIF.setText(nif);
+				txtNSS.setText(nss);
+				txtNombre.setText("Pedro");
+				txtApellidos.setText("Jiménez Serrano");
+				txtFechaNacimiento.setText("01/01/1980");
+				txtDomicilio.setText("C/Cervantes");
+				txtNumero.setText("38");
+				txtPiso.setText("4");
+				txtPuerta.setText("F");
+				txtLocalidad.setText("Ciudad Real");
+				txtCP.setText("13001");
+				txtProvincia.setText("Ciudad Real");
+				txtCorreo.setText("pjs80@gmail.com");
+				txtTelefonoFijo.setText("926147130");
+				txtTelefonoMovil.setText("626405060");
+				jcmbCentros.setSelectedIndex(0);
+				btnCrear.click();
+				// Si no se han quedado los campos vacios, es porque ya existia el login
+			} while (!txtNIF.getText().equals(""));
+			// Aqui es mejor hacer la comprobacion de esta manera, porque el mensaje que se muestra en 
+			// el diálogo de confirmación varia según se pueda asignar o no médico al beneficiario
 			comprobarCamposVacios();
 			beneficiarioCreado = true;
 		} catch(Exception e) {
@@ -302,14 +307,14 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			txtTelefonoFijo.setText("926147130");
 			txtTelefonoMovil.setText("626405060");
 			jcmbCentros.setSelectedIndex(0);
-			btnCrear.click();
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION), "Ya existe una persona en el sistema registrada con el NIF " + nif + ".");
 			assertEquals(txtNIF.getText(), nif);
 			// Intentamos crear un beneficiario con el mismo NSS
 			// y comprobamos que los campos no se han borrado
 			otroNif = UtilidadesPruebas.generarNIF();
 			txtNIF.setText(otroNif);
 			txtNSS.setText(nss);
-			btnCrear.click();
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnCrear, OK_OPTION),  "El beneficiario con el NSS " + nss + " ya se encuentra dado de alta en el sistema y no se puede registrar de nuevo.");
 			assertEquals(txtNSS.getText(), nss);			
 		} catch(Exception e) {
 			fail(e.toString());
@@ -320,27 +325,31 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		String nss = "";
 		
 		try {
-			// Creamos un beneficiario con datos válidos omitiendo
-			// el correo electrónico y los teléfonos
-			nif = UtilidadesPruebas.generarNIF();
-			nss = UtilidadesPruebas.generarNSS();
-			txtNIF.setText(nif);
-			txtNSS.setText(nss);
-			txtNombre.setText("Pedro  ");
-			txtApellidos.setText("  Jiménez Serrano");
-			txtFechaNacimiento.setText("01/01/1980");
-			txtDomicilio.setText("C/Cervantes");
-			txtNumero.setText("38");
-			txtPiso.setText("4");
-			txtPuerta.setText("F");
-			txtLocalidad.setText("Ciudad Real");
-			txtCP.setText("13001");
-			txtProvincia.setText("Ciudad Real");
-			txtCorreo.setText("");
-			txtTelefonoFijo.setText(" ");
-			txtTelefonoMovil.setText("  ");
-			jcmbCentros.setSelectedIndex(0);
-			btnCrear.click();
+			do {
+				// Creamos un beneficiario con datos válidos omitiendo
+				// el correo electrónico y los teléfonos
+				nif = UtilidadesPruebas.generarNIF();
+				nss = UtilidadesPruebas.generarNSS();
+				txtNIF.setText(nif);
+				txtNSS.setText(nss);
+				txtNombre.setText("Pedro  ");
+				txtApellidos.setText("  Jiménez Serrano");
+				txtFechaNacimiento.setText("01/01/1980");
+				txtDomicilio.setText("C/Cervantes");
+				txtNumero.setText("38");
+				txtPiso.setText("4");
+				txtPuerta.setText("F");
+				txtLocalidad.setText("Ciudad Real");
+				txtCP.setText("13001");
+				txtProvincia.setText("Ciudad Real");
+				txtCorreo.setText("");
+				txtTelefonoFijo.setText(" ");
+				txtTelefonoMovil.setText("  ");
+				jcmbCentros.setSelectedIndex(0);
+				btnCrear.click();
+			} while (!txtNIF.getText().equals(""));
+			// Aqui es mejor hacer la comprobacion de esta manera, porque el mensaje que se muestra en 
+			// el diálogo de confirmación varia según se pueda asignar o no médico al beneficiario
 			comprobarCamposVacios();
 			beneficiarioCreado = true;
 		} catch(Exception e) {
@@ -352,27 +361,31 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 		String nss = "";
 		
 		try {
-			// Creamos un beneficiario con datos válidos omitiendo
-			// el número, el piso y la puerta del domicilio
-			nif = UtilidadesPruebas.generarNIF();
-			nss = UtilidadesPruebas.generarNSS();
-			txtNIF.setText(nif);
-			txtNSS.setText(nss);
-			txtNombre.setText("Pedro");
-			txtApellidos.setText("Jiménez Serrano");
-			txtFechaNacimiento.setText("01/01/1980");
-			txtDomicilio.setText("  C/Cervantes");
-			txtNumero.setText("");
-			txtPiso.setText(" ");
-			txtPuerta.setText("  ");
-			txtLocalidad.setText("Ciudad Real  ");
-			txtCP.setText("13001");
-			txtProvincia.setText("Ciudad Real");
-			txtCorreo.setText("pjs80@gmail.com  ");
-			txtTelefonoFijo.setText("926147130");
-			txtTelefonoMovil.setText("626405060");
-			jcmbCentros.setSelectedIndex(0);
-			btnCrear.click();
+			do {
+				// Creamos un beneficiario con datos válidos omitiendo
+				// el número, el piso y la puerta del domicilio
+				nif = UtilidadesPruebas.generarNIF();
+				nss = UtilidadesPruebas.generarNSS();
+				txtNIF.setText(nif);
+				txtNSS.setText(nss);
+				txtNombre.setText("Pedro");
+				txtApellidos.setText("Jiménez Serrano");
+				txtFechaNacimiento.setText("01/01/1980");
+				txtDomicilio.setText("  C/Cervantes");
+				txtNumero.setText("");
+				txtPiso.setText(" ");
+				txtPuerta.setText("  ");
+				txtLocalidad.setText("Ciudad Real  ");
+				txtCP.setText("13001");
+				txtProvincia.setText("Ciudad Real");
+				txtCorreo.setText("pjs80@gmail.com  ");
+				txtTelefonoFijo.setText("926147130");
+				txtTelefonoMovil.setText("626405060");
+				jcmbCentros.setSelectedIndex(0);
+				btnCrear.click();
+			} while (!txtNIF.getText().equals(""));
+			// Aqui es mejor hacer la comprobacion de esta manera, porque el mensaje que se muestra en 
+			// el diálogo de confirmación varia según se pueda asignar o no médico al beneficiario
 			comprobarCamposVacios();
 			beneficiarioCreado = true;
 		} catch(Exception e) {

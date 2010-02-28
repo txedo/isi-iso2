@@ -28,7 +28,6 @@ import comunicaciones.ConfiguracionCliente;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
-import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
@@ -40,7 +39,6 @@ import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
-import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.LoginIncorrectoException;
 import excepciones.NIFIncorrectoException;
@@ -96,7 +94,6 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	private Citador citador;
 	private Medico cabecera, especialista, pediatra;
 	private TipoMedico tPediatra, tCabecera, tEspecialista;
-	private CentroSalud centro;
 	private PeriodoTrabajo periodo1;
 	
 	protected void setUp() {
@@ -172,7 +169,8 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 					valido = false;
 				}
 			}while(!valido);
-			// Consultamos el médico de nuevo, porque el centro de salud que realmente se le asigna
+			
+			// Consultamos el médico, porque el centro de salud que realmente se le asigna
 			// se hace de manera aleatoria
 			cabecera = controlador.consultarMedico(cabecera.getNif());
 			do {
@@ -277,17 +275,17 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Ponemos un NIF nulo
 			txtNIFBuscado.setText("");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NIFIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
 			// Ponemos un NIF incorrecto y comprobamos que el campo de
 			// identificacion se selecciona por tener un formato inválido
 			txtNIFBuscado.setText("111111");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NIFIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
 			// Probamos con un NIF que no esté dado de alta en el sistema
 			txtNIFBuscado.setText("00000000a");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "No existe ningún usuario con el NIF introducido.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "No existe ningún usuario con el NIF introducido.");
 			// Ponemos un NIF correcto
 			txtNIFBuscado.setText(admin.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			// Intentamos modificar el usuario
 			assertFalse(chkEditar.isSelected());
 			chkEditar.select();
@@ -297,15 +295,15 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			assertFalse(txtCentro.isEditable());
 			// Escribimos un nombre incorrecto y comprobamos que se selecciona
 			txtNombre.setText("Pedro$");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new NombreIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new NombreIncorrectoException().getMessage());
 			txtNombre.setText("Pedro");
 			// Ponemos unos apellidos incorrectos y comprobamos que se seleccionan
 			txtApellidos.setText("---");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new ApellidoIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new ApellidoIncorrectoException().getMessage());
 			txtApellidos.setText("Jiménez Serrano");
 			// Ponemos un nombre de usuario incorrecto y comprobamos que se selecciona
 			txtLogin.setText("admin- ");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new LoginIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new LoginIncorrectoException().getMessage());
 			txtLogin.setText("admin87");
 			// Ponemos una contraseña invalida y comprobamos que se selecciona
 			// TODO: sigue fallando la contraseña. Ahora me dice que se almacena correctamente
@@ -319,15 +317,15 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			jtxtPasswordConf.setText("12345678");
 			// Probamos un e-mail invalido y comprobamos que se selecciona (este campo es opcional)
 			txtCorreoElectronico.setText("pjs80@gmail");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new CorreoElectronicoIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new CorreoElectronicoIncorrectoException().getMessage());
 			txtCorreoElectronico.setText("pjs80@gmail.com");
 			// Ponemos un teléfono fijo incorrecto y comprobamos que se selecciona
 			txtTelefonoFijo.setText("926 147 130");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new TelefonoFijoIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new TelefonoFijoIncorrectoException().getMessage());
 			txtTelefonoFijo.setText("926147130");
 			// Ponemos un teléfono móvil incorrecto y comprobamos que se selecciona
 			txtTelefonoMovil.setText("61011122");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new TelefonoMovilIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new TelefonoMovilIncorrectoException().getMessage());
 			txtTelefonoMovil.setText("626405060");
 			// Como se ha buscado un administrador, intentamos cambiar su rol a uno no válido
 			jcmbRol.grabFocus();
@@ -342,7 +340,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	
 	public void testConsultarAdministrador() {
 		txtNIFBuscado.setText(admin.getNif());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 		assertEquals(txtNIF.getText(), admin.getNif());
 		assertEquals(jcmbRol.getSelectedItem().toString(), "Administrador");
 		assertFalse(btnCalendario.isVisible());
@@ -350,7 +348,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	
 	public void testConsultarCitador() {
 		txtNIFBuscado.setText(citador.getNif());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 		assertEquals(txtNIF.getText(), citador.getNif());
 		assertEquals(jcmbRol.getSelectedItem().toString(), "Citador");
 		assertFalse(txtEspecialidad.isVisible());
@@ -359,7 +357,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	
 	public void testConsultarMedico() {
 		txtNIFBuscado.setText(cabecera.getNif());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 		assertEquals(txtNIF.getText(), cabecera.getNif());
 		assertEquals(jcmbRol.getSelectedItem().toString(), "Medico (Cabecera)");
 		assertFalse(txtEspecialidad.isVisible());
@@ -368,7 +366,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 
 	public void testConsultarEspecialista() {
 		txtNIFBuscado.setText(especialista.getNif());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 		assertEquals(txtNIF.getText(), especialista.getNif());
 		assertEquals(jcmbRol.getSelectedItem().toString(), "Medico (Especialista)");
 		assertTrue(txtEspecialidad.isVisible());
@@ -382,7 +380,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Buscamos el usuario
 			txtNIFBuscado.setText(admin.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), admin.getNif());
 			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
@@ -397,10 +395,10 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			// Editamos el nombre del administrador
 			txtNombre.setText(nuevoNombre);
 			// Guardamos el administrador
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), "El usuario ha sido modificado correctamente.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
 			// Comprobamos que el administrador ha sido modificado correctamente
 			txtNIFBuscado.setText(admin.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), admin.getNif());
 			// Comprobamos que en el textbox del nombre sale nuevoNombre
 			assertEquals(nuevoNombre, txtNombre.getText());
@@ -413,7 +411,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Buscamos el usuario
 			txtNIFBuscado.setText(admin.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), admin.getNif());
 			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
@@ -429,10 +427,10 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			jcmbRol.grabFocus();
 			jcmbRol.setSelectedIndex(1);
 			// Guardamos el administrador
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), "El usuario ha sido modificado correctamente.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
 			// Comprobamos que el administrador ha sido modificado correctamente
 			txtNIFBuscado.setText(admin.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), admin.getNif());
 			assertEquals(jcmbRol.getSelectedItem().toString(), "Citador");
 		} catch(Exception e) {
@@ -449,7 +447,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Buscamos el usuario
 			txtNIFBuscado.setText(citador.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), citador.getNif());
 			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
@@ -464,10 +462,10 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			// Editamos el correo del citador
 			txtCorreoElectronico.setText(nuevoCorreo);
 			// Guardamos el citador
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), "El usuario ha sido modificado correctamente.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
 			// Comprobamos que el citador ha sido modificado correctamente
 			txtNIFBuscado.setText(citador.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), citador.getNif());			
 			assertEquals(nuevoCorreo, txtCorreoElectronico.getText());
 		} catch(Exception e) {
@@ -478,7 +476,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Buscamos el usuario
 			txtNIFBuscado.setText(citador.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), citador.getNif());
 			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
@@ -494,10 +492,10 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			jcmbRol.grabFocus();
 			jcmbRol.setSelectedIndex(0);
 			// Guardamos el citador
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), "El usuario ha sido modificado correctamente.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
 			// Comprobamos que el citador ha sido modificado correctamente
 			txtNIFBuscado.setText(citador.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), citador.getNif());
 			assertEquals(jcmbRol.getSelectedItem().toString(), "Administrador");
 		} catch(Exception e) {
@@ -517,7 +515,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
@@ -532,10 +530,10 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			// Editamos el login del médico
 			txtLogin.setText(nuevoLogin);
 			// Guardamos el medico
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), "El usuario ha sido modificado correctamente.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
 			// Comprobamos que el medico ha sido modificado correctamente
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());			
 			assertEquals(nuevoLogin, txtLogin.getText());
 		} catch(Exception e) {
@@ -546,7 +544,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Buscamos el usuario
 			txtNIFBuscado.setText(especialista.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), especialista.getNif());
 			assertTrue(txtEspecialidad.isVisible().isTrue());
 			assertEquals(((Especialista)especialista.getTipoMedico()).getEspecialidad(), txtEspecialidad.getText());
@@ -563,10 +561,10 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			// Editamos el teléfono del médico
 			txtTelefonoFijo.setText(nuevoTelefono);
 			// Guardamos el medico
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), "El usuario ha sido modificado correctamente.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
 			// Comprobamos que el medico ha sido modificado correctamente
 			txtNIFBuscado.setText(especialista.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), especialista.getNif());			
 			assertEquals(nuevoTelefono, txtTelefonoFijo.getText());
 		} catch(Exception e) {
@@ -577,7 +575,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			// Comprobamos que, inicialmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
@@ -602,10 +600,10 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			// El texto de la label se ha debido actualizar con el numero de horas introducido
 			assertTrue(!textoHoras.equals(jlblHoras.getText()));
 			// Guardamos el médico
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), "El usuario ha sido modificado correctamente.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
 			// Comprobamos que el médico ha sido modificado correctamente
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			assertEquals(jlblHoras.getText(), "7 horas semanales");
 		} catch(Exception e) {
@@ -639,7 +637,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			// Comprobamos que, inicialmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
@@ -686,7 +684,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			}).run();
 			// Comprobamos que el médico ha sido modificado correctamente
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertTrue(jlblHoras.getText().equals("1 hora semanal"));
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			controlador.eliminarBeneficiario(beneficiarioPrueba);
@@ -700,7 +698,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Buscamos el usuario
 			txtNIFBuscado.setText(admin.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), admin.getNif());
 			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
@@ -743,7 +741,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		try {
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			// Comprobamos que, inicialmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
@@ -803,7 +801,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			// Comprobamos que, inicialmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());

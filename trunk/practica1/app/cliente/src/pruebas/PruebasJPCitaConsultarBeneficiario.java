@@ -22,7 +22,6 @@ import comunicaciones.ConfiguracionCliente;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
-import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
@@ -70,12 +69,13 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 	private TipoMedico tCabecera;
 	private Beneficiario beneficiarioPrueba;
 	private PeriodoTrabajo periodo1;
-	private Medico medicoAsignado;
 	
-	private boolean valido = false;
+	private boolean valido;
+	private String login;
 	
 	@SuppressWarnings("deprecation")
 	protected void setUp() {
+		valido = false;
 		try {
 			// Establecemos conexión con el servidor front-end
 			controlador = new ControladorCliente();
@@ -89,22 +89,22 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 				}
 			});
 			
-			// Creamos e insertamos un médico y un beneficiario
-			
+			// Creamos un médico de cabecera			
 			tCabecera = new Cabecera();
-			String login = UtilidadesPruebas.generarLogin();
+			login = UtilidadesPruebas.generarLogin();
 			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
 			periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
 			cabecera.getCalendario().add(periodo1);
 			
-			// Mientras existan los usuarios, se genera otro login y otro NIF
+			// Mientras exista el usuario, se genera otro login y otro NIF
 			do {
 				try {
 					controlador.crearUsuario(cabecera);
 					valido = true;
 				} catch (UsuarioYaExistenteException e) {
 					cabecera.setNif(UtilidadesPruebas.generarNIF());
-					cabecera.setLogin(UtilidadesPruebas.generarLogin());
+					login = UtilidadesPruebas.generarLogin();
+					cabecera.setLogin(login);
 					cabecera.setPassword(login);
 					valido = false;
 				}
@@ -134,7 +134,6 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 					valido = false;
 				}
 			}while(!valido);
-			medicoAsignado = cabecera;
 			
 			// Creamos el panel
 			panelCita = new JPCitaConsultarBeneficiario(controlador.getVentanaPrincipal(), controlador);
@@ -189,24 +188,24 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			jcmbIdentificacion.setSelectedIndex(0);
 			// Inicialmente probamos con un NIF nulo
 			txtIdentificacion.setText("");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Debe introducir un NIF o un NSS.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Debe introducir un NIF o un NSS.");
 			// Ponemos un NIF incorrecto y comprobamos que el campo de
 			// identificacion se selecciona por tener un formato inválido
 			txtIdentificacion.setText("11223344");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NIFIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
 			// Probamos con un NIF que no esté dado de alta en el sistema
 			txtIdentificacion.setText("00000000a");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.");
 			// Buscamos un beneficiario por su NSS
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(1);
 			// Ponemos un NSS incorrecto y comprobamos que el campo del
 			// identificacion se selecciona por tener un formato inválido
 			txtIdentificacion.setText("11223344");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NSSIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NSSIncorrectoException().getMessage());
 			// Probamos con un NSS que no esté dado de alta en el sistema
 			txtIdentificacion.setText("000000000000");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.");
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -217,9 +216,9 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(0);
 		txtIdentificacion.setText(beneficiarioPrueba.getNif());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 		// Se comprueba que tiene médico asignado
-		assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+		assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 		// La tabla de citas debe estar vacía
 		assertTrue(tblCitas.getRowCount()==0);
 		assertFalse(btnAnular.isEnabled());
@@ -233,9 +232,9 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(1);
 		txtIdentificacion.setText(beneficiarioPrueba.getNss());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 		// Se comprueba que tiene médico asignado
-		assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+		assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 		// La tabla de citas debe estar vacía
 		assertTrue(tblCitas.getRowCount()==0);
 		assertFalse(btnAnular.isEnabled());
@@ -248,20 +247,20 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		// Creamos una cita para el beneficiario
 		Cita c;
 		try {
-			c = controlador.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
 		
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
-			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// La tabla de citas debe tener un elemento
 			assertTrue(tblCitas.getRowCount()==1);
 			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==1);
-			assertEquals(medicoAsignado.getNif(), tblCitas.getContentAt(0, 3));
+			assertEquals(cabecera.getNif(), tblCitas.getContentAt(0, 3));
 			controlador.anularCita(c);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -272,24 +271,24 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		// Creamos una cita para el beneficiario
 		Cita c1, c2;
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
 		
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
-			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// La tabla de citas debe tener un elemento
 			assertTrue(tblCitas.getRowCount()==1);
 			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==1);
 			// El boton de anular debe estar habilitado (porq se selecciona la cita por defecto)
 			assertTrue(btnAnular.isEnabled());
-			assertEquals(medicoAsignado.getNif(), tblCitas.getContentAt(0, 3));
+			assertEquals(cabecera.getNif(), tblCitas.getContentAt(0, 3));
 			// Si no se hace focus en una, es como si ninguna fila estuviese seleccionada, por lo que debe fallar
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnAnular), "Seleccione una cita que todavía esté pendiente (no marcada en azul) para anularla.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnAnular, OK_OPTION), "Seleccione una cita que todavía esté pendiente (no marcada en azul) para anularla.");
 			// Seleccionamos y eliminamos la cita 
 			btnCitasHistorico.click();
 			tblCitas.selectRow(0);
@@ -311,25 +310,25 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		
 		// Probamos a tener más de una cita
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
-			c2 = controlador.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2010-1900,5,16,10,30), IConstantes.DURACION_CITA);
+			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c2 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,30), IConstantes.DURACION_CITA);
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
-			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// La tabla de citas debe tener dos elementos
 			assertTrue(tblCitas.getRowCount()==2);
 			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==2);
 			// El boton de anular debe estar habilitado (porq se selecciona una cita por defecto)
 			assertTrue(btnAnular.isEnabled());
-			assertEquals(medicoAsignado.getNif(), tblCitas.getContentAt(0, 3));
-			assertEquals(medicoAsignado.getNif(), tblCitas.getContentAt(1, 3));
+			assertEquals(cabecera.getNif(), tblCitas.getContentAt(0, 3));
+			assertEquals(cabecera.getNif(), tblCitas.getContentAt(1, 3));
 			// Si no se hace focus en una, es como si ninguna fila estuviese seleccionada, por lo que debe fallar
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnAnular), "Seleccione una cita que todavía esté pendiente (no marcada en azul) para anularla.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnAnular, OK_OPTION), "Seleccione una cita que todavía esté pendiente (no marcada en azul) para anularla.");
 			// Eliminamos una cita 
 			tblCitas.selectRow(0);
 			WindowInterceptor.init(btnAnular.triggerClick()).process(new WindowHandler() {

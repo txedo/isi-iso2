@@ -22,12 +22,33 @@ import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
 
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Cabecera;
+import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
+import dominio.conocimiento.Medico;
+import dominio.conocimiento.PeriodoTrabajo;
+import dominio.conocimiento.TipoMedico;
 import dominio.control.ControladorCliente;
+import excepciones.ApellidoIncorrectoException;
+import excepciones.BeneficiarioYaExistenteException;
+import excepciones.CodigoPostalIncorrectoException;
+import excepciones.CorreoElectronicoIncorrectoException;
+import excepciones.DomicilioIncorrectoException;
+import excepciones.FechaNacimientoIncorrectaException;
+import excepciones.LocalidadIncorrectaException;
+import excepciones.NIFIncorrectoException;
+import excepciones.NSSIncorrectoException;
+import excepciones.NombreIncorrectoException;
+import excepciones.NumeroDomicilioIncorrectoException;
+import excepciones.PisoDomicilioIncorrectoException;
+import excepciones.ProvinciaIncorrectaException;
+import excepciones.PuertaDomicilioIncorrectoException;
+import excepciones.TelefonoFijoIncorrectoException;
+import excepciones.TelefonoMovilIncorrectoException;
+import excepciones.UsuarioYaExistenteException;
 
 public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
 	
-	boolean eliminado = false;
 	private Beneficiario beneficiarioPrueba;
 	private ControladorCliente controlador;
 	private JPBeneficiarioConsultar panel;
@@ -50,6 +71,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	private TextBox txtTelefonoFijo;
 	private TextBox txtTelefonoMovil;
 	private ComboBox cmbCentros;
+	private TextBox txtMedicoAsignado;
 	private Button btnBuscar;
 	private Button btnGuardar;
 	private Button btnEliminar;
@@ -75,8 +97,17 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	private JCheckBox jchkEditar;
 	private Window winPrincipal;
 	
+	private boolean eliminadoBeneficiario, eliminadoMedico, valido;
+	private TipoMedico tCabecera;
+	private Medico cabecera;
+	private String login;
+	private PeriodoTrabajo periodo1;
+	
 	@SuppressWarnings("deprecation")
 	protected void setUp() {
+		eliminadoBeneficiario = false;
+		eliminadoMedico = false;
+		valido = false;
 		try {
 			// Establecemos conexión con el servidor front-end
 			controlador = new ControladorCliente();
@@ -89,7 +120,32 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 					}
 				}
 			});
-			// Creamos un beneficiario de prueba
+			
+			// Creamos un médico de cabecera 
+			tCabecera = new Cabecera();
+			login = UtilidadesPruebas.generarLogin();
+			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
+			periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
+			cabecera.getCalendario().add(periodo1);		
+			// Mientras exista el usuario, se genera otro login y otro NIF
+			do {
+				try {
+					controlador.crearUsuario(cabecera);
+					valido = true;
+				} catch (UsuarioYaExistenteException e) {
+					cabecera.setNif(UtilidadesPruebas.generarNIF());
+					login = UtilidadesPruebas.generarLogin();
+					cabecera.setLogin(login);
+					cabecera.setPassword(login);
+					valido = false;
+				}
+			}while(!valido);
+			
+			// Consultamos el médico de nuevo, porque el centro de salud que realmente se le asigna
+			// se hace de manera aleatoria
+			cabecera = controlador.consultarMedico(cabecera.getNif());
+
+			// Creamos el beneficiario en el mismo centro que el médico, para que no se le asigne otro diferente 
 			beneficiarioPrueba = new Beneficiario ();
 			beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());
 			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
@@ -97,8 +153,20 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			beneficiarioPrueba.setApellidos("de prueba");
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
-			beneficiarioPrueba.setCentroSalud(controlador.consultarCentros().firstElement());
-			controlador.crearBeneficiario(beneficiarioPrueba);
+			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
+			beneficiarioPrueba.setMedicoAsignado(cabecera);
+			// Mientras exista el beneficiario, se genera otro NIF y otro NSS
+			do {
+				try {					
+					controlador.crearBeneficiario(beneficiarioPrueba);
+					valido = true;
+				} catch (BeneficiarioYaExistenteException e) {
+					beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());					
+					beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
+					valido = false;
+				}
+			}while(!valido);
+			
 			// Creamos el panel
 			panel = new JPBeneficiarioConsultar(controlador.getVentanaPrincipal(), controlador);
 			// Obtenemos los componentes del panel
@@ -121,6 +189,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			txtTelefonoFijo = pnlPanel.getTextBox("txtTelefonoFijo");
 			txtTelefonoMovil = pnlPanel.getTextBox("txtTelefonoMovil");
 			cmbCentros = pnlPanel.getComboBox("cmbCentros");
+			txtMedicoAsignado = pnlPanel.getTextBox("txtMedicoAsignado");
 			btnBuscar = pnlPanel.getButton("btnBuscar");
 			btnGuardar = pnlPanel.getButton("btnGuardar");
 			btnEliminar = pnlPanel.getButton("btnEliminar");
@@ -151,7 +220,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	
 	protected void tearDown() {
 		try {
-			if (!eliminado) controlador.eliminarBeneficiario(beneficiarioPrueba);
+			if (!eliminadoBeneficiario) controlador.eliminarBeneficiario(beneficiarioPrueba);
+			if (!eliminadoMedico) controlador.eliminarMedico(cabecera);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
 		} catch(Exception e) {
@@ -170,35 +240,30 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			jcmbIdentificacion.setSelectedIndex(0);
 			// Inicialmente probamos con un NIF nulo
 			txtIdentificacion.setText("");
-			btnBuscar.click();
-			assertEquals(txtNIF.getText(), "");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Debe introducir un NIF o un NSS.");
 			// Ponemos un NIF incorrecto y comprobamos que el campo de
 			// identificacion se selecciona por tener un formato inválido
 			txtIdentificacion.setText("11223344");
-			btnBuscar.click();
-			assertEquals(jtxtIdentificacion.getSelectedText(), txtIdentificacion.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
 			// Probamos con un NIF que no esté dado de alta en el sistema
 			txtIdentificacion.setText("00000000a");
-			btnBuscar.click();
-			assertEquals(jtxtIdentificacion.getSelectedText(), txtIdentificacion.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.");
 			// Buscamos un beneficiario por su NSS
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(1);
 			// Ponemos un NSS incorrecto y comprobamos que el campo del
 			// identificacion se selecciona por tener un formato inválido
 			txtIdentificacion.setText("11223344");
-			btnBuscar.click();
-			assertEquals(jtxtIdentificacion.getSelectedText(), txtIdentificacion.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NSSIncorrectoException().getMessage());
 			// Probamos con un NSS que no esté dado de alta en el sistema
 			txtIdentificacion.setText("000000000000");
-			btnBuscar.click();
-			assertEquals(jtxtIdentificacion.getSelectedText(), txtIdentificacion.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.");
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			btnBuscar.click();
 			// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
 			assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
 			// A continuación se pasará a tratar de editar el beneficiario
@@ -208,13 +273,11 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			// Los campos NIF y NSS no son editables
 			// Escribimos un nombre incorrecto y comprobamos que se selecciona
 			txtNombre.setText("12341234");
-			btnGuardar.click();
-			assertEquals(jtxtNombre.getSelectedText(), txtNombre.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new NombreIncorrectoException().getMessage());
 			txtNombre.setText("Jose Manuel");
 			// Escribimos un apellido incorrecto y comprobamos que se selecciona
 			txtApellidos.setText("12341234");
-			btnGuardar.click();
-			assertEquals(jtxtApellidos.getSelectedText(), txtApellidos.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new ApellidoIncorrectoException().getMessage());
 			txtApellidos.setText("López García");
 			// Ponemos fechas de nacimientos incorrectas y comprobamos que
 			// se seleccionan (la validación de las fechas la hace en gran
@@ -224,59 +287,50 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			for(String fecha : invalidos) {
 				jtxtFechaNacimiento.setSelectionEnd(0);
 				txtFechaNacimiento.setText(fecha);
+				// Como hay varias fechas inválidas, el mensaje de excepción no siempre es el mismo
 				btnGuardar.click();
 				assertEquals(jtxtFechaNacimiento.getSelectedText(), txtFechaNacimiento.getText());
 			}
 			txtFechaNacimiento.setText("01/01/1980");
 			// Ponemos un domicilio incorrecto y comprobamos que se selecciona
 			txtDomicilio.setText("*");
-			btnGuardar.click();
-			assertEquals(jtxtDomicilio.getSelectedText(), txtDomicilio.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new DomicilioIncorrectoException().getMessage());
 			txtDomicilio.setText("C/Cervantes");
 			// Ponemos un número incorrecto y comprobamos que se selecciona
 			txtNumero.setText("10 A");
-			btnGuardar.click();
-			assertEquals(jtxtNumero.getSelectedText(), txtNumero.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new NumeroDomicilioIncorrectoException().getMessage());
 			txtNumero.setText("38");
 			// Ponemos un piso incorrecto y comprobamos que se selecciona
 			txtPiso.setText("4ºF");
-			btnGuardar.click();
-			assertEquals(jtxtPiso.getSelectedText(), txtPiso.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new PisoDomicilioIncorrectoException().getMessage());
 			txtPiso.setText("4");
 			// Ponemos una puerta incorrecta y comprobamos que se selecciona
 			txtPuerta.setText("5");
-			btnGuardar.click();
-			assertEquals(jtxtPuerta.getSelectedText(), txtPuerta.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new PuertaDomicilioIncorrectoException().getMessage());
 			txtPuerta.setText("F");
 			// Ponemos una localidad incorrecta y comprobamos que se selecciona
 			txtLocalidad.setText("<ninguna>");
-			btnGuardar.click();
-			assertEquals(jtxtLocalidad.getSelectedText(), txtLocalidad.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new LocalidadIncorrectaException().getMessage());
 			txtLocalidad.setText("Ciudad Real");
 			// Ponemos un código postal incorrecto y comprobamos que se selecciona
 			txtCP.setText("130000");
-			btnGuardar.click();
-			assertEquals(jtxtCP.getSelectedText(), txtCP.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new CodigoPostalIncorrectoException().getMessage());
 			txtCP.setText("12345");
 			// Ponemos una provincia incorrecta y comprobamos que se selecciona
 			txtProvincia.setText("900");
-			btnGuardar.click();
-			assertEquals(jtxtProvincia.getSelectedText(), txtProvincia.getText());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new ProvinciaIncorrectaException().getMessage());
 			txtProvincia.setText("Ciudad Real");
 			// Ponemos un correo incorrecto y comprobamos que se selecciona
 			txtCorreo.setText("pjs80@gmail");
-			btnGuardar.click();
-			assertTrue(jtxtCorreo.getSelectionStart() == 0 && jtxtCorreo.getSelectionEnd() == txtCorreo.getText().length());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new CorreoElectronicoIncorrectoException().getMessage());
 			txtCorreo.setText("pjs80@gmail.com");
 			// Ponemos un teléfono fijo incorrecto y comprobamos que se selecciona
 			txtTelefonoFijo.setText("926 147 130");
-			btnGuardar.click();
-			assertTrue(jtxtTelefonoFijo.getSelectionStart() == 0 && jtxtTelefonoFijo.getSelectionEnd() == txtTelefonoFijo.getText().length());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new TelefonoFijoIncorrectoException().getMessage());
 			txtTelefonoFijo.setText("926147130");
 			// Ponemos un teléfono móvil incorrecto y comprobamos que se selecciona
 			txtTelefonoMovil.setText("61011122");
-			btnGuardar.click();
-			assertTrue(jtxtTelefonoMovil.getSelectionStart() == 0 && jtxtTelefonoMovil.getSelectionEnd() == txtTelefonoMovil.getText().length());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new TelefonoMovilIncorrectoException().getMessage());
 			txtTelefonoMovil.setText("626405060");
 			// Ponemos un centro de salud incorrecto y comprobamos que se produce un error
 			jcmbCentros.grabFocus();
@@ -294,7 +348,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(0);
 		txtIdentificacion.setText(beneficiarioPrueba.getNif());
-		btnBuscar.click();
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 		// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
 		assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
 		assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
@@ -305,10 +359,30 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(1);
 		txtIdentificacion.setText(beneficiarioPrueba.getNss());
-		btnBuscar.click();
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 		// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
 		assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
 		assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
+	}
+	
+	public void testBuscarBeneficiarioSinMedicoAsignado () {
+		try {
+			// Borramos el médico de cabecera que se le asignó al beneficiario
+			controlador.eliminarMedico(cabecera);
+			eliminadoMedico = true;			
+			// Consultamos el beneficiario
+			jcmbIdentificacion.grabFocus();
+			jcmbIdentificacion.setSelectedIndex(1);
+			txtIdentificacion.setText(beneficiarioPrueba.getNss());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
+			// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
+			assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
+			assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
+			// En el textbox de médico, no debe aparecer ninguno
+			assertEquals(txtMedicoAsignado.getText(), "(ninguno)");
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 	}
 	
 	public void testActualizarBeneficiario () {
@@ -318,7 +392,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			btnBuscar.click();
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
 			assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
 			assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
@@ -336,13 +410,12 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			// Comprobamos que el boton de Guardar ahora sí está habilitado
 			assertTrue(btnGuardar.isEnabled());
 			// Guardamos el beneficiario
-			btnGuardar.click();
-			comprobarCamposVacios();
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El beneficiario ha sido modificado correctamente.");
 			// Comprobamos que el beneficiario ha sido modificado correctamente
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			btnBuscar.click();
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Comprobamos que en el textbox del nombre sale nuevoNombre
 			assertEquals(nuevoNombre, txtNombre.getText());
 		} catch(Exception e) {
@@ -356,7 +429,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			btnBuscar.click();
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
 			assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
 			assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
@@ -372,13 +445,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			// Comprobamos que el boton de Eliminar ahora sí está habilitado
 			assertTrue(btnEliminar.isEnabled());
 			// Eliminamos el beneficiario confirmando la operación en el diálogo de confirmación
-			WindowInterceptor.init(btnEliminar.triggerClick()).process(new WindowHandler() {
-				public Trigger process (Window window) {
-					return window.getButton(YES_OPTION).triggerClick();
-				}
-			}).run();
-			eliminado = true;
-			comprobarCamposVacios();
+			assertEquals(UtilidadesPruebas.obtenerTextoSegundoDialogo(btnEliminar, YES_OPTION, OK_OPTION), "El beneficiario ha sido eliminado correctamente.");
+			eliminadoBeneficiario = true;
 			// Comprobamos que el beneficiario ha sido eliminado correctamente
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
@@ -394,25 +462,6 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		} catch(Exception e) {
 			fail(e.toString());
 		}
-	}
-	
-	private void comprobarCamposVacios() {
-		assertTrue(txtNIF.getText().equals(""));
-		assertTrue(txtNSS.getText().equals(""));
-		assertTrue(txtNombre.getText().equals(""));
-		assertTrue(txtApellidos.getText().equals(""));
-		assertTrue(txtFechaNacimiento.getText().equals(""));
-		assertTrue(txtDomicilio.getText().equals(""));
-		assertTrue(txtNumero.getText().equals(""));
-		assertTrue(txtPiso.getText().equals(""));
-		assertTrue(txtPuerta.getText().equals(""));
-		assertTrue(txtLocalidad.getText().equals(""));
-		assertTrue(txtCP.getText().equals(""));
-		assertTrue(txtProvincia.getText().equals(""));
-		assertTrue(txtCorreo.getText().equals(""));
-		assertTrue(txtTelefonoFijo.getText().equals(""));
-		assertTrue(txtTelefonoMovil.getText().equals(""));
-		assertTrue(jcmbCentros.getSelectedIndex() == -1);
 	}
 	
 }
