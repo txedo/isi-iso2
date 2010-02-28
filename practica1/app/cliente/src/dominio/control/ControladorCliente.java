@@ -182,6 +182,10 @@ public class ControladorCliente {
 		ventanaPrincipal.forzarCierreSesionDuplicada();
 	}
 	
+	public void forzarCierreSesionEliminacion() {
+		ventanaPrincipal.forzarCierreSesionEliminacion();
+	}
+	
 	public void forzarCierreServidorDesconectado() {
 		ventanaPrincipal.forzarCierreServidorDesconectado();
 	}

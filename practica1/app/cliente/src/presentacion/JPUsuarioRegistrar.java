@@ -148,7 +148,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			{
 				lblCalendario = new JLabel();
 				this.add(lblCalendario, new AnchorConstraint(316, 292, 675, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblCalendario.setText("Calendario laboral *");
+				lblCalendario.setText("Calendario laboral");
 				lblCalendario.setPreferredSize(new java.awt.Dimension(126, 14));
 			}
 			{

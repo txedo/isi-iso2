@@ -13,6 +13,7 @@ import org.uispec4j.Panel;
 import org.uispec4j.TextBox;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
+import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 import com.toedter.calendar.JDateChooser;
@@ -149,6 +150,9 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
 			beneficiarioPrueba.setNombre("beneficiario");
 			beneficiarioPrueba.setApellidos("de prueba");
+			beneficiarioPrueba.setCorreo(" ");
+			beneficiarioPrueba.setTelefono(" ");
+			beneficiarioPrueba.setMovil(" ");
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
@@ -184,6 +188,10 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 					valido = false;
 				}
 			}while(!valido);
+			
+			// Consultamos el médico de nuevo, porque el centro de salud que realmente se le asigna
+			// se hace de manera aleatoria
+			especialista = controlador.consultarMedico(especialista.getNif());
 
 			// Creamos el panel
 			panel = new JPCitaVolanteTramitar(controlador.getVentanaPrincipal(), controlador);
@@ -209,7 +217,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			cmbHorasCitas = pnlPanel.getComboBox("cmbHorasCitas");
 			txtMedico = pnlPanel.getTextBox("txtMedico");
 			btnRegistrar = pnlPanel.getButton("btnRegistrar");
-			
+
 			// Componentes Swing
 			// Primera parte
 			jcmbIdentificacion = (JComboBox)cmbIdentificacion.getAwtComponent();
@@ -367,7 +375,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
 		idVolante = emitirVolante(beneficiarioPrueba, cabecera, especialista);
 		if (idVolante != -1) {
-			txtNumeroVolante.setText(idVolante+"");
+			txtNumeroVolante.setText(String.valueOf(idVolante));
 			esperado = "Volante encontrado.";
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
 			// Comprobamos que los campos se actualizan correctamente

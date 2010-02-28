@@ -120,6 +120,9 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
 			beneficiarioPrueba.setNombre("beneficiario");
 			beneficiarioPrueba.setApellidos("de prueba");
+			beneficiarioPrueba.setCorreo(" ");
+			beneficiarioPrueba.setTelefono(" ");
+			beneficiarioPrueba.setMovil(" ");
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
@@ -284,13 +287,9 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			assertTrue(tblCitas.getRowCount()==1);
 			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==1);
-			// El boton de anular debe estar habilitado (porq se selecciona la cita por defecto)
+			// El boton de anular debe estar habilitado
 			assertTrue(btnAnular.isEnabled());
 			assertEquals(cabecera.getNif(), tblCitas.getContentAt(0, 3));
-			// Si no se hace focus en una, es como si ninguna fila estuviese seleccionada, por lo que debe fallar
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnAnular, OK_OPTION), "Seleccione una cita que todavía esté pendiente (no marcada en azul) para anularla.");
-			// Seleccionamos y eliminamos la cita 
-			btnCitasHistorico.click();
 			tblCitas.selectRow(0);
 			WindowInterceptor.init(btnAnular.triggerClick()).process(new WindowHandler() {
 				// Aviso para confirmar la eliminacion
@@ -299,9 +298,6 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 				}
 			}).run();
 			// La tabla de citas debe estar vacia
-			assertTrue(tblCitas.getRowCount()==0);
-			assertFalse(btnAnular.isEnabled());
-			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==0);
 			assertFalse(btnAnular.isEnabled());
 		} catch(Exception e) {
@@ -327,9 +323,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			assertTrue(btnAnular.isEnabled());
 			assertEquals(cabecera.getNif(), tblCitas.getContentAt(0, 3));
 			assertEquals(cabecera.getNif(), tblCitas.getContentAt(1, 3));
-			// Si no se hace focus en una, es como si ninguna fila estuviese seleccionada, por lo que debe fallar
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnAnular, OK_OPTION), "Seleccione una cita que todavía esté pendiente (no marcada en azul) para anularla.");
-			// Eliminamos una cita 
+			// Eliminamos una cita
 			tblCitas.selectRow(0);
 			WindowInterceptor.init(btnAnular.triggerClick()).process(new WindowHandler() {
 				// Aviso para confirmar la eliminacion
@@ -338,9 +332,6 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 				}
 			}).run();
 			// La tabla de citas debe contener una cita
-			assertTrue(tblCitas.getRowCount()==1);
-			assertTrue(btnAnular.isEnabled());
-			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==1);
 			assertTrue(btnAnular.isEnabled());
 			

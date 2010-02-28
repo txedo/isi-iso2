@@ -51,8 +51,11 @@ public class PruebasUsuarios extends PruebasBase {
 	private Especialista especialista;
 	private Cabecera cabecera;
 	
+	private boolean sesionCerrada;
+	
 	@SuppressWarnings("deprecation")
 	protected void setUp() {
+		sesionCerrada = false;
 		try {
 			// Preparamos la base de datos
 			super.setUp();
@@ -110,7 +113,7 @@ public class PruebasUsuarios extends PruebasBase {
 	protected void tearDown() {
 		try {
 			// Cerramos la sesión
-			GestorSesiones.liberar(((Sesion)sesionCitador).getId());
+			if (!sesionCerrada) GestorSesiones.liberar(((Sesion)sesionCitador).getId());
 			GestorSesiones.liberar(((Sesion)sesionAdmin).getId());
 			// Cerramos la base de datos
 			super.tearDown();
@@ -384,12 +387,18 @@ public class PruebasUsuarios extends PruebasBase {
 		try {
 			// Eliminamos un usuario y un médico existentes como administrador
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, medico2);
+			// Primero cerramos la sesión del citador, para evitar fallos, ya que si se elimina un usuario con una
+			// sesión abierta, se va a intentar liberar ese cliente, pero como no se ha hecho la llamada a "registrar",
+			// va a dar un fallo
+			GestorSesiones.liberar(((Sesion)sesionCitador).getId());
+			sesionCerrada = true;
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, citador1);
 			// Comprobamos que al beneficiario que tenía asignado el médico
 			// borrado se le ha asignado otro médico disponible
 			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario1.getNif());
 			assertEquals(medico4, beneficiario.getMedicoAsignado());
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 

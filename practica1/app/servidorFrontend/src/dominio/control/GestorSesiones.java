@@ -260,4 +260,15 @@ public class GestorSesiones {
 		return sesiones.get(idSesion);
 	}
 
+	public static long getIdSesionUsuario(Usuario usuario) {
+		Enumeration<Sesion> sesionesAbiertas = sesiones.elements();
+		long idSesion = -1;
+		Sesion s;
+		while (sesionesAbiertas.hasMoreElements() && idSesion == -1) {
+			s = sesionesAbiertas.nextElement();
+			if (s.getUsuario().getNif().equals(usuario.getNif()))
+				idSesion = s.getId();
+		}
+		return idSesion;
+	}
 }
