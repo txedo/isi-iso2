@@ -2,7 +2,6 @@ package pruebas;
 
 import java.awt.Frame;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -13,13 +12,10 @@ import org.uispec4j.PasswordField;
 import org.uispec4j.TextBox;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
-import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JFLogin;
 import dominio.control.ControladorCliente;
-import excepciones.LoginIncorrectoException;
-import excepciones.UsuarioIncorrectoException;
 
 public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
 

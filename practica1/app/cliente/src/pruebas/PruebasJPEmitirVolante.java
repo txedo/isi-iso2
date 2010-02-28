@@ -5,7 +5,6 @@ import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JList;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import org.uispec4j.Button;
@@ -18,14 +17,12 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 
-import presentacion.JPCitaConsultarBeneficiario;
 import presentacion.JPEmitirVolante;
 
 import comunicaciones.ConfiguracionCliente;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
-import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Especialista;
@@ -70,13 +67,13 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 	private TipoMedico tCabecera, tEspecialista;
 	private Beneficiario beneficiarioPrueba;
 	private PeriodoTrabajo periodo1;
-	private Medico medicoAsignado;
 	
-	private boolean valido = false;
+	private boolean valido;
 	private String login;
 	
 	@SuppressWarnings("deprecation")
 	protected void setUp() {
+		valido = false;
 		try {
 			// Establecemos conexión con el servidor front-end con el rol de administrador
 			controlador = new ControladorCliente();
@@ -92,6 +89,7 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 			
 			tEspecialista = new Especialista("Neurologia");
 			
+			// Creamos un médico de cabecera
 			tCabecera = new Cabecera();
 			login = UtilidadesPruebas.generarLogin();
 			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
@@ -137,7 +135,6 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 					valido = false;
 				}
 			}while(!valido);
-			medicoAsignado = cabecera;
 			
 			// Creamos el panel
 			pnlEmitir = new JPEmitirVolante(controlador.getVentanaPrincipal(), controlador);
@@ -214,18 +211,18 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 			jcmbIdentificacion.setSelectedIndex(0);
 			// Inicialmente probamos con un NIF nulo
 			txtIdentificacion.setText("");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Debe introducir un NIF o un NSS.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Debe introducir un NIF o un NSS.");
 			// El botón de emitir debe estar deshabilitado
 			assertFalse(btnEmitir.isEnabled());
 			// Ponemos un NIF incorrecto y comprobamos que el campo de
 			// identificacion se selecciona por tener un formato inválido
 			txtIdentificacion.setText("11223344");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NIFIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
 			// El botón de emitir debe estar deshabilitado
 			assertFalse(btnEmitir.isEnabled());
 			// Probamos con un NIF que no esté dado de alta en el sistema
 			txtIdentificacion.setText("00000000a");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.");
 			// El botón de emitir debe estar deshabilitado
 			assertFalse(btnEmitir.isEnabled());
 			// Buscamos un beneficiario por su NSS
@@ -234,12 +231,12 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 			// Ponemos un NSS incorrecto y comprobamos que el campo del
 			// identificacion se selecciona por tener un formato inválido
 			txtIdentificacion.setText("11223344");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NSSIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NSSIncorrectoException().getMessage());
 			// El botón de emitir debe estar deshabilitado
 			assertFalse(btnEmitir.isEnabled());
 			// Probamos con un NSS que no esté dado de alta en el sistema
 			txtIdentificacion.setText("000000000000");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.");
 			// El botón de emitir debe estar deshabilitado
 			assertFalse(btnEmitir.isEnabled());
 		} catch(Exception e) {
@@ -265,9 +262,9 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
-			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// El botón de emitir debe estar deshabilitado
 			assertFalse(btnEmitir.isEnabled());
 		} catch(Exception e) {
@@ -293,9 +290,9 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(1);
 			txtIdentificacion.setText(beneficiarioPrueba.getNss());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
-			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// El botón de emitir debe estar deshabilitado
 			assertFalse(btnEmitir.isEnabled());
 		} catch(Exception e) {
@@ -328,9 +325,9 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
-			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// Al seleccionar una especialidad, debe haber 0 especialistas (sólo existe la cadena vacía)
 			jcmbEspecialidad.grabFocus();
 			jcmbEspecialidad.setSelectedIndex(2);
@@ -411,9 +408,9 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
-			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// La lista de especialista sólo debe tenr uno al seleccionar la especialidad Neurologia
 			jcmbEspecialidad.grabFocus();
 			jcmbEspecialidad.setSelectedItem("Neurologia");
@@ -494,9 +491,9 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
-			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// La lista de especialista sólo debe tenr uno al seleccionar la especialidad Neurologia
 			jcmbEspecialidad.grabFocus();
 			jcmbEspecialidad.setSelectedItem("Neurologia");

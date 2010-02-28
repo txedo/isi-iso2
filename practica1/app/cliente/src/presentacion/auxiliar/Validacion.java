@@ -124,17 +124,31 @@ public class Validacion {
 	}
 	
 	public static void comprobarDomicilio(String cadena) throws DomicilioIncorrectoException {
-		// Todos los caracteres de la cadena deben ser alfabeticos
 		boolean bCorrecto = false;
+		boolean bAux = true;
 		
 		// El primer caracter debe ser una letra
-		if (cadena.length() > 0) {
-			if (Character.isLetter(cadena.charAt(0))) {
-				bCorrecto = true;
+		if(cadena.length() > 0) {
+			if(Character.isLetter(cadena.charAt(0))) {
+				bAux = !cadena.contains("--");
+				bAux = bAux && !cadena.contains("//");
+				// El resto de caracteres pueden ser letra, espacio, guion o barra
+				for(int i = 1; i < cadena.length() && bAux; i++) {
+					bAux = cadena.charAt(i) == '/' || Character.isLetter(cadena.charAt(i)) || Character.isWhitespace(cadena.charAt(i)) || cadena.charAt(i) == '-';
+				}
+				bCorrecto = bAux;
+				
+				// No se puede terminar la cadena con un guión ni con espacios
+				if ((bCorrecto && cadena.charAt(cadena.length()-1) == '-') || bCorrecto && Character.isWhitespace(cadena.charAt(cadena.length()-1)))
+					bCorrecto = false;
+				
 			}
-		}
-		if (!bCorrecto)
+			if(!bCorrecto) {
+				throw new DomicilioIncorrectoException();
+			}
+		} else {
 			throw new DomicilioIncorrectoException();
+		}
 	}
 	
 	// Una cadena es válida si todos sus caracteres son alfabéticos, espacios o guiones
@@ -145,14 +159,15 @@ public class Validacion {
 		// El primer caracter debe ser una letra
 		if(cadena.length() > 0) {
 			if(Character.isLetter(cadena.charAt(0))) {
-				// El resto de caracteres pueden ser letra, espacio o guion
+				bAux = !cadena.contains("--");
+				// El resto de caracteres pueden ser letra, espacio o guion (no se permiten guiones juntos, como --)
 				for(int i = 1; i < cadena.length() && bAux; i++) {
 					bAux = Character.isLetter(cadena.charAt(i)) || Character.isWhitespace(cadena.charAt(i)) || cadena.charAt(i) == '-';
 				}
 				bCorrecto = bAux;
 				
-				// No se puede terminar la cadena con un guión
-				if (bCorrecto && cadena.charAt(cadena.length()-1) == '-')
+				// No se puede terminar la cadena con un guión ni con espacios
+				if ((bCorrecto && cadena.charAt(cadena.length()-1) == '-') || bCorrecto && Character.isWhitespace(cadena.charAt(cadena.length()-1)))
 					bCorrecto = false;
 				
 			}
@@ -171,9 +186,9 @@ public class Validacion {
 		
 		if (text.length() > 0) {
 			for (int i = 0; i < text.length() && bAux; i++) {
-				// Solo puede aparecer una letra en la última posición de la cadena
+				// Solo puede aparecer una letra en la última posición de la cadena y no puede ser sólo una letra
 				if (Character.isLetter(text.charAt(i))) {
-					if (i == text.length()-1)
+					if (i == text.length()-1 && text.length() >1 )
 						bAux = true;
 					else
 						bAux = false;

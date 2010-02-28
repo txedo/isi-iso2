@@ -58,13 +58,13 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 	private TipoMedico tCabecera;
 	private Beneficiario beneficiarioPrueba;
 	private PeriodoTrabajo periodo1;
-	private Medico medicoAsignado;
 	
-	private boolean valido = false;
+	private boolean valido;
 	private String login;
 	
 	@SuppressWarnings("deprecation")
 	protected void setUp() {
+		valido = false;
 		try {
 			// Establecemos conexión con el servidor front-end
 			controlador = new ControladorCliente();
@@ -78,14 +78,14 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 				}
 			});
 			
-			// Creamos e insertamos un médico y un beneficiario			
+			// Creamos un médico
 			tCabecera = new Cabecera();
 			login = UtilidadesPruebas.generarLogin();
 			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
 			periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
 			cabecera.getCalendario().add(periodo1);
 			
-			// Mientras existan los usuarios, se genera otro login y otro NIF
+			// Mientras exista el usuario, se genera otro login y otro NIF
 			do {
 				try {
 					controlador.crearUsuario(cabecera);
@@ -123,8 +123,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 					valido = false;
 				}
 			}while(!valido);
-			medicoAsignado = cabecera;
-			
+
 			// Creamos el panel
 			panelCita = new JPCitaConsultarMedico(controlador.getVentanaPrincipal(), controlador);
 			// Obtenemos los componentes del panel
@@ -167,17 +166,17 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 		try {
 			// Ponemos un NIF nulo
 			txtNIFBuscado.setText("");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NIFIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
 			// Ponemos un NIF incorrecto y comprobamos que el campo de
 			// identificacion se selecciona por tener un formato inválido
 			txtNIFBuscado.setText("111111");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), new NIFIncorrectoException().getMessage());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
 			// Probamos con un NIF que no esté dado de alta en el sistema
 			txtNIFBuscado.setText("00000000a");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "No existe ningún médico con el NIF introducido.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "No existe ningún médico con el NIF introducido.");
 			// Ponemos un NIF correcto
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");		
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");		
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.toString());
@@ -187,7 +186,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 	public void testBuscarMedico () {
 		// Probamos con el NIF del médico de cabecera que es correcto y está dado de alta en el sistema
 		txtNIFBuscado.setText(cabecera.getNif());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 		assertEquals(txtNIF.getText(), cabecera.getNif());
 		// La tabla de citas debe estar vacía
 		assertTrue(tblCitas.getRowCount()==0);
@@ -199,11 +198,11 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 		// Creamos una cita para el beneficiario
 		Cita c1, c2;
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
 			
 			// Buscamos el médico
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			// La tabla de citas debe tener un elemento
 			assertTrue(tblCitas.getRowCount()==1);
@@ -217,11 +216,11 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 		
 		// Probamos a tener más de una cita
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
-			c2 = controlador.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2010-1900,5,16,10,30), IConstantes.DURACION_CITA);
+			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c2 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,30), IConstantes.DURACION_CITA);
 			// Buscamos el médico
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			// La tabla de citas debe tener dos elementos
 			assertTrue(tblCitas.getRowCount()==2);

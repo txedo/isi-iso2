@@ -43,10 +43,12 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 	private TipoMedico tCabecera;
 	private Beneficiario beneficiarioPrueba;
 	private PeriodoTrabajo periodo1;
-	private Medico medicoAsignado;
+	
+	private boolean valido;
+	private String login;
 	
 	protected void setUp() {
-		boolean valido = true;
+		valido = false;
 		try {
 			// Establecemos conexión con el servidor front-end
 			controlador = new ControladorCliente();
@@ -61,9 +63,9 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 				}
 			});
 			
-			// Creamos e insertamos un médico y un beneficiario
+			// Creamos un médico
 			tCabecera = new Cabecera();
-			String login = UtilidadesPruebas.generarLogin();
+			login = UtilidadesPruebas.generarLogin();
 			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
 			cabecera.setCentroSalud(controlador.consultarCentros().firstElement());
 			periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
@@ -79,14 +81,15 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			beneficiarioPrueba.setCentroSalud(controlador.consultarCentros().firstElement());
 			beneficiarioPrueba.setMedicoAsignado(cabecera);
 			
-			// Mientras existan los usuarios, se genera otro login y otro NIF
+			// Mientras exista el usuario, se genera otro login y otro NIF
 			do {
 				try {
 					controlador.crearUsuario(cabecera);
 					valido = true;
 				} catch (UsuarioYaExistenteException e) {
 					cabecera.setNif(UtilidadesPruebas.generarNIF());
-					cabecera.setLogin(UtilidadesPruebas.generarLogin());
+					login = UtilidadesPruebas.generarLogin();
+					cabecera.setLogin(login);
 					cabecera.setPassword(login);
 					valido = false;
 				}
@@ -102,7 +105,6 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 					valido = false;
 				}
 			}while(!valido);
-			medicoAsignado = cabecera;
 					
 			// Creamos el panel
 			panel = new JPCitaConsultarPropias(controlador.getVentanaPrincipal(), controlador);
@@ -151,7 +153,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), medicoAsignado.getLogin(), medicoAsignado.getLogin());
+						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
 					} catch(Exception e) {
 						fail(e.toString());
 					}
@@ -184,14 +186,14 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 					}
 				}
 			});
-			c1 = controlador.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
 			// Consultamos la cita del medico del beneficiario
 			controlador.cerrarSesion();
 			winPrincipal.dispose();
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), medicoAsignado.getLogin(), medicoAsignado.getLogin());
+						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
 					} catch(Exception e) {
 						fail(e.toString());
 					}

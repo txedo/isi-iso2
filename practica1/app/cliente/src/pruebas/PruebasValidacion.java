@@ -100,8 +100,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos nombres incorrectos
-			// TODO: "Ana  " no debe ser válido, no debe acabar en espacio
-			invalidos = new String[] { "", "  ", "1234", "Pablo123", "Luis¿?", };
+			invalidos = new String[] { "", "  ", "Ana  ", "1234", "Pablo123", "Luis¿?", "pepe---luis", "pepe--", };
 			for(String nombre : invalidos) {
 				try {
 					Validacion.comprobarNombre(nombre);
@@ -129,8 +128,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos apellidos incorrectos
-			// TODO: "Ortiz  " no debe ser válido, no debe acabar en espacio
-			invalidos = new String[] { "", "  ", "1234", "Muñoz 12345", "¿López?" };
+			invalidos = new String[] { "", "  ", "1234", "Muñoz 12345", "¿López?", "Ortiz ", "Lopez-", "Dominguez--Garcia" };
 			for(String apellidos : invalidos) {
 				try {
 					Validacion.comprobarApellidos(apellidos);
@@ -139,7 +137,6 @@ public class PruebasValidacion extends TestCase {
 				}
 			}
 			// Probamos apellidos correctos
-			// TODO: ¡Hay que permitir guiones!
 			validos = new String[] { "Sancho Ramírez", "Jiménez Domínguez-García", "ÁÉÍÓÚ áéíóú ÑñÇç" };
 			for(String apellidos : validos) {
 				try {
@@ -188,9 +185,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos domicilios incorrectos
-			// TODO: No debe acabar en espacios, y se debería
-			// comprobar que sólo hubiera letras y otros caracteres (/, -...).
-			invalidos = new String[] { "", "  ", "1234", "¿¿??", "A$*^!·?=" };
+			invalidos = new String[] { "", "  ", "1234", "¿¿??", "A$*^!·?=", "ÁÉÍÓÚ áéíóú ÑñÇç /\\-.", "C/Mata " };
 			for(String domicilio : invalidos) {
 				try {
 					Validacion.comprobarDomicilio(domicilio);
@@ -199,7 +194,7 @@ public class PruebasValidacion extends TestCase {
 				}
 			}
 			// Probamos domicilios correctos
-			validos = new String[] { "C/Mata", "C/Don Quijote", "Calle Santa María", "ÁÉÍÓÚ áéíóú ÑñÇç /\\-." };
+			validos = new String[] { "C/Mata", "C/Don Quijote", "Calle Santa María" };
 			for(String domicilio : validos) {
 				try {
 					Validacion.comprobarDomicilio(domicilio);
@@ -218,7 +213,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos números de domicilio incorrectos
-			invalidos = new String[] { "", "  ", "abcd", "-12", "8A", "0,59", "1.890" };
+			invalidos = new String[] { "", "  ", "abcd", "-12", "8 A", " A", "a", "0,59", "1.890" };
 			for(String numero : invalidos) {
 				try {
 					Validacion.comprobarNumero(numero);
