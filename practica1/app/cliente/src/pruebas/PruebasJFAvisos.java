@@ -33,12 +33,11 @@ import excepciones.UsuarioYaExistenteException;
 public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas {
 
 	private ControladorCliente controlador;
-	private JFAvisos panel;
 	private Panel pnlPanel;
 	private Table tblTablaAvisos;
 	private Button btnCerrar;
-	private JTable jtblTablaAvisos;
 	private Window winPrincipal;
+	private JFAvisos frmAvisos;
 	
 	private Medico cabecera;
 	private TipoMedico tCabecera;
@@ -135,6 +134,11 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 				}
 			}while(!valido);
 
+			frmAvisos = new JFAvisos();
+			// Obtenemos los componentes del panel
+			pnlPanel = new Panel(frmAvisos);
+			tblTablaAvisos = pnlPanel.getTable("tblTablaAvisos");
+			btnCerrar = pnlPanel.getButton("btnCerrar");
 					
 		} catch(Exception e) {
 			fail(e.toString());
@@ -148,6 +152,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			controlador.eliminarBeneficiario(beneficiarioPrueba2);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
+			frmAvisos.dispose();
 			winPrincipal.dispose();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -161,13 +166,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			win = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						// Creamos el panel
-						panel = new JFAvisos();
-						panel.show();
-						// Obtenemos los componentes del panel
-						pnlPanel = new Panel(panel);
-						tblTablaAvisos = pnlPanel.getTable("tblTablaAvisos");
-						btnCerrar = pnlPanel.getButton("btnCerrar");
+						frmAvisos.show();
 						assertTrue(tblTablaAvisos.getRowCount()==0);
 						btnCerrar.click();
 					} catch(Exception e) {
@@ -190,14 +189,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			win = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						// Creamos el panel
-						panel = new JFAvisos();
-						panel.show();
-						// Obtenemos los componentes del panel
-						pnlPanel = new Panel(panel);
-						tblTablaAvisos = pnlPanel.getTable("tblTablaAvisos");
-						btnCerrar = pnlPanel.getButton("btnCerrar");
-						panel.mostrarBeneficiarios("Beneficiario", beneficiarios);
+						frmAvisos.mostrarBeneficiarios("Beneficiario", beneficiarios);
 						assertEquals(tblTablaAvisos.getRowCount(), 2);
 						btnCerrar.click();
 					} catch(Exception e) {
@@ -223,14 +215,8 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			
 			win = WindowInterceptor.run(new Trigger() {
 				public void run() {
-					try {// Creamos el panel
-						panel = new JFAvisos();
-						panel.show();
-						// Obtenemos los componentes del panel
-						pnlPanel = new Panel(panel);
-						tblTablaAvisos = pnlPanel.getTable("tblTablaAvisos");
-						btnCerrar = pnlPanel.getButton("btnCerrar");
-						panel.mostrarCitas("Citas", citas);
+					try {
+						frmAvisos.mostrarCitas("Citas", citas);
 						assertEquals(tblTablaAvisos.getRowCount(), 1);
 						btnCerrar.click();
 					} catch(Exception e) {
