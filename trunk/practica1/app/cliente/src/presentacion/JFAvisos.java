@@ -88,6 +88,7 @@ public class JFAvisos extends javax.swing.JFrame {
 						tblTablaAvisos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 						tblTablaAvisos.setCellEditor(null);
 						tblTablaAvisos.setDefaultRenderer(Object.class, new TableCellRendererCitas());
+						tblTablaAvisos.setName("tblTablaAvisos");
 					}
 				}
 			}
