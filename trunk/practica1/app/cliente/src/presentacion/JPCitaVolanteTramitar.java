@@ -117,6 +117,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				this.add(btnBuscarVolante, new AnchorConstraint(228, 11, 557, 822, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnBuscarVolante.setText("Buscar");
 				btnBuscarVolante.setPreferredSize(new java.awt.Dimension(66, 23));
+				btnBuscarVolante.setName("btnBuscarVolante");
 				btnBuscarVolante.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnBuscarVolanteActionPerformed(evt);
@@ -127,6 +128,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				txtNumeroVolante = new JTextField();
 				this.add(txtNumeroVolante, new AnchorConstraint(228, 83, 557, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtNumeroVolante.setPreferredSize(new java.awt.Dimension(209, 23));
+				txtNumeroVolante.setName("txtNumeroVolante");
 			}
 			{
 				lblNumeroVolante = new JLabel();
@@ -157,6 +159,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				pnlBeneficiario.setPreferredSize(new java.awt.Dimension(430, 182));
 				pnlBeneficiario.reducirPanel();
 				pnlBeneficiario.setPreguntarRegistro(true);
+				pnlBeneficiario.setName("pnlBeneficiario");
 				pnlBeneficiario.addBeneficiarioBuscadoListener(new BeneficiarioBuscadoListener() {
 					public void beneficiarioBuscado(EventObject evt) {
 						pnlBeneficiarioConsultarBeneficiarioBuscado(evt);
@@ -181,6 +184,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				this.add(btnRegistrar, new AnchorConstraint(455, 11, 855, 798, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE));
 				btnRegistrar.setText("Registrar cita");
 				btnRegistrar.setPreferredSize(new java.awt.Dimension(120, 26));
+				btnRegistrar.setName("btnRegistrar");
 				btnRegistrar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnRegistrarActionPerformed(evt);
@@ -193,6 +197,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				cmbHorasCitas.setModel(new DefaultComboBoxModel(new String[] {}));
 				cmbHorasCitas.setRenderer(new ListCellRendererCitas());
 				cmbHorasCitas.setPreferredSize(new java.awt.Dimension(280, 23));
+				cmbHorasCitas.setName("cmbHorasCitas");
 				cmbHorasCitas.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent evt) {
 						cmbHorasCitasItemStateChanged(evt);
@@ -206,6 +211,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				dtcDiaCita.setDateFormatString("dd/MM/yyyy");
 				dtcDiaCita.setToolTipText("Formato dd/MM/yyyy. Haga clic en el icono de la derecha para desplegar un calendario.");
 				dtcDiaCita.setMinSelectableDate(new Date());
+				dtcDiaCita.setName("dtcDiaCita");
 				dtcDiaCita.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						dtcDiaCitaPropertyChange(evt);
@@ -222,6 +228,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				this.add(txtCentro, new AnchorConstraint(291, 12, 893, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtCentro.setEditable(false);
 				txtCentro.setPreferredSize(new java.awt.Dimension(280, 22));
+				txtCentro.setName("txtCentro");
 			}
 			{
 				lblCentro = new JLabel();
@@ -234,6 +241,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				this.add(txtMedicoAsignado, new AnchorConstraint(264, 12, 953, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtMedicoAsignado.setEditable(false);
 				txtMedicoAsignado.setPreferredSize(new java.awt.Dimension(280, 22));
+				txtMedicoAsignado.setName("txtMedicoAsignado2");
 			}
 			{
 				lblMedicoAsignado = new JLabel();
@@ -252,6 +260,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				this.add(txtMedico, new AnchorConstraint(415, 12, 904, 138, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				txtMedico.setEditable(false);
 				txtMedico.setPreferredSize(new java.awt.Dimension(280, 23));
+				txtMedico.setName("txtMedico");
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -312,7 +321,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 			}
 			
 			// Mostramos los datos del volante encontrado
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Volante encontrado.");
+			Dialogos.mostrarDialogoInformacion(null, "Búsqueda correcta", "Volante encontrado.");
 			txtNumeroVolante.setText("");
 			txtMedicoAsignado.setText(volante.getReceptor().getApellidos() + ", " + volante.getReceptor().getNombre() + " (" + volante.getReceptor().getNif() + ")");
 			txtCentro.setText(volante.getReceptor().getCentroSalud().getNombre() + "; " + volante.getReceptor().getCentroSalud().getDireccion());

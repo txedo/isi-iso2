@@ -23,6 +23,7 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasJPUsuarioRegistrar.class);
 		suite.addTestSuite(PruebasJPUsuarioConsultar.class);
 		suite.addTestSuite(PruebasJPCitaTramitar.class);
+		suite.addTestSuite(PruebasJPCitaVolanteTramitar.class);
 		suite.addTestSuite(PruebasJPEmitirVolante.class);
 		suite.addTestSuite(PruebasJPCitaConsultarBeneficiario.class);
 		suite.addTestSuite(PruebasJPCitaConsultarMedico.class);
