@@ -108,6 +108,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	
 	@SuppressWarnings("deprecation")
 	protected void setUp() {
+		medicosEliminados = new Vector<Medico>();
 		eliminadoBeneficiario = false;
 		eliminadoMedico = false;
 		valido = false;
