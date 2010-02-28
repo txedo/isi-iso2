@@ -262,10 +262,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		// Se comprueba que NO tiene médico asignado
 		assertEquals("(ninguno)", txtMedicoAsignado.getText());
 		// Todos los componentes de pedir cita deben estar deshabilitados
-		assertFalse(txtFechaCita.isEnabled());
-		assertFalse(cmbHorasCitas.isEnabled());
-		assertFalse(txtMedico.isEditable());
-		assertFalse(btnRegistrar.isEnabled());
+		comprobarControlesDeshabilitados();
 	}
 
 	public void testBuscarBeneficiarioPorNSSSinMedicoAsignado () {
