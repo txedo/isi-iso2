@@ -259,15 +259,12 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			controlador.eliminarMedico(pediatra);
 			controlador.eliminarMedico(especialista);
 			// Cerramos la sesión y la ventana del controlador
+			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
-			winPrincipal.dispose();
-
-			Thread.sleep(50);
-
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
+		winPrincipal.dispose();
 	}
 
 	/** Pruebas con datos no válidos */

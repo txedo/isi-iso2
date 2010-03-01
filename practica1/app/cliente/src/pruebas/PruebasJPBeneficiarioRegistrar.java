@@ -141,6 +141,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 				controlador.eliminarBeneficiario(beneficiario);
 			}
 			// Cerramos la sesión y la ventana del controlador
+			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
 			winPrincipal.dispose();
 		} catch(Exception e) {

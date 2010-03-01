@@ -202,11 +202,12 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			controlador.eliminarMedico(cabecera);
 			controlador.eliminarBeneficiario(beneficiarioPrueba);
 			// Cerramos la sesión y la ventana del controlador
+			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
-			winPrincipal.dispose();
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+		winPrincipal.dispose();
 	}
 	
 	/** Pruebas con datos no válidos */
