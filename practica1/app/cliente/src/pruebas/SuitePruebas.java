@@ -28,6 +28,8 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasJPCitaConsultarBeneficiario.class);
 		suite.addTestSuite(PruebasJPCitaConsultarMedico.class);
 		suite.addTestSuite(PruebasJPCitaConsultarPropias.class);
+		suite.addTestSuite(PruebasJFAvisos.class);
+		suite.addTestSuite(PruebasJFCalendarioLaboral.class);
 		return suite;
 	}
 	
