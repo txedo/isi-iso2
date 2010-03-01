@@ -7,12 +7,12 @@ import java.util.Vector;
 import persistencia.FPCentroSalud;
 import persistencia.FPSustitucion;
 import persistencia.FPUsuario;
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
-import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ISesion;
@@ -57,10 +57,10 @@ public class PruebasSustituciones extends PruebasBase {
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro Provincial", "Calle Ninguna, s/n");
 			centro2 = new CentroSalud("Centro Nuevo", "Calle Ninguna más, s/n");
-			medico1 = new Medico("12345678", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
-			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "", cabecera);
-			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "fernan@gmail.com", "", "681871340");
-			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("admin"), "María", "L. F.", "", "911222333", "");
+			medico1 = new Medico("12345678", "medPrueba", UtilidadesDominio.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
+			medico2 = new Medico("87654321", "medico2", UtilidadesDominio.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "", cabecera);
+			citador1 = new Citador("11223344", "citador", UtilidadesDominio.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "fernan@gmail.com", "", "681871340");
+			admin1 = new Administrador("55667788", "admin", UtilidadesDominio.encriptarPasswordSHA1("admin"), "María", "L. F.", "", "911222333", "");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			citador1.setCentroSalud(centro1);
@@ -100,24 +100,6 @@ public class PruebasSustituciones extends PruebasBase {
 		Calendar calend;
 		
 		try {
-			// Intentamos obtener los sustitutos de un médico nulo
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { null, null, 0, 0 });
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}		
-
-		try {
-			// Intentamos obtener los sustitutos de un médico en un día nulo
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), null, 0, 0 });
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-	
-		try {
 			// Intentamos obtener los sustitutos de un médico con una sesión sin permisos
 			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), new Date(), 0, 0 });
 			fail("Se esperaba una excepción OperacionIncorrectaException");
@@ -137,7 +119,7 @@ public class PruebasSustituciones extends PruebasBase {
 		
 		try {
 			// Intentamos obtener los sustitutos de un médico inexistente
-			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
+			medico = new Medico("91295019", "otro2", UtilidadesDominio.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico.getNif(), new Date(), 0, 0 });
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
@@ -322,63 +304,6 @@ public class PruebasSustituciones extends PruebasBase {
 		Medico m1 = null, m2 = null, m3 = null, m4 = null, m5 = null, m6 = null, medico;
 		
 		try {
-			// Intentamos asignar un sustituto a un médico nulo
-			servidor.modificarCalendario(sesionAdmin.getId(), null, new Vector<Date>(), new Date(), new Date(), medico2);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-
-		try {
-			// Intentamos asignar un sustituto en días nulos
-			servidor.modificarCalendario(sesionAdmin.getId(), medico1, null, new Date(), new Date(), medico2);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-
-		try {
-			// Intentamos asignar un sustituto en un día nulo
-			dias = new Vector<Date>();
-			dias.add(null);
-			servidor.modificarCalendario(sesionAdmin.getId(), medico1, dias, new Date(), new Date(), medico2);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-
-		try {
-			// Intentamos asignar un sustituto en un rango nulo
-			servidor.modificarCalendario(sesionAdmin.getId(), medico1, new Vector<Date>(), null, new Date(), medico2);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-
-		try {
-			// Intentamos asignar un sustituto en un rango nulo
-			servidor.modificarCalendario(sesionAdmin.getId(), medico1, new Vector<Date>(), new Date(), null, medico2);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
-			// Intentamos asignar un sustituto nulo
-			dias = new Vector<Date>();
-			servidor.modificarCalendario(sesionAdmin.getId(), medico1, new Vector<Date>(), new Date(), new Date(), null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
 			// Intentamos asignar un sustituto con una sesión sin permisos
 			servidor.modificarCalendario(sesionCitador.getId(), medico1, new Vector<Date>(), new Date(), new Date(), medico2);
 			fail("Se esperaba una excepción OperacionIncorrectaException");
@@ -398,7 +323,7 @@ public class PruebasSustituciones extends PruebasBase {
 		
 		try {
 			// Intentamos asignar un sustituto a un médico inexistente
-			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
+			medico = new Medico("91295019", "otro2", UtilidadesDominio.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
 			servidor.modificarCalendario(sesionAdmin.getId(), medico, new Vector<Date>(), new Date(), new Date(), medico2);
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
@@ -408,7 +333,7 @@ public class PruebasSustituciones extends PruebasBase {
 		
 		try {
 			// Intentamos asignar un sustituto inexsitente
-			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
+			medico = new Medico("91295019", "otro2", UtilidadesDominio.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
 			servidor.modificarCalendario(sesionAdmin.getId(), medico1, new Vector<Date>(), new Date(), new Date(), medico);
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
@@ -485,6 +410,110 @@ public class PruebasSustituciones extends PruebasBase {
 			assertTrue(sustituciones.contains(new Sustitucion(calend.getTime(), 11, 13, m1, m2)));
 		} catch(Exception e) {
 			fail(e.toString());
+		}
+	}
+
+	/** Pruebas de las operaciones de la clase Sustitucion */
+	@SuppressWarnings("deprecation")
+	public void testClaseSustitucion() {
+		Sustitucion sustitucion;
+		
+		try {
+			// Comprobamos que se detecta bien si las horas de la
+			// sustitución están dentro de un determinado rango de horas
+			sustitucion = new Sustitucion(new Date(2010 - 1900, 5, 5), 10, 12, medico1, medico2);
+			assertTrue(sustitucion.horaEnSustitucion(10, 11));
+			assertTrue(sustitucion.horaEnSustitucion(11, 12));
+			assertTrue(sustitucion.horaEnSustitucion(9, 13));
+			sustitucion = new Sustitucion(new Date(2010 - 1900, 5, 5), 16, 20, medico1, medico2);
+			assertFalse(sustitucion.horaEnSustitucion(14, 16));
+			assertFalse(sustitucion.horaEnSustitucion(20, 22));
+			sustitucion = new Sustitucion(new Date(2010 - 1900, 5, 5), 9, 14, medico1, medico2);
+			assertTrue(sustitucion.horaEnSustitucion(new Date(2010 - 1900, 5, 5, 9, 30)));
+			assertTrue(sustitucion.horaEnSustitucion(new Date(2010 - 1900, 5, 5, 13, 25)));
+			assertFalse(sustitucion.horaEnSustitucion(new Date(2010 - 1900, 5, 5, 14, 0)));
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas con datos nulos */
+	public void testDatosNulos() {
+		Vector<Date> dias;
+		
+		try {
+			// Intentamos obtener los sustitutos de un médico nulo
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { null, null, 0, 0 });
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}		
+
+		try {
+			// Intentamos obtener los sustitutos de un médico en un día nulo
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { medico1.getNif(), null, 0, 0 });
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+	
+		try {
+			// Intentamos asignar un sustituto a un médico nulo
+			servidor.modificarCalendario(sesionAdmin.getId(), null, new Vector<Date>(), new Date(), new Date(), medico2);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+
+		try {
+			// Intentamos asignar un sustituto en días nulos
+			servidor.modificarCalendario(sesionAdmin.getId(), medico1, null, new Date(), new Date(), medico2);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+
+		try {
+			// Intentamos asignar un sustituto en un día nulo
+			dias = new Vector<Date>();
+			dias.add(null);
+			servidor.modificarCalendario(sesionAdmin.getId(), medico1, dias, new Date(), new Date(), medico2);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+
+		try {
+			// Intentamos asignar un sustituto en un rango nulo
+			servidor.modificarCalendario(sesionAdmin.getId(), medico1, new Vector<Date>(), null, new Date(), medico2);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+
+		try {
+			// Intentamos asignar un sustituto en un rango nulo
+			servidor.modificarCalendario(sesionAdmin.getId(), medico1, new Vector<Date>(), new Date(), null, medico2);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos asignar un sustituto nulo
+			dias = new Vector<Date>();
+			servidor.modificarCalendario(sesionAdmin.getId(), medico1, new Vector<Date>(), new Date(), new Date(), null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
 		}
 	}
 	

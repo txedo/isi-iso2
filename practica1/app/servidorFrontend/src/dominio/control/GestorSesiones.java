@@ -11,7 +11,7 @@ import java.util.Random;
 import java.util.Vector;
 import comunicaciones.ICliente;
 import comunicaciones.ProxyCliente;
-import dominio.conocimiento.Encriptacion;
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.RolesUsuario;
@@ -58,7 +58,7 @@ public class GestorSesiones {
 		
 		// Encriptamos la contraseña del usuario
 		try {
-			passwordEncriptada = Encriptacion.encriptarPasswordSHA1(password);			
+			passwordEncriptada = UtilidadesDominio.encriptarPasswordSHA1(password);			
 		} catch(NoSuchAlgorithmException e) {
 			throw new SQLException("No se puede encriptar la contraseña del usuario.");
 		}

@@ -11,6 +11,7 @@ import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
 import persistencia.FPSustitucion;
 import persistencia.FPUsuario;
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
@@ -18,7 +19,6 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
-import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.IConstantes;
@@ -73,13 +73,13 @@ public class PruebasMedicos extends PruebasBase {
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro Provincial", "Calle Ninguna, s/n");
 			centro2 = new CentroSalud("Centro Nuevo", "Calle Ninguna más, s/n");
-			medico1 = new Medico("12345678", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
-			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "", cabecera);
-			medico3 = new Medico("58782350", "jjj", Encriptacion.encriptarPasswordSHA1("jjj"), "Juan", "P. F.", "", "", "", especialista);
-			medico4 = new Medico("91295016", "otro", Encriptacion.encriptarPasswordSHA1("otro"), "Ana", "R. M.", "", "", "", cabecera);
-			medico5 = new Medico("23589712", "aaa", Encriptacion.encriptarPasswordSHA1("aaa"), "Noelia", "S. S.", "", "", "", new Especialista("Traumatologia"));
-			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "fernan@gmail.com", "", "681871340");
-			admin1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("admin"), "María", "L. F.", "", "911222333", "");
+			medico1 = new Medico("12345678", "medPrueba", UtilidadesDominio.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
+			medico2 = new Medico("87654321", "medico2", UtilidadesDominio.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "", cabecera);
+			medico3 = new Medico("58782350", "jjj", UtilidadesDominio.encriptarPasswordSHA1("jjj"), "Juan", "P. F.", "", "", "", especialista);
+			medico4 = new Medico("91295016", "otro", UtilidadesDominio.encriptarPasswordSHA1("otro"), "Ana", "R. M.", "", "", "", cabecera);
+			medico5 = new Medico("23589712", "aaa", UtilidadesDominio.encriptarPasswordSHA1("aaa"), "Noelia", "S. S.", "", "", "", new Especialista("Traumatologia"));
+			citador1 = new Citador("11223344", "citador", UtilidadesDominio.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "fernan@gmail.com", "", "681871340");
+			admin1 = new Administrador("55667788", "admin", UtilidadesDominio.encriptarPasswordSHA1("admin"), "María", "L. F.", "", "911222333", "");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro1);
@@ -137,15 +137,6 @@ public class PruebasMedicos extends PruebasBase {
 		Medico medicoGet;
 		
 		try {
-			// Intentamos consultar un médico con NIF nulo
-			servidor.getMedico(sesionCitador.getId(), null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
 			// Intentamos consultar los datos de un médico sin permisos
 			servidor.getMedico(sesionMedico.getId(), medico1.getNif());
 			fail("Se esperaba una excepción OperacionIncorrectaException");
@@ -173,6 +164,15 @@ public class PruebasMedicos extends PruebasBase {
 		}
 		
 		try {
+			// Intentamos obtener los datos de un usuario que no es médico
+			servidor.getMedico(sesionAdmin.getId(), citador1.getNif());
+			fail("Se esperaba una excepción MedicoInexistenteException");
+		} catch(MedicoInexistenteException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción MedicoInexistenteException");
+		}
+		
+		try {
 			// Obtenemos los datos de un médico existente
 			medicoGet = (Medico)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico1.getNif());
 			assertEquals(medico1, medicoGet);
@@ -184,15 +184,6 @@ public class PruebasMedicos extends PruebasBase {
 	/** Pruebas de la operación que crea nuevos médicos */
 	public void testCrearMedico() {
 		Medico medico, medicoGet;
-		
-		try {
-			// Intentamos crear un médico nulo
-			servidor.crear(sesionCitador.getId(), (Medico)null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
 		
 		try {
 			// Intentamos crear un médico con la sesión del citador
@@ -230,7 +221,7 @@ public class PruebasMedicos extends PruebasBase {
 			servidor.crear(sesionAdmin.getId(), medico);
 			// Comprobamos que el usuario se ha creado correctamente
 			medicoGet = (Medico)servidor.getMedico(sesionAdmin.getId(), medico.getNif());
-			medico.setPassword(Encriptacion.encriptarPasswordSHA1("medNuevo"));
+			medico.setPassword(UtilidadesDominio.encriptarPasswordSHA1("medNuevo"));
 			medico.setCentroSalud(medicoGet.getCentroSalud().equals(centro1) ? centro1 : centro2);
 			assertEquals(medico, medicoGet);
 		} catch(Exception e) {
@@ -252,15 +243,6 @@ public class PruebasMedicos extends PruebasBase {
 	/** Pruebas de la operación que modifica médicos existentes */
 	public void testModificarMedico() {
 		Medico medico, medicoGet;
-		
-		try {
-			// Intentamos modificar un médico nulo
-			servidor.modificar(sesionCitador.getId(), (Medico)null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
 		
 		try {
 			// Intentamos modificar un médico con la sesión del citador
@@ -298,7 +280,7 @@ public class PruebasMedicos extends PruebasBase {
 			servidor.modificar(sesionAdmin.getId(), medico1);
 			// Comprobamos que el médico se haya actualizado correctamente
 			medicoGet = servidor.getMedico(sesionAdmin.getId(), medico1.getNif());
-			medico1.setPassword(Encriptacion.encriptarPasswordSHA1("abcdef"));
+			medico1.setPassword(UtilidadesDominio.encriptarPasswordSHA1("abcdef"));
 			assertEquals(medico1, medicoGet);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -308,15 +290,6 @@ public class PruebasMedicos extends PruebasBase {
 	/** Pruebas de la operación que elimina médicos existentes */
 	public void testEliminarMedico() {
 		Medico medico;
-		
-		try {
-			// Intentamos eliminar un médico nulo
-			servidor.eliminar(sesionCitador.getId(), null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
 		
 		try {
 			// Intentamos eliminar un médico con la sesión del citador
@@ -361,15 +334,6 @@ public class PruebasMedicos extends PruebasBase {
 		PeriodoTrabajo periodo;
 			
 		try {
-			// Intentamos obtener el horario de un médico nulo
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
 			// Intentamos consultar el horario de un médico con una sesión sin permisos
 			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, medico1.getNif());
 			fail("Se esperaba una excepción OperacionIncorrectaException");
@@ -389,7 +353,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos obtener el horario de un médico inexistente
-			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
+			medico = new Medico("91295019", "otro2", UtilidadesDominio.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, medico.getNif());
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
@@ -434,15 +398,6 @@ public class PruebasMedicos extends PruebasBase {
 		Vector<Medico> medicos;
 		
 		try {
-			// Intentamos obtener los médicos de un tipo nulo
-			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
 			// Intentamos consultar los médicos de un tipo con una sesión sin permisos
 			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, cabecera);
 			fail("Se esperaba una excepción OperacionIncorrectaException");
@@ -484,24 +439,6 @@ public class PruebasMedicos extends PruebasBase {
 		Medico medico;
 		
 		try {
-			// Intentamos obtener quién daría la cita de un médico nulo
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { null, new Date() });
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}		
-
-		try {
-			// Intentamos obtener quién daría una cita en un día nulo
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getNif(), null });
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-	
-		try {
 			// Intentamos obtener quién daría una cita con una sesión sin permisos
 			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getNif(), new Date() });
 			fail("Se esperaba una excepción OperacionIncorrectaException");
@@ -521,7 +458,7 @@ public class PruebasMedicos extends PruebasBase {
 		
 		try {
 			// Intentamos obtener quién daría la cita de un médico inexistente
-			medico = new Medico("91295019", "otro2", Encriptacion.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
+			medico = new Medico("91295019", "otro2", UtilidadesDominio.encriptarPasswordSHA1("otro"), "Anaasa", "R. M.", "anaasa@uclm.es", "", "", cabecera);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico.getNif(), new Date() });
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
@@ -607,6 +544,81 @@ public class PruebasMedicos extends PruebasBase {
 			assertFalse(medico1.fechaEnCalendario(fecha, 10));
 		} catch(Exception e) {
 			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas con datos nulos */
+	public void testDatosNulos() {
+		try {
+			// Intentamos consultar un médico con NIF nulo
+			servidor.getMedico(sesionCitador.getId(), null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos crear un médico nulo
+			servidor.crear(sesionCitador.getId(), (Medico)null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos modificar un médico nulo
+			servidor.modificar(sesionCitador.getId(), (Medico)null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos eliminar un médico nulo
+			servidor.eliminar(sesionCitador.getId(), null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos obtener el horario de un médico nulo
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos obtener los médicos de un tipo nulo
+			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos obtener quién daría la cita de un médico nulo
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { null, new Date() });
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}		
+
+		try {
+			// Intentamos obtener quién daría una cita en un día nulo
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_CITA, new Object[] { medico1.getNif(), null });
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
 		}
 	}
 	

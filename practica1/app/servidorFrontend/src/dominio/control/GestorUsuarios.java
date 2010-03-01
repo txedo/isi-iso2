@@ -8,7 +8,6 @@ import dominio.UtilidadesDominio;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Cita;
-import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.PeriodoTrabajo;
@@ -148,7 +147,7 @@ public class GestorUsuarios {
 		// copia del usuario para no modificar el original)
 		usuarioReal = (Usuario)usuario.clone();
 		try {
-			usuarioReal.setPassword(Encriptacion.encriptarPasswordSHA1(usuario.getPassword()));
+			usuarioReal.setPassword(UtilidadesDominio.encriptarPasswordSHA1(usuario.getPassword()));
 		} catch(NoSuchAlgorithmException e) {
 			throw new SQLException("No se puede encriptar la contraseña del usuario.");
 		}
@@ -201,7 +200,7 @@ public class GestorUsuarios {
 		if(!usuario.getPassword().trim().equals("")) {
 			// Encriptamos la nueva contraseña del usuario
 			try {
-				usuarioReal.setPassword(Encriptacion.encriptarPasswordSHA1(usuario.getPassword()));
+				usuarioReal.setPassword(UtilidadesDominio.encriptarPasswordSHA1(usuario.getPassword()));
 			} catch(NoSuchAlgorithmException e) {
 				throw new SQLException("No se puede encriptar la contraseña del usuario.");
 			}
@@ -218,18 +217,19 @@ public class GestorUsuarios {
 		if(usuarioReal.getRol() == RolesUsuario.Medico) {
 			citas = FPCita.consultarPorMedico(usuario.getNif());
 			for(Cita cita : citas) {
-				afectada = true;
-				for(PeriodoTrabajo periodo : ((Medico)usuarioReal).getCalendario()) {
-					if(UtilidadesDominio.diaFecha(cita.getFechaYHora()) == periodo.getDia()
-					 && cita.citaEnHoras(periodo.getHoraInicio(), periodo.getHoraFinal())
-					 && cita.getFechaYHora().after(new Date())) {
-						// La cita queda dentro del nuevo horario
-						afectada = false;
+				if(cita.getFechaYHora().after(new Date())) {
+					afectada = true;
+					for(PeriodoTrabajo periodo : ((Medico)usuarioReal).getCalendario()) {
+						if(UtilidadesDominio.diaFecha(cita.getFechaYHora()) == periodo.getDia()
+						 && cita.citaEnHoras(periodo.getHoraInicio(), periodo.getHoraFinal())) {
+							// La cita queda dentro del nuevo horario
+							afectada = false;
+						}
 					}
-				}
-				if(afectada) {
-					// La cita no queda dentro del nuevo horario
-					FPCita.eliminar(cita);
+					if(afectada) {
+						// La cita no queda dentro del nuevo horario
+						FPCita.eliminar(cita);
+					}
 				}
 			}
 		}

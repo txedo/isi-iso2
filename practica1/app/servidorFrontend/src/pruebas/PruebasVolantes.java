@@ -6,6 +6,7 @@ import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import persistencia.FPVolante;
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
@@ -13,7 +14,6 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
-import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ISesion;
@@ -74,12 +74,12 @@ public class PruebasVolantes extends PruebasBase {
 			// Creamos objetos de prueba
 			centro1 = new CentroSalud("Centro A", "Calle 2, nº2");
 			centro2 = new CentroSalud("Centro B", "Calle 4, nº4");
-			medico1 = new Medico("12345678", "medico1", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
-			medico2 = new Medico("87654321", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "666123123", cabecera);
-			medico3 = new Medico("34581732", "medico3", Encriptacion.encriptarPasswordSHA1("pass"), "nombre", "apellido", "nombre@correos.es", "", "", especialista);
-			medico4 = new Medico("09761231", "medNoRegistrado", Encriptacion.encriptarPasswordSHA1("asas"), "E", "P", "", "999888777", "666555444", cabecera);
-			citador1 = new Citador("11223344", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "", "" ,"");
-			administrador1 = new Administrador("55667788", "admin", Encriptacion.encriptarPasswordSHA1("admin"), "María", "L. F.", "admin@yahoo.com", "999999999", "666666666");
+			medico1 = new Medico("12345678", "medico1", UtilidadesDominio.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
+			medico2 = new Medico("87654321", "medico2", UtilidadesDominio.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "666123123", cabecera);
+			medico3 = new Medico("34581732", "medico3", UtilidadesDominio.encriptarPasswordSHA1("pass"), "nombre", "apellido", "nombre@correos.es", "", "", especialista);
+			medico4 = new Medico("09761231", "medNoRegistrado", UtilidadesDominio.encriptarPasswordSHA1("asas"), "E", "P", "", "999888777", "666555444", cabecera);
+			citador1 = new Citador("11223344", "citador", UtilidadesDominio.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "", "" ,"");
+			administrador1 = new Administrador("55667788", "admin", UtilidadesDominio.encriptarPasswordSHA1("admin"), "María", "L. F.", "admin@yahoo.com", "999999999", "666666666");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro1);
@@ -93,7 +93,7 @@ public class PruebasVolantes extends PruebasBase {
 			medico1.getCalendario().add(periodo2);
 			medico2.getCalendario().add(periodo3);
 			medico3.getCalendario().add(periodo3);
-			usuario1 = new Administrador("04328172", "usuario", Encriptacion.encriptarPasswordSHA1("f"), "O", "C", "", "", "");
+			usuario1 = new Administrador("04328172", "usuario", UtilidadesDominio.encriptarPasswordSHA1("f"), "O", "C", "", "", "");
 			usuario1.setCentroSalud(centro1);
 			direccion1 = new Direccion("Avda. Mayor", "10", "4", "C", "Ciudad", "Provincia", 10234);
 			direccion2 = new Direccion("Calle Principal", "5", "", "", "Ciudad", "Provincia", 10234);
@@ -176,33 +176,6 @@ public class PruebasVolantes extends PruebasBase {
 	public void testEmitirVolante() {	
 		Volante volanteGet = null;
 		long idVolante = -1;
-		
-		try {
-			// Intentamos emitir un volante para un beneficiario nulo
-			servidor.emitirVolante(sesionMedico.getId(), null, medico1, medico3);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
-			// Intentamos emitir un volante para un médico emisor nulo
-			servidor.emitirVolante(sesionMedico.getId(), beneficiario1, null, medico3);			
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
-			// Intentamos emitir un volante para un médico receptor nulo
-			servidor.emitirVolante(sesionMedico.getId(), beneficiario1, medico1, null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
 		
 		try {
 			// Intentamos emitir un volante como administrador
@@ -288,4 +261,50 @@ public class PruebasVolantes extends PruebasBase {
 		}
 	}
 
+	/** Pruebas de las operaciones de la clase Volante */
+	public void testClaseVloante() {
+		Volante volante;
+		
+		try {
+			// Comprobamos que los métodos toString y equals no producen
+			// excepción si no se ha utilizado todavía el volante
+			volante = new Volante(medico1, medico2, beneficiario1, null, new Date());
+			assertNotNull(volante.toString());
+			assertTrue(volante.equals(volante));
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+
+	}
+	
+	/** Pruebas con datos nulos */
+	public void testDatosNulos() {
+		try {
+			// Intentamos emitir un volante para un beneficiario nulo
+			servidor.emitirVolante(sesionMedico.getId(), null, medico1, medico3);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos emitir un volante para un médico emisor nulo
+			servidor.emitirVolante(sesionMedico.getId(), beneficiario1, null, medico3);			
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos emitir un volante para un médico receptor nulo
+			servidor.emitirVolante(sesionMedico.getId(), beneficiario1, medico1, null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+	}
+	
 }

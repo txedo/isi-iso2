@@ -10,13 +10,12 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Vector;
-
 import comunicaciones.ICliente;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.CentroSalud;
-import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -50,9 +49,9 @@ public class PruebasSesiones extends PruebasBase {
 			// Creamos objetos de prueba
 			pediatra = new Pediatra();
 			centro1 = new CentroSalud("Centro A", "Calle 3, nº3");
-			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
-			medico2 = new Medico("99887766A", "otroMedico", Encriptacion.encriptarPasswordSHA1("xxxxx"), "Ramón", "S. J.", "", "", "", pediatra);
-			administrador1 = new Administrador("12121212A", "admin", Encriptacion.encriptarPasswordSHA1("admin"), "Administrador", "Apellidos", "", "999888777", "667788888");
+			medico1 = new Medico("12345678A", "medPrueba", UtilidadesDominio.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
+			medico2 = new Medico("99887766A", "otroMedico", UtilidadesDominio.encriptarPasswordSHA1("xxxxx"), "Ramón", "S. J.", "", "", "", pediatra);
+			administrador1 = new Administrador("12121212A", "admin", UtilidadesDominio.encriptarPasswordSHA1("admin"), "Administrador", "Apellidos", "", "999888777", "667788888");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			administrador1.setCentroSalud(centro1);
@@ -77,24 +76,6 @@ public class PruebasSesiones extends PruebasBase {
 	/** Pruebas de la operación que inicia una nueva sesión **/
 	public void testIdentificar() {
 		ISesion sesion = null, sesion2;
-		
-		try {
-			// Intentamos identificarnos con un nombre de usuario nulo
-			servidor.identificar(null, "");
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
-			// Intentamos identificarnos con una contraseña nula
-			servidor.identificar("", null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
 		
 		try {
 			// Intentamos identificarnos en el sistema con un usuario inexistente
@@ -167,15 +148,6 @@ public class PruebasSesiones extends PruebasBase {
 		}
 	
 		try {
-			// Intentamos registrar un cliente nulo
-			servidor.registrar(null, 0);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-
-		try {
 			// Intentamos registrar un cliente con una sesión no válida
 			servidor.registrar(cliente, -12345);
 			fail("Se esperaba una excepción SesionNoIniciadaException");
@@ -213,10 +185,7 @@ public class PruebasSesiones extends PruebasBase {
 			fail(e.toString());
 		}
 	}
-	/*			// Comprobamos que al realizar una operación el cliente es notificado
-	assertFalse(cliente.llamado());
-	servidor.modificar(sesion.getId(), medico1);
-	assertTrue(cliente.llamado());*/
+
 	/** Pruebas de la operación que consulta las operaciones disponibles */
 	@SuppressWarnings("unchecked")
 	public void testOperacionesDisponibles() {
@@ -243,6 +212,36 @@ public class PruebasSesiones extends PruebasBase {
 		}
 	}
 	
+	/** Pruebas con datos nulos */
+	public void testDatosNulos() {
+		try {
+			// Intentamos identificarnos con un nombre de usuario nulo
+			servidor.identificar(null, "");
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos identificarnos con una contraseña nula
+			servidor.identificar("", null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+
+		try {
+			// Intentamos registrar un cliente nulo
+			servidor.registrar(null, 0);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+	}
+	
 	// -----------------------------------------------------------------------
 	
 	private class ClienteDummy extends UnicastRemoteObject implements ICliente {
@@ -253,7 +252,6 @@ public class PruebasSesiones extends PruebasBase {
 
 		private boolean registro;
 		private int puerto;
-		private boolean llamado;
 		
 		public ClienteDummy() throws RemoteException {
 			super();
@@ -315,17 +313,12 @@ public class PruebasSesiones extends PruebasBase {
 		}
 
 		public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
-			llamado = true;
 		}
 		
 		public void servidorInaccesible() throws RemoteException {
 		}
 		
 		public void cerrarSesion() throws RemoteException {
-		}
-		
-		public boolean llamado() {
-			return llamado;
 		}
 
 		public void cerrarSesionEliminacion() throws RemoteException {

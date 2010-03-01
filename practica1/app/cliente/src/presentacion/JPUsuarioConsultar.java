@@ -581,17 +581,18 @@ public class JPUsuarioConsultar extends JPBase {
 				citas = getControlador().consultarCitasMedico(usuario.getNif());
 				citasAfectadas = new Vector<Cita>();
 				for(Cita cita : citas) {
-					afectada = true;
-					for(PeriodoTrabajo periodo : ((Medico)usuarioModif).getCalendario()) {
-						if(UtilidadesDominio.diaFecha(cita.getFechaYHora()) == periodo.getDia()
-						 && cita.citaEnHoras(periodo.getHoraInicio(), periodo.getHoraFinal())
-						 && cita.getFechaYHora().after(new Date())) {
-							// La cita queda dentro del nuevo horario
-							afectada = false;
+					if(cita.getFechaYHora().after(new Date())) {
+						afectada = true;
+						for(PeriodoTrabajo periodo : ((Medico)usuarioModif).getCalendario()) {
+							if(UtilidadesDominio.diaFecha(cita.getFechaYHora()) == periodo.getDia()
+							 && cita.citaEnHoras(periodo.getHoraInicio(), periodo.getHoraFinal())) {
+								// La cita queda dentro del nuevo horario
+								afectada = false;
+							}
 						}
-					}
-					if(afectada) {
-						citasAfectadas.add(cita);
+						if(afectada) {
+							citasAfectadas.add(cita);
+						}
 					}
 				}
 				if(citasAfectadas.size() > 0) {

@@ -67,7 +67,8 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 	private ConfiguracionFrontend configuracion;
 	private JFConfigFrontend frmConfiguracion;
 	private JFAcercaDeFrontend frmAcercaDe;
-	
+	private int numeroClientes;
+
 	private JLabel lblConfigRespaldo;
 	private JLabel lblConfigBD;
 	private JMenuItem mniDesconectar;
@@ -462,17 +463,28 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		}
 	}
 	
+	// Métodos públicos
+	
 	public void ponerMensaje(String mensaje) {
 		txtLog.setText(txtLog.getText() + mensaje + "\n");
 		txtLog.setCaretPosition(txtLog.getDocument().getLength());
 	}
 
+	public String getMensajes() {
+		return txtLog.getText();
+	}
+	
 	public void actualizarClientesEscuchando(int numeroClientes) {
+		this.numeroClientes = numeroClientes;
 		if(numeroClientes == 1) {
 			lblClientesConectados.setText(numeroClientes + " cliente conectado.");
 		} else {
 			lblClientesConectados.setText(numeroClientes + " clientes conectados.");
 		}
+	}
+	
+	public int getClientesEscuchando() {
+		return numeroClientes;
 	}
 	
 	//$hide<<$

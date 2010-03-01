@@ -114,18 +114,20 @@ public abstract class Usuario implements Serializable, Cloneable {
 		dev = false;
 		if(o != null && o instanceof Usuario) {
 			u = (Usuario)o;
-			dev = nif.equals(u.getNif()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && correo.equals(u.getCorreo()) && telefono.equals(u.getTelefono()) && movil.equals(u.getMovil());
-			if(centro == null) {
-				dev = dev & (u.getCentroSalud() == null);
-			} else {
-				dev = dev & centro.equals(u.getCentroSalud());
+			if(u.getClass().equals(this.getClass())) {
+				dev = nif.equals(u.getNif()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && correo.equals(u.getCorreo()) && telefono.equals(u.getTelefono()) && movil.equals(u.getMovil());
+				if(centro == null) {
+					dev = dev & (u.getCentroSalud() == null);
+				} else {
+					dev = dev & centro.equals(u.getCentroSalud());
+				}
 			}
 		}
 		return dev;
 	}
 
 	public String toString() {
-		return getRol().toString() + ": " + nif + ", " + login + ", " + password + ", " + nombre + ", " + apellidos;
+		return getRol().toString() + ": " + nif + ", " + login + ", " + password + ", " + nombre + ", " + apellidos + ", " + correo + ", " + telefono + ", " + movil + ", C: " + (centro == null ? "(ninguno)" : centro.getNombre());
 	}
 	
 }

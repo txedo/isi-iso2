@@ -285,11 +285,6 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 			txtPuertoBDPrincipal.selectAll();
 			txtPuertoBDPrincipal.grabFocus();
 			valido = false;
-		} catch(NumberFormatException ex) {
-			Dialogos.mostrarDialogoError(this, "Error", "El puerto de la base de datos principal debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
-			txtPuertoBDPrincipal.selectAll();
-			txtPuertoBDPrincipal.grabFocus();
-			valido = false;
 		}
 		
 		// Comprobamos los datos del servidor de respaldo (si está activo)
@@ -307,11 +302,6 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 				txtPuertoRespaldo.selectAll();
 				txtPuertoRespaldo.grabFocus();
 				valido = false;
-			} catch(NumberFormatException ex) {
-				Dialogos.mostrarDialogoError(this, "Error", "El puerto del servidor de respaldo debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
-				txtPuertoRespaldo.selectAll();
-				txtPuertoRespaldo.grabFocus();
-				valido = false;
 			}
 		}
 		
@@ -320,11 +310,6 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 			try {
 				Validacion.comprobarPuerto(txtPuertoFrontend.getText().trim());
 			} catch(PuertoInvalidoException ex) {
-				Dialogos.mostrarDialogoError(this, "Error", "El puerto de escucha del servidor front-end debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
-				txtPuertoFrontend.selectAll();
-				txtPuertoFrontend.grabFocus();
-				valido = false;
-			} catch(NumberFormatException ex) {
 				Dialogos.mostrarDialogoError(this, "Error", "El puerto de escucha del servidor front-end debe ser un número entre " + String.valueOf(Validacion.PUERTO_MINIMO) + " y " + String.valueOf(Validacion.PUERTO_MAXIMO) + ".");
 				txtPuertoFrontend.selectAll();
 				txtPuertoFrontend.grabFocus();
