@@ -66,6 +66,7 @@ public class JFCalendarioLaboral extends javax.swing.JFrame {
 				getContentPane().add(jPanelConsultarCalendario, new AnchorConstraint(2, 977, 836, 1, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jPanelConsultarCalendario.setVisible(true);
 				jPanelConsultarCalendario.setPreferredSize(new java.awt.Dimension(412, 207));
+				jPanelConsultarCalendario.setName("pnlConsultarCalendario");
 			}
 			{
 				btnRestablecerTodo = new JButton();
@@ -86,6 +87,7 @@ public class JFCalendarioLaboral extends javax.swing.JFrame {
 				btnRestablecer.setText("Restablecer");
 				btnRestablecer.setPreferredSize(new java.awt.Dimension(117, 24));
 				btnRestablecer.setEnabled(false);
+				btnRestablecer.setName("btnRestablecer");
 				btnRestablecer.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnRestablecerActionPerformed(evt);

@@ -99,6 +99,7 @@ public class JPCalendarioConsultar extends javax.swing.JPanel implements IConsta
 				this.add(btnPropagar, new AnchorConstraint(155, 216, 467, 12, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				btnPropagar.setText("Propagar selección");
 				btnPropagar.setPreferredSize(new java.awt.Dimension(132, 24));
+				btnPropagar.setName("btnPropagar");
 				btnPropagar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						btnPropagarActionPerformed(evt);
@@ -119,6 +120,7 @@ public class JPCalendarioConsultar extends javax.swing.JPanel implements IConsta
 						}
 					});
 					lstDiasSemana.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					lstDiasSemana.setName("lstDiasSemanas");
 					lstDiasSemana.setSelectedIndex(0);
 				}
 			}
