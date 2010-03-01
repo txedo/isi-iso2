@@ -257,12 +257,13 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			// Eliminamos el medico de prueba y el beneficiario de prueba
 			controlador.eliminarMedico(cabecera);
 			controlador.eliminarBeneficiario(beneficiarioPrueba);
-			// Cerramos la sesión y la ventana del controlador
+			// Cerramos la sesión y la ventana del controlador			
+			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
-			winPrincipal.dispose();
 		} catch(Exception e) {
 			fail(e.toString());
-		}
+		}	
+		winPrincipal.dispose();
 	}
 	
 	public void testDatosInvalidos() {

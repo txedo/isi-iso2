@@ -152,8 +152,8 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			controlador.eliminarBeneficiario(beneficiarioPrueba2);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
-			frmAvisos.dispose();
 			winPrincipal.dispose();
+			frmAvisos.dispose();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

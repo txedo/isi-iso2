@@ -187,6 +187,7 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 			controlador.eliminarBeneficiario(beneficiarioPrueba);
 			controlador.eliminarUsuario(cabecera);			
 			// Cerramos la sesión y la ventana del controlador
+			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
 		} catch(Exception e) {
 			fail(e.toString());
