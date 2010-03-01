@@ -56,7 +56,7 @@ public class Sesion implements ISesion, Serializable {
 		dev = false;
 		if(o != null && o instanceof Sesion) {
 			u = (Sesion)o;
-			dev = idSesion==u.getId() && usuario.equals(u.getUsuario());
+			dev = idSesion == u.getId() && usuario.equals(u.getUsuario()) && horaInicio.equals(u.getHoraInicio());
 		}
 		return dev;
 	}

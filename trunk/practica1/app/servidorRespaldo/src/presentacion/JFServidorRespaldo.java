@@ -61,11 +61,11 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	
 	private static final long serialVersionUID = -3739906711082199809L;
 	
-	private int numeroClientes;
 	private ControladorRespaldo controlador;
 	private ConfiguracionRespaldo configuracion;
 	private JFConfigRespaldo frmConfiguracion;
 	private JFAcercaDeRespaldo frmAcercaDe;
+	private int numeroClientes;
 	
 	private JButton btnSalir;
 	private JLabel lblConfigBD;
@@ -78,7 +78,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	private JButton btnDesconectar;
 	private JMenuBar mnbMenus;
 	private JButton btnConectar;
-	private JTextArea textLog;
+	private JTextArea txtLog;
 	private JMenuItem mniAcercaDe;
 	private JMenuItem mniConfigurar;
 	private JMenuItem mniSalir;
@@ -208,11 +208,11 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 					scpPanelLog.setPreferredSize(new java.awt.Dimension(522, 212));
 					scpPanelLog.setMinimumSize(new java.awt.Dimension(346, 155));
 					{
-						textLog = new JTextArea();
-						scpPanelLog.setViewportView(textLog);
-						textLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
-						textLog.setEditable(false);
-						textLog.setFont(new java.awt.Font("Tahoma",0,12));
+						txtLog = new JTextArea();
+						scpPanelLog.setViewportView(txtLog);
+						txtLog.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
+						txtLog.setEditable(false);
+						txtLog.setFont(new java.awt.Font("Tahoma",0,12));
 					}
 				}
 				{
@@ -438,11 +438,11 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 	// Métodos públicos
 	
 	public void ponerMensaje(String mensaje) {
-		textLog.setText(textLog.getText() + mensaje + "\n");	
+		txtLog.setText(txtLog.getText() + mensaje + "\n");	
 	}
 	
 	public String getMensajes() {
-		return textLog.getText();
+		return txtLog.getText();
 	}
 
 	public void actualizarClientesEscuchando(int numeroClientes) {

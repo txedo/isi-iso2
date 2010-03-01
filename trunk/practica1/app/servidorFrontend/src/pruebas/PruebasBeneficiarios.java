@@ -9,6 +9,7 @@ import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
 import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
+import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
@@ -16,7 +17,6 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
-import dominio.conocimiento.Encriptacion;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -68,8 +68,8 @@ public class PruebasBeneficiarios extends PruebasBase {
 			direccion2 = new Direccion("calle 2", "10", "2", "A", "aadsfaada", "afafssafad", 13500);
 			centro1 = new CentroSalud("Centro A", "Calle 1, nº1");
 			centro2 = new CentroSalud("Centro B", "Calle 2, nº2");
-			medico1 = new Medico("12345678A", "medPrueba", Encriptacion.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
-			medico2 = new Medico("87654321A", "medico2", Encriptacion.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "666123123", cabecera);
+			medico1 = new Medico("12345678A", "medPrueba", UtilidadesDominio.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", pediatra);
+			medico2 = new Medico("87654321A", "medico2", UtilidadesDominio.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "666123123", cabecera);
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			periodo1 = new PeriodoTrabajo(10, 14, DiaSemana.Miercoles);
@@ -78,8 +78,8 @@ public class PruebasBeneficiarios extends PruebasBase {
 			medico1.getCalendario().add(periodo1);
 			medico1.getCalendario().add(periodo2);
 			medico2.getCalendario().add(periodo3);
-			citador1 = new Citador("11223344A", "citador", Encriptacion.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "", "926111222", "");
-			admin1 = new Administrador("55667788A", "admin", Encriptacion.encriptarPasswordSHA1("admin"), "María", "L. F.", "marilf@yahoo.es", "", "666000000");
+			citador1 = new Citador("11223344A", "citador", UtilidadesDominio.encriptarPasswordSHA1("cit123"), "Fernando", "G. P.", "", "926111222", "");
+			admin1 = new Administrador("55667788A", "admin", UtilidadesDominio.encriptarPasswordSHA1("admin"), "María", "L. F.", "marilf@yahoo.es", "", "666000000");
 			citador1.setCentroSalud(centro1);
 			admin1.setCentroSalud(centro1);
 			beneficiario1 = new Beneficiario("12345678A", "123456-ab", "bene1", "asdfg", fecha1, direccion1, "add@sf.com", "123456789", "987654321");
@@ -122,24 +122,6 @@ public class PruebasBeneficiarios extends PruebasBase {
 	/** Pruebas de la operación que obtiene los datos de un beneficiario */
 	public void testConsultarBeneficiario() {
 		Beneficiario beneficiario;
-		
-		try {
-			// Intentamos obtener un beneficiario con NIF nulo
-			servidor.getBeneficiario(sesionCitador.getId(), null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch (NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
-			// Intentamos obtener un beneficiario con NSS nulo
-			servidor.getBeneficiarioPorNSS(sesionCitador.getId(), null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch (NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
@@ -213,26 +195,6 @@ public class PruebasBeneficiarios extends PruebasBase {
 	/** Pruebas de la operación que crea nuevos beneficiarios */
 	public void testCrearBeneficiario() {
 		Beneficiario beneficiario, beneficiarioGet;
-		
-		try {
-			// Intentamos crear un beneficiario nulo
-			servidor.crear(sesionAdmin.getId(), (Beneficiario)null);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
-		
-		try {
-			// Intentamos crear un beneficiario con un centro de salud nulo
-			beneficiario = new Beneficiario("66666666A", "14124as-cd", "beNuevo", "nuevos", fecha2, direccion2, "luna@hotmail.com", "34698124", "67912312");
-			beneficiario.setCentroSalud(null);
-			servidor.crear(sesionAdmin.getId(), beneficiario);
-			fail("Se esperaba una excepción NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción NullPointerException");
-		}
 		
 		try {
 			// Intentamos crear un nuevo beneficiario con la sesión de médico
@@ -332,25 +294,6 @@ public class PruebasBeneficiarios extends PruebasBase {
 		Beneficiario beneficiario, beneficiarioGet;
 		
 		try {
-			// Intentamos modificar un beneficiario nulo
-			servidor.modificar(sesionAdmin.getId(), (Beneficiario)null);
-			fail("Se esperaba NullPointerException");
-		} catch (NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba NullPointerException");
-		}
-		
-		try {
-			// Intentamos modificar un beneficiario con un centro de salud nulo
-			beneficiario1.setCentroSalud(null);
-			servidor.modificar(sesionAdmin.getId(), beneficiario1);
-			fail("Se esperaba NullPointerException");
-		} catch (NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba NullPointerException");
-		}
-		
-		try {
 			// Intentamos modificar un beneficiario con la sesión del médico
 			beneficiario1.setCentroSalud(centro1);
 			beneficiario1.setCorreo("ninguno@ninguno.com");
@@ -414,15 +357,6 @@ public class PruebasBeneficiarios extends PruebasBase {
 		Beneficiario beneficiario;
 		
 		try {
-			// Intentamos eliminar un beneficiario nulo
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, null);
-			fail("Se esperaba NullPointerException");
-		} catch (NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba NullPointerException");
-		}
-		
-		try {
 			// Intentamos eliminar un beneficiario con la sesión del médico
 			servidor.mensajeAuxiliar(sesionMedico.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, beneficiario1);
 			fail("Se esperaba una excepción OperacionIncorrectaException");
@@ -466,16 +400,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 	@SuppressWarnings("unchecked")
 	public void testConsultarBeneficiariosMedico() {
 		Vector<Beneficiario> beneficiarios;
-		
-		try {
-			// Intentamos consultar los beneficiarios de un médico con NIF nulo
-			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, null);
-			fail("Se esperaba NullPointerException");
-		} catch(NullPointerException e) {
-		} catch(Exception e) {
-			fail("Se esperaba NullPointerException");
-		}
-		
+				
 		try {
 			// Intentamos consultar los beneficiarios de un médico con la sesión del citador
 			servidor.mensajeAuxiliar(sesionCitador.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico1.getNif());
@@ -540,6 +465,85 @@ public class PruebasBeneficiarios extends PruebasBase {
 			assertTrue(beneficiario.equals(beneficiario));
 		} catch(Exception e) {
 			fail(e.toString());
+		}
+	}
+
+	/** Pruebas con datos nulos */
+	public void testDatosNulos() {
+		Beneficiario beneficiario;
+		
+		try {
+			// Intentamos obtener un beneficiario con NIF nulo
+			servidor.getBeneficiario(sesionCitador.getId(), null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch (NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos obtener un beneficiario con NSS nulo
+			servidor.getBeneficiarioPorNSS(sesionCitador.getId(), null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch (NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos crear un beneficiario nulo
+			servidor.crear(sesionAdmin.getId(), (Beneficiario)null);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		
+		try {
+			// Intentamos crear un beneficiario con un centro de salud nulo
+			beneficiario = new Beneficiario("66666666A", "14124as-cd", "beNuevo", "nuevos", fecha2, direccion2, "luna@hotmail.com", "34698124", "67912312");
+			beneficiario.setCentroSalud(null);
+			servidor.crear(sesionAdmin.getId(), beneficiario);
+			fail("Se esperaba una excepción NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción NullPointerException");
+		}
+		try {
+			// Intentamos modificar un beneficiario nulo
+			servidor.modificar(sesionAdmin.getId(), (Beneficiario)null);
+			fail("Se esperaba NullPointerException");
+		} catch (NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba NullPointerException");
+		}
+		
+		try {
+			// Intentamos modificar un beneficiario con un centro de salud nulo
+			beneficiario1.setCentroSalud(null);
+			servidor.modificar(sesionAdmin.getId(), beneficiario1);
+			fail("Se esperaba NullPointerException");
+		} catch (NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba NullPointerException");
+		}
+		
+		try {
+			// Intentamos eliminar un beneficiario nulo
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, null);
+			fail("Se esperaba NullPointerException");
+		} catch (NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba NullPointerException");
+		}
+
+		try {
+			// Intentamos consultar los beneficiarios de un médico con NIF nulo
+			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, null);
+			fail("Se esperaba NullPointerException");
+		} catch(NullPointerException e) {
+		} catch(Exception e) {
+			fail("Se esperaba NullPointerException");
 		}
 	}
 	

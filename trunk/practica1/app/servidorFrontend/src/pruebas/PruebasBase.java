@@ -12,7 +12,7 @@ import junit.framework.TestCase;
  * base de datos al iniciar las pruebas y la cierra al finalizar.
  */
 public class PruebasBase extends TestCase {
-
+	
 	protected void setUp() {
 		Connection bd;
 		PreparedStatement sentencia;
@@ -22,8 +22,8 @@ public class PruebasBase extends TestCase {
 		try {
 			// Borramos la base de datos
 			agente = AgenteFrontend.getAgente();
-			agente.setIP("127.0.0.1");
-			agente.setPuerto(3306);
+			agente.setIP(IDatosPruebas.IP_BASEDATOS_PRINCIPAL);
+			agente.setPuerto(IDatosPruebas.PUERTO_BASEDATOS_PRINCIPAL);
 			agente.abrir();
 			bd = agente.getConexion();
 			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
