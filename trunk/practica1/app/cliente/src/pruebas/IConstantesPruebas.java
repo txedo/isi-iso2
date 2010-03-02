@@ -1,6 +1,6 @@
 package pruebas;
 
-public interface IConstantes {
+public interface IConstantesPruebas {
 	public static final String YES_OPTION = "Sí";
 	public static final String NO_OPTION = "No";
 	public static final String CANCEL_OPTION = "Cancelar";

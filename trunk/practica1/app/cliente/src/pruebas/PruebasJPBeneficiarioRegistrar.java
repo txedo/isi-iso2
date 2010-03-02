@@ -34,7 +34,7 @@ import presentacion.JPBeneficiarioRegistrar;
 /**
  * Pruebas del panel de registro de beneficiarios.
  */
-public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
+public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 	
 	private String nif;
 	private boolean beneficiarioCreado = false;

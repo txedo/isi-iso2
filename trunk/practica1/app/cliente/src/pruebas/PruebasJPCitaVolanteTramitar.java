@@ -36,7 +36,7 @@ import excepciones.NSSIncorrectoException;
 import excepciones.UsuarioYaExistenteException;
 
 
-public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
+public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 	
 	private ControladorCliente controlador;
 	private ControladorCliente controladorCabecera;

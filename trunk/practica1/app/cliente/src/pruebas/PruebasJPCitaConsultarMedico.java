@@ -31,7 +31,7 @@ import excepciones.BeneficiarioYaExistenteException;
 import excepciones.NIFIncorrectoException;
 import excepciones.UsuarioYaExistenteException;
 
-public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, pruebas.IConstantes {
+public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private ControladorCliente controlador;
 	private JPCitaConsultarMedico panelCita;

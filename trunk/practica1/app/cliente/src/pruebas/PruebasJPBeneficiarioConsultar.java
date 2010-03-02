@@ -48,7 +48,7 @@ import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
 import excepciones.UsuarioYaExistenteException;
 
-public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
+public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 	
 	private Beneficiario beneficiarioPrueba;
 	private ControladorCliente controlador;
