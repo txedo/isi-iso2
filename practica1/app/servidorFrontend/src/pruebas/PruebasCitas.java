@@ -23,6 +23,8 @@ import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.ICodigosOperacionesCliente;
+import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -55,9 +57,7 @@ public class PruebasCitas extends PruebasBase {
 	private Usuario usuario1;
 	private Direccion direccion1, direccion2;
 	private PeriodoTrabajo periodo1, periodo2, periodo3;
-	private ISesion sesionCitador;
-	private ISesion sesionAdmin;
-	private ISesion sesionMedico;
+	private ISesion sesionCitador, sesionAdmin, sesionMedico;
 	private Pediatra pediatra;
 	private Especialista especialista;
 	private Cabecera cabecera;
@@ -65,7 +65,7 @@ public class PruebasCitas extends PruebasBase {
 	private Date fechaCita1, fechaCita2, fechaCita3, fechaCita4;
 	private Volante volante1, volante2;
 	private GregorianCalendar calendar;
-	private final long DURACION = 15;
+	private ClientePrueba clienteCitador, clienteMedico;
 	
 	protected void setUp() {
 		try {
@@ -152,6 +152,13 @@ public class PruebasCitas extends PruebasBase {
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
 			sesionAdmin = GestorSesiones.identificar(administrador1.getLogin(), "admin");
 			sesionMedico = GestorSesiones.identificar(medico2.getLogin(), "xxx");
+			// Registramos dos clientes
+			clienteCitador = new ClientePrueba();
+			clienteMedico = new ClientePrueba();
+			clienteCitador.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			clienteMedico.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			GestorSesiones.registrar(sesionCitador.getId(), clienteCitador);
+			GestorSesiones.registrar(sesionMedico.getId(), clienteMedico);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -224,8 +231,8 @@ public class PruebasCitas extends PruebasBase {
 				calendar = new GregorianCalendar(2015, 6 - 1, 8, 16, 15);
 				fechaCitaPendiente = calendar.getTime();
 			}
-			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCitaPendiente, DURACION);
-			citaPasada = new Cita(fechaCita4, DURACION, beneficiario1, medicoAsignado);
+			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCitaPendiente, IConstantes.DURACION_CITA);
+			citaPasada = new Cita(fechaCita4, IConstantes.DURACION_CITA, beneficiario1, medicoAsignado);
 			FPCita.insertar(citaPasada);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -376,8 +383,8 @@ public class PruebasCitas extends PruebasBase {
 				calendar = new GregorianCalendar(2015, 5, 8, 16, 15);
 				fechaCitaPendiente = calendar.getTime();
 			}
-			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCitaPendiente, DURACION);
-			citaPasada = new Cita(fechaCita4, DURACION, beneficiario1, medicoAsignado);
+			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCitaPendiente, IConstantes.DURACION_CITA);
+			citaPasada = new Cita(fechaCita4, IConstantes.DURACION_CITA, beneficiario1, medicoAsignado);
 			FPCita.insertar(citaPasada);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -409,11 +416,11 @@ public class PruebasCitas extends PruebasBase {
 				FPCita.eliminar(cita);
 			}
 			// Insertamos varias citas pendientes nuevas
-			citaPendiente = new Cita(new GregorianCalendar(2015, 2, 24, 10, 0).getTime(), DURACION, beneficiario1, medico1);
+			citaPendiente = new Cita(new GregorianCalendar(2015, 2, 24, 10, 0).getTime(), IConstantes.DURACION_CITA, beneficiario1, medico1);
 			FPCita.insertar(citaPendiente);
-			citaPendiente = new Cita(new GregorianCalendar(2015, 2, 24, 20, 0).getTime(), DURACION, beneficiario1, medico2);
+			citaPendiente = new Cita(new GregorianCalendar(2015, 2, 24, 20, 0).getTime(), IConstantes.DURACION_CITA, beneficiario1, medico2);
 			FPCita.insertar(citaPendiente);
-			citaSustituta = new Cita(new GregorianCalendar(2015, 2, 24, 15, 0).getTime(), DURACION, beneficiario1, medico1);
+			citaSustituta = new Cita(new GregorianCalendar(2015, 2, 24, 15, 0).getTime(), IConstantes.DURACION_CITA, beneficiario1, medico1);
 			FPCita.insertar(citaSustituta);
 			// Añadimos una sustitución para que medico2 tenga que sustituir
 			// a medico1 en la cita de las 15:00
@@ -493,8 +500,8 @@ public class PruebasCitas extends PruebasBase {
 				calendar = new GregorianCalendar(2015, 5, 8, 16, 15);
 				fechaCitaPendiente = calendar.getTime();
 			}
-			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medico.getNif(), fechaCitaPendiente, DURACION);
-			citaPasada = new Cita(fechaCita4, DURACION, beneficiario1, medico);
+			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medico.getNif(), fechaCitaPendiente, IConstantes.DURACION_CITA);
+			citaPasada = new Cita(fechaCita4, IConstantes.DURACION_CITA, beneficiario1, medico);
 			FPCita.insertar(citaPasada);
 		} catch(Exception e) {
 			fail(e.toString());
@@ -523,7 +530,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos pedir cita con una sesión sin permisos
-			servidor.pedirCita(sesionMedico.getId(), beneficiario1, beneficiario1.getMedicoAsignado().getNif(), fecha1, DURACION);
+			servidor.pedirCita(sesionMedico.getId(), beneficiario1, beneficiario1.getMedicoAsignado().getNif(), fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -532,7 +539,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			servidor.pedirCita(-12345, beneficiario1, beneficiario1.getMedicoAsignado().getNif(), fecha1, DURACION);
+			servidor.pedirCita(-12345, beneficiario1, beneficiario1.getMedicoAsignado().getNif(), fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -541,7 +548,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita a un beneficiario no registrado 
-			servidor.pedirCita(sesionCitador.getId(), beneficiario2, medico1.getNif(), fecha1, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario2, medico1.getNif(), fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
@@ -550,7 +557,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita a un beneficiario sin médico asignado 
-			servidor.pedirCita(sesionCitador.getId(), beneficiario3, medico1.getNif(), fecha1, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario3, medico1.getNif(), fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -559,7 +566,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita con un médico no registrado
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medico4.getNif(), fecha1, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medico4.getNif(), fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -568,7 +575,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita con un usuario que no es médico
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, administrador1.getNif(), fecha1, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, administrador1.getNif(), fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -580,7 +587,7 @@ public class PruebasCitas extends PruebasBase {
 			// que no es el que tiene asignado actualmente
 			medicoAsignado = beneficiario1.getMedicoAsignado();
 			medicoAsignado = (medicoAsignado.equals(medico1)) ? medico2 : medico1;
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha1, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción CitaNoValidaException");
 		} catch(CitaNoValidaException e) {
 		} catch(Exception e) {
@@ -589,7 +596,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita para una fecha anterior a hoy
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, beneficiario1.getMedicoAsignado().getNif(), fechaCita4, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, beneficiario1.getMedicoAsignado().getNif(), fechaCita4, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -599,7 +606,7 @@ public class PruebasCitas extends PruebasBase {
 		try {
 			// Intentamos dar cita a una hora que no es múltiplo
 			// de la duración de las citas
-			servidor.pedirCita(sesionAdmin.getId(), beneficiario1, beneficiario1.getMedicoAsignado().getNif(), fechaCita3, DURACION);
+			servidor.pedirCita(sesionAdmin.getId(), beneficiario1, beneficiario1.getMedicoAsignado().getNif(), fechaCita3, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -611,7 +618,7 @@ public class PruebasCitas extends PruebasBase {
 			// el médico asignado al beneficiario
 			medicoAsignado = beneficiario1.getMedicoAsignado();
 			fechaCita = (medicoAsignado.equals(medico1)) ? fechaCita2 : fechaCita1;
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -622,11 +629,16 @@ public class PruebasCitas extends PruebasBase {
 			// Solicitamos una cita correcta para un beneficiario
 			medicoAsignado = beneficiario1.getMedicoAsignado();
 			fechaCita = (medicoAsignado.equals(medico1)) ? fechaCita1 : fechaCita2;
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita, IConstantes.DURACION_CITA);
 			// Comprobamos que la cita se ha añadido correctamente
 			citas = servidor.getCitas(sesionCitador.getId(), beneficiario1.getNif());
 			assertTrue(citas.size() == 1);
-			assertEquals(new Cita(fechaCita, DURACION, beneficiario1, medicoAsignado), citas.get(0));
+			assertEquals(new Cita(fechaCita, IConstantes.DURACION_CITA, beneficiario1, medicoAsignado), citas.get(0));
+			// Comprobamos que se ha avisado a los clientes de la tramitación de la cita
+			Thread.sleep(100);
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.INSERTAR);
+			assertEquals(citas.get(0), clienteMedico.getUltimoDato());
+			assertNull(clienteCitador.getUltimoDato());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -635,7 +647,7 @@ public class PruebasCitas extends PruebasBase {
 			// Intentamos solicitar la misma cita de antes			
 			medicoAsignado = beneficiario1.getMedicoAsignado();
 			fechaCita = (medicoAsignado.equals(medico1)) ? fechaCita1 : fechaCita2;
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción CitaNoValidaException");
 		} catch(CitaNoValidaException e){ 
 		} catch(Exception e) {
@@ -650,7 +662,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos pedir cita con una sesión sin permisos
-			servidor.pedirCita(sesionMedico.getId(), beneficiario1, 0, fecha1, DURACION);
+			servidor.pedirCita(sesionMedico.getId(), beneficiario1, 0, fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción OperacionIncorrectaException");
 		} catch(OperacionIncorrectaException e) {
 		} catch(Exception e) {
@@ -659,7 +671,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos acceder al servidor con un id de sesión erróneo
-			servidor.pedirCita(-12345, beneficiario1, 0, fecha1, DURACION);
+			servidor.pedirCita(-12345, beneficiario1, 0, fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción SesionInvalidaException");
 		} catch(SesionInvalidaException e) {
 		} catch(Exception e) {
@@ -668,7 +680,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita a un beneficiario no registrado 
-			servidor.pedirCita(sesionCitador.getId(), beneficiario2, 0, fecha1, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario2, 0, fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción BeneficiarioInexistenteException");
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
@@ -677,7 +689,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita a un beneficiario sin médico asignado 
-			servidor.pedirCita(sesionCitador.getId(), beneficiario3, 0, fecha1, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario3, 0, fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción MedicoInexistenteException");
 		} catch(MedicoInexistenteException e) {
 		} catch(Exception e) {
@@ -686,7 +698,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita con un volante que no existe	
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, 13121312, fechaCita2, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, 13121312, fechaCita2, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción VolanteNoValidoException");
 		} catch(VolanteNoValidoException e) {
 		} catch(Exception e) {
@@ -697,7 +709,7 @@ public class PruebasCitas extends PruebasBase {
 			// Intentamos dar una cita con un volante a un beneficiario
 			// que no es el que tiene asociado al volante
 			FPBeneficiario.insertar(beneficiario2);
-			servidor.pedirCita(sesionCitador.getId(), beneficiario2, volante1.getId(), fechaCita1, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario2, volante1.getId(), fechaCita1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción VolanteNoValidoException");
 		} catch(VolanteNoValidoException e) {
 		} catch(Exception e) {
@@ -706,7 +718,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos dar una cita para una fecha anterior a hoy
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita4, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita4, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -716,7 +728,7 @@ public class PruebasCitas extends PruebasBase {
 		try {
 			// Intentamos dar cita a una hora que no es múltiplo
 			// de la duración de las citas
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita3, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita3, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -725,7 +737,7 @@ public class PruebasCitas extends PruebasBase {
 	
 		try {
 			// Intentamos dar una cita a una fecha no válida para el médico receptor
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita1, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción FechaNoValidaException");
 		} catch(FechaNoValidaException e) {
 		} catch(Exception e) {
@@ -734,17 +746,22 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Solicitamos una cita válida a partir de un volante
-			cita = servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita2, DURACION);
+			cita = servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita2, IConstantes.DURACION_CITA);
 			// Comprobamos que la cita se ha añadido correctamente
 			citas = servidor.getCitas(sesionCitador.getId(), beneficiario1.getNif());
-			assertEquals(new Cita(fechaCita2, DURACION, beneficiario1, volante1.getReceptor()), citas.get(0));
+			assertEquals(new Cita(fechaCita2, IConstantes.DURACION_CITA, beneficiario1, volante1.getReceptor()), citas.get(0));
+			// Comprobamos que se ha avisado a los clientes de la tramitación de la cita
+			Thread.sleep(100);
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.INSERTAR);
+			assertEquals(citas.get(0), clienteMedico.getUltimoDato());
+			assertNull(clienteCitador.getUltimoDato());
 		} catch(Exception e) {			
 			fail(e.toString());
 		}
 		
 		try {
 			// Intentamos solicitar una cita a partir de otro volante a la misma hora
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante2.getId(), fechaCita2, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante2.getId(), fechaCita2, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción CitaNoValidaException");
 		} catch(CitaNoValidaException e){ 
 		} catch(Exception e) {
@@ -753,7 +770,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos solicitar una cita con un volante que ya se ha utilizado		
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita2, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita2, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción VolanteNoValidoException");
 		} catch(VolanteNoValidoException e){ 
 		} catch(Exception e) {
@@ -763,7 +780,7 @@ public class PruebasCitas extends PruebasBase {
 		try {
 			// Anulamos la cita del volante y pedimos otra cita para el mismo volante
 			servidor.anularCita(sesionCitador.getId(), cita);
-			cita = servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita2, DURACION);
+			cita = servidor.pedirCita(sesionCitador.getId(), beneficiario1, volante1.getId(), fechaCita2, IConstantes.DURACION_CITA);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -784,7 +801,7 @@ public class PruebasCitas extends PruebasBase {
 			} else {
 				fechaCita = fechaCita2;
 			}
-			cita = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita, DURACION);
+			cita = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita, IConstantes.DURACION_CITA);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -813,6 +830,11 @@ public class PruebasCitas extends PruebasBase {
 			// Comprobamos que la cita ya no existe
 			citas = servidor.getCitas(sesionCitador.getId(), beneficiario1.getNif());
 			assertTrue(citas.size() == 0);
+			// Comprobamos que se ha avisado a los clientes de la anulación de la cita
+			Thread.sleep(100);
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.ELIMINAR);
+			assertEquals(cita, clienteMedico.getUltimoDato());
+			assertNull(clienteCitador.getUltimoDato());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -878,8 +900,8 @@ public class PruebasCitas extends PruebasBase {
 			FPBeneficiario.insertar(beneficiario2);
 			medicoAsignado = beneficiario2.getMedicoAsignado();
 			fechaCita = (medicoAsignado.equals(medico1)) ? fechaCita1 : fechaCita2;
-			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario2, medicoAsignado.getNif(), fechaCita, DURACION);
-			citaPasada = new Cita(fechaCita4, DURACION, beneficiario2, medicoAsignado);
+			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario2, medicoAsignado.getNif(), fechaCita, IConstantes.DURACION_CITA);
+			citaPasada = new Cita(fechaCita4, IConstantes.DURACION_CITA, beneficiario2, medicoAsignado);
 			FPCita.insertar(citaPasada);
 			// Consultamos las horas de las citas del médico de las citas creadas
 			citasMedico = (Hashtable<Date, Vector<String>>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS_MEDICO, medicoAsignado.getNif());
@@ -955,11 +977,11 @@ public class PruebasCitas extends PruebasBase {
 			fecha3 = calendar.getTime();
 			calendar = new GregorianCalendar(2011, 1 - 1, 10, 16, 45);
 			fecha4 = calendar.getTime();
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha1, DURACION);
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha2, DURACION);
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha3, DURACION);
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha4, DURACION);
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita2, DURACION);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha1, IConstantes.DURACION_CITA);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha2, IConstantes.DURACION_CITA);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha3, IConstantes.DURACION_CITA);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha4, IConstantes.DURACION_CITA);
+			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita2, IConstantes.DURACION_CITA);
 			// Consultamos ahora los días completos del médico
 			dias = (Vector<Date>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_DIAS_COMPLETOS, medico2.getNif());
 			// Comprobamos que se ha devuelto el día completo
@@ -1065,7 +1087,7 @@ public class PruebasCitas extends PruebasBase {
 
 		try {
 			// Intentamos pedir cita con un beneficiario nulo
-			servidor.pedirCita(sesionAdmin.getId(), null, beneficiario1.getMedicoAsignado().getNif(), fecha1, DURACION);
+			servidor.pedirCita(sesionAdmin.getId(), null, beneficiario1.getMedicoAsignado().getNif(), fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -1074,7 +1096,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos pedir cita con un médico nulo
-			servidor.pedirCita(sesionAdmin.getId(), beneficiario1, null, fecha1, DURACION);
+			servidor.pedirCita(sesionAdmin.getId(), beneficiario1, null, fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -1083,7 +1105,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos pedir cita con una fecha nula
-			servidor.pedirCita(sesionAdmin.getId(), beneficiario1, beneficiario1.getMedicoAsignado().getNif(), null, DURACION);
+			servidor.pedirCita(sesionAdmin.getId(), beneficiario1, beneficiario1.getMedicoAsignado().getNif(), null, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -1092,7 +1114,7 @@ public class PruebasCitas extends PruebasBase {
 
 		try {
 			// Intentamos pedir cita con un beneficiario nulo
-			servidor.pedirCita(sesionAdmin.getId(), null, 0, fecha1, DURACION);
+			servidor.pedirCita(sesionAdmin.getId(), null, 0, fecha1, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -1101,7 +1123,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Intentamos pedir cita con una fecha nula
-			servidor.pedirCita(sesionAdmin.getId(), beneficiario1, 0, null, DURACION);
+			servidor.pedirCita(sesionAdmin.getId(), beneficiario1, 0, null, IConstantes.DURACION_CITA);
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {

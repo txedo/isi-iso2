@@ -46,6 +46,7 @@ public class PruebasBase extends TestCase {
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM volantes");
 			sentencia.executeUpdate();
+			bd.commit();
 			// Ponemos la conexión local con la base de datos
 			conexion = new ConexionBDFrontend();
 			GestorConexionesBD.ponerConexion(conexion);

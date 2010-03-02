@@ -11,6 +11,8 @@ import java.sql.SQLException;
  */
 public abstract class ComandoSQL implements Serializable {
 
+	private static final long serialVersionUID = -3054901238912047586L;
+
 	protected String sentencia;
 	protected Object[] parametros;
 	

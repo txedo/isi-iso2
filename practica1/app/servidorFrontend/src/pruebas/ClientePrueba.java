@@ -1,4 +1,4 @@
-package comunicaciones;
+package pruebas;
 
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
@@ -9,35 +9,34 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
-import dominio.control.Cliente;
+import comunicaciones.ICliente;
 
 /**
- * Clase que exporta la instancia que será utilizada por el servidor
- * front-end para ejecutar operaciones en los clientes.
+ * Cliente dummy utilizado en las pruebas del servidor front-end.
  */
-public class RemotoCliente extends UnicastRemoteObject implements ICliente {
+class ClientePrueba extends UnicastRemoteObject implements ICliente {
 
 	private static final long serialVersionUID = -6461417903923553869L;
 
 	private final int PUERTO_INICIAL_CLIENTE = 3995;
 
-	private ICliente cliente;
+	private int ultimaOperacion;
+	private Object ultimoDato;
+	private boolean llamadoServidorInaccesible;
+	private boolean llamadoCerrarSesion;
+	private boolean llamadoCerrarSesionEliminacion;
+	
 	private boolean registro;
 	private int puerto;
 	
-	private static RemotoCliente instancia;
-	
-	protected RemotoCliente() throws RemoteException {
+	public ClientePrueba() throws RemoteException {
 		super();
-		cliente = new Cliente();
 		registro = false;
-	}
-	
-	public static RemotoCliente getCliente() throws RemoteException {
-		if(instancia == null) {
-			instancia = new RemotoCliente();
-		}
-		return instancia;
+		llamadoServidorInaccesible = false;
+		llamadoCerrarSesion = false;
+		llamadoCerrarSesionEliminacion = false;
+		ultimaOperacion = -1;
+		ultimoDato = null;
 	}
 	
     public void activar(String ip) throws RemoteException, MalformedURLException {
@@ -85,39 +84,50 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
     	} catch(NotBoundException ex) {
     	}
     }
-    
-    public ICliente getClienteExportado() {
-    	return cliente;
-    }
-    
-    public int getPuertoEscucha() {
-    	return puerto;
-    }
 
-    // Métodos del cliente
-
-	public String getDireccionIP() throws RemoteException {
-		return cliente.getDireccionIP();
+    public String getDireccionIP() throws RemoteException {
+		return IDatosPruebas.IP_ESCUCHA_CLIENTES;
 	}
 
 	public int getPuerto() throws RemoteException {
-		return cliente.getPuerto();
+		return puerto;
 	}
 
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
-		cliente.actualizarVentanas(operacion, dato);
+		ultimaOperacion = operacion;
+		ultimoDato = dato;
 	}
 	
 	public void servidorInaccesible() throws RemoteException {
-		cliente.servidorInaccesible();
+		llamadoServidorInaccesible = true;
 	}
 	
 	public void cerrarSesion() throws RemoteException {
-		cliente.cerrarSesion();
+		llamadoCerrarSesion = true;
+	}
+
+	public void cerrarSesionEliminacion() throws RemoteException {
+		llamadoCerrarSesionEliminacion = true;
+	}
+
+	public int getUltimaOperacion() {
+		return ultimaOperacion;
+	}
+
+	public Object getUltimoDato() {
+		return ultimoDato;
+	}
+
+	public boolean isLlamadoServidorInaccesible() {
+		return llamadoServidorInaccesible;
+	}
+
+	public boolean isLlamadoCerrarSesion() {
+		return llamadoCerrarSesion;
+	}
+
+	public boolean isLlamadoCerrarSesionEliminacion() {
+		return llamadoCerrarSesionEliminacion;
 	}
 	
-	public void cerrarSesionEliminacion() throws RemoteException {
-		cliente.cerrarSesionEliminacion();
-	}
-    
 }

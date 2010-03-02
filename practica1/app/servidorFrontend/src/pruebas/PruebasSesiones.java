@@ -1,16 +1,6 @@
 package pruebas;
 
-import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.Naming;
-import java.rmi.NoSuchObjectException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.server.ExportException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.Vector;
-import comunicaciones.ICliente;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import dominio.UtilidadesDominio;
@@ -38,6 +28,7 @@ public class PruebasSesiones extends PruebasBase {
 	private Medico medico1, medico2;
 	private Administrador administrador1;
 	private Pediatra pediatra;
+	private ClientePrueba cliente1;
 	
 	protected void setUp() {
 		try {
@@ -59,6 +50,9 @@ public class PruebasSesiones extends PruebasBase {
 			FPUsuario.insertar(medico1);
 			FPUsuario.insertar(medico2);
 			FPUsuario.insertar(administrador1);
+			// Creamos dos clientes
+			cliente1 = new ClientePrueba();
+			cliente1.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -73,7 +67,7 @@ public class PruebasSesiones extends PruebasBase {
 		}
 	}
 	
-	/** Pruebas de la operación que inicia una nueva sesión **/
+	/** Pruebas de la operación que inicia una nueva sesión */
 	public void testIdentificar() {
 		ISesion sesion = null, sesion2;
 		
@@ -135,21 +129,13 @@ public class PruebasSesiones extends PruebasBase {
 		}
 	}
 	
-	/** Pruebas de las operaciones que registran y liberar clientes en el sistema **/
+	/** Pruebas de las operaciones que registran y liberar clientes en el sistema */
 	public void testRegistrarLiberar() {
-		ClienteDummy cliente = null;
 		ISesion sesion = null;
-		
-		try {
-			// Inicializamos un cliente
-			cliente = new ClienteDummy();
-		} catch(Exception e) {
-			fail(e.toString());
-		}
 	
 		try {
 			// Intentamos registrar un cliente con una sesión no válida
-			servidor.registrar(cliente, -12345);
+			servidor.registrar(cliente1, -12345);
 			fail("Se esperaba una excepción SesionNoIniciadaException");
 		} catch(SesionNoIniciadaException e) {
 		} catch(Exception e) {
@@ -157,12 +143,20 @@ public class PruebasSesiones extends PruebasBase {
 		}
 
 		try {
-			// Iniciamos una sesión como administrador
+			// Iniciamos una sesión como administrador y registramos un cliente
 			sesion = servidor.identificar("admin", "admin");
-			// Registramos un nuevo cliente en el sistema
-			cliente.activar("127.0.0.1");
-			servidor.registrar(cliente, sesion.getId());
+			servidor.registrar(cliente1, sesion.getId());
 			assertNotNull(GestorSesiones.getClientes().get(sesion.getId()));
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Volvemos a iniciar sesión como adminisrador para
+			// ver que se cierra la sesión anterior
+			sesion = servidor.identificar("admin", "admin");
+			Thread.sleep(100);
+			assertTrue(cliente1.isLlamadoCerrarSesion());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -179,7 +173,6 @@ public class PruebasSesiones extends PruebasBase {
 		try {
 			// Liberamos el cliente registrado del sistema
 			servidor.liberar(sesion.getId());
-			cliente.desactivar("127.0.0.1");
 			assertNull(GestorSesiones.getClientes().get(sesion.getId()));
 		} catch(Exception e) {
 			fail(e.toString());
@@ -240,91 +233,6 @@ public class PruebasSesiones extends PruebasBase {
 		} catch(Exception e) {
 			fail("Se esperaba una excepción NullPointerException");
 		}
-	}
-	
-	// -----------------------------------------------------------------------
-	
-	private class ClienteDummy extends UnicastRemoteObject implements ICliente {
-
-		private static final long serialVersionUID = -6461417903923553869L;
-
-		private final int PUERTO_INICIAL_CLIENTE = 3995;
-
-		private boolean registro;
-		private int puerto;
-		
-		public ClienteDummy() throws RemoteException {
-			super();
-			registro = false;
-		}
-		
-	    public void activar(String ip) throws RemoteException, MalformedURLException {
-			boolean puertoUsado;
-
-			// Si el objeto ya estaba exportado, controlamos las
-			// excepciones y no las lanzamos hacia arriba
-	    	try {
-	    		if(!registro) {
-	    			// Buscamos un puerto que no esté ya en uso en el equipo
-	    			puertoUsado = true;
-	    			puerto = PUERTO_INICIAL_CLIENTE;
-	    			do {
-	    				try {
-	    					LocateRegistry.createRegistry(puerto);
-	    					puertoUsado = false;
-	    				} catch(ExportException e) {
-	    					puerto++;
-	    				}
-	    			} while(puertoUsado);
-	    			registro = true;
-	    		}
-	    		exportObject(this, puerto);
-	        } catch(ExportException ex) {
-	        	if(!ex.getMessage().toLowerCase().equals("object already exported")) {
-	        		throw ex;
-	        	}
-	        }
-	        try {
-	            Naming.bind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_CLIENTE, this);
-	        } catch(AlreadyBoundException ex) {
-	            Naming.rebind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_CLIENTE, this);
-	        }
-	    }
-	    
-	    public void desactivar(String ip) throws RemoteException, MalformedURLException, NotBoundException {
-			// Si el objeto no estaba exportado, controlamos las
-			// excepciones y no las lanzamos hacia arriba
-	    	try {
-	    		unexportObject(this, false);
-	    	} catch(NoSuchObjectException ex) {
-	    	}
-	    	try {
-	    		Naming.unbind("rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_CLIENTE);
-	    	} catch(NotBoundException ex) {
-	    	}
-	    }
-
-	    public String getDireccionIP() throws RemoteException {
-			return "127.0.0.1";
-		}
-
-		public int getPuerto() throws RemoteException {
-			return puerto;
-		}
-
-		public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
-		}
-		
-		public void servidorInaccesible() throws RemoteException {
-		}
-		
-		public void cerrarSesion() throws RemoteException {
-		}
-
-		public void cerrarSesionEliminacion() throws RemoteException {
-			
-		}
-	    
 	}
 	
 }

@@ -19,12 +19,6 @@ public class GestorConexionesLog {
 			conexiones.add(conexion);
 		}
 	}
-	
-	public static void quitarConexion(IConexionLog conexion) {
-		if(conexiones.contains(conexion)) {
-			conexiones.remove(conexion);
-		}
-	}
 
 	public static void quitarConexiones() {
 		conexiones.clear();

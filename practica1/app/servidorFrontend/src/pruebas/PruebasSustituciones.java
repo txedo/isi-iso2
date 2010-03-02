@@ -15,6 +15,7 @@ import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -43,6 +44,7 @@ public class PruebasSustituciones extends PruebasBase {
 	private ISesion sesionAdmin;
 	private Pediatra pediatra;
 	private Cabecera cabecera;
+	private ClientePrueba clienteCitador, clienteAdmin;
 	
 	protected void setUp() {
 		try {
@@ -74,6 +76,13 @@ public class PruebasSustituciones extends PruebasBase {
 			// Iniciamos dos sesiones con roles de citador y administrador
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
 			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "admin");
+			// Registramos dos clientes
+			clienteCitador = new ClientePrueba();
+			clienteAdmin = new ClientePrueba();
+			clienteCitador.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			clienteAdmin.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			GestorSesiones.registrar(sesionCitador.getId(), clienteCitador);
+			GestorSesiones.registrar(sesionAdmin.getId(), clienteAdmin);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -300,6 +309,7 @@ public class PruebasSustituciones extends PruebasBase {
 	public void testEstablecerSustituto() {
 		Vector<Date> dias;
 		Vector<Sustitucion> sustituciones;
+		Sustitucion sustitucion;
 		Calendar calend;
 		Medico m1 = null, m2 = null, m3 = null, m4 = null, m5 = null, m6 = null, medico;
 		
@@ -407,7 +417,13 @@ public class PruebasSustituciones extends PruebasBase {
 			servidor.modificarCalendario(sesionAdmin.getId(), m1, dias, new Date(2010 - 1900, 0, 1, 11, 0), new Date(2010 - 1900, 0, 1, 13, 0), m2);
 			// Comprobamos que la sustitución se ha añadido
 			sustituciones = FPSustitucion.consultarPorSustituido(m1.getNif());
-			assertTrue(sustituciones.contains(new Sustitucion(calend.getTime(), 11, 13, m1, m2)));
+			sustitucion = new Sustitucion(calend.getTime(), 11, 13, m1, m2);
+			assertTrue(sustituciones.contains(sustitucion));
+			// Comprobamos que se ha avisado a los clientes de la nueva sustitución
+			Thread.sleep(100);
+			assertTrue(clienteCitador.getUltimaOperacion() == ICodigosOperacionesCliente.INSERTAR);
+			assertEquals(sustitucion, clienteCitador.getUltimoDato());
+			assertNull(clienteAdmin.getUltimoDato());
 		} catch(Exception e) {
 			fail(e.toString());
 		}

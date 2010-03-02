@@ -21,6 +21,7 @@ import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -52,12 +53,11 @@ public class PruebasMedicos extends PruebasBase {
 	private PeriodoTrabajo periodo31, periodo32;
 	private Beneficiario beneficiario1;
 	private Direccion direccion1;
-	private ISesion sesionCitador;
-	private ISesion sesionMedico;
-	private ISesion sesionAdmin;
+	private ISesion sesionCitador, sesionMedico, sesionAdmin;
 	private Pediatra pediatra;
 	private Especialista especialista;
 	private Cabecera cabecera;
+	private ClientePrueba clienteAdmin, clienteMedico;
 	
 	protected void setUp() {
 		try {
@@ -115,6 +115,13 @@ public class PruebasMedicos extends PruebasBase {
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
 			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
 			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "admin");
+			// Registramos dos clientes
+			clienteAdmin = new ClientePrueba();
+			clienteMedico = new ClientePrueba();
+			clienteAdmin.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			clienteMedico.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			GestorSesiones.registrar(sesionAdmin.getId(), clienteAdmin);
+			GestorSesiones.registrar(sesionMedico.getId(), clienteMedico);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -220,10 +227,18 @@ public class PruebasMedicos extends PruebasBase {
 			medico = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "juan67@otro.com", "", "", especialista);
 			servidor.crear(sesionAdmin.getId(), medico);
 			// Comprobamos que el usuario se ha creado correctamente
+			Thread.sleep(100);
 			medicoGet = (Medico)servidor.getMedico(sesionAdmin.getId(), medico.getNif());
 			medico.setPassword(UtilidadesDominio.encriptarPasswordSHA1("medNuevo"));
 			medico.setCentroSalud(medicoGet.getCentroSalud().equals(centro1) ? centro1 : centro2);
 			assertEquals(medico, medicoGet);
+			// Comprobamos que se ha avisado a los clientes del registro del médico
+			Thread.sleep(100);
+			medico.setPassword("medNuevo");
+			medico.setCentroSalud(null);
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.INSERTAR);
+			assertEquals(medico, clienteMedico.getUltimoDato());
+			assertNull(clienteAdmin.getUltimoDato());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -282,6 +297,12 @@ public class PruebasMedicos extends PruebasBase {
 			medicoGet = servidor.getMedico(sesionAdmin.getId(), medico1.getNif());
 			medico1.setPassword(UtilidadesDominio.encriptarPasswordSHA1("abcdef"));
 			assertEquals(medico1, medicoGet);
+			// Comprobamos que se ha avisado a los clientes del cambio del médico
+			Thread.sleep(100);
+			medico1.setPassword("");
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.MODIFICAR);
+			assertEquals(medico1, clienteMedico.getUltimoDato());
+			assertNull(clienteAdmin.getUltimoDato());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -322,6 +343,11 @@ public class PruebasMedicos extends PruebasBase {
 		try {
 			// Eliminamos un médico existente como administrador
 			servidor.eliminar(sesionAdmin.getId(), medico2);
+			// Comprobamos que se ha avisado a los clientes del cambio del médico
+			Thread.sleep(100);
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.ELIMINAR);
+			assertEquals(medico2, clienteMedico.getUltimoDato());
+			assertNull(clienteAdmin.getUltimoDato());
 		} catch(Exception e) {
 			fail(e.toString());
 		}

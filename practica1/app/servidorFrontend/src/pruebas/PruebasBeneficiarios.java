@@ -18,6 +18,7 @@ import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -43,13 +44,11 @@ public class PruebasBeneficiarios extends PruebasBase {
 	private Citador citador1;
 	private Direccion direccion1, direccion2;
 	private Administrador admin1;
-	private ISesion sesionCitador;
-	private ISesion sesionAdmin;
-	private ISesion sesionMedico;
+	private ISesion sesionCitador, sesionAdmin, sesionMedico;
 	private Pediatra pediatra;
 	private Cabecera cabecera;
-	private Date fecha1;
-	private Date fecha2;
+	private Date fecha1, fecha2;
+	private ClientePrueba clienteAdmin, clienteMedico;
 	
 	protected void setUp() {
 		try {
@@ -101,6 +100,13 @@ public class PruebasBeneficiarios extends PruebasBase {
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
 			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "admin");
 			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
+			// Registramos dos clientes
+			clienteAdmin = new ClientePrueba();
+			clienteMedico = new ClientePrueba();
+			clienteAdmin.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			clienteMedico.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			GestorSesiones.registrar(sesionAdmin.getId(), clienteAdmin);
+			GestorSesiones.registrar(sesionMedico.getId(), clienteMedico);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -266,6 +272,12 @@ public class PruebasBeneficiarios extends PruebasBase {
 			// Vemos si se le ha asignado un pediatra como médico de cabecera
 			assertNotNull(beneficiarioGet.getMedicoAsignado());
 			assertEquals(FPTipoMedico.consultar(beneficiarioGet.getMedicoAsignado().getNif()), new Pediatra());
+			// Comprobamos que se ha avisado a los clientes del registro del beneficiario
+			Thread.sleep(100);
+			beneficiario.setMedicoAsignado(null);
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.INSERTAR);
+			assertEquals(beneficiario, clienteMedico.getUltimoDato());
+			assertNull(clienteAdmin.getUltimoDato());
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.toString());
@@ -333,6 +345,11 @@ public class PruebasBeneficiarios extends PruebasBase {
 			// Comprobamos que el beneficiario se haya actualizado correctamente
 			beneficiarioGet = servidor.getBeneficiario(sesionAdmin.getId(), beneficiario1.getNif());
 			assertEquals(beneficiario1, beneficiarioGet);
+			// Comprobamos que se ha avisado a los clientes del cambio del beneficiario
+			Thread.sleep(100);
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.MODIFICAR);
+			assertEquals(beneficiario1, clienteMedico.getUltimoDato());
+			assertNull(clienteAdmin.getUltimoDato());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -387,6 +404,11 @@ public class PruebasBeneficiarios extends PruebasBase {
 		try {
 			// Eliminamos un beneficiario existente
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO, beneficiario1);
+			// Comprobamos que se ha avisado a los clientes del borrado del beneficiario
+			Thread.sleep(100);
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.ELIMINAR);
+			assertEquals(beneficiario1, clienteMedico.getUltimoDato());
+			assertNull(clienteAdmin.getUltimoDato());
 			// Comprobamos que el beneficiario ya no existe
 			beneficiario = servidor.getBeneficiario(sesionAdmin.getId(), beneficiario1.getNif());
 			fail("Se esperaba una excepción BeneficiarioInexistenteException");

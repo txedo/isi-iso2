@@ -252,6 +252,30 @@ public class GestorSesiones {
 		}
 	}
 	
+	public static void cerrarSesionCliente(String nifUsuario) throws Exception {
+		Enumeration<Sesion> sesionesAbiertas;
+		Sesion sesion, sesionUsuario;
+
+		// Buscamos el cliente asociado al usuario
+		sesionUsuario = null;
+		sesionesAbiertas = sesiones.elements();
+		while(sesionesAbiertas.hasMoreElements() && sesionUsuario == null) {
+			sesion = sesionesAbiertas.nextElement();
+			if(sesion.getUsuario().getNif().equals(nifUsuario)) {
+				sesionUsuario = sesion;
+			}
+		}
+		
+		if(sesionUsuario != null) {
+			// Si el cliente se había registrado en el sistema, lo desconectamos
+			if(clientes.get(sesionUsuario.getId()) != null) {
+				clientes.get(sesionUsuario.getId()).cerrarSesionEliminacion();	
+			}
+			// Liberamos el cliente
+			ServidorFrontend.getServidor().liberar(sesionUsuario.getId());
+		}
+	}
+	
 	public static Hashtable<Long, ICliente> getClientes() {
 		return clientes;
 	}
@@ -260,15 +284,4 @@ public class GestorSesiones {
 		return sesiones.get(idSesion);
 	}
 
-	public static long getIdSesionUsuario(Usuario usuario) {
-		Enumeration<Sesion> sesionesAbiertas = sesiones.elements();
-		long idSesion = -1;
-		Sesion s;
-		while (sesionesAbiertas.hasMoreElements() && idSesion == -1) {
-			s = sesionesAbiertas.nextElement();
-			if (s.getUsuario().getNif().equals(usuario.getNif()))
-				idSesion = s.getId();
-		}
-		return idSesion;
-	}
 }
