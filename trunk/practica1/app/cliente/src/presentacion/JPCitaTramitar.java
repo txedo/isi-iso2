@@ -25,6 +25,8 @@ import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.JDateChooserCitas;
 import presentacion.auxiliar.ListCellRendererCitas;
 import presentacion.auxiliar.UtilidadesListaHoras;
+import presentacion.auxiliar.Validacion;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
@@ -38,7 +40,9 @@ import dominio.conocimiento.Usuario;
 import dominio.UtilidadesDominio;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
+import excepciones.FechaCitaIncorrectaException;
 import excepciones.FechaNoValidaException;
+import excepciones.FormatoFechaIncorrectoException;
 import excepciones.MedicoInexistenteException;
 
 /**
@@ -314,12 +318,11 @@ public class JPCitaTramitar extends JPBase {
 		Date fecha, hora;
 		
 		try {
-		
+			Validacion.comprobarFechaCita(dtcDiaCita.getDate());
 			// Comprobamos que la hora seleccionada sea válida
 			if(!horaSeleccionadaValida()) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo) para registrar la cita.");
 			} else {
-				
 				// Obtenemos la hora definitiva de la cita
 				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
 				fecha = dtcDiaCita.getDate();
@@ -330,26 +333,32 @@ public class JPCitaTramitar extends JPBase {
 				// Mostramos el resultado de la operación y limpiamos el panel
 				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "La cita ha quedado registrada.");
 				restablecerPanel();
-
 			}
 
 		} catch(ParseException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "La fecha seleccionada no tiene un formato válido.");
-
 		} catch(MedicoInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		} catch(BeneficiarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		} catch(FechaNoValidaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
-
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch (FormatoFechaIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+			((JTextField)dtcDiaCita.getDateEditor()).selectAll();
+			dtcDiaCita.grabFocus();
+		} catch (FechaCitaIncorrectaException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+			((JTextField)dtcDiaCita.getDateEditor()).selectAll();
+			dtcDiaCita.grabFocus();
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
+		
 	}
 
 	private boolean horaSeleccionadaValida() {
