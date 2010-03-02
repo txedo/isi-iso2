@@ -20,12 +20,6 @@ public class GestorConexionesBD {
 			conexiones.add(conexion);
 		}
 	}
-	
-	public static void quitarConexion(IConexionBD conexion) {
-		if(conexiones.contains(conexion)) {
-			conexiones.remove(conexion);
-		}
-	}
 
 	public static void quitarConexiones() {
 		conexiones.clear();

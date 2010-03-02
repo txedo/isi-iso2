@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 import persistencia.AgenteFrontend;
 import persistencia.ComandoSQL;
 import persistencia.ComandoSQLSentencia;
@@ -27,11 +25,10 @@ public class PruebasConexiones extends TestCase {
 	private ConexionBDFrontend conexionBD;
 	private ConexionLogBD conexionLogBD;
 	private ConexionLogVentana conexionLogVentana;
+	private JFServidorFrontend ventana;
 	private ProxyServidorRespaldo conexionRespaldo;
 	
 	protected void setUp() {
-		JFServidorFrontend ventana;
-		
 		try {
 			// Inicializamos las conexiones con las bases de datos
 			// y las ventanas de estado de los servidores
@@ -48,6 +45,7 @@ public class PruebasConexiones extends TestCase {
 			conexionBD.abrir();
 			conexionRespaldo.abrir();
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
@@ -102,6 +100,7 @@ public class PruebasConexiones extends TestCase {
 			resultados.next();
 			assertTrue(resultados.getString("apellidos").equals("Nuevo"));
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 
@@ -119,6 +118,7 @@ public class PruebasConexiones extends TestCase {
 			// (no se pueden hacer consultas porque la clase ResultSet
 			// no es serializable y no se puede enviar por RMI)
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 		
@@ -171,14 +171,16 @@ public class PruebasConexiones extends TestCase {
 			GestorConexionesBD.ponerConexion(conexionRespaldo);
 			comando = new ComandoSQLSentencia("INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, idCentro) VALUES (\"44004400Z\", \"otrologin\", \"otrapass\", 0, \"C\", \"D\", null)");
 			GestorConexionesBD.ejecutar(comando);
+			comando = new ComandoSQLSentencia("INSERT INTO beneficiarios (nif, nss, nombre, apellidos, fechaNacimiento, nifMedico, idCentro) VALUES (\"77665544L\", \"998877776655\", \"A\", \"B\", \"1980-01-01\", null, null)");
+			GestorConexionesBD.ejecutar(comando);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 		
 		try {
 			// Intentamos ejecutar una sentencia que funciona bien sobre
-			// la primera base de datos pero falla en la segunda, porque
-			// el login del usuario está repetido
+			// la primera base de datos (principal) pero falla en la segunda
+			// (secundaria), porque el login del usuario está repetido
 			GestorConexionesBD.quitarConexiones();
 			GestorConexionesBD.ponerConexion(conexionBD);
 			GestorConexionesBD.ponerConexion(conexionRespaldo);
@@ -193,10 +195,41 @@ public class PruebasConexiones extends TestCase {
 		
 		try {
 			// Comprobamos que la sentencia no se ha llegado a ejecutar
-			// en la primera base de datos
+			// en la primera base de datos (principal)
+			GestorConexionesBD.quitarConexiones();
+			GestorConexionesBD.ponerConexion(conexionBD);
 			comando = new ComandoSQLSentencia("SELECT * FROM usuarios WHERE nif = \"33333333P\"");
 			resultados = GestorConexionesBD.consultar(comando);
 			assertFalse(resultados.next());
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+
+		try {
+			// Intentamos ejecutar una sentencia que funciona bien sobre
+			// la primera base de datos (secundaria) pero falla en la segunda
+			// (principal), porque no existe el beneficiario 77665544L
+			GestorConexionesBD.quitarConexiones();
+			GestorConexionesBD.ponerConexion(conexionRespaldo);
+			GestorConexionesBD.ponerConexion(conexionBD);
+			comando = new ComandoSQLSentencia("INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp) VALUES (\"77665544L\", \"A\", \"5\", \"\", \"\", \"Ciudad\", \"Provincia\", 13000)");
+			GestorConexionesBD.ejecutar(comando);
+			fail("Se esperaba una excepción SQLException");
+		} catch(SQLException e) {
+			assertEquals("Error en el acceso a las bases de datos.", e.getMessage());
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SQLException");
+		}
+		
+		try {
+			// Comprobamos que la sentencia no se ha llegado a ejecutar
+			// en la primera base de datos (secundaria); como no se pueden
+			// hacer consultas probamos a insertar la dirección, si el comando
+			// anterior se hubiera ejecutado esto no se podría hacer
+			GestorConexionesBD.quitarConexiones();
+			GestorConexionesBD.ponerConexion(conexionRespaldo);
+			comando = new ComandoSQLSentencia("INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp) VALUES (\"77665544L\", \"A\", \"5\", \"\", \"\", \"Ciudad\", \"Provincia\", 13000)");
+			GestorConexionesBD.ejecutar(comando);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -207,29 +240,73 @@ public class PruebasConexiones extends TestCase {
 		Connection bd;
 		PreparedStatement sentencia;
 		ResultSet resultados;
+		String[] lineas;
 		
 		try {
 			// Configuramos el almacenamiento de los mensajes en la base de datos
 			GestorConexionesLog.quitarConexiones();
 			GestorConexionesLog.ponerConexion(conexionLogBD);
+			GestorConexionesBD.quitarConexiones();
+			GestorConexionesBD.ponerConexion(conexionBD);
 			// Comprobamos que ahora no hay ningún mensaje en la BD
 			bd = AgenteFrontend.getAgente().getConexion();
 			sentencia = bd.prepareStatement("SELECT * FROM entradaslog");
 			resultados = sentencia.executeQuery();
 			assertFalse(resultados.next());
-			// Generamos un nuevo mensaje
+			// Generamos nuevos mensajes y cambiamos los clientes a la escucha
 			GestorConexionesLog.ponerMensaje("prueba", ITiposMensajeLog.TIPO_INFO, "Mensaje de prueba");
-			// Comprobamos que ahora hay un único mensaje en la BD
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Otro mensaje de prueba");
+			GestorConexionesLog.actualizarClientesEscuchando(3);
+			// Comprobamos que ahora hay dos mensajes en la BD
 			sentencia = bd.prepareStatement("SELECT * FROM entradaslog");
 			resultados = sentencia.executeQuery();
 			assertTrue(resultados.next());
-			assertEquals(resultados.getString("mensaje"), "Mensaje de prueba");
+			assertTrue(resultados.getString("mensaje").equals("Mensaje de prueba") || resultados.getString("mensaje").equals("Otro mensaje de prueba"));
+			assertTrue(resultados.next());
+			assertTrue(resultados.getString("mensaje").equals("Mensaje de prueba") || resultados.getString("mensaje").equals("Otro mensaje de prueba"));
 			assertFalse(resultados.next());
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 		
-		// TODO: conexion log en ventana y remota (que no se puede comprobar)
+		try {
+			// Configuramos la visualización de los mensajes en el servidor front-end
+			GestorConexionesLog.quitarConexiones();
+			GestorConexionesLog.ponerConexion(conexionLogVentana);
+			// Obtenemos los mensajes actuales de la ventana
+			assertEquals(ventana.getMensajes(), "");
+			assertTrue(ventana.getClientesEscuchando() == 0);
+			// Generamos nuevos mensajes y cambiamos los clientes a la escucha
+			GestorConexionesLog.ponerMensaje("prueba", ITiposMensajeLog.TIPO_INFO, "Mensaje de prueba");
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Otro mensaje de prueba");
+			GestorConexionesLog.actualizarClientesEscuchando(3);
+			// Comprobamos que la ventana se ha actualizado
+			lineas = ventana.getMensajes().split("\n");
+			assertTrue(lineas[0].endsWith("Mensaje de prueba"));
+			assertTrue(lineas[1].endsWith("Otro mensaje de prueba"));
+			assertTrue(ventana.getClientesEscuchando() == 3);
+		} catch(Exception e) {
+			e.printStackTrace();
+			fail(e.toString());
+		}
+		
+		try {
+			// Configuramos la visualización de los mensajes en el servidor de respaldo
+			GestorConexionesLog.quitarConexiones();
+			GestorConexionesLog.ponerConexion(conexionRespaldo);
+			// Generamos nuevos mensajes y cambiamos los clientes a la escucha
+			GestorConexionesLog.ponerMensaje("prueba", ITiposMensajeLog.TIPO_INFO, "Mensaje de prueba");
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Otro mensaje de prueba");
+			GestorConexionesLog.actualizarClientesEscuchando(3);
+			// No hay ninguna forma de recuperar los mensajes de la ventana del
+			// servidor de respaldo, suponemos que la conexión funciona bien
+			// porque en las PruebasRemotoServidor del servidor de respaldo
+			// se prueba la clase remota ServidorRespaldo
+		} catch(Exception e) {
+			e.printStackTrace();
+			fail(e.toString());
+		}
 	}
 	
 	private void borrarBaseDatos() {
@@ -257,6 +334,7 @@ public class PruebasConexiones extends TestCase {
 			comando = new ComandoSQLSentencia("DELETE FROM volantes");
 			GestorConexionesBD.ejecutar(comando);
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 	}

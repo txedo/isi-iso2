@@ -131,7 +131,8 @@ public class ControladorFrontend {
 		} catch(RemoteException e) {
 		} catch(SQLException e) {
 		}
-		// Notificamos a los cliente que el servidor ha sido desconectado
+		
+		// Notificamos a los clientes que el servidor ha sido desconectado
 		GestorSesiones.desconectarClientes();
 
 		// Cerramos las conexiones con las BD y vaciamos la lista

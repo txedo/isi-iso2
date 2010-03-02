@@ -44,7 +44,6 @@ public class ProxyCliente implements ICliente {
 		hilo = new Thread(new HiloCerrarSesion(cliente));
 		hilo.start();
 	}
-	
 
 	public void cerrarSesionEliminacion() throws RemoteException {
 		Thread hilo;
@@ -52,7 +51,6 @@ public class ProxyCliente implements ICliente {
 		// Lanzamos la operación en otro hilo para no detener el servidor
 		hilo = new Thread(new HiloCerrarSesionEliminacion(cliente));
 		hilo.start();
-		
 	}
 	
 	public void servidorInaccesible() throws RemoteException {

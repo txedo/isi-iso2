@@ -19,6 +19,7 @@ import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -51,12 +52,11 @@ public class PruebasUsuarios extends PruebasBase {
 	private Pediatra pediatra;
 	private Especialista especialista;
 	private Cabecera cabecera;
-	
-	private boolean sesionCerrada;
+	private ClientePrueba clienteAdmin, clienteCitador, clienteMedico;
+	private boolean sesionCitadorCerrada;
 	
 	@SuppressWarnings("deprecation")
 	protected void setUp() {
-		sesionCerrada = false;
 		try {
 			// Preparamos la base de datos
 			super.setUp();
@@ -109,6 +109,17 @@ public class PruebasUsuarios extends PruebasBase {
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
 			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "admin");
 			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
+			sesionCitadorCerrada = false;
+			// Registramos dos clientes
+			clienteAdmin = new ClientePrueba();
+			clienteCitador = new ClientePrueba();
+			clienteMedico = new ClientePrueba();
+			clienteAdmin.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			clienteCitador.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			clienteMedico.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			GestorSesiones.registrar(sesionAdmin.getId(), clienteAdmin);
+			GestorSesiones.registrar(sesionCitador.getId(), clienteCitador);
+			GestorSesiones.registrar(sesionMedico.getId(), clienteMedico);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -117,7 +128,9 @@ public class PruebasUsuarios extends PruebasBase {
 	protected void tearDown() {
 		try {
 			// Cerramos la sesión
-			if (!sesionCerrada) GestorSesiones.liberar(((Sesion)sesionCitador).getId());
+			if(!sesionCitadorCerrada) {
+				GestorSesiones.liberar(((Sesion)sesionCitador).getId());
+			}
 			GestorSesiones.liberar(((Sesion)sesionAdmin).getId());
 			// Cerramos la base de datos
 			super.tearDown();
@@ -243,10 +256,18 @@ public class PruebasUsuarios extends PruebasBase {
 			// Comprobamos que el usuario se ha creado correctamente
 			// (al crear el usuario su contraseña se habrá encriptado
 			// y se le habrá asignado el único centro que hay)
+			Thread.sleep(100);
 			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, usuario.getNif());
 			usuario.setPassword(UtilidadesDominio.encriptarPasswordSHA1("nuevoadmin"));
 			usuario.setCentroSalud(centro1);
 			assertEquals(usuario, usuarioGet);
+			// Comprobamos que se ha avisado a los clientes del registro del usuario
+			Thread.sleep(100);
+			usuario.setPassword("nuevoadmin");
+			usuario.setCentroSalud(null);
+			assertTrue(clienteCitador.getUltimaOperacion() == ICodigosOperacionesCliente.INSERTAR);
+			assertEquals(usuario, clienteCitador.getUltimoDato());
+			assertNull(clienteAdmin.getUltimoDato());
 			// Creamos un nuevo médico con la sesión del administrador
 			usuario = new Medico("6666666", "medNuevo", "medNuevo", "Juan", "P. C.", "", "", "", especialista);
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CREAR_USUARIO, usuario);
@@ -327,6 +348,12 @@ public class PruebasUsuarios extends PruebasBase {
 			usuarioGet = (Usuario)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_USUARIO, medico2.getNif());
 			medico2.setPassword(UtilidadesDominio.encriptarPasswordSHA1("xxx"));
 			assertEquals(medico2, usuarioGet);
+			// Comprobamos que se ha avisado a los clientes del cambio del médico
+			Thread.sleep(100);
+			medico2.setPassword("");
+			assertTrue(clienteCitador.getUltimaOperacion() == ICodigosOperacionesCliente.MODIFICAR);
+			assertEquals(medico2, clienteCitador.getUltimoDato());
+			assertNull(clienteAdmin.getUltimoDato());
 			// Comprobamos que se ha eliminado la cita pendiente del
 			// médico que queda fuera de su nuevo calendario
 			citas = FPCita.consultarPorBeneficiario(beneficiario1.getNif());
@@ -385,16 +412,18 @@ public class PruebasUsuarios extends PruebasBase {
 		try {
 			// Eliminamos un usuario y un médico existentes como administrador
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, medico2);
-			// Primero cerramos la sesión del citador, para evitar fallos, ya que si se elimina un usuario con una
-			// sesión abierta, se va a intentar liberar ese cliente, pero como no se ha hecho la llamada a "registrar",
-			// va a dar un fallo
-			GestorSesiones.liberar(((Sesion)sesionCitador).getId());
-			sesionCerrada = true;
 			servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, citador1);
 			// Comprobamos que al beneficiario que tenía asignado el médico
 			// borrado se le ha asignado otro médico disponible
 			beneficiario = FPBeneficiario.consultarPorNIF(beneficiario1.getNif());
 			assertEquals(medico4, beneficiario.getMedicoAsignado());
+			// Comprobamos que se ha avisado a los clientes del borrado del médico
+			Thread.sleep(100);
+			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.ELIMINAR);
+			assertEquals(citador1, clienteMedico.getUltimoDato());
+			// Comprobamos que se ha intentado cerrar la sesión del usuario eliminado
+			assertTrue(clienteCitador.isLlamadoCerrarSesionEliminacion());
+			sesionCitadorCerrada = true;
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.toString());

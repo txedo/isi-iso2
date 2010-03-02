@@ -92,7 +92,6 @@ public class GestorUsuarios {
 		
 		// Llamamos al método común para eliminar usuarios y médicos
 		eliminarUsuario(usuario);
-		
 	}
 
 	// Método para obtener los datos del usuario que ha iniciado sesión

@@ -2,17 +2,15 @@ package pruebas;
 
 import java.rmi.RemoteException;
 import org.uispec4j.Trigger;
+import org.uispec4j.UISpecTestCase;
 import org.uispec4j.interception.WindowInterceptor;
-
 import comunicaciones.ConfiguracionRespaldo;
-
 import dominio.control.ControladorRespaldo;
-import junit.framework.TestCase;
 
 /**
  * Pruebas del controlador principal del servidor de respaldo.
  */
-public class PruebasControlador extends TestCase {
+public class PruebasControlador extends UISpecTestCase {
 
 	private ControladorRespaldo controlador;
 	
@@ -49,7 +47,7 @@ public class PruebasControlador extends TestCase {
 		
 		try {
 			// Activamos el servidor varias veces para ver si no hay fallos
-			configuracion = new ConfiguracionRespaldo("127.0.0.1", 3306, 1098);
+			configuracion = new ConfiguracionRespaldo(IDatosPruebas.IP_BASEDATOS_SECUNDARIA, IDatosPruebas.PUERTO_BASEDATOS_SECUNDARIA, IDatosPruebas.PUERTO_ESCUCHA);
 			controlador.iniciarServidorRespaldo(configuracion);
 			controlador.iniciarServidorRespaldo(configuracion);
 			assertTrue(controlador.isServidorActivo());
@@ -59,7 +57,7 @@ public class PruebasControlador extends TestCase {
 		
 		try {
 			// Intentamos activar el servidor en un puerto diferente
-			configuracion = new ConfiguracionRespaldo("127.0.0.1", 3306, 1298);
+			configuracion = new ConfiguracionRespaldo(IDatosPruebas.IP_BASEDATOS_SECUNDARIA, IDatosPruebas.PUERTO_BASEDATOS_SECUNDARIA, IDatosPruebas.PUERTO_ESCUCHA + 500);
 			controlador.iniciarServidorRespaldo(configuracion);
 			fail("Se esperaba una RemoteException");
 		} catch(RemoteException e) {
@@ -69,7 +67,7 @@ public class PruebasControlador extends TestCase {
 		
 		try {
 			// Desactivamos el servidor dos veces para ver si no hay fallos
-			configuracion = new ConfiguracionRespaldo("127.0.0.1", 3306, 1098);
+			configuracion = new ConfiguracionRespaldo(IDatosPruebas.IP_BASEDATOS_SECUNDARIA, IDatosPruebas.PUERTO_BASEDATOS_SECUNDARIA, IDatosPruebas.PUERTO_ESCUCHA);
 			controlador.detenerServidorRespaldo(configuracion);
 			controlador.detenerServidorRespaldo(configuracion);
 			assertFalse(controlador.isServidorActivo());

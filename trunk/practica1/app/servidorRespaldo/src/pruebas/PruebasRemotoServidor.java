@@ -20,7 +20,7 @@ public class PruebasRemotoServidor extends TestCase {
 	
 	public void setUp() {
 		try {
-			// Creamos la conexión con el servidor de respaldo
+			// Creamos el objeto remoto exportado por el servidor de respaldo
 			conexion = RemotoServidorRespaldo.getServidor();		
 		} catch(Exception e) {
 			fail(e.toString());

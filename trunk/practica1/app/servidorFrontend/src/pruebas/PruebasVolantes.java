@@ -16,6 +16,7 @@ import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
@@ -54,6 +55,7 @@ public class PruebasVolantes extends PruebasBase {
 	private Cabecera cabecera;
 	private Date fecha1, fecha2;
 	private Volante volante1, volante2;
+	private ClientePrueba clienteAdmin, clienteMedico;
 	
 	protected void setUp() {
 		try {
@@ -123,6 +125,13 @@ public class PruebasVolantes extends PruebasBase {
 			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
 			sesionAdmin = GestorSesiones.identificar(administrador1.getLogin(), "admin");
 			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
+			// Registramos dos clientes
+			clienteAdmin = new ClientePrueba();
+			clienteMedico = new ClientePrueba();
+			clienteAdmin.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			clienteMedico.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
+			GestorSesiones.registrar(sesionAdmin.getId(), clienteAdmin);
+			GestorSesiones.registrar(sesionMedico.getId(), clienteMedico);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -246,6 +255,11 @@ public class PruebasVolantes extends PruebasBase {
 			assertTrue(idVolante != -1);
 			volanteGet = GestorVolantes.consultarVolante(sesionAdmin.getId(), idVolante);
 			assertEquals(idVolante, volanteGet.getId());
+			// Comprobamos que se ha avisado a los clientes de la emisión del volante
+			Thread.sleep(100);
+			assertTrue(clienteAdmin.getUltimaOperacion() == ICodigosOperacionesCliente.INSERTAR);
+			assertEquals(volanteGet, clienteAdmin.getUltimoDato());
+			assertNull(clienteMedico.getUltimoDato());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
