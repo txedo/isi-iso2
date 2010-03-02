@@ -1,7 +1,5 @@
 package pruebas;
 
-import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
 
@@ -22,14 +20,11 @@ import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
 import comunicaciones.RemotoCliente;
 
-import presentacion.JPCitas;
 import presentacion.JPCitaTramitar;
 import presentacion.auxiliar.OperacionesInterfaz;
-import presentacion.JFPrincipal;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
-import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.IConstantes;
@@ -38,10 +33,7 @@ import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
 import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
-import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
-import excepciones.FechaNoValidaException;
-import excepciones.MedicoInexistenteException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.UsuarioYaExistenteException;
@@ -160,10 +152,9 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			}while(!valido);
 			medicoAsignado = cabecera;
 
-			// Creamos el panel
+			// Obtenemos el panel
 			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
 			panel = (JPCitaTramitar)p1.getPanel("jPanelTramitar").getAwtContainer();
-//			panel = new JPCitaTramitar(controlador.getVentanaPrincipal(), controlador);
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
 			panelBeneficiario = pnlPanel.getPanel("pnlBeneficiario");
@@ -227,146 +218,146 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		winPrincipal.dispose();
 	}
 	
-//	/** Pruebas con datos no válidos */
-//	public void testDatosInvalidos() {
-//		String[] invalidos;
-//		
-//		try {
-//			// Buscamos un beneficiario por su NIF
-//			jcmbIdentificacion.grabFocus();
-//			jcmbIdentificacion.setSelectedIndex(0);
-//			// Inicialmente probamos con un NIF nulo
-//			txtIdentificacion.setText("");
-//			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Debe introducir un NIF o un NSS.");
-//			// Ponemos un NIF incorrecto y comprobamos que el campo de
-//			// identificacion se selecciona por tener un formato inválido
-//			txtIdentificacion.setText("11223344");
-//			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
-//			// Probamos con un NIF que no esté dado de alta en el sistema y NO lo damos de alta en el sistema
-//			txtIdentificacion.setText("00000000a");
-//			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, NO_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo para poder tramitar su cita?");
-//			// Buscamos un beneficiario por su NSS
-//			jcmbIdentificacion.grabFocus();
-//			jcmbIdentificacion.setSelectedIndex(1);
-//			// Ponemos un NSS incorrecto y comprobamos que el campo del
-//			// identificacion se selecciona por tener un formato inválido
-//			txtIdentificacion.setText("11223344");
-//			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NSSIncorrectoException().getMessage());
-//			// Probamos con un NSS que no esté dado de alta en el sistema y NO lo damos de alta en el sistema
-//			txtIdentificacion.setText("000000000000");
-//			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, NO_OPTION), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo para poder tramitar su cita?");
-//		} catch(Exception e) {
-//			fail(e.toString());
-//		}
-//	}
-//	
-//	public void testBuscarBeneficiarioPorNIFSinMedicoAsignado () {
-//		// Borramos todos los médicos del tipo de médico asignado al beneficiario
-//		// para evitar que el sistema le asigne otro automáticamente
-//		try {
-//			medicosEliminados = controlador.obtenerMedicosTipo(tCabecera);
-//			for (Medico m : medicosEliminados) {
-//				controlador.eliminarMedico(m);
-//			}
-//		} catch(Exception e) {
-//			fail(e.toString());
-//		}
-//		// Le desasignamos el médico al beneficiario que tenemos en memoria
-//		// el servidor automaticamente ha actualizado su estado en la base de datos
-//		beneficiarioPrueba.setMedicoAsignado(null);
-//		// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
-//		jcmbIdentificacion.grabFocus();
-//		jcmbIdentificacion.setSelectedIndex(0);
-//		txtIdentificacion.setText(beneficiarioPrueba.getNif());
-//		String esperado = "El beneficiario con NIF " + beneficiarioPrueba.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.";
-//		assertEquals(UtilidadesPruebas.obtenerTextoSegundoDialogo(btnBuscar, OK_OPTION, OK_OPTION), esperado);
-//		// Se comprueba que NO tiene médico asignado
-//		assertEquals("(ninguno)", txtMedicoAsignado.getText());
-//		// Todos los componentes de pedir cita deben estar deshabilitados
-//		comprobarControlesDeshabilitados();
-//	}
-//
-//	public void testBuscarBeneficiarioPorNSSSinMedicoAsignado () {
-//		// Borramos todos los médicos del tipo de médico asignado al beneficiario
-//		// para evitar que el sistema le asigne otro automáticamente
-//		try {
-//			medicosEliminados = controlador.obtenerMedicosTipo(tCabecera);
-//			for (Medico m : medicosEliminados) {
-//				controlador.eliminarMedico(m);
-//			}
-//		} catch(Exception e) {
-//			fail(e.toString());
-//		}
-//		// Le desasignamos el médico al beneficiario que tenemos en memoria
-//		// el servidor automaticamente ha actualizado su estado en la base de datos
-//		beneficiarioPrueba.setMedicoAsignado(null);
-//		// Probamos con el NSS de beneficiarioPrueba que es correcto y está dado de alta en el sistema
-//		jcmbIdentificacion.grabFocus();
-//		jcmbIdentificacion.setSelectedIndex(1);
-//		txtIdentificacion.setText(beneficiarioPrueba.getNss());
-//		String esperado = "El beneficiario con NIF " + beneficiarioPrueba.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.";
-//		assertEquals(UtilidadesPruebas.obtenerTextoSegundoDialogo(btnBuscar, OK_OPTION, OK_OPTION), esperado);
-//		// Se comprueba que NO tiene médico asignado
-//		assertEquals("(ninguno)", txtMedicoAsignado.getText());
-//		// Todos los componentes de pedir cita deben estan deshabilitados
-//		comprobarControlesDeshabilitados();
-//	}
-//	
-//	public void testTramitarCita () {
-//		String esperado = "";
-//		// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
-//		// y que además tiene un médico asignado
-//		jcmbIdentificacion.grabFocus();
-//		jcmbIdentificacion.setSelectedIndex(0);
-//		txtIdentificacion.setText(beneficiarioPrueba.getNif());
-//		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
-//		// Se comprueba que tiene médico asignado
-//		assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
-//		// Comprobamos que los componentes se han habilitado
-//		assertTrue(txtFechaCita.isEnabled());
-//		assertTrue(cmbHorasCitas.isEnabled());
-//		assertFalse(txtMedico.isEditable());
-//		assertTrue(btnRegistrar.isEnabled());
-//		// Ponemos una fecha en la que no trabaja el médico, para ello eliminamos su periodo de trabajo
-//		// Como el médico trabaja los miércoles, seleccionamos un martes
-//		//txtFechaCita.setText("17/10/2010");
-//		//esperado = "El día seleccionado no es laboral para el médico";
-//		//assertEquals(esperado, (String)jcmbHorasCitas.getSelectedItem());
-//		//assertEquals(1, jcmbHorasCitas.getItemCount());
-//		// Ponemos una fecha en la que sí trabaja el médico
-//		txtFechaCita.setText("20/10/2010");
-//		assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
-//		// Seleccionamos la primera hora disponible y tramitamos la cita
-//		jcmbHorasCitas.grabFocus();
-//		jcmbHorasCitas.setSelectedIndex(0);
-//		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnRegistrar, OK_OPTION), "La cita ha quedado registrada.");
-//		// Comprobamos que los campos se han reseteado
-//		comprobarCamposRestablecidos();
-//		comprobarControlesDeshabilitados();
-//		// Volvemos a consultar el mismo beneficiario
-//		jcmbIdentificacion.grabFocus();
-//		jcmbIdentificacion.setSelectedIndex(0);
-//		txtIdentificacion.setText(beneficiarioPrueba.getNif());
-//		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
-//		// Se comprueba que tiene médico asignado
-//		assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
-//		// Comprobamos que los componentes se han habilitado de nuevo
-//		assertTrue(txtFechaCita.isEnabled());
-//		assertTrue(cmbHorasCitas.isEnabled());
-//		assertFalse(txtMedico.isEditable());
-//		assertTrue(btnRegistrar.isEnabled());
-//		// Ponemos la misma fecha en la que tramitamos la cita
-//		txtFechaCita.setText("20/10/2010");
-//		assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
-//		// Comprobamos que aparece seleccionada por defecto la segunda hora disponible porque la primera ya está asignada
-//		assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);
-//		// Seleccionamos la primera hora (la misma que registramos antes)
-//		jcmbHorasCitas.setSelectedIndex(0);
-//		// Tramitamos la cita y vemos que la operacion no es posible
-//		esperado = "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo) para registrar la cita.";
-//		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnRegistrar, OK_OPTION), esperado);
-//	}
-//	
+	/** Pruebas con datos no válidos */
+	public void testDatosInvalidos() {
+		String[] invalidos;
+		
+		try {
+			// Buscamos un beneficiario por su NIF
+			jcmbIdentificacion.grabFocus();
+			jcmbIdentificacion.setSelectedIndex(0);
+			// Inicialmente probamos con un NIF nulo
+			txtIdentificacion.setText("");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Debe introducir un NIF o un NSS.");
+			// Ponemos un NIF incorrecto y comprobamos que el campo de
+			// identificacion se selecciona por tener un formato inválido
+			txtIdentificacion.setText("11223344");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
+			// Probamos con un NIF que no esté dado de alta en el sistema y NO lo damos de alta en el sistema
+			txtIdentificacion.setText("00000000a");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, NO_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo para poder tramitar su cita?");
+			// Buscamos un beneficiario por su NSS
+			jcmbIdentificacion.grabFocus();
+			jcmbIdentificacion.setSelectedIndex(1);
+			// Ponemos un NSS incorrecto y comprobamos que el campo del
+			// identificacion se selecciona por tener un formato inválido
+			txtIdentificacion.setText("11223344");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NSSIncorrectoException().getMessage());
+			// Probamos con un NSS que no esté dado de alta en el sistema y NO lo damos de alta en el sistema
+			txtIdentificacion.setText("000000000000");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, NO_OPTION), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo para poder tramitar su cita?");
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	public void testBuscarBeneficiarioPorNIFSinMedicoAsignado () {
+		// Borramos todos los médicos del tipo de médico asignado al beneficiario
+		// para evitar que el sistema le asigne otro automáticamente
+		try {
+			medicosEliminados = controlador.obtenerMedicosTipo(tCabecera);
+			for (Medico m : medicosEliminados) {
+				controlador.eliminarMedico(m);
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		// Le desasignamos el médico al beneficiario que tenemos en memoria
+		// el servidor automaticamente ha actualizado su estado en la base de datos
+		beneficiarioPrueba.setMedicoAsignado(null);
+		// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		String esperado = "El beneficiario con NIF " + beneficiarioPrueba.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.";
+		assertEquals(UtilidadesPruebas.obtenerTextoSegundoDialogo(btnBuscar, OK_OPTION, OK_OPTION), esperado);
+		// Se comprueba que NO tiene médico asignado
+		assertEquals("(ninguno)", txtMedicoAsignado.getText());
+		// Todos los componentes de pedir cita deben estar deshabilitados
+		comprobarControlesDeshabilitados();
+	}
+
+	public void testBuscarBeneficiarioPorNSSSinMedicoAsignado () {
+		// Borramos todos los médicos del tipo de médico asignado al beneficiario
+		// para evitar que el sistema le asigne otro automáticamente
+		try {
+			medicosEliminados = controlador.obtenerMedicosTipo(tCabecera);
+			for (Medico m : medicosEliminados) {
+				controlador.eliminarMedico(m);
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		// Le desasignamos el médico al beneficiario que tenemos en memoria
+		// el servidor automaticamente ha actualizado su estado en la base de datos
+		beneficiarioPrueba.setMedicoAsignado(null);
+		// Probamos con el NSS de beneficiarioPrueba que es correcto y está dado de alta en el sistema
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(1);
+		txtIdentificacion.setText(beneficiarioPrueba.getNss());
+		String esperado = "El beneficiario con NIF " + beneficiarioPrueba.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.";
+		assertEquals(UtilidadesPruebas.obtenerTextoSegundoDialogo(btnBuscar, OK_OPTION, OK_OPTION), esperado);
+		// Se comprueba que NO tiene médico asignado
+		assertEquals("(ninguno)", txtMedicoAsignado.getText());
+		// Todos los componentes de pedir cita deben estan deshabilitados
+		comprobarControlesDeshabilitados();
+	}
+	
+	public void testTramitarCita () {
+		String esperado = "";
+		// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
+		// y que además tiene un médico asignado
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		// Se comprueba que tiene médico asignado
+		assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+		// Comprobamos que los componentes se han habilitado
+		assertTrue(txtFechaCita.isEnabled());
+		assertTrue(cmbHorasCitas.isEnabled());
+		assertFalse(txtMedico.isEditable());
+		assertTrue(btnRegistrar.isEnabled());
+		// Ponemos una fecha en la que no trabaja el médico, para ello eliminamos su periodo de trabajo
+		// Como el médico trabaja los miércoles, seleccionamos un martes
+		txtFechaCita.setText("17/10/2010");
+		esperado = "El día seleccionado no es laboral para el médico";
+		assertEquals(esperado, (String)jcmbHorasCitas.getSelectedItem());
+		assertEquals(1, jcmbHorasCitas.getItemCount());
+		// Ponemos una fecha en la que sí trabaja el médico
+		txtFechaCita.setText("20/10/2010");
+		assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+		// Seleccionamos la primera hora disponible y tramitamos la cita
+		jcmbHorasCitas.grabFocus();
+		jcmbHorasCitas.setSelectedIndex(0);
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnRegistrar, OK_OPTION), "La cita ha quedado registrada.");
+		// Comprobamos que los campos se han reseteado
+		comprobarCamposRestablecidos();
+		comprobarControlesDeshabilitados();
+		// Volvemos a consultar el mismo beneficiario
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		// Se comprueba que tiene médico asignado
+		assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+		// Comprobamos que los componentes se han habilitado de nuevo
+		assertTrue(txtFechaCita.isEnabled());
+		assertTrue(cmbHorasCitas.isEnabled());
+		assertFalse(txtMedico.isEditable());
+		assertTrue(btnRegistrar.isEnabled());
+		// Ponemos la misma fecha en la que tramitamos la cita
+		txtFechaCita.setText("20/10/2010");
+		assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+		// Comprobamos que aparece seleccionada por defecto la segunda hora disponible porque la primera ya está asignada
+		assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);
+		// Seleccionamos la primera hora (la misma que registramos antes)
+		jcmbHorasCitas.setSelectedIndex(0);
+		// Tramitamos la cita y vemos que la operacion no es posible
+		esperado = "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo) para registrar la cita.";
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnRegistrar, OK_OPTION), esperado);
+	}
+	
 	@SuppressWarnings("deprecation")
 	public void testObservadorCitaRegistrada () {
 		// Iniciamos sesión con un segundo administrador
