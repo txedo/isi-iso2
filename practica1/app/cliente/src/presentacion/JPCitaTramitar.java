@@ -302,6 +302,8 @@ public class JPCitaTramitar extends JPBase {
 			
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+
+		} catch (ParseException e) {
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}

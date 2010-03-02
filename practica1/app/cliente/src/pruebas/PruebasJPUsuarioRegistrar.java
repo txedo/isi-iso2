@@ -40,7 +40,7 @@ import excepciones.NombreIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
 
-public class PruebasJPUsuarioRegistrar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
+public class PruebasJPUsuarioRegistrar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private ControladorCliente controlador;
 	private JPUsuarioRegistrar panel;

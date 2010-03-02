@@ -17,7 +17,7 @@ import org.uispec4j.interception.WindowInterceptor;
 import presentacion.JFLogin;
 import dominio.control.ControladorCliente;
 
-public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantes {
+public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private boolean sesionIniciada;
 	private ControladorCliente controlador;

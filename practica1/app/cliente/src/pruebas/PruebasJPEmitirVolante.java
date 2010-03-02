@@ -35,7 +35,7 @@ import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.UsuarioYaExistenteException;
 
-public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, pruebas.IConstantes {
+public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private ControladorCliente controlador;
 	private JPEmitirVolante pnlEmitir;

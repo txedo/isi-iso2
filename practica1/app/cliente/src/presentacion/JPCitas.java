@@ -97,6 +97,7 @@ public class JPCitas extends JPBase {
 				jScrollTramitar.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelTramitar = new JPCitaTramitar(this.getFrame(), this.getControlador());
+					jPanelTramitar.setName("jPanelTramitar");
 					jScrollTramitar.setViewportView(jPanelTramitar);
 				}
 			}

@@ -245,6 +245,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 					{
 						jPanelGestionarCitas = new JPCitas(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Citas", null, jPanelGestionarCitas, null);
+						jPanelGestionarCitas.setName("jPanelGestionarCitas");
 						jPanelGestionarCitas.addOperacionCambiadaListener(new OperacionCambiadaListener() {
 							public void operacionCambiada(OperacionCambiadaEvent evt) {
 								jPanelGestionarCitasOperacionCambiada(evt);
