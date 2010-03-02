@@ -100,7 +100,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos nombres incorrectos
-			invalidos = new String[] { "", "  ", "Ana  ", "1234", "Pablo123", "Luis¿?", "pepe---luis", "pepe--", };
+			invalidos = new String[] { "", "  ", "  Ana", "Ana  ", "1234", "Pablo123", "Luis¿?", "pepe---luis", "pepe--", };
 			for(String nombre : invalidos) {
 				try {
 					Validacion.comprobarNombre(nombre);
@@ -128,7 +128,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos apellidos incorrectos
-			invalidos = new String[] { "", "  ", "1234", "Muñoz 12345", "¿López?", "Ortiz ", "Lopez-", "Dominguez--Garcia" };
+			invalidos = new String[] { "", "  ", "1234", "Muñoz 12345", "¿López?", "  Ortiz", "Ortiz  ", "Lopez-", "Dominguez--Garcia" };
 			for(String apellidos : invalidos) {
 				try {
 					Validacion.comprobarApellidos(apellidos);
@@ -185,7 +185,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos domicilios incorrectos
-			invalidos = new String[] { "", "  ", "1234", "¿¿??", "A$*^!·?=", "ÁÉÍÓÚ áéíóú ÑñÇç /\\-.", "C/Mata " };
+			invalidos = new String[] { "", "  ", "1234", "¿¿??", "A$*^!·?=", "  Calle", "  Calle", "Calle /\\-.", "C/Mata " };
 			for(String domicilio : invalidos) {
 				try {
 					Validacion.comprobarDomicilio(domicilio);
@@ -194,7 +194,7 @@ public class PruebasValidacion extends TestCase {
 				}
 			}
 			// Probamos domicilios correctos
-			validos = new String[] { "C/Mata", "C/Don Quijote", "Calle Santa María" };
+			validos = new String[] { "C/Mata", "C/Don Quijote", "Calle Santa María", "ÁÉÍÓÚ áéíóú ÑñÇç" };
 			for(String domicilio : validos) {
 				try {
 					Validacion.comprobarDomicilio(domicilio);
@@ -213,7 +213,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos números de domicilio incorrectos
-			invalidos = new String[] { "", "  ", "abcd", "-12", "8 A", " A", "a", "0,59", "1.890" };
+			invalidos = new String[] { "", "  ", "abcd", "-12", "8 A", "  2", "2  ", "a", "8AB", "0,59", "1.890" };
 			for(String numero : invalidos) {
 				try {
 					Validacion.comprobarNumero(numero);
@@ -222,7 +222,7 @@ public class PruebasValidacion extends TestCase {
 				}
 			}
 			// Probamos números de domicilio correctos
-			validos = new String[] { "0", "18", "590" };
+			validos = new String[] { "0", "18", "590", "4B" };
 			for(String numero : validos) {
 				try {
 					Validacion.comprobarNumero(numero);
@@ -241,7 +241,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos pisos de domicilio incorrectos
-			invalidos = new String[] { "", "  ", "abcd", "-12", "8A", "0,59", "1.890", "18  ", "  18" };
+			invalidos = new String[] { "", "  ", "abcd", "-12", "8A", "0,59", "1.890", "G", "18  ", "  18" };
 			for(String piso : invalidos) {
 				try {
 					Validacion.comprobarPiso(piso);
@@ -269,7 +269,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos puertas de domicilio incorrectos
-			invalidos = new String[] { "", " ", "abcd", "1234", "AB", "pq", "Ñ", "Ç", "Á", "é" };
+			invalidos = new String[] { "", " ", "abcd", "1234", "1", "AB", "pq", "Ñ", "Ç", "Á", "é" };
 			for(String puerta : invalidos) {
 				try {
 					Validacion.comprobarPuerta(puerta);
@@ -297,7 +297,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos localidades incorrectas
-			invalidos = new String[] { "", "  ", "1234", "Ciudad 12345", "**Madrid**" };
+			invalidos = new String[] { "", "  ", "1234", "  Toledo", "Toledo  ", "Ciudad 12345", "**Madrid**" };
 			for(String localidad : invalidos) {
 				try {
 					Validacion.comprobarLocalidad(localidad);
@@ -353,7 +353,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos provincias incorrectas
-			invalidos = new String[] { "", "  ", "1234", "Provincia 12345", "**Badajoz**" };
+			invalidos = new String[] { "", "  ", "1234", "Badajoz  ", "  Badajoz", "Provincia 12345", "**Badajoz**" };
 			for(String provincia : invalidos) {
 				try {
 					Validacion.comprobarProvincia(provincia);

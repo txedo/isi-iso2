@@ -316,7 +316,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(0);
 		txtIdentificacion.setText(beneficiarioPrueba.getNif());
-		String esperado = "El beneficiario con NIF " + beneficiarioPrueba.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.";
+		String esperado = "El beneficiario seleccionado no puede pedir cita\nporque no tiene ningún médico asignado.";
 		assertEquals(UtilidadesPruebas.obtenerTextoSegundoDialogo(btnBuscar, OK_OPTION, OK_OPTION), esperado);
 		// Todos los componentes de tramitar el volante y pedir cita deben estar deshabilitados
 		comprobarControlesDeshabilitados();
@@ -340,7 +340,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(1);
 		txtIdentificacion.setText(beneficiarioPrueba.getNss());
-		String esperado = "El beneficiario con NIF " + beneficiarioPrueba.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.";
+		String esperado = "El beneficiario seleccionado no puede pedir cita\nporque no tiene ningún médico asignado.";
 		assertEquals(UtilidadesPruebas.obtenerTextoSegundoDialogo(btnBuscar, OK_OPTION, OK_OPTION), esperado);
 		// Todos los componentes de tramitar el volante y pedir cita deben estar deshabilitados
 		comprobarControlesDeshabilitados();

@@ -73,9 +73,16 @@ public class ControladorRespaldo {
 	public void detenerServidorRespaldo(ConfiguracionRespaldo configuracion) throws RemoteException, MalformedURLException, SQLException, UnknownHostException {
 		SimpleDateFormat formatoFecha;
 		
+		// Al desconectar el servidor ignoramos todos los errores de conexión
+		// y SQL para poder desconectar el servidor incluso si ha cambiado
+		// la IP de la máquina del servidor de respaldo
+		
 		// Desactivamos las clases remotas del servidor de respaldo
 		if(remotoServidor != null && ipServidor != null) {
-			remotoServidor.desactivar(ipServidor, configuracion.getPuertoRespaldo());
+			try {
+				remotoServidor.desactivar(ipServidor, configuracion.getPuertoRespaldo());
+			} catch(RemoteException e) {
+			}
 		}
 
 		// Mostramos un mensaje indicando que el servidor está inactivo
