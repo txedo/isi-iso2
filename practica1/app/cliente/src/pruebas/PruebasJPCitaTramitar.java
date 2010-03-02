@@ -25,6 +25,7 @@ import presentacion.auxiliar.OperacionesInterfaz;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
+import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.IConstantes;
@@ -34,6 +35,8 @@ import dominio.conocimiento.TipoMedico;
 import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.FechaCitaIncorrectaException;
+import excepciones.FormatoFechaIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.UsuarioYaExistenteException;
@@ -320,12 +323,18 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		assertTrue(btnRegistrar.isEnabled());
 		// Ponemos una fecha en la que no trabaja el médico, para ello eliminamos su periodo de trabajo
 		// Como el médico trabaja los miércoles, seleccionamos un martes
-		txtFechaCita.setText("17/10/2010");
+		txtFechaCita.setText("03/03/2015");
 		esperado = "El día seleccionado no es laboral para el médico";
 		assertEquals(esperado, (String)jcmbHorasCitas.getSelectedItem());
 		assertEquals(1, jcmbHorasCitas.getItemCount());
+		// Ponemos una fecha anterior a la actual (es decir, una fecha caducada)
+		txtFechaCita.setText("01/01/2009");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnRegistrar, OK_OPTION), new FechaCitaIncorrectaException().getLocalizedMessage());
+		// Ponemos un formato de fecha que no es válido
+		txtFechaCita.setText("asdf");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnRegistrar, OK_OPTION), new FormatoFechaIncorrectoException().getLocalizedMessage());
 		// Ponemos una fecha en la que sí trabaja el médico
-		txtFechaCita.setText("20/10/2010");
+		txtFechaCita.setText("04/03/2015");
 		assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
 		// Seleccionamos la primera hora disponible y tramitamos la cita
 		jcmbHorasCitas.grabFocus();
@@ -347,7 +356,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		assertFalse(txtMedico.isEditable());
 		assertTrue(btnRegistrar.isEnabled());
 		// Ponemos la misma fecha en la que tramitamos la cita
-		txtFechaCita.setText("20/10/2010");
+		txtFechaCita.setText("04/03/2015");
 		assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
 		// Comprobamos que aparece seleccionada por defecto la segunda hora disponible porque la primera ya está asignada
 		assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);
@@ -359,7 +368,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void testObservadorCitaRegistrada () {
+	public void testObservadorCitaRegistradaAnulada () {
 		// Iniciamos sesión con un segundo administrador
 		controladorAuxiliar = new ControladorCliente();
 		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
@@ -389,19 +398,19 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		assertFalse(txtMedico.isEditable());
 		assertTrue(btnRegistrar.isEnabled());
 		// Se selecciona un día en el que trabajará el médico
-		txtFechaCita.setText("20/10/2010");
+		txtFechaCita.setText("04/03/2015");
 		assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
 		// Comprobamos que aparece seleccionada por defecto la primera hora disponible
 		assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 		try {
 			// En este momento el segundo administrador pide una cita en la hora seleccionada por el primero
-			Trigger t = new Trigger() {
+			Trigger t1 = new Trigger() {
 				@Override
 				public void run() throws Exception {
-					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2010-1900,10-1,20,horaInicio,0), IConstantes.DURACION_CITA);
+					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
 				}
 			};
-			WindowInterceptor.init(t).process(new WindowHandler() {
+			WindowInterceptor.init(t1).process(new WindowHandler() {
 				public Trigger process(Window window) {
 
 					return window.getButton(OK_OPTION).triggerClick();
@@ -410,14 +419,45 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			// Dormimos el hilo en espera de la respuesta del servidor
 			Thread.sleep(500);
 			// La ventana del primer administrador se ha debido actualizar seleccionando la siguiente hora disponible en el día que se ha pedido cita desde el administrador auxiliar
-			txtFechaCita.setText("20/10/2010");
+			txtFechaCita.setText("04/03/2015");
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);
+			// Ahora procedemos a eliminar la cita desde el segundo administrador
+			Trigger t2 = new Trigger() {
+				@Override
+				public void run() throws Exception {
+					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
+				}
+			};
+			WindowInterceptor.init(t2).process(new WindowHandler() {
+				public Trigger process(Window window) {
+
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
+			// Dormimos el hilo en espera de la respuesta del servidor
+			Thread.sleep(500);
+			// La ventana del primer administrador se ha debido actualizar seleccionando la primera hora disponible en el día que se ha anulado cita desde el administrador auxiliar
+			txtFechaCita.setText("04/03/2015");
+			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+			// Se finaliza el controlador auxiliar
 			controladorAuxiliar.cerrarSesion();
 			controladorAuxiliar.cerrarControlador();
 		} catch (Exception e) {
 			fail (e.toString());
 		}
 		winPrincipal2.dispose();
+	}
+	
+	public void testObservadorUsuarioActualizadoEliminado () {
+		// TODO
+	}
+	
+	public void testObservadorBeneficiarioActualizadoEliminado () {
+		// TODO
+	}
+	
+	public void testObservadorSustitucionRegistrada () {
+		// TODO
 	}
 
 	private void comprobarCamposRestablecidos () {

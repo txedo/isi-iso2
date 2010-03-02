@@ -8,6 +8,7 @@ import excepciones.ApellidoIncorrectoException;
 import excepciones.CodigoPostalIncorrectoException;
 import excepciones.CadenaIncorrectaException;
 import excepciones.CadenaVaciaException;
+import excepciones.FechaCitaIncorrectaException;
 import excepciones.IdVolanteIncorrectoException;
 import excepciones.LocalidadIncorrectaException;
 import excepciones.ContraseñaIncorrectaException;
@@ -104,6 +105,22 @@ public class Validacion {
 			throw new ApellidoIncorrectoException();
 		} catch(CadenaVaciaException e) {
 			throw new ApellidoIncorrectoException();
+		}
+	}
+	
+	// La fecha de nacimiento debe ser válida y posterior a la fecha actual
+	public static void comprobarFechaCita(Date date) throws FormatoFechaIncorrectoException, FechaCitaIncorrectaException {
+		SimpleDateFormat sdf;
+		
+		sdf = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			sdf.format(date);
+		} catch(Exception e) {
+			throw new FormatoFechaIncorrectoException();
+		}
+		
+		if(date.before(new Date())) {
+			throw new FechaCitaIncorrectaException();
 		}
 	}
 	
