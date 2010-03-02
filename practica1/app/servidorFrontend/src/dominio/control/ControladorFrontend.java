@@ -124,8 +124,13 @@ public class ControladorFrontend {
 	}
 
 	public void detenerServidor(ConfiguracionFrontend configuracion) throws RemoteException, MalformedURLException, UnknownHostException, SQLException {
+		// Al desconectar el servidor ignoramos todos los errores de conexión
+		// y SQL para poder desconectar el servidor incluso si no se tiene
+		// acceso a los clientes que se habían registrado (p.ej., porque se ha
+		// caído la red), el servidor de base de datos ha dejado de funcionar
+		// o ha cambiado la IP de la máquina del servidor front-end
+		
 		// Generamos un mensaje indicando que el servidor está inactivo
-		// (ignoramos los errores que pudieran producirse)
 		try {
 			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_INFO, "=== Servidor detenido ===");
 		} catch(RemoteException e) {
@@ -133,10 +138,12 @@ public class ControladorFrontend {
 		}
 		
 		// Notificamos a los clientes que el servidor ha sido desconectado
-		GestorSesiones.desconectarClientes();
-
+		try {
+			GestorSesiones.desconectarClientes();
+		} catch(RemoteException e) {
+		}
+		
 		// Cerramos las conexiones con las BD y vaciamos la lista
-		// (ignoramos los errores que pudieran producirse)
 		try {
 			GestorConexionesBD.cerrarConexiones();
 			GestorConexionesBD.quitarConexiones();
@@ -145,9 +152,12 @@ public class ControladorFrontend {
 		
 		// Desconectamos el servidor
 		if(remotoServidor != null) {
-			remotoServidor.desactivar(ipServidor, configuracion.getPuertoFrontend());
+			try {
+				remotoServidor.desactivar(ipServidor, configuracion.getPuertoFrontend());
+			} catch(RemoteException e) {
+			}
 		}
-				
+		
 		// El servidor no está activo
 		servidorActivo = false;
 	}

@@ -283,7 +283,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 			// Para poder pedir cita, el beneficiario debe tener
 			// un médico asignado
 			if(beneficiario.getMedicoAsignado() == null) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario con NIF " + beneficiario.getNif() + " no puede pedir cita\nporque no tiene ningún médico asignado.");
+				Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario seleccionasdo no puede pedir cita\nporque no tiene ningún médico asignado.");
 			} else {
 				// Activamos la búsqueda de volantes
 				cambiarEstadoConsulta(true);
@@ -381,7 +381,10 @@ public class JPCitaVolanteTramitar extends JPBase {
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
-			while(diasDesactivados.contains(UtilidadesDominio.diaFecha(cal.getTime())) || diasOcupados.contains(cal.getTime())) {
+			while(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+				  || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+				  || diasDesactivados.contains(UtilidadesDominio.diaFecha(cal.getTime()))
+				  || diasOcupados.contains(cal.getTime())) {
 				cal.add(Calendar.DAY_OF_MONTH, 1);
 			}
 			dtcDiaCita.setDate(cal.getTime());
