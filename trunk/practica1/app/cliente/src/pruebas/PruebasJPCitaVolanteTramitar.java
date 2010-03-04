@@ -18,21 +18,28 @@ import org.uispec4j.interception.WindowInterceptor;
 
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
+import comunicaciones.RemotoCliente;
 
 import presentacion.JPCitaTramitar;
 import presentacion.JPCitaVolanteTramitar;
 import presentacion.JPEmitirVolante;
+import presentacion.auxiliar.OperacionesInterfaz;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
+import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Especialista;
+import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Volante;
+import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioYaExistenteException;
+import excepciones.FechaCitaIncorrectaException;
+import excepciones.FormatoFechaIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.UsuarioYaExistenteException;
@@ -42,6 +49,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	
 	private ControladorCliente controlador;
 	private ControladorCliente controladorCabecera;
+	private ControladorCliente controladorAuxiliar;
 	private JPCitaVolanteTramitar panel;
 	private Panel panelBeneficiario;
 	private Panel pnlPanel;
@@ -100,10 +108,15 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	private final int horaFinal = 16;
 	private Vector<Medico> medicosEliminados;
 	
+	private long idVolante;
+	private boolean eliminado;
+	
 	protected void setUp() {
 		boolean valido = true;
 		String login;
 		medicosEliminados = new Vector<Medico>();
+		eliminado = false;
+		idVolante = -1;
 		
 		try {
 			// Establecemos conexión con el servidor front-end
@@ -259,7 +272,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			}
 			// Eliminamos el medico de prueba y el beneficiario de prueba
 			controlador.eliminarMedico(cabecera);
-			controlador.eliminarBeneficiario(beneficiarioPrueba);
+			if (!eliminado) controlador.eliminarBeneficiario(beneficiarioPrueba);
 			// Cerramos la sesión y la ventana del controlador			
 			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
@@ -350,7 +363,6 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	}
 	
 	public void testTramitarVolanteCita () {
-		long idVolante = -1;
 		String esperado = "";
 		// Inicialmente deben estar deshabilitados los componentes para tramitar el volante y la cita
 		comprobarCamposRestablecidos();
@@ -390,10 +402,18 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertTrue(cmbHorasCitas.isEnabled());
 			// Ponemos una fecha en la que no trabaja el médico
 			// Como el médico trabaja los miércoles, seleccionamos un martes
-			//txtFechaCita.setText("17/10/2010");
+			// Ponemos una fecha en la que no trabaja el médico, para ello eliminamos su periodo de trabajo
+			// Como el médico trabaja los miércoles, seleccionamos un martes
+			txtDiaCita.setText("03/03/2015");
 			esperado = "El día seleccionado no es laboral para el médico";
 			assertEquals(esperado, (String)jcmbHorasCitas.getSelectedItem());
 			assertEquals(1, jcmbHorasCitas.getItemCount());
+			// Ponemos una fecha anterior a la actual (es decir, una fecha caducada)
+			txtDiaCita.setText("01/01/2009");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnRegistrar, OK_OPTION), new FechaCitaIncorrectaException().getLocalizedMessage());
+			// Ponemos un formato de fecha que no es válido
+			txtDiaCita.setText("asdf");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnRegistrar, OK_OPTION), new FormatoFechaIncorrectoException().getLocalizedMessage());
 			// Ponemos una fecha en la que sí trabaja el médico
 			txtDiaCita.setText("20/10/2010");
 			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
@@ -432,7 +452,6 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	}
 	
 	public void testTramitarVolanteCitaOtroBeneficiario () {
-		long idVolante = -1;
 		String esperado = "";
 		boolean valido = false;
 		// Creamos un segundo beneficiario
@@ -490,7 +509,6 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	}
 	
 	private long emitirVolante(final Beneficiario bene, final Medico emisor, final Medico receptor) {
-		long idVolante = -1;
 		controladorCabecera = new ControladorCliente();
 		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
 			public void run() {
@@ -510,6 +528,352 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		}
 		winPrincipal2.dispose();
 		return idVolante;
+	}
+	
+	public void testObservadorCitaRegistradaAnulada () {
+		String esperado = "";
+		
+		// Iniciamos sesión con un segundo administrador
+		controladorAuxiliar = new ControladorCliente();
+		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
+			public void run() {
+				try {
+					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
+					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
+					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
+					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
+				} catch(Exception e) {
+					fail(e.toString());
+				}
+			}
+		});
+		// Indicamos que la operación activa del primer administador es la de tramitar cita con volante
+		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.TramitarCitaVolante);
+		// El primer administrador busca al beneficiario de prueba
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		// Comprobamos que los componentes de tramitar el volante se han habilitado
+		assertTrue(txtNumeroVolante.isEnabled());
+		assertTrue(txtNumeroVolante.getText().equals(""));
+		assertTrue(btnBuscarVolante.isEnabled());
+		assertTrue(txtMedicoAsignado.getText().equals(""));
+		assertTrue(txtCentro.getText().equals(""));
+		// Comprobamos que los de tramitar la cita aún están deshabilitados, porque primero hay que buscar el volante
+		assertFalse(txtDiaCita.isEnabled());
+		assertFalse(cmbHorasCitas.isEnabled());
+		assertFalse(txtMedico.isEditable());
+		assertFalse(btnRegistrar.isEnabled());
+		// Ahora emitimos un volante y lo buscamos para tramitarlo
+		idVolante = emitirVolante(beneficiarioPrueba, cabecera, especialista);
+		if (idVolante != -1) {
+			txtNumeroVolante.setText(String.valueOf(idVolante));
+			esperado = "Volante encontrado.";
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
+			// Comprobamos que los campos se actualizan correctamente
+			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			// Comprobamos que los campos de pedir cita se han habilitado
+			assertTrue(txtDiaCita.isEnabled());
+			assertTrue(cmbHorasCitas.isEnabled());	
+			// Se selecciona un día en el que trabajará el médico
+			txtDiaCita.setText("04/03/2015");
+			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
+			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+			try {
+				// En este momento el segundo administrador pide una cita en la hora seleccionada por el primero
+				Trigger t1 = new Trigger() {
+					@Override
+					public void run() throws Exception {
+						controladorAuxiliar.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
+					}
+				};
+				WindowInterceptor.init(t1).process(new WindowHandler() {
+					public Trigger process(Window window) {
+	
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar seleccionando la siguiente hora disponible en el día que se ha pedido cita desde el administrador auxiliar
+				txtDiaCita.setText("04/03/2015");
+				assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);
+				
+				// Ahora pedimos cita para este mismo volante
+				Trigger t2 = new Trigger() {
+					@Override
+					public void run() throws Exception {
+						controladorAuxiliar.pedirCita(beneficiarioPrueba, idVolante, new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
+					}
+				};
+				WindowInterceptor.init(t2).process(new WindowHandler() {
+					public Trigger process(Window window) {
+	
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar, borrando los campos porque el volante ya no se puede utilizar
+				comprobarCamposRestablecidos();
+				
+				// Ahora procedemos a eliminar la cita sin volante desde el segundo administrador
+				Trigger t3 = new Trigger() {
+					@Override
+					public void run() throws Exception {
+						controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
+					}
+				};
+				WindowInterceptor.init(t3).process(new WindowHandler() {
+					public Trigger process(Window window) {
+	
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar seleccionando la primera hora disponible en el día que se ha anulado cita desde el administrador auxiliar
+				txtDiaCita.setText("04/03/2015");
+				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+				
+				// Ahora procedemos a eliminar la cita que se dió con el volante desde el segundo administrador
+				Trigger t4 = new Trigger() {
+					@Override
+					public void run() throws Exception {
+						controladorAuxiliar.anularCita(controladorAuxiliar.consultarVolante(idVolante).getCita());
+					}
+				};
+				WindowInterceptor.init(t4).process(new WindowHandler() {
+					public Trigger process(Window window) {
+	
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar seleccionando la primera hora disponible en el día que se ha anulado cita desde el administrador auxiliar
+				txtDiaCita.setText("04/03/2015");
+				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);				
+				
+				// Se finaliza el controlador auxiliar
+				controladorAuxiliar.cerrarSesion();
+				controladorAuxiliar.cerrarControlador();
+			
+			} catch (Exception e) {
+				fail (e.toString());
+			}
+		}
+		winPrincipal2.dispose();
+	}
+	
+	public void testObservadorUsuarioActualizadoEliminado () {
+		String esperado = "";
+		PeriodoTrabajo periodo2 = new PeriodoTrabajo(horaInicio, horaFinal-2, DiaSemana.Miercoles);
+		// Reemplazamos el periodo que ya tenia el medico
+		especialista.getCalendario().set(0, periodo2);
+		
+		// Iniciamos sesión con un segundo administrador
+		controladorAuxiliar = new ControladorCliente();
+		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
+			public void run() {
+				try {
+					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
+					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
+					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
+					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
+				} catch(Exception e) {
+					fail(e.toString());
+				}
+			}
+		});
+		// Indicamos que la operación activa del primer administador es la de tramitar cita con volante
+		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.TramitarCitaVolante);
+			// El primer administrador busca al beneficiario de prueba
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		// Comprobamos que los componentes de tramitar el volante se han habilitado
+		assertTrue(txtNumeroVolante.isEnabled());
+		assertTrue(txtNumeroVolante.getText().equals(""));
+		assertTrue(btnBuscarVolante.isEnabled());
+		assertTrue(txtMedicoAsignado.getText().equals(""));
+		assertTrue(txtCentro.getText().equals(""));
+		// Comprobamos que los de tramitar la cita aún están deshabilitados, porque primero hay que buscar el volante
+		assertFalse(txtDiaCita.isEnabled());
+		assertFalse(cmbHorasCitas.isEnabled());
+		assertFalse(txtMedico.isEditable());
+		assertFalse(btnRegistrar.isEnabled());
+		// Ahora emitimos un volante y lo buscamos para tramitarlo
+		idVolante = emitirVolante(beneficiarioPrueba, cabecera, especialista);
+		if (idVolante != -1) {
+			txtNumeroVolante.setText(String.valueOf(idVolante));
+			esperado = "Volante encontrado.";
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
+			// Comprobamos que los campos se actualizan correctamente
+			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			// Comprobamos que los campos de pedir cita se han habilitado
+			assertTrue(txtDiaCita.isEnabled());
+			assertTrue(cmbHorasCitas.isEnabled());
+			// Se selecciona un día en el que trabajará el médico
+			txtDiaCita.setText("04/03/2015");
+			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
+			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+			try {
+				// En este momento el segundo administrador modifica el calendario del médico
+				Trigger t1 = new Trigger() {
+					@Override
+					public void run() throws Exception {
+						controladorAuxiliar.modificarMedico(especialista);
+					}
+				};
+				WindowInterceptor.init(t1).process(new WindowHandler() {
+					public Trigger process(Window window) {
+	
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar teniendo menos horas en el combobox
+				txtDiaCita.setText("04/03/2015");
+				assertEquals((horaFinal-2-horaInicio)*4, jcmbHorasCitas.getItemCount());
+				
+				// Ahora procedemos a eliminar el medico desde el segundo administrador
+				Trigger t2 = new Trigger() {
+					@Override
+					public void run() throws Exception {
+						controladorAuxiliar.eliminarMedico(especialista);
+					}
+				};
+				WindowInterceptor.init(t2).process(new WindowHandler() {
+					public Trigger process(Window window) {
+	
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar borrando los campos, pues se ha eliminado el especialista
+				comprobarCamposRestablecidos();
+				medicosEliminados.add(especialista);
+				
+				// Se finaliza el controlador auxiliar
+				controladorAuxiliar.cerrarSesion();
+				controladorAuxiliar.cerrarControlador();
+			} catch (Exception e) {
+				fail (e.toString());
+			}
+		}
+		winPrincipal2.dispose();
+	}
+	
+	public void testObservadorBeneficiarioActualizadoEliminado () {
+		String esperado = "";
+		// Iniciamos sesión con un segundo administrador
+		controladorAuxiliar = new ControladorCliente();
+		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
+			public void run() {
+				try {
+					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
+					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
+					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
+					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
+				} catch(Exception e) {
+					fail(e.toString());
+				}
+			}
+		});
+		// Indicamos que la operación activa del primer administador es la de tramitar cita con volante
+		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.TramitarCitaVolante);
+		// El primer administrador busca al beneficiario de prueba
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		// Comprobamos que los componentes de tramitar el volante se han habilitado
+		assertTrue(txtNumeroVolante.isEnabled());
+		assertTrue(txtNumeroVolante.getText().equals(""));
+		assertTrue(btnBuscarVolante.isEnabled());
+		assertTrue(txtMedicoAsignado.getText().equals(""));
+		assertTrue(txtCentro.getText().equals(""));
+		// Comprobamos que los de tramitar la cita aún están deshabilitados, porque primero hay que buscar el volante
+		assertFalse(txtDiaCita.isEnabled());
+		assertFalse(cmbHorasCitas.isEnabled());
+		assertFalse(txtMedico.isEditable());
+		assertFalse(btnRegistrar.isEnabled());
+		// Ahora emitimos un volante y lo buscamos para tramitarlo
+		idVolante = emitirVolante(beneficiarioPrueba, cabecera, especialista);
+		if (idVolante != -1) {
+			txtNumeroVolante.setText(String.valueOf(idVolante));
+			esperado = "Volante encontrado.";
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
+			// Comprobamos que los campos se actualizan correctamente
+			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			// Comprobamos que los campos de pedir cita se han habilitado
+			assertTrue(txtDiaCita.isEnabled());
+			assertTrue(cmbHorasCitas.isEnabled());
+			// Se selecciona un día en el que trabajará el médico
+			txtDiaCita.setText("04/03/2015");
+			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
+			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+			try {
+				// En este momento el segundo administrador modifica el beneficiario
+				Trigger t1 = new Trigger() {
+					@Override
+					public void run() throws Exception {
+						beneficiarioPrueba.setNombre("Otro Nombre");
+						controladorAuxiliar.modificarBeneficiario(beneficiarioPrueba);
+					}
+				};
+				WindowInterceptor.init(t1).process(new WindowHandler() {
+					public Trigger process(Window window) {
+	
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del beneficiario
+				assertEquals(txtNombre.getText(), beneficiarioPrueba.getNombre());
+				
+				// Ahora procedemos a eliminar el beneficiario desde el segundo administrador
+				Trigger t2 = new Trigger() {
+					@Override
+					public void run() throws Exception {
+						controladorAuxiliar.eliminarBeneficiario(beneficiarioPrueba);
+					}
+				};
+				WindowInterceptor.init(t2).process(new WindowHandler() {
+					public Trigger process(Window window) {
+	
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar borrando los campos, pues no existe ya el beneficiario
+				comprobarCamposRestablecidos();
+				eliminado = true;
+				// Se finaliza el controlador auxiliar
+				controladorAuxiliar.cerrarSesion();
+				controladorAuxiliar.cerrarControlador();
+			} catch (Exception e) {
+				fail (e.toString());
+			}
+		}
+		winPrincipal2.dispose();
+	}
+	
+	public void testObservadorSustitucionRegistrada () {
+		// TODO
 	}
 
 	private void comprobarCamposRestablecidos () {

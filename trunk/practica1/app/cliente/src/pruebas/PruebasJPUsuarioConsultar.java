@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.util.Date;
 import java.util.Vector;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
@@ -22,8 +24,10 @@ import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JFCalendarioLaboral;
 import presentacion.JPUsuarioConsultar;
+import presentacion.auxiliar.OperacionesInterfaz;
 
 import comunicaciones.ConfiguracionCliente;
+import comunicaciones.RemotoCliente;
 
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
@@ -37,6 +41,7 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
+import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CorreoElectronicoIncorrectoException;
@@ -50,6 +55,7 @@ import excepciones.UsuarioYaExistenteException;
 public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private ControladorCliente controlador;
+	private ControladorCliente controladorAuxiliar;
 	private JPUsuarioConsultar panel;
 	private Panel pnlPanel;
 	private TextBox txtNIFBuscado;
@@ -84,6 +90,9 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	private JTextField jtxtCentro;
 	private JTextField jtxtEspecialidad;
 	private JLabel jlblHoras;
+	private JCheckBox jchkEditar;
+	private JButton jbtnEliminar;
+	private JButton jbtnGuardar;
 	private Window winPrincipal;
 	private JFCalendarioLaboral frameCalendario;
 	
@@ -235,6 +244,9 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			jcmbRol = (JComboBox)cmbRol.getAwtComponent();
 			jtxtCentro = (JTextField)txtCentro.getAwtComponent();
 			jtxtEspecialidad = (JTextField)txtEspecialidad.getAwtComponent();
+			jchkEditar = (JCheckBox)chkEditar.getAwtComponent();
+			jbtnGuardar = (JButton)btnGuardar.getAwtComponent();
+			jbtnEliminar = (JButton)btnEliminar.getAwtComponent();
 			
 			// Buscamos en el panel la label de las horas seleccionadas en el calendario
 			for (Component c : panel.getComponents()) {
@@ -243,6 +255,11 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 					jlblHoras = (JLabel) c;
 			}
 			textoHoras = jlblHoras.getText();
+			
+			// Mostramos los botones ya que, por defecto, están invisibles
+			jchkEditar.setVisible(true);
+			jbtnGuardar.setVisible(true);
+			jbtnEliminar.setVisible(true);
 			
 			Thread.sleep(50);
 			
@@ -860,6 +877,89 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			e.printStackTrace();
 			fail(e.toString());
 		}
+	}
+	
+	public void testObservadorUsuarioActualizadoEliminado () {
+		// Iniciamos sesión con un segundo administrador
+		controladorAuxiliar = new ControladorCliente();
+		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
+			public void run() {
+				try {
+					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
+					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
+					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
+					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
+				} catch(Exception e) {
+					fail(e.toString());
+				}
+			}
+		});
+		// Indicamos que la operación activa del primer administador es la de consultar un usuario
+		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarUsuario);
+		// El primer administrador busca al médico de prueba
+		txtNIFBuscado.setText(cabecera.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
+		assertEquals(txtNIF.getText(), cabecera.getNif());
+		try {
+			// En este momento el segundo administrador modifica el usuario
+			Trigger t1 = new Trigger() {
+				@Override
+				public void run() throws Exception {
+					cabecera.setNombre("Otro Nombre");
+					controladorAuxiliar.modificarMedico(cabecera);
+				}
+			};
+			WindowInterceptor.init(t1).process(new WindowHandler() {
+				public Trigger process(Window window) {
+
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
+			// Dormimos el hilo en espera de la respuesta del servidor
+			Thread.sleep(500);
+			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del médico
+			assertEquals(txtNombre.getText(), cabecera.getNombre());
+			
+			// Ahora procedemos a eliminar el médico desde el segundo administrador
+			Trigger t2 = new Trigger() {
+				@Override
+				public void run() throws Exception {
+					controladorAuxiliar.eliminarMedico(cabecera);
+				}
+			};
+			WindowInterceptor.init(t2).process(new WindowHandler() {
+				public Trigger process(Window window) {
+
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
+			// Dormimos el hilo en espera de la respuesta del servidor
+			Thread.sleep(500);
+			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues no existe ya el médico
+			comprobarCamposRestablecidos();
+			// Se finaliza el controlador auxiliar
+			controladorAuxiliar.cerrarSesion();
+			controladorAuxiliar.cerrarControlador();
+		} catch (Exception e) {
+			fail (e.toString());
+		}
+		winPrincipal2.dispose();
+	}
+	
+	private void comprobarCamposRestablecidos () {
+		assertTrue(txtNIF.getText().equals(""));	
+		assertTrue(txtNombre.getText().equals(""));
+		assertTrue(txtApellidos.getText().equals(""));
+		assertTrue(txtLogin.getText().equals(""));
+		assertTrue(jtxtPassword.getText().equals(""));
+		assertTrue(jtxtPasswordConf.getText().equals(""));
+		assertTrue(txtCorreoElectronico.getText().equals(""));
+		assertTrue(txtTelefonoFijo.getText().equals(""));
+		assertTrue(txtTelefonoMovil.getText().equals(""));
+		assertFalse(jcmbRol.isEnabled());
+		assertTrue(txtCentro.getText().equals(""));
+		assertFalse(btnCalendario.isVisible());
+		assertFalse(txtEspecialidad.isVisible());
 	}
 
 }

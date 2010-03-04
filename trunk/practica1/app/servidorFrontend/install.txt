@@ -86,6 +86,7 @@ CREATE TABLE citas (
        nifBeneficiario CHAR(9) NOT NULL,
        nifMedico CHAR(9) NOT NULL,
        PRIMARY KEY (id),
+       UNIQUE (fecha, nifMedico),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
        FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
