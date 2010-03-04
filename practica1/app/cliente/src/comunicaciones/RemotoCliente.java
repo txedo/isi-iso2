@@ -96,14 +96,6 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 
     // Métodos del cliente
 
-	public String getDireccionIP() throws RemoteException {
-		return cliente.getDireccionIP();
-	}
-
-	public int getPuerto() throws RemoteException {
-		return cliente.getPuerto();
-	}
-
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
 		cliente.actualizarVentanas(operacion, dato);
 	}

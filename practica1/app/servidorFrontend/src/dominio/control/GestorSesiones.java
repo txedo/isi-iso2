@@ -1,7 +1,5 @@
 package dominio.control;
 
-import java.net.MalformedURLException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -38,7 +36,7 @@ public class GestorSesiones {
 	private static Hashtable<Long, ICliente> clientes = new Hashtable<Long, ICliente>();
 
 	// Metodo para identificar un cliente y crear una sesion
-	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, Exception {
+	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, RemoteException, Exception {
 		Enumeration<Sesion> sesionesAbiertas; 
 		Sesion sesion, sesionAbierta;
 		ICliente cliente;
@@ -122,17 +120,8 @@ public class GestorSesiones {
 			throw new SesionNoIniciadaException("El identificador de la sesión es inválido.");
 		}
 
-		// Establecemos conexión con el cliente remoto y lo guardamos
-		try {
-			proxyCliente = new ProxyCliente();
-			proxyCliente.conectar(cliente.getDireccionIP(), cliente.getPuerto());
-		} catch(NotBoundException e) {
-			throw new RemoteException("No se puede conectar con el cliente porque está desactivado (IP " + cliente.getDireccionIP() + ", puerto " + String.valueOf(cliente.getPuerto()) + ").");
-		} catch(MalformedURLException e) {
-			throw new RemoteException("No se puede conectar con el cliente (IP " + cliente.getDireccionIP() + ", puerto " + String.valueOf(cliente.getPuerto()) + ").");
-		} catch(RemoteException e) {
-			throw new RemoteException("No se puede conectar con el cliente (IP " + cliente.getDireccionIP() + ", puerto " + String.valueOf(cliente.getPuerto()) + ").");
-		}
+		// Creamos un proxy con el cliente y lo añadimos a la lista de clientes conectados
+		proxyCliente = new ProxyCliente(cliente);
 		clientes.put(idSesion, proxyCliente);
 	}
 	
