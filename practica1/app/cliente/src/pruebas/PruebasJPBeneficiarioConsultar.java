@@ -18,6 +18,7 @@ import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JPBeneficiarioConsultar;
+import presentacion.JPBeneficiarioRegistrar;
 
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
@@ -174,8 +175,9 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 				}
 			}while(!valido);
 			
-			// Creamos el panel
-			panel = new JPBeneficiarioConsultar(controlador.getVentanaPrincipal(), controlador);
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarBeneficiarios");
+			panel = (JPBeneficiarioConsultar)p1.getPanel("jPanelConsultar").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
 			cmbIdentificacion = pnlPanel.getComboBox("cmbIdentificacion");

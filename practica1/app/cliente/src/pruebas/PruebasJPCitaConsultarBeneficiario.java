@@ -17,6 +17,7 @@ import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JPCitaConsultarBeneficiario;
+import presentacion.JPCitaTramitar;
 
 import comunicaciones.ConfiguracionCliente;
 
@@ -138,8 +139,9 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 				}
 			}while(!valido);
 			
-			// Creamos el panel
-			panelCita = new JPCitaConsultarBeneficiario(controlador.getVentanaPrincipal(), controlador);
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
+			panelCita = (JPCitaConsultarBeneficiario)p1.getPanel("jPanelConsultarCitasBeneficiario").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panelCita);
 			panelBeneficiario = pnlPanel.getPanel("pnlBeneficiario");

@@ -18,6 +18,7 @@ import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JPEmitirVolante;
+import presentacion.JPUsuarioConsultar;
 
 import comunicaciones.ConfiguracionCliente;
 
@@ -139,8 +140,9 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 				}
 			}while(!valido);
 			
-			// Creamos el panel
-			pnlEmitir = new JPEmitirVolante(controlador.getVentanaPrincipal(), controlador);
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarVolantes");
+			pnlEmitir = (JPEmitirVolante) p1.getPanel("jPanelEmitir").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(pnlEmitir);
 			panelBeneficiario = pnlPanel.getPanel("pnlBeneficiario");

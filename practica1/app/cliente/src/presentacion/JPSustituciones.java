@@ -86,6 +86,7 @@ public class JPSustituciones extends JPBase {
 				jScrollEstablecer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelEstablecer = new JPEstablecerSustituto(this.getFrame(), this.getControlador());
+					jPanelEstablecer.setName("jPanelEstablecer");
 					jScrollEstablecer.setViewportView(jPanelEstablecer);
 				}
 			}
