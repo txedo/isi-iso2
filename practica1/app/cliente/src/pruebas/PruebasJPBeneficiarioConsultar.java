@@ -3,6 +3,7 @@ package pruebas;
 import java.util.Date;
 import java.util.Vector;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -19,9 +20,11 @@ import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JPBeneficiarioConsultar;
 import presentacion.JPBeneficiarioRegistrar;
+import presentacion.auxiliar.OperacionesInterfaz;
 
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
+import comunicaciones.RemotoCliente;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
@@ -30,6 +33,7 @@ import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
+import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.BeneficiarioYaExistenteException;
@@ -53,6 +57,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	
 	private Beneficiario beneficiarioPrueba;
 	private ControladorCliente controlador;
+	private ControladorCliente controladorAuxiliar;
 	private JPBeneficiarioConsultar panel;
 	private Panel pnlPanel;
 	private ComboBox cmbIdentificacion;
@@ -97,6 +102,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	private JTextField jtxtTelefonoMovil;
 	private JComboBox jcmbCentros;
 	private JCheckBox jchkEditar;
+	private JButton jbtnEliminar;
+	private JButton jbtnGuardar;
 	private Window winPrincipal;
 	
 	private boolean eliminadoBeneficiario, eliminadoMedico, valido;
@@ -222,6 +229,13 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			jtxtTelefonoMovil = (JTextField)txtTelefonoMovil.getAwtComponent();
 			jcmbCentros = (JComboBox)cmbCentros.getAwtComponent();
 			jchkEditar = (JCheckBox)chkEditar.getAwtComponent();
+			jbtnGuardar = (JButton)btnGuardar.getAwtComponent();
+			jbtnEliminar = (JButton)btnEliminar.getAwtComponent();
+			
+			// Mostramos los botones ya que, por defecto, están invisibles
+			jchkEditar.setVisible(true);
+			jbtnGuardar.setVisible(true);
+			jbtnEliminar.setVisible(true);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -478,6 +492,169 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+	}
+	
+	public void testObservadorBeneficiarioActualizadoEliminado () {
+		// Iniciamos sesión con un segundo administrador
+		controladorAuxiliar = new ControladorCliente();
+		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
+			public void run() {
+				try {
+					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
+					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
+					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
+					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
+				} catch(Exception e) {
+					fail(e.toString());
+				}
+			}
+		});
+		// Indicamos que la operación activa del primer administador es la de consultar beneficiario
+		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarBeneficiario);
+		// El primer administrador busca al beneficiario de prueba
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		// Se comprueba que tiene médico asignado
+		assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
+		try {
+			// En este momento el segundo administrador modifica el beneficiario
+			Trigger t1 = new Trigger() {
+				@Override
+				public void run() throws Exception {
+					beneficiarioPrueba.setNombre("Otro Nombre");
+					controladorAuxiliar.modificarBeneficiario(beneficiarioPrueba);
+				}
+			};
+			WindowInterceptor.init(t1).process(new WindowHandler() {
+				public Trigger process(Window window) {
+
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
+			// Dormimos el hilo en espera de la respuesta del servidor
+			Thread.sleep(500);
+			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del beneficiario
+			assertEquals(txtNombre.getText(), beneficiarioPrueba.getNombre());
+			
+			// Ahora procedemos a eliminar el beneficiario desde el segundo administrador
+			Trigger t2 = new Trigger() {
+				@Override
+				public void run() throws Exception {
+					controladorAuxiliar.eliminarBeneficiario(beneficiarioPrueba);
+				}
+			};
+			WindowInterceptor.init(t2).process(new WindowHandler() {
+				public Trigger process(Window window) {
+
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
+			// Dormimos el hilo en espera de la respuesta del servidor
+			Thread.sleep(500);
+			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues no existe ya el beneficiario
+			comprobarCamposRestablecidos();
+			eliminadoBeneficiario = true;
+			// Se finaliza el controlador auxiliar
+			controladorAuxiliar.cerrarSesion();
+			controladorAuxiliar.cerrarControlador();
+		} catch (Exception e) {
+			fail (e.toString());
+		}
+		winPrincipal2.dispose();
+	}
+	
+	public void testObservadorUsuarioActualizadoEliminado () {
+		// Iniciamos sesión con un segundo administrador
+		controladorAuxiliar = new ControladorCliente();
+		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
+			public void run() {
+				try {
+					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
+					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
+					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
+					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
+				} catch(Exception e) {
+					fail(e.toString());
+				}
+			}
+		});
+		// Indicamos que la operación activa del primer administador es la de consultar beneficiario
+		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarBeneficiario);
+		// El primer administrador busca al beneficiario de prueba
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		// Se comprueba que tiene médico asignado
+		assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
+		try{
+			// En este momento el segundo administrador modifica el médico asignado al beneficiario
+			Trigger t1 = new Trigger() {
+				@Override
+				public void run() throws Exception {
+					cabecera.setNombre("Nombre cabecera nuevo");
+					controladorAuxiliar.modificarMedico(cabecera);
+				}
+			};
+			WindowInterceptor.init(t1).process(new WindowHandler() {
+				public Trigger process(Window window) {
+
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
+			// Dormimos el hilo en espera de la respuesta del servidor
+			Thread.sleep(500);
+			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre de medico de cabecera
+			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
+			
+			// Ahora procedemos a eliminar el medico desde el segundo administrador
+			Trigger t2 = new Trigger() {
+				@Override
+				public void run() throws Exception {
+					controladorAuxiliar.eliminarMedico(cabecera);
+				}
+			};
+			WindowInterceptor.init(t2).process(new WindowHandler() {
+				public Trigger process(Window window) {
+
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
+			// Dormimos el hilo en espera de la respuesta del servidor
+			Thread.sleep(500);
+			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues el beneficiario se ha quedado sin médico asignado
+			comprobarCamposRestablecidos();
+			medicosEliminados.add(cabecera);
+			// Se finaliza el controlador auxiliar
+			controladorAuxiliar.cerrarSesion();
+			controladorAuxiliar.cerrarControlador();
+		} catch (Exception e) {
+			fail (e.toString());
+		}
+		winPrincipal2.dispose();
+	}
+	
+	private void comprobarCamposRestablecidos () {
+		assertTrue(txtIdentificacion.getText().equals(""));
+		assertTrue(txtNIF.getText().equals(""));
+		assertTrue(txtNSS.getText().equals(""));
+		assertTrue(txtNombre.getText().equals(""));
+		assertTrue(txtApellidos.getText().equals(""));
+		assertTrue(txtFechaNacimiento.getText().equals(""));
+		assertTrue(txtDomicilio.getText().equals(""));
+		assertTrue(txtNumero.getText().equals(""));
+		assertTrue(txtPuerta.getText().equals(""));
+		assertTrue(txtPiso.getText().equals(""));
+		assertTrue(txtCP.getText().equals(""));
+		assertTrue(txtLocalidad.getText().equals(""));
+		assertTrue(txtProvincia.getText().equals(""));
+		assertTrue(txtCorreo.getText().equals(""));
+		assertTrue(txtTelefonoFijo.getText().equals(""));
+		assertTrue(txtTelefonoMovil.getText().equals(""));
+		assertFalse(jcmbCentros.isEnabled());
+		assertTrue(txtMedicoAsignado.getText().equals(""));
 	}
 	
 }

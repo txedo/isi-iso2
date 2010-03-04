@@ -215,7 +215,7 @@ public class JPCitaTramitar extends JPBase {
 			// Para poder pedir cita, el beneficiario debe tener
 			// un médico asignado
 			if(beneficiario.getMedicoAsignado() == null) {
-				Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario seleccionasdo no puede pedir cita\nporque no tiene ningún médico asignado.");
+				Dialogos.mostrarDialogoError(getFrame(), "Error", "El beneficiario seleccionado no puede pedir cita\nporque no tiene ningún médico asignado.");
 			} else {
 				
 				// Consultamos al servidor toda la información

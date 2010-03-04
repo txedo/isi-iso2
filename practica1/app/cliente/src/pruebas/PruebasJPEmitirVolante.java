@@ -140,7 +140,18 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 				}
 			}while(!valido);
 			
-			// Obtenemos el panel
+			// Obtenemos el panel, iniciando sesión como médico
+			controlador.cerrarSesion();
+			winPrincipal.dispose();
+			winPrincipal = WindowInterceptor.run(new Trigger() {
+				public void run() {
+					try {
+						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
+					} catch(Exception e) {
+						fail(e.toString());
+					}
+				}
+			});
 			Panel p1 = winPrincipal.getPanel("jPanelGestionarVolantes");
 			pnlEmitir = (JPEmitirVolante) p1.getPanel("jPanelEmitir").getAwtContainer();
 			// Obtenemos los componentes del panel
@@ -200,18 +211,6 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 	/** Pruebas con datos no válidos */
 	public void testDatosInvalidos() {
 		try {
-			// Iniciamos sesión como médico
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
 			// Buscamos un beneficiario por su NIF
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
@@ -252,18 +251,6 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 	
 	public void testBuscarBeneficiarioPorNIF () {
 		try {
-			// Iniciamos sesión como médico
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
@@ -280,18 +267,6 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 	
 	public void testBuscarBeneficiarioPorNSS () {
 		try {
-			// Iniciamos sesión como médico
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(1);
@@ -311,6 +286,18 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 		try {
 			especialistas = controlador.obtenerMedicosTipo(tEspecialista);
 			// Limpiamos la base de datos de especialistas
+			// Volvemos a la sesión del administrador
+			controlador.cerrarSesion();
+			winPrincipal.dispose();
+			winPrincipal = WindowInterceptor.run(new Trigger() {
+				public void run() {
+					try {
+						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
+					} catch(Exception e) {
+						fail(e.toString());
+					}
+				}
+			});
 			for (Medico m: especialistas) {
 				controlador.eliminarUsuario(m);
 			}
@@ -374,6 +361,18 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 		try {
 			especialistas = controlador.obtenerMedicosTipo(tEspecialista);
 			// Limpiamos la base de datos de especialistas
+			// Volvemos a la sesión del administrador
+			controlador.cerrarSesion();
+			winPrincipal.dispose();
+			winPrincipal = WindowInterceptor.run(new Trigger() {
+				public void run() {
+					try {
+						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
+					} catch(Exception e) {
+						fail(e.toString());
+					}
+				}
+			});
 			for (Medico m: especialistas) {
 				controlador.eliminarUsuario(m);
 			}
@@ -457,6 +456,17 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 		try {
 			especialistas = controlador.obtenerMedicosTipo(tEspecialista);
 			// Limpiamos la base de datos de especialistas
+			controlador.cerrarSesion();
+			winPrincipal.dispose();
+			winPrincipal = WindowInterceptor.run(new Trigger() {
+				public void run() {
+					try {
+						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
+					} catch(Exception e) {
+						fail(e.toString());
+					}
+				}
+			});
 			for (Medico m: especialistas) {
 				controlador.eliminarUsuario(m);
 			}
