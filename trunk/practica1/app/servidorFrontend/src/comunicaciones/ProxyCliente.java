@@ -12,22 +12,11 @@ public class ProxyCliente implements ICliente {
 
 	private ICliente cliente;
 	
-	public void conectar(String ip, int puerto) throws MalformedURLException, RemoteException, NotBoundException {
-		String url;
-		
-		url = "rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_CLIENTE;
-        cliente = (ICliente)Naming.lookup(url);
+	public ProxyCliente (ICliente c) {
+		this.cliente = c;
 	}
 
 	// Métodos del cliente
-
-	public String getDireccionIP() throws RemoteException {
-		return cliente.getDireccionIP();
-	}
-
-	public int getPuerto() throws RemoteException {
-		return cliente.getPuerto();
-	}
 
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
 		Thread hilo;

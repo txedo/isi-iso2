@@ -10,10 +10,6 @@ public interface ICliente extends Remote {
 	
 	public final String NOMBRE_CLIENTE = "cliente";
 	
-	public String getDireccionIP() throws RemoteException;
-	
-	public int getPuerto() throws RemoteException;
-	
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException;
 	
 	public void servidorInaccesible() throws RemoteException;
