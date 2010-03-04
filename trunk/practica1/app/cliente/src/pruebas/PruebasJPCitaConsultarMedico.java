@@ -14,6 +14,7 @@ import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JPCitaConsultarMedico;
+import presentacion.JPCitaTramitar;
 
 import comunicaciones.ConfiguracionCliente;
 
@@ -127,8 +128,9 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 				}
 			}while(!valido);
 
-			// Creamos el panel
-			panelCita = new JPCitaConsultarMedico(controlador.getVentanaPrincipal(), controlador);
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
+			panelCita = (JPCitaConsultarMedico)p1.getPanel("jPanelConsultarCitasMedico").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panelCita);
 			panelUsuario = pnlPanel.getPanel("pnlUsuario");

@@ -91,6 +91,7 @@ public class JPBeneficiarios extends JPBase {
 				jScrollConsultar.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelConsultar = new JPBeneficiarioConsultar(this.getFrame(), this.getControlador());
+					jPanelConsultar.setName("jPanelConsultar");
 					jScrollConsultar.setViewportView(jPanelConsultar);
 					jPanelConsultar.desactivarModificacion();					
 				}
@@ -103,6 +104,7 @@ public class JPBeneficiarios extends JPBase {
 				jScrollRegistrar.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelRegistrar = new JPBeneficiarioRegistrar(this.getFrame(), this.getControlador());
+					jPanelRegistrar.setName("jPanelRegistrar");
 					jScrollRegistrar.setViewportView(jPanelRegistrar);
 				}
 			}
@@ -114,6 +116,7 @@ public class JPBeneficiarios extends JPBase {
 				jScrollConsultarModificar.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelConsultarModificar = new JPBeneficiarioConsultar(this.getFrame(), this.getControlador());
+					jPanelConsultarModificar.setName("jPanelConsultarModificar");
 					jScrollConsultarModificar.setViewportView(jPanelConsultarModificar);
 				}
 			}

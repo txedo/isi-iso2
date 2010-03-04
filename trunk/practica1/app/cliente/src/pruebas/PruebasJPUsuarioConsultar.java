@@ -198,8 +198,9 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 				}
 			}while(!valido);
 			
-			// Creamos el panel
-			panel = new JPUsuarioConsultar(controlador.getVentanaPrincipal(), controlador);
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarUsuarios");
+			panel = (JPUsuarioConsultar) p1.getPanel("jPanelConsultar").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
 			txtNIFBuscado = pnlPanel.getTextBox("txtNIFBuscado");

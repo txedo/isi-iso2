@@ -19,7 +19,9 @@ import org.uispec4j.interception.WindowInterceptor;
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
 
+import presentacion.JPCitaTramitar;
 import presentacion.JPCitaVolanteTramitar;
+import presentacion.JPEmitirVolante;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.DiaSemana;
@@ -193,8 +195,9 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			// se hace de manera aleatoria
 			especialista = controlador.consultarMedico(especialista.getNif());
 
-			// Creamos el panel
-			panel = new JPCitaVolanteTramitar(controlador.getVentanaPrincipal(), controlador);
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
+			panel = (JPCitaVolanteTramitar)p1.getPanel("jPanelVolanteTramitar").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
 			panelBeneficiario = pnlPanel.getPanel("pnlBeneficiario");

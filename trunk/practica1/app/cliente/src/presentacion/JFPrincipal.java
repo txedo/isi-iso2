@@ -222,11 +222,13 @@ public class JFPrincipal extends javax.swing.JFrame {
 					});
 					{
 						jPanelBienvenida = new JPBienvenida();
+						jPanelBienvenida.setName("jPanelBienvenida");
 						jTabbedPaneOperaciones.addTab("Inicio", null, jPanelBienvenida, null);
 					}
 					{
 						jPanelGestionarBeneficiarios = new JPBeneficiarios(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Beneficiarios", null, jPanelGestionarBeneficiarios, null);
+						jPanelGestionarBeneficiarios.setName("jPanelGestionarBeneficiarios");
 						jPanelGestionarBeneficiarios.addOperacionCambiadaListener(new OperacionCambiadaListener() {
 							public void operacionCambiada(OperacionCambiadaEvent evt) {
 								jPanelGestionarBeneficiariosOperacionCambiada(evt);
@@ -236,6 +238,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 					{
 						jPanelGestionarUsuarios = new JPUsuarios(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Usuarios", null, jPanelGestionarUsuarios, null);
+						jPanelGestionarUsuarios.setName("jPanelGestionarUsuarios");
 						jPanelGestionarUsuarios.addOperacionCambiadaListener(new OperacionCambiadaListener() {
 							public void operacionCambiada(OperacionCambiadaEvent evt) {
 								jPanelGestionarUsuariosOperacionCambiada(evt);
@@ -255,6 +258,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 					{
 						jPanelGestionarSustituciones = new JPSustituciones(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Sustituciones", null, jPanelGestionarSustituciones, null);
+						jPanelGestionarSustituciones.setName("jPanelGestionarSustituciones");
 						jPanelGestionarSustituciones.addOperacionCambiadaListener(new OperacionCambiadaListener() {
 							public void operacionCambiada(OperacionCambiadaEvent evt) {
 								jPanelGestionarSustitucionesOperacionCambiada(evt);
@@ -264,6 +268,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 					{
 						jPanelGestionarVolantes = new JPVolantes(this, controlador);
 						jTabbedPaneOperaciones.addTab("Gestionar Volantes", null, jPanelGestionarVolantes, null);
+						jPanelGestionarVolantes.setName("jPanelGestionarVolantes");
 						jPanelGestionarVolantes.addOperacionCambiadaListener(new OperacionCambiadaListener() {
 							public void operacionCambiada(OperacionCambiadaEvent evt) {
 								jPanelGestionarVolantesOperacionCambiada(evt);

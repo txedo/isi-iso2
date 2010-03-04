@@ -30,6 +30,7 @@ import excepciones.PuertaDomicilioIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
 import presentacion.JPBeneficiarioRegistrar;
+import presentacion.JPCitaTramitar;
 
 /**
  * Pruebas del panel de registro de beneficiarios.
@@ -91,6 +92,9 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 					}
 				}
 			});
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarBeneficiarios");
+			panel = (JPBeneficiarioRegistrar)p1.getPanel("jPanelRegistrar").getAwtContainer();
 			// Creamos el panel
 			panel = new JPBeneficiarioRegistrar(controlador.getVentanaPrincipal(), controlador);
 			// Obtenemos los componentes del panel

@@ -12,6 +12,7 @@ import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JPCitaConsultarPropias;
+import presentacion.JPCitaTramitar;
 
 import comunicaciones.ConfiguracionCliente;
 
@@ -109,8 +110,9 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 				}
 			}while(!valido);
 					
-			// Creamos el panel
-			panel = new JPCitaConsultarPropias(controlador.getVentanaPrincipal(), controlador);
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
+			panel = (JPCitaConsultarPropias)p1.getPanel("jPanelConsultarCitasPropias").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
 			tblCitas = pnlPanel.getTable("tblTablaCitas");

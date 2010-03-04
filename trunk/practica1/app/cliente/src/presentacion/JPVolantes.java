@@ -87,6 +87,7 @@ public class JPVolantes extends JPBase {
 				jScrollEmitir.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelEmitir = new JPEmitirVolante(this.getFrame(), this.getControlador());
+					jPanelEmitir.setName("jPanelEmitir");
 					jScrollEmitir.setViewportView(jPanelEmitir);
 				}
 			}

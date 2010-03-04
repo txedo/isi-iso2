@@ -109,6 +109,7 @@ public class JPCitas extends JPBase {
 				jScrollTramitarConVolante.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelVolanteTramitar = new JPCitaVolanteTramitar(this.getFrame(), this.getControlador());
+					jPanelVolanteTramitar.setName("jPanelVolanteTramitar");
 					jScrollTramitarConVolante.setViewportView(jPanelVolanteTramitar);
 				}
 			}
@@ -120,6 +121,7 @@ public class JPCitas extends JPBase {
 				jScrollConsultarCitasBeneficiario.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelConsultarCitasBeneficiario = new JPCitaConsultarBeneficiario(this.getFrame(), this.getControlador());
+					jPanelConsultarCitasBeneficiario.setName("jPanelConsultarCitasBeneficiario");
 					jScrollConsultarCitasBeneficiario.setViewportView(jPanelConsultarCitasBeneficiario);
 				}
 			}
@@ -131,6 +133,7 @@ public class JPCitas extends JPBase {
 				jScrollConsultarCitasMedico.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelConsultarCitasMedico = new JPCitaConsultarMedico(this.getFrame(), this.getControlador());
+					jPanelConsultarCitasMedico.setName("jPanelConsultarCitasMedico");
 					jScrollConsultarCitasMedico.setViewportView(jPanelConsultarCitasMedico);
 				}
 			}
@@ -142,6 +145,7 @@ public class JPCitas extends JPBase {
 				jScrollConsultarCitasPropias.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
 					jPanelConsultarCitasPropias = new JPCitaConsultarPropias(this.getFrame(), this.getControlador());
+					jPanelConsultarCitasPropias.setName("jPanelConsultarCitasPropias");
 					jScrollConsultarCitasPropias.setViewportView(jPanelConsultarCitasPropias);
 				}
 			}

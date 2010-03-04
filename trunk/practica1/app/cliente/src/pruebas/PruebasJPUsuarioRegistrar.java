@@ -96,8 +96,9 @@ public class PruebasJPUsuarioRegistrar extends org.uispec4j.UISpecTestCase imple
 					}
 				}
 			});
-			// Creamos el panel
-			panel = new JPUsuarioRegistrar(controlador.getVentanaPrincipal(), controlador);
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarUsuarios");
+			panel = (JPUsuarioRegistrar) p1.getPanel("jPanelRegistrar").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
 			txtNIF = pnlPanel.getTextBox("txtNIF");
