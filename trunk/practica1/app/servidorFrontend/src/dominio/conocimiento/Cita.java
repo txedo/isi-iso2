@@ -13,6 +13,7 @@ public class Cita implements Serializable {
 		
 	private static final long serialVersionUID = 590630882906518367L;
 	
+	private static SimpleDateFormat formatoDia = new SimpleDateFormat("dd/MM/yyyy");
 	private static SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm");
 	
 	private long id;
@@ -22,9 +23,15 @@ public class Cita implements Serializable {
 	private Medico medico;
 	
 	public Cita() {
+		id = -1;
+		fechaYHora = new Date();
+		duracion = 0;
+		beneficiario = null;
+		medico = null;
 	}
 	
 	public Cita(Date fechaYhora, long duracion, Beneficiario beneficiario, Medico medico) {
+		id = -1;
 		this.fechaYHora = fechaYhora;
 		this.duracion = duracion;
 		this.beneficiario = beneficiario;
@@ -87,6 +94,10 @@ public class Cita implements Serializable {
 	
 	public static String cadenaHoraCita(Date fechaYHora) {
 		return formatoHora.format(fechaYHora);
+	}
+
+	public static String cadenaDiaCita(Date fechaYHora) {
+		return formatoDia.format(fechaYHora);
 	}
 
 	public static Date horaCadenaCita(String fechaYHora) throws ParseException {

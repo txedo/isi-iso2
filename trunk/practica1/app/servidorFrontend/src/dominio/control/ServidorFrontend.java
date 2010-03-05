@@ -367,14 +367,15 @@ public class ServidorFrontend implements IServidorFrontend {
 	}
 	
 	public void crear(long idSesion, Medico medico) throws RemoteException, MedicoYaExistenteException, SQLException, Exception {
+		Medico medicoCreado;
 		String login;
 		
 		try {
 			// Añadimos un nuevo médico al sistema
-			GestorMedicos.crearMedico(idSesion, medico);
+			medicoCreado = GestorMedicos.crearMedico(idSesion, medico);
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Creado el médico con NIF " + medico.getNif() + ".");
-			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, medico);
+			GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, medicoCreado);
 		} catch(SQLException se) {
 			login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 			GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se creaba el médico con NIF " + medico.getNif() + ": " + se.getLocalizedMessage());
@@ -866,6 +867,7 @@ public class ServidorFrontend implements IServidorFrontend {
 	
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception {
 		Object resultado;
+		Usuario usuarioCreado;
 		String login;
 		
 		resultado = null;
@@ -977,10 +979,10 @@ public class ServidorFrontend implements IServidorFrontend {
 		case ICodigosMensajeAuxiliar.CREAR_USUARIO:
 			try {
 				// Añadimos un nuevo usuario al sistema
-				GestorUsuarios.crearUsuario(idSesion, (Usuario)informacion);
+				usuarioCreado = GestorUsuarios.crearUsuario(idSesion, (Usuario)informacion);
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Creado el usuario con NIF " + ((Usuario)informacion).getNif() + ".");
-				GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, (Usuario)informacion);
+				GestorSesiones.actualizarClientes(idSesion, ICodigosOperacionesCliente.INSERTAR, usuarioCreado);
 			} catch(SQLException se) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_CREATE, "Error SQL mientras se creaba el usuario con NIF " + ((Usuario)informacion).getNif() + ": " + se.getLocalizedMessage());
@@ -1346,6 +1348,10 @@ public class ServidorFrontend implements IServidorFrontend {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al analizar la fecha del día para el que se estaban consultando los médicos que pueden sustituir al médico con NIF " + (String)((Object[])informacion)[0] + ": " + fnve.getLocalizedMessage());
 				throw fnve;
+			} catch(SustitucionInvalidaException sie) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al analizar los datos de la sustitución para la que se estaban buscando sustitutos al médico con NIF " + (String)((Object[])informacion)[0] + ": " + sie.getLocalizedMessage());
+				throw sie;
 			} catch(NullPointerException npe) {
 				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
 				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Error al intentar consultar los médicos que pueden sustituir a otro médico con datos no válidos: " + npe.getLocalizedMessage());

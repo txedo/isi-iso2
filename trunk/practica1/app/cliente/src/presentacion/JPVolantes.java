@@ -36,7 +36,7 @@ public class JPVolantes extends JPBase {
 	private EventListenerList listenerList;
 	private OperacionesInterfaz operacionSeleccionada;
 	
-	private JPEmitirVolante jPanelEmitir;
+	private JPVolanteEmitir jPanelEmitir;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
 	private JScrollPane jScrollEmitir;
@@ -86,7 +86,7 @@ public class JPVolantes extends JPBase {
 				jScrollEmitir.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 				jScrollEmitir.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
-					jPanelEmitir = new JPEmitirVolante(this.getFrame(), this.getControlador());
+					jPanelEmitir = new JPVolanteEmitir(this.getFrame(), this.getControlador());
 					jPanelEmitir.setName("jPanelEmitir");
 					jScrollEmitir.setViewportView(jPanelEmitir);
 				}

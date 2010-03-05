@@ -109,8 +109,6 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	private boolean eliminadoBeneficiario, eliminadoMedico, valido;
 	private TipoMedico tCabecera;
 	private Medico cabecera;
-	private String login;
-	private PeriodoTrabajo periodo1;
 	
 	private Vector<Medico> medicosEliminados;
 	
@@ -135,32 +133,15 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			
 			// Creamos un médico de cabecera 
 			tCabecera = new Cabecera();
-			login = UtilidadesPruebas.generarLogin();
-			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
-			periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
-			cabecera.getCalendario().add(periodo1);		
-			// Mientras exista el usuario, se genera otro login y otro NIF
-			do {
-				try {
-					controlador.crearUsuario(cabecera);
-					valido = true;
-				} catch (UsuarioYaExistenteException e) {
-					cabecera.setNif(UtilidadesPruebas.generarNIF());
-					login = UtilidadesPruebas.generarLogin();
-					cabecera.setLogin(login);
-					cabecera.setPassword(login);
-					valido = false;
-				}
-			}while(!valido);
-			
-			// Consultamos el médico de nuevo, porque el centro de salud que realmente se le asigna
-			// se hace de manera aleatoria
-			cabecera = controlador.consultarMedico(cabecera.getNif());
+			cabecera = new Medico();
+			cabecera.setNombre("Eduardo");
+			cabecera.setApellidos("Ramírez García");
+			cabecera.setTipoMedico(tCabecera);
+			cabecera.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			cabecera = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera); 
 
 			// Creamos el beneficiario en el mismo centro que el médico, para que no se le asigne otro diferente 
-			beneficiarioPrueba = new Beneficiario ();
-			beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());
-			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
+			beneficiarioPrueba = new Beneficiario();
 			beneficiarioPrueba.setNombre("beneficiario");
 			beneficiarioPrueba.setApellidos("de prueba");
 			beneficiarioPrueba.setCorreo(" ");
@@ -170,17 +151,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
 			beneficiarioPrueba.setMedicoAsignado(cabecera);
-			// Mientras exista el beneficiario, se genera otro NIF y otro NSS
-			do {
-				try {					
-					controlador.crearBeneficiario(beneficiarioPrueba);
-					valido = true;
-				} catch (BeneficiarioYaExistenteException e) {
-					beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());					
-					beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
-					valido = false;
-				}
-			}while(!valido);
+			beneficiarioPrueba = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
 			
 			// Obtenemos el panel
 			Panel p1 = winPrincipal.getPanel("jPanelGestionarBeneficiarios");

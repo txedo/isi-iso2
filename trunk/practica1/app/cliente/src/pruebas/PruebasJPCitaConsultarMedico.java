@@ -47,11 +47,6 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 	private TextBox txtNombre;
 	private TextBox txtApellidos;	
 	private TextBox txtNIFBuscado;
-	private JTextField jtxtNIF;
-	private JTextField jtxtLogin;
-	private JTextField jtxtNombre;
-	private JTextField jtxtApellidos;
-	private JTextField jtxtNIFBuscado;
 	private JTable jtblCitas;
 	private Window winPrincipal;
 	
@@ -143,12 +138,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 			btnCitasHistorico = pnlPanel.getButton("btnHistoricoCitas");
 			btnRestablecer = pnlPanel.getButton("btnRestablecer");
 			tblCitas = pnlPanel.getTable("tblTablaCitas");
-			
-			jtxtNIFBuscado = (JTextField)txtNIFBuscado.getAwtComponent();
-			jtxtNIF = (JTextField)txtNIF.getAwtComponent();
-			jtxtNombre = (JTextField)txtNombre.getAwtComponent();
-			jtxtApellidos = (JTextField)txtApellidos.getAwtComponent();
-			jtxtLogin = (JTextField)txtLogin.getAwtComponent();
+
 			jtblCitas = (JTable) tblCitas.getAwtComponent();
 		} catch(Exception e) {
 			fail(e.toString());
@@ -173,16 +163,20 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 			// Ponemos un NIF nulo
 			txtNIFBuscado.setText("");
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
+			assertFalse(btnCitasHistorico.isEnabled());
 			// Ponemos un NIF incorrecto y comprobamos que el campo de
 			// identificacion se selecciona por tener un formato inválido
 			txtNIFBuscado.setText("111111");
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
+			assertFalse(btnCitasHistorico.isEnabled());
 			// Probamos con un NIF que no esté dado de alta en el sistema
 			txtNIFBuscado.setText("00000000a");
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "No existe ningún médico con el NIF introducido.");
+			assertFalse(btnCitasHistorico.isEnabled());
 			// Ponemos un NIF correcto
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");		
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Médico encontrado.");		
+			assertFalse(btnCitasHistorico.isEnabled());
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.toString());
@@ -192,7 +186,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 	public void testBuscarMedico () {
 		// Probamos con el NIF del médico de cabecera que es correcto y está dado de alta en el sistema
 		txtNIFBuscado.setText(cabecera.getNif());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Médico encontrado.");
 		assertEquals(txtNIF.getText(), cabecera.getNif());
 		// La tabla de citas debe estar vacía
 		assertTrue(tblCitas.getRowCount()==0);
@@ -208,7 +202,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 			
 			// Buscamos el médico
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Médico encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			// La tabla de citas debe tener un elemento
 			assertTrue(tblCitas.getRowCount()==1);
@@ -226,7 +220,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 			c2 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,30), IConstantes.DURACION_CITA);
 			// Buscamos el médico
 			txtNIFBuscado.setText(cabecera.getNif());
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Médico encontrado.");
 			assertEquals(txtNIF.getText(), cabecera.getNif());
 			// La tabla de citas debe tener dos elementos
 			assertTrue(tblCitas.getRowCount()==2);

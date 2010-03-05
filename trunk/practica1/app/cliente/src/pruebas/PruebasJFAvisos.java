@@ -2,21 +2,14 @@ package pruebas;
 
 import java.util.Date;
 import java.util.Vector;
-
-import javax.swing.JTable;
-
 import org.uispec4j.Button;
 import org.uispec4j.Panel;
 import org.uispec4j.Table;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
-
 import presentacion.JFAvisos;
-import presentacion.JPCitaConsultarPropias;
-
 import comunicaciones.ConfiguracionCliente;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Cita;
@@ -47,6 +40,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 	private boolean valido;
 	private String login;
 	
+	@SuppressWarnings("deprecation")
 	protected void setUp() {
 		valido = false;
 		try {
@@ -166,7 +160,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			win = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						frmAvisos.show();
+						frmAvisos.setVisible(true);
 						assertTrue(tblTablaAvisos.getRowCount()==0);
 						btnCerrar.click();
 					} catch(Exception e) {
@@ -204,6 +198,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testMostrarCitas() {
 		try {
 			// Registramos una cita para el medico

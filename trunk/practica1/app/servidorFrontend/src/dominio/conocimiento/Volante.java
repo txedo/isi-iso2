@@ -21,9 +21,16 @@ public class Volante implements Serializable {
 	private Date fechaCaducidad;
 	
 	public Volante() {
+		id = -1;
+		emisor = null;
+		receptor = null;
+		beneficiario = null;
+		cita = null;
+		fechaCaducidad = new Date();
 	}
 	
 	public Volante(Medico emisor, Medico receptor, Beneficiario beneficiario, Cita cita, Date fechaCaducidad) {
+		id = -1;
 		this.emisor = emisor;
 		this.receptor = receptor;
 		this.beneficiario = beneficiario;

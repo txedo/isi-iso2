@@ -15,9 +15,13 @@ public class CentroSalud implements Serializable, Cloneable {
 	private String direccion;
 	
 	public CentroSalud() {
+		id = -1;
+		nombre = "";
+		direccion = "";
 	}
 	
 	public CentroSalud(String nombre, String direccion) {
+		id = -1;
 		this.nombre = nombre;
 		this.direccion = direccion;
 	}

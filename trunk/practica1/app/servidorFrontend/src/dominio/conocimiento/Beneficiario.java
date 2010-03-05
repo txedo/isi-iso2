@@ -23,6 +23,17 @@ public class Beneficiario implements Serializable, Cloneable {
 	private CentroSalud centroSalud;
 
 	public Beneficiario() {
+		nif = "";
+		nss = "";
+		nombre = "";
+		apellidos = "";
+		direccion = new Direccion();
+		correo = "";
+		telefono = "";
+		movil = "";
+		fechaNacimiento = new Date();
+		medicoAsignado = null;
+		centroSalud = null;
 	}
 	
 	public Beneficiario(String nif, String nss, String nombre, String apellidos, Date fecha, Direccion direccion, String correo, String telefono, String movil) {
@@ -35,8 +46,8 @@ public class Beneficiario implements Serializable, Cloneable {
 		this.telefono = telefono;
 		this.movil = movil;
 		this.fechaNacimiento = fecha;
-		this.medicoAsignado = null;
-		this.centroSalud = null;
+		medicoAsignado = null;
+		centroSalud = null;
 	}
 
 	public String getNif() {

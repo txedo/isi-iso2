@@ -22,6 +22,7 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -112,8 +113,6 @@ public class ControladorCliente {
 			// Creamos y activamos el cliente remoto
 			cliente = RemotoCliente.getCliente();
 			cliente.activar(ipCliente);
-			((Cliente)cliente.getClienteExportado()).setDireccionIP(ipCliente);
-			((Cliente)cliente.getClienteExportado()).setPuerto(cliente.getPuertoEscucha());
 			((Cliente)cliente.getClienteExportado()).setControlador(this);
 			// Registramos el cliente en el servidor
 			servidor.registrar((ICliente)cliente, sesion.getId());
@@ -150,7 +149,6 @@ public class ControladorCliente {
 			ventanaPrincipal.setVisible(false);
 			ventanaPrincipal.dispose();
 		}
-//		System.exit(0);
 	}
 	
 	public ISesion getSesion() {
@@ -190,33 +188,36 @@ public class ControladorCliente {
 		ventanaPrincipal.forzarCierreServidorDesconectado();
 	}
 	
-	public void beneficiarioActualizado(Beneficiario beneficiario) {
-		ventanaPrincipal.beneficiarioActualizado(beneficiario);
+	public void actualizarVentanaPrincipal(int operacion, Object dato) {
+		switch(operacion) {
+		case ICodigosOperacionesCliente.INSERTAR:
+			if(dato instanceof Usuario) {
+				ventanaPrincipal.usuarioRegistrado((Usuario)dato);
+			} else if(dato instanceof Cita) {
+				ventanaPrincipal.citaRegistrada((Cita)dato);
+			} else if(dato instanceof Sustitucion) {
+				ventanaPrincipal.sustitucionRegistrada((Sustitucion)dato);
+			}
+			break;
+		case ICodigosOperacionesCliente.MODIFICAR:
+			if(dato instanceof Beneficiario) {
+				ventanaPrincipal.beneficiarioActualizado((Beneficiario)dato);
+			} else if(dato instanceof Usuario) {
+				ventanaPrincipal.usuarioActualizado((Usuario)dato);
+			}
+			break;
+		case ICodigosOperacionesCliente.ELIMINAR:
+			if(dato instanceof Beneficiario) {
+				ventanaPrincipal.beneficiarioEliminado((Beneficiario)dato);
+			} else if(dato instanceof Usuario) {
+				ventanaPrincipal.usuarioEliminado((Usuario)dato);
+			} else if(dato instanceof Cita) {
+				ventanaPrincipal.citaAnulada((Cita)dato);
+			}
+			break;
+		}
 	}
 	
-	public void beneficiarioEliminado(Beneficiario beneficiario) {
-		ventanaPrincipal.beneficiarioEliminado(beneficiario);
-	}
-	
-	public void usuarioActualizado(Usuario usuario) {
-		ventanaPrincipal.usuarioActualizado(usuario);
-	}
-	
-	public void usuarioEliminado(Usuario usuario){
-		ventanaPrincipal.usuarioEliminado(usuario);
-	}
-
-	public void citaRegistrada(Cita cita) {
-		ventanaPrincipal.citaRegistrada(cita);
-	}
-	
-	public void citaAnulada(Cita cita) {
-		ventanaPrincipal.citaAnulada(cita);
-	}
-	
-	public void sustitucionRegistrada(Sustitucion sustitucion) {
-		ventanaPrincipal.sustitucionRegistrada(sustitucion);
-	}
 	
 	// ---------------------------
 	// Métodos cliente -> servidor

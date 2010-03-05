@@ -16,9 +16,14 @@ public class PeriodoTrabajo implements Serializable {
 	private DiaSemana dia;
 	
 	public PeriodoTrabajo() {
+		id = -1;
+		horaInicio = 0;
+		horaFinal = 0;
+		dia = DiaSemana.Lunes;
 	}
 	
 	public PeriodoTrabajo(int horaInicio, int horaFinal, DiaSemana dia) {
+		id = -1;
 		this.horaInicio = horaInicio;
 		this.horaFinal = horaFinal;
 		this.dia = dia;

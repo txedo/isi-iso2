@@ -120,9 +120,10 @@ public class GestorSesiones {
 			throw new SesionNoIniciadaException("El identificador de la sesión es inválido.");
 		}
 
-		// Creamos un proxy con el cliente y lo añadimos a la lista de clientes conectados
-		proxyCliente = new ProxyCliente(cliente);
-		clientes.put(idSesion, proxyCliente);
+		// Creamos un proxy asociado con el cliente y lo añadimos a la lista de clientes conectados
+		proxyCliente = new ProxyCliente();
+		proxyCliente.asociar(cliente);
+		clientes.put(idSesion, proxyCliente);		
 	}
 	
 	// Metodo para cerrar una sesión y liberar el cliente registrado
@@ -217,19 +218,24 @@ public class GestorSesiones {
 		}
 	}
 
+	// Método que fuerza la desconexión de todos los clientes conectados al servidor
 	public static void desconectarClientes() throws RemoteException {
-		// Cerramos todos los clientes que hay conectados al servidor
-		for(Long id : clientes.keySet()) {
-			// Notificamos al cliente que el servidor ha sido desconectado
-			clientes.get(id).servidorInaccesible();
+		try {
+			// Cerramos todos los clientes que hay conectados al servidor
+			for(Long id : clientes.keySet()) {
+				// Notificamos al cliente que el servidor ha sido desconectado
+				clientes.get(id).servidorInaccesible();
+			}
+		} finally {
+			// Reseteamos la tabla de sesiones y clientes (lo hacemos aquí,
+			// y no iteración a iteración en el bucle anterior, para evitar
+			// el problema de tablas mutantes)
+			sesiones = new Hashtable<Long, Sesion>();
+			clientes = new Hashtable<Long, ICliente>();
 		}
-		// Reseteamos la tabla de sesiones y clientes (lo hacemos aquí,
-		// y no iteración a iteración en el bucle anterior, para evitar
-		// el problema de tablas mutantes)
-		sesiones = new Hashtable<Long, Sesion>();
-		clientes = new Hashtable<Long, ICliente>();
 	}
 	
+	// Método que actualiza el estado de los clientes conectados al servidor
 	public static void actualizarClientes(long idSesion, int operacion, Object dato) throws RemoteException {
 		// Avisamos a todos los clientes (menos el que lanzó la operación)
 		// de que ha ocurrido una inserción, modificación o eliminación

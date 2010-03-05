@@ -3,13 +3,10 @@ package pruebas;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Vector;
-
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-
 import org.uispec4j.Button;
 import org.uispec4j.ComboBox;
 import org.uispec4j.ListBox;
@@ -20,12 +17,9 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
 import presentacion.JFCalendarioLaboral;
 import presentacion.JPUsuarioRegistrar;
-
 import comunicaciones.ConfiguracionCliente;
-
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
@@ -60,15 +54,8 @@ public class PruebasJPUsuarioRegistrar extends org.uispec4j.UISpecTestCase imple
 	private Button btnCalendario;
 	private Button btnCrearUsuario;
 	private Button btnRestablecer;
-	private JTextField jtxtNIF;
-	private JTextField jtxtNombre;
-	private JTextField jtxtApellidos;
-	private JTextField jtxtLogin;
 	private JPasswordField jtxtPassword;
 	private JPasswordField jtxtPasswordConf;
-	private JTextField jtxtCorreoElectronico;
-	private JTextField jtxtTelefonoFijo;
-	private JTextField jtxtTelefonoMovil;
 	private JList jlstTipoUsuario;
 	private JList jlstTipoMedico;
 	private JLabel jlblHoras;
@@ -117,15 +104,8 @@ public class PruebasJPUsuarioRegistrar extends org.uispec4j.UISpecTestCase imple
 			btnCrearUsuario = pnlPanel.getButton("btnCrearUsuario");
 			btnRestablecer = pnlPanel.getButton("btnRestablecer");
 
-			jtxtNIF = (JTextField) txtNIF.getAwtComponent();
-			jtxtNombre = (JTextField) txtNombre.getAwtComponent();
-			jtxtApellidos = (JTextField) txtApellidos.getAwtComponent();
-			jtxtLogin = (JTextField) txtLogin.getAwtComponent();
 			jtxtPassword = (JPasswordField) txtPassword.getAwtComponent();
 			jtxtPasswordConf = (JPasswordField) txtPasswordConf.getAwtComponent();
-			jtxtCorreoElectronico = (JTextField) txtCorreoElectronico.getAwtComponent();
-			jtxtTelefonoFijo = (JTextField) txtTelefonoFijo.getAwtComponent();
-			jtxtTelefonoMovil = (JTextField) txtTelefonoMovil.getAwtComponent();
 			jlstTipoUsuario = (JList) lstTipoUsuario.getAwtComponent();
 			jlstTipoMedico = (JList) lstTipoMedico.getAwtComponent();
 			jcmbEspecialidad = (JComboBox) cmbEspecialidad.getAwtComponent();

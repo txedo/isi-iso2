@@ -14,6 +14,10 @@ public class EntradaLog {
 	private String mensaje;
 	
 	public EntradaLog() {
+		usuario = "";
+		fecha = new Timestamp((new Date()).getTime());
+		accion = "";
+		mensaje = "";
 	}
 	
 	public EntradaLog(String usuario, Timestamp fecha, String accion, String mensaje) {

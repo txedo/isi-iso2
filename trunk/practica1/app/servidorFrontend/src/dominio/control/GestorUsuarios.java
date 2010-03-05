@@ -53,7 +53,9 @@ public class GestorUsuarios {
 	}
 	
 	// Método para añadir un nuevo usuario al sistema
-	public static void crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static Usuario crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+		Usuario usuarioCreado;
+		
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
 			throw new NullPointerException("El usuario que se va a crear no puede ser nulo.");
@@ -63,7 +65,9 @@ public class GestorUsuarios {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.RegistrarUsuario);
 
 		// Llamamos al método común para crear usuarios y médicos
-		crearUsuario(usuario);
+		usuarioCreado = crearUsuario(usuario);
+		
+		return usuarioCreado;
 	}
 	
 	// Método para modificar un usuario existente del sistema
@@ -137,7 +141,7 @@ public class GestorUsuarios {
 	
 	// Método para añadir un nuevo usuario al sistema
 	// (es público porque se utiliza desde otro gestor, no es accesible a los clientes)
-	public static void crearUsuario(Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static Usuario crearUsuario(Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
 		CentroSalud centro;
 		Usuario usuarioReal;
 		boolean existe;
@@ -177,6 +181,8 @@ public class GestorUsuarios {
 
 		// Añadimos el usuario al sistema
 		FPUsuario.insertar(usuarioReal);
+		
+		return usuarioReal;
 	}
 	
 	// Método para modificar un usuario existente del sistema

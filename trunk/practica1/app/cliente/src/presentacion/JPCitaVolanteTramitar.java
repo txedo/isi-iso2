@@ -375,19 +375,23 @@ public class JPCitaVolanteTramitar extends JPBase {
 			}
 			
 			// Buscamos el primer día y hora disponible para una cita
-			cal = Calendar.getInstance();
-			cal.setTime(new Date());
-			cal.set(Calendar.HOUR, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-			while(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
-				  || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
-				  || diasDesactivados.contains(UtilidadesDominio.diaFecha(cal.getTime()))
-				  || diasOcupados.contains(cal.getTime())) {
-				cal.add(Calendar.DAY_OF_MONTH, 1);
+			if(beneficiario.getMedicoAsignado().getCalendario().size() == 0) {
+				dtcDiaCita.setDate(new Date());
+			} else {
+				cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				while(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+					  || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+					  || diasDesactivados.contains(UtilidadesDominio.diaFecha(cal.getTime()))
+					  || diasOcupados.contains(cal.getTime())) {
+					cal.add(Calendar.DAY_OF_MONTH, 1);
+				}
+				dtcDiaCita.setDate(cal.getTime());
 			}
-			dtcDiaCita.setDate(cal.getTime());
 			UtilidadesListaHoras.obtenerListaHoras(dtcDiaCita, horasCitas, citasOcupadas, cmbHorasCitas);
 
 			// Activamos la tramitación de citas
@@ -586,6 +590,9 @@ public class JPCitaVolanteTramitar extends JPBase {
 	
 	public void citaRegistrada(Cita cita) {
 		Volante vol;
+		Date dia;
+		int indHora;
+		
 		if(beneficiario != null && volante != null) {	
 			// Se vuelve a consultar el volante, para ver si la cita que se ha registrado corresponde a este volante o no
 			try {
@@ -597,23 +604,27 @@ public class JPCitaVolanteTramitar extends JPBase {
 				else if (cita.getMedico().equals(vol.getReceptor())) {
 					// Otro cliente ha registrado una cita para el mismo médico del volante
 					// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
-					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico.");
+					dia = dtcDiaCita.getDate();
+					indHora = cmbHorasCitas.getSelectedIndex();
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico el día " + Cita.cadenaDiaCita(cita.getFechaYHora()) + " a las " + Cita.cadenaHoraCita(cita.getFechaYHora()) + ".");
 					mostrarHorasCitasMedico();
+					dtcDiaCita.setDate(dia);
+					cmbHorasCitas.setSelectedIndex(indHora);
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			} catch(RemoteException e) {
-				e.printStackTrace();
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			} catch(Exception e) {
-				e.printStackTrace();
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			}
 		}
 	}
 	
 	public void citaAnulada(Cita cita) {
+		Date dia;
+		int indHora;
+		
 		if(beneficiario != null && volante != null) {
 			if(volante.getCita() != null && volante.getCita().equals(cita)) {
 				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado la cita desde otro cliente para este volante.");
@@ -622,8 +633,12 @@ public class JPCitaVolanteTramitar extends JPBase {
 			else if (cita.getMedico().equals(volante.getReceptor())) {
 				// Otro cliente ha anulado una cita para el mismo médico del volante
 				// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
-				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico.");
+				dia = dtcDiaCita.getDate();
+				indHora = cmbHorasCitas.getSelectedIndex();
+				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico el día " + Cita.cadenaDiaCita(cita.getFechaYHora()) + " a las " + Cita.cadenaHoraCita(cita.getFechaYHora()) + ".");
 				mostrarHorasCitasMedico();
+				dtcDiaCita.setDate(dia);
+				cmbHorasCitas.setSelectedIndex(indHora);
 			}
 		}
 	}

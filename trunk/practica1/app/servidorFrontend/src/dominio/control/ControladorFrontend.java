@@ -118,6 +118,7 @@ public class ControladorFrontend {
 		} else {
 			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_INFO, "=== Servidor iniciado (servidor de respaldo deshabilitado) ===");
 		}
+		GestorConexionesLog.actualizarClientesEscuchando(0);
 		
 		// El servidor está activo
 		servidorActivo = true;

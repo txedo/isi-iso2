@@ -30,7 +30,7 @@ import excepciones.UsuarioIncorrectoException;
 public class GestorSustituciones {
 
 	// Método que devuelve una lista de posibles sustitutos para un médico en una fecha
-	public static Vector<Medico> obtenerPosiblesSustitutos(long idSesion, String nifMedico, Date dia, int horaDesde, int horaHasta) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, CentroSaludInexistenteException, DireccionInexistenteException, MedicoInexistenteException, UsuarioIncorrectoException, NullPointerException, FechaNoValidaException {
+	public static Vector<Medico> obtenerPosiblesSustitutos(long idSesion, String nifMedico, Date dia, int horaDesde, int horaHasta) throws SesionInvalidaException, OperacionIncorrectaException, SQLException, CentroSaludInexistenteException, DireccionInexistenteException, MedicoInexistenteException, UsuarioIncorrectoException, NullPointerException, FechaNoValidaException, SustitucionInvalidaException {
 		Vector<Medico> sustitutos;
 		Vector<String> horasCitas, horasSust;
 		Vector<Sustitucion> sustituciones;
@@ -76,7 +76,7 @@ public class GestorSustituciones {
 		}
 		
 		// Obtenemos las horas de las citas que se van a tener que sustituir
-		horasCitas = horasTrabajo(medico, dia, horaDesde, horaHasta);
+		horasCitas = medico.horasCitas(UtilidadesDominio.diaFecha(dia), horaDesde, horaHasta, IConstantes.DURACION_CITA);
 		if(horasCitas.size() == 0) {
 			throw new FechaNoValidaException("El médico que se quiere sustituir no trabaja en la fecha y horas indicadas.");
 		}
@@ -87,7 +87,7 @@ public class GestorSustituciones {
 		for(Sustitucion sustitucion : sustituciones) {
 			if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)
 			 && sustitucion.horaEnSustitucion(horaDesde, horaHasta)) {
-				throw new FechaNoValidaException("El médico que se quiere sustituir ya está siendo sustituido por otro médico en todas o algunas de las horas indicadas.");
+				throw new SustitucionInvalidaException("El médico que se quiere sustituir ya está siendo sustituido por otro médico en todas o algunas de las horas indicadas.");
 			}
 		}
 		
@@ -97,7 +97,7 @@ public class GestorSustituciones {
 		for(Sustitucion sustitucion : sustituciones) {
 			if(UtilidadesDominio.fechaIgual(dia, sustitucion.getDia(), false)
 			 && sustitucion.horaEnSustitucion(horaDesde, horaHasta)) {
-				throw new FechaNoValidaException("El médico que se quiere sustituir tiene una sustitución asignada en todas o algunas de las horas indicadas.");
+				throw new SustitucionInvalidaException("El médico que se quiere sustituir tiene una sustitución asignada en todas o algunas de las horas indicadas.");
 			}
 		}
 		
@@ -255,7 +255,7 @@ public class GestorSustituciones {
 		Vector<Sustitucion> sustituciones;
 		Vector<String> horasCitas;
 		
-		// Obtenemos las horas en los que el médico sustituto
+		// Obtenemos las horas en los que el médico
 		// tiene que pasar sus citas en el día indicado
 		horasCitas = medico.horasCitas(UtilidadesDominio.diaFecha(dia), horaDesde, horaHasta, IConstantes.DURACION_CITA);
 		// Añadimos a la lista de horas aquellas en las que el médico
