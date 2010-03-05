@@ -856,7 +856,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 
 	private void limpiarCamposConsulta() {
-		beneficiario = null;
+		this.beneficiario = null;
 		txtNIF.setText("");
 		txtNSS.setText("");
 		txtNombre.setText("");

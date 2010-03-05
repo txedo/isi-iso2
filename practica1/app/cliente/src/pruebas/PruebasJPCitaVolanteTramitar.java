@@ -2,9 +2,11 @@ package pruebas;
 
 import java.util.Date;
 import java.util.Vector;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+
 import org.uispec4j.Button;
 import org.uispec4j.ComboBox;
 import org.uispec4j.Panel;
@@ -13,13 +15,14 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
+
+import presentacion.JPCitaVolanteTramitar;
+import presentacion.auxiliar.OperacionesInterfaz;
+
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
 import comunicaciones.RemotoCliente;
-import presentacion.JPCitaTramitar;
-import presentacion.JPCitaVolanteTramitar;
-import presentacion.JPVolanteEmitir;
-import presentacion.auxiliar.OperacionesInterfaz;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Cita;
@@ -38,7 +41,6 @@ import excepciones.FechaCitaIncorrectaException;
 import excepciones.FormatoFechaIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
-import excepciones.UsuarioYaExistenteException;
 
 public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 	
@@ -107,8 +109,6 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	private boolean eliminado;
 	
 	protected void setUp() {
-		boolean valido = true;
-		String login;
 		medicosEliminados = new Vector<Medico>();
 		eliminado = false;
 		idVolante = -1;
@@ -127,81 +127,40 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				}
 			});
 			
+			// Establecemos la operación activa de la ventana principal
+			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.TramitarCitaVolante);
+			
 			// Eliminamos todos los especialistas de la base de datos
 			medicosEliminados = controlador.obtenerMedicosTipo(new Especialista());
-			// Creamos e insertamos un médico de cabecera, un especialista y un beneficiario			
+			
+			// Creamos un médico de cabecera 
 			tCabecera = new Cabecera();
-			login = UtilidadesPruebas.generarLogin();
-			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
-			periodo1 = new PeriodoTrabajo(horaInicio, horaFinal, DiaSemana.Miercoles);
-			cabecera.getCalendario().add(periodo1);
-			
-			// Mientras existan los usuarios, se genera otro login y otro NIF
-			do {
-				try {
-					controlador.crearUsuario(cabecera);
-					valido = true;
-				} catch (UsuarioYaExistenteException e) {
-					cabecera.setNif(UtilidadesPruebas.generarNIF());
-					login = UtilidadesPruebas.generarLogin();
-					cabecera.setLogin(login);
-					cabecera.setPassword(login);
-					valido = false;
-				}
-			}while(!valido);
-			
-			// Consultamos el médico de nuevo, porque el centro de salud que realmente se le asigna
-			// se hace de manera aleatoria
-			cabecera = controlador.consultarMedico(cabecera.getNif());
+			cabecera = new Medico();
+			cabecera.setNombre("Eduardo");
+			cabecera.setApellidos("Ramírez García");
+			cabecera.setTipoMedico(tCabecera);
+			cabecera.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			cabecera = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera); 
 
 			// Creamos el beneficiario en el mismo centro que el médico, para que no se le asigne otro diferente 
 			beneficiarioPrueba = new Beneficiario ();
-			beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());
-			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
 			beneficiarioPrueba.setNombre("beneficiario");
 			beneficiarioPrueba.setApellidos("de prueba");
-			beneficiarioPrueba.setCorreo(" ");
-			beneficiarioPrueba.setTelefono(" ");
-			beneficiarioPrueba.setMovil(" ");
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
 			beneficiarioPrueba.setMedicoAsignado(cabecera);
-			do {
-				try {					
-					controlador.crearBeneficiario(beneficiarioPrueba);
-					valido = true;
-				} catch (BeneficiarioYaExistenteException e) {
-					beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());					
-					beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
-					valido = false;
-				}
-			}while(!valido);
+			beneficiarioPrueba = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
 			medicoAsignado = cabecera;
 			
 			// Creamos el médico especialista que será el receptor de los volantes
 			tEspecialista = new Especialista("Neurologia");
-			login = UtilidadesPruebas.generarLogin();
-			especialista = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Francisco", "Garrido", "", "", "", tEspecialista);
-			especialista.getCalendario().add(periodo1);
-			
-			// Mientras existan los usuarios, se genera otro login y otro NIF
-			do {
-				try {
-					controlador.crearUsuario(especialista);
-					valido = true;
-				} catch (UsuarioYaExistenteException e) {
-					especialista.setNif(UtilidadesPruebas.generarNIF());
-					login = UtilidadesPruebas.generarLogin();
-					especialista.setLogin(login);
-					especialista.setPassword(login);
-					valido = false;
-				}
-			}while(!valido);
-			
-			// Consultamos el médico de nuevo, porque el centro de salud que realmente se le asigna
-			// se hace de manera aleatoria
-			especialista = controlador.consultarMedico(especialista.getNif());
+			especialista = new Medico();
+			especialista.setNombre("Juan");
+			especialista.setApellidos("Especialista");
+			especialista.setTipoMedico(tEspecialista);
+			especialista.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			especialista = (Medico)UtilidadesPruebas.crearUsuario(controlador, especialista); 
 
 			// Obtenemos el panel
 			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
@@ -248,19 +207,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	}
 	
 	protected void tearDown() {
-		// Para borrar los datos, hay que entrar con la sesión del administrador
 		try {
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
+			UtilidadesPruebas.cerrarControladorAuxiliar();
 			// Restauramos los médicos que se hayan podido eliminar
 			for (Medico m : medicosEliminados) {
 				controlador.crearMedico(m);
@@ -278,7 +226,6 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	}
 	
 	public void testDatosInvalidos() {
-		String[] invalidos;
 		
 		try {
 			// Buscamos un beneficiario por su NIF
@@ -529,21 +476,12 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		String esperado = "";
 		
 		// Iniciamos sesión con un segundo administrador
-		controladorAuxiliar = new ControladorCliente();
-		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
-			public void run() {
-				try {
-					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
-					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
-					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
-					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
-				} catch(Exception e) {
-					fail(e.toString());
-				}
-			}
-		});
-		// Indicamos que la operación activa del primer administador es la de tramitar cita con volante
-		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.TramitarCitaVolante);
+		try {
+			// Iniciamos el controlador auxiliar con otro usuario administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 		// El primer administrador busca al beneficiario de prueba
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(0);
@@ -579,15 +517,13 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {
 				// En este momento el segundo administrador pide una cita en la hora seleccionada por el primero
-				Trigger t1 = new Trigger() {
-					@Override
+				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
-						controladorAuxiliar.pedirCita(beneficiarioPrueba, medicoAsignado.getNif(), new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
+						controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
 					}
-				};
-				WindowInterceptor.init(t1).process(new WindowHandler() {
+				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-	
+						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
 				}).run();
@@ -598,36 +534,34 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);
 				
 				// Ahora pedimos cita para este mismo volante
-				Trigger t2 = new Trigger() {
-					@Override
+				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
 						controladorAuxiliar.pedirCita(beneficiarioPrueba, idVolante, new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
 					}
-				};
-				WindowInterceptor.init(t2).process(new WindowHandler() {
+				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-	
+						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
-				}).run();
+				}).run();			
+				
 				// Dormimos el hilo en espera de la respuesta del servidor
 				Thread.sleep(500);
 				// La ventana del primer administrador se ha debido actualizar, borrando los campos porque el volante ya no se puede utilizar
 				comprobarCamposRestablecidos();
 				
 				// Ahora procedemos a eliminar la cita sin volante desde el segundo administrador
-				Trigger t3 = new Trigger() {
-					@Override
+				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
 						controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
 					}
-				};
-				WindowInterceptor.init(t3).process(new WindowHandler() {
+				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-	
+						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
-				}).run();
+				}).run();	
+				
 				// Dormimos el hilo en espera de la respuesta del servidor
 				Thread.sleep(500);
 				// La ventana del primer administrador se ha debido actualizar seleccionando la primera hora disponible en el día que se ha anulado cita desde el administrador auxiliar
@@ -635,33 +569,26 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 				
 				// Ahora procedemos a eliminar la cita que se dió con el volante desde el segundo administrador
-				Trigger t4 = new Trigger() {
-					@Override
+				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
 						controladorAuxiliar.anularCita(controladorAuxiliar.consultarVolante(idVolante).getCita());
 					}
-				};
-				WindowInterceptor.init(t4).process(new WindowHandler() {
+				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-	
+						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
 				}).run();
+				
 				// Dormimos el hilo en espera de la respuesta del servidor
 				Thread.sleep(500);
 				// La ventana del primer administrador se ha debido actualizar seleccionando la primera hora disponible en el día que se ha anulado cita desde el administrador auxiliar
 				txtDiaCita.setText("04/03/2015");
-				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);				
-				
-				// Se finaliza el controlador auxiliar
-				controladorAuxiliar.cerrarSesion();
-				controladorAuxiliar.cerrarControlador();
-			
+				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);							
 			} catch (Exception e) {
 				fail (e.toString());
 			}
 		}
-		winPrincipal2.dispose();
 	}
 	
 	public void testObservadorUsuarioActualizadoEliminado () {
@@ -671,22 +598,14 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		especialista.getCalendario().set(0, periodo2);
 		
 		// Iniciamos sesión con un segundo administrador
-		controladorAuxiliar = new ControladorCliente();
-		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
-			public void run() {
-				try {
-					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
-					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
-					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
-					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
-				} catch(Exception e) {
-					fail(e.toString());
-				}
-			}
-		});
-		// Indicamos que la operación activa del primer administador es la de tramitar cita con volante
-		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.TramitarCitaVolante);
-			// El primer administrador busca al beneficiario de prueba
+		try {
+			// Iniciamos el controlador auxiliar con otro usuario administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+
+		// El primer administrador busca al beneficiario de prueba
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(0);
 		txtIdentificacion.setText(beneficiarioPrueba.getNif());
@@ -721,15 +640,13 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {
 				// En este momento el segundo administrador modifica el calendario del médico
-				Trigger t1 = new Trigger() {
-					@Override
+				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
 						controladorAuxiliar.modificarMedico(especialista);
 					}
-				};
-				WindowInterceptor.init(t1).process(new WindowHandler() {
+				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-	
+						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
 				}).run();
@@ -740,15 +657,13 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				assertEquals((horaFinal-2-horaInicio)*4, jcmbHorasCitas.getItemCount());
 				
 				// Ahora procedemos a eliminar el medico desde el segundo administrador
-				Trigger t2 = new Trigger() {
-					@Override
+				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
 						controladorAuxiliar.eliminarMedico(especialista);
 					}
-				};
-				WindowInterceptor.init(t2).process(new WindowHandler() {
+				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-	
+						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
 				}).run();
@@ -757,35 +672,21 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				// La ventana del primer administrador se ha debido actualizar borrando los campos, pues se ha eliminado el especialista
 				comprobarCamposRestablecidos();
 				medicosEliminados.add(especialista);
-				
-				// Se finaliza el controlador auxiliar
-				controladorAuxiliar.cerrarSesion();
-				controladorAuxiliar.cerrarControlador();
 			} catch (Exception e) {
 				fail (e.toString());
 			}
 		}
-		winPrincipal2.dispose();
 	}
 	
 	public void testObservadorBeneficiarioActualizadoEliminado () {
 		String esperado = "";
 		// Iniciamos sesión con un segundo administrador
-		controladorAuxiliar = new ControladorCliente();
-		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
-			public void run() {
-				try {
-					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
-					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
-					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
-					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
-				} catch(Exception e) {
-					fail(e.toString());
-				}
-			}
-		});
-		// Indicamos que la operación activa del primer administador es la de tramitar cita con volante
-		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.TramitarCitaVolante);
+		try {
+			// Iniciamos el controlador auxiliar con otro usuario administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 		// El primer administrador busca al beneficiario de prueba
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(0);
@@ -821,34 +722,31 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {
 				// En este momento el segundo administrador modifica el beneficiario
-				Trigger t1 = new Trigger() {
-					@Override
+				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
 						beneficiarioPrueba.setNombre("Otro Nombre");
 						controladorAuxiliar.modificarBeneficiario(beneficiarioPrueba);
 					}
-				};
-				WindowInterceptor.init(t1).process(new WindowHandler() {
+				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-	
+						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
-				}).run();
+				}).run();				
+				
 				// Dormimos el hilo en espera de la respuesta del servidor
 				Thread.sleep(500);
 				// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del beneficiario
 				assertEquals(txtNombre.getText(), beneficiarioPrueba.getNombre());
 				
 				// Ahora procedemos a eliminar el beneficiario desde el segundo administrador
-				Trigger t2 = new Trigger() {
-					@Override
+				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
 						controladorAuxiliar.eliminarBeneficiario(beneficiarioPrueba);
 					}
-				};
-				WindowInterceptor.init(t2).process(new WindowHandler() {
+				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-	
+						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
 				}).run();
@@ -857,14 +755,10 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				// La ventana del primer administrador se ha debido actualizar borrando los campos, pues no existe ya el beneficiario
 				comprobarCamposRestablecidos();
 				eliminado = true;
-				// Se finaliza el controlador auxiliar
-				controladorAuxiliar.cerrarSesion();
-				controladorAuxiliar.cerrarControlador();
 			} catch (Exception e) {
 				fail (e.toString());
 			}
 		}
-		winPrincipal2.dispose();
 	}
 	
 	public void testObservadorSustitucionRegistrada () {

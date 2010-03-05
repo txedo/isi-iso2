@@ -3,11 +3,13 @@ package pruebas;
 import java.awt.Component;
 import java.util.Date;
 import java.util.Vector;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
+
 import org.uispec4j.Button;
 import org.uispec4j.CheckBox;
 import org.uispec4j.ComboBox;
@@ -18,11 +20,13 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
+
 import presentacion.JFCalendarioLaboral;
 import presentacion.JPUsuarioConsultar;
 import presentacion.auxiliar.OperacionesInterfaz;
+
 import comunicaciones.ConfiguracionCliente;
-import comunicaciones.RemotoCliente;
+
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
@@ -34,7 +38,6 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
-import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.ContraseñaIncorrectaException;
@@ -44,7 +47,6 @@ import excepciones.NIFIncorrectoException;
 import excepciones.NombreIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
-import excepciones.UsuarioYaExistenteException;
 
 public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
@@ -80,7 +82,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	private Window winPrincipal;
 	private JFCalendarioLaboral frameCalendario;
 	
-	private String textoHoras, login;
+	private String textoHoras;
 	private boolean eliminadoAdmin, eliminadoMedico;
 	
 	private Administrador admin;
@@ -90,7 +92,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	private PeriodoTrabajo periodo1;
 	
 	protected void setUp() {
-		boolean valido = true;
+		periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
 		eliminadoAdmin = false;
 		eliminadoMedico = false;
 		
@@ -106,94 +108,59 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 					}
 				}
 			});
-			// Creamos e insertamos usuarios de prueba, para poder consultarlos
-			login = UtilidadesPruebas.generarLogin();
-			admin = new Administrador(UtilidadesPruebas.generarNIF(), login, login, "administrador", "administra", "", "", "");
-			login = UtilidadesPruebas.generarLogin();
-			citador = new Citador(UtilidadesPruebas.generarNIF(), login, login, "citador", "cita", "adad@gmail.com", "912312312", "612131212");
+			
+			// Establecemos la operación activa de la ventana principal
+			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarUsuario);
+			
+			
+			// Creamos un médico de cabecera 
 			tCabecera = new Cabecera();
+			cabecera = new Medico();
+			cabecera.setNombre("Eduardo");
+			cabecera.setApellidos("Ramírez García");
+			cabecera.setTipoMedico(tCabecera);
+			cabecera.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			cabecera = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera);
+			
+			// Creamos un especialista
 			tEspecialista = new Especialista("Neurologia");
+			especialista = new Medico();
+			especialista.setNombre("Juan");
+			especialista.setApellidos("García");
+			especialista.setTipoMedico(tEspecialista);
+			especialista.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			especialista = (Medico)UtilidadesPruebas.crearUsuario(controlador, especialista);
+			
+			// Creamos un pediatra
 			tPediatra = new Pediatra();
-			login = UtilidadesPruebas.generarLogin();
-			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
-			login = UtilidadesPruebas.generarLogin();
-			pediatra = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Carmen", "GG", "carmen@gmail.com", "", "", tPediatra);
-			login = UtilidadesPruebas.generarLogin();
-			especialista = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Juan", "PF", "asdsad@yahoo.es", "987654321", "678901234", tEspecialista);
-			periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
-			cabecera.getCalendario().add(periodo1);
-			pediatra.getCalendario().add(periodo1);
-			especialista.getCalendario().add(periodo1);
+			pediatra = new Medico();
+			pediatra.setNombre("Antonio");
+			pediatra.setApellidos("Ramírez");
+			pediatra.setTipoMedico(tPediatra);
+			pediatra.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			pediatra = (Medico)UtilidadesPruebas.crearUsuario(controlador, pediatra);
 			
-			// Mientras existan los usuarios, se genera otro login y otro NIF
-			do {
-				try {
-					controlador.crearUsuario(admin);
-					valido = true;
-				} catch (UsuarioYaExistenteException e) {
-					admin.setNif(UtilidadesPruebas.generarNIF());
-					login = UtilidadesPruebas.generarLogin();
-					admin.setLogin(login);
-					admin.setPassword(login);
-					valido = false;
-				}
-			}while(!valido);
-			do {
-				try {
-					controlador.crearUsuario(citador);
-					valido = true;
-				} catch (UsuarioYaExistenteException e) {
-					citador.setNif(UtilidadesPruebas.generarNIF());
-					login = UtilidadesPruebas.generarLogin();
-					citador.setLogin(login);
-					citador.setPassword(login);
-					valido = false;
-				}
-			}while(!valido);
-			do {
-				try {
-					controlador.crearUsuario(cabecera);
-					valido = true;
-				} catch (UsuarioYaExistenteException e) {
-					cabecera.setNif(UtilidadesPruebas.generarNIF());
-					login = UtilidadesPruebas.generarLogin();
-					cabecera.setLogin(login);
-					cabecera.setPassword(login);
-					valido = false;
-				}
-			}while(!valido);
+			// Creamos un administrador
+			admin = new Administrador();
+			admin.setNombre("Pedro");
+			admin.setApellidos("Ramírez");
+			admin.setCorreo("");
+			admin.setMovil("");
+			admin.setTelefono("");
+			admin = (Administrador)UtilidadesPruebas.crearUsuario(controlador, admin);
 			
-			// Consultamos el médico, porque el centro de salud que realmente se le asigna
-			// se hace de manera aleatoria
-			cabecera = controlador.consultarMedico(cabecera.getNif());
-			do {
-				try {
-					controlador.crearUsuario(pediatra);
-					valido = true;
-				} catch (UsuarioYaExistenteException e) {
-					pediatra.setNif(UtilidadesPruebas.generarNIF());
-					login = UtilidadesPruebas.generarLogin();
-					pediatra.setLogin(login);
-					pediatra.setPassword(login);
-					valido = false;
-				}
-			}while(!valido);
-			do {
-				try {
-					controlador.crearUsuario(especialista);
-					valido = true;
-				} catch (UsuarioYaExistenteException e) {
-					admin.setNif(UtilidadesPruebas.generarNIF());
-					login = UtilidadesPruebas.generarLogin();
-					especialista.setLogin(login);
-					especialista.setPassword(login);
-					valido = false;
-				}
-			}while(!valido);
+			// Creamos un citador
+			citador = new Citador();
+			citador.setNombre("Maria");
+			citador.setApellidos("Romero");
+			citador.setCorreo("");
+			citador.setMovil("");
+			citador.setTelefono("");
+			citador = (Citador)UtilidadesPruebas.crearUsuario(controlador, citador);
 			
 			// Obtenemos el panel
 			Panel p1 = winPrincipal.getPanel("jPanelGestionarUsuarios");
-			panel = (JPUsuarioConsultar) p1.getPanel("jPanelConsultar").getAwtContainer();
+			panel = (JPUsuarioConsultar) p1.getPanel("jPanelConsultarModificar").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
 			txtNIFBuscado = pnlPanel.getTextBox("txtNIFBuscado");
@@ -244,7 +211,9 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	
 	protected void tearDown() {
 		try {
-			// Eliminamos objetos de prueba
+			// Cerramos la sesión auxiliar de las pruebas del observador
+			UtilidadesPruebas.cerrarControladorAuxiliar();
+			
 			if (!eliminadoAdmin) controlador.eliminarUsuario(admin);
 			controlador.eliminarUsuario(citador);
 			if (!eliminadoMedico) controlador.eliminarMedico(cabecera);
@@ -620,7 +589,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
 			beneficiarioPrueba.setMedicoAsignado(cabecera);
-			controlador.crearBeneficiario(beneficiarioPrueba);
+			UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
 			
 			// Creamos una cita de prueba		
 			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
@@ -788,7 +757,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
 			beneficiarioPrueba.setMedicoAsignado(cabecera);
-			controlador.crearBeneficiario(beneficiarioPrueba);
+			UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
 			
 			// Creamos una cita de prueba		
 			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
@@ -854,37 +823,27 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	
 	public void testObservadorUsuarioActualizadoEliminado () {
 		// Iniciamos sesión con un segundo administrador
-		controladorAuxiliar = new ControladorCliente();
-		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
-			public void run() {
-				try {
-					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
-					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
-					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
-					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
-				} catch(Exception e) {
-					fail(e.toString());
-				}
-			}
-		});
-		// Indicamos que la operación activa del primer administador es la de consultar un usuario
-		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarUsuario);
+		try {
+			// Iniciamos el controlador auxiliar con otro usuario administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
 		// El primer administrador busca al médico de prueba
 		txtNIFBuscado.setText(cabecera.getNif());
 		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 		assertEquals(txtNIF.getText(), cabecera.getNif());
 		try {
-			// En este momento el segundo administrador modifica el usuario
-			Trigger t1 = new Trigger() {
-				@Override
+			// En este momento el segundo administrador modifica el médico
+			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					cabecera.setNombre("Otro Nombre");
 					controladorAuxiliar.modificarMedico(cabecera);
 				}
-			};
-			WindowInterceptor.init(t1).process(new WindowHandler() {
+			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-
+					// Capturamos la ventana que avisa del cambio
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
@@ -894,15 +853,13 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			assertEquals(txtNombre.getText(), cabecera.getNombre());
 			
 			// Ahora procedemos a eliminar el médico desde el segundo administrador
-			Trigger t2 = new Trigger() {
-				@Override
+			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.eliminarMedico(cabecera);
 				}
-			};
-			WindowInterceptor.init(t2).process(new WindowHandler() {
+			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-
+					// Capturamos la ventana que avisa de la nueva cita
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
@@ -910,13 +867,10 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			Thread.sleep(500);
 			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues no existe ya el médico
 			comprobarCamposRestablecidos();
-			// Se finaliza el controlador auxiliar
-			controladorAuxiliar.cerrarSesion();
-			controladorAuxiliar.cerrarControlador();
+			eliminadoMedico = true;
 		} catch (Exception e) {
 			fail (e.toString());
 		}
-		winPrincipal2.dispose();
 	}
 	
 	private void comprobarCamposRestablecidos () {

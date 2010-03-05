@@ -43,8 +43,6 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 		pnlCalendario = new Panel(frmCalendario);
 		pnlCalendarioConsultar = pnlCalendario.getPanel("pnlConsultarCalendario");
 		lstDiasSemana = pnlCalendarioConsultar.getListBox("lstDiasSemana");
-		// Ambiguedad, porque hay una lista de paneles de periodos de trabajo dentro del panel de Calendario Consultar
-		// pnlPeriodos = pnlCalendarioConsultar.getPanel("pnlPeriodosTrabajo");
 		btnAceptar = pnlCalendario.getButton("btnAceptar");
 		btnRestablecer = pnlCalendario.getButton("btnRestablecer");
 		btnRestablecerTodo = pnlCalendario.getButton("btnRestablecerTodo");
@@ -58,11 +56,6 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 		frmCalendario.dispose();
 		periodos = new Vector<PeriodoTrabajo>();
 	}
-	
-	// TODO: coger los paneles de periodos de trabajo de cada día y ver que sus checkboxes se seleccionan
-	// de acuerdo a las horas introducidas.
-	
-	// TODO: hacer pruebas seleccionando checkboxes a mano.
 	
 	public void testMostrarCalendarioVacio() {
 		try {			

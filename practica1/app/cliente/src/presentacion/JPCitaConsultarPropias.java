@@ -203,7 +203,7 @@ public class JPCitaConsultarPropias extends JPBase {
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		boolean actualizado = false;
 		Cita c;
-		
+
 		// Si alguno de los beneficiarios que se muestran en la tabla de citas ha cambiado, se refresca la tabla
 		if (medico != null && citas.size()>0) {
 			for (int i=0; !actualizado && i<citas.size(); i++) {

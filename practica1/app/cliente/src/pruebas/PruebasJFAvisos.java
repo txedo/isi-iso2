@@ -2,14 +2,18 @@ package pruebas;
 
 import java.util.Date;
 import java.util.Vector;
+
 import org.uispec4j.Button;
 import org.uispec4j.Panel;
 import org.uispec4j.Table;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
+
 import presentacion.JFAvisos;
+
 import comunicaciones.ConfiguracionCliente;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Cita;
@@ -20,8 +24,6 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
 import dominio.control.ControladorCliente;
-import excepciones.BeneficiarioYaExistenteException;
-import excepciones.UsuarioYaExistenteException;
 
 public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas {
 
@@ -57,26 +59,27 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 				}
 			});
 			
-			// Creamos un médico
+			// Creamos un médico de cabecera 
 			tCabecera = new Cabecera();
-			login = UtilidadesPruebas.generarLogin();
-			cabecera = new Medico(UtilidadesPruebas.generarNIF(), login, login, "Eduardo", "PC", "", "", "", tCabecera);
-			cabecera.setCentroSalud(controlador.consultarCentros().firstElement());
-			periodo1 = new PeriodoTrabajo(10, 16, DiaSemana.Miercoles);
-			cabecera.getCalendario().add(periodo1);
-			
-			beneficiarioPrueba1 = new Beneficiario ();
-			beneficiarioPrueba1.setNif(UtilidadesPruebas.generarNIF());
-			beneficiarioPrueba1.setNss(UtilidadesPruebas.generarNSS());
+			cabecera = new Medico();
+			cabecera.setNombre("Eduardo");
+			cabecera.setApellidos("Ramírez García");
+			cabecera.setTipoMedico(tCabecera);
+			cabecera.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			cabecera = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera); 
+
+			// Creamos el beneficiario en el mismo centro que el médico, para que no se le asigne otro diferente 
+			beneficiarioPrueba1 = new Beneficiario();
 			beneficiarioPrueba1.setNombre("beneficiario");
-			beneficiarioPrueba1.setApellidos("de prueba 1");
+			beneficiarioPrueba1.setApellidos("de prueba");
 			beneficiarioPrueba1.setCorreo(" ");
 			beneficiarioPrueba1.setTelefono(" ");
 			beneficiarioPrueba1.setMovil(" ");
 			beneficiarioPrueba1.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba1.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
-			beneficiarioPrueba1.setCentroSalud(controlador.consultarCentros().firstElement());
+			beneficiarioPrueba1.setCentroSalud(cabecera.getCentroSalud());
 			beneficiarioPrueba1.setMedicoAsignado(cabecera);
+			beneficiarioPrueba1 = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba1);
 			
 			beneficiarioPrueba2 = new Beneficiario ();
 			beneficiarioPrueba2.setNif(UtilidadesPruebas.generarNIF());
@@ -90,44 +93,8 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			beneficiarioPrueba2.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba2.setCentroSalud(controlador.consultarCentros().firstElement());
 			beneficiarioPrueba2.setMedicoAsignado(cabecera);
+			beneficiarioPrueba1 = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba2);
 			
-			// Mientras exista el usuario, se genera otro login y otro NIF
-			do {
-				try {
-					controlador.crearUsuario(cabecera);
-					valido = true;
-				} catch (UsuarioYaExistenteException e) {
-					cabecera.setNif(UtilidadesPruebas.generarNIF());
-					login = UtilidadesPruebas.generarLogin();
-					cabecera.setLogin(login);
-					cabecera.setPassword(login);
-					valido = false;
-				}
-			}while(!valido);
-			cabecera = controlador.consultarMedico(cabecera.getNif());
-			
-			do {
-				try {
-					controlador.crearBeneficiario(beneficiarioPrueba1);
-					valido = true;
-				} catch (BeneficiarioYaExistenteException e) {
-					beneficiarioPrueba1.setNif(UtilidadesPruebas.generarNIF());					
-					beneficiarioPrueba1.setNss(UtilidadesPruebas.generarNSS());
-					valido = false;
-				}
-			}while(!valido);
-			
-			do {
-				try {
-					controlador.crearBeneficiario(beneficiarioPrueba2);
-					valido = true;
-				} catch (BeneficiarioYaExistenteException e) {
-					beneficiarioPrueba2.setNif(UtilidadesPruebas.generarNIF());					
-					beneficiarioPrueba2.setNss(UtilidadesPruebas.generarNSS());
-					valido = false;
-				}
-			}while(!valido);
-
 			frmAvisos = new JFAvisos();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(frmAvisos);

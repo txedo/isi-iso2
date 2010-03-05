@@ -19,12 +19,10 @@ import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 import presentacion.JPBeneficiarioConsultar;
-import presentacion.JPBeneficiarioRegistrar;
 import presentacion.auxiliar.OperacionesInterfaz;
 
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
-import comunicaciones.RemotoCliente;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
@@ -33,14 +31,11 @@ import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
-import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
-import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CodigoPostalIncorrectoException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.DomicilioIncorrectoException;
-import excepciones.FechaNacimientoIncorrectaException;
 import excepciones.LocalidadIncorrectaException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
@@ -51,7 +46,6 @@ import excepciones.ProvinciaIncorrectaException;
 import excepciones.PuertaDomicilioIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
-import excepciones.UsuarioYaExistenteException;
 
 public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 	
@@ -155,7 +149,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			
 			// Obtenemos el panel
 			Panel p1 = winPrincipal.getPanel("jPanelGestionarBeneficiarios");
-			panel = (JPBeneficiarioConsultar)p1.getPanel("jPanelConsultar").getAwtContainer();
+			panel = (JPBeneficiarioConsultar)p1.getPanel("jPanelConsultarModificar").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
 			cmbIdentificacion = pnlPanel.getComboBox("cmbIdentificacion");
@@ -207,6 +201,10 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			jchkEditar.setVisible(true);
 			jbtnGuardar.setVisible(true);
 			jbtnEliminar.setVisible(true);
+			
+			// Indicamos que la operación activa del primer administador es la de consultar las citas de un beneficiario
+			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarBeneficiario);
+
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -214,10 +212,14 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	
 	protected void tearDown() {
 		try {
-			if (!eliminadoBeneficiario) controlador.eliminarBeneficiario(beneficiarioPrueba);
+			// Cerramos la sesión auxiliar de las pruebas del observador
+			UtilidadesPruebas.cerrarControladorAuxiliar();
+			// Recuperamos los médicos borrados
 			for (Medico m : medicosEliminados) {
 				controlador.crearMedico(m);
 			}
+			// Eliminamos los objetos de prueba
+			if (!eliminadoBeneficiario) controlador.eliminarBeneficiario(beneficiarioPrueba);			
 			if (!eliminadoMedico) controlador.eliminarMedico(cabecera);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.getVentanaPrincipal().dispose();
@@ -467,92 +469,68 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	
 	public void testObservadorBeneficiarioActualizadoEliminado () {
 		// Iniciamos sesión con un segundo administrador
-		controladorAuxiliar = new ControladorCliente();
-		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
-			public void run() {
-				try {
-					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
-					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
-					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
-					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
-				} catch(Exception e) {
-					fail(e.toString());
-				}
-			}
-		});
-		// Indicamos que la operación activa del primer administador es la de consultar beneficiario
-		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarBeneficiario);
+		try {
+			// Iniciamos el controlador auxiliar con otro usuario administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
 		// El primer administrador busca al beneficiario de prueba
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(0);
 		txtIdentificacion.setText(beneficiarioPrueba.getNif());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 		// Se comprueba que tiene médico asignado
 		assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 		try {
 			// En este momento el segundo administrador modifica el beneficiario
-			Trigger t1 = new Trigger() {
-				@Override
+			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
-					beneficiarioPrueba.setNombre("Otro Nombre");
+					beneficiarioPrueba.setCorreo("correoPrueba@gmail.com");
 					controladorAuxiliar.modificarBeneficiario(beneficiarioPrueba);
 				}
-			};
-			WindowInterceptor.init(t1).process(new WindowHandler() {
+			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-
+					// Capturamos la ventana que avisa del cambio en el beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
 			Thread.sleep(500);
-			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del beneficiario
-			assertEquals(txtNombre.getText(), beneficiarioPrueba.getNombre());
+			// La ventana del primer administrador se ha debido actualizar con el nuevo correo del beneficiario
+			assertEquals(txtCorreo.getText(), beneficiarioPrueba.getCorreo());
 			
-			// Ahora procedemos a eliminar el beneficiario desde el segundo administrador
-			Trigger t2 = new Trigger() {
-				@Override
+			// Ahora eliminamos el beneficiario
+			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.eliminarBeneficiario(beneficiarioPrueba);
 				}
-			};
-			WindowInterceptor.init(t2).process(new WindowHandler() {
+			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-
+					// Capturamos la ventana que avisa de la eliminación del beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
 			Thread.sleep(500);
-			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues no existe ya el beneficiario
+			// La ventana del primer administrador se ha debido limpiar
 			comprobarCamposRestablecidos();
 			eliminadoBeneficiario = true;
-			// Se finaliza el controlador auxiliar
-			controladorAuxiliar.cerrarSesion();
-			controladorAuxiliar.cerrarControlador();
 		} catch (Exception e) {
 			fail (e.toString());
 		}
-		winPrincipal2.dispose();
 	}
 	
 	public void testObservadorUsuarioActualizadoEliminado () {
 		// Iniciamos sesión con un segundo administrador
-		controladorAuxiliar = new ControladorCliente();
-		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
-			public void run() {
-				try {
-					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
-					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
-					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
-					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
-				} catch(Exception e) {
-					fail(e.toString());
-				}
-			}
-		});
-		// Indicamos que la operación activa del primer administador es la de consultar beneficiario
-		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarBeneficiario);
+		try {
+			// Iniciamos el controlador auxiliar con otro usuario administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
 		// El primer administrador busca al beneficiario de prueba
 		jcmbIdentificacion.grabFocus();
 		jcmbIdentificacion.setSelectedIndex(0);
@@ -562,16 +540,14 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 		try{
 			// En este momento el segundo administrador modifica el médico asignado al beneficiario
-			Trigger t1 = new Trigger() {
-				@Override
+			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
-					cabecera.setNombre("Nombre cabecera nuevo");
+					cabecera.setNombre("Otro nombre");
 					controladorAuxiliar.modificarMedico(cabecera);
 				}
-			};
-			WindowInterceptor.init(t1).process(new WindowHandler() {
+			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-
+					// Capturamos la ventana que avisa del cambio del médico
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
@@ -581,15 +557,13 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			
 			// Ahora procedemos a eliminar el medico desde el segundo administrador
-			Trigger t2 = new Trigger() {
-				@Override
+			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.eliminarMedico(cabecera);
 				}
-			};
-			WindowInterceptor.init(t2).process(new WindowHandler() {
+			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-
+					// Capturamos la ventana que avisa de la eliminación del médico
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
@@ -598,13 +572,9 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues el beneficiario se ha quedado sin médico asignado
 			comprobarCamposRestablecidos();
 			medicosEliminados.add(cabecera);
-			// Se finaliza el controlador auxiliar
-			controladorAuxiliar.cerrarSesion();
-			controladorAuxiliar.cerrarControlador();
 		} catch (Exception e) {
 			fail (e.toString());
-		}
-		winPrincipal2.dispose();
+		}		
 	}
 	
 	private void comprobarCamposRestablecidos () {
