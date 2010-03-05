@@ -30,7 +30,6 @@ import excepciones.PuertaDomicilioIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
 import presentacion.JPBeneficiarioRegistrar;
-import presentacion.JPCitaTramitar;
 
 /**
  * Pruebas del panel de registro de beneficiarios.
@@ -147,10 +146,10 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			// Cerramos la sesión y la ventana del controlador
 			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
-			winPrincipal.dispose();
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+		winPrincipal.dispose();
 	}
 
 	/** Pruebas con datos no válidos */

@@ -138,6 +138,7 @@ public class JPSustituciones extends JPBase {
 
 	public void setOperacionSeleccionada(OperacionesInterfaz operacionSeleccionada) {
 		jPanelListaOperaciones.setOperacion(operacionSeleccionada);
+		this.operacionSeleccionada = operacionSeleccionada;
 	}
 
 	public void addOperacionCambiadaListener(OperacionCambiadaListener listener) {

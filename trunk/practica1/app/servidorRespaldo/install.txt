@@ -4,7 +4,7 @@ USE bdsscarespaldo;
 CREATE TABLE centros (
        id INT NOT NULL AUTO_INCREMENT,
        nombre VARCHAR(255) UNIQUE NOT NULL default '', 
-       direccion VARCHAR(255) NOT NULL,
+       direccion VARCHAR(255) NOT NULL default '',
        PRIMARY KEY (id)
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
@@ -33,20 +33,20 @@ CREATE TABLE tiposMedico (
 
 CREATE TABLE periodosTrabajo (
        id INT NOT NULL AUTO_INCREMENT,
-       nifMedico CHAR(9) NOT NULL,
-       horaInicio INT NOT NULL,
-       horaFinal INT NOT NULL,
-       dia INT NOT NULL,
+       nifMedico CHAR(9) NOT NULL default '',
+       horaInicio INT NOT NULL default -1,
+       horaFinal INT NOT NULL default -1,
+       dia INT NOT NULL default -1,
        PRIMARY KEY (id),
        FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE entradasLog (
        id INT NOT NULL AUTO_INCREMENT,
-       usuario VARCHAR(255) NOT NULL,
+       usuario VARCHAR(255) NOT NULL default '',
        fecha DATETIME NOT NULL,
        accion ENUM ('create', 'read', 'update', 'delete', 'info') NOT NULL,
-       mensaje VARCHAR(255) NOT NULL,
+       mensaje VARCHAR(255) NOT NULL default '',
        PRIMARY KEY (id)
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
@@ -82,9 +82,9 @@ CREATE TABLE direcciones (
 CREATE TABLE citas (
        id INT NOT NULL AUTO_INCREMENT,
        fecha DATETIME NOT NULL,
-       duracion INT NOT NULL,
-       nifBeneficiario CHAR(9) NOT NULL,
-       nifMedico CHAR(9) NOT NULL,
+       duracion INT NOT NULL default -1,
+       nifBeneficiario CHAR(9) NOT NULL default '',
+       nifMedico CHAR(9) NOT NULL default '',
        PRIMARY KEY (id),
        UNIQUE (fecha, nifMedico),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -93,9 +93,9 @@ CREATE TABLE citas (
 
 CREATE TABLE volantes (
        id INT NOT NULL AUTO_INCREMENT,
-       nifBeneficiario CHAR(9) NOT NULL,
-       nifMedicoEmisor CHAR(9) NOT NULL,
-       nifMedicoReceptor CHAR(9) NOT NULL,
+       nifBeneficiario CHAR(9) NOT NULL default '',
+       nifMedicoEmisor CHAR(9) NOT NULL default '',
+       nifMedicoReceptor CHAR(9) NOT NULL default '',
        fechaCaducidad DATETIME NOT NULL,
        idCita INT,
        PRIMARY KEY (id),
@@ -108,10 +108,10 @@ CREATE TABLE volantes (
 CREATE TABLE sustituciones (
        id INT NOT NULL AUTO_INCREMENT,
        dia DATETIME NOT NULL,
-       horaInicio INT NOT NULL,
-       horaFinal INT NOT NULL,
-       nifMedico CHAR(9) NOT NULL,
-       nifSustituto CHAR(9) NOT NULL,
+       horaInicio INT NOT NULL default -1,
+       horaFinal INT NOT NULL default -1,
+       nifMedico CHAR(9) NOT NULL default '',
+       nifSustituto CHAR(9) NOT NULL default '',
        PRIMARY KEY (id),
        FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
        FOREIGN KEY (nifSustituto) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE

@@ -576,6 +576,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jPanelBienvenida.repaint();
 			break;
 		}
+		operacionSeleccionada = operacion;
 	}
 		
 	public void forzarCierreSesionDuplicada() {

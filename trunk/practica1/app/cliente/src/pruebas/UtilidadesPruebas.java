@@ -108,7 +108,6 @@ public class UtilidadesPruebas {
 	
 	// Cierra la sesión abierta con el método crearControladorAuxiliar
 	public static void cerrarControladorAuxiliar() throws Exception {
-		String ip;
 		
 		if(controlador != null) {
 			controlador.cerrarSesion();
