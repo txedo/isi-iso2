@@ -148,7 +148,7 @@ public class JPCitaConsultarMedico extends JPBase {
 		// Borramos los datos de la última consulta de citas
 		limpiarCamposConsulta();
 
-		// Obtenemos el medico que se ha buscado en el panel de consulta
+		// Obtenemos el médico que se ha buscado en el panel de consulta
 		// (puede ser null si ocurrió un error al buscar el usuario)
 		medico = (Medico)pnlUsuario.getUsuario();
 		
@@ -235,12 +235,11 @@ public class JPCitaConsultarMedico extends JPBase {
 	
 	// Métodos públicos
 	
-	// <métodos del observador>
-	
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		boolean actualizado = false;
 		Cita c;
-		// Si alguno de los beneficiarios que se muestran en la tabla de citas ha cambiado, se refresca la tabla
+		// Si alguno de los beneficiarios que se muestran en la tabla de citas
+		// ha cambiado, se refresca la tabla
 		if (medico != null && citas.size()>0) {
 			for (int i=0; !actualizado && i<citas.size(); i++) {
 				c = citas.get(i);
@@ -259,7 +258,9 @@ public class JPCitaConsultarMedico extends JPBase {
 	public void beneficiarioEliminado(Beneficiario beneficiario) {
 		boolean actualizado = false;
 		Cita c;
-		// Si alguno de los beneficiarios que se muestran en la tabla de citas se ha eliminado, se refresca la tabla
+		
+		// Si alguno de los beneficiarios que se muestran en la tabla de citas se
+		// ha eliminado, se refresca la tabla
 		if (medico != null && citas.size()>0) {
 			for (int i=0; !actualizado && i<citas.size(); i++) {
 				c = citas.get(i);

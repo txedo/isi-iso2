@@ -35,7 +35,7 @@ public class JPSustituciones extends JPBase {
 	private EventListenerList listenerList;
 	private OperacionesInterfaz operacionSeleccionada;
 	
-	private JPEstablecerSustituto jPanelEstablecer;
+	private JPSustitucionEstablecer jPanelEstablecer;
 	private JSeparator jSeparator;
 	private JPOperaciones jPanelListaOperaciones;
 	private JScrollPane jScrollEstablecer;
@@ -85,9 +85,10 @@ public class JPSustituciones extends JPBase {
 				jScrollEstablecer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 				jScrollEstablecer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				{
-					jPanelEstablecer = new JPEstablecerSustituto(this.getFrame(), this.getControlador());
+					jPanelEstablecer = new JPSustitucionEstablecer(this.getFrame(), this.getControlador());
 					jPanelEstablecer.setName("jPanelEstablecer");
 					jScrollEstablecer.setViewportView(jPanelEstablecer);
+					jPanelEstablecer.setName("jPanelEstablecer");
 				}
 			}
 		} catch(Exception e) {
@@ -153,6 +154,17 @@ public class JPSustituciones extends JPBase {
 	
 	public boolean hayOperacionesDisponibles() {
 		return (jPanelListaOperaciones.getNumeroOperaciones() > 0);
+	}
+	
+	public void usuarioRegistrado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case EstablecerSustituto:
+			jPanelEstablecer.usuarioRegistrado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {

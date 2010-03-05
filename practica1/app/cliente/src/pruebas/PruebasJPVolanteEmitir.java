@@ -2,11 +2,9 @@ package pruebas;
 
 import java.util.Date;
 import java.util.Vector;
-
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JTextField;
-
 import org.uispec4j.Button;
 import org.uispec4j.ComboBox;
 import org.uispec4j.ListBox;
@@ -16,12 +14,9 @@ import org.uispec4j.TextBox;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
-
-import presentacion.JPEmitirVolante;
+import presentacion.JPVolanteEmitir;
 import presentacion.JPUsuarioConsultar;
-
 import comunicaciones.ConfiguracionCliente;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.DiaSemana;
@@ -36,10 +31,10 @@ import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.UsuarioYaExistenteException;
 
-public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
+public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private ControladorCliente controlador;
-	private JPEmitirVolante pnlEmitir;
+	private JPVolanteEmitir pnlEmitir;
 	private Panel panelBeneficiario;
 	private Panel pnlPanel;
 	private Table tblCitas;
@@ -153,7 +148,7 @@ public class PruebasJPEmitirVolante extends org.uispec4j.UISpecTestCase implemen
 				}
 			});
 			Panel p1 = winPrincipal.getPanel("jPanelGestionarVolantes");
-			pnlEmitir = (JPEmitirVolante) p1.getPanel("jPanelEmitir").getAwtContainer();
+			pnlEmitir = (JPVolanteEmitir) p1.getPanel("jPanelEmitir").getAwtContainer();
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(pnlEmitir);
 			panelBeneficiario = pnlPanel.getPanel("pnlBeneficiario");

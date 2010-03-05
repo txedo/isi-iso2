@@ -18,6 +18,15 @@ public abstract class Usuario implements Serializable, Cloneable {
 	protected CentroSalud centro;
 	
 	public Usuario() {
+		nif = "";
+		login = "";
+		password = "";
+		nombre = "";
+		apellidos = "";
+		correo = "";
+		telefono = "";
+		movil = "";
+		centro = null;
 	}
 	
 	public Usuario(String nif, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil) {
@@ -29,6 +38,7 @@ public abstract class Usuario implements Serializable, Cloneable {
 		this.correo = correo;
 		this.telefono = telefono;
 		this.movil = movil;
+		centro = null;
 	}
 
 	public abstract RolesUsuario getRol();

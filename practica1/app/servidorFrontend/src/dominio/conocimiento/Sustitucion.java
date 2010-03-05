@@ -20,9 +20,16 @@ public class Sustitucion implements Serializable {
 	private Medico sustituto;
 	
 	public Sustitucion() {
+		id = -1;
+		dia = new Date();
+		horaInicio = 0;
+		horaFinal = 0;
+		medico = null;
+		sustituto = null;
 	}
 	
 	public Sustitucion(Date dia, int horaInicio, int horaFinal, Medico medico, Medico sustituto) {
+		id = -1;
 		this.dia = dia;
 		this.horaInicio = horaInicio;
 		this.horaFinal = horaFinal;

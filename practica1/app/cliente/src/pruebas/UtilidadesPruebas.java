@@ -1,26 +1,157 @@
 package pruebas;
 
-import java.util.Date;
 import java.util.Random;
-
 import javax.swing.JDialog;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
-
 import org.uispec4j.Button;
+import org.uispec4j.ListBox;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
+import comunicaciones.ConfiguracionCliente;
+import comunicaciones.RemotoCliente;
+import comunicaciones.UtilidadesComunicaciones;
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Usuario;
+import dominio.control.Cliente;
+import dominio.control.ControladorCliente;
+import excepciones.BeneficiarioYaExistenteException;
+import excepciones.UsuarioYaExistenteException;
 import presentacion.auxiliar.Validacion;
 
 public class UtilidadesPruebas {
 
-	private static Random rnd = new Random(new Date().getTime());
+	private static Random rnd = new Random(System.currentTimeMillis());
 
 	private static Window ventanaMostrada;
 	
-	public static String obtenerTextoDialogo (Button btn) {
+	private static ControladorCliente controlador = null;
+	private static Window winControlador = null;
+	private static String loginStatic, passwordStatic;
+
+	// Crea un nuevo beneficiario en el sistema, asegurándose de que no exista ya
+	public static Beneficiario crearBeneficiario(ControladorCliente controlador, Beneficiario beneficiario) throws Exception {
+		boolean valido;
+		
+		// Mientras el beneficiario exista, se le asigna un nuevo NIF y NSS
+		beneficiario.setNif(generarNIF());					
+		beneficiario.setNss(generarNSS());
+		do {
+			valido = false;
+			try {					
+				controlador.crearBeneficiario(beneficiario);
+				valido = true;
+			} catch(BeneficiarioYaExistenteException e) {
+				beneficiario.setNif(generarNIF());					
+				beneficiario.setNss(generarNSS());
+			}
+		} while(!valido);
+		
+		// Consultamos el beneficiario por si el médico se asignó aleatoriamente
+		beneficiario = controlador.consultarBeneficiarioPorNIF(beneficiario.getNif());
+		
+		return beneficiario;
+	}
+
+	// Crea un nuevo usuario en el sistema, asegurándose de que no exista ya
+	public static Usuario crearUsuario(ControladorCliente controlador, Usuario usuario) throws Exception {
+		boolean valido;
+
+		// Mientras el usuario exista, se le asigna un nuevo NIF y login
+		usuario.setNif(generarNIF());					
+		usuario.setLogin(generarLogin());
+		usuario.setPassword(usuario.getLogin());
+		do {
+			valido = false;
+			try {					
+				controlador.crearUsuario(usuario);
+				valido = true;
+			} catch(UsuarioYaExistenteException e) {
+				usuario.setNif(generarNIF());
+				usuario.setLogin(generarLogin());
+				usuario.setPassword(usuario.getLogin());
+			}
+		} while(!valido);
+		
+		// Consultamos el usuario para obtener el centro de salud asignado aleatoriamente
+		usuario = controlador.consultarUsuario(usuario.getNif());
+		
+		return usuario;
+	}
+	
+	// Inicia sesión con un nuevo usuario en un controlador auxiliar
+	public static ControladorCliente crearControladorAuxiliar(String login, String password) throws Exception {
+		ControladorCliente controladorPrincipal;
+		
+		// Nos quedamos con la referencia del controlador principal
+		controladorPrincipal = ((Cliente)(RemotoCliente.getCliente().getClienteExportado())).getControlador();
+		
+		// Iniciamos sesión con un nuevo controlador
+		loginStatic = login;
+		passwordStatic = password;
+		controlador = new ControladorCliente();
+		winControlador = WindowInterceptor.run(new Trigger() {
+			public void run() throws Exception {
+				controlador.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IPServidorFrontend, IDatosConexionPruebas.puertoServidorFrontend), loginStatic, passwordStatic);
+			}
+		});
+
+		// Como sólo se puede exportar un objeto Cliente, ahora mismo el objeto exportado
+		// hace referencia al controlador del usuario auxiliar; en esta línea restablecemos
+		// el controlador del cliente para que haga referencia al controlador de las pruebas
+		((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controladorPrincipal);
+		
+		return controlador;
+	}
+	
+	// Cierra la sesión abierta con el método crearControladorAuxiliar
+	public static void cerrarControladorAuxiliar() throws Exception {
+		String ip;
+		
+		if(controlador != null) {
+			controlador.cerrarSesion();
+			controlador.cerrarControlador();
+			RemotoCliente.getCliente().activar(UtilidadesComunicaciones.obtenerIPHost());
+		}
+		if(winControlador != null) {
+			winControlador.dispose();
+		}
+	}
+	
+	// Comprueba que en una lista aparezcan los usuarios indicados
+	public static boolean comprobarListaUsuarios(ListBox lista, Usuario[] usuarios) {
+		JList jlista;
+		String nombreUsuario;
+		boolean encontrado, dev;
+		int i;
+		
+		dev = true;
+		jlista = lista.getAwtComponent();
+		if(jlista.getModel().getSize() != usuarios.length) {
+			dev = false;
+		} else {
+			for(Usuario usuario : usuarios) {
+				// Buscamos el usuario en la lista
+				encontrado = false;
+				nombreUsuario = usuario.getApellidos() + ", " + usuario.getNombre() + " (" + usuario.getNif() + ")";
+				for(i = 0; i < usuarios.length; i++) {
+					if(nombreUsuario.equals(jlista.getModel().getElementAt(i))) {
+						encontrado = true;
+					}
+				}
+				if(!encontrado) {
+					dev = false;
+				}
+			}
+		}
+		
+		return dev;
+	}
+	
+	// Devuelve el texto del cuadro de diálogo mostrado al pulsar el botón indicado
+	public static String obtenerTextoDialogo(Button btn) {
 		String mensaje = "";
 		JOptionPane optionPane = null;
 		JDialog dialogo = null;
@@ -38,7 +169,9 @@ public class UtilidadesPruebas {
 		return mensaje;
 	}
 	
-	public static String obtenerTextoDialogo (Button btn, final String btnQueCierra) {
+	// Devuelve el texto del cuadro de diálogo mostrado al pulsar el botón indicado,
+	// y cierra el cuadro de diálogo pulsando el botón con el texto especificado
+	public static String obtenerTextoDialogo(Button btn, final String txtBotonCierre) {
 		String mensaje = "";
 		JOptionPane optionPane = null;
 		JDialog dialogo = null;
@@ -46,7 +179,7 @@ public class UtilidadesPruebas {
 				new WindowHandler() {
 					public Trigger process(Window window) {
 						ventanaMostrada = window;
-						return window.getButton(btnQueCierra).triggerClick();
+						return window.getButton(txtBotonCierre).triggerClick();
 					}
 				}).run();
 		// El JOptionPane está encapsulado dentro del dialogo (JDialog) que devuelve el WindowInterceptor
@@ -56,19 +189,21 @@ public class UtilidadesPruebas {
 		return mensaje;
 	}
 	
-	public static String obtenerTextoSegundoDialogo (Button btn, final String btnQueCierraPrimero, final String btnQueCierraSegundo) {
+	// Devuelve el texto del segundo cuadro de diálogo mostrado al pulsar el botón
+	// indicado, y cierra ambos diálogos pulsando los botones con los textos especificados
+	public static String obtenerTextoSegundoDialogo(Button btn, final String txtBotonCierre1, final String txtBotonCierre2) {
 		String mensaje = "";
 		JOptionPane optionPane = null;
 		JDialog dialogo = null;
 		WindowInterceptor.init(btn.triggerClick()).process(
 				new WindowHandler() {
 					public Trigger process(Window window) {
-						return window.getButton(btnQueCierraPrimero).triggerClick();
+						return window.getButton(txtBotonCierre1).triggerClick();
 					}
 				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
 						ventanaMostrada = window;
-						return window.getButton(btnQueCierraSegundo).triggerClick();
+						return window.getButton(txtBotonCierre2).triggerClick();
 					}
 				}).run();
 		// El JOptionPane está encapsulado dentro del dialogo (JDialog) que devuelve el WindowInterceptor

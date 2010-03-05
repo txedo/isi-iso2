@@ -9,8 +9,10 @@ public class ProxyCliente implements ICliente {
 
 	private ICliente cliente;
 	
-	public ProxyCliente (ICliente c) {
-		this.cliente = c;
+	public void asociar(ICliente cliente) {
+		// Este proxy no se conecta a un objeto remoto con 'Naming.lookup' porque
+		// el objeto remoto ya lo proporciona el cliente al llamar a 'registrar'
+		this.cliente = cliente;
 	}
 
 	// Métodos del cliente

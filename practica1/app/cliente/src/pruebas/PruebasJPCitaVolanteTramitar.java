@@ -2,11 +2,9 @@ package pruebas;
 
 import java.util.Date;
 import java.util.Vector;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-
 import org.uispec4j.Button;
 import org.uispec4j.ComboBox;
 import org.uispec4j.Panel;
@@ -15,14 +13,12 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
 import comunicaciones.RemotoCliente;
-
 import presentacion.JPCitaTramitar;
 import presentacion.JPCitaVolanteTramitar;
-import presentacion.JPEmitirVolante;
+import presentacion.JPVolanteEmitir;
 import presentacion.auxiliar.OperacionesInterfaz;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
@@ -43,7 +39,6 @@ import excepciones.FormatoFechaIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.UsuarioYaExistenteException;
-
 
 public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 	

@@ -18,6 +18,13 @@ public class Direccion implements Serializable, Cloneable {
 	private int cp;
 	
 	public Direccion() {
+		domicilio = "";
+		numero = "";
+		piso = "";
+		puerta = "";
+		ciudad = "";
+		provincia = "";
+		cp = 0;
 	}
 
 	public Direccion(String domicilio, String numero, String piso, String puerta, String ciudad, String provincia, int cp) {

@@ -502,6 +502,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			cerrarSesion();
 			try {
 				controlador.cerrarControlador();
+				System.exit(0);
 			} catch (RemoteException e) {
 				Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
 			} catch (MalformedURLException e) {
@@ -563,11 +564,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jPanelGestionarCitas.setOperacionSeleccionada(operacion);
 			break;
 		case EstablecerSustituto:
-			jTabbedPaneOperaciones.setSelectedComponent(jPanelGestionarCitas);
+			jTabbedPaneOperaciones.setSelectedComponent(jPanelGestionarSustituciones);
 			jPanelGestionarCitas.setOperacionSeleccionada(operacion);
 			break;
 		case EmitirVolante:
-			jTabbedPaneOperaciones.setSelectedComponent(jPanelGestionarCitas);
+			jTabbedPaneOperaciones.setSelectedComponent(jPanelGestionarVolantes);
 			jPanelGestionarCitas.setOperacionSeleccionada(operacion);
 			break;
 		case OperacionInvalida:
@@ -639,6 +640,22 @@ public class JFPrincipal extends javax.swing.JFrame {
 		}
 	}
 	
+	public void usuarioRegistrado(Usuario usuario) {
+		// Redirigimos la operación al grupo de paneles seleccionado
+		switch(operacionSeleccionada) {
+		case EstablecerSustituto:
+			jPanelGestionarSustituciones.usuarioRegistrado(usuario);
+			break;
+		case EmitirVolante:
+// TODO: Juan A., falta por hacer que se refresque la lista de especialistas
+// al insertar un nuevo especialista
+//			jPanelGestionarVolantes.usuarioRegistrado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+
 	public void usuarioActualizado(Usuario usuario) {
 		// Redirigimos la operación al grupo de paneles seleccionado
 		switch(operacionSeleccionada) {
@@ -649,6 +666,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 		case ConsultarBeneficiario:
 		case ConsultarModificarBeneficiario:
 			jPanelGestionarBeneficiarios.usuarioActualizado(usuario);
+			break;
 		case TramitarCita:
 		case TramitarCitaVolante:
 		case ConsultarAnularCitasBeneficiario:
@@ -675,6 +693,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			break;
 		case ConsultarModificarBeneficiario:
 			jPanelGestionarBeneficiarios.usuarioEliminado(usuario);
+			break;
 		case TramitarCita:
 		case TramitarCitaVolante:
 		case ConsultarAnularCitasBeneficiario:

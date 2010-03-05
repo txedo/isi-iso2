@@ -244,19 +244,23 @@ public class JPCitaTramitar extends JPBase {
 				}
 
 				// Buscamos el primer día y hora disponible para una cita
-				cal = Calendar.getInstance();
-				cal.setTime(new Date());
-				cal.set(Calendar.HOUR, 0);
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				cal.set(Calendar.MILLISECOND, 0);
-				while(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
-				      || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
-				      || diasDesactivados.contains(UtilidadesDominio.diaFecha(cal.getTime()))
-				      || diasOcupados.contains(cal.getTime())) {
-					cal.add(Calendar.DAY_OF_MONTH, 1);
+				if(beneficiario.getMedicoAsignado().getCalendario().size() == 0) {
+					dtcDiaCita.setDate(new Date());
+				} else {
+					cal = Calendar.getInstance();
+					cal.setTime(new Date());
+					cal.set(Calendar.HOUR, 0);
+					cal.set(Calendar.MINUTE, 0);
+					cal.set(Calendar.SECOND, 0);
+					cal.set(Calendar.MILLISECOND, 0);
+					while(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+					      || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+					      || diasDesactivados.contains(UtilidadesDominio.diaFecha(cal.getTime()))
+					      || diasOcupados.contains(cal.getTime())) {
+						cal.add(Calendar.DAY_OF_MONTH, 1);
+					}
+					dtcDiaCita.setDate(cal.getTime());
 				}
-				dtcDiaCita.setDate(cal.getTime());
 				UtilidadesListaHoras.obtenerListaHoras(dtcDiaCita, horasCitas, citasOcupadas, cmbHorasCitas);
 
 				// Activamos el registro de citas
@@ -434,22 +438,35 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	public void citaRegistrada(Cita cita) {
+		Date dia;
+		int indHora;
+		
 		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
 			// Otro cliente ha registrado una cita para el mismo médico que
 			// este beneficiario; se vuelven a recuperar las horas de ese médico,
 			// para marcar la hora que se ha registrado en otro cliente
-			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico.");
+			dia = dtcDiaCita.getDate();
+			indHora = cmbHorasCitas.getSelectedIndex();
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este médico el día " + Cita.cadenaDiaCita(cita.getFechaYHora()) + " a las " + Cita.cadenaHoraCita(cita.getFechaYHora()) + ".");
 			mostrarHorasCitasMedico();
-			
+			dtcDiaCita.setDate(dia);
+			cmbHorasCitas.setSelectedIndex(indHora);
 		}
 	}
 	
 	public void citaAnulada(Cita cita) {
+		Date dia;
+		int indHora;
+		
 		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
 			// Otro cliente ha anulado una cita para el mismo médico que este beneficiario.
 			// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
-			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico.");
+			dia = dtcDiaCita.getDate();
+			indHora = cmbHorasCitas.getSelectedIndex();
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este médico el día " + Cita.cadenaDiaCita(cita.getFechaYHora()) + " a las " + Cita.cadenaHoraCita(cita.getFechaYHora()) + ".");
 			mostrarHorasCitasMedico();
+			dtcDiaCita.setDate(dia);
+			cmbHorasCitas.setSelectedIndex(indHora);
 		}
 	}
 	

@@ -227,6 +227,7 @@ public class JFLogin extends javax.swing.JFrame {
 	private void thisWindowClosing(WindowEvent evt) {
 		try {
 			controlador.cerrarControlador();
+			System.exit(0);
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(null, "Error", e.getLocalizedMessage());
 		} catch(MalformedURLException e) {

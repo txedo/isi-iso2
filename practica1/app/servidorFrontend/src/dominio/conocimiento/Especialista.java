@@ -14,9 +14,11 @@ public class Especialista extends TipoMedico implements Serializable{
 	
 	public Especialista() {
 		super();
+		especialidad = "";
 	}
 	
 	public Especialista(String especialidad) {
+		super();
 		this.especialidad = especialidad;
 	}
 

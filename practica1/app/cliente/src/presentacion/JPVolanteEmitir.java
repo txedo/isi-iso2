@@ -54,7 +54,7 @@ import excepciones.MedicoInexistenteException;
 /**
  * Panel que permite emitir volantes para ir a la consulta de especialistas.
  */
-public class JPEmitirVolante extends JPBase {
+public class JPVolanteEmitir extends JPBase {
 	
 	private static final long serialVersionUID = -2491308165795545454L;
 	
@@ -75,13 +75,13 @@ public class JPEmitirVolante extends JPBase {
 	private JComboBox cbEspecialidad;
 	private ListModel lstEspecialistasModel; 
 	
-	public JPEmitirVolante() {
+	public JPVolanteEmitir() {
 		this(null, null);
 		// Este constructor evita que aparezca un error al editar
 		// los formularios o paneles que utilizan JPEmitirVolante
 	}
 	
-	public JPEmitirVolante(JFPrincipal frame, ControladorCliente controlador) {
+	public JPVolanteEmitir(JFPrincipal frame, ControladorCliente controlador) {
 		super(frame, controlador);
 		initGUI();
 	}

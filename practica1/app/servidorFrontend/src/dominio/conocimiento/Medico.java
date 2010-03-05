@@ -17,6 +17,8 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 	
 	public Medico() {
 		super();
+		calendario = new Vector<PeriodoTrabajo>();
+		tipoMedico = null;
 	}
 	
 	public Medico(String nif, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil, TipoMedico tipo) {

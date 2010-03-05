@@ -4,11 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import dominio.conocimiento.IConstantes;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CodigoPostalIncorrectoException;
 import excepciones.CadenaIncorrectaException;
 import excepciones.CadenaVaciaException;
 import excepciones.FechaCitaIncorrectaException;
+import excepciones.FechaSustitucionIncorrectaException;
+import excepciones.HoraSustitucionIncorrectaException;
 import excepciones.IdVolanteIncorrectoException;
 import excepciones.LocalidadIncorrectaException;
 import excepciones.ContraseñaIncorrectaException;
@@ -105,22 +109,6 @@ public class Validacion {
 			throw new ApellidoIncorrectoException();
 		} catch(CadenaVaciaException e) {
 			throw new ApellidoIncorrectoException();
-		}
-	}
-	
-	// La fecha de nacimiento debe ser válida y posterior a la fecha actual
-	public static void comprobarFechaCita(Date date) throws FormatoFechaIncorrectoException, FechaCitaIncorrectaException {
-		SimpleDateFormat sdf;
-		
-		sdf = new SimpleDateFormat("dd/MM/yyyy");
-		try {
-			sdf.format(date);
-		} catch(Exception e) {
-			throw new FormatoFechaIncorrectoException();
-		}
-		
-		if(date.before(new Date())) {
-			throw new FechaCitaIncorrectaException();
 		}
 	}
 	
@@ -422,6 +410,54 @@ public class Validacion {
 			throw new IdVolanteIncorrectoException("El identificador del volante debe ser un número entero");
 		}
 		
+	}
+
+	// La fecha de la cita debe ser válida y posterior a la fecha actual
+	public static void comprobarFechaCita(Date date) throws FormatoFechaIncorrectoException, FechaCitaIncorrectaException {
+		SimpleDateFormat sdf;
+		
+		sdf = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			sdf.format(date);
+		} catch(Exception e) {
+			throw new FormatoFechaIncorrectoException();
+		}
+		
+		if(date.before(new Date())) {
+			throw new FechaCitaIncorrectaException();
+		}
+	}
+	
+	// La fecha de la sustitución debe ser válida y posterior a la fecha actual
+	public static void comprobarFechaSustitucion(Date date) throws FormatoFechaIncorrectoException, FechaSustitucionIncorrectaException {
+		SimpleDateFormat sdf;
+		
+		if(date == null) {
+			throw new FechaSustitucionIncorrectaException();
+		}
+		
+		sdf = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			sdf.format(date);
+		} catch(Exception e) {
+			throw new FormatoFechaIncorrectoException();
+		}
+		
+		if(date.before(new Date())) {
+			throw new FechaSustitucionIncorrectaException();
+		}
+	}
+	
+	// Las horas de la sustitución deben estar dentro de la jornada laboral y la inicial
+	// debe ser menor que la final
+	public static void comprobarHorasSustitucion(int horaInicial, int horaFinal) throws HoraSustitucionIncorrectaException {
+		if(horaInicial < IConstantes.HORA_INICIO_JORNADA) {
+			throw new HoraSustitucionIncorrectaException("La hora inicial de la sustitución queda fuera del horario laboral de los médicos.");
+		} else if(horaFinal > IConstantes.HORA_FIN_JORNADA) {
+			throw new HoraSustitucionIncorrectaException("La hora final de la sustitución queda fuera del horario laboral de los médicos.");
+		} else if(horaInicial >= horaFinal) {
+			throw new HoraSustitucionIncorrectaException("La hora final de la sustitución debe ser mayor que la inicial.");
+		}
 	}
 	
 }

@@ -1,4 +1,4 @@
-	package presentacion;
+package presentacion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -189,7 +189,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			{
 				lblMedicoAsignado = new JLabel();
 				this.add(lblMedicoAsignado, new AnchorConstraint(438, 277, 891, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblMedicoAsignado.setText("Médico actual *");
+				lblMedicoAsignado.setText("Médico actual");
 				lblMedicoAsignado.setPreferredSize(new java.awt.Dimension(119, 18));
 				lblMedicoAsignado.setName("lblMedicoAsignado");
 			}
@@ -238,14 +238,14 @@ public class JPBeneficiarioConsultar extends JPBase {
 			{
 				lblNSS = new JLabel();
 				this.add(lblNSS, new AnchorConstraint(105, 280, 344, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblNSS.setText("NSS *");
+				lblNSS.setText("NSS");
 				lblNSS.setPreferredSize(new java.awt.Dimension(110, 15));
 				lblNSS.setName("lblNSS");
 			}
 			{
 				lblNIF = new JLabel();
 				this.add(lblNIF, new AnchorConstraint(77, 280, 261, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblNIF.setText("NIF *");
+				lblNIF.setText("NIF");
 				lblNIF.setPreferredSize(new java.awt.Dimension(110, 15));
 				lblNIF.setName("lblNIF");
 			}
@@ -835,8 +835,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 		btnEliminar.setEnabled(activar);
 		lblCamposOblig.setVisible(activar);
 		if(activar) {
-			lblNIF.setText("NIF *");
-			lblNSS.setText("NSS *");
 			lblNombre.setText("Nombre *");
 			lblApellidos.setText("Apellidos *");
 			lblFechaNacimiento.setText("Fecha de nacimiento *");
@@ -845,10 +843,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			lblCP.setText("CP *");
 			lblProvincia.setText("Provincia *");
 			lblCentro.setText("Centro de salud *");
-			lblMedicoAsignado.setText("Médico actual *");
 		} else {
-			lblNIF.setText("NIF");
-			lblNSS.setText("NSS");
 			lblNombre.setText("Nombre");
 			lblApellidos.setText("Apellidos");
 			lblFechaNacimiento.setText("Fecha de nacimiento");
@@ -857,7 +852,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 			lblCP.setText("CP");
 			lblProvincia.setText("Provincia");
 			lblCentro.setText("Centro de salud");
-			lblMedicoAsignado.setText("Médico actual");
 		}
 	}
 
@@ -964,7 +958,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
 		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario
-			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido modificado por otro cliente");
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido modificado por otro cliente.");
 			beneficiario.setMedicoAsignado((Medico)usuario);
 			mostrarDatosBeneficiario(beneficiario);
 		}
@@ -974,7 +968,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
 		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario
-			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido eliminado por otro cliente");
+			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido eliminado por otro cliente.\nVuelva a buscar el beneficiario para ver el nuevo médico asignado.");
 			restablecerPanel();
 		}
 	}

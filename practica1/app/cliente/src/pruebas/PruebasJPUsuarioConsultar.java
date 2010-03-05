@@ -3,14 +3,11 @@ package pruebas;
 import java.awt.Component;
 import java.util.Date;
 import java.util.Vector;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-
 import org.uispec4j.Button;
 import org.uispec4j.CheckBox;
 import org.uispec4j.ComboBox;
@@ -21,18 +18,14 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
 import presentacion.JFCalendarioLaboral;
 import presentacion.JPUsuarioConsultar;
 import presentacion.auxiliar.OperacionesInterfaz;
-
 import comunicaciones.ConfiguracionCliente;
 import comunicaciones.RemotoCliente;
-
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
-import dominio.conocimiento.Cita;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
@@ -44,6 +37,7 @@ import dominio.conocimiento.TipoMedico;
 import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
+import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.LoginIncorrectoException;
 import excepciones.NIFIncorrectoException;
@@ -76,19 +70,9 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	private Button btnEliminar;
 	private Button btnBuscar;
 	private CheckBox chkEditar;
-	private JTextField jtxtNIFBuscado;
-	private JTextField jtxtNIF;
-	private JTextField jtxtNombre;
-	private JTextField jtxtApellidos;
-	private JTextField jtxtLogin;
 	private JPasswordField jtxtPassword;
 	private JPasswordField jtxtPasswordConf;
-	private JTextField jtxtCorreoElectronico;
-	private JTextField jtxtTelefonoFijo;
-	private JTextField jtxtTelefonoMovil;
 	private JComboBox jcmbRol;
-	private JTextField jtxtCentro;
-	private JTextField jtxtEspecialidad;
 	private JLabel jlblHoras;
 	private JCheckBox jchkEditar;
 	private JButton jbtnEliminar;
@@ -231,19 +215,9 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			btnBuscar = pnlPanel.getButton("btnbuscar");
 			chkEditar = pnlPanel.getCheckBox("chkEditar");
 			
-			jtxtNIFBuscado = (JTextField)txtNIFBuscado.getAwtComponent();
-			jtxtNIF = (JTextField)txtNIF.getAwtComponent();
-			jtxtNombre = (JTextField)txtNombre.getAwtComponent();
-			jtxtApellidos = (JTextField)txtApellidos.getAwtComponent();
-			jtxtLogin = (JTextField)txtLogin.getAwtComponent();
 			jtxtPassword = (JPasswordField)txtPassword.getAwtComponent();
 			jtxtPasswordConf = (JPasswordField)txtPasswordConf.getAwtComponent();
-			jtxtCorreoElectronico = (JTextField)txtCorreoElectronico.getAwtComponent();
-			jtxtTelefonoFijo = (JTextField)txtTelefonoFijo.getAwtComponent();
-			jtxtTelefonoMovil = (JTextField)txtTelefonoMovil.getAwtComponent();
 			jcmbRol = (JComboBox)cmbRol.getAwtComponent();
-			jtxtCentro = (JTextField)txtCentro.getAwtComponent();
-			jtxtEspecialidad = (JTextField)txtEspecialidad.getAwtComponent();
 			jchkEditar = (JCheckBox)chkEditar.getAwtComponent();
 			jbtnGuardar = (JButton)btnGuardar.getAwtComponent();
 			jbtnEliminar = (JButton)btnEliminar.getAwtComponent();
@@ -321,13 +295,11 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), new LoginIncorrectoException().getMessage());
 			txtLogin.setText("admin87");
 			// Ponemos una contraseña invalida y comprobamos que se selecciona
-			// TODO: sigue fallando la contraseña. Ahora me dice que se almacena correctamente
-			/* jtxtPassword.grabFocus();
 			jtxtPassword.setText("123456");			
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new ContraseñaIncorrectaException().getMessage());
 			jtxtPassword.setText("12345678");
 			// Comprobamos que al no coincidir las contraseñas, se selecciona la primera contraseña
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new ContraseñaIncorrectaException().getMessage());*/
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new ContraseñaIncorrectaException().getMessage());
 			jtxtPassword.setText("12345678");
 			jtxtPasswordConf.setText("12345678");
 			// Probamos un e-mail invalido y comprobamos que se selecciona (este campo es opcional)
@@ -626,8 +598,8 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testActualizarMedico2() {
-		Cita c; 
 		Beneficiario beneficiarioPrueba;
 		final Vector<PeriodoTrabajo> periodos = new Vector<PeriodoTrabajo>();
 		periodos.add(new PeriodoTrabajo(10, 11, DiaSemana.Lunes ));
@@ -651,7 +623,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			controlador.crearBeneficiario(beneficiarioPrueba);
 			
 			// Creamos una cita de prueba		
-			c=controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
+			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
 		
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());
@@ -697,7 +669,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
 						// Aviso de las citas anuladas
-						return window.getButton(CLOSED_OPTION).triggerClick();
+						return window.getButton(CLOSE_OPTION).triggerClick();
 					}
 			}).run();
 			// Comprobamos que el médico ha sido modificado correctamente
@@ -796,6 +768,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 	}
 	
 	// Pruebas para eliminar un médico que tiene citas y beneficiarios asignados
+	@SuppressWarnings("deprecation")
 	public void testEliminarMedico2() {
 		eliminadoMedico = false;
 		Beneficiario beneficiarioPrueba;
@@ -851,12 +824,12 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
 					// Aviso de los beneficiarios que cambian de médico
-					return window.getButton(CLOSED_OPTION).triggerClick();
+					return window.getButton(CLOSE_OPTION).triggerClick();
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
 					// Aviso de las citas anuladas
-					return window.getButton(CLOSED_OPTION).triggerClick();
+					return window.getButton(CLOSE_OPTION).triggerClick();
 				}
 			}).run();
 			// Comprobamos que el usuario ha sido eliminado correctamente

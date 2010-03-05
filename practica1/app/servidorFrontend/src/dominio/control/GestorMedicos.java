@@ -62,7 +62,9 @@ public class GestorMedicos {
 	}
 	
 	// Método para añadir un nuevo médico al sistema
-	public static void crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+	public static Medico crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+		Medico medicoCreado;
+		
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
 			throw new NullPointerException("El médico que se va a crear no puede ser nulo.");
@@ -73,10 +75,12 @@ public class GestorMedicos {
 		
 		// Llamamos al método común para crear usuarios y médicos
 		try {
-			GestorUsuarios.crearUsuario(medico);
+			medicoCreado = (Medico)GestorUsuarios.crearUsuario(medico);
 		} catch(UsuarioYaExistenteException ex) {
 			throw new MedicoYaExistenteException(ex.getMessage());
 		}
+		
+		return medicoCreado;
 	}
 	
 	// Método para modificar un médico existente del sistema

@@ -2,10 +2,8 @@ package pruebas;
 
 import java.util.Date;
 import java.util.Vector;
-
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-
 import org.uispec4j.Button;
 import org.uispec4j.ComboBox;
 import org.uispec4j.Panel;
@@ -14,15 +12,11 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
 import com.toedter.calendar.JDateChooser;
-
 import comunicaciones.ConfiguracionCliente;
 import comunicaciones.RemotoCliente;
-
 import presentacion.JPCitaTramitar;
 import presentacion.auxiliar.OperacionesInterfaz;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Cita;
@@ -34,7 +28,6 @@ import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
 import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
-import excepciones.BeneficiarioYaExistenteException;
 import excepciones.FechaCitaIncorrectaException;
 import excepciones.FormatoFechaIncorrectoException;
 import excepciones.NIFIncorrectoException;
@@ -68,13 +61,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	private Button btnRegistrar;
 	
 	private JComboBox jcmbIdentificacion;
-	private JTextField jtxtIdentificacion;
-	private JTextField jtxtNIF;
-	private JTextField jtxtNSS;
-	private JTextField jtxtNombre;
-	private JTextField jtxtApellidos;
 	private JComboBox jcmbCentros;
-	private JTextField jtxtMedicoAsignado;
 	private JComboBox jcmbHorasCitas;
 	
 	private Medico cabecera;
@@ -87,6 +74,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	private boolean eliminado;
 	
 	
+	@SuppressWarnings("deprecation")
 	protected void setUp() {
 		boolean valido = true;
 		String login;
@@ -94,9 +82,9 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		eliminado = false;
 		
 		try {
-			// Establecemos conexión con el servidor front-end
+			
+			// Establecemos conexión con el servidor e iniciamos sesión como administrador
 			controlador = new ControladorCliente();
-			// Iniciamos sesion como administrador
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
@@ -106,7 +94,10 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 					}
 				}
 			});
-			
+
+			// Establecemos la operación activa de la ventana principal
+			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.TramitarCita);
+
 			// Creamos e insertamos un médico y un beneficiario			
 			tCabecera = new Cabecera();
 			login = UtilidadesPruebas.generarLogin();
@@ -134,27 +125,13 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 
 			// Creamos el beneficiario en el mismo centro que el médico, para que no se le asigne otro diferente 
 			beneficiarioPrueba = new Beneficiario ();
-			beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());
-			beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
 			beneficiarioPrueba.setNombre("beneficiario");
 			beneficiarioPrueba.setApellidos("de prueba");
-			beneficiarioPrueba.setCorreo(" ");
-			beneficiarioPrueba.setTelefono(" ");
-			beneficiarioPrueba.setMovil(" ");
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
 			beneficiarioPrueba.setMedicoAsignado(cabecera);
-			do {
-				try {					
-					controlador.crearBeneficiario(beneficiarioPrueba);
-					valido = true;
-				} catch (BeneficiarioYaExistenteException e) {
-					beneficiarioPrueba.setNif(UtilidadesPruebas.generarNIF());					
-					beneficiarioPrueba.setNss(UtilidadesPruebas.generarNSS());
-					valido = false;
-				}
-			}while(!valido);
+			beneficiarioPrueba = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
 			medicoAsignado = cabecera;
 
 			// Obtenemos el panel
@@ -179,12 +156,6 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			btnRegistrar = pnlPanel.getButton("btnRegistrar");
 			
 			jcmbIdentificacion = (JComboBox)cmbIdentificacion.getAwtComponent();
-			jtxtIdentificacion = (JTextField)txtIdentificacion.getAwtComponent();
-			jtxtNIF = (JTextField)txtNIF.getAwtComponent();
-			jtxtNSS = (JTextField)txtNSS.getAwtComponent();
-			jtxtNombre = (JTextField)txtNombre.getAwtComponent();
-			jtxtApellidos = (JTextField)txtApellidos.getAwtComponent();
-			jtxtMedicoAsignado = (JTextField)txtMedicoAsignado.getAwtComponent();
 			jcmbCentros = (JComboBox)cmbCentros.getAwtComponent();
 			jcmbHorasCitas = (JComboBox)cmbHorasCitas.getAwtComponent();
 			
@@ -194,8 +165,10 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	}
 	
 	protected void tearDown() {
-		// Para borrar los datos, hay que entrar con la sesión del administrador
 		try {
+			// Cerramos la sesión auxiliar de las pruebas del observador
+			UtilidadesPruebas.cerrarControladorAuxiliar();
+			// Para borrar los datos, hay que entrar con la sesión del administrador
 			controlador.cerrarSesion();
 			winPrincipal.dispose();
 			winPrincipal = WindowInterceptor.run(new Trigger() {
@@ -220,7 +193,6 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		} catch(Exception e) {
 			fail(e.toString());
 		}
-		winPrincipal.dispose();
 	}
 	
 	/** Pruebas con datos no válidos */
@@ -370,84 +342,75 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void testObservadorCitaRegistradaAnulada () {
-		// Iniciamos sesión con un segundo administrador
-		controladorAuxiliar = new ControladorCliente();
-		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
-			public void run() {
-				try {
-					controladorAuxiliar.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdminAuxiliar, passwordAdminAuxiliar);
-					// Ahora el controlador del proxy se ha cambiado al controlador auxiliar
-					// Volvemos a restablecer en el proxy el controlador principal de las pruebas
-					((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controlador);
-				} catch(Exception e) {
-					fail(e.toString());
-				}
-			}
-		});
-		// Indicamos que la operación activa del primer administador es la de tramitar cita
-		controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.TramitarCita);
-		// El primer administrador busca al beneficiario de prueba
-		jcmbIdentificacion.grabFocus();
-		jcmbIdentificacion.setSelectedIndex(0);
-		txtIdentificacion.setText(beneficiarioPrueba.getNif());
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
-		// Se comprueba que tiene médico asignado
-		assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
-		// Comprobamos que los componentes se han habilitado
-		assertTrue(txtFechaCita.isEnabled());
-		assertTrue(cmbHorasCitas.isEnabled());
-		assertFalse(txtMedico.isEditable());
-		assertTrue(btnRegistrar.isEnabled());
-		// Se selecciona un día en el que trabajará el médico
-		txtFechaCita.setText("04/03/2015");
-		assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
-		// Comprobamos que aparece seleccionada por defecto la primera hora disponible
-		assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+	public void testObservadorCitas() {
 		try {
-			// En este momento el segundo administrador pide una cita en la hora seleccionada por el primero
-			Trigger t1 = new Trigger() {
-				@Override
+			// Iniciamos el controlador auxiliar con otro usuario administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// El primer administrador busca al beneficiario de prueba
+			jcmbIdentificacion.grabFocus();
+			jcmbIdentificacion.setSelectedIndex(0);
+			txtIdentificacion.setText(beneficiarioPrueba.getNif());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+			// Se comprueba que tiene médico asignado
+			assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+			// Comprobamos que los componentes se han habilitado
+			assertTrue(txtFechaCita.isEnabled());
+			assertTrue(cmbHorasCitas.isEnabled());
+			assertFalse(txtMedico.isEditable());
+			assertTrue(btnRegistrar.isEnabled());
+			// Seleccionamos un día en el que trabajará el médico
+			txtFechaCita.setText("04/03/2015");
+			assertEquals(txtMedico.getText(), beneficiarioPrueba.getMedicoAsignado().getApellidos() + ", " + beneficiarioPrueba.getMedicoAsignado().getNombre() + " (" + beneficiarioPrueba.getMedicoAsignado().getNif() + ")");
+			assertEquals((horaFinal - horaInicio) * 4, jcmbHorasCitas.getItemCount());
+			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
+			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+			// Solicitamos una cita con el segundo administrador conectado en la hora seleccionada
+			// por el primero para ver que se pasa a mostrar la cita como ocupada
+			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
 				}
-			};
-			WindowInterceptor.init(t1).process(new WindowHandler() {
+			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-
+					// Capturamos la ventana que avisa de la nueva cita
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			// Dormimos el hilo en espera de la respuesta del servidor
 			Thread.sleep(500);
-			// La ventana del primer administrador se ha debido actualizar seleccionando la siguiente hora disponible en el día que se ha pedido cita desde el administrador auxiliar
-			txtFechaCita.setText("04/03/2015");
-			assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);
+			// La ventana del primer administrador se ha debido actualizar marcando la
+			// hora que estaba seleccionada como no válida (por defecto, se mantiene la misma
+			// hora seleccionada al actualizar la ventana, aunque deje de estar disponible)
+			assertEquals(txtFechaCita.getText(), "04/03/2015");
+			assertEquals(txtMedico.getText(), "(fecha no válida)");
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
 			// Ahora procedemos a eliminar la cita desde el segundo administrador
-			Trigger t2 = new Trigger() {
-				@Override
+			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
 				}
-			};
-			WindowInterceptor.init(t2).process(new WindowHandler() {
+			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-
+					// Capturamos la ventana que avisa de la anulación de la cita
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			// Dormimos el hilo en espera de la respuesta del servidor
 			Thread.sleep(500);
-			// La ventana del primer administrador se ha debido actualizar seleccionando la primera hora disponible en el día que se ha anulado cita desde el administrador auxiliar
-			txtFechaCita.setText("04/03/2015");
-			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
-			// Se finaliza el controlador auxiliar
-			controladorAuxiliar.cerrarSesion();
-			controladorAuxiliar.cerrarControlador();
-		} catch (Exception e) {
-			fail (e.toString());
+			// La ventana del primer administrador se ha debido actualizar marcando la
+			// hora que estaba seleccionada como válida
+			assertEquals(txtFechaCita.getText(), "04/03/2015");
+			assertEquals(txtMedico.getText(), beneficiarioPrueba.getMedicoAsignado().getApellidos() + ", " + beneficiarioPrueba.getMedicoAsignado().getNombre() + " (" + beneficiarioPrueba.getMedicoAsignado().getNif() + ")");
+		} catch(Exception e) {
+			fail(e.toString());
 		}
-		winPrincipal2.dispose();
 	}
 	
 	public void testObservadorUsuarioActualizadoEliminado () {

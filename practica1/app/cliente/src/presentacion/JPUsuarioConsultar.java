@@ -68,6 +68,8 @@ public class JPUsuarioConsultar extends JPBase {
 
 	private static final long serialVersionUID = 2736737327573021315L;
 	
+	private final String PASSWORD_OCULTA = ".....";
+	
 	private EventListenerList listenerList;
 	private Vector<PeriodoTrabajo> periodos;
 	private Usuario usuario;
@@ -328,7 +330,7 @@ public class JPUsuarioConsultar extends JPBase {
 			{
 				lblNIF = new JLabel();
 				this.add(lblNIF, new AnchorConstraint(76, 254, 237, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
-				lblNIF.setText("NIF *");
+				lblNIF.setText("NIF");
 				lblNIF.setPreferredSize(new java.awt.Dimension(99, 16));
 			}
 			{
@@ -409,9 +411,6 @@ public class JPUsuarioConsultar extends JPBase {
 	//$hide>>$
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
-		Object[] listeners;
-		int i;
-
 		// Borramos la información del antiguo usuario consultado
 		limpiarCamposConsulta();
 					
@@ -426,7 +425,11 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 
 			// Mostramos los datos del usuario encontrado
-			Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Usuario encontrado.");
+			if(soloMedicos) {
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Médico encontrado.");
+			} else {
+				Dialogos.mostrarDialogoInformacion(getFrame(), "Resultados de la búsqueda", "Usuario encontrado.");
+			}
 			
 			mostrarDatosUsuario(usuario);
 			
@@ -450,25 +453,20 @@ public class JPUsuarioConsultar extends JPBase {
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
-		
-		// Notificamos que ha cambiado el usuario seleccionado
-		listeners = listenerList.getListenerList();
-		for(i = 0; i < listeners.length; i += 2) {
-			if(listeners[i] == UsuarioBuscadoListener.class) {
-				((UsuarioBuscadoListener)listeners[i + 1]).usuarioBuscado(new EventObject(this));
-			}
-		}
 	}
 	
 	private void mostrarDatosUsuario(Usuario usuario) {
+		Object[] listeners;
 		int horas;
+		int i;
 		
+		// Actualizamos el usuario
 		this.usuario = usuario;
 		
 		txtNIFBuscado.setText("");
 		txtNIF.setText(usuario.getNif());
 		txtLogin.setText(usuario.getLogin());
-		txtPassword.setText("*****");
+		txtPassword.setText(PASSWORD_OCULTA);
 		txtPasswordConf.setText("");
 		txtNombre.setText(usuario.getNombre());
 		txtApellidos.setText(usuario.getApellidos());
@@ -510,6 +508,14 @@ public class JPUsuarioConsultar extends JPBase {
 		}
 		cmbRol.setSelectedItem(usuario.getRol().name());
 		chkEditar.setEnabled(true);
+		
+		// Notificamos que ha cambiado el usuario seleccionado
+		listeners = listenerList.getListenerList();
+		for(i = 0; i < listeners.length; i += 2) {
+			if(listeners[i] == UsuarioBuscadoListener.class) {
+				((UsuarioBuscadoListener)listeners[i + 1]).usuarioBuscado(new EventObject(this));
+			}
+		}
 	}
 	
 	private void btnGuardarActionPerformed(ActionEvent evt) {
@@ -524,7 +530,8 @@ public class JPUsuarioConsultar extends JPBase {
 			Validacion.comprobarNombre(txtNombre.getText().trim());
 			Validacion.comprobarApellidos(txtApellidos.getText().trim());
 			Validacion.comprobarUsuario(txtLogin.getText().trim());
-			if(passwordCambiada && (txtPassword.getPassword().length > 0 || txtPasswordConf.getPassword().length > 0)) { 
+			if((passwordCambiada || !(new String(txtPassword.getPassword()).equals(PASSWORD_OCULTA)))
+			   && (txtPassword.getPassword().length > 0 || txtPasswordConf.getPassword().length > 0)) { 
 				Validacion.comprobarContraseña(new String(txtPasswordConf.getPassword()));
 				if(!(new String(txtPassword.getPassword())).equals(new String(txtPasswordConf.getPassword()))) {
 					throw new ContraseñaIncorrectaException("Las contraseñas no coinciden.");
