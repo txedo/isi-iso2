@@ -25,6 +25,17 @@ public class GestorConexionesBD {
 		conexiones.clear();
 	}
 	
+	public static void cerrarConexiones() throws SQLException {
+		try {
+			// Cerramos todas las conexiones con bases de datos
+			for(IConexionBD conexion : conexiones) {
+				conexion.cerrar();
+			}
+		} catch(RemoteException ex) {
+			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
+		}
+	}
+	
 	public static ResultSet consultar(ComandoSQL comando) throws SQLException {
 		ResultSet datos;
 		
@@ -65,17 +76,6 @@ public class GestorConexionesBD {
 			// Aplicamos los cambios en todas las conexiones
 			for(IConexionBD conexion : conexiones) {
 				conexion.commit();
-			}
-		} catch(RemoteException ex) {
-			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
-		}
-	}
-	
-	public static void cerrarConexiones() throws SQLException {
-		try {
-			// Cerramos todas las conexiones con bases de datos
-			for(IConexionBD conexion : conexiones) {
-				conexion.cerrar();
 			}
 		} catch(RemoteException ex) {
 			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
