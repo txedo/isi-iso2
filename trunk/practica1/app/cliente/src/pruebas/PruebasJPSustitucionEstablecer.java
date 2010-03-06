@@ -540,7 +540,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			comprobarDatosSustitucionHabilitado();
 			comprobarListaSustitutosHabilitada();
 			assertTrue(UtilidadesPruebas.comprobarListaUsuarios(lstSustitutos, new Usuario[] { pediatra2, pediatra3, pediatra4 }));
@@ -568,7 +568,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			comprobarDatosSustitucionHabilitado();
 			comprobarListaSustitutosHabilitada();
 			assertTrue(UtilidadesPruebas.comprobarListaUsuarios(lstSustitutos, new Usuario[] { pediatra2, pediatra3 }));
@@ -591,7 +591,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			comprobarDatosSustitucionHabilitado();
 			comprobarListaSustitutosDeshabilitada();
 		} catch(Exception e) {
@@ -627,7 +627,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			comprobarDatosSustitucionHabilitado();
 			comprobarListaSustitutosHabilitada();
 			assertTrue(UtilidadesPruebas.comprobarListaUsuarios(lstSustitutos, new Usuario[] { pediatra2, pediatra3 }));
@@ -656,7 +656,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			comprobarDatosSustitucionHabilitado();
 			comprobarListaSustitutosHabilitada();
 			assertTrue(UtilidadesPruebas.comprobarListaUsuarios(lstSustitutos, new Usuario[] { pediatra3 }));
@@ -677,7 +677,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			comprobarPanelUsuarioVacio();
 			comprobarDatosSustitucionDeshabilitado();
 			comprobarListaSustitutosDeshabilitada();

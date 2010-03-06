@@ -530,7 +530,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del médico se ha debido actualizar con el nuevo nombre del beneficiario
 			assertEquals(txtNombre.getText(), beneficiarioPrueba.getNombre());
 			
@@ -546,7 +546,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido limpiar
 			comprobarCamposRestablecidos();
 			beneficiarioEliminado = true;
@@ -629,7 +629,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del médico de cabecera
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			
@@ -646,7 +646,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del médico se ha debido actualizar con los nuevos apellidos del especialista
 			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", jlstEspecialistas.getSelectedValue().toString());
 		
@@ -662,7 +662,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del médico se ha debido actualizar borrando los campos, pues el beneficiario se ha quedado sin médico asignado
 			comprobarCamposRestablecidos();
 			medicoEliminado = true;
@@ -679,7 +679,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del médico se ha debido actualizar, no mostrando ningún especialista
 			assertEquals(jlstEspecialistas.getModel().getSize(), 0);
 		} catch (Exception e) {

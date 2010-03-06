@@ -496,7 +496,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar con el nuevo correo del beneficiario
 			assertEquals(txtCorreo.getText(), beneficiarioPrueba.getCorreo());
 			
@@ -512,7 +512,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido limpiar
 			comprobarCamposRestablecidos();
 			eliminadoBeneficiario = true;
@@ -551,7 +551,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre de medico de cabecera
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			
@@ -567,7 +567,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues el beneficiario se ha quedado sin médico asignado
 			comprobarCamposRestablecidos();
 			medicosEliminados.add(cabecera);
