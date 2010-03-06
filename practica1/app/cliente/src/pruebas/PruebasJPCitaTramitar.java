@@ -381,7 +381,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	
 	public void testObservadorUsuarioActualizadoEliminado () {
 		PeriodoTrabajo periodo2 = new PeriodoTrabajo(horaInicio, horaFinal-2, DiaSemana.Miercoles);
-		// Reemplazamos el periodo de trabajo que ya tenia el medico
+		// Reemplazamos el periodo de trabajo que ya tenía el médico
 		cabecera.getCalendario().clear();
 		cabecera.getCalendario().add(periodo2);
 		
@@ -427,14 +427,14 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			txtFechaCita.setText("04/03/2015");
 			assertEquals((horaFinal-2-horaInicio)*4, jcmbHorasCitas.getItemCount());
 			
-			// Ahora procedemos a eliminar el medico desde el segundo administrador
+			// Ahora procedemos a eliminar el médico desde el segundo administrador
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.eliminarMedico(cabecera);
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-					// Capturamos la ventana que avisa de la eliminación del médico
+					// Capturamos la ventana que avisa de la eliminación del médico asignado al beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();

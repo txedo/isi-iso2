@@ -21,8 +21,6 @@ import presentacion.auxiliar.OperacionesInterfaz;
 
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
-import comunicaciones.RemotoCliente;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Cita;
@@ -34,7 +32,6 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Volante;
-import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.FechaCitaIncorrectaException;
@@ -96,15 +93,12 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	private Medico especialista;
 	private TipoMedico tEspecialista;
 	private Beneficiario beneficiarioPrueba;
-	private PeriodoTrabajo periodo1;
-	private Medico medicoAsignado;
-	private Volante volante;
 	
 	private final int horaInicio = 10;
 	private final int horaFinal = 16;
 	private Vector<Medico> medicosEliminados;
 	
-	private long idVolante;
+	private long idVolante, idVolantePrueba;
 	private boolean eliminado;
 	
 	protected void setUp() {
@@ -150,7 +144,6 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
 			beneficiarioPrueba.setMedicoAsignado(cabecera);
 			beneficiarioPrueba = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
-			medicoAsignado = cabecera;
 			
 			// Creamos el médico especialista que será el receptor de los volantes
 			tEspecialista = new Especialista("Neurologia");
@@ -212,9 +205,10 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			for (Medico m : medicosEliminados) {
 				controlador.crearMedico(m);
 			}
-			// Eliminamos el medico de prueba y el beneficiario de prueba
+			// Eliminamos el medico de prueba, beneficiario de prueba y el especialista de prueba
 			controlador.eliminarMedico(cabecera);
 			if (!eliminado) controlador.eliminarBeneficiario(beneficiarioPrueba);
+			controlador.eliminarMedico(especialista);
 			// Cerramos la sesión y la ventana del controlador			
 			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
@@ -349,6 +343,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			// Como el médico trabaja los miércoles, seleccionamos un martes
 			// Ponemos una fecha en la que no trabaja el médico, para ello eliminamos su periodo de trabajo
 			// Como el médico trabaja los miércoles, seleccionamos un martes
+			
+			// TODO: salta el fallo de "Unparseable date"
 			txtDiaCita.setText("03/03/2015");
 			esperado = "El día seleccionado no es laboral para el médico";
 			assertEquals(esperado, (String)jcmbHorasCitas.getSelectedItem());
@@ -457,7 +453,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		}
 	}
 	
-	public void testObservadorCitaRegistradaAnulada () {
+	public void testObservadorCitasRegistradas () {
 		String esperado = "";
 		
 		// Iniciamos sesión con un segundo administrador
@@ -505,97 +501,181 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {
-				// En este momento el segundo administrador pide una cita en la hora seleccionada por el primero
-				// TODO: La cita hay que pedirla para el médico especialista receptor
-				// del volante, no para el médico asignado al beneficiario, porque su
-				// horario de citas no se utiliza para tramitar una cita con un volante
-/*				WindowInterceptor.init(new Trigger() {
+				// En este momento el segundo administrador pide una cita para el especialista receptor, en la hora seleccionada por el primero
+				// Para ello, se necesita un segundo volante con el mismo especialista. Se crea uno de prueba
+				idVolantePrueba = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera, especialista, cabecera.getLogin(), cabecera.getLogin());
+				WindowInterceptor.init(new Trigger() {
 					@SuppressWarnings("deprecation")
 					public void run() throws Exception {
-						controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
+						controladorAuxiliar.pedirCita(beneficiarioPrueba, idVolantePrueba, new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
 					}
 				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-						// Capturamos la ventana que avisa de la nueva cita
+						// Capturamos la ventana que avisa de la nueva cita para el especialista receptor del volante
 						return window.getButton(OK_OPTION).triggerClick();
 					}
 				}).run();
 				// Dormimos el hilo en espera de la respuesta del servidor
 				Thread.sleep(500);
-				// La ventana del primer administrador se ha debido actualizar seleccionando la siguiente hora disponible en el día que se ha pedido cita desde el administrador auxiliar
+				// La ventana del primer administrador se ha debido actualizar, mostrando que la fecha ya no es válida
 				txtDiaCita.setText("04/03/2015");
-				assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);*/
+				assertTrue(jcmbHorasCitas.getSelectedIndex()==0);
+				assertEquals(txtMedico.getText(), "(fecha no válida)");
 				
-				// Ahora pedimos cita para este mismo volante
+				// Ahora pedimos una cita para el primer volante en otra fecha
 				Thread.sleep(500);
 				WindowInterceptor.init(new Trigger() {
 					@SuppressWarnings("deprecation")
 					public void run() throws Exception {
-						controladorAuxiliar.pedirCita(beneficiarioPrueba, idVolante, new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
+						controladorAuxiliar.pedirCita(beneficiarioPrueba, idVolante, new Date(2012-1900,3-1,7,horaInicio,0), IConstantes.DURACION_CITA);
 					}
 				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
-						// Capturamos la ventana que avisa de la nueva cita
+						// Capturamos la ventana que avisa de la nueva cita registrada para el volante
 						return window.getButton(OK_OPTION).triggerClick();
 					}
 				}).run();
 				
 				// Dormimos el hilo en espera de la respuesta del servidor
 				Thread.sleep(500);
-				// La ventana del primer administrador se ha debido actualizar, borrando los campos porque el volante ya no se puede utilizar
+				// La ventana del primer administrador se ha debido actualizar, borrando los campos, porque el volante ya no se puede utilizar
 				comprobarCamposRestablecidos();
 				
-				// TODO: Cuando se pide la cita anterior, creo que la ventana
-				// se restablece, por lo que se pierde el volante seleccionado
-				// y por eso el siguiente código no lanza ninguna ventana
-				
-				// Ahora procedemos a eliminar la cita sin volante desde el segundo administrador
-				WindowInterceptor.init(new Trigger() {
-					@SuppressWarnings("deprecation")
-					public void run() throws Exception {
-						controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
-					}
-				}).process(new WindowHandler() {
-					public Trigger process(Window window) {
-						// Capturamos la ventana que avisa de la nueva cita
-						return window.getButton(OK_OPTION).triggerClick();
-					}
-				}).run();	
-				
-				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
-				// La ventana del primer administrador se ha debido actualizar seleccionando la primera hora disponible en el día que se ha anulado cita desde el administrador auxiliar
-				txtDiaCita.setText("04/03/2015");
-				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
-				
-				// Ahora procedemos a eliminar la cita que se dió con el volante desde el segundo administrador
-				WindowInterceptor.init(new Trigger() {
-					public void run() throws Exception {
-						controladorAuxiliar.anularCita(controladorAuxiliar.consultarVolante(idVolante).getCita());
-					}
-				}).process(new WindowHandler() {
-					public Trigger process(Window window) {
-						// Capturamos la ventana que avisa de la nueva cita
-						return window.getButton(OK_OPTION).triggerClick();
-					}
-				}).run();
-				
-				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
-				// La ventana del primer administrador se ha debido actualizar seleccionando la primera hora disponible en el día que se ha anulado cita desde el administrador auxiliar
-				txtDiaCita.setText("04/03/2015");
-				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);							
+				// La cita y los volantes de prueba se borrarán en el tearDown, porque se borra su médico
 			} catch (Exception e) {
 				fail (e.toString());
 			}
 		}
 	}
 	
+	public void testObservadorCitasAnuladas () {
+	
+		String esperado = "";
+		
+		// Iniciamos sesión con un segundo administrador
+		try {
+			// Iniciamos el controlador auxiliar con otro usuario administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		// El primer administrador busca al beneficiario de prueba
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar), "Beneficiario encontrado.");
+		// Comprobamos que los componentes de tramitar el volante se han habilitado
+		assertTrue(txtNumeroVolante.isEnabled());
+		assertTrue(txtNumeroVolante.getText().equals(""));
+		assertTrue(btnBuscarVolante.isEnabled());
+		assertTrue(txtMedicoAsignado.getText().equals(""));
+		assertTrue(txtCentro.getText().equals(""));
+		// Comprobamos que los de tramitar la cita aún están deshabilitados, porque primero hay que buscar el volante
+		assertFalse(txtDiaCita.isEnabled());
+		assertFalse(cmbHorasCitas.isEnabled());
+		assertFalse(txtMedico.isEditable());
+		assertFalse(btnRegistrar.isEnabled());
+		// Ahora emitimos un volante y lo buscamos para tramitarlo
+		try {
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera, especialista, cabecera.getLogin(), cabecera.getLogin());
+		} catch (Exception e) {
+			fail(e.toString());
+		}
+		if (idVolante != -1) {
+			txtNumeroVolante.setText(String.valueOf(idVolante));
+			esperado = "Volante encontrado.";
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
+			// Comprobamos que los campos se actualizan correctamente
+			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			// Comprobamos que los campos de pedir cita se han habilitado
+			assertTrue(txtDiaCita.isEnabled());
+			assertTrue(cmbHorasCitas.isEnabled());	
+			// Se selecciona un día en el que trabajará el médico
+			txtDiaCita.setText("04/03/2015");
+			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
+			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+			try {
+				// En este momento el segundo administrador pide una cita para el especialista receptor en la hora seleccionada por el primero
+				// Para ello, se necesita un segundo volante con el mismo especialista. Se crea uno de prueba
+				idVolantePrueba = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera, especialista, cabecera.getLogin(), cabecera.getLogin());
+				WindowInterceptor.init(new Trigger() {
+					@SuppressWarnings("deprecation")
+					public void run() throws Exception {
+						controladorAuxiliar.pedirCita(beneficiarioPrueba, idVolantePrueba, new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
+					}
+				}).process(new WindowHandler() {
+					public Trigger process(Window window) {
+						// Capturamos la ventana que avisa de la nueva cita registrada para el especialista receptor
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar, mostrando que la fecha ya no es válida
+				txtDiaCita.setText("04/03/2015");
+				assertTrue(jcmbHorasCitas.getSelectedIndex()==0);
+				assertEquals(txtMedico.getText(), "(fecha no válida)");
+				
+				// Ahora procedemos a eliminar esta cita (no asignada al volante) desde el segundo administrador
+				WindowInterceptor.init(new Trigger() {
+					@SuppressWarnings("deprecation")
+					public void run() throws Exception {
+						controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA, beneficiarioPrueba, controlador.consultarVolante(idVolante).getReceptor()));
+					}
+				}).process(new WindowHandler() {
+					public Trigger process(Window window) {
+						// Capturamos la ventana que avisa que la cita del especialista ha sido eliminada
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();	
+				
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar, mostrando que la fecha ya es válida 
+				txtDiaCita.setText("04/03/2015");
+				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+				assertEquals(txtMedico.getText(), especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")");
+				
+				// Se emite una cita de prueba para el volante (desde el primer administrador)
+				controlador.pedirCita(beneficiarioPrueba, idVolante, new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
+				// Consultamos de nuevo el volante, comporbando que se muestra el diálogo de error
+				txtNumeroVolante.setText(String.valueOf(idVolante));
+				esperado = "El volante seleccionado ya se ha utilizado para pedir una cita y no se puede usar de nuevo.";
+				assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
+				assertFalse(txtDiaCita.isEnabled());
+				assertFalse(cmbHorasCitas.isEnabled());
+				
+				// Ahora procedemos a eliminar esta cita que se dió con el volante desde el segundo administrador
+				WindowInterceptor.init(new Trigger() {
+					public void run() throws Exception {
+						controladorAuxiliar.anularCita(controladorAuxiliar.consultarVolante(idVolante).getCita());
+					}
+				}).process(new WindowHandler() {
+					public Trigger process(Window window) {
+						// Capturamos la ventana que avisa de la anulación de la cita asociada al volante
+						return window.getButton(OK_OPTION).triggerClick();
+					}
+				}).run();
+			
+				// Dormimos el hilo en espera de la respuesta del servidor
+				Thread.sleep(500);
+				// La ventana del primer administrador se ha debido actualizar, habilitando los componentes para poder pedir cita, pues el volante ya no tiene cita asignada
+				assertTrue(txtDiaCita.isEnabled());
+				assertTrue(cmbHorasCitas.isEnabled());	
+			} catch (Exception e) {
+				fail (e.toString());
+			}
+		}
+	}
+		
 	public void testObservadorUsuarioActualizadoEliminado () {
 		String esperado = "";
 		PeriodoTrabajo periodo2 = new PeriodoTrabajo(horaInicio, horaFinal-2, DiaSemana.Miercoles);
 		// Reemplazamos el periodo que ya tenia el medico
-		especialista.getCalendario().set(0, periodo2);
+		especialista.getCalendario().clear();
+		especialista.getCalendario().add(periodo2);
 		
 		// Iniciamos sesión con un segundo administrador
 		try {

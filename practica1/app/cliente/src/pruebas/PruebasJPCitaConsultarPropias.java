@@ -239,7 +239,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			});
 			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
 			
-			// Iniciamos sesión como médico
+			// Iniciamos de nuevo sesión como médico
 			controlador.cerrarSesion();
 			winPrincipal.dispose();
 			winPrincipal = WindowInterceptor.run(new Trigger() {
@@ -254,6 +254,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			// Indicamos que la operación activa del médico es la de consultar las citas propias de un médico
 			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarCitasPropias);
 			
+			// Consultamos las citas del médico, que debe ser una
 			btnCitasPendientes.click();
 			assertTrue(tblCitas.getRowCount()==1);
 		
@@ -267,6 +268,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 				public Trigger process(Window window) {
 					// Capturamos la ventana que avisa del cambio en el beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
+					// TODO: no se muestra esta ventana
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
@@ -287,7 +289,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
 			Thread.sleep(500);
-			// La tabla de citas debe estar vacía
+			// La tabla de citas debe estar vacía, pues se ha borrado el beneficiario de la cita
 			assertTrue(tblCitas.getRowCount()==0);
 			beneficiarioEliminado = true;
 			// Borramos la cita de prueba
@@ -309,17 +311,18 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			// Indicamos que la operación activa del médico es la de consultar las citas propias de un médico
 			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarCitasPropias);
 
+			// Consultamos las citas del médico, que no debe tener ninguna
 			btnCitasPendientes.click();
 			assertTrue(tblCitas.getRowCount()==0);
 			
-			// Pedimos una cita desde el controlador auxiliar
+			// Pedimos una cita para este médico desde el controlador auxiliar
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,0), IConstantes.DURACION_CITA);
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-					// Capturamos la ventana que avisa de la nueva cita
+					// Capturamos la ventana que avisa de la nueva cita registrada
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();

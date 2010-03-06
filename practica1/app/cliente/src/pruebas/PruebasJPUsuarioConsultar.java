@@ -843,7 +843,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-					// Capturamos la ventana que avisa del cambio
+					// Capturamos la ventana que avisa del cambio en el médico
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
@@ -859,7 +859,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-					// Capturamos la ventana que avisa de la nueva cita
+					// Capturamos la ventana que avisa de la eliminación del médico
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
