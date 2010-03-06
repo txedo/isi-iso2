@@ -50,18 +50,8 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 		beneficiarioEliminado = false;
 		
 		try {
-			// Establecemos conexión con el servidor front-end
-			controlador = new ControladorCliente();
-			// Iniciamos sesion como administrador
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
+			// Iniciamos sesion con un administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdmin, IDatosConexionPruebas.passwordAdmin);
 			
 			// Creamos un médico de cabecera 
 			tCabecera = new Cabecera();
@@ -70,7 +60,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			cabecera.setApellidos("Ramírez García");
 			cabecera.setTipoMedico(tCabecera);
 			cabecera.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
-			cabecera = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera); 
+			cabecera = (Medico)UtilidadesPruebas.crearUsuario(controladorAuxiliar, cabecera); 
 
 			// Creamos el beneficiario en el mismo centro que el médico, para que no se le asigne otro diferente 
 			beneficiarioPrueba = new Beneficiario();
@@ -83,22 +73,10 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
 			beneficiarioPrueba.setMedicoAsignado(cabecera);
-			beneficiarioPrueba = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
-					
-			// Obtenemos el panel
-			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
-			panel = (JPCitaConsultarPropias)p1.getPanel("jPanelConsultarCitasPropias").getAwtContainer();
-			// Obtenemos los componentes del panel
-			pnlPanel = new Panel(panel);
-			tblCitas = pnlPanel.getTable("tblTablaCitas");
-			btnCitasPendientes = pnlPanel.getButton("btnCitasPendientes");
-			btnCitasHistorico = pnlPanel.getButton("btnCitasHistorico");		
+			beneficiarioPrueba = UtilidadesPruebas.crearBeneficiario(controladorAuxiliar, beneficiarioPrueba);
 			
-			jtblCitas = (JTable) tblCitas.getAwtComponent();
-			
-			// Iniciamos sesion como el médico asignado al beneficiario, para consultar sus citas
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
+			// Iniciamos sesion con el médico de cabecera de prueba que hemos creado
+			controlador = new ControladorCliente();
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
@@ -108,41 +86,38 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 					}
 				}
 			});
-			
 			// Indicamos que la operación activa del médico es la de consultar las citas propias de un médico
 			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarCitasPropias);
 			
+			// Obtenemos el panel
+			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
+			panel = (JPCitaConsultarPropias)p1.getPanel("jPanelConsultarCitasPropias").getAwtContainer();
+
+			// Obtenemos los componentes del panel
+			pnlPanel = new Panel(panel);
+			tblCitas = pnlPanel.getTable("tblTablaCitas");
+			btnCitasPendientes = pnlPanel.getButton("btnCitasPendientes");
+			btnCitasHistorico = pnlPanel.getButton("btnCitasHistorico");		
+			
+			jtblCitas = (JTable) tblCitas.getAwtComponent();
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 	}
 	
 	protected void tearDown() {
-		// Para borrar los datos, hay que entrar con la sesión del administrador
 		try {
+			// Borramos los usuarios y beneficiarios creados con la sesion del administrador
+			controladorAuxiliar.eliminarMedico(cabecera);
+			if (!beneficiarioEliminado) controladorAuxiliar.eliminarBeneficiario(beneficiarioPrueba);
 			// Cerramos la sesión auxiliar de las pruebas del observador
 			UtilidadesPruebas.cerrarControladorAuxiliar();
-			// Para borrar los datos, hay que entrar con la sesión del administrador
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
-			controlador.eliminarMedico(cabecera);
-			if (!beneficiarioEliminado) controlador.eliminarBeneficiario(beneficiarioPrueba);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		winPrincipal.dispose();
 	}
 	
 	public void testConsultarCitasVacias() {
@@ -156,109 +131,44 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 	public void testConsultarCitas() {
 		Cita c1 = null;
 		
-		// Registramos una cita futura de prueba (se necesita rol de administrador)
 		try {
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
-			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			// Registramos una cita futura de prueba (se necesita rol de administrador)
+			c1= controladorAuxiliar.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
 
 			// Consultamos la cita del medico del beneficiario
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
 			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==1);
 			assertEquals(tblCitas.getContentAt(0, 3), beneficiarioPrueba.getNif());
 			btnCitasPendientes.click();
 			assertTrue(tblCitas.getRowCount()==1);
 			assertEquals(tblCitas.getContentAt(0, 3), beneficiarioPrueba.getNif());
-			
 		} catch (Exception e) {
 			fail(e.toString());
 		}
 		
-		// Borramos la cita (como administrador)
 		try {
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
-			controlador.anularCita(c1);
+			// Borramos la cita (como administrador)
+			controladorAuxiliar.anularCita(c1);
+			// TODO comprobar que se actualiza en la ventana del médico
 		} catch (Exception e) {
 			fail(e.toString());
 		}
 	}
 	
-	public void testObservadorBeneficiarioActualizadoEliminado () {
+	public void testObservadorBeneficiario () {
+		// Comprueba que cuando se actualiza o elimina un beneficiario desde un teminal,
+		// las ventanas de otros terminales se actualizan correctamente
 		Cita c1 = null;
-		
-		// Iniciamos sesión con un segundo administrador
+
 		try {
-			// Iniciamos el controlador auxiliar con otro usuario administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		// Registramos una cita futura de prueba para el médico (se necesita rol de administrador)
-		try {
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
-			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
-			
-			// Iniciamos de nuevo sesión como médico
-			controlador.cerrarSesion();
-			winPrincipal.dispose();
-			winPrincipal = WindowInterceptor.run(new Trigger() {
-				public void run() {
-					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
-					} catch(Exception e) {
-						fail(e.toString());
-					}
-				}
-			});
-			// Indicamos que la operación activa del médico es la de consultar las citas propias de un médico
-			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarCitasPropias);
+			// Registramos una cita futura de prueba para el médico (se necesita rol de administrador)
+			c1 = controladorAuxiliar.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
 			
 			// Consultamos las citas del médico, que debe ser una
 			btnCitasPendientes.click();
 			assertTrue(tblCitas.getRowCount()==1);
 		
-			// En este momento el segundo administrador modifica el beneficiario de la cita
+			// En este momento el administrador modifica el beneficiario de la cita
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					beneficiarioPrueba.setNombre("Otro Nombre");
@@ -268,7 +178,6 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 				public Trigger process(Window window) {
 					// Capturamos la ventana que avisa del cambio en el beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
-					// TODO: no se muestra esta ventana
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
@@ -293,7 +202,12 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			assertTrue(tblCitas.getRowCount()==0);
 			beneficiarioEliminado = true;
 			// Borramos la cita de prueba
-			controladorAuxiliar.anularCita(c1);
+			try {
+				controladorAuxiliar.anularCita(c1);
+				fail ("ERROR: Al borrar el beneficiario, la cita debería haberse eliminado en cascada.");
+			} catch (Exception e) {
+				// Oraculo negativo, debe producirse esta excepcion para un funcionamiento correcto
+			}
 		} catch (Exception e) {
 			fail (e.toString());
 		}
@@ -301,20 +215,9 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 	
 	public void testObservadorCitas() {
 		try {
-			// Iniciamos el controlador auxiliar con otro usuario administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Indicamos que la operación activa del médico es la de consultar las citas propias de un médico
-			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarCitasPropias);
-
 			// Consultamos las citas del médico, que no debe tener ninguna
 			btnCitasPendientes.click();
 			assertTrue(tblCitas.getRowCount()==0);
-			
 			// Pedimos una cita para este médico desde el controlador auxiliar
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
@@ -329,7 +232,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			Thread.sleep(TIME_OUT);
 			// La tabla de citas se debe haber actualizado
 			assertTrue(tblCitas.getRowCount()==1);
-			assertEquals(jtblCitas.getModel().getValueAt(0, 3), cabecera.getNif());
+			assertEquals(jtblCitas.getModel().getValueAt(0, 3), beneficiarioPrueba.getNif());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
