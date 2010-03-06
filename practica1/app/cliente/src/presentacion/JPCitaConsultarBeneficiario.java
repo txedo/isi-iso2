@@ -361,7 +361,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	}
 	
 	public void citaRegistrada(Cita cita) {
-		if(beneficiario != null && cita.getBeneficiario().equals(beneficiario)) {
+		if(beneficiario != null && cita.getBeneficiario().getNif().equals(beneficiario.getNif())) {
 			// Otro cliente ha registrado una cita para este beneficiario
 			// Se vuelven a recuperar las citas para mostrar la nueva
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este beneficiario.");
@@ -373,7 +373,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	}
 	
 	public void citaAnulada(Cita cita) {
-		if(beneficiario != null && cita.getBeneficiario().equals(beneficiario)) {
+		if(beneficiario != null && cita.getBeneficiario().getNif().equals(beneficiario.getNif())) {
 			// Otro cliente ha anulado una cita para el médico de este beneficiario
 			// Se vuelven a recuperar las citas para mostrar las restantes
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado una cita desde otro cliente para este beneficiario.");

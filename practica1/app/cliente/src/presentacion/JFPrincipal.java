@@ -407,7 +407,11 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private void configurarInterfaz(Vector<Operaciones> operaciones) {
 		// Inicializamos la barra de estado
 		lblBarraEstado.setText("Sesión iniciada: " + controlador.getUsuarioAutenticado() + "@" + RolesUsuario.values()[(int)controlador.getSesion().getRol()]);
-		lblIPPuerto.setText("Cliente preparado en " + controlador.getIPCliente() + " (puerto " + controlador.getPuertoEscucha() + ")");
+		if(controlador.isRegistrado()) {
+			lblIPPuerto.setText("Cliente preparado en " + controlador.getIPCliente() + " (puerto " + controlador.getPuertoEscucha() + ")");
+		} else {
+			lblIPPuerto.setText("Cliente preparado en " + controlador.getIPCliente() + " (no registrado)");
+		}
 
 		// Inicializamos los paneles de gestión de beneficiarios
 		if(!operaciones.contains(Operaciones.ConsultarBeneficiario)) {

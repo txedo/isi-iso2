@@ -29,6 +29,7 @@ import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.FechaSustitucionIncorrectaException;
 import excepciones.NIFIncorrectoException;
+import excepciones.SustitucionInvalidaException;
 import excepciones.UsuarioInexistenteException;
 
 /**
@@ -115,6 +116,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 			pediatra1.getCalendario().add(new PeriodoTrabajo(10, 14, DiaSemana.Lunes));
 			pediatra1.getCalendario().add(new PeriodoTrabajo(9, 13, DiaSemana.Martes));
 			pediatra1.getCalendario().add(new PeriodoTrabajo(15, 20, DiaSemana.Jueves));
+			pediatra1.getCalendario().add(new PeriodoTrabajo(9, 10, DiaSemana.Viernes));
 			pediatra1.setTipoMedico(new Pediatra());
 			pediatra1 = (Medico)UtilidadesPruebas.crearUsuario(controlador, pediatra1);
 			pediatra2 = new Medico();
@@ -133,7 +135,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 			pediatra3 = (Medico)UtilidadesPruebas.crearUsuario(controlador, pediatra3);
 			
 			// Creamos un beneficiario de prueba 
-			beneficiario1 = new Beneficiario ();
+			beneficiario1 = new Beneficiario();
 			beneficiario1.setNombre("beneficiario");
 			beneficiario1.setApellidos("de prueba");
 			beneficiario1.setFechaNacimiento(new Date(2009 - 1900, 1, 1));
@@ -189,7 +191,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 			fail(e.toString());
 		}
 	}
-	
+
 	/** Pruebas con datos incorrectos para el médico sustituido */
 	public void testDatosSustituidoIncorrecto() {			
 		try {

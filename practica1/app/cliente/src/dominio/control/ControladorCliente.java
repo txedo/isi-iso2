@@ -52,6 +52,7 @@ public class ControladorCliente {
 	private JFPrincipal ventanaPrincipal;
 	private String usuarioAutenticado;
 	private String ipCliente;
+	private boolean registrado;
 	
 	public ControladorCliente() {
 		servidor = null;
@@ -80,8 +81,13 @@ public class ControladorCliente {
 		ventanaLogin.setLocationRelativeTo(null);
 		ventanaLogin.setVisible(true);
 	}
-	
+
 	public void iniciarSesion(ConfiguracionCliente configuracion, String login, String password) throws SQLException, UsuarioIncorrectoException, MalformedURLException, RemoteException, NotBoundException, UnknownHostException, Exception {
+		// Por defecto, cuando se inicia sesión se registra el cliente remoto
+		iniciarSesion(configuracion, login, password, true);
+	}
+	
+	public void iniciarSesion(ConfiguracionCliente configuracion, String login, String password, boolean registrar) throws SQLException, UsuarioIncorrectoException, MalformedURLException, RemoteException, NotBoundException, UnknownHostException, Exception {
 		// Obtenemos la IP de la máquina local
 		ipCliente = UtilidadesComunicaciones.obtenerIPHost();
 		
@@ -108,16 +114,20 @@ public class ControladorCliente {
 		} catch(RemoteException e) {
 			throw new RemoteException("No se puede identificar el usuario en el servidor front-end (IP " + configuracion.getIPFrontend() + ", puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
 		}
-		
-		try {
-			// Creamos y activamos el cliente remoto
-			cliente = RemotoCliente.getCliente();
-			cliente.activar(ipCliente);
-			((Cliente)cliente.getClienteExportado()).setControlador(this);
-			// Registramos el cliente en el servidor
-			servidor.registrar((ICliente)cliente, sesion.getId());
-		} catch(RemoteException e) {
-			throw new RemoteException("No se puede registrar el cliente en el servidor front-end (IP " + configuracion.getIPFrontend() + ", puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
+
+		// Comprobamos si hay que registrar el cliente en el servidor
+		registrado = registrar;
+		if(registrar) {
+			try {
+				// Creamos y activamos el cliente remoto
+				cliente = RemotoCliente.getCliente();
+				cliente.activar(ipCliente);
+				((Cliente)cliente.getClienteExportado()).setControlador(this);
+				// Registramos el cliente en el servidor
+				servidor.registrar((ICliente)cliente, sesion.getId());
+			} catch(RemoteException e) {
+				throw new RemoteException("No se puede registrar el cliente en el servidor front-end (IP " + configuracion.getIPFrontend() + ", puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");
+			}
 		}
 		
 		// Ocultamos y cerramos las ventanas si todavía estaban abiertas
@@ -157,6 +167,10 @@ public class ControladorCliente {
 	
 	public String getUsuarioAutenticado() {
 		return usuarioAutenticado;
+	}
+	
+	public boolean isRegistrado() {
+		return registrado;
 	}
 
 	public IServidorFrontend getServidor() {

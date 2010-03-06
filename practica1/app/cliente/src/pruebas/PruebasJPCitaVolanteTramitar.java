@@ -45,7 +45,6 @@ import excepciones.NSSIncorrectoException;
 public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 	
 	private ControladorCliente controlador;
-	private ControladorCliente controladorCabecera;
 	private ControladorCliente controladorAuxiliar;
 	private JPCitaVolanteTramitar panel;
 	private Panel panelBeneficiario;
@@ -331,7 +330,11 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		esperado = "No existe ningún volante con el id 1000.";
 		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
-		idVolante = emitirVolante(beneficiarioPrueba, cabecera, especialista);
+		try {
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera, especialista, cabecera.getLogin(), cabecera.getLogin());
+		} catch (Exception e) {
+			fail(e.toString());
+		}
 		if (idVolante != -1) {
 			txtNumeroVolante.setText(String.valueOf(idVolante));
 			esperado = "Volante encontrado.";
@@ -419,7 +422,11 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			}
 		}while(!valido);
 		// Emitimos un segundo volante para este beneficiario
-		idVolante = emitirVolante(beneficiario, cabecera, especialista);
+		try {
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiario, cabecera, especialista, cabecera.getLogin(), cabecera.getLogin());
+		} catch (Exception e) {
+			fail(e.toString());
+		}
 		if (idVolante != -1) {
 			// Buscamos el primer beneficiario y tratamos de tramitar el volante del segundo
 			// Se espera un mensaje de error
@@ -450,28 +457,6 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		}
 	}
 	
-	private long emitirVolante(final Beneficiario bene, final Medico emisor, final Medico receptor) {
-		controladorCabecera = new ControladorCliente();
-		Window winPrincipal2 = WindowInterceptor.run(new Trigger() {
-			public void run() {
-				try {
-					controladorCabecera.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
-				} catch(Exception e) {
-					fail(e.toString());
-				}
-			}
-		});
-		try {
-			idVolante = controladorCabecera.emitirVolante(bene, emisor, receptor);
-			controladorCabecera.cerrarSesion();
-			controladorCabecera.cerrarControlador();
-		} catch (Exception e) {
-			fail (e.toString());
-		}
-		winPrincipal2.dispose();
-		return idVolante;
-	}
-	
 	public void testObservadorCitaRegistradaAnulada () {
 		String esperado = "";
 		
@@ -499,7 +484,11 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertFalse(txtMedico.isEditable());
 		assertFalse(btnRegistrar.isEnabled());
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
-		idVolante = emitirVolante(beneficiarioPrueba, cabecera, especialista);
+		try {
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera, especialista, cabecera.getLogin(), cabecera.getLogin());
+		} catch (Exception e) {
+			fail(e.toString());
+		}
 		if (idVolante != -1) {
 			txtNumeroVolante.setText(String.valueOf(idVolante));
 			esperado = "Volante encontrado.";
@@ -517,7 +506,11 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {
 				// En este momento el segundo administrador pide una cita en la hora seleccionada por el primero
-				WindowInterceptor.init(new Trigger() {
+				// TODO: La cita hay que pedirla para el médico especialista receptor
+				// del volante, no para el médico asignado al beneficiario, porque su
+				// horario de citas no se utiliza para tramitar una cita con un volante
+/*				WindowInterceptor.init(new Trigger() {
+					@SuppressWarnings("deprecation")
 					public void run() throws Exception {
 						controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
 					}
@@ -531,10 +524,12 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				Thread.sleep(500);
 				// La ventana del primer administrador se ha debido actualizar seleccionando la siguiente hora disponible en el día que se ha pedido cita desde el administrador auxiliar
 				txtDiaCita.setText("04/03/2015");
-				assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);
+				assertTrue(jcmbHorasCitas.getSelectedIndex() == 1);*/
 				
 				// Ahora pedimos cita para este mismo volante
+				Thread.sleep(500);
 				WindowInterceptor.init(new Trigger() {
+					@SuppressWarnings("deprecation")
 					public void run() throws Exception {
 						controladorAuxiliar.pedirCita(beneficiarioPrueba, idVolante, new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
 					}
@@ -543,15 +538,20 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
-				}).run();			
+				}).run();
 				
 				// Dormimos el hilo en espera de la respuesta del servidor
 				Thread.sleep(500);
 				// La ventana del primer administrador se ha debido actualizar, borrando los campos porque el volante ya no se puede utilizar
 				comprobarCamposRestablecidos();
 				
+				// TODO: Cuando se pide la cita anterior, creo que la ventana
+				// se restablece, por lo que se pierde el volante seleccionado
+				// y por eso el siguiente código no lanza ninguna ventana
+				
 				// Ahora procedemos a eliminar la cita sin volante desde el segundo administrador
 				WindowInterceptor.init(new Trigger() {
+					@SuppressWarnings("deprecation")
 					public void run() throws Exception {
 						controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
 					}
@@ -622,7 +622,11 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertFalse(txtMedico.isEditable());
 		assertFalse(btnRegistrar.isEnabled());
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
-		idVolante = emitirVolante(beneficiarioPrueba, cabecera, especialista);
+		try {
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera, especialista, cabecera.getLogin(), cabecera.getLogin());
+		} catch (Exception e) {
+			fail(e.toString());
+		}
 		if (idVolante != -1) {
 			txtNumeroVolante.setText(String.valueOf(idVolante));
 			esperado = "Volante encontrado.";
@@ -642,6 +646,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				// En este momento el segundo administrador modifica el calendario del médico
 				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
+						Thread.sleep(100);
 						controladorAuxiliar.modificarMedico(especialista);
 					}
 				}).process(new WindowHandler() {
@@ -704,7 +709,11 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertFalse(txtMedico.isEditable());
 		assertFalse(btnRegistrar.isEnabled());
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
-		idVolante = emitirVolante(beneficiarioPrueba, cabecera, especialista);
+		try {
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera, especialista, cabecera.getLogin(), cabecera.getLogin());
+		} catch (Exception e) {
+			fail(e.toString());
+		}
 		if (idVolante != -1) {
 			txtNumeroVolante.setText(String.valueOf(idVolante));
 			esperado = "Volante encontrado.";
@@ -732,7 +741,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 						// Capturamos la ventana que avisa de la nueva cita
 						return window.getButton(OK_OPTION).triggerClick();
 					}
-				}).run();				
+				}).run();
 				
 				// Dormimos el hilo en espera de la respuesta del servidor
 				Thread.sleep(500);
@@ -788,4 +797,5 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertFalse(txtMedico.isEditable());
 		assertFalse(btnRegistrar.isEnabled());
 	}
+	
 }
