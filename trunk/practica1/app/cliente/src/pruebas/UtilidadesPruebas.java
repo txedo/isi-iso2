@@ -14,6 +14,7 @@ import comunicaciones.ConfiguracionCliente;
 import comunicaciones.RemotoCliente;
 import comunicaciones.UtilidadesComunicaciones;
 import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.Medico;
 import dominio.conocimiento.Usuario;
 import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
@@ -27,6 +28,7 @@ public class UtilidadesPruebas {
 
 	private static Window ventanaMostrada;
 	
+	private static ControladorCliente controladorCabecera;
 	private static ControladorCliente controlador = null;
 	private static Window winControlador = null;
 	private static String loginStatic, passwordStatic;
@@ -81,34 +83,49 @@ public class UtilidadesPruebas {
 		return usuario;
 	}
 	
+	// Emite un volante para un beneficiario utilizando una nueva sesión como médico
+	public static long emitirVolante(Beneficiario beneficiario, Medico emisor, Medico receptor, String login, String password) throws Exception {
+		Window winCabecera;
+		long idVolante;
+
+		// Iniciamos sesión como médico con un nuevo controlador
+		loginStatic = login;
+		passwordStatic = password;
+		controladorCabecera = new ControladorCliente();
+		winCabecera = WindowInterceptor.run(new Trigger() {
+			public void run() throws Exception {
+				controladorCabecera.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IPServidorFrontend, IDatosConexionPruebas.puertoServidorFrontend), loginStatic, passwordStatic, false);
+			}
+		});
+		
+		// Emitimos un nuevo volante con los datos indicados
+		idVolante = controladorCabecera.emitirVolante(beneficiario, emisor, receptor);
+		
+		// Cerramos la sesión y liberamos los recursos usados
+		controladorCabecera.cerrarSesion();
+		controladorCabecera.cerrarControlador();
+		winCabecera.dispose();
+
+		return idVolante;
+	}
+
 	// Inicia sesión con un nuevo usuario en un controlador auxiliar
 	public static ControladorCliente crearControladorAuxiliar(String login, String password) throws Exception {
-		ControladorCliente controladorPrincipal;
-		
-		// Nos quedamos con la referencia del controlador principal
-		controladorPrincipal = ((Cliente)(RemotoCliente.getCliente().getClienteExportado())).getControlador();
-		
 		// Iniciamos sesión con un nuevo controlador
 		loginStatic = login;
 		passwordStatic = password;
 		controlador = new ControladorCliente();
 		winControlador = WindowInterceptor.run(new Trigger() {
 			public void run() throws Exception {
-				controlador.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IPServidorFrontend, IDatosConexionPruebas.puertoServidorFrontend), loginStatic, passwordStatic);
+				controlador.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IPServidorFrontend, IDatosConexionPruebas.puertoServidorFrontend), loginStatic, passwordStatic, false);
 			}
 		});
 
-		// Como sólo se puede exportar un objeto Cliente, ahora mismo el objeto exportado
-		// hace referencia al controlador del usuario auxiliar; en esta línea restablecemos
-		// el controlador del cliente para que haga referencia al controlador de las pruebas
-		((Cliente)(RemotoCliente.getCliente().getClienteExportado())).setControlador(controladorPrincipal);
-		
 		return controlador;
 	}
 	
 	// Cierra la sesión abierta con el método crearControladorAuxiliar
 	public static void cerrarControladorAuxiliar() throws Exception {
-		
 		if(controlador != null) {
 			controlador.cerrarSesion();
 			controlador.cerrarControlador();

@@ -30,7 +30,6 @@ import presentacion.auxiliar.Validacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
@@ -545,8 +544,6 @@ public class JPCitaVolanteTramitar extends JPBase {
 	}
 
 	// Métodos públicos
-
-	// <métodos del observador>
 	
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		if (this.beneficiario!=null && beneficiario.getNif().equals(this.beneficiario.getNif()))
@@ -563,27 +560,23 @@ public class JPCitaVolanteTramitar extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(beneficiario != null) {
-			if (volante != null) {
-				if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
-					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha modificado el especialista asociado al volante desde otro cliente.");
-					// Otro cliente ha actualizado el especialista asignado al volante
-					txtMedicoAsignado.setText(usuario.getApellidos() + ", " + usuario.getNombre() + " (" + usuario.getNif() + ")");
-					// Se puede haber modificado el horario del médico, por lo que recargamos las horas disponibles para dar cita
-					mostrarHorasCitasMedico();
-				}
+		if(beneficiario != null && volante != null) {
+			if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getNif().equals(volante.getReceptor().getNif())) {
+				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha modificado el especialista asociado al volante desde otro cliente.");
+				// Otro cliente ha actualizado el especialista asignado al volante
+				txtMedicoAsignado.setText(usuario.getApellidos() + ", " + usuario.getNombre() + " (" + usuario.getNif() + ")");
+				// Se puede haber modificado el horario del médico, por lo que recargamos las horas disponibles para dar cita
+				mostrarHorasCitasMedico();
 			}
 		}
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(beneficiario != null) {
-			if (volante != null) {
-				if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
-					// Otro cliente ha eliminado el médico especialista asociado al volante
-					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha eliminado el especialista asociado al volante desde otro cliente.");
-					restablecerPanel();
-				}
+		if(beneficiario != null && volante != null) {
+			if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getNif().equals(volante.getReceptor().getNif())) {
+				// Otro cliente ha eliminado el médico especialista asociado al volante
+				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha eliminado el especialista asociado al volante desde otro cliente.");
+				restablecerPanel();
 			}
 		}
 	}
@@ -601,7 +594,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este volante, por lo que éste ya no se puede utilizar.");
 					restablecerPanel();
 				}
-				else if (cita.getMedico().equals(vol.getReceptor())) {
+				else if (cita.getMedico().getNif().equals(vol.getReceptor().getNif())) {
 					// Otro cliente ha registrado una cita para el mismo médico del volante
 					// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
 					dia = dtcDiaCita.getDate();
@@ -630,7 +623,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha anulado la cita desde otro cliente para este volante.");
 				mostrarHorasCitasMedico();
 			}
-			else if (cita.getMedico().equals(volante.getReceptor())) {
+			else if (cita.getMedico().getNif().equals(volante.getReceptor().getNif())) {
 				// Otro cliente ha anulado una cita para el mismo médico del volante
 				// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
 				dia = dtcDiaCita.getDate();
@@ -644,7 +637,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 	}
 
 	public void sustitucionRegistrada(Sustitucion sustitucion) {
-		if(beneficiario != null && volante.getReceptor().equals(sustitucion.getMedico())
+		if(beneficiario != null && volante.getReceptor().getNif().equals(sustitucion.getMedico().getNif())
 		 && UtilidadesDominio.fechaIgual(sustitucion.getDia(), dtcDiaCita.getDate(), false)) {
 			// Otro cliente ha registrado una sustitución para el médico
 			// con el que se quiere pedir cita en el día seleccionado

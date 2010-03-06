@@ -441,7 +441,7 @@ public class JPCitaTramitar extends JPBase {
 		Date dia;
 		int indHora;
 		
-		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
+		if(beneficiario != null && cita.getMedico().getNif().equals(beneficiario.getMedicoAsignado().getNif())) {
 			// Otro cliente ha registrado una cita para el mismo médico que
 			// este beneficiario; se vuelven a recuperar las horas de ese médico,
 			// para marcar la hora que se ha registrado en otro cliente
@@ -458,7 +458,7 @@ public class JPCitaTramitar extends JPBase {
 		Date dia;
 		int indHora;
 		
-		if(beneficiario != null && cita.getMedico().equals(beneficiario.getMedicoAsignado())) {
+		if(beneficiario != null && cita.getMedico().getNif().equals(beneficiario.getMedicoAsignado().getNif())) {
 			// Otro cliente ha anulado una cita para el mismo médico que este beneficiario.
 			// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha quedado libre
 			dia = dtcDiaCita.getDate();
@@ -471,7 +471,7 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	public void sustitucionRegistrada(Sustitucion sustitucion) {
-		if(beneficiario != null && beneficiario.getMedicoAsignado().equals(sustitucion.getMedico())
+		if(beneficiario != null && beneficiario.getMedicoAsignado().getNif().equals(sustitucion.getMedico().getNif())
 		 && UtilidadesDominio.fechaIgual(sustitucion.getDia(), dtcDiaCita.getDate(), false)) {
 			// Otro cliente ha registrado una sustitución para el médico
 			// con el que se quiere pedir cita en el día seleccionado
