@@ -672,10 +672,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		
 	public void testObservadorUsuarioActualizadoEliminado () {
 		String esperado = "";
-		PeriodoTrabajo periodo2 = new PeriodoTrabajo(horaInicio, horaFinal-2, DiaSemana.Miercoles);
-		// Reemplazamos el periodo que ya tenia el medico
-		especialista.getCalendario().clear();
-		especialista.getCalendario().add(periodo2);
+		final PeriodoTrabajo periodo2 = new PeriodoTrabajo(horaInicio, horaFinal-2, DiaSemana.Miercoles);
 		
 		// Iniciamos sesión con un segundo administrador
 		try {
@@ -727,6 +724,9 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
 						Thread.sleep(100);
+						// Reemplazamos el periodo que ya tenia el medico
+						especialista.getCalendario().clear();
+						especialista.getCalendario().add(periodo2);
 						controladorAuxiliar.modificarMedico(especialista);
 					}
 				}).process(new WindowHandler() {

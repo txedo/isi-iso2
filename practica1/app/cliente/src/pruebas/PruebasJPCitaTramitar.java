@@ -380,10 +380,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	}
 	
 	public void testObservadorUsuarioActualizadoEliminado () {
-		PeriodoTrabajo periodo2 = new PeriodoTrabajo(horaInicio, horaFinal-2, DiaSemana.Miercoles);
-		// Reemplazamos el periodo de trabajo que ya tenía el médico
-		cabecera.getCalendario().clear();
-		cabecera.getCalendario().add(periodo2);
+		final PeriodoTrabajo periodo2 = new PeriodoTrabajo(horaInicio, horaFinal-2, DiaSemana.Miercoles);
 		
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador
@@ -413,6 +410,9 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			// En este momento el segundo administrador modifica el calendario del médico
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
+					// Reemplazamos el periodo de trabajo que ya tenía el médico
+					cabecera.getCalendario().clear();
+					cabecera.getCalendario().add(periodo2);
 					controladorAuxiliar.modificarMedico(cabecera);
 				}
 			}).process(new WindowHandler() {
