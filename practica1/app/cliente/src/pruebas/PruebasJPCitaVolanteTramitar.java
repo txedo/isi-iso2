@@ -516,14 +516,14 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 					}
 				}).run();
 				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar, mostrando que la fecha ya no es válida
 				txtDiaCita.setText("04/03/2015");
 				assertTrue(jcmbHorasCitas.getSelectedIndex()==0);
 				assertEquals(txtMedico.getText(), "(fecha no válida)");
 				
 				// Ahora pedimos una cita para el primer volante en otra fecha
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				WindowInterceptor.init(new Trigger() {
 					@SuppressWarnings("deprecation")
 					public void run() throws Exception {
@@ -537,7 +537,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				}).run();
 				
 				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar, borrando los campos, porque el volante ya no se puede utilizar
 				comprobarCamposRestablecidos();
 				
@@ -612,7 +612,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 					}
 				}).run();
 				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar, mostrando que la fecha ya no es válida
 				txtDiaCita.setText("04/03/2015");
 				assertTrue(jcmbHorasCitas.getSelectedIndex()==0);
@@ -632,7 +632,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				}).run();	
 				
 				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar, mostrando que la fecha ya es válida 
 				txtDiaCita.setText("04/03/2015");
 				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
@@ -660,7 +660,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				}).run();
 			
 				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar, habilitando los componentes para poder pedir cita, pues el volante ya no tiene cita asignada
 				assertTrue(txtDiaCita.isEnabled());
 				assertTrue(cmbHorasCitas.isEnabled());	
@@ -736,7 +736,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 					}
 				}).run();
 				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar teniendo menos horas en el combobox
 				txtDiaCita.setText("04/03/2015");
 				assertEquals((horaFinal-2-horaInicio)*4, jcmbHorasCitas.getItemCount());
@@ -753,7 +753,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 					}
 				}).run();
 				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar borrando los campos, pues se ha eliminado el especialista
 				comprobarCamposRestablecidos();
 				medicosEliminados.add(especialista);
@@ -824,7 +824,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				}).run();
 				
 				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del beneficiario
 				assertEquals(txtNombre.getText(), beneficiarioPrueba.getNombre());
 				
@@ -840,7 +840,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 					}
 				}).run();
 				// Dormimos el hilo en espera de la respuesta del servidor
-				Thread.sleep(500);
+				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar borrando los campos, pues no existe ya el beneficiario
 				comprobarCamposRestablecidos();
 				eliminado = true;

@@ -272,7 +272,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del médico se ha debido actualizar con el nuevo nombre del beneficiario
 			assertEquals(jtblCitas.getModel().getValueAt(0, 2), beneficiarioPrueba.getApellidos() + ", " + beneficiarioPrueba.getNombre());
 			
@@ -288,7 +288,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La tabla de citas debe estar vacía, pues se ha borrado el beneficiario de la cita
 			assertTrue(tblCitas.getRowCount()==0);
 			beneficiarioEliminado = true;
@@ -326,7 +326,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La tabla de citas se debe haber actualizado
 			assertTrue(tblCitas.getRowCount()==1);
 			assertEquals(jtblCitas.getModel().getValueAt(0, 3), cabecera.getNif());
@@ -346,7 +346,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La tabla se debe haber quedado vacia
 			assertTrue(tblCitas.getRowCount()==0);
 		} catch(Exception e) {

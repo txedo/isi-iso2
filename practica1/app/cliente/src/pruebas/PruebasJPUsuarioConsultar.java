@@ -848,7 +848,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del médico
 			assertEquals(txtNombre.getText(), cabecera.getNombre());
 			
@@ -864,7 +864,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues no existe ya el médico
 			comprobarCamposRestablecidos();
 			eliminadoMedico = true;

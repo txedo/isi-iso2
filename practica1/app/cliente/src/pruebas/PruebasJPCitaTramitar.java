@@ -347,7 +347,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar marcando la
 			// hora que estaba seleccionada como no válida (por defecto, se mantiene la misma
 			// hora seleccionada al actualizar la ventana, aunque deje de estar disponible)
@@ -369,7 +369,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar marcando la
 			// hora que estaba seleccionada como válida
 			assertEquals(txtFechaCita.getText(), "04/03/2015");
@@ -408,11 +408,11 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			// En este momento el segundo administrador modifica el calendario del médico
+			cabecera.getCalendario().clear();
+			cabecera.getCalendario().add(periodo2);
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					// Reemplazamos el periodo de trabajo que ya tenía el médico
-					cabecera.getCalendario().clear();
-					cabecera.getCalendario().add(periodo2);
 					controladorAuxiliar.modificarMedico(cabecera);
 				}
 			}).process(new WindowHandler() {
@@ -422,7 +422,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar teniendo menos horas en el combobox
 			txtFechaCita.setText("04/03/2015");
 			assertEquals((horaFinal-2-horaInicio)*4, jcmbHorasCitas.getItemCount());
@@ -439,7 +439,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues el beneficiario se ha quedado sin médico asignado
 			comprobarCamposRestablecidos();
 			medicosEliminados.add(cabecera);
@@ -488,7 +488,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del beneficiario
 			assertEquals(txtNombre.getText(), beneficiarioPrueba.getNombre());
 			
@@ -504,7 +504,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues no existe ya el beneficiario
 			comprobarCamposRestablecidos();
 			eliminado = true;

@@ -256,7 +256,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del beneficiario
 			assertEquals(jtblCitas.getModel().getValueAt(0, 2), beneficiarioPrueba.getApellidos() + ", " + beneficiarioPrueba.getNombre());
 			
@@ -272,7 +272,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar con la nueva tabla de citas
 			assertTrue(tblCitas.getRowCount()==0);
 			beneficiarioEliminado = true;
@@ -309,7 +309,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del médico de cabecera
 			assertEquals(cabecera.getNombre(), txtNombre.getText());
 			
@@ -325,7 +325,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues se ha eliminado el médico
 			comprobarCamposRestablecidos();
 			medicoEliminado = true;
@@ -358,7 +358,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La tabla de citas se debe haber actualizado en el primer administrador
 			assertTrue(tblCitas.getRowCount()==1);
 			assertEquals(jtblCitas.getModel().getValueAt(0, 3), beneficiarioPrueba.getNif());
@@ -378,7 +378,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
-			Thread.sleep(500);
+			Thread.sleep(TIME_OUT);
 			// La tabla se debe haber quedado vacia
 			assertTrue(tblCitas.getRowCount()==0);
 		} catch(Exception e) {
