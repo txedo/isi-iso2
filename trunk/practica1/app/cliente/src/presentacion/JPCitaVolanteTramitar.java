@@ -594,8 +594,8 @@ public class JPCitaVolanteTramitar extends JPBase {
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado una cita desde otro cliente para este volante, por lo que éste ya no se puede utilizar.");
 					restablecerPanel();
 				}
+				// Otro cliente ha registrado una cita para el mismo médico receptor del volante
 				else if (cita.getMedico().getNif().equals(vol.getReceptor().getNif())) {
-					// Otro cliente ha registrado una cita para el mismo médico del volante
 					// Se vuelven a recuperar las horas de ese médico, para marcar la hora que se ha registrado en otro cliente
 					dia = dtcDiaCita.getDate();
 					indHora = cmbHorasCitas.getSelectedIndex();

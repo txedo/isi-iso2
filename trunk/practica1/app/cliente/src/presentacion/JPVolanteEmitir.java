@@ -333,6 +333,8 @@ public class JPVolanteEmitir extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
+		System.out.println(beneficiario);
+		System.out.println(usuario);
 		if(beneficiario != null) {
 			if (usuario.getRol() == RolesUsuario.Medico) {
 				if (beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {

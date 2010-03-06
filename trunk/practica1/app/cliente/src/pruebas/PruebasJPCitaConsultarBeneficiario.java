@@ -88,6 +88,9 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 				}
 			});
 			
+			// Indicamos que la operación activa del primer administador es la de consultar beneficiario
+			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarAnularCitasBeneficiario);
+			
 			// Creamos un médico de cabecera 
 			tCabecera = new Cabecera();
 			cabecera = new Medico();
@@ -139,9 +142,6 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			jtxtMedicoAsignado = (JTextField)txtMedicoAsignado.getAwtComponent();
 			jcmbCentros = (JComboBox)cmbCentros.getAwtComponent();
 			jtblCitas = (JTable) tblCitas.getAwtComponent();
-			
-			// Indicamos que la operación activa del primer administador es la de consultar beneficiario
-			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarAnularCitasBeneficiario);
 			
 		} catch(Exception e) {
 			fail(e.toString());
@@ -413,7 +413,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-					// Capturamos la ventana que avisa del cambio del médico
+					// Capturamos la ventana que avisa del cambio del médico asignado al beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
@@ -422,14 +422,14 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre de medico de cabecera
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			
-			// Ahora procedemos a eliminar el medico desde el segundo administrador
+			// Ahora procedemos a eliminar el médico desde el segundo administrador
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.eliminarMedico(cabecera);
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-					// Capturamos la ventana que avisa de la eliminación del médico
+					// Capturamos la ventana que avisa de la eliminación del médico asignado al beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
@@ -467,7 +467,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-					// Capturamos la ventana que avisa de la nueva cita
+					// Capturamos la ventana que avisa de la nueva cita registrada para este beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();

@@ -307,7 +307,7 @@ public class GestorCitas {
 		
 		// Comprobamos que la hora de la cita sea múltiplo de
 		// la duración, para que si las citas duran 15 minutos,
-		// no se pueda pedir cita a las 19:38
+		// no se pueda pedir cita a las 19:38, por ejemplo
 		hora = Calendar.getInstance();
 		hora.setTime(fechaYHora);
 		if((double)hora.get(Calendar.MINUTE) / IConstantes.DURACION_CITA != hora.get(Calendar.MINUTE) / IConstantes.DURACION_CITA) {

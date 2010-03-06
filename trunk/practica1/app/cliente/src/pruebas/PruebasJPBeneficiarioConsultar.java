@@ -100,7 +100,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	private JButton jbtnGuardar;
 	private Window winPrincipal;
 	
-	private boolean eliminadoBeneficiario, eliminadoMedico, valido;
+	private boolean eliminadoBeneficiario, eliminadoMedico;
 	private TipoMedico tCabecera;
 	private Medico cabecera;
 	
@@ -111,7 +111,6 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		medicosEliminados = new Vector<Medico>();
 		eliminadoBeneficiario = false;
 		eliminadoMedico = false;
-		valido = false;
 		try {
 			// Establecemos conexión con el servidor front-end
 			controlador = new ControladorCliente();
@@ -124,6 +123,9 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 					}
 				}
 			});
+			
+			// Indicamos que la operación activa del primer administador es la de consultar las citas de un beneficiario
+			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarBeneficiario);
 			
 			// Creamos un médico de cabecera 
 			tCabecera = new Cabecera();
@@ -202,9 +204,6 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			jbtnGuardar.setVisible(true);
 			jbtnEliminar.setVisible(true);
 			
-			// Indicamos que la operación activa del primer administador es la de consultar las citas de un beneficiario
-			controlador.getVentanaPrincipal().setOperacionSeleccionada(OperacionesInterfaz.ConsultarModificarBeneficiario);
-
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -547,7 +546,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-					// Capturamos la ventana que avisa del cambio del médico
+					// Capturamos la ventana que avisa del cambio del médico asignado al beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
@@ -556,14 +555,14 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre de medico de cabecera
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			
-			// Ahora procedemos a eliminar el medico desde el segundo administrador
+			// Ahora procedemos a eliminar el médico desde el segundo administrador
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.eliminarMedico(cabecera);
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
-					// Capturamos la ventana que avisa de la eliminación del médico
+					// Capturamos la ventana que avisa de la eliminación del médico asignado al beneficiario
 					return window.getButton(OK_OPTION).triggerClick();
 				}
 			}).run();
