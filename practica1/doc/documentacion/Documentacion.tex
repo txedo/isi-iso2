@@ -16,9 +16,9 @@
 \usepackage{makeidx}
 \hypersetup{bookmarksopen,bookmarksopenlevel=3,linktocpage,colorlinks,urlcolor=blue,citecolor=blue,
 						linkcolor=blue,filecolor=blue,pdfnewwindow,
-						pdftitle={Trabajo Final}, % Cambiar el título por lo que se quiera poner. Lo mismo para el autor y la materia
+						pdftitle={Práctica Primer Cuatrimestre Ingeniería Software II},
 						pdfauthor={Juan Andrada Romero, Juan Gallardo Casero, Jose Domingo López López},
-						pdfsubject={Práctica Primer Cuatrimestre Ingeniería Software II}}
+						pdfsubject={Ingeniería del Software II}}
 
 
 % Macro para definir una lista personalizada 
@@ -32,6 +32,18 @@
 }}%
 {\end{list}}
 
+% Macro para insertar una imagen
+%       Uso: \imagen{nombreFichero}{Factor escala}{Caption (leyenda)}{Label (identificador para referenciarla)}
+% -------------------------------------------------------------------------------------------------------------
+\def\imagen#1#2#3#4{
+ \begin{figure}[h]
+ \begin{center}
+   \scalebox{#2}{\includegraphics{#1}}
+ \caption {#3}
+ \label{#4}
+ \end{center}
+ \end{figure}
+}
 
 % Definicion del "listings" para el lenguaje Java
 \lstdefinelanguage{Java}
