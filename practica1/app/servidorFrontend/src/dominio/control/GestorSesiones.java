@@ -159,6 +159,7 @@ public class GestorSesiones {
 		operaciones.add(Operaciones.ConsultarBeneficiario);
 		operaciones.add(Operaciones.ConsultarCentros);
 		operaciones.add(Operaciones.ConsultarVolante);
+		operaciones.add(Operaciones.CorrespondeNIFUsuario);
 		
 		// Agregamos las operaciones permitidas para citadores y administradores
 		if(sesion.getRol() == RolesUsuario.Administrador.ordinal() || sesion.getRol() == RolesUsuario.Citador.ordinal()) {

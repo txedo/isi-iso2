@@ -49,6 +49,7 @@ import excepciones.ProvinciaIncorrectaException;
 import excepciones.PuertaDomicilioIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
+import excepciones.UsuarioInexistenteException;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -120,6 +121,9 @@ public class JPBeneficiarioConsultar extends JPBase {
 	private JButton btnBuscar;
 	private JLabel lblBuscar;
 	private JComboBox cmbIdentificacion;
+	
+	private String tipo, identificacion;
+	private boolean esBeneficiario = true;
 	
 	public JPBeneficiarioConsultar() {
 		this(null, null);
@@ -476,7 +480,6 @@ public class JPBeneficiarioConsultar extends JPBase {
 	
 	private void btnBuscarActionPerformed(ActionEvent evt) {
 		Beneficiario beneficiarioBuscado = null;
-		String identificacion, tipo;
 		boolean respuesta;
 		
 		// Borramos la información del antiguo beneficiario consultado
@@ -509,7 +512,22 @@ public class JPBeneficiarioConsultar extends JPBase {
 			Dialogos.mostrarDialogoInformacion(getFrame(), "Búsqueda correcta", "Beneficiario encontrado.");
 					
 		} catch(BeneficiarioInexistenteException e) {
-			if(preguntarRegistro) {
+			// Se comprueba que el NIF introducido no corresponda a un usuario (no beneficiario) del sistema
+			if (tipo.equals(ID_NIF)) {
+				try {
+					esBeneficiario = !(getControlador().correspondeNIFUsuario(identificacion));
+					if (!esBeneficiario) {
+						Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El NIF introducido corresponde a un usuario del sistema, no a un beneficiario.");
+						txtIdentificacion.selectAll();
+						txtIdentificacion.grabFocus();
+					}
+				} catch(Exception e1) { 
+					esBeneficiario = false;
+				}
+			}
+			else
+				esBeneficiario = true;
+			if(preguntarRegistro && esBeneficiario) {
 				// Preguntamos si se quiere registrar este beneficiario
 				respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", e.getMessage() + "\n¿Quiere registrarlo para poder tramitar su cita?");
 				if(respuesta) {
@@ -518,7 +536,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 					txtIdentificacion.selectAll();
 					txtIdentificacion.grabFocus();
 				}
-			} else {
+			} else if (esBeneficiario){
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 				txtIdentificacion.selectAll();
 				txtIdentificacion.grabFocus();
@@ -654,29 +672,33 @@ public class JPBeneficiarioConsultar extends JPBase {
 			// lo cambiará si el beneficiario cambia de centro o de edad
 			beneficiarioModif.setMedicoAsignado(beneficiario.getMedicoAsignado());
 			
-			// Solicitamos al servidor que se modifique el beneficiario
-			getControlador().modificarBeneficiario(beneficiarioModif);
+			// Si se le ha dado a botón de "Guardar" sin haber hecho ningún cambio, se muestra un aviso y no se realiza la operación
+			if (beneficiario.equals(beneficiarioModif))
+				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "No se ha hecho ningún cambio sobre el beneficiario.");
+			else {
+				// Solicitamos al servidor que se modifique el beneficiario
+				getControlador().modificarBeneficiario(beneficiarioModif);
 			
-			// Obtenemos el médico que se le ha asignado al beneficiario
-			medico = getControlador().consultarBeneficiarioPorNIF(beneficiario.getNif()).getMedicoAsignado();
-
-			// Mostramos el resultado de la operación y limpiamos el panel
-			if(beneficiario.getMedicoAsignado() == null) {
-				if(medico == null) {
-					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente pero no\nse le ha podido asignar ningún médico del centro seleccionado.\nEl beneficiario no podrá pedir cita hasta que se le asigne un médico.");
+				// Obtenemos el médico que se le ha asignado al beneficiario
+				medico = getControlador().consultarBeneficiarioPorNIF(beneficiario.getNif()).getMedicoAsignado();
+				// Mostramos el resultado de la operación y limpiamos el panel
+				if(beneficiario.getMedicoAsignado() == null) {
+					if(medico == null) {
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente pero no\nse le ha podido asignar ningún médico del centro seleccionado.\nEl beneficiario no podrá pedir cita hasta que se le asigne un médico.");
+					} else {
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente y se\nle ha asignado automáticamente el siguiente médico:\n" + medico.getApellidos() + ", " + medico.getNombre());
+					}
 				} else {
-					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente y se\nle ha asignado automáticamente el siguiente médico:\n" + medico.getApellidos() + ", " + medico.getNombre());
+					if(medico == null) {
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente pero no\nse le ha podido asignar ningún médico del centro seleccionado.\nEl beneficiario no podrá pedir cita hasta que se le asigne un médico.");
+					} else if(medico.equals(beneficiario.getMedicoAsignado())) {
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente.");
+					} else {
+						Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente y se\nle ha asignado automáticamente un nuevo médico:\n" + medico.getApellidos() + ", " + medico.getNombre());
+					}
 				}
-			} else {
-				if(medico == null) {
-					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente pero no\nse le ha podido asignar ningún médico del centro seleccionado.\nEl beneficiario no podrá pedir cita hasta que se le asigne un médico.");
-				} else if(medico.equals(beneficiario.getMedicoAsignado())) {
-					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente.");
-				} else {
-					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El beneficiario ha sido modificado correctamente y se\nle ha asignado automáticamente un nuevo médico:\n" + medico.getApellidos() + ", " + medico.getNombre());
-				}
+				restablecerPanel();
 			}
-			restablecerPanel();
 			
 		} catch(BeneficiarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());

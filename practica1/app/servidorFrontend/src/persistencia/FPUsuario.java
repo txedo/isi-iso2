@@ -94,6 +94,19 @@ public class FPUsuario {
 		return usuario;
 	}
 	
+	public static boolean correspondeNIFUsuario (String nif) throws SQLException {
+		ComandoSQL comando;
+		ResultSet datos;
+		boolean corresponde = false;
+		
+		// Consultamos la base de datos
+		comando = new ComandoSQLSentencia("SELECT " + COL_NIF + " FROM " + TABLA_USUARIOS
+				+ " WHERE " + COL_NIF + " = ?", nif);
+		datos = GestorConexionesBD.consultar(comando);
+		corresponde = (datos.next());
+		return corresponde;
+	}
+	
 	public static Usuario consultar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
 		ComandoSQL comando;
 		ResultSet datos;

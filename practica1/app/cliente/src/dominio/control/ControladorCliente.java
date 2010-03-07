@@ -288,6 +288,10 @@ public class ControladorCliente {
 		servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.ELIMINAR_USUARIO, usu);
 	}
 
+	public boolean correspondeNIFUsuario (String nif) throws RemoteException, Exception {
+		return (Boolean)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CORRESPONDE_NIF_USUARIO, nif);
+	}
+	
 	public Usuario consultarPropioUsuario() throws RemoteException, Exception {
 		return (Usuario)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_PROPIO_USUARIO, null);
 	}

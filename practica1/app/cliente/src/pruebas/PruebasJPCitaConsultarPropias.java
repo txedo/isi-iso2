@@ -136,7 +136,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 		
 		try {
 			// Registramos una cita futura de prueba (se necesita rol de administrador)
-			c1= controladorAuxiliar.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c1= controladorAuxiliar.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 
 			// Consultamos la cita del medico del beneficiario
 			btnCitasHistorico.click();
@@ -166,7 +166,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 
 		try {
 			// Registramos una cita futura de prueba para el médico (se necesita rol de administrador)
-			c1 = controladorAuxiliar.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c1 = controladorAuxiliar.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			
 			// Consultamos las citas del médico, que debe ser una
 			btnCitasPendientes.click();
@@ -203,7 +203,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			// Dormimos el hilo en espera de la respuesta del servidor
 			Thread.sleep(TIME_OUT);
 			// La tabla de citas debe estar vacía, pues se ha borrado el beneficiario de la cita
-			assertTrue(tblCitas.getRowCount()==0);
+			assertEquals(tblCitas.getRowCount(),0);
 			beneficiarioEliminado = true;
 			// Borramos la cita de prueba
 			try {
@@ -225,7 +225,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			// Pedimos una cita para este médico desde el controlador auxiliar
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
-					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,0), IConstantes.DURACION_CITA);
+					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
@@ -245,7 +245,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			// Ahora procedemos a eliminar la cita desde el segundo administrador
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
-					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,10,0), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
+					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
