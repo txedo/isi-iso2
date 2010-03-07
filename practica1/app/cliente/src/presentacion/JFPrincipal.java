@@ -652,9 +652,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			jPanelGestionarSustituciones.usuarioRegistrado(usuario);
 			break;
 		case EmitirVolante:
-// TODO: Juan A., falta por hacer que se refresque la lista de especialistas
-// al insertar un nuevo especialista
-//			jPanelGestionarVolantes.usuarioRegistrado(usuario);
+			jPanelGestionarVolantes.usuarioRegistrado(usuario);
 			break;
 		default:
 			// La operación no va a cambiar el estado del panel seleccionado

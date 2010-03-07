@@ -149,7 +149,8 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 		try {
 			// Borramos la cita (como administrador)
 			controladorAuxiliar.anularCita(c1);
-			// TODO comprobar que se actualiza en la ventana del médico
+			btnCitasHistorico.click();
+			assertTrue(tblCitas.getRowCount()==0);
 		} catch (Exception e) {
 			fail(e.toString());
 		}

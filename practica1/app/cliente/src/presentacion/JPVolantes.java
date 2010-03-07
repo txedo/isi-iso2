@@ -179,6 +179,17 @@ public class JPVolantes extends JPBase {
 		}
 	}
 	
+	public void usuarioRegistrado(Usuario usuario) {
+		// Redirigimos la operación al panel seleccionado
+		switch(operacionSeleccionada) {
+		case EmitirVolante:
+			jPanelEmitir.usuarioRegistrado(usuario);
+			break;
+		default:
+			// La operación no va a cambiar el estado del panel seleccionado
+		}
+	}
+	
 	public void usuarioActualizado(Usuario usuario) {
 		// Redirigimos la operación al panel seleccionado
 		switch(operacionSeleccionada) {
