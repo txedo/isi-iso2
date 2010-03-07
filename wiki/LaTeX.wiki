@@ -40,7 +40,7 @@ Para darle el mismo formato a la documentación, os comento como teneis que hace
 
 2.- Cuando querais hacer una lista de elementos (diferentes items marcados por "puntitos") teneis que usar el entorno \milista, de la siguiente forma: 
     \begin{milista}
-      \itemize ...
+      \item ...
     \end{milista}
 Además, cada uno de los "items" ponerlo en negrita (\textbf).
 
