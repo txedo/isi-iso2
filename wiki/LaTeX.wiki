@@ -54,16 +54,20 @@ Además, cada uno de los "items" ponerlo en negrita (\textbf).
 
 Si quereis insertar pseudocodigo, podeis usar el entorno \verbatim. Pero siempre que sea código o algo diferente al texto normal, utilizar la familia \texttt, para diferenciarlo del resto.
 
-5.- Para incluir imagenes, se hace asi:
+5.- Para incluir imagenes, se hace asi (utilizando una macro): 
 
 {{{
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.65]{./imagenes/nombre_imagen}
-\caption{leyenda_imagen}
-\label{etiqueta_imagen_para_referenciarla}
-\end{figure}
+\imagen{ruta_imagen}{factor_escalado}{caption o leyenda}{label para referenciar la imagen}
 }}}
+
+El factor de escalado varía entre 0 y 1 y sirve para redimensionar la imagen sin deformarla.
+
+Un ejemplo para insertar una imagen utilizando esta macro: 
+
+{{{
+\imagen{./imagenes/esi_bw.png}{0.45}{Logo}{fig:logo}
+}}}
+
 
 
 *MUY IMPORTANTE: no poner barras bajas en los nombres de las imagenes ni de los archivos.tex !!!!!!!!!!*
