@@ -3,8 +3,10 @@ package pruebas;
 import java.rmi.RemoteException;
 import org.uispec4j.Trigger;
 import org.uispec4j.UISpecTestCase;
+import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 import comunicaciones.ConfiguracionRespaldo;
+import dominio.Main;
 import dominio.control.ControladorRespaldo;
 
 /**
@@ -71,6 +73,24 @@ public class PruebasControlador extends UISpecTestCase {
 			controlador.detenerServidorRespaldo(configuracion);
 			controlador.detenerServidorRespaldo(configuracion);
 			assertFalse(controlador.isServidorActivo());
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de la clase Main */
+	public void testMain() {
+		Window ventana;
+		
+		try {
+			// Comprobamos que el método Main muestra la ventana principal del servidor
+			ventana = WindowInterceptor.run(new Trigger() {
+				public void run() {
+					Main.main(new String[] {});
+				}
+			});
+			assertEquals(ventana.getTitle(), "Servidor de Respaldo");
+			ventana.dispose();
 		} catch(Exception e) {
 			fail(e.toString());
 		}

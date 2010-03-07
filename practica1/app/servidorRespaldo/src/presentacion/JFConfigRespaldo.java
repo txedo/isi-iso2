@@ -174,28 +174,6 @@ public class JFConfigRespaldo extends javax.swing.JFrame {
 	
 	//$hide>>$
 	
-	public ConfiguracionRespaldo getConfiguracion() {
-		// Devolvemos la última configuración aceptada
-		// (no la mostrada actualmente en la ventana)
-		return configuracion;
-	}
-	
-	public void setConfiguracion(ConfiguracionRespaldo configuracion) {
-		// Cambia la configuración aceptada y mostrada en la ventana
-		this.configuracion = configuracion;
-		txtIPBDRespaldo.setText(configuracion.getIPBDRespaldo());
-		txtPuertoBDRespaldo.setText(String.valueOf(configuracion.getPuertoBDRespaldo()));
-		txtPuertoRespaldo.setText(String.valueOf(configuracion.getPuertoRespaldo()));
-	}
-	
-	public void addVentanaCerradaListener(VentanaCerradaListener listener) {
-		listenerList.add(VentanaCerradaListener.class, listener);
-	}
-
-	public void removeVentanaCerradaListener(VentanaCerradaListener listener) {
-		listenerList.remove(VentanaCerradaListener.class, listener);
-	}
-	
 	private void thisWindowClosing(WindowEvent evt) {
 		cerrarVentana();
 	}
@@ -264,6 +242,30 @@ public class JFConfigRespaldo extends javax.swing.JFrame {
 		}
 	}
 
+	// Métodos públicos
+	
+	public ConfiguracionRespaldo getConfiguracion() {
+		// Devolvemos la última configuración aceptada
+		// (no la mostrada actualmente en la ventana)
+		return configuracion;
+	}
+	
+	public void setConfiguracion(ConfiguracionRespaldo configuracion) {
+		// Cambia la configuración aceptada y mostrada en la ventana
+		this.configuracion = configuracion;
+		txtIPBDRespaldo.setText(configuracion.getIPBDRespaldo());
+		txtPuertoBDRespaldo.setText(String.valueOf(configuracion.getPuertoBDRespaldo()));
+		txtPuertoRespaldo.setText(String.valueOf(configuracion.getPuertoRespaldo()));
+	}
+	
+	public void addVentanaCerradaListener(VentanaCerradaListener listener) {
+		listenerList.add(VentanaCerradaListener.class, listener);
+	}
+
+	public void removeVentanaCerradaListener(VentanaCerradaListener listener) {
+		listenerList.remove(VentanaCerradaListener.class, listener);
+	}
+	
 	//$hide<<$
 
 }

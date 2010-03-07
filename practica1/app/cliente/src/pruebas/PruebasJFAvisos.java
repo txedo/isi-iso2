@@ -25,6 +25,9 @@ import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
 import dominio.control.ControladorCliente;
 
+/**
+ * Pruebas de la ventana de avisos.
+ */
 public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas {
 
 	private ControladorCliente controlador;
@@ -52,7 +55,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
+						controlador.iniciarSesion(new ConfiguracionCliente(IP_SERVIDOR_FRONTEND, PUERTO_SERVIDOR_FRONTEND), USUARIO_ADMIN, PASSWORD_ADMIN);
 					} catch(Exception e) {
 						fail(e.toString());
 					}

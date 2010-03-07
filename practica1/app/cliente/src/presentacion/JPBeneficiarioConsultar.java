@@ -955,7 +955,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Médico
 		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido modificado por otro cliente.");
@@ -965,7 +965,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Médico
 		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario
 			Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "El médico asignado al beneficiario ha sido eliminado por otro cliente.\nVuelva a buscar el beneficiario para ver el nuevo médico asignado.");

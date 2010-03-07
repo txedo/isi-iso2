@@ -26,8 +26,8 @@ import dominio.control.ControladorCliente;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que agrupa todas las operaciones sobre sustituciones.
-*/
+ * Panel que agrupa todas las operaciones sobre sustituciones.
+ */
 public class JPSustituciones extends JPBase {
 
 	private static final long serialVersionUID = -7175632273033085117L;

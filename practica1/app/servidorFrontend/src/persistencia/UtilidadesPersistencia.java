@@ -7,7 +7,8 @@ import dominio.conocimiento.CategoriasMedico;
 import dominio.conocimiento.CentroSalud;
 
 /**
- * Clase con métodos estáticos auxiliares para acceder a la base de datos.
+ * Clase con métodos estáticos auxiliares para acceder a la base de datos que
+ * relacionan varias tablas.
  */
 public class UtilidadesPersistencia {
 

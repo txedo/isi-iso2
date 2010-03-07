@@ -84,17 +84,17 @@ public class PruebasCitas extends PruebasBase {
 			// El formato del gregorianCalendar es: año,mes,dia,hora,minutos
 			// Esta fecha de cita es valida para el medico1 e invalida para el medico2
 			// La fecha seria el miercoles 13 de Enero de 2016, a las 10:30
-			calendar = new GregorianCalendar(2016,1-1,13,10,30);
+			calendar = new GregorianCalendar(2016,1-1,13,10,IConstantes.DURACION_CITA * 3);
 			fechaCita1 = calendar.getTime();
 			// Fecha de cita valida para el medico2 e invalida para el medico1
 			// La cita seria el lunes 11 de Enero de 2016, a las 16:15
-			calendar = new GregorianCalendar(2016,1-1,11,16,15);
+			calendar = new GregorianCalendar(2016,1-1,11,16,IConstantes.DURACION_CITA * 2);
 			fechaCita2 = calendar.getTime();
 			// Fecha no valida
-			calendar = new GregorianCalendar(2016,1-1,11,16,19);
+			calendar = new GregorianCalendar(2016,1-1,11,16,18);
 			fechaCita3 = calendar.getTime();
 			// Fecha anterior a la actual
-			calendar = new GregorianCalendar(2009,1-1,11,16,19);
+			calendar = new GregorianCalendar(2009,1-1,11,16,18);
 			fechaCita4 = calendar.getTime();
 			// Inicializamos los tipos de medicos
 			pediatra = new Pediatra();
@@ -225,10 +225,10 @@ public class PruebasCitas extends PruebasBase {
 			// Insertamos varias citas válidas, tanto pendientes como pasadas
 			medicoAsignado = beneficiario1.getMedicoAsignado();
 			if(medicoAsignado.getNif().equals(medico1.getNif())) {
-				calendar = new GregorianCalendar(2015, 6 - 1, 12, 16, 15);
+				calendar = new GregorianCalendar(2015, 6 - 1, 12, 16, IConstantes.DURACION_CITA);
 				fechaCitaPendiente = calendar.getTime();
 			} else {
-				calendar = new GregorianCalendar(2015, 6 - 1, 8, 16, 15);
+				calendar = new GregorianCalendar(2015, 6 - 1, 8, 16, IConstantes.DURACION_CITA * 3);
 				fechaCitaPendiente = calendar.getTime();
 			}
 			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCitaPendiente, IConstantes.DURACION_CITA);
@@ -377,10 +377,10 @@ public class PruebasCitas extends PruebasBase {
 			// Insertamos varias citas válidas, tanto pendientes como pasadas
 			medicoAsignado = beneficiario1.getMedicoAsignado();
 			if(medicoAsignado.getNif().equals(medico1.getNif())) {
-				calendar = new GregorianCalendar(2015, 5, 12, 16, 15);
+				calendar = new GregorianCalendar(2015, 5, 12, 16, IConstantes.DURACION_CITA);
 				fechaCitaPendiente = calendar.getTime();
 			} else {
-				calendar = new GregorianCalendar(2015, 5, 8, 16, 15);
+				calendar = new GregorianCalendar(2015, 5, 8, 16, IConstantes.DURACION_CITA * 3);
 				fechaCitaPendiente = calendar.getTime();
 			}
 			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCitaPendiente, IConstantes.DURACION_CITA);
@@ -494,10 +494,10 @@ public class PruebasCitas extends PruebasBase {
 			// Insertamos varias citas válidas, tanto pendientes como pasadas
 			medico = (Medico)((Sesion)sesionMedico).getUsuario();
 			if(medico.equals(medico1.getNif())) {
-				calendar = new GregorianCalendar(2015, 5, 12, 16, 15);
+				calendar = new GregorianCalendar(2015, 5, 12, 16, IConstantes.DURACION_CITA);
 				fechaCitaPendiente = calendar.getTime();
 			} else {
-				calendar = new GregorianCalendar(2015, 5, 8, 16, 15);
+				calendar = new GregorianCalendar(2015, 5, 8, 16, IConstantes.DURACION_CITA * 3);
 				fechaCitaPendiente = calendar.getTime();
 			}
 			citaPendiente = servidor.pedirCita(sesionCitador.getId(), beneficiario1, medico.getNif(), fechaCitaPendiente, IConstantes.DURACION_CITA);
@@ -924,7 +924,8 @@ public class PruebasCitas extends PruebasBase {
 	public void testConsultarDiasCompletos() {
 		Vector<Date> dias;
 		Medico medicoAsignado; 
-		Date fecha1,fecha2, fecha3, fecha4;
+		Date fecha1;
+		int mins;
 		
 		try {
 			// Intentamos consultar los días completos con una sesión sin permisos
@@ -969,18 +970,11 @@ public class PruebasCitas extends PruebasBase {
 			assertTrue(dias.size() == 0);
 			// Ocupamos un día entero con citas
 			medicoAsignado = beneficiario1.getMedicoAsignado();
-			calendar = new GregorianCalendar(2011, 1 - 1 ,10, 16, 0);
-			fecha1 = calendar.getTime();
-			calendar = new GregorianCalendar(2011, 1 - 1, 10, 16, 30);
-			fecha2 = calendar.getTime();
-			calendar = new GregorianCalendar(2011, 1 - 1, 10, 16, 15);
-			fecha3 = calendar.getTime();
-			calendar = new GregorianCalendar(2011, 1 - 1, 10, 16, 45);
-			fecha4 = calendar.getTime();
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha1, IConstantes.DURACION_CITA);
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha2, IConstantes.DURACION_CITA);
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha3, IConstantes.DURACION_CITA);
-			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha4, IConstantes.DURACION_CITA);
+			for(mins = 0; mins < 60; mins += IConstantes.DURACION_CITA) {
+				calendar = new GregorianCalendar(2011, 1 - 1, 10, 16, mins);
+				fecha1 = calendar.getTime();
+				servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fecha1, IConstantes.DURACION_CITA);
+			}
 			servidor.pedirCita(sesionCitador.getId(), beneficiario1, medicoAsignado.getNif(), fechaCita2, IConstantes.DURACION_CITA);
 			// Consultamos ahora los días completos del médico
 			dias = (Vector<Date>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.CONSULTAR_DIAS_COMPLETOS, medico2.getNif());
@@ -998,7 +992,7 @@ public class PruebasCitas extends PruebasBase {
 		Calendar calend;
 		Date hora;
 		String cadena;
-		Cita cita;
+		Cita cita, citaB;
 		
 		try {
 			// Comprobamos que las horas de las citas tienen el formato esperado
@@ -1024,6 +1018,16 @@ public class PruebasCitas extends PruebasBase {
 			assertTrue(cita.citaEnHoras(16, 21));
 			assertFalse(cita.citaEnHoras(12, 14));
 			assertFalse(cita.citaEnHoras(19, 23));
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Comprobamos que el método equals funciona bien
+			cita = new Cita(new Date(2010 - 1900, 4, 5, 18, 30, 0), 15, beneficiario1, medico1);
+			assertTrue(cita.equals(cita));
+			citaB = new Cita(new Date(2010 - 1900, 4, 5, 18, 20, 0), 15, beneficiario1, medico1);
+			assertFalse(cita.equals(citaB));
 		} catch(Exception e) {
 			fail(e.toString());
 		}

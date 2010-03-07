@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Agente de la base de datos del servidor frontend.
+ * Agente de la base de datos principal.
  */
 public class AgenteFrontend {
 

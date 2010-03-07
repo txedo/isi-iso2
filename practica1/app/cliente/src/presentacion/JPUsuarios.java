@@ -26,8 +26,8 @@ import dominio.control.ControladorCliente;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que agrupa todas las operaciones sobre usuarios.
-*/
+ * Panel que agrupa todas las operaciones sobre usuarios.
+ */
 public class JPUsuarios extends JPBase {
 
 	private static final long serialVersionUID = -3062194232916521414L;

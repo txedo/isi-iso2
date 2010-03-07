@@ -16,12 +16,14 @@ import comunicaciones.UtilidadesComunicaciones;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Usuario;
-import dominio.control.Cliente;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.UsuarioYaExistenteException;
 import presentacion.auxiliar.Validacion;
 
+/**
+ * Clase estática con métodos auxiliares utilizados en las pruebas.
+ */
 public class UtilidadesPruebas {
 
 	private static Random rnd = new Random(System.currentTimeMillis());
@@ -94,7 +96,7 @@ public class UtilidadesPruebas {
 		controladorCabecera = new ControladorCliente();
 		winCabecera = WindowInterceptor.run(new Trigger() {
 			public void run() throws Exception {
-				controladorCabecera.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IPServidorFrontend, IDatosConexionPruebas.puertoServidorFrontend), loginStatic, passwordStatic, false);
+				controladorCabecera.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IP_SERVIDOR_FRONTEND, IDatosConexionPruebas.PUERTO_SERVIDOR_FRONTEND), loginStatic, passwordStatic, false);
 			}
 		});
 		
@@ -117,7 +119,7 @@ public class UtilidadesPruebas {
 		controlador = new ControladorCliente();
 		winControlador = WindowInterceptor.run(new Trigger() {
 			public void run() throws Exception {
-				controlador.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IPServidorFrontend, IDatosConexionPruebas.puertoServidorFrontend), loginStatic, passwordStatic, false);
+				controlador.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IP_SERVIDOR_FRONTEND, IDatosConexionPruebas.PUERTO_SERVIDOR_FRONTEND), loginStatic, passwordStatic, false);
 			}
 		});
 

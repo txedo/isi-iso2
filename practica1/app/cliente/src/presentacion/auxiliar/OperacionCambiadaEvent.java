@@ -3,7 +3,7 @@ package presentacion.auxiliar;
 import java.util.EventObject;
 
 /**
- * Datos para el evento OperacionCambiada de los paneles.
+ * Datos para el evento operacionCambiada de los paneles.
  */
 public class OperacionCambiadaEvent extends EventObject {
 

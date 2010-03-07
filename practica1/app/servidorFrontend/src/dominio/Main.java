@@ -3,7 +3,7 @@ package dominio;
 import dominio.control.ControladorFrontend;
 
 /**
- * Clase principal del servidor frontend.
+ * Clase principal del servidor front-end.
  */
 public class Main {
 	

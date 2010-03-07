@@ -219,7 +219,7 @@ public class GestorUsuarios {
 		
 		// Si el usuario modificado es un médico, eliminamos aquellas citas
 		// pendientes que ahora no quedan dentro del nuevo horario del médico
-		if(usuarioReal.getRol() == RolesUsuario.Medico) {
+		if(usuarioReal.getRol() == RolesUsuario.Médico) {
 			citas = FPCita.consultarPorMedico(usuario.getNif());
 			for(Cita cita : citas) {
 				if(cita.getFechaYHora().after(new Date())) {
@@ -256,7 +256,7 @@ public class GestorUsuarios {
 		
 		// Si se va a eliminar un médico, obtenemos su lista de
 		// beneficiarios para asignarle después un médico diferente
-		if(usuario.getRol() == RolesUsuario.Medico) {
+		if(usuario.getRol() == RolesUsuario.Médico) {
 			nifs = FPBeneficiario.consultarBeneficiariosMedico(usuario.getNif());
 			beneficiarios = new Vector<Beneficiario>();
 			for(String nif : nifs) {
@@ -268,7 +268,7 @@ public class GestorUsuarios {
 		FPUsuario.eliminar(usuario);
 
 		// Intentamos asignar nuevos médicos a los beneficiarios
-		if(usuario.getRol() == RolesUsuario.Medico) {
+		if(usuario.getRol() == RolesUsuario.Médico) {
 			for(Beneficiario beneficiario : beneficiarios) {
 				beneficiario.setMedicoAsignado(null);
 				nuevoMedico = GestorBeneficiarios.obtenerMedicoBeneficiario(beneficiario);

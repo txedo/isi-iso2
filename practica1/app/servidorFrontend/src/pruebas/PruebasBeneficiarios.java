@@ -456,7 +456,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 	/** Pruebas de las operaciones de la clase Beneficiario */
 	public void testClaseBeneficiario() {
 		GregorianCalendar calend;
-		Beneficiario beneficiario;
+		Beneficiario beneficiario, beneficiarioClone;
 		
 		try {
 			// Creamos un beneficiario nacido ayer
@@ -485,6 +485,11 @@ public class PruebasBeneficiarios extends PruebasBase {
 			beneficiario = new Beneficiario("11223344P", "001199881100", "ABC", "DEF", new Date(), direccion1, "", "", "");
 			assertNotNull(beneficiario.toString());
 			assertTrue(beneficiario.equals(beneficiario));
+			// Comprobamos que los métodos clone y equals funcionan bien
+			beneficiarioClone = (Beneficiario)beneficiario.clone();
+			assertTrue(beneficiario.equals(beneficiarioClone));
+			beneficiarioClone.setCentroSalud(centro1);
+			assertFalse(beneficiario.equals(beneficiarioClone));
 		} catch(Exception e) {
 			fail(e.toString());
 		}

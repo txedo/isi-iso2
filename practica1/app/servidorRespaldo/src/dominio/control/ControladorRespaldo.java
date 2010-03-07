@@ -1,8 +1,6 @@
 package dominio.control;
 
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -38,7 +36,7 @@ public class ControladorRespaldo {
 		ventana.setVisible(false);
 	}
 	
-	public void iniciarServidorRespaldo(ConfiguracionRespaldo configuracion) throws MalformedURLException, RemoteException, NotBoundException, SQLException, UnknownHostException {
+	public void iniciarServidorRespaldo(ConfiguracionRespaldo configuracion) throws MalformedURLException, RemoteException, SQLException {
 		SimpleDateFormat formatoFecha;
 
 		// Obtenemos la IP de la máquina local
@@ -70,7 +68,7 @@ public class ControladorRespaldo {
 		servidorActivo = true;
 	}
 	
-	public void detenerServidorRespaldo(ConfiguracionRespaldo configuracion) throws RemoteException, MalformedURLException, SQLException, UnknownHostException {
+	public void detenerServidorRespaldo(ConfiguracionRespaldo configuracion) throws RemoteException, MalformedURLException {
 		SimpleDateFormat formatoFecha;
 		
 		// Al desconectar el servidor ignoramos todos los errores de conexión

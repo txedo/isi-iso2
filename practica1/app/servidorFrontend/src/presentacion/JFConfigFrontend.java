@@ -38,7 +38,7 @@ import excepciones.PuertoInvalidoException;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
- * Ventana de configuración de las conexiones del servidor front-end.
+ * Ventana de configuración del servidor front-end.
  */
 public class JFConfigFrontend extends javax.swing.JFrame {
 
@@ -231,33 +231,6 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 	
 	//$hide>>$
 	
-	public ConfiguracionFrontend getConfiguracion() {
-		// Devolvemos la última configuración aceptada
-		// (no la mostrada actualmente en la ventana)
-		return configuracion;
-	}
-	
-	public void setConfiguracion(ConfiguracionFrontend configuracion) {
-		// Cambia la configuración aceptada y mostrada en la ventana
-		this.configuracion = configuracion;
-		txtIPBDPrincipal.setText(configuracion.getIPBDPrincipal());
-		txtPuertoBDPrincipal.setText(String.valueOf(configuracion.getPuertoBDPrincipal()));
-		txtIPRespaldo.setText(configuracion.getIPRespaldo());
-		txtPuertoRespaldo.setText(String.valueOf(configuracion.getPuertoRespaldo()));
-		chkRespaldo.setSelected(configuracion.isRespaldoActivado());
-		txtIPRespaldo.setEnabled(configuracion.isRespaldoActivado());
-		txtPuertoRespaldo.setEnabled(configuracion.isRespaldoActivado());
-		txtPuertoFrontend.setText(String.valueOf(configuracion.getPuertoFrontend()));
-	}
-	
-	public void addVentanaCerradaListener(VentanaCerradaListener listener) {
-		listenerList.add(VentanaCerradaListener.class, listener);
-	}
-
-	public void removeVentanaCerradaListener(VentanaCerradaListener listener) {
-		listenerList.remove(VentanaCerradaListener.class, listener);
-	}
-	
 	private void thisWindowClosing(WindowEvent evt) {
 		cerrarVentana();
 	}
@@ -355,6 +328,35 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 				((VentanaCerradaListener)listeners[i + 1]).ventanaCerrada(new EventObject(this));
 			}
 		}
+	}
+
+	// Métodos públicos
+
+	public ConfiguracionFrontend getConfiguracion() {
+		// Devolvemos la última configuración aceptada
+		// (no la mostrada actualmente en la ventana)
+		return configuracion;
+	}
+	
+	public void setConfiguracion(ConfiguracionFrontend configuracion) {
+		// Cambia la configuración aceptada y mostrada en la ventana
+		this.configuracion = configuracion;
+		txtIPBDPrincipal.setText(configuracion.getIPBDPrincipal());
+		txtPuertoBDPrincipal.setText(String.valueOf(configuracion.getPuertoBDPrincipal()));
+		txtIPRespaldo.setText(configuracion.getIPRespaldo());
+		txtPuertoRespaldo.setText(String.valueOf(configuracion.getPuertoRespaldo()));
+		chkRespaldo.setSelected(configuracion.isRespaldoActivado());
+		txtIPRespaldo.setEnabled(configuracion.isRespaldoActivado());
+		txtPuertoRespaldo.setEnabled(configuracion.isRespaldoActivado());
+		txtPuertoFrontend.setText(String.valueOf(configuracion.getPuertoFrontend()));
+	}
+	
+	public void addVentanaCerradaListener(VentanaCerradaListener listener) {
+		listenerList.add(VentanaCerradaListener.class, listener);
+	}
+
+	public void removeVentanaCerradaListener(VentanaCerradaListener listener) {
+		listenerList.remove(VentanaCerradaListener.class, listener);
 	}
 
 	//$hide<<$

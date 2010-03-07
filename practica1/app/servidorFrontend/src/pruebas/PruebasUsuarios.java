@@ -263,8 +263,6 @@ public class PruebasUsuarios extends PruebasBase {
 			assertEquals(usuario, usuarioGet);
 			// Comprobamos que se ha avisado a los clientes del registro del usuario
 			Thread.sleep(100);
-			usuario.setPassword("nuevoadmin");
-			usuario.setCentroSalud(null);
 			assertTrue(clienteCitador.getUltimaOperacion() == ICodigosOperacionesCliente.INSERTAR);
 			assertEquals(usuario, clienteCitador.getUltimoDato());
 			assertNull(clienteAdmin.getUltimoDato());

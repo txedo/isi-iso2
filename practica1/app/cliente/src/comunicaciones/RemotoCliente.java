@@ -13,7 +13,7 @@ import dominio.control.Cliente;
 
 /**
  * Clase que exporta la instancia que será utilizada por el servidor
- * front-end para ejecutar operaciones en los clientes.
+ * front-end para ejecutar operaciones sobre los clientes.
  */
 public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 

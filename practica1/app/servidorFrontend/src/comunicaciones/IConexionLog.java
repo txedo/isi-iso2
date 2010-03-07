@@ -5,8 +5,8 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 /**
- * Interfaz que deben implementar las clases que vayan a mostrar o
- * procesar los mensajes de estado generados por el sistema.
+ * Interfaz que deben implementar las clases que vayan a mostrar, almacenar o
+ * procesar los mensajes de estado generados por el servidor.
  */
 public interface IConexionLog extends Remote {
 

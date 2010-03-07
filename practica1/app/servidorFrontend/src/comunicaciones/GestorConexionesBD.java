@@ -8,8 +8,8 @@ import persistencia.ComandoSQL;
 import comunicaciones.IConexionBD;
 
 /**
- * Gestor que permite acceder de forma sincronizada a varias bases de datos
- * (locales o remotas).
+ * Gestor que permite acceder y modificar de forma sincronizada varias
+ * bases de datos (locales o remotas).
  */
 public class GestorConexionesBD {
 

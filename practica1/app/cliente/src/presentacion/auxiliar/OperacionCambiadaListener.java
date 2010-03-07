@@ -3,7 +3,7 @@ package presentacion.auxiliar;
 import java.util.EventListener;
 
 /**
- * Interfaz para el evento OperacionCambiada de los paneles.
+ * Interfaz para el evento operacionCambiada de los paneles.
  */
 public interface OperacionCambiadaListener extends EventListener {
 

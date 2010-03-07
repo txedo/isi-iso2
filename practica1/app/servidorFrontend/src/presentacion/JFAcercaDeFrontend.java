@@ -38,7 +38,7 @@ import presentacion.auxiliar.VentanaCerradaListener;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
- * Ventana Acerca De del servidor 
+ * Ventana 'Acerca de' del servidor front-end.
  */
 public class JFAcercaDeFrontend extends javax.swing.JFrame {
 

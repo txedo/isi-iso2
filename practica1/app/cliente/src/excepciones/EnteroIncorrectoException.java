@@ -1,5 +1,9 @@
 package excepciones;
 
+/**
+ * Excepción interna lanzada cuando un campo numérico tiene caracteres no
+ * válidos o contiene un número negativo.
+ */
 public class EnteroIncorrectoException extends Exception {
 
 	private static final long serialVersionUID = -4573938396507767050L;
@@ -11,4 +15,5 @@ public class EnteroIncorrectoException extends Exception {
 	public EnteroIncorrectoException(String message) {
 		super(message);
 	}
+	
 }

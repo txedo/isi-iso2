@@ -339,7 +339,7 @@ public class JPVolanteEmitir extends JPBase {
 	public void usuarioRegistrado(Usuario usuario) {
 		String especialidad;
 		if(beneficiario != null) {
-			if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
+			if (usuario.getRol() == RolesUsuario.Médico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
 				// Si se ha registrado un especialista y se están viendo los especialistas de esa especialidad, se refreca la lista
 				especialidad = ((Especialista)(((Medico)usuario).getTipoMedico())).getEspecialidad();
 				if (cbEspecialidad.getSelectedItem().toString().equals(especialidad)) { 
@@ -352,7 +352,7 @@ public class JPVolanteEmitir extends JPBase {
 	
 	public void usuarioActualizado(Usuario usuario) {
 		if(beneficiario != null) {
-			if (usuario.getRol() == RolesUsuario.Medico) {
+			if (usuario.getRol() == RolesUsuario.Médico) {
 				if (beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 					// Otro cliente ha actualizado el médico asignado al beneficiario
 					especialidadSeleccionada = cbEspecialidad.getSelectedIndex();
@@ -373,7 +373,7 @@ public class JPVolanteEmitir extends JPBase {
 	
 	public void usuarioEliminado(Usuario usuario) {
 		if(beneficiario != null) {
-			if (usuario.getRol() == RolesUsuario.Medico) {
+			if (usuario.getRol() == RolesUsuario.Médico) {
 				if (beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 					// Otro cliente ha eliminado el médico asignado al beneficiario
 					pnlBeneficiario.usuarioEliminado(usuario);

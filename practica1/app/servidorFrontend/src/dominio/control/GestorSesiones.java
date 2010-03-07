@@ -24,8 +24,9 @@ import excepciones.SesionNoIniciadaException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
- * Clase encargada de iniciar y finalizar sesiones con los clientes
- * del sistema.
+ * Clase encargada de iniciar y finalizar sesiones con los clientes del
+ * sistema, así como de comunicarse con los clientes registrados cuando hay
+ * un cambio en el servidor.
  */
 public class GestorSesiones {
 	
@@ -189,7 +190,7 @@ public class GestorSesiones {
 		}
 		
 		// Agregamos las operaciones permitidas para médicos
-		if(sesion.getRol() == RolesUsuario.Medico.ordinal()) {
+		if(sesion.getRol() == RolesUsuario.Médico.ordinal()) {
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
 			operaciones.add(Operaciones.EmitirVolante);
 			operaciones.add(Operaciones.ConsultarCitasPropiasMedico);

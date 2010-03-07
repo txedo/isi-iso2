@@ -1,7 +1,7 @@
 package comunicaciones;
 
 /**
- * Clase con la configuración de conexión del servidor frontend.
+ * Clase con la configuración de la conexión del servidor front-end.
  */
 public class ConfiguracionFrontend {
 

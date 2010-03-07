@@ -5,6 +5,7 @@ import java.util.Vector;
 import persistencia.FPCentroSalud;
 import persistencia.FPUsuario;
 import comunicaciones.RemotoServidorFrontend;
+import comunicaciones.UtilidadesComunicaciones;
 import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
@@ -103,7 +104,7 @@ public class PruebasRemotoServidor extends PruebasBase {
 			sesionAdmin = conexion.identificar(admin.getLogin(), admin.getLogin());
 			sesionMedico = conexion.identificar(medico.getLogin(), medico.getLogin());
 			cliente = new ClientePrueba();
-			cliente.activar(cliente.getDireccionIP());
+			cliente.activar(UtilidadesComunicaciones.obtenerIPHost());
 			conexion.registrar(cliente, sesionAdmin.getId());
 			conexion.liberar(sesionAdmin.getId());
 			sesionAdmin = conexion.identificar(admin.getLogin(), admin.getLogin());
@@ -127,10 +128,10 @@ public class PruebasRemotoServidor extends PruebasBase {
 		
 		try {
 			// Probamos las operaciones de gestión de médicos
-			medico1 = new Medico("55113300X", "medico1", "medico1", "abc", "abc", "", "", "", new Especialista(Especialidades.Traumatologia.name()));
+			medico1 = new Medico("55113300X", "medico1", "medico1", "abc", "abc", "", "", "", new Especialista(Especialidades.Traumatología.name()));
 			medico1.setCentroSalud(centro);
 			medico1.getCalendario().add(new PeriodoTrabajo(10, 12, DiaSemana.Lunes));
-			medico2 = new Medico("66880011X", "medico2", "medico2", "abc", "abc", "", "", "", new Especialista(Especialidades.Traumatologia.name()));
+			medico2 = new Medico("66880011X", "medico2", "medico2", "abc", "abc", "", "", "", new Especialista(Especialidades.Traumatología.name()));
 			medico2.setCentroSalud(centro);
 			conexion.crear(sesionAdmin.getId(), medico1);
 			conexion.crear(sesionAdmin.getId(), medico2);
@@ -155,8 +156,8 @@ public class PruebasRemotoServidor extends PruebasBase {
 		
 		try {
 			// Probamos las operaciones de gestión de citas
-			conexion.pedirCita(sesionAdmin.getId(), beneficiario, medico.getNif(), new Date(2015 - 1900, 8, 14, 10, 15), IConstantes.DURACION_CITA);
-			conexion.pedirCita(sesionAdmin.getId(), beneficiario, idVolante, new Date(2015 - 1900, 8, 14, 10, 15), IConstantes.DURACION_CITA);
+			conexion.pedirCita(sesionAdmin.getId(), beneficiario, medico.getNif(), new Date(2015 - 1900, 8, 14, 10, IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
+			conexion.pedirCita(sesionAdmin.getId(), beneficiario, idVolante, new Date(2015 - 1900, 8, 14, 10, IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			citas = conexion.getCitas(sesionAdmin.getId(), beneficiario.getNif());
 			assertTrue(citas.size() == 2);
 			conexion.anularCita(sesionAdmin.getId(), citas.get(0));

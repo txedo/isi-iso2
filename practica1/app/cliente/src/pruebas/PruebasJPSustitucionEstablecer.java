@@ -29,7 +29,6 @@ import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.FechaSustitucionIncorrectaException;
 import excepciones.NIFIncorrectoException;
-import excepciones.SustitucionInvalidaException;
 import excepciones.UsuarioInexistenteException;
 
 /**
@@ -74,7 +73,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IPServidorFrontend, IDatosConexionPruebas.puertoServidorFrontend), IDatosConexionPruebas.usuarioAdmin, IDatosConexionPruebas.passwordAdmin);
+						controlador.iniciarSesion(new ConfiguracionCliente(IDatosConexionPruebas.IP_SERVIDOR_FRONTEND, IDatosConexionPruebas.PUERTO_SERVIDOR_FRONTEND), IDatosConexionPruebas.USUARIO_ADMIN, IDatosConexionPruebas.PASSWORD_ADMIN);
 					} catch(Exception e) {
 						fail(e.toString());
 					}
@@ -495,7 +494,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 	public void testObservadorUsuarios() {
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN_AUXILIAR, IDatosConexionPruebas.PASSWORD_ADMIN_AUXILIAR);
 		} catch(Exception e) {
 			fail(e.toString());
 		}

@@ -58,9 +58,9 @@ import excepciones.MedicoInexistenteException;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que permite tramitar citas para beneficiarios del sistema a partir
-* de los volantes emitidos por los médicos de cabecera.
-*/
+ * Panel que permite tramitar citas para beneficiarios del sistema a partir
+ * de los volantes emitidos por los médicos de cabecera.
+ */
 public class JPCitaVolanteTramitar extends JPBase {
 
 	private static final long serialVersionUID = 8297107492599580450L;
@@ -561,7 +561,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 	
 	public void usuarioActualizado(Usuario usuario) {
 		if(beneficiario != null && volante != null) {
-			if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getNif().equals(volante.getReceptor().getNif())) {
+			if (usuario.getRol() == RolesUsuario.Médico && ((Medico)usuario).getNif().equals(volante.getReceptor().getNif())) {
 				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha modificado el especialista asociado al volante desde otro cliente.");
 				// Otro cliente ha actualizado el especialista asignado al volante
 				txtMedicoAsignado.setText(usuario.getApellidos() + ", " + usuario.getNombre() + " (" + usuario.getNif() + ")");
@@ -573,7 +573,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 	
 	public void usuarioEliminado(Usuario usuario) {
 		if(beneficiario != null && volante != null) {
-			if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getNif().equals(volante.getReceptor().getNif())) {
+			if (usuario.getRol() == RolesUsuario.Médico && ((Medico)usuario).getNif().equals(volante.getReceptor().getNif())) {
 				// Otro cliente ha eliminado el médico especialista asociado al volante
 				Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha eliminado el especialista asociado al volante desde otro cliente.");
 				restablecerPanel();

@@ -5,18 +5,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import org.uispec4j.Trigger;
 import org.uispec4j.UISpecTestCase;
+import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
 import persistencia.AgenteFrontend;
 import comunicaciones.ConexionBDFrontend;
 import comunicaciones.ConfiguracionFrontend;
 import comunicaciones.GestorConexionesBD;
+import dominio.Main;
 import dominio.UtilidadesDominio;
 import dominio.conocimiento.ISesion;
 import dominio.control.ControladorFrontend;
 import dominio.control.ServidorFrontend;
 
 /**
- * Pruebas del controlador principal del servidor de respaldo.
+ * Pruebas del controlador principal del servidor front-end.
  */
 public class PruebasControlador extends UISpecTestCase {
 
@@ -116,6 +118,38 @@ public class PruebasControlador extends UISpecTestCase {
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+		
+		try {
+			// Activamos el servidor con el servidor de respaldo activado
+			configuracion = new ConfiguracionFrontend(IDatosPruebas.IP_BASEDATOS_PRINCIPAL, IDatosPruebas.PUERTO_BASEDATOS_PRINCIPAL, IDatosPruebas.IP_SERVIDOR_RESPALDO, IDatosPruebas.PUERTO_SERVIDOR_RESPALDO, IDatosPruebas.PUERTO_ESCUCHA);
+			controlador.iniciarServidor(configuracion);
+			controlador.iniciarServidor(configuracion);
+			assertTrue(controlador.isServidorActivo());
+			// Desactivamos el servidor
+			controlador.detenerServidor(configuracion);
+			controlador.detenerServidor(configuracion);
+			assertFalse(controlador.isServidorActivo());
+		} catch(Exception e) {
+			fail(e.toString() + "\nPara ejecutar esta prueba se necesita tener activado el servidor de respaldo.");
+		}
 	}
 	
+	/** Pruebas de la clase Main */
+	public void testMain() {
+		Window ventana;
+		
+		try {
+			// Comprobamos que el método Main muestra la ventana principal del servidor
+			ventana = WindowInterceptor.run(new Trigger() {
+				public void run() {
+					Main.main(new String[] {});
+				}
+			});
+			assertEquals(ventana.getTitle(), "Servidor Front-End");
+			ventana.dispose();
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+
 }

@@ -37,6 +37,9 @@ import presentacion.auxiliar.VentanaCerradaListener;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+/**
+ * Ventana 'Acerca de' del cliente.
+ */
 public class JFAcercaDeCliente extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -4903915570854306815L;

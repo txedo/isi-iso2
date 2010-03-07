@@ -62,7 +62,7 @@ public class FPUsuario {
 			case Administrador:
 				usuario = new Administrador();
 				break;
-			case Medico:
+			case Médico:
 				usuario = new Medico();
 				break;
 			default:
@@ -81,7 +81,7 @@ public class FPUsuario {
 			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
 			usuario.setCentroSalud(centro);
 			// Establecemos datos adicionales de los médicos
-			if(usuario.getRol() == RolesUsuario.Medico) {
+			if(usuario.getRol() == RolesUsuario.Médico) {
 				// Obtenemos el calendario del médico
 				calendario = FPPeriodoTrabajo.consultarHorario(usuario.getNif());
 				((Medico)usuario).setCalendario(calendario);
@@ -122,7 +122,7 @@ public class FPUsuario {
 			case Administrador:
 				usuario = new Administrador();
 				break;
-			case Medico:
+			case Médico:
 				usuario = new Medico();
 				break;
 			default:
@@ -141,7 +141,7 @@ public class FPUsuario {
 			centro = FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO));
 			usuario.setCentroSalud(centro);
 			// Establecemos datos adicionales de los médicos
-			if(usuario.getRol() == RolesUsuario.Medico) {
+			if(usuario.getRol() == RolesUsuario.Médico) {
 				// Obtenemos el calendario del médico
 				calendario = FPPeriodoTrabajo.consultarHorario(usuario.getNif());
 				((Medico)usuario).setCalendario(calendario);
@@ -197,7 +197,7 @@ public class FPUsuario {
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Insertamos datos adicionales de los médicos
-		if(usuario.getRol() == RolesUsuario.Medico) {
+		if(usuario.getRol() == RolesUsuario.Médico) {
 			calendario = ((Medico)usuario).getCalendario();
 			for(PeriodoTrabajo periodo : calendario) {
 				FPPeriodoTrabajo.insertar(usuario.getNif(), periodo);
@@ -224,7 +224,7 @@ public class FPUsuario {
 		GestorConexionesBD.ejecutar(comando);
 		
 		// Modificamos datos adicionales de los médicos
-		if(usuario.getRol() == RolesUsuario.Medico) {
+		if(usuario.getRol() == RolesUsuario.Médico) {
 			// Borramos el calendario antiguo del médico y añadimos el nuevo
 			calendario = FPPeriodoTrabajo.consultarHorario(usuario.getNif());
 			for(PeriodoTrabajo periodo : calendario) {
@@ -245,7 +245,7 @@ public class FPUsuario {
 		Vector<PeriodoTrabajo> calendario;
 		
 		// Borramos datos adicionales de los médicos
-		if(usuario.getRol() == RolesUsuario.Medico) {
+		if(usuario.getRol() == RolesUsuario.Médico) {
 			calendario = ((Medico)usuario).getCalendario();
 			for(PeriodoTrabajo periodo : calendario) {
 				FPPeriodoTrabajo.eliminar(periodo);

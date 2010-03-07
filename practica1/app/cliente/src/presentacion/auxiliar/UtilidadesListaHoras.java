@@ -7,6 +7,10 @@ import java.util.Vector;
 import javax.swing.JComboBox;
 import dominio.conocimiento.DiaSemana;
 
+/**
+ * Clase estática con métodos relacionados con el manejo de listas de horas
+ * de trabajo de los médicos.
+ */
 public class UtilidadesListaHoras {
 	
 	@SuppressWarnings("deprecation")

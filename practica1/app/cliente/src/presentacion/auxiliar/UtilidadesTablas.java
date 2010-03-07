@@ -14,7 +14,8 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.TipoMedico;
 
 /**
- * Funciones auxiliares para manejar tablas de citas y beneficiarios.
+ * Clase estática con métodos auxiliares para manejar tablas de citas y
+ * beneficiarios.
  */
 public class UtilidadesTablas {
 

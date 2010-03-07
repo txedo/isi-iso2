@@ -41,7 +41,7 @@ public class FPSustitucion {
 		
 		// Obtenemos los datos del médico sustituido
 		medico = FPUsuario.consultar(nifMedico);
-		if(medico.getRol() != RolesUsuario.Medico) {
+		if(medico.getRol() != RolesUsuario.Médico) {
 			datos.close();
 			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones del usuario con NIF " + String.valueOf(nifMedico) + " porque no es un médico.");
 		}
@@ -56,7 +56,7 @@ public class FPSustitucion {
 			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
 			sustitucion.setMedico((Medico)medico);
 			sustituto = FPUsuario.consultar(datos.getString(COL_NIF_SUSTITUTO));
-			if(sustituto.getRol() != RolesUsuario.Medico) {
+			if(sustituto.getRol() != RolesUsuario.Médico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("Alguna de las sustituciones del médico con NIF " + String.valueOf(nifMedico) + " no tiene asociado un usuario con rol de médico.");
 			}
@@ -82,7 +82,7 @@ public class FPSustitucion {
 		
 		// Obtenemos los datos del médico sustituto
 		sustituto = FPUsuario.consultar(nifMedico);
-		if(sustituto.getRol() != RolesUsuario.Medico) {
+		if(sustituto.getRol() != RolesUsuario.Médico) {
 			datos.close();
 			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones hechas por el usuario con NIF " + String.valueOf(nifMedico) + " porque no es un médico.");
 		}
@@ -96,7 +96,7 @@ public class FPSustitucion {
 			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
 			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
 			medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-			if(medico.getRol() != RolesUsuario.Medico) {
+			if(medico.getRol() != RolesUsuario.Médico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("Alguna de las sustituciones hechas por el médico con NIF " + String.valueOf(nifMedico) + " no tiene asociado un usuario con rol de médico.");
 			}

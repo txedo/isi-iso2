@@ -9,7 +9,7 @@ import comunicaciones.ConexionLogVentana;
 import comunicaciones.IServidorRespaldo;
 
 /**
- * Fachada del servidor de respaldo utilizada por el servidor frontend
+ * Fachada del servidor de respaldo utilizada por el servidor front-end
  * que da acceso a la funcionalidad del servidor.
  */
 public class ServidorRespaldo implements IServidorRespaldo {

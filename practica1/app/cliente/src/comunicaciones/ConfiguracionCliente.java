@@ -1,7 +1,7 @@
 package comunicaciones;
 
 /**
- * Clase con la configuración de conexión del cliente.
+ * Clase con la configuración de la conexión del cliente.
  */
 public class ConfiguracionCliente {
 

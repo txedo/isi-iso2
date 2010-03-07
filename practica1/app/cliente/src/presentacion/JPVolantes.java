@@ -27,8 +27,8 @@ import dominio.control.ControladorCliente;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que agrupa todas las operaciones sobre volantes.
-*/
+ * Panel que agrupa todas las operaciones sobre volantes.
+ */
 public class JPVolantes extends JPBase {
 
 	private static final long serialVersionUID = -7175632273033085117L;

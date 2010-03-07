@@ -18,6 +18,10 @@ public class Cabecera extends TipoMedico implements Serializable {
 		return CategoriasMedico.Cabecera;
 	}
 	
+	public Object clone() {
+		return new Cabecera();
+	}
+	
 	public boolean equals(Object o) {
 		boolean dev;
 		

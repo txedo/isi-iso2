@@ -278,6 +278,8 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 		}
 	}
 	
+	//$hide>>$
+	
 	private void mniAcercaDeActionPerformed(ActionEvent evt) {
 		frmAcercaDe = new JFAcercaDeFrontend();
 		frmAcercaDe.addVentanaCerradaListener(new VentanaCerradaListener() {

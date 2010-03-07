@@ -3,7 +3,6 @@ package presentacion;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 import comunicaciones.ConfiguracionRespaldo;
-
 import dominio.control.ControladorRespaldo;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -11,8 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.EventObject;
@@ -370,10 +367,6 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(MalformedURLException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
-		} catch(UnknownHostException e) {
-			ponerMensaje("Error: " + e.getLocalizedMessage());
-		} catch(NotBoundException e) {
-			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(RemoteException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
 			// Si se produce un fallo de RMI al conectar el
@@ -400,13 +393,9 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			mniConfigurar.setEnabled(true);
 			actualizarEstado();
 			ok = true;
-		} catch(SQLException e) {
-			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(RemoteException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
 		} catch(MalformedURLException e) {
-			ponerMensaje("Error: " + e.getLocalizedMessage());
-		} catch(UnknownHostException e) {
 			ponerMensaje("Error: " + e.getLocalizedMessage());
 		}
 		

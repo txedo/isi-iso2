@@ -27,8 +27,8 @@ import javax.swing.BorderFactory;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que agrupa todas las operaciones sobre beneficiarios.
-*/
+ * Panel que agrupa todas las operaciones sobre beneficiarios.
+ */
 public class JPBeneficiarios extends JPBase {
 
 	private static final long serialVersionUID = -8179883245270149179L;

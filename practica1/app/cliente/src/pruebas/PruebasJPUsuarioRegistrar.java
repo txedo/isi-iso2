@@ -34,6 +34,9 @@ import excepciones.NombreIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
 
+/**
+ * Pruebas del panel de registro de usuarios.
+ */
 public class PruebasJPUsuarioRegistrar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private ControladorCliente controlador;
@@ -77,7 +80,7 @@ public class PruebasJPUsuarioRegistrar extends org.uispec4j.UISpecTestCase imple
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
+						controlador.iniciarSesion(new ConfiguracionCliente(IP_SERVIDOR_FRONTEND, PUERTO_SERVIDOR_FRONTEND), USUARIO_ADMIN, PASSWORD_ADMIN);
 					} catch (Exception e) {
 						fail(e.toString());
 					}

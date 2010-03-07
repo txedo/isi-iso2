@@ -34,6 +34,9 @@ import dominio.control.ControladorCliente;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 
+/**
+ * Pruebas del panel de emisión de volantes.
+ */
 public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private ControladorCliente controlador, controladorAuxiliar;
@@ -75,7 +78,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 		
 		try {
 			// Iniciamos sesion con un administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdmin, IDatosConexionPruebas.passwordAdmin);
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN, IDatosConexionPruebas.PASSWORD_ADMIN);
 				
 			tEspecialista = new Especialista("Neurologia");
 			
@@ -106,7 +109,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
+						controlador.iniciarSesion(new ConfiguracionCliente(IP_SERVIDOR_FRONTEND, PUERTO_SERVIDOR_FRONTEND), cabecera.getLogin(), cabecera.getLogin());
 					} catch(Exception e) {
 						fail(e.toString());
 					}

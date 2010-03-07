@@ -1,5 +1,8 @@
 package excepciones;
 
+/**
+ * Excepción lanzada al introducir una fecha con un formato incorrecto.
+ */
 public class FormatoFechaIncorrectoException extends Exception {
 
 	private static final long serialVersionUID = 5844092287426882038L;

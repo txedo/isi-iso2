@@ -17,6 +17,9 @@ import org.uispec4j.interception.WindowInterceptor;
 import presentacion.JFLogin;
 import dominio.control.ControladorCliente;
 
+/**
+ * Pruebas de la ventana de identificación de usuarios.
+ */
 public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private boolean sesionIniciada;
@@ -104,8 +107,8 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 		String [] direcciones = { "", " ", "aaaa", "-441", "213", "0.0.0", "127.0.0.0.0" };
 		String mensaje;
 		
-		txtUsuario.setText(usuarioAdmin);
-		txtPassword.setPassword(passwordAdmin);
+		txtUsuario.setText(USUARIO_ADMIN);
+		txtPassword.setPassword(PASSWORD_ADMIN);
 		// Abrimos las opciones avanzadas
 		btnAvanzado.click();
 		for (int i = 0; i < direcciones.length; i++) {
@@ -123,8 +126,8 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 		String [] puertos = { "", " ", "aaaa", "-441", "0.0.0", "127.0.0.0.0" };
 		String mensaje;
 		
-		txtUsuario.setText(usuarioAdmin);
-		txtPassword.setPassword(passwordAdmin);
+		txtUsuario.setText(USUARIO_ADMIN);
+		txtPassword.setPassword(PASSWORD_ADMIN);
 		// Abrimos las opciones avanzadas
 		btnAvanzado.click();
 		for (int i = 0; i < puertos.length; i++) {
@@ -141,8 +144,8 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 	public void testServidorInalcanzable () {
 		String mensaje;
 		
-		txtUsuario.setText(usuarioAdmin);
-		txtPassword.setPassword(passwordAdmin);
+		txtUsuario.setText(USUARIO_ADMIN);
+		txtPassword.setPassword(PASSWORD_ADMIN);
 		// Abrimos las opciones avanzadas
 		btnAvanzado.click();
 		// Ponemos una IP en la que no hay un servidor a la escucha
@@ -156,8 +159,8 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 	// Loguea un usuario con la IP y el puerto del servidor por defecto
 	@SuppressWarnings("deprecation")
 	public void testLoginUsuarioCorrecto () {
-		txtUsuario.setText(usuarioAdmin);
-		txtPassword.setPassword(passwordAdmin);
+		txtUsuario.setText(USUARIO_ADMIN);
+		txtPassword.setPassword(PASSWORD_ADMIN);
 		winPrincipal = WindowInterceptor.run(btnConectar.triggerClick());
 		winPrincipal.assertTitleEquals("SSCA - Unidad de Citación");
 		sesionIniciada = true;

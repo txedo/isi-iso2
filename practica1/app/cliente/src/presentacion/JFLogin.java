@@ -237,11 +237,9 @@ public class JFLogin extends javax.swing.JFrame {
 		}
 	}
 	
-	public void setControlador(ControladorCliente controlador) {
-		this.controlador = controlador;
-	}
-	
 	private void btnConectarActionPerformed(ActionEvent evt) {
+		int puerto;
+		
 		try {
 			
 			// Comprobamos los campos de la ventana
@@ -250,7 +248,7 @@ public class JFLogin extends javax.swing.JFrame {
 			Validacion.comprobarDireccionIP(txtDireccionServidor.getText().trim());
 			Validacion.comprobarPuerto(txtPuertoServidor.getText().trim());
 			
-			int puerto = Integer.parseInt(txtPuertoServidor.getText().trim());
+			puerto = Integer.parseInt(txtPuertoServidor.getText().trim());
 			controlador.iniciarSesion(new ConfiguracionCliente(txtDireccionServidor.getText(), puerto), txtUsuario.getText(), new String(txtPassword.getPassword()));
 		
 		} catch(UsuarioIncorrectoException e) {
@@ -308,6 +306,12 @@ public class JFLogin extends javax.swing.JFrame {
 		txtPuertoServidor.setEnabled(b);
 		txtPuertoServidor.setVisible(b);
 		lblPuertoServidor.setVisible(b);
+	}
+
+	// Métodos públicos
+	
+	public void setControlador(ControladorCliente controlador) {
+		this.controlador = controlador;
 	}
 
 	//$hide<<$

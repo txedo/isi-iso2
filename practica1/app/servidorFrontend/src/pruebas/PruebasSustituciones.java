@@ -210,6 +210,7 @@ public class PruebasSustituciones extends PruebasBase {
 			m3.getCalendario().add(new PeriodoTrabajo(14, 20, DiaSemana.Jueves));
 			m4 = new Medico("44444444A", "dddd", "1234", "abc", "abc", "", "", "", new Pediatra());
 			m4.getCalendario().add(new PeriodoTrabajo(10, 13, DiaSemana.Lunes));
+			m4.getCalendario().add(new PeriodoTrabajo(17, 18, DiaSemana.Miercoles));
 			m4.setCentroSalud(centro1);
 			m5 = new Medico("55555555A", "eeee", "1234", "abc", "abc", "", "", "", new Especialista("XYZ"));
 			m5.getCalendario().add(new PeriodoTrabajo(9, 20, DiaSemana.Martes));
@@ -233,10 +234,10 @@ public class PruebasSustituciones extends PruebasBase {
 			sustitucion = new Sustitucion(calend.getTime(), 15, 18, m3, m6);
 			FPSustitucion.insertar(sustitucion);
 			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m3.getNif(), calend.getTime(), 16, 18 });
-			fail("Se esperaba una excepción FechaNoValidaException");
-		} catch(FechaNoValidaException e) {
+			fail("Se esperaba una excepción SustitucionInvalidaException");
+		} catch(SustitucionInvalidaException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepción FechaNoValidaException");
+			fail("Se esperaba una excepción SustitucionInvalidaException");
 		}
 		
 		try {
@@ -246,10 +247,10 @@ public class PruebasSustituciones extends PruebasBase {
 			sustitucion = new Sustitucion(calend.getTime(), 15, 18, m1, m4);
 			FPSustitucion.insertar(sustitucion);
 			medicos = (Vector<Medico>)servidor.mensajeAuxiliar(sesionAdmin.getId(), ICodigosMensajeAuxiliar.OBTENER_POSIBLES_SUSTITUTOS, new Object[] { m4.getNif(), calend.getTime(), 17, 20 });
-			fail("Se esperaba una excepción FechaNoValidaException");
-		} catch(FechaNoValidaException e) {
+			fail("Se esperaba una excepción SustitucionInvalidaException");
+		} catch(SustitucionInvalidaException e) {
 		} catch(Exception e) {
-			fail("Se esperaba una excepción FechaNoValidaException");
+			fail("Se esperaba una excepción SustitucionInvalidaException");
 		}
 		
 		try {
