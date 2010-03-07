@@ -73,7 +73,9 @@ public class JPVolanteEmitir extends JPBase {
 	private JLabel lblCentro;
 	private JScrollPane jScrollPane1;
 	private JComboBox cbEspecialidad;
-	private ListModel lstEspecialistasModel; 
+	private ListModel lstEspecialistasModel;
+	private int especialidadSeleccionada;
+	private boolean medicoBeneficiarioActualizado;
 	
 	public JPVolanteEmitir() {
 		this(null, null);
@@ -179,8 +181,8 @@ public class JPVolanteEmitir extends JPBase {
 					lstEspecialistasValueChanged(evt);
 				}
 			});
-			crearModelos(new String [] {""});
-			rellenarModeloComboBox(new String [] {""});
+			crearModelos(new String [] {});
+			rellenarModeloComboBox(new String [] {});
 			cbEspecialidad.setFocusable(false);
 			cbEspecialidad.setEnabled(false);
 			cbEspecialidad.setName("cmbEspecialidad");
@@ -189,7 +191,6 @@ public class JPVolanteEmitir extends JPBase {
 					cbEspecialidadActionPerformed(evt);
 				}
 			});
-
 			btnAceptar.setEnabled(false);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -223,7 +224,7 @@ public class JPVolanteEmitir extends JPBase {
 	
 	@SuppressWarnings("unchecked")
 	public void inicializarEspecialistas() {		
-		String [] info = {""};
+		String [] info = {};
 		try {
 			especialistas = (Vector<Medico>) getControlador().obtenerMedicosTipo(new Especialista(cbEspecialidad.getSelectedItem().toString()));
 			if (especialistas.size()>0) {
@@ -270,7 +271,10 @@ public class JPVolanteEmitir extends JPBase {
 			cbEspecialidad.setEnabled(true);
 			cbEspecialidad.setFocusable(true);
 			lstEspecialistas.setEnabled(true);
-			cbEspecialidad.setSelectedIndex(0);
+			if (medicoBeneficiarioActualizado)
+				cbEspecialidad.setSelectedIndex(especialidadSeleccionada);
+			else
+				cbEspecialidad.setSelectedIndex(0);
 		}
 	}
 	
@@ -308,8 +312,8 @@ public class JPVolanteEmitir extends JPBase {
 	
 	private void limpiarPanelMedico() {
 		lstEspecialistas.clearSelection();
-		crearModelos(new String [] {""});
-		rellenarModeloComboBox(new String[] {""});
+		crearModelos(new String [] {});
+		rellenarModeloComboBox(new String[] {});
 		cbEspecialidad.setEnabled(false);
 		cbEspecialidad.setFocusable(false);
 		lstEspecialistas.setEnabled(false);
@@ -332,14 +336,29 @@ public class JPVolanteEmitir extends JPBase {
 		
 	}
 	
+	public void usuarioRegistrado(Usuario usuario) {
+		String especialidad;
+		if(beneficiario != null) {
+			if (usuario.getRol() == RolesUsuario.Medico && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
+				// Si se ha registrado un especialista y se están viendo los especialistas de esa especialidad, se refreca la lista
+				especialidad = ((Especialista)(((Medico)usuario).getTipoMedico())).getEspecialidad();
+				if (cbEspecialidad.getSelectedItem().toString().equals(especialidad)) { 
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "Se ha registrado un especialista de esta especialidad desde otro cliente.");
+					inicializarEspecialistas();
+				}
+			}
+		}
+	}
+	
 	public void usuarioActualizado(Usuario usuario) {
-		System.out.println(beneficiario);
-		System.out.println(usuario);
 		if(beneficiario != null) {
 			if (usuario.getRol() == RolesUsuario.Medico) {
 				if (beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 					// Otro cliente ha actualizado el médico asignado al beneficiario
+					especialidadSeleccionada = cbEspecialidad.getSelectedIndex();
+					medicoBeneficiarioActualizado = true;
 					pnlBeneficiario.usuarioActualizado(usuario);
+					inicializarEspecialistas();
 				}
 				else if (especialistas.size()>0 && ((Medico)usuario).getTipoMedico().getCategoria().equals(CategoriasMedico.Especialista)) {
 					for (Medico e: especialistas) {

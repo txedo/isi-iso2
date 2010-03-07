@@ -851,7 +851,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	}
 	
 	public void testObservadorSustitucionRegistrada () {
-		// TODO
+		// TODO: Txedo, haz la prueba para este observador
 	}
 
 	private void comprobarCamposRestablecidos () {

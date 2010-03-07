@@ -150,12 +150,14 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			// Cerramos la sesión y la ventana del controlador
 			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
-			// Eliminados los usuarios creados en las pruebas
-			if (!beneficiarioEliminado) controladorAuxiliar.eliminarBeneficiario(beneficiarioPrueba);
-			if (!medicoEliminado) controladorAuxiliar.eliminarUsuario(cabecera);
+			// Recuperamos los médicos eliminados
 			for (Medico m : medicosEliminados) {
 				controladorAuxiliar.crearMedico(m);
 			}
+			// Eliminados los usuarios creados en las pruebas
+			if (!beneficiarioEliminado) controladorAuxiliar.eliminarBeneficiario(beneficiarioPrueba);
+			if (!medicoEliminado) controladorAuxiliar.eliminarUsuario(cabecera);
+			
 			// Cerramos la sesión auxiliar de las pruebas del observador
 			UtilidadesPruebas.cerrarControladorAuxiliar();
 		} catch(Exception e) {
@@ -251,15 +253,13 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
-			// Al seleccionar una especialidad, debe haber 0 especialistas (sólo existe la cadena vacía)
+			// Al seleccionar una especialidad, debe haber 0 especialistas
 			jcmbEspecialidad.grabFocus();
 			jcmbEspecialidad.setSelectedIndex(2);
-			assertEquals(jlstEspecialistas.getModel().getSize(), 1);
-			assertEquals(jlstEspecialistas.getModel().getElementAt(0), "");
+			assertEquals(jlstEspecialistas.getModel().getSize(), 0);
 			jcmbEspecialidad.grabFocus();
 			jcmbEspecialidad.setSelectedIndex(0);
-			assertEquals(jlstEspecialistas.getModel().getSize(), 1);
-			assertEquals(jlstEspecialistas.getModel().getElementAt(0), "");
+			assertEquals(jlstEspecialistas.getModel().getSize(), 0);
 			// El botón de emitir debe estar deshabilitado
 			assertFalse(btnEmitir.isEnabled());
 			
@@ -418,17 +418,19 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 	}
 	
 	public void testObservadorUsuario () {
-		// Comprueba que cuando se actualiza o elimina un usuario desde un teminal,
+		// Comprueba que cuando se actualiza o elimina un usuario desde un terminal,
 		// las ventanas de otros terminales se actualizan correctamente
 		try {
 			// Borramos todos los médicos de cabecera del sistema excepto el médico de cabecera de prueba
-			medicosEliminados = controladorAuxiliar.obtenerMedicosTipo(tCabecera);
-			for (Medico m : medicosEliminados) {
-				if (!m.getLogin().equals(cabecera.getLogin()))
+			Vector<Medico> medicos = controladorAuxiliar.obtenerMedicosTipo(tCabecera);
+			for (Medico m : medicos) {
+				if (!m.getNif().equals(cabecera.getNif())) {
 					controladorAuxiliar.eliminarMedico(m);
+					medicosEliminados.add(m);
+				}
 			}
 			// Creamos un médico auxiliar y se lo asignamos al beneficiario
-			// De este modo cuando eliminemos el médico asignado al beneficiario, no será el mismo que tiene iniciada la sesión
+			// De este modo cuando eliminemos el médico asignado al beneficiario, no será el mismo que tiene iniciada la sesión (que es el médico de cabecera)
 			medicoAuxiliar = new Medico();
 			medicoAuxiliar.setNombre("Rodrigo");
 			medicoAuxiliar.setApellidos("de Juan Tellez");
@@ -438,6 +440,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			beneficiarioPrueba.setMedicoAsignado(medicoAuxiliar);
 			beneficiarioPrueba.setCentroSalud(medicoAuxiliar.getCentroSalud());
 			controladorAuxiliar.modificarBeneficiario(beneficiarioPrueba);
+			
 		} catch (Exception e) {
 			fail (e.toString());
 		} 
@@ -462,6 +465,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			jcmbEspecialidad.setSelectedItem("Cardiologia");
 			jlstEspecialistas.grabFocus();
 			jlstEspecialistas.setSelectedIndex(0);
+			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", jlstEspecialistas.getSelectedValue().toString());
 			
 			// En este momento el administrador modifica el médico asignado al beneficiario
 			medicoAuxiliar.setNombre("Otro nombre");
@@ -479,9 +483,6 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar con el nuevo nombre del médico de cabecera
 			assertEquals(medicoAuxiliar.getApellidos() + ", " + medicoAuxiliar.getNombre() + " (" + medicoAuxiliar.getNif() + ")", txtMedicoAsignado.getText());
-			// Volvemos a seleccionar la especialidad del especialista de prueba (porque la interfaz resetea la selección)
-			jcmbEspecialidad.grabFocus();
-			jcmbEspecialidad.setSelectedItem("Cardiologia");
 			
 			// En este momento el administrador modifica el único especialista registrado en el sistema
 			especialista.setApellidos("Otros apellidos");
@@ -516,15 +517,29 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			// Dormimos el hilo en espera de la respuesta del servidor
 			Thread.sleep(TIME_OUT);
 			// La ventana del médico se ha debido actualizar borrando los campos, pues el beneficiario se ha quedado sin médico asignado
-			comprobarCamposRestablecidos();
-			medicoEliminado = true;
+			comprobarCamposRestablecidos();	
+			// Volvemos a dejar la base de datos sin el especialista de prueba
+			controladorAuxiliar.eliminarUsuario(especialista);
+		} catch (Exception e) {
+			fail (e.toString());
+		}		
+	}
+	
+	public void testObservadorEspecialista() {
+		try {
+			// Creamos (como administrador) el médico especialista que se va a eliminar
+			tEspecialista = new Especialista("Cardiologia");
+			especialista = new Medico();
+			especialista.setNombre("Juan");
+			especialista.setApellidos("Especialista");
+			especialista.setTipoMedico(tEspecialista);
+			especialista.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			especialista = (Medico)UtilidadesPruebas.crearUsuario(controladorAuxiliar, especialista);
 			
-			// Automaticamente se le ha asignado al médico el otro médico de cabecera que hay registrado en la base de datos, que es el que tiene la sesión iniciada
-			// Volvemos a consultar el beneficiario y comprobamos que es cierto
+			// Buscamos al beneficiario de prueba
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
-			// TODO FALLA A PARTIR DE AQUI
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// Volvemos a seleccionar la especialidad Cardiologia
@@ -532,6 +547,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			jcmbEspecialidad.setSelectedItem("Cardiologia");
 			jlstEspecialistas.grabFocus();
 			jlstEspecialistas.setSelectedIndex(0);
+			assertEquals(jlstEspecialistas.getSelectedValue().toString(), especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")");
 			// Ahora procedemos a eliminar el especialista para el que se iba a emitir el volante
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
@@ -544,12 +560,31 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 				}
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
-			Thread.sleep(TIME_OUT+1000);
+			Thread.sleep(TIME_OUT);
 			// La ventana del médico se ha debido actualizar, no mostrando ningún especialista
-			assertEquals(jlstEspecialistas.getModel().getSize(), 0);
+			assertEquals(jlstEspecialistas.getModel().getSize(), 0);	
+			
+			// Ahora insertamos de nuevo el especialista y vemos que se refresca la lista de esa especialidad
+			WindowInterceptor.init(new Trigger() {
+				public void run() throws Exception {
+					especialista = (Medico)UtilidadesPruebas.crearUsuario(controladorAuxiliar, especialista);
+				}
+			}).process(new WindowHandler() {
+				public Trigger process(Window window) {
+					// Capturamos la ventana que avisa de la inserción del especialista
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
+			// La ventana del médico se ha debido actualizar, mostrando 1 especialista de esa especialidad
+			jcmbEspecialidad.grabFocus();
+			jcmbEspecialidad.setSelectedItem("Cardiologia");
+			assertEquals(jlstEspecialistas.getModel().getSize(), 1);
+			
+			// Volvemos a dejar la base de datos sin el especialista de prueba
+			controladorAuxiliar.eliminarUsuario(especialista);			
 		} catch (Exception e) {
 			fail (e.toString());
-		}		
+		}
 	}
 	
 	private void comprobarCamposRestablecidos () {

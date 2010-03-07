@@ -514,7 +514,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	}
 	
 	public void testObservadorSustitucionRegistrada () {
-		// TODO: hacer pruebas para este observador
+		// TODO: Txedo, haz la prueba para este observador
 	}
 
 	private void comprobarCamposRestablecidos () {
