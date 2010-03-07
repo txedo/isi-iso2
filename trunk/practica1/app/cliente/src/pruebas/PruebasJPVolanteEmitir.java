@@ -285,7 +285,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			}
 			
 			// Insertamos un único especialista
-			tEspecialista = new Especialista("Neurologia");
+			tEspecialista = new Especialista("Neurología");
 			especialista = new Medico();
 			especialista.setNombre("Juan");
 			especialista.setApellidos("Especialista");
@@ -300,9 +300,9 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Se comprueba que tiene médico asignado
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
-			// La lista de especialista sólo debe tenr uno al seleccionar la especialidad Neurologia
+			// La lista de especialista sólo debe tener uno al seleccionar la especialidad Neurologia
 			jcmbEspecialidad.grabFocus();
-			jcmbEspecialidad.setSelectedItem("Neurologia");
+			jcmbEspecialidad.setSelectedItem("Neurología");
 			assertEquals(jlstEspecialistas.getModel().getSize(), 1);
 			assertEquals(jlstEspecialistas.getModel().getElementAt(0), especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")");
 			// El botón de emitir debe estar habilitado
@@ -332,7 +332,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			}
 			
 			// Creamos el médico especialista que será el receptor de los volantes
-			tEspecialista = new Especialista("Neurologia");
+			tEspecialista = new Especialista("Neurología");
 			especialista = new Medico();
 			especialista.setNombre("Juan");
 			especialista.setApellidos("Especialista");
@@ -349,7 +349,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// La lista de especialista sólo debe tenr uno al seleccionar la especialidad Neurologia
 			jcmbEspecialidad.grabFocus();
-			jcmbEspecialidad.setSelectedItem("Neurologia");
+			jcmbEspecialidad.setSelectedItem("Neurología");
 			assertEquals(jlstEspecialistas.getModel().getSize(), 1);
 			assertEquals(jlstEspecialistas.getModel().getElementAt(0), especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")");
 			// Seleccionamos el especialsita
@@ -449,7 +449,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 		} 
 		try{		
 			// Creamos (como administrador) el médico especialista que se va a modificar/ eliminar
-			tEspecialista = new Especialista("Cardiologia");
+			tEspecialista = new Especialista("Cardiología");
 			especialista = new Medico();
 			especialista.setNombre("Juan");
 			especialista.setApellidos("Especialista");
@@ -465,7 +465,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			// Se comprueba que tiene médico asignado
 			assertEquals(medicoAuxiliar.getApellidos() + ", " + medicoAuxiliar.getNombre() + " (" + medicoAuxiliar.getNif() + ")", txtMedicoAsignado.getText());
 			jcmbEspecialidad.grabFocus();
-			jcmbEspecialidad.setSelectedItem("Cardiologia");
+			jcmbEspecialidad.setSelectedItem("Cardiología");
 			jlstEspecialistas.grabFocus();
 			jlstEspecialistas.setSelectedIndex(0);
 			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", jlstEspecialistas.getSelectedValue().toString());
@@ -531,7 +531,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 	public void testObservadorEspecialista() {
 		try {
 			// Creamos (como administrador) el médico especialista que se va a eliminar
-			tEspecialista = new Especialista("Cardiologia");
+			tEspecialista = new Especialista("Cardiología");
 			especialista = new Medico();
 			especialista.setNombre("Juan");
 			especialista.setApellidos("Especialista");
@@ -547,7 +547,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			assertEquals(cabecera.getApellidos() + ", " + cabecera.getNombre() + " (" + cabecera.getNif() + ")", txtMedicoAsignado.getText());
 			// Volvemos a seleccionar la especialidad Cardiologia
 			jcmbEspecialidad.grabFocus();
-			jcmbEspecialidad.setSelectedItem("Cardiologia");
+			jcmbEspecialidad.setSelectedItem("Cardiología");
 			jlstEspecialistas.grabFocus();
 			jlstEspecialistas.setSelectedIndex(0);
 			assertEquals(jlstEspecialistas.getSelectedValue().toString(), especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")");
@@ -580,7 +580,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			}).run();
 			// La ventana del médico se ha debido actualizar, mostrando 1 especialista de esa especialidad
 			jcmbEspecialidad.grabFocus();
-			jcmbEspecialidad.setSelectedItem("Cardiologia");
+			jcmbEspecialidad.setSelectedItem("Cardiología");
 			assertEquals(jlstEspecialistas.getModel().getSize(), 1);
 			
 			// Volvemos a dejar la base de datos sin el especialista de prueba

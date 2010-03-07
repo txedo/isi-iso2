@@ -16,6 +16,7 @@ public enum Operaciones {
 	RegistrarUsuario,
 	ModificarUsuario,
 	EliminarUsuario,
+	CorrespondeNIFUsuario,
 	ConsultarPropioUsuario,
 	ConsultarCentros,
 	// Operaciones del Gestor de Médicos

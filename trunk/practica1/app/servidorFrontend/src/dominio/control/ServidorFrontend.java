@@ -1112,6 +1112,18 @@ public class ServidorFrontend implements IServidorFrontend {
 				throw e;
 			}
 			break;
+			
+		case ICodigosMensajeAuxiliar.CORRESPONDE_NIF_USUARIO:
+			try {
+				resultado = GestorUsuarios.correspondeNIFUsuario((String)informacion);
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_READ, "Se ha consultado si el NIF " + ((String)informacion) + " corresponde a un usuario del sistema.");
+			} catch(SQLException se) {
+				login = GestorSesiones.getSesion(idSesion).getUsuario().getLogin();
+				GestorConexionesLog.ponerMensaje(login, ITiposMensajeLog.TIPO_DELETE, "Error SQL mientras se consultaba si el NIF " + ((String)informacion) + " corresponde a un usuario del sistema.");
+				throw se;
+			}
+			break;
 
 		case ICodigosMensajeAuxiliar.CONSULTAR_PROPIO_USUARIO:
 			try {

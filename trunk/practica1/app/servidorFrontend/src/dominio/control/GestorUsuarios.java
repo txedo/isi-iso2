@@ -97,6 +97,10 @@ public class GestorUsuarios {
 		// Llamamos al método común para eliminar usuarios y médicos
 		eliminarUsuario(usuario);
 	}
+	
+	public static boolean correspondeNIFUsuario (String nif) throws SQLException {
+		return FPUsuario.correspondeNIFUsuario(nif);
+	}
 
 	// Método para obtener los datos del usuario que ha iniciado sesión
 	public static Usuario consultarPropioUsuario(long idSesion) throws SesionInvalidaException, OperacionIncorrectaException {

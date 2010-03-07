@@ -181,7 +181,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 		// Creamos una cita para el beneficiario
 		Cita c1, c2;
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			
 			// Buscamos el médico
 			txtNIFBuscado.setText(cabecera.getNif());
@@ -199,8 +199,8 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 		
 		// Probamos a tener más de una cita
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
-			c2 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,30), IConstantes.DURACION_CITA);
+			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
+			c2 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,2*IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			// Buscamos el médico
 			txtNIFBuscado.setText(cabecera.getNif());
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Médico encontrado.");
@@ -237,7 +237,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 		
 		try {
 			// Se pide una cita de prueba para el beneficiario de prueba y su médico asignado
-			controlador.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,0), IConstantes.DURACION_CITA);
+			controlador.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			
 			// El primer administrador busca al médico de prueba
 			txtNIFBuscado.setText(cabecera.getNif());
@@ -353,7 +353,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 			// Pedimos una cita desde el controlador auxiliar para este médico
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
-					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,0), IConstantes.DURACION_CITA);
+					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
@@ -373,7 +373,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 			// Ahora procedemos a eliminar la cita desde el segundo administrador
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
-					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,10,0), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
+					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {

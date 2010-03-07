@@ -608,17 +608,24 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			
 			if(actualizar) {
-				// Solicitamos al servidor que se modifique el usuario
-				getControlador().modificarUsuario(usuarioModif);
-				// Mostramos el resultado de la operación y limpiamos el panel
-				Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
-				restablecerPanel();
-				// Mostramos las citas afectadas si se ha modificado un médico
-				if(citasAfectadas != null && citasAfectadas.size() > 0) {
-					// Se avisa de las citas eliminadas
-					frmAviso = new JFAvisos();
-					frmAviso.setLocationRelativeTo(this);
-					frmAviso.mostrarCitas("Las siguientes citas han sido anuladas:", citasAfectadas);
+				// Si se le ha dado a botón de "Guardar" sin haber hecho ningún cambio, se muestra un aviso y no se realiza la operación
+				
+				// TODO: Juan G., no funciona el equals por la contraseña.
+				if (usuario.equals(usuarioModif))
+					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "No se ha hecho ningún cambio sobre el usuario.");
+				else {
+					// Solicitamos al servidor que se modifique el usuario
+					getControlador().modificarUsuario(usuarioModif);
+					// Mostramos el resultado de la operación y limpiamos el panel
+					Dialogos.mostrarDialogoInformacion(getFrame(), "Operación correcta", "El usuario ha sido modificado correctamente.");
+					restablecerPanel();
+					// Mostramos las citas afectadas si se ha modificado un médico
+					if(citasAfectadas != null && citasAfectadas.size() > 0) {
+						// Se avisa de las citas eliminadas
+						frmAviso = new JFAvisos();
+						frmAviso.setLocationRelativeTo(this);
+						frmAviso.mostrarCitas("Las siguientes citas han sido anuladas:", citasAfectadas);
+					}
 				}
 				
 			}

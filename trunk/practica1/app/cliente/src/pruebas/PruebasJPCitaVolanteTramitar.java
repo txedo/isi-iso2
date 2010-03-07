@@ -16,6 +16,7 @@ import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
+import presentacion.JPBeneficiarioConsultar;
 import presentacion.JPCitaVolanteTramitar;
 import presentacion.auxiliar.OperacionesInterfaz;
 
@@ -249,6 +250,21 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+	}
+	
+	public void testRegistrarBeneficiarioInexistente () {
+		// Buscamos un beneficiario por su NIF
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		// Probamos con un NIF que no esté dado de alta en el sistema
+		txtIdentificacion.setText("00000000a");
+		// Esteblecemos que se pregunte si se desea registrar el beneficiario
+		((JPBeneficiarioConsultar)panelBeneficiario.getAwtComponent()).setPreguntarRegistro(true);
+		// Al contestar que si, pasamos al panel de registrar beneficiario, por lo que ya no existirá la tabla para consultar las citas
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, YES_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo para poder tramitar su cita?");
+		// Se ha debido pasar a la ventana de registro de beneficiario
+		assertEquals(OperacionesInterfaz.RegistrarBeneficiario, controlador.getVentanaPrincipal().getOperacionSeleccionada());
+		
 	}
 	
 	public void testBuscarBeneficiarioPorNIFSinMedicoAsignado () {
@@ -499,7 +515,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertTrue(cmbHorasCitas.isEnabled());	
 			// Se selecciona un día en el que trabajará el médico
 			txtDiaCita.setText("04/03/2015");
-			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+			assertEquals((horaFinal-horaInicio)*(60/IConstantes.DURACION_CITA), jcmbHorasCitas.getItemCount());
 			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {
@@ -595,7 +611,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertTrue(cmbHorasCitas.isEnabled());	
 			// Se selecciona un día en el que trabajará el médico
 			txtDiaCita.setText("04/03/2015");
-			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+			assertEquals((horaFinal-horaInicio)*(60/IConstantes.DURACION_CITA), jcmbHorasCitas.getItemCount());
 			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {
@@ -718,7 +734,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertTrue(cmbHorasCitas.isEnabled());
 			// Se selecciona un día en el que trabajará el médico
 			txtDiaCita.setText("04/03/2015");
-			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+			assertEquals((horaFinal-horaInicio)*(60/IConstantes.DURACION_CITA), jcmbHorasCitas.getItemCount());
 			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {
@@ -741,7 +757,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar teniendo menos horas en el combobox
 				txtDiaCita.setText("04/03/2015");
-				assertEquals((horaFinal-2-horaInicio)*4, jcmbHorasCitas.getItemCount());
+				assertEquals((horaFinal-2-horaInicio)*(60/IConstantes.DURACION_CITA), jcmbHorasCitas.getItemCount());
 				
 				// Ahora procedemos a eliminar el medico desde el segundo administrador
 				WindowInterceptor.init(new Trigger() {
@@ -808,7 +824,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertTrue(cmbHorasCitas.isEnabled());
 			// Se selecciona un día en el que trabajará el médico
 			txtDiaCita.setText("04/03/2015");
-			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+			assertEquals((horaFinal-horaInicio)*(60/IConstantes.DURACION_CITA), jcmbHorasCitas.getItemCount());
 			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {

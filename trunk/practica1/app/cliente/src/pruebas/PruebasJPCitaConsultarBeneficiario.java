@@ -16,6 +16,7 @@ import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
+import presentacion.JPBeneficiarioConsultar;
 import presentacion.JPCitaConsultarBeneficiario;
 import presentacion.auxiliar.OperacionesInterfaz;
 
@@ -168,35 +169,35 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 	}
 	
 	/** Pruebas con datos no válidos */
-	public void testDatosInvalidos() {		
-		try {
-			// Buscamos un beneficiario por su NIF
-			jcmbIdentificacion.grabFocus();
-			jcmbIdentificacion.setSelectedIndex(0);
-			// Inicialmente probamos con un NIF nulo
-			txtIdentificacion.setText("");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Debe introducir un NIF o un NSS.");
-			// Ponemos un NIF incorrecto y comprobamos que el campo de
-			// identificacion se selecciona por tener un formato inválido
-			txtIdentificacion.setText("11223344");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
-			// Probamos con un NIF que no esté dado de alta en el sistema
-			txtIdentificacion.setText("00000000a");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.");
-			// Buscamos un beneficiario por su NSS
-			jcmbIdentificacion.grabFocus();
-			jcmbIdentificacion.setSelectedIndex(1);
-			// Ponemos un NSS incorrecto y comprobamos que el campo del
-			// identificacion se selecciona por tener un formato inválido
-			txtIdentificacion.setText("11223344");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NSSIncorrectoException().getMessage());
-			// Probamos con un NSS que no esté dado de alta en el sistema
-			txtIdentificacion.setText("000000000000");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.");
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-	}
+    public void testDatosInvalidos() {              
+    	try {
+            // Buscamos un beneficiario por su NIF
+            jcmbIdentificacion.grabFocus();
+            jcmbIdentificacion.setSelectedIndex(0);
+            // Inicialmente probamos con un NIF nulo
+            txtIdentificacion.setText("");
+            assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Debe introducir un NIF o un NSS.");
+            // Ponemos un NIF incorrecto y comprobamos que el campo de
+            // identificacion se selecciona por tener un formato inválido
+            txtIdentificacion.setText("11223344");
+            assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
+            // Probamos con un NIF que no esté dado de alta en el sistema
+            txtIdentificacion.setText("00000000a");
+            assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.");
+            // Buscamos un beneficiario por su NSS
+            jcmbIdentificacion.grabFocus();
+            jcmbIdentificacion.setSelectedIndex(1);
+            // Ponemos un NSS incorrecto y comprobamos que el campo del
+            // identificacion se selecciona por tener un formato inválido
+            txtIdentificacion.setText("11223344");
+            assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NSSIncorrectoException().getMessage());
+            // Probamos con un NSS que no esté dado de alta en el sistema
+            txtIdentificacion.setText("000000000000");
+            assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.");
+        } catch(Exception e) {
+                fail(e.toString());
+        }
+    }
 	
 	public void testBuscarBeneficiarioPorNIF () {
 		// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
@@ -234,7 +235,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		// Creamos una cita para el beneficiario
 		Cita c;
 		try {
-			c = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 		
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
@@ -258,7 +259,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		// Creamos una cita para el beneficiario
 		Cita c1, c2;
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
+			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 		
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
@@ -290,8 +291,8 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		
 		// Probamos a tener más de una cita
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,15), IConstantes.DURACION_CITA);
-			c2 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,30), IConstantes.DURACION_CITA);
+			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
+			c2 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,2*IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(0);
@@ -466,7 +467,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			// Pedimos una cita desde el controlador auxiliar
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
-					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,0), IConstantes.DURACION_CITA);
+					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
@@ -486,7 +487,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			// Ahora procedemos a eliminar la cita desde el segundo administrador
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
-					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,10,0), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
+					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {

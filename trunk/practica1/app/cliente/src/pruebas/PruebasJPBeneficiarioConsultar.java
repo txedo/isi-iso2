@@ -143,9 +143,9 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			beneficiarioPrueba = new Beneficiario();
 			beneficiarioPrueba.setNombre("beneficiario");
 			beneficiarioPrueba.setApellidos("de prueba");
-			beneficiarioPrueba.setCorreo(" ");
-			beneficiarioPrueba.setTelefono(" ");
-			beneficiarioPrueba.setMovil(" ");
+			beneficiarioPrueba.setCorreo("");
+			beneficiarioPrueba.setTelefono("");
+			beneficiarioPrueba.setMovil("");
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
@@ -250,6 +250,9 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			// Probamos con un NIF que no esté dado de alta en el sistema
 			txtIdentificacion.setText("00000000a");
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.");
+			// Probamos con un NIF que corresponde a otro usuario del sistema
+			txtIdentificacion.setText(cabecera.getNif());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "El NIF introducido corresponde a un usuario del sistema, no a un beneficiario.");
 			// Buscamos un beneficiario por su NSS
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(1);
@@ -410,10 +413,12 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			assertFalse(chkEditar.isSelected());
 			chkEditar.select();
 			assertTrue(chkEditar.isSelected());
-			// Editamos el nombre del beneficiario
-			txtNombre.setText(nuevoNombre);
 			// Comprobamos que el boton de Guardar ahora sí está habilitado
 			assertTrue(btnGuardar.isEnabled());
+			// Le damos al botón de guardar sin hacer ningún cambio
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "No se ha hecho ningún cambio sobre el beneficiario.");
+			// Editamos el nombre del beneficiario
+			txtNombre.setText(nuevoNombre);			
 			// Guardamos el beneficiario
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El beneficiario ha sido modificado correctamente.");
 			// Comprobamos que el beneficiario ha sido modificado correctamente

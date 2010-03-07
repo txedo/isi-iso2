@@ -17,8 +17,9 @@ public interface ICodigosMensajeAuxiliar {
 	public final int MODIFICAR_USUARIO = 1201;
 	public final int ELIMINAR_USUARIO = 1202;
 	public final int CONSULTAR_USUARIO = 1203;
-	public final int CONSULTAR_PROPIO_USUARIO = 1204;
-	public final int CONSULTAR_CENTROS = 1205;
+	public final int CORRESPONDE_NIF_USUARIO = 1204;
+	public final int CONSULTAR_PROPIO_USUARIO = 1205;
+	public final int CONSULTAR_CENTROS = 1206;
 	
 	// Operaciones auxiliares del Gestor de Médicos
 	public final int OBTENER_MEDICOS_TIPO = 1300;
