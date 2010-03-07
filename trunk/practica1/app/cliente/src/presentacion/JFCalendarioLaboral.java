@@ -114,32 +114,6 @@ public class JFCalendarioLaboral extends javax.swing.JFrame {
 	
 	//$hide>>$
 	
-	public Vector<PeriodoTrabajo> getPeriodosTrabajo() {
-		return jPanelConsultarCalendario.getPeriodosTrabajo();
-	}
-	
-	public void setPeriodosTrabajo(Vector<PeriodoTrabajo> periodos) {
-		jPanelConsultarCalendario.setPeriodosTrabajo(periodos);
-	}
-	
-	public int getHorasSemanales() {
-		return jPanelConsultarCalendario.getHorasSemanales();
-	}
-	
-	public void setModificable(boolean modificable) {
-		btnRestablecer.setEnabled(modificable);
-		btnRestablecerTodo.setEnabled(modificable);
-		jPanelConsultarCalendario.setModificable(modificable);
-	}
-		
-	public void addVentanaCerradaListener(VentanaCerradaListener listener) {
-		listenerList.add(VentanaCerradaListener.class, listener);
-	}
-
-	public void removeVentanaCerradaListener(VentanaCerradaListener listener) {
-		listenerList.remove(VentanaCerradaListener.class, listener);
-	}
-	
 	private void btnRestablecerActionPerformed(ActionEvent evt) {
 		jPanelConsultarCalendario.restablecerDiaSeleccionado();
 	}
@@ -169,6 +143,34 @@ public class JFCalendarioLaboral extends javax.swing.JFrame {
 		}
 	}
 
+	// Métodos públicos
+	
+	public Vector<PeriodoTrabajo> getPeriodosTrabajo() {
+		return jPanelConsultarCalendario.getPeriodosTrabajo();
+	}
+	
+	public void setPeriodosTrabajo(Vector<PeriodoTrabajo> periodos) {
+		jPanelConsultarCalendario.setPeriodosTrabajo(periodos);
+	}
+	
+	public int getHorasSemanales() {
+		return jPanelConsultarCalendario.getHorasSemanales();
+	}
+	
+	public void setModificable(boolean modificable) {
+		btnRestablecer.setEnabled(modificable);
+		btnRestablecerTodo.setEnabled(modificable);
+		jPanelConsultarCalendario.setModificable(modificable);
+	}
+		
+	public void addVentanaCerradaListener(VentanaCerradaListener listener) {
+		listenerList.add(VentanaCerradaListener.class, listener);
+	}
+
+	public void removeVentanaCerradaListener(VentanaCerradaListener listener) {
+		listenerList.remove(VentanaCerradaListener.class, listener);
+	}
+	
 	//$hide<<$
 	
 }

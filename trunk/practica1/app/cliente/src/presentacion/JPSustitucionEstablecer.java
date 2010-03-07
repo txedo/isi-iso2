@@ -413,7 +413,7 @@ public class JPSustitucionEstablecer extends JPBase {
 	// Métodos públicos
 	
 	public void usuarioRegistrado(Usuario usuario) {
-		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
+		if(this.medico != null && usuario.getRol() == RolesUsuario.Médico
 		    && usuario.getCentroSalud().equals(medico.getCentroSalud())
 		    && ((Medico)usuario).getTipoMedico().equals(medico.getTipoMedico())) {
 			// Si se ha registrado un médico del mismo tipo y que trabaja
@@ -427,11 +427,11 @@ public class JPSustitucionEstablecer extends JPBase {
 	public void usuarioActualizado(Usuario usuario) {
 		boolean actualizado;
 		
-		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
+		if(this.medico != null && usuario.getRol() == RolesUsuario.Médico
 		 && medico.getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha actualizado el médico que se va a sustituir
 			pnlMedico.usuarioActualizado(usuario);
-		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuario.Medico) {
+		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuario.Médico) {
 			actualizado = false;
 			for(Medico sustituto : sustitutos) {
 				if(!actualizado && sustituto.getNif().equals(usuario.getNif())) {
@@ -457,13 +457,13 @@ public class JPSustitucionEstablecer extends JPBase {
 	public void usuarioEliminado(Usuario usuario) {
 		boolean actualizado;
 
-		if(this.medico != null && usuario.getRol() == RolesUsuario.Medico
+		if(this.medico != null && usuario.getRol() == RolesUsuario.Médico
 		 && medico.getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha eliminado el médico que se va a sustituir
 			pnlMedico.usuarioEliminado(usuario);
 			limpiarCamposConsulta();
 			limpiarCamposSustitucion();
-		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuario.Medico) {
+		} else if(this.sustitutos != null && usuario.getRol() == RolesUsuario.Médico) {
 			actualizado = false;
 			for(Medico sustituto : sustitutos) {
 				if(!actualizado && sustituto.getNif().equals(usuario.getNif())) {

@@ -4,8 +4,8 @@ import javax.swing.JPanel;
 import dominio.control.ControladorCliente;
 
 /**
- * Panel base que contiene una referencia a un JFrame y al controlador
- * que da acceso a las operaciones del servidor.
+ * Panel base que contiene una referencia a la ventana principal del
+ * cliente y al controlador que da acceso a las operaciones del servidor.
  */
 public class JPBase extends JPanel {
 

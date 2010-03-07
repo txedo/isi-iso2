@@ -29,8 +29,8 @@ import dominio.control.ControladorCliente;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que agrupa todas las operaciones sobre citas.
-*/
+ * Panel que agrupa todas las operaciones sobre citas.
+ */
 public class JPCitas extends JPBase {
 
 	private static final long serialVersionUID = 3597203747113684691L;

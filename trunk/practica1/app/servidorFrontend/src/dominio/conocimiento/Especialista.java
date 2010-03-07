@@ -34,6 +34,10 @@ public class Especialista extends TipoMedico implements Serializable{
 		this.especialidad = especialidad;
 	}
 	
+	public Object clone() {
+		return new Especialista(especialidad);
+	}
+	
 	public boolean equals(Object o) {
 		Especialista e;
 		boolean dev;

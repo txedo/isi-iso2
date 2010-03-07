@@ -48,6 +48,9 @@ import excepciones.NombreIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
 
+/**
+ * Pruebas del panel de consulta, modificación y eliminación de usuarios.
+ */
 public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private ControladorCliente controlador;
@@ -102,7 +105,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
+						controlador.iniciarSesion(new ConfiguracionCliente(IP_SERVIDOR_FRONTEND, PUERTO_SERVIDOR_FRONTEND), USUARIO_ADMIN, PASSWORD_ADMIN);
 					} catch(Exception e) {
 						fail(e.toString());
 					}
@@ -825,7 +828,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		// Iniciamos sesión con un segundo administrador
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN_AUXILIAR, IDatosConexionPruebas.PASSWORD_ADMIN_AUXILIAR);
 		} catch(Exception e) {
 			fail(e.toString());
 		}

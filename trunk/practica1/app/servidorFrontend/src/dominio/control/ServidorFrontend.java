@@ -37,7 +37,7 @@ import excepciones.UsuarioYaExistenteException;
 import excepciones.VolanteNoValidoException;
 
 /**
- * Fachada del servidor frontend utilizada por el cliente que da acceso a
+ * Fachada del servidor front-end utilizada por el cliente que da acceso a
  * las clases gestoras que implementan la funcionalidad del sistema.
  */
 public class ServidorFrontend implements IServidorFrontend {

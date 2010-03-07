@@ -43,35 +43,6 @@ public class UtilidadesDominio {
 		return dia;
 	}
 	
-	public static boolean fechaAnterior(Date fecha1, Date fecha2, boolean considerarHora) {
-		Calendar calend, calendSH;
-		Date fecha1SH, fecha2SH;
-		boolean dev;
-		
-		if(considerarHora) {
-			// Comparamos directamente las dos fechas
-			dev = fecha1.before(fecha2);
-		} else {
-			// Nos quedamos sólo con la información del día
-			calend = Calendar.getInstance();
-			calendSH = Calendar.getInstance();
-			calend.setTime(fecha1);
-			calendSH.set(Calendar.YEAR, calend.get(Calendar.YEAR));
-			calendSH.set(Calendar.MONTH, calend.get(Calendar.MONTH));
-			calendSH.set(Calendar.DAY_OF_MONTH, calend.get(Calendar.DAY_OF_MONTH));
-			fecha1SH = calendSH.getTime();
-			calend.setTime(fecha2);
-			calendSH.set(Calendar.YEAR, calend.get(Calendar.YEAR));
-			calendSH.set(Calendar.MONTH, calend.get(Calendar.MONTH));
-			calendSH.set(Calendar.DAY_OF_MONTH, calend.get(Calendar.DAY_OF_MONTH));
-			fecha2SH = calendSH.getTime();
-			// Comparamos las dos fechas
-			dev = fecha1SH.before(fecha2SH);
-		}
-		
-		return dev;
-	}
-	
 	public static boolean fechaIgual(Date fecha1, Date fecha2, boolean considerarHora) {
 		Calendar calend, calendSH;
 		Date fecha1SH, fecha2SH;

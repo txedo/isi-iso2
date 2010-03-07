@@ -28,6 +28,9 @@ import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
 import dominio.control.ControladorCliente;
 
+/**
+ * Pruebas del panel de consulta de las citas propias del médico.
+ */
 public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 
 	private ControladorCliente controlador, controladorAuxiliar;
@@ -51,7 +54,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 		
 		try {
 			// Iniciamos sesion con un administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdmin, IDatosConexionPruebas.passwordAdmin);
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN, IDatosConexionPruebas.PASSWORD_ADMIN);
 			
 			// Creamos un médico de cabecera 
 			tCabecera = new Cabecera();
@@ -80,7 +83,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), cabecera.getLogin(), cabecera.getLogin());
+						controlador.iniciarSesion(new ConfiguracionCliente(IP_SERVIDOR_FRONTEND, PUERTO_SERVIDOR_FRONTEND), cabecera.getLogin(), cabecera.getLogin());
 					} catch(Exception e) {
 						fail(e.toString());
 					}

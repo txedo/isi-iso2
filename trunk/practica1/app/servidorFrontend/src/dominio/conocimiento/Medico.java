@@ -28,7 +28,7 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 	}
 	
 	public RolesUsuario getRol() {
-		return RolesUsuario.Medico;
+		return RolesUsuario.Médico;
 	}
 	
 	public Vector<PeriodoTrabajo> getCalendario() {
@@ -174,7 +174,7 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 	public Object clone() {
 		Medico m;
 		
-		m = new Medico(nif, login, password, nombre, apellidos, correo, telefono, movil, tipoMedico);
+		m = new Medico(nif, login, password, nombre, apellidos, correo, telefono, movil, (TipoMedico)tipoMedico.clone());
 		if(centro == null) {
 			m.setCentroSalud(null);
 		} else {
@@ -192,7 +192,7 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 		dev = false;
 		if(o != null && o instanceof Medico) {
 			m = (Medico)o;
-			dev = super.equals(m);
+			dev = super.equals(m) && tipoMedico.equals(m.getTipoMedico());
 			// Para que dos médicos sean iguales, deben tener el
 			// mismo calendario (aunque los períodos de trabajo
 			// no tienen por qué estar en el mismo orden)

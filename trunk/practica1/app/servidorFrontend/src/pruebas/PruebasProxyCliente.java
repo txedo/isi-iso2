@@ -1,5 +1,7 @@
 package pruebas;
 
+import comunicaciones.UtilidadesComunicaciones;
+
 /**
  * Pruebas de la clase que se comunica con los clientes registrados
  * en el servidor front-end.
@@ -14,7 +16,7 @@ public class PruebasProxyCliente extends PruebasBase {
 			super.setUp();
 			// Creamos un cliente de prueba
 			cliente = new ClientePrueba();
-			cliente.activar(cliente.getDireccionIP());
+			cliente.activar(UtilidadesComunicaciones.obtenerIPHost());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -23,7 +25,7 @@ public class PruebasProxyCliente extends PruebasBase {
 	protected void tearDown() {
 		try {
 			// Desactivamos el cliente
-			cliente.desactivar(cliente.getDireccionIP());
+			cliente.desactivar(UtilidadesComunicaciones.obtenerIPHost());
 			// Cerramos la base de datos
 			super.tearDown();
 		} catch(Exception e) {

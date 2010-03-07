@@ -109,7 +109,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(nifMedico);
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
@@ -139,7 +139,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(nifMedico);
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
@@ -172,7 +172,7 @@ public class GestorCitas {
 
 		// Obtenemos el usuario que ha ejecutado la operación a partir de su sesión
 		usuario = GestorSesiones.getSesion(idSesion).getUsuario();
-		if(usuario.getRol() != RolesUsuario.Medico) {
+		if(usuario.getRol() != RolesUsuario.Médico) {
 			throw new MedicoInexistenteException("Sólo los usuarios con rol de médico pueden consultar sus propias citas.");
 		}
 
@@ -193,7 +193,7 @@ public class GestorCitas {
 
 		// Obtenemos el usuario que ha ejecutado la operación a partir de su sesión
 		usuario = GestorSesiones.getSesion(idSesion).getUsuario();
-		if(usuario.getRol() != RolesUsuario.Medico) {
+		if(usuario.getRol() != RolesUsuario.Médico) {
 			throw new MedicoInexistenteException("Sólo los usuarios con rol de médico pueden consultar sus propias citas pendientes.");
 		}
 
@@ -232,7 +232,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(nifMedico);
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
@@ -286,7 +286,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(idMedico);
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
@@ -466,7 +466,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(nifMedico);
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 		} catch(UsuarioIncorrectoException ex) {
@@ -521,7 +521,7 @@ public class GestorCitas {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(nifMedico);
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 			medico = (Medico)usuario; 

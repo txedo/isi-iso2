@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Agente de la base de datos de respaldo.
+ * Agente de la base de datos secundaria.
  */
 public class AgenteRespaldo {
 

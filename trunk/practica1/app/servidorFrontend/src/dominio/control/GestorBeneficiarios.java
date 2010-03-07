@@ -19,7 +19,7 @@ import excepciones.SesionInvalidaException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
- * Clase encargada de consultar, añadir y modificar beneficiarios en
+ * Clase encargada de consultar, añadir, modificar y eliminar beneficiarios en
  * el sistema.
  */
 public class GestorBeneficiarios {

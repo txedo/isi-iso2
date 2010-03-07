@@ -1,5 +1,9 @@
 package excepciones;
 
+/**
+ * Excepción lanzada al introducir un correo electrónico con un formato
+ * incorrecto.
+ */
 public class CorreoElectronicoIncorrectoException extends Exception {
 
 	private static final long serialVersionUID = 5200892765737178507L;

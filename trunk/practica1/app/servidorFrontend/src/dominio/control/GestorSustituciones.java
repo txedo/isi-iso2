@@ -53,7 +53,7 @@ public class GestorSustituciones {
 		// Recuperamos los datos del médico
 		try {
 			usuario = FPUsuario.consultar(nifMedico);
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 			medico = (Medico)usuario;
@@ -199,7 +199,7 @@ public class GestorSustituciones {
 		// Comprobamos que existan los médicos sustituto y sustituido
 		try {
 			usuario = FPUsuario.consultar(medico.getNif());
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El médico sustituido no es un usuario del sistema con rol de médico.");
 			}
 			medico = (Medico)usuario;
@@ -208,7 +208,7 @@ public class GestorSustituciones {
 		}
 		try {
 			usuario = FPUsuario.consultar(sustituto.getNif());
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El médico sustituto no es un usuario del sistema con rol de médico.");
 			}
 			sustitutoReal = (Medico)usuario;

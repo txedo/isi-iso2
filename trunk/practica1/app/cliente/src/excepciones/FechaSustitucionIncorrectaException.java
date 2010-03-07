@@ -1,5 +1,8 @@
 package excepciones;
 
+/**
+ * Excepción lanzada al seleccionar una fecha no válida para una sustitución.
+ */
 public class FechaSustitucionIncorrectaException extends Exception {
 
 	private static final long serialVersionUID = 4458443234066061738L;
@@ -11,4 +14,5 @@ public class FechaSustitucionIncorrectaException extends Exception {
 	public FechaSustitucionIncorrectaException(String mensaje) {
 		super(mensaje);
 	}
+	
 }

@@ -34,8 +34,8 @@ import com.cloudgarden.layout.AnchorLayout;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que muestra una serie de operaciones y permite seleccionar una.
-*/
+ * Panel que muestra una serie de operaciones y permite seleccionar una.
+ */
 public class JPOperaciones extends JPanel {
 
 	private static final long serialVersionUID = -6305737945313540184L;

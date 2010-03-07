@@ -42,6 +42,9 @@ import persistencia.FPUsuario;
 import persistencia.FPVolante;
 import persistencia.UtilidadesPersistencia;
 
+/**
+ * Pruebas de las clases de persistencia.
+ */
 public class PruebasPersistencia extends PruebasBase {
 
 	private CentroSalud centro1, centro2, centro3;
@@ -399,7 +402,6 @@ public class PruebasPersistencia extends PruebasBase {
 			FPCita.insertar(cita1);
 			FPCita.insertar(cita2);
 			FPCita.insertar(cita3);
-			FPCita.insertar(cita2);
 			// Recuperamos varias citas de las dos formas posibles
 			cita = FPCita.consultar(cita1.getId());
 			assertEquals(cita1, cita);
@@ -421,6 +423,17 @@ public class PruebasPersistencia extends PruebasBase {
 			fail(e.toString());
 		}
 		
+		try {
+			// Intentamos insertar una cita repetida para un médico y una
+			// fecha determinadas, que no se debe permitir
+			// (y repetidas, que se permite)
+			FPCita.insertar(new Cita(cita2.getFechaYHora(), 20, beneficiario3, cita2.getMedico()));
+			fail("Se esperaba una excepción SQLException");
+		} catch(SQLException e) {
+		} catch(Exception e) {
+			fail("Se esperaba una excepción SQLException");
+		}
+			
 		try {
 			// Eliminamos una cita
 			FPCita.eliminar(cita1);

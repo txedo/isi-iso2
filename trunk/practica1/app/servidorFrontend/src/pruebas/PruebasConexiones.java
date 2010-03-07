@@ -18,7 +18,8 @@ import dominio.conocimiento.ITiposMensajeLog;
 import junit.framework.TestCase;
 
 /**
- * Pruebas de los Gestores de conexiones.
+ * Pruebas de los Gestores de conexiones de base de datos y de estado del
+ * servidor.
  */
 public class PruebasConexiones extends TestCase {
 
@@ -45,8 +46,7 @@ public class PruebasConexiones extends TestCase {
 			conexionBD.abrir();
 			conexionRespaldo.abrir();
 		} catch(Exception e) {
-			e.printStackTrace();
-			fail(e.toString());
+			fail(e.toString() + "\nPara ejecutar esta prueba se necesita tener activado el servidor de respaldo.");
 		}
 	}
 	
@@ -67,6 +67,7 @@ public class PruebasConexiones extends TestCase {
 		
 		try {
 			// Intentamos ejecutar un comando sin ninguna base de datos configurada
+			GestorConexionesBD.quitarConexiones();
 			GestorConexionesBD.consultar(new ComandoSQLSentencia("SELECT * FROM usuarios"));
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
@@ -248,6 +249,7 @@ public class PruebasConexiones extends TestCase {
 			GestorConexionesLog.ponerConexion(conexionLogBD);
 			GestorConexionesBD.quitarConexiones();
 			GestorConexionesBD.ponerConexion(conexionBD);
+			borrarBaseDatos();
 			// Comprobamos que ahora no hay ningún mensaje en la BD
 			bd = AgenteFrontend.getAgente().getConexion();
 			sentencia = bd.prepareStatement("SELECT * FROM entradaslog");

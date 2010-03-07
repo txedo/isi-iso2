@@ -18,6 +18,10 @@ public class Pediatra extends TipoMedico implements Serializable {
 		return CategoriasMedico.Pediatra;
 	}
 	
+	public Object clone() {
+		return new Pediatra();
+	}
+	
 	public boolean equals(Object o) {
 		boolean dev;
 		

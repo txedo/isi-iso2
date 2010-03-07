@@ -6,7 +6,7 @@ import persistencia.FPEntradaLog;
 
 /**
  * Clase que recibe los mensajes generados por el servidor y los
- * muestra en una ventana de estado.
+ * almacena en la base de datos del sistema.
  */
 public class ConexionLogBD implements IConexionLog {
 

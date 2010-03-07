@@ -55,7 +55,7 @@ public class FPCita {
 			beneficiario = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
 			cita.setBeneficiario(beneficiario);
 			medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-			if(medico.getRol() != RolesUsuario.Medico) {
+			if(medico.getRol() != RolesUsuario.Médico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("La cita con id " + String.valueOf(id) + " no tiene asociado un usuario con rol de médico.");
 			}
@@ -94,7 +94,7 @@ public class FPCita {
 			beneficiario = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
 			cita.setBeneficiario(beneficiario);
 			medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-			if(medico.getRol() != RolesUsuario.Medico) {
+			if(medico.getRol() != RolesUsuario.Médico) {
 				datos.close();
 				throw new UsuarioIncorrectoException("La cita con los datos indicados no tiene asociado un usuario con rol de médico.");
 			}
@@ -136,7 +136,7 @@ public class FPCita {
 				cita.setDuracion(datos.getInt(COL_DURACION));
 				cita.setBeneficiario(beneficiario);
 				medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-				if(medico.getRol() != RolesUsuario.Medico) {
+				if(medico.getRol() != RolesUsuario.Médico) {
 					datos.close();
 					throw new UsuarioIncorrectoException("Alguna de las citas del beneficiario con NIF " + nifBeneficiario + " no tiene asociado un usuario con rol de médico.");
 				}
@@ -166,7 +166,7 @@ public class FPCita {
 
 		// Obtenemos los datos del médico
 		medico = FPUsuario.consultar(nifMedico);
-		if(medico.getRol() != RolesUsuario.Medico) {
+		if(medico.getRol() != RolesUsuario.Médico) {
 			datos.close();
 			throw new UsuarioIncorrectoException("No se pueden consultar las citas del usuario con NIF " + String.valueOf(nifMedico) + " porque no es un médico.");
 		}

@@ -71,7 +71,7 @@ public class FPBeneficiario {
 				beneficiario.setMedicoAsignado(null);
 			} else {
 				medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-				if(medico.getRol() != RolesUsuario.Medico) {
+				if(medico.getRol() != RolesUsuario.Médico) {
 					datos.close();
 					throw new UsuarioIncorrectoException("El beneficiario con NIF " + nif + " no tiene asignado un usuario con rol de médico.");
 				}
@@ -118,7 +118,7 @@ public class FPBeneficiario {
 				beneficiario.setMedicoAsignado(null);
 			} else {
 				medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-				if(medico.getRol() != RolesUsuario.Medico) {
+				if(medico.getRol() != RolesUsuario.Médico) {
 					datos.close();
 					throw new UsuarioIncorrectoException("El beneficiario con NSS " + nss + " no tiene asignado un usuario con rol de médico.");
 				}

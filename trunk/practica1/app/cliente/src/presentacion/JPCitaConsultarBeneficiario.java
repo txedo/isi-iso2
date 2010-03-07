@@ -344,7 +344,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Médico
 		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario que está consultando las citas
 			pnlBeneficiario.usuarioActualizado(usuario);
@@ -352,7 +352,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Médico
 		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario que está consultando las citas
 			pnlBeneficiario.usuarioEliminado(usuario);

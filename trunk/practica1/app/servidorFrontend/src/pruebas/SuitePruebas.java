@@ -4,7 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Suite de pruebas para el servidor frontend.
+ * Suite de pruebas para el servidor front-end.
  */
 public class SuitePruebas {
 	

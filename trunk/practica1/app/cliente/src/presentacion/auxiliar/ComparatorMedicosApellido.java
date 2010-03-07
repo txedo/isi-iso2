@@ -2,6 +2,9 @@ package presentacion.auxiliar;
 
 import dominio.conocimiento.Medico;
 
+/**
+ * Clase que permite ordenar una lista de médicos por su apellido.
+ */
 @SuppressWarnings("unchecked")
 public class ComparatorMedicosApellido implements java.util.Comparator {
 	

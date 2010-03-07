@@ -23,7 +23,7 @@ import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
 
 /**
- * Proxy utilizado para conectarse con el servidor frontend.
+ * Proxy utilizado para conectarse con el servidor front-end.
  */
 public class ProxyServidorFrontend implements IServidorFrontend {
 	

@@ -5,6 +5,6 @@ package dominio.conocimiento;
  */
 public enum RolesUsuario {
 	Administrador,
-	Citador,	
-	Medico
+	Citador,
+	Médico
 }

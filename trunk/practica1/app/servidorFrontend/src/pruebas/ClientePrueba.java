@@ -85,14 +85,6 @@ class ClientePrueba extends UnicastRemoteObject implements ICliente {
     	}
     }
 
-    public String getDireccionIP() throws RemoteException {
-		return IDatosPruebas.IP_ESCUCHA_CLIENTES;
-	}
-
-	public int getPuerto() throws RemoteException {
-		return puerto;
-	}
-
 	public void actualizarVentanas(int operacion, Object dato) throws RemoteException {
 		ultimaOperacion = operacion;
 		ultimoDato = dato;

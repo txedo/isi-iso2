@@ -64,8 +64,8 @@ import excepciones.UsuarioNoSeleccionadoException;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que permite registrar nuevos usuarios en el sistema.
-*/
+ * Panel que permite registrar nuevos usuarios en el sistema.
+ */
 public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 
 	private static final long serialVersionUID = 4857739286462180783L;
@@ -373,7 +373,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			}
 			if(lstTipoUsuario.getSelectedIndex() == -1) {
 				throw new UsuarioNoSeleccionadoException("No se ha seleccionado el tipo de usuario.");
-			} else if(lstTipoMedico.getSelectedIndex() == -1 && lstTipoUsuario.getSelectedValue().equals(RolesUsuario.Medico.name())) {
+			} else if(lstTipoMedico.getSelectedIndex() == -1 && lstTipoUsuario.getSelectedValue().equals(RolesUsuario.Médico.name())) {
 				throw new UsuarioNoSeleccionadoException("No se ha seleccionado el tipo de médico.");
 			}
 
@@ -385,7 +385,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 				case Citador:
 					usuario = new Citador();
 					break;
-				case Medico:
+				case Médico:
 					usuario = new Medico();
 					break;
 			}
@@ -399,7 +399,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			usuario.setMovil(txtTelefonoMovil.getText().trim());
 			
 			// Creamos el tipo de médico si es necesario
-			if(usuario.getRol() == RolesUsuario.Medico) {
+			if(usuario.getRol() == RolesUsuario.Médico) {
 				switch(CategoriasMedico.valueOf(lstTipoMedico.getSelectedValue().toString())) {
 				case Cabecera:
 					tipo = new Cabecera();
@@ -540,7 +540,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 		cambiarEstadoEspecialidad(false);
 		cambiarEstadoConfiguracionCalendario(false);
 		if (lstTipoUsuario.getSelectedIndex()!=-1)
-			if (lstTipoUsuario.getSelectedValue().equals(RolesUsuario.Medico.name())) {
+			if (lstTipoUsuario.getSelectedValue().equals(RolesUsuario.Médico.name())) {
 				lstTipoMedico.setSelectedIndex(0);
 				lstTipoMedico.setVisible(true);
 				cambiarEstadoConfiguracionCalendario(true);

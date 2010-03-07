@@ -17,6 +17,9 @@ import presentacion.JPPeriodosTrabajo;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.PeriodoTrabajo;
 
+/**
+ * Pruebas de la ventana de consulta y edición del calendario laboral de los médicos.
+ */
 public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas {
 
 	private Panel pnlCalendario;

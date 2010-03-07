@@ -58,8 +58,8 @@ import excepciones.MedicoInexistenteException;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 /**
-* Panel que permite tramitar citas para beneficiarios del sistema.
-*/
+ * Panel que permite tramitar citas para beneficiarios del sistema.
+ */
 public class JPCitaTramitar extends JPBase {
 
 	private static final long serialVersionUID = 8297107492599580450L;
@@ -419,7 +419,7 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	public void usuarioActualizado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Médico
 		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha actualizado el médico asignado al beneficiario que pide la cita
 			pnlBeneficiario.usuarioActualizado(usuario);
@@ -429,7 +429,7 @@ public class JPCitaTramitar extends JPBase {
 	}
 	
 	public void usuarioEliminado(Usuario usuario) {
-		if(beneficiario != null && usuario.getRol() == RolesUsuario.Medico
+		if(beneficiario != null && usuario.getRol() == RolesUsuario.Médico
 		 && beneficiario.getMedicoAsignado().getNif().equals(((Medico)usuario).getNif())) {
 			// Otro cliente ha eliminado el médico asignado al beneficiario que pide la cita
 			pnlBeneficiario.usuarioEliminado(usuario);

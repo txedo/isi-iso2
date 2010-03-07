@@ -234,8 +234,6 @@ public class PruebasMedicos extends PruebasBase {
 			assertEquals(medico, medicoGet);
 			// Comprobamos que se ha avisado a los clientes del registro del médico
 			Thread.sleep(100);
-			medico.setPassword("medNuevo");
-			medico.setCentroSalud(null);
 			assertTrue(clienteMedico.getUltimaOperacion() == ICodigosOperacionesCliente.INSERTAR);
 			assertEquals(medico, clienteMedico.getUltimoDato());
 			assertNull(clienteAdmin.getUltimoDato());
@@ -543,6 +541,7 @@ public class PruebasMedicos extends PruebasBase {
 	/** Pruebas de las operaciones de la clase Medico */
 	@SuppressWarnings("deprecation")
 	public void testClaseMedico() {
+		Medico medicoClone;
 		Date fecha;
 		
 		try {
@@ -568,6 +567,16 @@ public class PruebasMedicos extends PruebasBase {
 			assertFalse(medico1.fechaEnCalendario(fecha, 10));
 			fecha = new Date(2009 - 1900, 11, 6, 12, 00, 0); // Domingo 12:00-12:10
 			assertFalse(medico1.fechaEnCalendario(fecha, 10));
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		try {
+			// Comprobamos que los métodos clone y equals funcionan bien
+			medicoClone = (Medico)medico1.clone();
+			assertTrue(medico1.equals(medicoClone));
+			medicoClone.setTipoMedico(new Cabecera());
+			assertFalse(medico1.equals(medicoClone));
 		} catch(Exception e) {
 			fail(e.toString());
 		}

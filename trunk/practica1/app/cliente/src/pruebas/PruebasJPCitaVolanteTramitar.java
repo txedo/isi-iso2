@@ -38,6 +38,9 @@ import excepciones.FormatoFechaIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 
+/**
+ * Pruebas del panel de tramitación de citas a partir de volantes.
+ */
 public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase implements IDatosConexionPruebas, IConstantesPruebas {
 	
 	private ControladorCliente controlador;
@@ -112,7 +115,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			winPrincipal = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						controlador.iniciarSesion(new ConfiguracionCliente(IPServidorFrontend, puertoServidorFrontend), usuarioAdmin, passwordAdmin);
+						controlador.iniciarSesion(new ConfiguracionCliente(IP_SERVIDOR_FRONTEND, PUERTO_SERVIDOR_FRONTEND), USUARIO_ADMIN, PASSWORD_ADMIN);
 					} catch(Exception e) {
 						fail(e.toString());
 					}
@@ -458,7 +461,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		// Iniciamos sesión con un segundo administrador
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN_AUXILIAR, IDatosConexionPruebas.PASSWORD_ADMIN_AUXILIAR);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -554,7 +557,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		// Iniciamos sesión con un segundo administrador
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN_AUXILIAR, IDatosConexionPruebas.PASSWORD_ADMIN_AUXILIAR);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -676,7 +679,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		// Iniciamos sesión con un segundo administrador
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN_AUXILIAR, IDatosConexionPruebas.PASSWORD_ADMIN_AUXILIAR);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -767,7 +770,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		// Iniciamos sesión con un segundo administrador
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador
-			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.usuarioAdminAuxiliar, IDatosConexionPruebas.passwordAdminAuxiliar);
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN_AUXILIAR, IDatosConexionPruebas.PASSWORD_ADMIN_AUXILIAR);
 		} catch(Exception e) {
 			fail(e.toString());
 		}

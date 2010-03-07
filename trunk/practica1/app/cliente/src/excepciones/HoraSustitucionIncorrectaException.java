@@ -1,5 +1,9 @@
 package excepciones;
 
+/**
+ * Excepción lanzada al introducir unas horas no válidas para una sustitución
+ * (por ejemplo, porque la hora inicial es mayor que la final).
+ */
 public class HoraSustitucionIncorrectaException extends Exception {
 
 	private static final long serialVersionUID = 4458443234066061738L;

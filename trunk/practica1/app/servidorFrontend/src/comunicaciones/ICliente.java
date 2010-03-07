@@ -4,7 +4,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Interfaz con las operaciones que se pueden solicitar a los clientes.
+ * Interfaz con las operaciones que se pueden solicitar a los clientes, y que
+ * deben implementar las aplicaciones que quieran registrarse en el servidor.
  */
 public interface ICliente extends Remote {
 	

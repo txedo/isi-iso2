@@ -101,6 +101,13 @@ public class JFAvisos extends javax.swing.JFrame {
 	
 	//$hide>>$
 	
+	private void btnCerrarActionPerformed(ActionEvent evt) {
+		setVisible(false);
+		dispose();
+	}
+
+	// Métodos públicos
+	
 	public void mostrarBeneficiarios(String titulo, Vector<Beneficiario> beneficiarios) {
 		// Mostramos la tabla de beneficiarios
 		lblTitulo.setText(titulo);
@@ -119,11 +126,6 @@ public class JFAvisos extends javax.swing.JFrame {
 		
 		// Mostramos la ventana
 		setVisible(true);
-	}
-
-	private void btnCerrarActionPerformed(ActionEvent evt) {
-		setVisible(false);
-		dispose();
 	}
 
 	//$hide<<$

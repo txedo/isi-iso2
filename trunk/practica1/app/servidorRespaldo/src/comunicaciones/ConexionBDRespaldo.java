@@ -6,8 +6,8 @@ import persistencia.AgenteRespaldo;
 import persistencia.ComandoSQL;
 
 /**
- * Clase intermedia para conectarse con el agente de base de datos del
- * servidor de respaldo.
+ * Clase intermedia para conectarse con el agente de la base de datos
+ * secundaria.
  */
 public class ConexionBDRespaldo implements IConexionBD {
 	

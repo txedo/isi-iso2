@@ -27,7 +27,7 @@ import excepciones.VolanteNoValidoException;
 
 /**
  * Clase encargada de solicitar y recuperar volantes para que los
- * beneficiarios puedan ir a ver a los especialistas.
+ * beneficiarios puedan pedir cita con los especialistas.
  */
 public class GestorVolantes {
 
@@ -73,7 +73,7 @@ public class GestorVolantes {
 		// Comprobamos que exista el médico emisor
 		try {
 			usuario = FPUsuario.consultar(emisor.getNif());
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El médico emisor no es un usuario del sistema con rol de médico.");
 			}
 			emisor = (Medico)usuario; 
@@ -84,7 +84,7 @@ public class GestorVolantes {
 		// Comprobamos que exista el médico receptor
 		try {
 			usuario = FPUsuario.consultar(destino.getNif());
-			if(usuario.getRol() != RolesUsuario.Medico) {
+			if(usuario.getRol() != RolesUsuario.Médico) {
 				throw new MedicoInexistenteException("El médico receptor no es un usuario del sistema con rol de médico.");
 			}
 			destino = (Medico)usuario; 
