@@ -1,0 +1,112 @@
+\subsection{Especificación detallada de requisitos}
+
+Para facilitar el análisis y el posterior diseño y desarrollo del sistema,
+desde el comienzo su funcionalidad se dividió en cinco partes básicas,
+correspondientes a la gestión de beneficiarios, usuarios, citas, volantes y
+sustituciones. A continuación se explican los requisitos detallados de cada
+parte del sistema.
+
+\subsubsection{Gestión de beneficiarios}
+
+El sistema permitirá la creación, consulta, modificación y también la
+eliminación de beneficiarios, a pesar de que en la especificación inicial no
+se hacía referencia a ella. De cada beneficiario, el servidor almacenará los
+siguientes datos:
+\begin{milista}
+\item \textbf{Datos personales}: NIF, NSS (número de seguridad social), nombre,
+apellidos y fecha de nacimiento.
+\item \textbf{Datos de contacto}: Dirección completa (domicilio, número, piso,
+puerta, localidad, provincia y código postal), correo electrónico, teléfono
+fijo y teléfono móvil.
+\item \textbf{Datos del sistema}: Centro de salud y médico de cabecera o
+pediatra asignado.
+\end{milista}
+
+Al registrarse en el sistema, el citador pedirá al beneficiario que elija el
+centro de salud en el que quiere pasar las citas con su médico de cabecera o
+pediatra. De esta manera, el beneficiario podrá elegir el centro de salud más
+cercano a su ubicación, o cualquiera que sea de su preferencia, para ir a ver
+al médico de cabecera.
+
+Una vez que el beneficiario se haya registrado, el sistema le asignará un
+médico de cabecera o pediatra (en función de su edad) del centro seleccionado,
+y el citador deberá informarle de cuál ha sido el médico elegido por el
+sistema.
+
+El beneficiario podrá pedir al empleado del sistema desarrollado la consulta,
+modificación y eliminación de sus datos registrados en el sistema, teniéndose
+que identificar para ello con su NIF o su NSS. En general, todas las
+operaciones relacionadas con la gestión de beneficiarios las pueden realizar
+los usuarios del sistema con rol de ``citador'', no siendo necesaria la
+intervención de los administradores.
+
+El médico de cabecera o pediatra asignado a cada beneficiario no se puede
+modificar, salvo si el beneficiario solicita que se le cambie el centro de
+salud en el que quiere pasar las citas. En este caso excepcional, que se puede
+dar si el beneficiario cambia de dirección, el sistema le asignará un médico
+diferente del nuevo centro de salud seleccionado. El NIF y el NSS de un
+beneficiario es fijo y no se puede modificar en ningún caso.
+
+Los médicos asignados a los beneficiarios de menos de 14 años son pediatras,
+mientras que los asignados a beneficiarios con 14 o más años son médicos de
+cabecera. El sistema, de forma automática, tendrá que cambiar el médico
+asociado a un beneficiario cuando cumpla los 14 años.
+
+\subsubsection{Gestión de usuarios}
+
+El sistema permitirá la creación, consulta, modificación y eliminación de 
+usuarios. Se considerará que existen tres roles o tipos de usuarios:
+``citadores'', administradores y médicos. De cada uno de estos usuarios, el
+servidor almacenará los siguientes datos:
+\begin{milista}
+\item \textbf{Datos personales}: NIF, nombre y apellidos.
+\item \textbf{Datos de contacto}: Correo electrónico, teléfono fijo y teléfono
+móvil.
+\item \textbf{Datos del sistema}: Nombre de usuario, contraseña y centro de
+salud asignado.
+\end{milista}
+
+Además, cada médico tiene un horario o calendario de trabajo en el que se
+define a qué horas puede pasar consulta en cada día de la semana (de lunes a
+viernes). Por simplicidad, y debido a que no supone una limitación importante,
+cada horario se define con intervalos de una hora, de forma que un médico puede
+pasar consulta de 10:00 a 14:00, o de 10:00 a 11:00 y de 12:00 a 14:00, pero
+no de 10:00 a 13:30, o de 10:15 a 13:15.
+
+La jornada laboral válida para los médicos se considera que empieza a las 9:00
+de la mañana y finaliza a las 21:00 de la tarde. Para permitir el registro de
+médicos de diferentes tipos y jornadas, no se establecerá una limitación
+inferior ni superior en el número de horas de trabajo diarias ni semanales de
+cada médico.
+
+Los médicos podrán ser de tres clases: médicos de cabecera, pediatras o
+especialistas. De cada especialista se guardarán, además de sus datos
+habituales, su especialidad médica, que se utilizará para facilitar la emisión
+de volantes a los beneficiarios.
+
+Cuando se registre un nuevo usuario en el sistema, independientemente de su
+tipo, se le asignará de forma automática el centro de salud en el que deberá
+trabajar. Este centro, del que el nuevo usuario deberá ser informado, no se
+podrá modificar en ningún caso.
+
+Por simplicidad, cada usuario sólo podrá tener asociado un rol (y, en el caso
+de los médicos, una clase de médico), que no se podrá modificar una vez que
+el usuario se ha registrado, puesto que es improbable que un médico de cabecera
+pase a ser administrador del sistema o viceversa. El único cambio de rol que
+se deberá poder hacer es pasar el rol de un ``citador'' a administrador y
+viceversa, lo cual es más probable que ocurra en la realidad. Por otro lado,
+el NIF de un usuario es fijo y tampoco se puede cambiar.
+
+Los usuarios podrán pedir al administrador del sistema desarrollado la
+consulta, modificación y eliminación de sus datos registrados en el sistema,
+teniéndose que identificar para ello con su NIF. De los médicos también se
+podrán cambiar, si es necesario, su horario de trabajo, para añadir o eliminar
+horas. En general, debido a su relevancia, todas las operaciones relacionadas
+con la gestión de usuarios sólo las pueden realizar los usuarios del sistema
+con rol de administrador.
+
+\subsubsection{Gestión de citas}
+
+\subsubsection{Gestión de volantes}
+
+\subsubsection{Gestión de sustituciones}
