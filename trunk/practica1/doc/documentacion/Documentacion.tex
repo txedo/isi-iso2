@@ -41,7 +41,7 @@
  morecomment = [s]{/*}{*/},
  morestring = [b]", 
  sensitive = true,
- morekeywords = {package, static, while, switch, break, line, void, String, Object, int, Integer, instanceof, else, if, for, private, return, new, public, class, import, int, boolean, true, false, extends, final, super, protected, abstract, this, do, float, double, null}
+ morekeywords = {package, static, while, switch, break, line, void, String, Object, int, Integer, instanceof, else, if, for, private, return, new, public, class, import, int, boolean, true, false, extends, final, super, protected, abstract, this, do, float, double, null, try, catch, implements}
 }
 
 % Configuración del código incluido para el lenguaje Java
@@ -114,8 +114,12 @@
 \pagenumbering{arabic}
 \pagestyle{fancy}
 
-% Aqui se incluyen los archivos .tex que forman el documento
+% Fase de Inicio
 \input{FaseInicio.tex}
+\clearpage
+
+% Fase de Transición
+\input{FaseTransicion.tex}
 \clearpage
 
 % Sección de apéndices

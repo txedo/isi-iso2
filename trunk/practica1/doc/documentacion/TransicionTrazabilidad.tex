@@ -1,0 +1,241 @@
+\subsection{Ejemplo de trazabilidad}
+
+En este apartado se va a mostrar un ejemplo de trazabilidad de un caso de uso,
+con el fin de ver cómo se ha ido desarrollando la funcionalidad del caso de uso
+a partir de los diferentes diagramas del Proceso Unificado de Desarrollo, así
+como la coherencia existente entre los diagramas, la documentación y el código
+final del sistema.
+
+El caso de uso que se tomará como referencia para el ejemplo de trazabilidad
+será \textbf{Tramitar cita}, debido a la importancia que este requisito
+funcional tiene en el sistema.
+
+\subsubsection{Identificación}
+
+Según el diagrama de casos de uso del cliente, el caso de uso \textbf{Tramitar
+cita} lo pueden realizar los citadores y, por herencia, también los
+administradores del sistema. Sin embargo, como se explica en la descripción del
+caso de uso, es necesario haber iniciado sesión primero, momento en el que se
+determinará el rol del usuario.
+
+Por este motivo, cuando comienza la aplicación, lo primero que se hace es
+mostrar la ventana de login al usuario, que como se puede observar en el
+diagrama \emph{Análisis - Iniciar sesión} del cliente, se define en la clase
+\emph{JFLogin}.
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaInicio.java}}
+
+Cuando el usuario introduce sus datos en la ventana, la interfaz gráfica
+verifica que los datos tengan un formato válido, es decir, que tanto el nombre
+de usuario como la contraseña tengan únicamente caracteres alfanuméricos, y que
+además la contraseña tenga al menos 8 caracteres (por motivos de seguridad).
+Sólo en caso de que el usuario y la contraseña sean válidos, se manda la
+petición de inicio de sesión al controlador, para que se reenvíe al servidor.
+
+Con el fin de evitar la anidación de condiciones cuando se necesitan verificar
+campos de una ventana (tanto la de identificación como todas las demás del
+cliente), el manejo de valores incorrectos se hace mediante excepciones, de
+forma que si un valor no tiene el formato esperado, se lanza una excepción que
+altera el flujo normal de ejecución.
+
+Como se puede observar a partir del código, en la ventana de identificación
+también se puede introducir la IP y el puerto en el que se encuentra el
+servidor front-end. Sin embargo, estos son detalles de implementación que no
+están recogidos ni en los requisitos funcionales ni en los diagramas de
+análisis.
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaIdentificacion.java}}
+
+El ControladorCliente, cuando recibe la solicitud de inicio de sesión, sigue
+el flujo indicado en el diagrama \emph{Análisis - Iniciar sesión} del cliente:
+\begin{milista}
+\item Establece conexión con el servidor front-end mediante la clase
+\emph{ProxyServidorFrontend}.
+\item Se identifica ante el servidor con el nombre de usuario y la contraseña
+introducidos en la ventana.
+\item Guarda la sesión devuelta por el servidor para utilizarla más adelante.
+\item Crea un nuevo \emph{Cliente} (a través de la clase \emph{RemotoCliente},
+que es singleton), lo activa para ponerlo a la escucha y lo registra en el
+servidor.
+\item Finalmente, oculta la ventana de identificación y muestra la ventana
+principal, \emph{JFPrincipal}, con las operaciones disponibles al usuario
+(de esto se encarga el método \emph{iniciar}).
+\end{milista}
+
+La identificación del usuario, que en el diagrama de análisis se muestra con
+un único paso, se realiza en el código con dos debido a que la interfaz del
+servidor front-end propuesta e implementada posee dos métodos diferentes para
+identificarse y registrar el cliente en el sistema: \emph{identificar} y
+\emph{registrar}. Las clases que intervienen en este proceso se pueden ver en
+el diagrama \emph{Iniciar sesión} del cliente. \verb+<<<<<<<<<<<<<<<<<<<<<<<IMPORTANTE, ESTE DIAGRAMA NO ESTÁ HECHO TODAVÍA>>>>>>>>>>>>>>>>>>+
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaConexion.java}}
+
+Suponiendo que el usuario registrado es un citador o un administrador, la
+interfaz mostrará, entre las operaciones disponibles, la correspondiente al
+caso de uso \textbf{Tramitar cita}. Por tanto, en este momento se cumple la
+primera precondición necesaria para poder llevar a cabo este caso de uso.
+
+Conviene decir que el cliente consulta al servidor las operaciones que tiene
+disponibles para mostrar los paneles que sean necesarios en la interfaz
+gráfica. Este hecho no se muestra ni en el diagrama de casos de uso ni en los
+diagramas de análisis porque es un detalle de implementación del caso de uso
+\textbf{Iniciar sesión}, que pretende hacer más extensible tanto el cliente
+como el servidor, para que haya que hacer los menores cambios posibles si un
+rol pasa a tener más o menos operaciones disponibles.
+
+\subsubsection{Introducción del NIF/NSS del beneficiario}
+
+La clase de análisis \emph{JFPrincipal} mostrada en todos los diagramas de
+análisis del cliente se corresponde, en la implementación final, con un gran
+número de clases JPanel, que dividen la funcionalidad del cliente en cinco
+grandes grupos (gestión de beneficiarios, usuarios, citas, volantes y
+sustituciones) y cada uno de estos grupos a su vez en las funcionalidades
+básicas (registrar beneficiario, tramitar cita, asignar sustituto, etc.). Para
+ver el esquema de clases que se ha utilizado en la interfaz gráfica se puede
+consultar el diagrama \emph{Interfaz gráfica} del cliente. \verb+<<<<<<<<<<<<<IMPORTANTE, ESTE DIAGRAMA NO ESTÁ HECHO TODAVÍA>>>>>>>>>>>>>+
+
+En concreto, el panel utilizado en el caso de uso \textbf{Tramitar cita} es
+\emph{JPCitaTramitar}, pero puesto que para tramitar una cita primero se debe
+identificar el beneficiario que la quiere pedir, este panel utiliza a su vez
+las funciones del panel \emph{JPBeneficiarioConsultar}. Esta reutilización de
+código demuestra que se ha utilizado la potencia de la orientación a objetos
+en el diseño de la interfaz gráfica del cliente, lo cual ha facilitado su
+desarrollo.
+
+Por tanto, los primeros pasos del diagrama \emph{Análisis - Tramitar cita} del
+cliente, en los que se obtiene y valida el NIF/NSS del beneficiario que quiere
+pedir cita y se comprueba si existe realmente, los realiza el panel
+\emph{JPBeneficiarioConsultar}, tal y como se puede ver en el diagrama de
+secuencia \emph{Tramitar cita (tramitación correcta)} del cliente. El
+siguiente fragmento de código muestra este proceso.
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaBuscarBeneficiario.java}}
+
+\subsubsection{Visualización de los días libres para pedir cita}
+
+Cuando se cargan los datos del beneficiario que quiere pedir cita, el panel
+\emph{JPBeneficiarioConsultar} avisa al panel \emph{JPCitaTramitar} para que
+solicite al servidor las fechas en las que se puede pedir la cita para el
+beneficiario, que es el siguiente paso en el flujo de eventos del caso de uso
+\textbf{Tramitar cita}. En la implementación final, esto se realiza a través
+del evento personalizado \emph{beneficiarioBuscado}, como se puede ver al final
+del anterior fragmento de código.
+
+Cuando el panel \emph{JPCitaTramitar} recibe la notificación de que se ha
+buscado un beneficiario, solicita al servidor, a través de varios mensajes, los
+días y horas en los que se puede pedir cita, tal y como se muestra en el
+diagrama de secuencia \emph{Tramitar cita (tramitación correcta)} del cliente.
+Concretamente, con el fin de facilitar el manejo del sistema por parte del
+citador o administrador, se piden tres listas al servidor:
+\begin{milista}
+\item Lista de días en los que el médico trabaja pero tiene todas las citas
+ocupadas (por lo que, a efectos de pedir una nueva cita, se considerará como
+día no laboral para el médico).
+\item Lista de días y horas en las que el médico ya tiene una cita y no puede
+pasar otra consulta.
+\item Lista de horas en las que el médico pasa consulta cada día de la semana.
+\end{milista}
+
+Cuando el cliente recibe la información anterior del servidor, genera un
+calendario con los días en los que el médico del beneficiario puede pasar
+consulta y las horas de cada día que el médico aún no tiene ocupadas. Este
+proceso es totalmente dependiente de los controles usados en la interfaz
+gráfica y no se detallará en esta documentación.
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaRecuperarHoras.java}}
+
+\subsubsection{Selección del día de la cita}
+
+En este momento del ejemplo de trazabilidad, el usuario dispone de un
+calendario con los días y las horas en los que el médico asociado al
+beneficiario puede pasar cita con él. Sin embargo, no se ha tenido en cuenta
+un requisito funcional importante del sistema que sí se menciona en los
+diagramas: el citador o administrador debe saber cuál es el médico real que
+dará la cita (teniendo en cuenta las sustituciones) para avisar al
+beneficiario.
+
+Esto se debe a que, en el sistema tal y como se ha implementado, se consulta
+el médico real que dará la cita cuando el usuario selecciona una cierta hora.
+Es decir, el cliente no recibe a priori información sobre los médicos que dará
+cada una de las posibles citas, sino que cuando se selecciona un día (mediante
+el calendario) y una hora (a través de un ComboBox) en la interfaz gráfica, se
+envía una petición al servidor para saber cuál es el médico real que daría la
+cita elegida.
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaMedicoReal.java}}
+
+Una vez que se ha seleccionado en la interfaz el día y la hora definitiva de la
+cita, continúa el flujo de ejecución del caso de uso \textbf{Tramitar cita}.
+Después de que el panel \emph{JPCitaTramitar} verifique que el día y la hora
+seleccionados son válidos (es decir, que sea una hora laborable y libre
+para el médico), envía a la clase \emph{ControladorCliente} la petición de
+tramitación de cita con los datos seleccionados.
+
+El controlador reenvía la petición al servidor front-end haciendo uso de la
+clase \emph{ProxyServidorFrontend}, añadiendo a los datos recibidos el id de la
+sesión del citador o administrador, recuperado a partir de la sesión que se
+almacenó en el controlador cuando se inició sesión. Como se puede observar,
+todo este flujo se corresponde perfectamente con el representado en el
+diagrama de análisis \emph{Análisis - Tramitar cita} y el diagrama de
+secuencia \emph{Tramitar cita (tramitación correcta)} del cliente.
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaRegistrarCita.java}}
+
+\subsubsection{Registro de la cita en el servidor}
+
+Cuando el cliente envía la solicitud de tramitación de cita, empieza el flujo
+de eventos del caso de uso \textbf{Tramitar cita} del servidor front-end. Como
+se puede ver en el diagrama de análisis \emph{Análisis - Tramitar cita}, el
+cliente se conecta con el sistema a través del objeto remoto
+\emph{RemotoServidorFrontend}, que lo único que hace es llamar al gestor
+principal del servidor, la clase \emph{ServidorFrontend}.
+
+Nótese que, en el diagrama de análisis citado, la interacción comienza con la
+selección del beneficiario que quiere pedir cita, ya que es un paso
+imprescindible para solicitar una cita. Sin embargo, como nos estamos centrando
+en la trazabilidad del caso de uso \textbf{Tramitar cita}, no hemos comentado
+en detalle cómo se gestiona la recuperación del beneficiario en el servidor, y
+hemos pasado directamente al almacenamiento de la cita.
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaCitaServidor.java}}
+
+A continuación, conforme al diagrama de análisis, la clase
+\emph{ServidorFrontend} llama a la clase \emph{GestorCitas} con los datos de la
+cita que se quiere tramitar. Esta clase, entonces, realiza toda la interacción
+mostrada en el diagrama \emph{Tramitar cita (tramitación correcta)} del
+servidor front-end para comprobar la validez de la cita y almacenarla en el
+sistema. Muchas de las comprobaciones que se hacen no serían necesarias si
+el servidor sólo pudiera ser utilizado por el cliente que se ha desarrollado,
+porque el propio cliente impide enviar peticiones inválidas al servidor. Sin
+embargo, para aumentar la seguridad del servidor, las comprobaciones se repiten
+también en este sistema.
+
+Algunas de las acciones que realiza el gestor de citas son:
+\begin{milista}
+\item Comprobar que el usuario ha iniciado sesión y tiene permisos para
+realizar la operación.
+\item Comprobar que existe el beneficiario que quiere pedir cita.
+\item Comprobar que existe el médico asociado al beneficiario.
+\item Comprobar que la fecha de la cita es válida (posterior a la actual,
+dentro del calendario de trabajo del médico, etc.).
+\item Comprobar que el médico no tiene ya una cita a la misma hora y el mismo día.
+\item Almacenar la cita en la base de datos del sistema.
+\end{milista}
+
+Todas las clases de la implementación final del servidor que intervienen en la
+gestión de citas se pueden consultar en el diagrama de clases \emph{Gestor
+Citas} del servidor front-end.
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaPedirCitaServidor.java}}
+
+Una vez que finaliza la tramitación, como se indica en el escenario del caso
+de uso \textbf{Tramitar cita} del servidor, se escribe una entrada en el log
+del servidor y se actualizan las ventanas de estado de los servidores (a
+través de la clase \emph{GestorConexionesLog}), y se avisa a los clientes
+registrados de la tramitación de la nueva cita (mediante el
+\emph{GestorSesiones}). La secuencia de llamadas que realiza el
+\emph{GestorConexionesLog} para que todas las clases interesadas procesen el
+mensaje se puede ver en el diagrama \emph{Gestor Conexiones Log} del servidor.
+
+\texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaLogYClientes.java}}
