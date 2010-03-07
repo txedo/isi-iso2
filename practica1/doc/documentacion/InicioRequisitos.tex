@@ -1,0 +1,81 @@
+\subsection{Especificación inicial de requisitos}
+
+Se desea desarrollar un sistema para la gestión de citas del sistema de salud
+de una comunidad autónoma. En la primera fase del proyecto (correspondiente al
+primer cuatrimestre del curso) se debe construir la aplicación que se
+utilizará en las unidades de citación de los hospitales y centros de salud. En
+la segunda fase (segundo cuatrimestre) se construirá una aplicación web para
+que pueda ser usada por parte de los beneficiarios del sistema de salud. Los
+requisitos de esta segunda fase se darán oportunamente.
+
+El sistema de salud de la comunidad autónoma (SSCA) tiene un conjunto muy
+amplio de beneficiarios, de cada uno de los cuales se almacenan sus datos
+personales habituales (número de seguridad social, NIF o NIE, nombre,
+apellidos, domicilio, teléfono fijo y móvil, correo electrónico, etc.).
+Cada beneficiario tiene asignado un médico de cabecera, que pasa consulta en
+un consultorio, centro de salud u hospital. De los médicos también se
+almacenan sus datos personales.
+
+Cuando un beneficiario desea pedir cita, se acerca a una unidad de citación o
+llama por teléfono, de manera que le atiende un empleado que es quien que
+maneja el sistema que se debe desarrollar en la primera fase. El beneficiario
+se identifica con su número de seguridad social, NIF o NIE, y entonces el
+empleado ve cuál es el médico de cabecera que tiene asignado. El empleado
+propone al beneficiario alguno de los días y horas en los que el médico le
+puede atender. Cuando el beneficiario acepta una cita, el empleado la marca y
+ésta le queda reservada.
+
+Cada médico puede tener un horario de consultas fijo (por ejemplo, todos los
+días de 9 a 14) o variable (lunes y martes de 9 a 14, miércoles de 12 a 14 y
+de 17 a 20, ...), si bien hay días en que no pasan consulta por algún motivo
+(vacaciones, quirófano, asuntos propios, baja, etc.). Cuando un médico no va
+pasar consulta en una fecha, el SSCA designa normalmente un sustituto. Si el
+beneficiario del SSCA pide cita y el médico va a estar ausente, el empleado le
+debe informar del nombre del médico que le atenderá antes de darle la cita.
+
+El sistema debe permitir la modificación y anulación de citas, así como dar
+citas a beneficiarios que no estén registrados previamente. El médico de
+cabecera de los menores de 14 años es un pediatra.
+
+En ocasiones, el médico de cabecera (o el pediatra) puede enviar al
+beneficiario a una consulta con el especialista. En este caso, el médico
+utiliza el mismo sistema que usted tiene que desarrollar para emitir un
+``volante''. El volante permite al beneficiario pedir cita para el
+especialista. El médico de cabecera solicitará el volante al sistema, que le
+devolverá un identificador único de volante. Con este número, el beneficiario
+puede ir a la unidad de citación o llamar por teléfono y pedir cita para el
+especialista. El volante relaciona, al menos, al médico de cabecera (o pediatra), al médico especialista y al beneficiario. Luego, el médico
+especialista puede expedir más volantes para que el beneficiario vuelva a
+acudir a su consulta o a la consulta de otro especialista.
+
+Debido a la información confidencial que se maneja, es necesario que quede un
+registro de todas las operaciones realizadas por cada usuario del sistema.
+
+Los empleados son los usuarios del sistema y, por tanto, utilizan los equipos
+informáticos de las unidades de citación (aplicaciones cliente). Si el usuario
+es administrador, además de las operaciones de los usuarios con rol de
+``citador'', el usuario puede:
+\begin{milista}
+\item Crear, modificar y eliminar otros usuarios.
+\item Asignar o desasignar roles.
+\item Modificar los calendarios y horarios de disponibilidad de los
+médicos, estableciendo los médicos sustitutos cuando sea necesario.
+\end{milista}
+
+En modo ``citador'', el cliente mostrará un calendario con las citas de cada
+médico en cada día. Los datos de usuarios, médicos, citas, etc. residen tanto
+en la BD principal como en la de respaldo, que son copias idénticas una de
+otra. Cuando se confirma una cita, el servidor A recibe la petición de alguno
+de los clientes:
+\begin{milista}
+\item A envía la petición a B
+\item B la almacena en su BD de respaldo
+\item B envía a A un mensaje de confirmación
+\item A almacena la cita
+\item A envía un mensaje al cliente indicándole que la cita se ha dado
+\item A actualiza el estado de los clientes: es decir, pasa a mostrar la
+hora como ocupada (o como libre, si se trata de una cancelación de cita)
+\end{milista}
+
+Si B falla, la transacción de que se trate (alta, modificación o lo que sea)
+no puede realizarse.
