@@ -31,7 +31,6 @@ import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
-import dominio.conocimiento.Volante;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.FechaCitaIncorrectaException;
