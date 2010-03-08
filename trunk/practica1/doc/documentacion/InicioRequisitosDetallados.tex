@@ -1,10 +1,10 @@
 \subsection{Especificación detallada de requisitos}
 
-Para facilitar el análisis y el posterior diseño y desarrollo del sistema,
-desde el comienzo su funcionalidad se dividió en cinco partes básicas,
-correspondientes a la gestión de beneficiarios, usuarios, citas, volantes y
-sustituciones. A continuación se explican los requisitos detallados de cada
-parte del sistema.
+Para facilitar el análisis y el posterior diseño e implementación del sistema,
+desde la fase de inicio del desarrollo su funcionalidad se dividió en cinco
+partes básicas, correspondientes a la gestión de beneficiarios, usuarios,
+citas, volantes y sustituciones. En los próximos apartados se explican los
+requisitos detallados de cada parte del sistema.
 
 \subsubsection{Gestión de beneficiarios}
 
@@ -38,7 +38,9 @@ modificación y eliminación de sus datos registrados en el sistema, teniéndose
 que identificar para ello con su NIF o su NSS. En general, todas las
 operaciones relacionadas con la gestión de beneficiarios las pueden realizar
 los usuarios del sistema con rol de ``citador'', no siendo necesaria la
-intervención de los administradores.
+intervención de los administradores. Sin embargo, los médicos también deberían
+poder consultar información de los beneficiarios, por si necesitaran saber su
+fecha de nacimiento o algún dato para ponerse en contacto con ellos.
 
 El médico de cabecera o pediatra asignado a cada beneficiario no se puede
 modificar, salvo si el beneficiario solicita que se le cambie el centro de
@@ -56,8 +58,9 @@ asociado a un beneficiario cuando cumpla los 14 años.
 
 El sistema permitirá la creación, consulta, modificación y eliminación de 
 usuarios. Se considerará que existen tres roles o tipos de usuarios:
-``citadores'', administradores y médicos. De cada uno de estos usuarios, el
-servidor almacenará los siguientes datos:
+``citadores'', administradores y médicos, pudiendo haber más de un
+administrador en el sistema. De cada uno de estos usuarios, el servidor
+almacenará los siguientes datos:
 \begin{milista}
 \item \textbf{Datos personales}: NIF, nombre y apellidos.
 \item \textbf{Datos de contacto}: Correo electrónico, teléfono fijo y teléfono
@@ -107,6 +110,127 @@ con rol de administrador.
 
 \subsubsection{Gestión de citas}
 
+El sistema permitirá el registro, consulta y anulación de citas a
+beneficiarios. Puesto que la modificación de una cita no es más que una
+anulación de la cita antigua y el registro de la nueva, y dado que el proceso
+de tramitación de una cita es mucho menos costoso que el de un beneficiario o
+usuario, se acordó que no era necesario que el sistema permitiera la
+modificación directa de las citas.
+
+Para facilitar la gestión y tramitación de las citas, además de considerar que
+el horario de consultas de un médico se encuentra dividido en intervalos de
+una hora (como ya se comentó en el anterior apartado de gestión de usuarios),
+las citas tendrán una duración fija de 10 minutos cada una, y sólo se podrán
+pedir en intervalos de 10 minutos. Esto significa que se podrán pedir cita a
+las 14:10 o las 19:40, pero no a las 16:22 o 20:03.
+
+Cada médico podrá tener, como máximo, una cita asignada para un mismo día y
+hora, mientras que, en principio, cada beneficiario podrá tener varias citas
+el mismo día a la misma hora. No obstante, los beneficiarios sólo podrán pedir
+cita para el médico de cabecera o pediatra que le asignó el sistema, o para un
+especialista si disponen de un volante, por lo que, en condiciones normales,
+cada beneficiario sólo podrá pedir una única cita en una misma hora.
+
+Cuando el empleado del sistema vaya a registrar una cita para un beneficiario,
+se le debe mostrar a priori quién es el médico que va a hacer realmente la
+consulta, teniendo en cuenta las sustituciones que le pudieran estar haciendo
+al médico esperado por el beneficiario. Por otro lado, si el beneficiario que
+quiere pedir cita no se encuentra registrado, el sistema deberá ofrecer la
+posibilidad de registrar el beneficiario siguiendo el proceso que se explicó
+en el apartado de gestión de beneficiarios.
+
+La unidad de citación desarrollada deberá permitir la consulta de las citas
+registradas tanto para un cierto beneficiario como para un cierto médico del
+sistema. Todas las operaciones relacionadas con la gestión de citas las podrán
+llevar a cabo de la misma forma los usuarios con rol de ``citador'' y
+administrador.
+
 \subsubsection{Gestión de volantes}
 
+El sistema permitirá únicamente la solicitud de nuevos volantes, no siendo
+posible la modificación, anulación o consulta de volantes existentes (salvo
+cuando un beneficiario va a pedir una cita utilizando un volante).
+
+Cuando un médico desee emitir un volante, deberá identificar al beneficiario
+que podrá utilizarlo y, a continuación, el sistema le mostrará una lista de
+los médicos especialistas registrados en el sistema para que seleccione el
+receptor del nuevo volante. Para facilitar la selección del especialista, los
+médicos se tendrán que agrupar según su especialidad médica indicada al
+registrarse.
+
+Antes de emitir un volante, el médico deberá informar al beneficiario del
+centro de salud en el que pasa consulta el especialista, debido a que, al
+contrario de lo que ocurre con el médico de cabecera o pediatra, los
+especialistas a los que se envían los beneficiarios no tienen por qué trabajar
+en el mismo centro de salud que indicaron al registrarse.
+
+Cada volante sólo se podrá utilizar una única vez para pedir cita con el
+especialista, aunque si, por cualquier motivo, se anula la cita con la que un
+beneficiario utilizó un volante, podrá usarlo de nuevo para pedir cita con el
+especialista en otro momento. No obstante, en cualquier caso todos los
+volantes tienen una fecha de caducidad de 6 meses desde el momento de su
+emisión, y no se podrán utilizar a partir de esa fecha (aunque se puedan usar
+para pedir una cita en un fecha posterior a la caducidad del volante).
+
+La emisión de volantes es responsabilidad exclusiva de los médicos del sistema,
+por lo que ni los citadores ni los administradores del sistema tendrán permiso
+para solicitar nuevos volantes para los beneficiarios.
+
 \subsubsection{Gestión de sustituciones}
+
+El sistema permitirá sólo la asignación de nuevas sustituciones, ya que entre
+los requisitos iniciales del sistema no se encuentra la modificación, anulación
+o consulta de las sustituciones existentes.
+
+De la misma forma que las horas de consulta de los médicos se dividen en
+intervalos de una hora, las sustituciones sólo se podrán hacer en horas
+completas, pudiéndose solicitar una sustitución en varias horas consecutivas o
+separadas para un mismo médico en un mismo día.
+
+Cuando un médico esté ausente, su horario de consultas seguirá siendo el mismo,
+pero las citas las pasará el médico sustituto. Por tanto, las horas que se
+deberán sustituir serán únicamente aquellas en las que el médico sustituido
+tendría consulta. Un médico no podrá sustituir a dos médicos diferentes en
+las mismas horas, pero sí podrá sustituir a varios médicos el mismo día si no
+se solapan sus horarios de consulta. Por ejemplo, un médico que no trabaje los
+viernes podría sustituir en un viernes a la vez a un médico que trabaja de
+9:00 a 14:00 y a otro que trabaja de 16:00 a 20:00.
+
+Los administradores serán los únicos usuarios que puedan asignar sustitutos a
+los médicos. Por tanto, cuando un médico no vaya a poder pasar consulta en una
+fecha, deberá avisar al administrador, el cual identificará al médico en el
+sistema y, a continuación, elegirá el día y las horas en las que el médico va
+a estar ausente. Si el médico ya estuviera siendo sustituido o estuviera
+haciendo una sustitución en las horas elegidas, no se podría asignar un nuevo
+sustituto.
+
+Con el fin de hacer más sencilla para el administrador la tarea de asignar
+sustitutos a los médicos, el sistema deberá generar automáticamente una lista
+con todos los médicos del sistema que puedan hacer una sustitución pedida. Un
+médico podrá ser elegible para realizar una sustitución si cumple los
+siguientes requisitos:
+\begin{milista}
+\item Ser exactamente de la misma categoría que el médico sustituido, lo cual
+incluye la especialidad médica en el caso de que se vaya a sustituir un
+especialista.
+\item Trabajar en el mismo centro de salud que el médico sustituido, para que
+el beneficiario no se tenga que desplazar por culpa de la sustitución.
+\item No tener horario de consultas en alguna de las horas que se tienen que
+sustituir.
+\item No estar pendiente de realizar una sustitución en alguna de las horas que
+se van a tener que sustituir, incluso si aún no tiene ninguna cita asignada en
+esas horas.
+\end{milista}
+
+\subsubsection{Otras consideraciones}
+
+Para permitir que el sistema se pueda ejecutar sobre un entorno distribuido,
+la unidad de citación, el servidor front-end, el servidor de respaldo, la base
+de datos principal y la base de datos secundaria deben poder estar en máquinas
+diferentes sin que ello afecte al funcionamiento del sistema.
+
+Todas las operaciones que realicen los usuarios del sistema deben quedar
+registradas en la base de datos por si fuera necesaria consultarlas más
+adelante. Además, el servidor front-end debe mostrar por pantalla los
+resultados de las últimas operaciones realizadas para que se pueda ver
+fácilmente si se producen errores en el sistema.

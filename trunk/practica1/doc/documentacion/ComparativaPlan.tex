@@ -1,0 +1,152 @@
+\section{Comparativa del plan de desarrollo}
+
+\subsection{Plan inicial de desarrollo}
+
+En la siguiente imagen se muestra el plan de desarrollo que se propuso
+inicialmente para crear el sistema propuesto en la práctica. En él se pueden
+ver claramente las iteraciones en las que se pretendía dividir el desarrollo.
+
+\verb+<<<<<<<<<<<<<<<PONER EL GRÁFICO>>>>>>>>>>> en 1 o 2 páginas si no cabe+
+\label{planInicial}
+
+\subsection{Evolución real del desarrollo}
+
+Una vez que ha finalizado todo el proceso de desarrollo, se puede concluir
+que, debido a la poca experiencia que teníamos como grupo de desarrollo en la
+creación de aplicaciones cliente-servidor de tal envergadura, desde el
+comienzo no se enfocó correctamente el desarrollo del sistema, al darle mayor
+importancia a la unidad de citación (el cliente) que al servidor front-end.
+
+En un principio, se acordó que toda la funcionalidad del sistema residiría en
+la unidad de citación, y que el servidor sólo se utilizaría como interfaz de
+acceso a la base de datos del sistema y registro de las operaciones. Por
+tanto, tareas como la comprobación de que la fecha de una cita esté dentro del
+horario de consulta de un médico o la generación de la lista de sustitutos
+posibles para un médico y una hora dado se pretendía hacer en el cliente.
+
+Cuando avanzó la fase de inicio y, con ella, el análisis de requisitos del
+sistema, se vio que no se había elegido el enfoque adecuado en el desarrollo.
+Dejar toda la funcionalidad a los clientes tenía varios problemas importantes,
+como por ejemplo que, en caso de que se detectara un error en algunas de esas
+funcionalidades (por ejemplo, la ausencia de una comprobación al tramitar una
+cita), sería necesario volver a compilar y distribuir la unidad de citación a
+todos los usuarios del sistema. Si la funcionalidad estuviera en el servidor,
+los clientes seguirían siendo los mismos y sólo sería necesario modificar el
+servidor, que es único.
+
+Por tanto, desde ese momento se decidió que las funcionalidades principales del
+sistema se implementarían en el servidor front-end, y no en la unidad de
+citación, lo cual varió totalmente el plan previsto de desarrollo. Sin embargo,
+se podía mantener el plan inicial pero reemplazando las tareas relativas a la
+unidad de citación por las del servidor front-end y viceversa.
+
+Posteriormente, cuando se empezó a diseñar e implementar algunas partes de las
+primeras iteraciones del desarrollo, se comprobó que el plan tenía otro
+problema grave que dificultaba, no el diseño, sino la implementación y las
+pruebas del código. Este problema se debía a que, en el plan inicial, se
+pretendía desarrollar primero la unidad de citación completa, después el
+servidor front-end y por último el servidor de respaldo. Para ello, la unidad
+de citación se probaría ante un servidor front-end \emph{dummy} que no tendría
+funcionalidad.
+
+Sin embargo, desarrollar un sistema compuesto por tres aplicaciones separando
+totalmente el diseño y la implementación de cada uno de los programas es
+difícil si se carece de experiencia en este tipo de sistemas. Por este motivo,
+desde las primeras iteraciones se decidió diseñar e implementar de forma
+paralela el cliente y el servidor front-end, que están relacionados entre sí,
+dejando el servidor de respaldo para más adelante.
+
+Por tanto, la forma real en la que, la mayor parte de las veces, evolucionó el
+proyecto en cada una de las iteraciones del desarrollo fue la siguiente:
+\begin{milista}
+\item Captura y análisis de requisitos de la funcionalidad a implementar en el
+servidor front-end.
+\item Diseño de clases para llevar a cabo esa funcionalidad.
+\item Implementación del requisito funcional en el servidor front-end.
+\item Pruebas de la parte del servidor implementada.
+\item Análisis y diseño de la funcionadad equivalente en la unidad de citación.
+\item Implementación del requisito funcional en la unidad de citación.
+\item Pruebas de la parte de la unidad de citación implementada.
+\end{milista}
+
+\subsection{Iteraciones del desarrollo}
+
+Según el plan de desarrollo inicial mostrado en la página
+\pageref{planInicial}, el proyecto iba a estar compuesto por 6 principales
+iteraciones, en las que se pretendía implementar lo siguiente:
+
+\begin{enumerate}
+\item Unidad de citación: identificación de usuarios, gestión de usuarios
+(no médicos) y gestión de beneficiarios.
+\item Unidad de citación: gestión de sustituciones y gestión de médicos.
+\item Unidad de citación: gestión de citas, gestión de volantes y actualización
+del estado.
+\item Servidor front-end.
+\item Servidor de respaldo.
+\item Integración de los tres sistemas.
+\end{enumerate}
+
+A continuación se mostrarán las iteraciones en las que se dividió realmente el
+proyecto y qué se consiguió con cada una de ellas en comparación con lo que se
+había previsto conseguir.
+
+\subsubsection{Primera iteración}
+
+En la primera iteración, al igual que se pretendía en el plan inicial de
+desarrollo, se implementó casi toda la parte de gestión de beneficiarios,
+gestión de usuarios e identificación de usuarios. En esta iteración se tuvo que
+realizar una gran labor de diseño, para decidir cómo se representarían los
+beneficiarios y usuarios en el sistema y qué estructura básica de clases
+tendría tanto el cliente como el servidor.
+
+En el plan inicial de desarrollo, precisamente, se decidió implementar primero
+la gestión de usuarios y beneficiarios por dos motivos: en primer lugar, porque
+es necesario disponer de usuarios y beneficiarios registrados para manipular
+citas, volantes y sustituciones; y, en segundo lugar, porque así se tendría
+completo, tras la primera iteración, el diseño de las clases más importantes
+del sistema.
+
+Además, al final de esta iteración también se implementó parte del servidor de
+respaldo, con el fin de hacerlo en un momento del desarrollo en el que el
+servidor front-end todavía no era demasiado complejo. De esta manera, si al
+integrar el servidor de respaldo en el servidor front-end se detectaban
+problemas, se podía cambiar la estructura del servidor front-end fácilmente.
+
+\subsubsection{Segunda iteración}
+
+En la segunda iteración, se completó la parte de gestión de usuarios con todas
+las tareas relacionadas con médicos (como la creación y manipulación de los
+horarios), y se implementó la gestión de citas. En esta iteración, se tuvo que
+hacer un importante trabajo de análisis y diseño para tomar las decisiones que
+determinarían cómo se darían las citas a los beneficiarios. Por ejemplo, en
+esta iteración se decidió que el calendario de los médicos iba a dividirse en
+horas, que las citas tendrían una duración fija, que cada beneficiario tendría
+un centro de salud para ir a pasar citas con su médico de cabecera, etc.
+
+En el plan de desarrollo propuesto inicialmente, se pretendía desarrollar la
+gestión de médicos junto con la de sustitutos, pero finalmente se desechó la
+idea porque la parte de gestión de sustituciones es la más compleja y está
+relacionada con la de citas, que todavía no se debería haber implementado.
+
+\subsubsection{Tercera iteración}
+
+En la tercera iteración, se implementó la gestión de volantes, la gestión de
+sustituciones y todo lo relacionado con la actualización del estado de los
+clientes. En esta iteración la mayor parte del tiempo se dedicó a la parte de
+implementación de la gestión de sustituciones y la actualización del estado,
+para lo cual el desarrollo conjunto del cliente y el servidor fue
+imprescindible.
+
+En el plan inicial de desarrollo, esta iteración se debería haber dedicado
+también a la gestión de citas, pero en la evolución real del proyecto eso ya
+se implementó en la iteración anterior.
+
+\subsubsection{Cuarta iteración}
+
+La cuarta y última iteración se destinó a la integración completa de las tres
+aplicaciones desarrolladas, y al aumento de la cobertura del código y la
+fiabilidad del sistema mediante la definición de nuevos casos de prueba. En
+cierto modo, se corresponde con la última iteración del plan inicial de
+desarrollo, aunque la integración que se propuso en ese plan estaba enfocada,
+principalmente, a integrar el servidor front-end y la unidad de citación, que
+teóricamente se habrían tenido que desarrollar de forma separada.
