@@ -1,0 +1,123 @@
+\subsection{Operaciones permitidas en el sistema}
+
+En la tabla \ref{tb:operacionesInterfaz} se muestran las acciones que un usuario puede realizar con el sistema (interactuando con su interfaz gráfica), junto con el rol que es necesario para poder llevarlas a cabo. Señalar que estas operaciones se corresponden con las distintas funcionalidades que el sistema ofrece al usuario, es decir, se corresponden con los distintos casos de uso del cliente (ver \diagrama{cliente}{casosUso}{Casos de Uso}).
+
+\begin{longtable}{| p{8cm} | p{8cm} |}
+\hline
+\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ACCIÓN}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ROL}} \\
+\hline
+Registrar beneficiario & Administrador, Citador\\
+\hline
+Consultar beneficiario & Administrador, Citador, Médico\\
+\hline
+Modificar beneficiario & Administrador, Citador\\
+\hline
+Eliminar beneficiario & Administrador, Citador\\
+\hline
+Registrar usuario & Administrador\\
+\hline
+Consultar usuario & Administrador\\
+\hline
+Modificar usuario & Administrador\\
+\hline
+Eliminar usuario & Administrador\\
+\hline
+Tramitar cita & Administrador, Citador\\
+\hline
+Tramitar cita a partir de un volante & Administrador, Citador\\
+\hline
+Consultar citas de un beneficiario & Administrador, Citador\\
+\hline
+Consultar citas de un médico & Administrador, Citador\\
+\hline
+Anular cita & Administrador, Citador\\
+\hline
+Consultar citas propias de un médico & Médico\\
+\hline
+Emitir volante & Médico\\
+\hline
+Establecer sustituto & Administrador\\
+\hline
+\caption{Operaciones que un usuario puede realizar con el sistema}
+\label{tb:operacionesInterfaz}
+\end{longtable}
+
+Estas operaciones se van a corresponder con los servicios que proporciona el servidor front-end en su interfaz. Sin embargo, algunas de las operaciones anteriores se apoya en la ejecución de otras acciones. Por ejemplo, para que un administrador pueda establecer una sustitución, primero debe buscar una lista de posibles sustitutos y elegir uno de ellos como sustituto de un médico; para que un médico pueda emitir un volante para un especialista, debe seleccionar un especialista de una lista; se deben calcular las horas a las que trabaja un médico para poder cita, etc. Por esta razón, se necesitan otras operaciones además de las mostradas en la tabla \ref{tb:operacionesInterfaz}, que se van a corresponder con la operación \textit{mensajeAuxiliar} del servidor front-end. 
+
+En la tabla \ref{tb:operaciones} se muestran, además de las operaciones anteriores, el resto de operaciones que existen en el sistema. Así, dicha tabla resume todas las operaciones que se pueden realizar en el sistema, junto con el rol necesario para poder ejecutarlas. Además, en esa tabla se resaltan aquellas operaciones que no aparecen en la tabla \ref{tb:operacionesInterfaz} y que, por tanto, son operaciones auxiliares.
+
+\begin{longtable}{| p{8cm} | p{8cm} |}
+\hline
+\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ACCIÓN}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ROL}} \\
+\hline
+Registrar beneficiario & Administrador, Citador\\
+\hline
+Consultar beneficiario & Administrador, Citador, Médico\\
+\hline
+Modificar beneficiario & Administrador, Citador\\
+\hline
+Eliminar beneficiario & Administrador, Citador\\
+\hline
+\colorFila Consultar beneficiarios asignados a un médico & Administrador\\
+\hline
+Registrar usuario & Administrador\\
+\hline
+Consultar usuario & Administrador\\
+\hline
+Modificar usuario & Administrador\\
+\hline
+Eliminar usuario & Administrador\\
+\hline
+\colorFila Corresponde NIF a un usuario & Administrador, Citador, Médico\\
+\hline
+\colorFila Consultar usuario que ha iniciado sesión & Administrador, Citador, Médico\\
+\hline
+\colorFila Consultar centros de salud & Administrador, Citador, Médico\\
+\hline
+\colorFila Registrar médico & Administrador\\
+\hline
+\colorFila Consultar médico & Administrador, Citador\\
+\hline
+\colorFila Modificar médico & Administrador\\
+\hline
+\colorFila Eliminar médico & Administrador\\
+\hline
+\colorFila Consultar médicos de un tipo determinado & Administrador\\
+\hline
+\colorFila Consultar posibles sustitutos & Administrador\\
+\hline
+Establecer sustituto & Administrador\\
+\hline
+\colorFila Consultar médico que atiende una cita & Administrador, Cita\\
+\hline
+Tramitar cita & Administrador, Citador\\
+\hline
+Tramitar cita a partir de un volante & Administrador, Citador\\
+\hline
+\colorFila Consultar horario de un médico & Administrador, Citador\\
+\hline
+\colorFila Consultar horas de citas asignadas a un médico & Administrador, Citador\\
+\hline
+\colorFila Consultar días completos de un médico & Administrador, Citador\\
+\hline
+Consultar citas de un beneficiario & Administrador, Citador\\
+\hline
+Consultar citas de un médico & Administrador, Citador\\
+\hline
+Anular cita & Administrador, Citador\\
+\hline
+Consultar citas propias de un médico & Médico\\
+\hline
+\colorFila Consultar citas en una fecha de un médico & Administrador, Citador\\
+\hline
+Emitir Volante & Médico\\
+\hline
+\colorFila Consultar Volante & Administrador, Citador, Médico\\
+\hline
+\caption{Operaciones soportadas en el sistema}
+\label{tb:operaciones}
+\end{longtable}
+
+Estas operaciones auxiliares se detallan en la siguiente sección, donde se comentará el uso principal de cada una de ellas y a cuál de las acciones que puede realizar el usuario (es decir, a qué funcionalidad del sistema, ver tabla \ref{tb:operacionesInterfaz}) dan soporte. 
+
+----------------- COMPLETAR ------------------
