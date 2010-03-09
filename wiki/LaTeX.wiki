@@ -10,7 +10,7 @@ Este paquete personalizado se utiliza para dar el formato a un documento de tipo
 
     - cont: esta opción se utiliza para subordinar el contador de figuras y tablas al número de sección. Para ello, se carga el paquete chngcntr. 
 
-    - title: opción que se usa para cambiar el formato de los títulos de secciones, subsecciones, etc. Se carga para ello el paquete titlesec. 
+    - title: opción que se usa para cambiar el formato de los títulos de secciones, subsecciones, etc. Se carga para ello el paquete _titlesec_.
 
     - fancy: esta opción se usa para configurar el estilo del encabezado y pie de página utilizando el paquete fancyhdr. 
 
@@ -68,10 +68,28 @@ Un ejemplo para insertar una imagen utilizando esta macro:
 \imagen{./imagenes/esi_bw.png}{0.45}{Logo}{fig:logo}
 }}}
 
-
-
 *MUY IMPORTANTE: no poner barras bajas en los nombres de las imagenes ni de los archivos.tex !!!!!!!!!!*
 
-*IMPORTANTE: no subir al repositorio archivos generados por LaTeX, como los ficheros .log, .aux, el PDF, etc. Subir sólo las imagenes, los fragmentos de código, los .tex, etc.*
-
 Por cierto, para escapar la barra baja en una palabra es así: {{{\_}}}
+
+
+6.- Uso de la macro para insertar referencias a diagramas:
+
+{{{
+\diagrama{sistema}{tipoDiagrama}{nombreDiagrama}
+}}}
+
+Las opciones para los dos primeros argumentos son: 
+
+- Para el sistema: *frontend*, *cliente* o *respaldo*. 
+
+- Para el tipo de diagrama: *secuencia*, *estados*, *casosUso*, *clases*, *análisis* (con tilde), *secuencia*, *colaboración*, *paquetes*, *componentes*, *despliegue*.
+
+Con esas opciones, la macro se encargará de dar el formato necesario e imprimirlo de la forma: *sistema -> tipoDiagrama -> _nombreDiagrama_*
+
+
+Ejemplos:
+
+Si se pone *\diagrama{frontend}{análisis}{registrar cita}* se mostrará: *servidor front-end -> diagrama de clases de análisis -> _registrar cita_*
+
+Si se pone *\diagrama{cliente}{estados}{identificar}* se mostrará: *cliente -> diagrama de máquina de estados -> _identificar_*
