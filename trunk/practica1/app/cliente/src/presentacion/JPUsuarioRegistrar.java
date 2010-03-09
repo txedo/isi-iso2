@@ -418,7 +418,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 			// Solicitamos al servidor que se cree el usuario
 			getControlador().crearUsuario(usuario);
 			
-			// Obtenemos el médico que se ha asignado al beneficiario
+			// Obtenemos el centro que se le ha asignado al usuario
 			centro = getControlador().consultarUsuario(usuario.getNif()).getCentroSalud();
 
 			// Mostramos el resultado de la operación y limpiamos el panel

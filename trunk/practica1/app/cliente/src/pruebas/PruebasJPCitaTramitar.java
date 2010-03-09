@@ -65,13 +65,14 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	private JComboBox jcmbCentros;
 	private JComboBox jcmbHorasCitas;
 	
-	private Medico cabecera;
+	private Medico cabecera1, cabecera2;
 	private TipoMedico tCabecera;
 	private Beneficiario beneficiarioPrueba;
 	private Medico medicoAsignado;
 	
 	private Vector<Medico> medicosEliminados;
 	private boolean eliminado;
+	private Vector<Date> diaSustitucion;
 	
 	
 	@SuppressWarnings("deprecation")
@@ -98,12 +99,21 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 
 			// Creamos un médico de cabecera 
 			tCabecera = new Cabecera();
-			cabecera = new Medico();
-			cabecera.setNombre("Eduardo");
-			cabecera.setApellidos("Ramírez García");
-			cabecera.setTipoMedico(tCabecera);
-			cabecera.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
-			cabecera = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera); 
+			cabecera1 = new Medico();
+			cabecera1.setNombre("Eduardo");
+			cabecera1.setApellidos("Ramírez García");
+			cabecera1.setTipoMedico(tCabecera);
+			cabecera1.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			cabecera1 = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera1); 
+			
+			// Creamos otro médico de cabecera para que pueda sustituir al primero 
+			tCabecera = new Cabecera();
+			cabecera2 = new Medico();
+			cabecera2.setNombre("Sustituto");
+			cabecera2.setApellidos("García");
+			cabecera2.setTipoMedico(tCabecera);
+			cabecera2.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Martes));
+			cabecera2 = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera2); 
 
 			// Creamos el beneficiario en el mismo centro que el médico, para que no se le asigne otro diferente 
 			beneficiarioPrueba = new Beneficiario ();
@@ -111,10 +121,10 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			beneficiarioPrueba.setApellidos("de prueba");
 			beneficiarioPrueba.setFechaNacimiento(new Date("01/01/1980"));
 			beneficiarioPrueba.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
-			beneficiarioPrueba.setCentroSalud(cabecera.getCentroSalud());
-			beneficiarioPrueba.setMedicoAsignado(cabecera);
+			beneficiarioPrueba.setCentroSalud(cabecera1.getCentroSalud());
+			beneficiarioPrueba.setMedicoAsignado(cabecera1);
 			beneficiarioPrueba = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
-			medicoAsignado = cabecera;
+			medicoAsignado = cabecera1;
 
 			// Obtenemos el panel
 			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
@@ -156,7 +166,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 				controlador.crearMedico(m);
 			}
 			// Eliminamos el medico de prueba y el beneficiario de prueba
-			controlador.eliminarMedico(cabecera);
+			controlador.eliminarMedico(cabecera1);
 			if (!eliminado) controlador.eliminarBeneficiario(beneficiarioPrueba);
 			// Cerramos la sesión y la ventana del controlador
 			controlador.getVentanaPrincipal().dispose();
@@ -427,12 +437,12 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			// Comprobamos que aparece seleccionada por defecto la primera hora disponible
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			// En este momento el segundo administrador modifica el calendario del médico
-			cabecera.getCalendario().clear();
-			cabecera.getCalendario().add(periodo2);
+			cabecera1.getCalendario().clear();
+			cabecera1.getCalendario().add(periodo2);
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					// Reemplazamos el periodo de trabajo que ya tenía el médico
-					controladorAuxiliar.modificarMedico(cabecera);
+					controladorAuxiliar.modificarMedico(cabecera1);
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
@@ -449,7 +459,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			// Ahora procedemos a eliminar el médico desde el segundo administrador
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
-					controladorAuxiliar.eliminarMedico(cabecera);
+					controladorAuxiliar.eliminarMedico(cabecera1);
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
@@ -461,7 +471,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			Thread.sleep(TIME_OUT);
 			// La ventana del primer administrador se ha debido actualizar borrando los campos, pues el beneficiario se ha quedado sin médico asignado
 			comprobarCamposRestablecidos();
-			medicosEliminados.add(cabecera);
+			medicosEliminados.add(cabecera1);
 		} catch (Exception e) {
 			fail (e.toString());
 		}
@@ -533,7 +543,52 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 	}
 	
 	public void testObservadorSustitucionRegistrada () {
-		// TODO: Txedo, haz la prueba para este observador
+		diaSustitucion = new Vector<Date>();
+		diaSustitucion.add(new Date("04/03/2015"));
+		try {
+			// Iniciamos el controlador auxiliar con otro usuario administrador
+			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN_AUXILIAR, IDatosConexionPruebas.PASSWORD_ADMIN_AUXILIAR);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+		
+		// El primer administrador busca al beneficiario de prueba
+		jcmbIdentificacion.grabFocus();
+		jcmbIdentificacion.setSelectedIndex(0);
+		txtIdentificacion.setText(beneficiarioPrueba.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
+		// Se comprueba que tiene médico asignado
+		assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+		// Comprobamos que los componentes se han habilitado
+		assertTrue(txtFechaCita.isEnabled());
+		assertTrue(cmbHorasCitas.isEnabled());
+		assertFalse(txtMedico.isEditable());
+		assertTrue(btnRegistrar.isEnabled());
+		// Se selecciona un día en el que trabajará el médico
+		txtFechaCita.setText("04/03/2015");
+		assertEquals((horaFinal-horaInicio)*(60/IConstantes.DURACION_CITA), jcmbHorasCitas.getItemCount());
+		// Comprobamos que aparece seleccionada por defecto la primera hora disponible (las 10:00)
+		assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
+		try {
+			// En este momento el segundo administrador pide una sustitución para el médico asignado al beneficiario
+			WindowInterceptor.init(new Trigger() {
+				public void run() throws Exception {
+					controladorAuxiliar.asignarSustituto(cabecera1, diaSustitucion, 10, 13, cabecera2);
+					// TODO: Dice que el medico que se quiere sustituir no trabaja en ese día
+				}
+			}).process(new WindowHandler() {
+				public Trigger process(Window window) {
+					// Capturamos la ventana que avisa de la sustitucion registrada
+					return window.getButton(OK_OPTION).triggerClick();
+				}
+			}).run();
+			// Dormimos el hilo en espera de la respuesta del servidor
+			Thread.sleep(TIME_OUT);
+			// La ventana del primer administrador se ha debido actualizar con el nombre del médico que realmente va a dar la cita (el sustituto)
+			assertEquals(txtMedicoAsignado.getText(), "");
+		} catch (Exception e) {
+			fail (e.toString());
+		}		
 	}
 
 	private void comprobarCamposRestablecidos () {
