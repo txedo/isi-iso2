@@ -85,11 +85,11 @@ Las opciones para los dos primeros argumentos son:
 
 - Para el tipo de diagrama: *secuencia*, *estados*, *casosUso*, *clases*, *análisis* (con tilde), *secuencia*, *colaboración*, *paquetes*, *componentes*, *despliegue*.
 
-Con esas opciones, la macro se encargará de dar el formato necesario e imprimirlo de la forma: *sistema -> tipoDiagrama -> _nombreDiagrama_*
+Con esas opciones, la macro se encargará de dar el formato necesario e imprimirlo de la forma: *Fichero de Visual Paradigm correspondiente al sistema sistema, tipoDiagrama -> _nombreDiagrama_*
 
 
 Ejemplos:
 
-Si se pone *\diagrama{frontend}{análisis}{registrar cita}* se mostrará: *servidor front-end -> diagrama de clases de análisis -> _registrar cita_*
+Si se pone *ver \diagrama{frontend}{análisis}{registrar cita}* se mostrará: *ver Fichero de Visual Paradigm correspondiente al servidor front-end, diagrama de clases de análisis -> _registrar cita_*
 
-Si se pone *\diagrama{cliente}{estados}{identificar}* se mostrará: *cliente -> diagrama de máquina de estados -> _identificar_*
+Si se pone *ver \diagrama{cliente}{estados}{identificar}* se mostrará: *ver Fichero de Visual Paradigm correspondiente al cliente, diagrama de máquina de estados -> _identificar_*
