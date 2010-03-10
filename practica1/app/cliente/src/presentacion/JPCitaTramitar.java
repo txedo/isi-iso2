@@ -312,8 +312,8 @@ public class JPCitaTramitar extends JPBase {
 			
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-
 		} catch (ParseException e) {
+			// Esta excepción no se maneja para que no se muestren mensajes inesperados
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
@@ -355,12 +355,8 @@ public class JPCitaTramitar extends JPBase {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch (FormatoFechaIncorrectoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			((JTextField)dtcDiaCita.getDateEditor()).selectAll();
-			dtcDiaCita.grabFocus();
 		} catch (FechaCitaIncorrectaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
-			((JTextField)dtcDiaCita.getDateEditor()).selectAll();
-			dtcDiaCita.grabFocus();
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
