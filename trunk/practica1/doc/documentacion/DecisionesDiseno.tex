@@ -19,36 +19,21 @@ Utilizando este enfoque multicapa, se sigue el principio de mínimo acoplamiento 
 
 En los siguientes apartados se comentarán las decisiones de diseño que se han tenido en cuenta para cada una de las capas de cada sistema desarrollado.
 
-\subsubsection{Unidad de Citación}
-
-\paragraph{Capa de comunicaciones}
-
-\paragraph{Capa de dominio}
-En el sistema cliente, la capa de dominio sólo contiene clases para el control de este sistema, que se encargan de mostrar los diferentes elementos de la capa de presentación y de comunicarse con el servidor front-end, utilizando para ello la capa de comunicaciones. 
-
-\paragraph{Capa de presentación}
-
-\paragraph{Capa de persistencia}
-La unidad de citación representa el cliente dentro de una arquitectura cliente-servidor, por lo que no debe realizar ninguna acción relacionada con la persistencia, sino que estas operaciones debe delegarlas al servidor. 
-
-
-\subsubsection{Servidor front-end}
-
-\paragraph{Capa de comunicaciones}
-
-\paragraph{Capa de dominio}
-
-\paragraph{Capa de presentación}
-
-\paragraph{Capa de persistencia}
+\input{UnidadCitacionComunicaciones.tex}
+\input{UnidadCitacionDominio.tex}
+\input{UnidadCitacionPresentacion.tex}
+\input{UnidadCitacionPersistencia.tex}
+\input{frontendComunicaciones.tex}
+\input{frontendDominio.tex}
+\input{frontendPresentacion.tex}
+\input{frontendPersistencia.tex}
+\input{respaldoComunicaciones.tex}
+\input{respaldoDominio.tex}
+\input{respaldoPresentacion.tex}
+\input{respaldoPersistencia.tex}
 
 
-\subsubsection{Servidor de respaldo}
 
-\paragraph{Capa de comunicaciones}
 
-\paragraph{Capa de dominio}
 
-\paragraph{Capa de presentación}
 
-\paragraph{Capa de persistencia}
