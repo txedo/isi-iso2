@@ -138,8 +138,8 @@
 \parskip=10pt
 
 % Se añade el prefacio al índice
-\clearpage\phantomsection
-\addcontentsline{toc}{section}{Prefacio}
+%\clearpage\phantomsection
+%\addcontentsline{toc}{section}{Prefacio}
 
 % Comienza el contenido del documento. Se utilizan números arábigos y el encabezado y pie de página personalizado
 \pagenumbering{arabic}
@@ -147,6 +147,11 @@
 
 % Fase de Inicio
 \input{FaseInicio.tex}
+\clearpage
+
+% Fase de construcción
+% Fase de Inicio
+\input{FaseConstruccion.tex}
 \clearpage
 
 % Fase de Transición
