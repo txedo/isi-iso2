@@ -41,9 +41,12 @@ import dominio.UtilidadesDominio;
 import dominio.conocimiento.Volante;
 import dominio.control.ControladorCliente;
 import excepciones.BeneficiarioInexistenteException;
+import excepciones.FechaCitaIncorrectaException;
 import excepciones.FechaNoValidaException;
+import excepciones.FormatoFechaIncorrectoException;
 import excepciones.IdVolanteIncorrectoException;
 import excepciones.MedicoInexistenteException;
+import excepciones.VolanteNoValidoException;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -444,6 +447,8 @@ public class JPCitaVolanteTramitar extends JPBase {
 			
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch (ParseException e) {
+			// Esta excepción no se maneja para que no se muestren mensajes inesperados
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
@@ -454,12 +459,11 @@ public class JPCitaVolanteTramitar extends JPBase {
 		Date fecha, hora;
 		
 		try {
-		
+			Validacion.comprobarFechaCita(dtcDiaCita.getDate());
 			// Comprobamos que la hora seleccionada sea válida
 			if(!horaSeleccionadaValida()) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", "Seleccione un día que sea laboral para el médico y una hora libre (no marcada en rojo).");
 			} else {
-				
 				// Obtenemos la hora definitiva de la cita
 				hora = Cita.horaCadenaCita(cmbHorasCitas.getSelectedItem().toString());
 				fecha = dtcDiaCita.getDate();
@@ -472,20 +476,23 @@ public class JPCitaVolanteTramitar extends JPBase {
 				restablecerPanel();
 				
 			}
-
 		} catch(ParseException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", "La fecha seleccionada no tiene un formato válido.");
-
 		} catch(MedicoInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		} catch(BeneficiarioInexistenteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		} catch(FechaNoValidaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
-
 		} catch(SQLException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(RemoteException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch (VolanteNoValidoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch (FormatoFechaIncorrectoException e) {
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
+		} catch (FechaCitaIncorrectaException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(Exception e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());

@@ -371,8 +371,6 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			// Como el médico trabaja los miércoles, seleccionamos un martes
 			// Ponemos una fecha en la que no trabaja el médico, para ello eliminamos su periodo de trabajo
 			// Como el médico trabaja los miércoles, seleccionamos un martes
-			
-			// TODO: salta el fallo de "Unparseable date"
 			txtDiaCita.setText("03/03/2015");
 			esperado = "El día seleccionado no es laboral para el médico";
 			assertEquals(esperado, (String)jcmbHorasCitas.getSelectedItem());
@@ -385,7 +383,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnRegistrar, OK_OPTION), new FormatoFechaIncorrectoException().getLocalizedMessage());
 			// Ponemos una fecha en la que sí trabaja el médico
 			txtDiaCita.setText("20/10/2010");
-			assertEquals((horaFinal-horaInicio)*4, jcmbHorasCitas.getItemCount());
+			assertEquals((horaFinal-horaInicio)*(60/IConstantes.DURACION_CITA), jcmbHorasCitas.getItemCount());
 			// Seleccionamos la primera hora disponible y tramitamos la cita
 			jcmbHorasCitas.grabFocus();
 			jcmbHorasCitas.setSelectedIndex(0);
@@ -878,6 +876,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		}
 	}
 	
+	// TODO : Juanes, este método peta por el siguiente mensaje:
+	// excepciones.FechaNoValidaException: El médico que se quiere sustituir no trabaja en la fecha y horas indicadas.
 	public void testObservadorSustitucionRegistrada () {
 		diaSustitucion = new Vector<Date>();
 		diaSustitucion.add(new Date("04/03/2015"));

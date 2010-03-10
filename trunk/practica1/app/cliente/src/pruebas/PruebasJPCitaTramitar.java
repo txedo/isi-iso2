@@ -542,6 +542,8 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		}
 	}
 	
+	//TODO : Juanes, este método peta por el siguiente mensaje:
+	// excepciones.FechaNoValidaException: El médico que se quiere sustituir no trabaja en la fecha y horas indicadas.
 	public void testObservadorSustitucionRegistrada () {
 		diaSustitucion = new Vector<Date>();
 		diaSustitucion.add(new Date("04/03/2015"));

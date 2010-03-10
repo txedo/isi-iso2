@@ -129,7 +129,7 @@ INSERT INTO tiposmedico (nifMedico, tipo) VALUES ("12345679C", 0);
 INSERT INTO usuarios VALUES ("12345678P", "pediatra", "4e709da3cdeb6f24bdae476f178cb1539ba93d31", 2, "Pediatra", "Pediatra", "pediatra@nada.com", "911222333", "", 1);
 INSERT INTO tiposmedico (nifMedico, tipo) VALUES ("12345678P", 1);
 INSERT INTO usuarios VALUES ("12345678E", "especialista", "c185fca5199a0e535100addcb696f3abc6e63861", 2, "Especialista", "Especialista", "especial@nada.com", "", "", 1);
-INSERT INTO tiposmedico VALUES ("12345678E", 2, "Neurologia");
+INSERT INTO tiposmedico VALUES ("12345678E", 2, "Neurología");
 INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia) VALUES ("12345678C", 9, 14, 2);
 INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia) VALUES ("12345678P", 9, 14, 2);
 INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia) VALUES ("12345678E", 9, 14, 2);
