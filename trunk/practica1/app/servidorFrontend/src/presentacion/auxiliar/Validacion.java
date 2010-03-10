@@ -38,7 +38,7 @@ public class Validacion {
 			try {
 				numPuerto = Integer.parseInt(puerto);
 				if(numPuerto < PUERTO_MINIMO || numPuerto > PUERTO_MAXIMO) {
-					throw new PuertoInvalidoException();
+					throw new PuertoInvalidoException("El puerto debe ser un número comprendido entre " + PUERTO_MINIMO + " y " + PUERTO_MAXIMO + ".");
 				}
 			} catch(NumberFormatException ex) {
 				throw new PuertoInvalidoException();

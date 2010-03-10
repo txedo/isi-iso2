@@ -32,13 +32,17 @@ public class Validacion {
 	public static void comprobarPuerto(String puerto) throws PuertoInvalidoException {
 		int numPuerto;
 		
-		try {
-			numPuerto = Integer.parseInt(puerto);
-			if(numPuerto < PUERTO_MINIMO || numPuerto > PUERTO_MAXIMO) {
+		if(puerto.equals("")) {
+			throw new PuertoInvalidoException("El puerto no puede ser nulo.");
+		} else {
+			try {
+				numPuerto = Integer.parseInt(puerto);
+				if(numPuerto < PUERTO_MINIMO || numPuerto > PUERTO_MAXIMO) {
+					throw new PuertoInvalidoException("El puerto debe ser un número comprendido entre " + PUERTO_MINIMO + " y " + PUERTO_MAXIMO + ".");
+				}
+			} catch(NumberFormatException ex) {
 				throw new PuertoInvalidoException();
 			}
-		} catch(NumberFormatException ex) {
-			throw new PuertoInvalidoException();
 		}
 	}
 	

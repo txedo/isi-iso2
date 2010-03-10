@@ -49,7 +49,6 @@ import excepciones.ProvinciaIncorrectaException;
 import excepciones.PuertaDomicilioIncorrectoException;
 import excepciones.TelefonoFijoIncorrectoException;
 import excepciones.TelefonoMovilIncorrectoException;
-import excepciones.UsuarioInexistenteException;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo

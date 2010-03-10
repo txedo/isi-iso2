@@ -2,16 +2,21 @@ package pruebas;
 
 import java.util.Date;
 
+import dominio.conocimiento.IConstantes;
 import presentacion.auxiliar.Validacion;
-
 import excepciones.ApellidoIncorrectoException;
 import excepciones.CodigoPostalIncorrectoException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.DomicilioIncorrectoException;
+import excepciones.FechaCitaIncorrectaException;
 import excepciones.FechaNacimientoIncorrectaException;
+import excepciones.FechaSustitucionIncorrectaException;
+import excepciones.HoraSustitucionIncorrectaException;
 import excepciones.IPInvalidaException;
+import excepciones.IdVolanteIncorrectoException;
 import excepciones.LocalidadIncorrectaException;
+import excepciones.LoginIncorrectoException;
 import excepciones.NIFIncorrectoException;
 import excepciones.NSSIncorrectoException;
 import excepciones.NombreIncorrectoException;
@@ -30,8 +35,27 @@ import junit.framework.TestCase;
  */
 public class PruebasValidacion extends TestCase {
 	
+	private String cadenaMaxima;
+	private String numeroMaximo;
+	
 	public void setUp() {
-		// No es necesario ningún código de inicialización
+		char[] c;
+		int i;
+		
+		try {
+			c = new char[Validacion.MAX_LONGITUD_CAMPOS + 1];
+			for(i = 0; i < c.length; i++) {
+				c[i] = 'A';
+			}
+			cadenaMaxima = new String(c);
+			c = new char[Validacion.MAX_LONGITUD_CAMPOS_NUMERICOS + 1];
+			for(i = 0; i < c.length; i++) {
+				c[i] = '1';
+			}
+			numeroMaximo = new String(c);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 	}
 	
 	public void tearDown() {
@@ -44,7 +68,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos NIFs incorrectos
-			invalidos = new String[] { "", "  ", "abc", "1234", "1234d", "12345678", "1234567890x", "12345678?", "12345678ñ", "12345678á", "12345678Ç", "  12345678A", "12345678A  " };
+			invalidos = new String[] { "", "  ", "abc", "1234", "1234d", "12345678", "1234567890x", "12345678?", "12345678ñ", "12345678á", "12345678Ç", "  12345678A", "12345678A  ", cadenaMaxima };
 			for(String nif : invalidos) {
 				try {
 					Validacion.comprobarNIF(nif);
@@ -72,7 +96,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos NSSs incorrectos
-			invalidos = new String[] { "", "  ", "abc", "1234", "123456789012x", "abcdefghijkl", "  123456789012", "123456789012  " };
+			invalidos = new String[] { "", "  ", "abc", "1234", "123456789012x", "abcdefghijkl", "  123456789012", "123456789012  ", cadenaMaxima };
 			for(String nss : invalidos) {
 				try {
 					Validacion.comprobarNSS(nss);
@@ -100,7 +124,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos nombres incorrectos
-			invalidos = new String[] { "", "  ", "  Ana", "Ana  ", "1234", "Pablo123", "Luis¿?", "pepe---luis", "pepe--", };
+			invalidos = new String[] { "", "  ", "  Ana", "Ana  ", "1234", "Pablo123", "Luis¿?", "pepe---luis", "pepe--", cadenaMaxima };
 			for(String nombre : invalidos) {
 				try {
 					Validacion.comprobarNombre(nombre);
@@ -128,7 +152,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos apellidos incorrectos
-			invalidos = new String[] { "", "  ", "1234", "Muñoz 12345", "¿López?", "  Ortiz", "Ortiz  ", "Lopez-", "Dominguez--Garcia" };
+			invalidos = new String[] { "", "  ", "1234", "Muñoz 12345", "¿López?", "  Ortiz", "Ortiz  ", "Lopez-", "Dominguez--Garcia", cadenaMaxima };
 			for(String apellidos : invalidos) {
 				try {
 					Validacion.comprobarApellidos(apellidos);
@@ -185,7 +209,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos domicilios incorrectos
-			invalidos = new String[] { "", "  ", "1234", "¿¿??", "A$*^!·?=", "  Calle", "  Calle", "Calle /\\-.", "C/Mata " };
+			invalidos = new String[] { "", "  ", "1234", "¿¿??", "A$*^!·?=", "  Calle", "  Calle", "Calle /\\-.", "C/Mata ", cadenaMaxima };
 			for(String domicilio : invalidos) {
 				try {
 					Validacion.comprobarDomicilio(domicilio);
@@ -213,7 +237,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos números de domicilio incorrectos
-			invalidos = new String[] { "", "  ", "abcd", "-12", "8 A", "  2", "2  ", "a", "8AB", "0,59", "1.890" };
+			invalidos = new String[] { "", "  ", "abcd", "-12", "8 A", "  2", "2  ", "a", "8AB", "0,59", "1.890", numeroMaximo };
 			for(String numero : invalidos) {
 				try {
 					Validacion.comprobarNumero(numero);
@@ -222,7 +246,7 @@ public class PruebasValidacion extends TestCase {
 				}
 			}
 			// Probamos números de domicilio correctos
-			validos = new String[] { "0", "18", "590", "4B" };
+			validos = new String[] { "0", "18", "590", "4B", numeroMaximo.substring(0, numeroMaximo.length() - 1) + "A" };
 			for(String numero : validos) {
 				try {
 					Validacion.comprobarNumero(numero);
@@ -241,7 +265,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos pisos de domicilio incorrectos
-			invalidos = new String[] { "", "  ", "abcd", "-12", "8A", "0,59", "1.890", "G", "18  ", "  18" };
+			invalidos = new String[] { "", "  ", "abcd", "-12", "8A", "0,59", "1.890", "G", "18  ", "  18", numeroMaximo };
 			for(String piso : invalidos) {
 				try {
 					Validacion.comprobarPiso(piso);
@@ -269,7 +293,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos puertas de domicilio incorrectos
-			invalidos = new String[] { "", " ", "abcd", "1234", "1", "AB", "pq", "Ñ", "Ç", "Á", "é" };
+			invalidos = new String[] { "", " ", "abcd", "1234", "1", "AB", "pq", "Ñ", "Ç", "Á", "é", cadenaMaxima };
 			for(String puerta : invalidos) {
 				try {
 					Validacion.comprobarPuerta(puerta);
@@ -297,7 +321,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos localidades incorrectas
-			invalidos = new String[] { "", "  ", "1234", "  Toledo", "Toledo  ", "Ciudad 12345", "**Madrid**" };
+			invalidos = new String[] { "", "  ", "1234", "  Toledo", "Toledo  ", "Ciudad 12345", "**Madrid**", cadenaMaxima };
 			for(String localidad : invalidos) {
 				try {
 					Validacion.comprobarLocalidad(localidad);
@@ -325,7 +349,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos códigos postales incorrectos
-			invalidos = new String[] { "", "  ", "1234", "abc", "FGHIJ", "13000W", "**123", "18020  ", "  18020" };
+			invalidos = new String[] { "", "  ", "1234", "abc", "FGHIJ", "13000W", "**123", "18020  ", "  18020", numeroMaximo };
 			for(String codigo : invalidos) {
 				try {
 					Validacion.comprobarCodigoPostal(codigo);
@@ -353,7 +377,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos provincias incorrectas
-			invalidos = new String[] { "", "  ", "1234", "Badajoz  ", "  Badajoz", "Provincia 12345", "**Badajoz**" };
+			invalidos = new String[] { "", "  ", "1234", "Badajoz  ", "  Badajoz", "Provincia 12345", "**Badajoz**", cadenaMaxima };
 			for(String provincia : invalidos) {
 				try {
 					Validacion.comprobarProvincia(provincia);
@@ -381,7 +405,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos correos electrónicos incorrectos
-			invalidos = new String[] { "", "  ", "1234", "abcd", "pedro@novale", "pedro.garcia@novale", "pedro.com", "a@.c", "maria@yahoo.es  ", "  maria@yahoo.es" };
+			invalidos = new String[] { "", "  ", "1234", "abcd", "pedro@novale", "pedro.garcia@novale", "pedro.com", "a@.c", "maria@yahoo.es  ", "  maria@yahoo.es", cadenaMaxima };
 			for(String correo : invalidos) {
 				try {
 					Validacion.comprobarCorreoElectronico(correo);
@@ -409,7 +433,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos teléfonos fijos incorrectos
-			invalidos = new String[] { "", "  ", "1234", "abcd", "555666777", "91 1201 888", "900112233x", "9001122??", "926111222  ", "  926111222" };
+			invalidos = new String[] { "", "  ", "1234", "abcd", "555666777", "91 1201 888", "900112233x", "9001122??", "926111222  ", "  926111222", numeroMaximo };
 			for(String telefono : invalidos) {
 				try {
 					Validacion.comprobarTelefonoFijo(telefono);
@@ -437,7 +461,7 @@ public class PruebasValidacion extends TestCase {
 		
 		try {
 			// Probamos teléfonos móviles incorrectos
-			invalidos = new String[] { "", "  ", "1234", "abcd", "555666777", "612 127 914", "600112233x", "6001122??", "626111222  ", "  626111222" };
+			invalidos = new String[] { "", "  ", "1234", "abcd", "555666777", "612 127 914", "600112233x", "6001122??", "626111222  ", "  626111222", numeroMaximo };
 			for(String telefono : invalidos) {
 				try {
 					Validacion.comprobarTelefonoMovil(telefono);
@@ -459,13 +483,41 @@ public class PruebasValidacion extends TestCase {
 		}	
 	}
 	
+	/** Pruebas de nombres de usuario */
+	public void testUsuarios() {
+		String[] invalidos, validos;
+		
+		try {
+			// Probamos nombres de usuario incorrectos
+			invalidos = new String[] { "", "  ", "123abc", "abc$$$", "ÁÉÍÓÚáéíóú", "ÑÑÑÑññññ", "abc123456  ", "  abc123456", cadenaMaxima };
+			for(String usuario : invalidos) {
+				try {
+					Validacion.comprobarUsuario(usuario);
+					fail("El nombre de usuario '" + usuario + "' debería ser inválido.");
+				} catch(LoginIncorrectoException e) {
+				}
+			}
+			// Probamos nombres de usuario correctos
+			validos = new String[] { "abc123", "a11111111", "abcdefgh", "UsEr123rEsU" };
+			for(String usuario : validos) {
+				try {
+					Validacion.comprobarUsuario(usuario);
+				} catch(LoginIncorrectoException e) {
+					fail("El nombre de usuario '" + usuario + "' debería ser válido.");
+				}
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
 	/** Pruebas de contraseñas */
 	public void testContraseñas() {
 		String[] invalidos, validos;
 		
 		try {
 			// Probamos contraseñas incorrectas
-			invalidos = new String[] { "", "  ", "abc123", "abc$$$123", "ÁÉÍÓÚáéíóú", "ÑÑÑÑññññ", "abc123456  ", "  abc123456" };
+			invalidos = new String[] { "", "  ", "abc123", "abc$$$123", "ÁÉÍÓÚáéíóú", "ÑÑÑÑññññ", "abc123456  ", "  abc123456", cadenaMaxima };
 			for(String clave : invalidos) {
 				try {
 					Validacion.comprobarContraseña(clave);
@@ -480,6 +532,120 @@ public class PruebasValidacion extends TestCase {
 					Validacion.comprobarContraseña(clave);
 				} catch(ContraseñaIncorrectaException e) {
 					fail("La contraseña '" + clave + "' debería ser válida.");
+				}
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de fechas de citas */
+	@SuppressWarnings("deprecation")
+	public void testFechasCitas() {
+		Date[] invalidos, validos;
+		
+		try {
+			// Probamos fechas de citas incorrectas
+			invalidos = new Date[] { new Date(1920 - 1900, 4, 4) };
+			for(Date fecha : invalidos) {
+				try {
+					Validacion.comprobarFechaCita(fecha);
+					fail("La fecha de cita '" + fecha + "' debería ser inválida.");
+				} catch(FechaCitaIncorrectaException e) {
+				}
+			}
+			// Probamos fechas de citas correctas
+			validos = new Date[] { new Date(2015 - 1900, 4, 4) };
+			for(Date fecha : validos) {
+				try {
+					Validacion.comprobarFechaCita(fecha);
+				} catch(FechaCitaIncorrectaException e) {
+					fail("La fecha de cita '" + fecha + "' debería ser válida.");
+				}
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de fechas de sustituciones */
+	@SuppressWarnings("deprecation")
+	public void testFechasSustituciones() {
+		Date[] invalidos, validos;
+		
+		try {
+			// Probamos fechas de citas incorrectas
+			invalidos = new Date[] { new Date(1920 - 1900, 4, 4) };
+			for(Date fecha : invalidos) {
+				try {
+					Validacion.comprobarFechaSustitucion(fecha);
+					fail("La fecha de cita '" + fecha + "' debería ser inválida.");
+				} catch(FechaSustitucionIncorrectaException e) {
+				}
+			}
+			// Probamos fechas de citas correctas
+			validos = new Date[] { new Date(2015 - 1900, 4, 4) };
+			for(Date fecha : validos) {
+				try {
+					Validacion.comprobarFechaSustitucion(fecha);
+				} catch(FechaSustitucionIncorrectaException e) {
+					fail("La fecha de cita '" + fecha + "' debería ser válida.");
+				}
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de horas de sustituciones */
+	public void testHorasSustituciones() {
+		int[][] invalidos, validos;
+		
+		try {
+			// Probamos horas de sustituciones incorrectas
+			invalidos = new int[][] { new int[] { 0, 0 }, new int[] { 0, 23 }, new int[] { 14, 23 }, new int[] { 15, 10 }, new int[] { 17, 17 } };
+			for(int[] horas : invalidos) {
+				try {
+					Validacion.comprobarHorasSustitucion(horas[0], horas[1]);
+					fail("Las horas de sustitución " + horas[0] + " - " + horas[1] + " debería ser inválida.");
+				} catch(HoraSustitucionIncorrectaException e) {
+				}
+			}
+			// Probamos horas de sustituciones correctas
+			validos = new int[][] { new int[] { 10, 15 }, new int[] { IConstantes.HORA_INICIO_JORNADA, IConstantes.HORA_FIN_JORNADA } };
+			for(int[] horas : validos) {
+				try {
+					Validacion.comprobarHorasSustitucion(horas[0], horas[1]);
+				} catch(HoraSustitucionIncorrectaException e) {
+					fail("Las horas de sustitución " + horas[0] + " - " + horas[1] + " debería ser inválida.");
+				}
+			}
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+	}
+	
+	/** Pruebas de identificadores de volantes */
+	public void testIdVolantes() {
+		String[] invalidos, validos;
+		
+		try {
+			// Probamos ids de volantes incorrectos
+			invalidos = new String[] { "", "  ", "abc", "123a", "a123", "-150", "3.14", "4,105", "  1234", "1234  ", numeroMaximo };
+			for(String id : invalidos) {
+				try {
+					Validacion.comprobarVolante(id);
+					fail("El id de volante '" + id + "' debería ser inválida.");
+				} catch(IdVolanteIncorrectoException e) {
+				}
+			}
+			// Probamos ids de volantes correctos
+			validos = new String[] { "1", "100", "500500" };
+			for(String id : validos) {
+				try {
+					Validacion.comprobarVolante(id);
+				} catch(IdVolanteIncorrectoException e) {
+					fail("El id de volante '" + id + "' debería ser válida.");
 				}
 			}
 		} catch(Exception e) {
