@@ -1,0 +1,54 @@
+\subsection{Vista Lógica}
+
+En los diferentes puntos de esta sección se van a detallar las decisiones de diseño que se han tenido en cuenta a la hora de diseñar y desarrollar los tres sistemas: unidad de citación o cliente; servidor front-end y servidor de respaldo.
+
+\subsubsection{Arquitectura cliente-servidor}
+
+\subsubsection{Arquitectura multicapa}
+Cabe destacar que todos los sistemas se han desarrollado siguiendo una arquitectura multicapa. De este modo, las capas con las que cuenta cada sistema son las siguientes: 
+
+\begin{milista}
+	\item \textbf{Unidad de citación}: comunicaciones, dominio y presentación. (ver \diagrama{cliente}{paquetes}{})
+	\item \textbf{Servidor front-end}: comunicaciones, dominio, persistencia y presentación. (ver \diagrama{frontend}{paquetes}{})
+	\item \textbf{Servidor de respaldo}: comunicaciones, dominio, persistencia y presentación. (ver \diagrama{respaldo}{paquetes}{})
+\end{milista}
+
+Utilizando este enfoque multicapa, se sigue el principio de mínimo acoplamiento y máxima coherencia, desacoplando los elementos de una capa de los de otra. De este modo, se facilita el mantenimiento y extensibilidad del sistema, pues cuando se realice el cambio en algún elemento de una capa, el resto de capas no se verán afectadas.
+
+-------- ¿¿ HABLAR DE COMO SE COMUNICAN LAS CAPAS ?? -------------------
+
+En los siguientes apartados se comentarán las decisiones de diseño que se han tenido en cuenta para cada una de las capas de cada sistema desarrollado.
+
+\subsubsection{Unidad de Citación}
+
+\paragraph{Capa de comunicaciones}
+
+\paragraph{Capa de dominio}
+En el sistema cliente, la capa de dominio sólo contiene clases para el control de este sistema, que se encargan de mostrar los diferentes elementos de la capa de presentación y de comunicarse con el servidor front-end, utilizando para ello la capa de comunicaciones. 
+
+\paragraph{Capa de presentación}
+
+\paragraph{Capa de persistencia}
+La unidad de citación representa el cliente dentro de una arquitectura cliente-servidor, por lo que no debe realizar ninguna acción relacionada con la persistencia, sino que estas operaciones debe delegarlas al servidor. 
+
+
+\subsubsection{Servidor front-end}
+
+\paragraph{Capa de comunicaciones}
+
+\paragraph{Capa de dominio}
+
+\paragraph{Capa de presentación}
+
+\paragraph{Capa de persistencia}
+
+
+\subsubsection{Servidor de respaldo}
+
+\paragraph{Capa de comunicaciones}
+
+\paragraph{Capa de dominio}
+
+\paragraph{Capa de presentación}
+
+\paragraph{Capa de persistencia}
