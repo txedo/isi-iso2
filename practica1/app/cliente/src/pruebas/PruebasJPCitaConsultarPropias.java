@@ -48,6 +48,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 	
 	private boolean beneficiarioEliminado;
 		
+	@SuppressWarnings("deprecation")
 	protected void setUp() {
 
 		beneficiarioEliminado = false;
@@ -131,6 +132,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 		assertTrue(tblCitas.getRowCount()==0);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testConsultarCitas() {
 		Cita c1 = null;
 		
@@ -159,6 +161,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testObservadorBeneficiario () {
 		// Comprueba que cuando se actualiza o elimina un beneficiario desde un teminal,
 		// las ventanas de otros terminales se actualizan correctamente
@@ -224,6 +227,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			assertTrue(tblCitas.getRowCount()==0);
 			// Pedimos una cita para este médico desde el controlador auxiliar
 			WindowInterceptor.init(new Trigger() {
+				@SuppressWarnings("deprecation")
 				public void run() throws Exception {
 					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 				}
@@ -244,6 +248,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 		try {
 			// Ahora procedemos a eliminar la cita desde el segundo administrador
 			WindowInterceptor.init(new Trigger() {
+				@SuppressWarnings("deprecation")
 				public void run() throws Exception {
 					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
 				}

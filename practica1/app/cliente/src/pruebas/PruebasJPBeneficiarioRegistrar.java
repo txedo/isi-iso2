@@ -60,21 +60,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 	private ComboBox cmbCentros;
 	private Button btnCrear;
 	private Button btnRestablecer;
-	private JTextField jtxtNIF;
-	private JTextField jtxtNSS;
-	private JTextField jtxtNombre;
-	private JTextField jtxtApellidos;
-	private JTextField jtxtDomicilio;
 	private JTextField jtxtFechaNacimiento;
-	private JTextField jtxtNumero;
-	private JTextField jtxtPiso;
-	private JTextField jtxtPuerta;
-	private JTextField jtxtLocalidad;
-	private JTextField jtxtProvincia;
-	private JTextField jtxtCP;
-	private JTextField jtxtCorreo;
-	private JTextField jtxtTelefonoFijo;
-	private JTextField jtxtTelefonoMovil;
 	private JComboBox jcmbCentros;
 	private Window winPrincipal;
 	
@@ -116,21 +102,7 @@ public class PruebasJPBeneficiarioRegistrar extends org.uispec4j.UISpecTestCase 
 			cmbCentros = pnlPanel.getComboBox("cmbCentros");
 			btnCrear = pnlPanel.getButton("btnCrear");
 			btnRestablecer = pnlPanel.getButton("btnRestablecer");
-			jtxtNIF = (JTextField)txtNIF.getAwtComponent();
-			jtxtNSS = (JTextField)txtNSS.getAwtComponent();
-			jtxtNombre = (JTextField)txtNombre.getAwtComponent();
-			jtxtApellidos = (JTextField)txtApellidos.getAwtComponent();
 			jtxtFechaNacimiento = (JTextField)txtFechaNacimiento.getAwtComponent();
-			jtxtDomicilio = (JTextField)txtDomicilio.getAwtComponent();
-			jtxtNumero = (JTextField)txtNumero.getAwtComponent();
-			jtxtPiso = (JTextField)txtPiso.getAwtComponent();
-			jtxtPuerta = (JTextField)txtPuerta.getAwtComponent();
-			jtxtLocalidad = (JTextField)txtLocalidad.getAwtComponent();
-			jtxtCP = (JTextField)txtCP.getAwtComponent();
-			jtxtProvincia = (JTextField)txtProvincia.getAwtComponent();
-			jtxtCorreo = (JTextField)txtCorreo.getAwtComponent();
-			jtxtTelefonoFijo = (JTextField)txtTelefonoFijo.getAwtComponent();
-			jtxtTelefonoMovil = (JTextField)txtTelefonoMovil.getAwtComponent();
 			jcmbCentros = (JComboBox)cmbCentros.getAwtComponent();
 		} catch(Exception e) {
 			fail(e.toString());

@@ -40,14 +40,9 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 	private Medico cabecera;
 	private TipoMedico tCabecera;
 	private Beneficiario beneficiarioPrueba1, beneficiarioPrueba2;
-	private PeriodoTrabajo periodo1;
-	
-	private boolean valido;
-	private String login;
 	
 	@SuppressWarnings("deprecation")
 	protected void setUp() {
-		valido = false;
 		try {
 			// Establecemos conexión con el servidor front-end
 			controlador = new ControladorCliente();

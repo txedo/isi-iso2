@@ -2,11 +2,8 @@ package pruebas;
 
 import java.util.Date;
 import java.util.Vector;
-
 import javax.swing.JComboBox;
 import javax.swing.JList;
-import javax.swing.JTextField;
-
 import org.uispec4j.Button;
 import org.uispec4j.ComboBox;
 import org.uispec4j.ListBox;
@@ -16,12 +13,9 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
 import presentacion.JPVolanteEmitir;
 import presentacion.auxiliar.OperacionesInterfaz;
-
 import comunicaciones.ConfiguracionCliente;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.DiaSemana;
@@ -55,11 +49,6 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 	private ComboBox cmbEspecialidad;
 	private ListBox lstEspecialistas;
 	private JComboBox jcmbIdentificacion;
-	private JTextField jtxtIdentificacion;
-	private JTextField jtxtNIF;
-	private JTextField jtxtNSS;
-	private JTextField jtxtNombre;
-	private JTextField jtxtApellidos;
 	private JComboBox jcmbEspecialidad;
 	private JList jlstEspecialistas;
 	private Window winPrincipal;
@@ -136,11 +125,6 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 			cmbEspecialidad = pnlPanel.getComboBox("cmbEspecialidad");
 			
 			jcmbIdentificacion = (JComboBox)cmbIdentificacion.getAwtComponent();
-			jtxtIdentificacion = (JTextField)txtIdentificacion.getAwtComponent();
-			jtxtNIF = (JTextField)txtNIF.getAwtComponent();
-			jtxtNSS = (JTextField)txtNSS.getAwtComponent();
-			jtxtNombre = (JTextField)txtNombre.getAwtComponent();
-			jtxtApellidos = (JTextField)txtApellidos.getAwtComponent();
 			jlstEspecialistas = (JList)lstEspecialistas.getAwtComponent();
 			jcmbEspecialidad = (JComboBox)cmbEspecialidad.getAwtComponent();
 		} catch(Exception e) {

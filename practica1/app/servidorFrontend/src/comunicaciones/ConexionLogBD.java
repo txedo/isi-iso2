@@ -18,7 +18,7 @@ public class ConexionLogBD implements IConexionLog {
 	public void ponerMensaje(String tipoMensaje, String mensaje) throws SQLException {
 		EntradaLog entrada;
 		
-		entrada = new EntradaLog("---", tipoMensaje, mensaje);
+		entrada = new EntradaLog(null, tipoMensaje, mensaje);
 		FPEntradaLog.insertar(entrada);
 	}
 	

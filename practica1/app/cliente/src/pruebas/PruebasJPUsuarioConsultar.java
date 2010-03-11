@@ -34,10 +34,12 @@ import dominio.conocimiento.Citador;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.Direccion;
 import dominio.conocimiento.Especialista;
+import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.TipoMedico;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.ContraseñaIncorrectaException;
@@ -269,9 +271,9 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			// Ponemos una contraseña invalida y comprobamos que se selecciona
 			jtxtPassword.setText("123456");			
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new ContraseñaIncorrectaException().getMessage());
-			jtxtPassword.setText("12345678");
 			// Comprobamos que al no coincidir las contraseñas, se selecciona la primera contraseña
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), new ContraseñaIncorrectaException().getMessage());
+			jtxtPassword.setText("12345678");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar), "Las contraseñas no coinciden.");
 			jtxtPassword.setText("12345678");
 			jtxtPasswordConf.setText("12345678");
 			// Probamos un e-mail invalido y comprobamos que se selecciona (este campo es opcional)
@@ -317,7 +319,14 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		txtNIFBuscado.setText(cabecera.getNif());
 		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 		assertEquals(txtNIF.getText(), cabecera.getNif());
-		assertEquals(jcmbRol.getSelectedItem().toString(), "Medico (Cabecera)");
+		assertEquals(jcmbRol.getSelectedItem().toString(), "Médico (Cabecera)");
+		assertFalse(txtEspecialidad.isVisible());
+		assertTrue(btnCalendario.isVisible());
+		panel.setSoloMedicos(true);
+		txtNIFBuscado.setText(cabecera.getNif());
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Médico encontrado.");
+		assertEquals(txtNIF.getText(), cabecera.getNif());
+		assertEquals(jcmbRol.getSelectedItem().toString(), "Médico (Cabecera)");
 		assertFalse(txtEspecialidad.isVisible());
 		assertTrue(btnCalendario.isVisible());
 	}
@@ -326,13 +335,15 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		txtNIFBuscado.setText(especialista.getNif());
 		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
 		assertEquals(txtNIF.getText(), especialista.getNif());
-		assertEquals(jcmbRol.getSelectedItem().toString(), "Medico (Especialista)");
+		assertEquals(jcmbRol.getSelectedItem().toString(), "Médico (Especialista)");
 		assertTrue(txtEspecialidad.isVisible());
 		assertTrue(btnCalendario.isVisible());
 	}
 	
 	public void testActualizarAdministrador() {
+		Usuario usuarioGet;
 		String nuevoNombre = "nombre nuevo del administrador";
+		String nuevaPass = "nuevapass";
 		
 		// Actualizamos el nombre del administrador
 		try {
@@ -394,7 +405,33 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			fail(e.toString());
 		}
 		
-		// TODO: Pruebas para actualizar la contraseña
+		// Cambiamos la contraseña del administrador
+		try {
+			// Buscamos el usuario
+			txtNIFBuscado.setText(admin.getNif());
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Usuario encontrado.");
+			assertEquals(txtNIF.getText(), admin.getNif());
+			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
+			assertTrue(chkEditar.isEnabled());
+			assertFalse(chkEditar.isSelected());
+			// Comprobamos que, inicialmente, el botón Guardar no está habilitado
+			assertFalse(btnGuardar.isEnabled());
+			// A continuación se pasará a tratar de editar el administrador
+			chkEditar.select();
+			assertTrue(chkEditar.isSelected());
+			// Comprobamos que el boton de Guardar ahora sí está habilitado
+			assertTrue(btnGuardar.isEnabled());
+			// Cambiamos la contraseña
+			txtPassword.setPassword(nuevaPass);
+			txtPasswordConf.setPassword(nuevaPass);
+			// Guardamos el administrador
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
+			// Comprobamos que la contraseña del administrador ha cambiado
+			usuarioGet = controlador.consultarUsuario(admin.getNif());
+			assertFalse(usuarioGet.getPassword().equals(admin.getPassword()));
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 	}
 	
 	public void testActualizarCitador() {
@@ -593,7 +630,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
 			
 			// Creamos una cita de prueba		
-			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
+			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, IConstantes.DURACION_CITA), dominio.conocimiento.IConstantes.DURACION_CITA);
 		
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());
@@ -761,7 +798,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
 			
 			// Creamos una cita de prueba		
-			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, 15), dominio.conocimiento.IConstantes.DURACION_CITA);
+			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, IConstantes.DURACION_CITA), dominio.conocimiento.IConstantes.DURACION_CITA);
 
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());
@@ -878,8 +915,8 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 		assertTrue(txtNombre.getText().equals(""));
 		assertTrue(txtApellidos.getText().equals(""));
 		assertTrue(txtLogin.getText().equals(""));
-		assertTrue(jtxtPassword.getText().equals(""));
-		assertTrue(jtxtPasswordConf.getText().equals(""));
+		assertTrue(jtxtPassword.getPassword().length == 0);
+		assertTrue(jtxtPasswordConf.getPassword().length == 0);
 		assertTrue(txtCorreoElectronico.getText().equals(""));
 		assertTrue(txtTelefonoFijo.getText().equals(""));
 		assertTrue(txtTelefonoMovil.getText().equals(""));

@@ -81,22 +81,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	private Button btnEliminar;
 	private CheckBox chkEditar;
 	private JComboBox jcmbIdentificacion;
-	private JTextField jtxtIdentificacion;
-	private JTextField jtxtNIF;
-	private JTextField jtxtNSS;
-	private JTextField jtxtNombre;
-	private JTextField jtxtApellidos;
-	private JTextField jtxtDomicilio;
 	private JTextField jtxtFechaNacimiento;
-	private JTextField jtxtNumero;
-	private JTextField jtxtPiso;
-	private JTextField jtxtPuerta;
-	private JTextField jtxtLocalidad;
-	private JTextField jtxtProvincia;
-	private JTextField jtxtCP;
-	private JTextField jtxtCorreo;
-	private JTextField jtxtTelefonoFijo;
-	private JTextField jtxtTelefonoMovil;
 	private JComboBox jcmbCentros;
 	private JCheckBox jchkEditar;
 	private JButton jbtnEliminar;
@@ -181,22 +166,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			btnEliminar = pnlPanel.getButton("btnEliminar");
 			chkEditar = pnlPanel.getCheckBox("chkEditar");
 			jcmbIdentificacion = (JComboBox)cmbIdentificacion.getAwtComponent();
-			jtxtIdentificacion = (JTextField)txtIdentificacion.getAwtComponent();
-			jtxtNIF = (JTextField)txtNIF.getAwtComponent();
-			jtxtNSS = (JTextField)txtNSS.getAwtComponent();
-			jtxtNombre = (JTextField)txtNombre.getAwtComponent();
-			jtxtApellidos = (JTextField)txtApellidos.getAwtComponent();
 			jtxtFechaNacimiento = (JTextField)txtFechaNacimiento.getAwtComponent();
-			jtxtDomicilio = (JTextField)txtDomicilio.getAwtComponent();
-			jtxtNumero = (JTextField)txtNumero.getAwtComponent();
-			jtxtPiso = (JTextField)txtPiso.getAwtComponent();
-			jtxtPuerta = (JTextField)txtPuerta.getAwtComponent();
-			jtxtLocalidad = (JTextField)txtLocalidad.getAwtComponent();
-			jtxtCP = (JTextField)txtCP.getAwtComponent();
-			jtxtProvincia = (JTextField)txtProvincia.getAwtComponent();
-			jtxtCorreo = (JTextField)txtCorreo.getAwtComponent();
-			jtxtTelefonoFijo = (JTextField)txtTelefonoFijo.getAwtComponent();
-			jtxtTelefonoMovil = (JTextField)txtTelefonoMovil.getAwtComponent();
 			jcmbCentros = (JComboBox)cmbCentros.getAwtComponent();
 			jchkEditar = (JCheckBox)chkEditar.getAwtComponent();
 			jbtnGuardar = (JButton)btnGuardar.getAwtComponent();
@@ -269,8 +239,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
 			// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
-			assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
-			assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
+			assertEquals(txtNIF.getText(), beneficiarioPrueba.getNif());
+			assertEquals(txtNSS.getText(), beneficiarioPrueba.getNss());
 			// A continuación se pasará a tratar de editar el beneficiario
 			assertFalse(chkEditar.isSelected());
 			chkEditar.select();
@@ -355,8 +325,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		txtIdentificacion.setText(beneficiarioPrueba.getNif());
 		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 		// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
-		assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
-		assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
+		assertEquals(txtNIF.getText(), beneficiarioPrueba.getNif());
+		assertEquals(txtNSS.getText(), beneficiarioPrueba.getNss());
 	}
 	
 	public void testBuscarBeneficiarioPorNSS () {
@@ -366,8 +336,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		txtIdentificacion.setText(beneficiarioPrueba.getNss());
 		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 		// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
-		assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
-		assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
+		assertEquals(txtNIF.getText(), beneficiarioPrueba.getNif());
+		assertEquals(txtNSS.getText(), beneficiarioPrueba.getNss());
 	}
 	
 	public void testBuscarBeneficiarioSinMedicoAsignado () {
@@ -384,8 +354,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			txtIdentificacion.setText(beneficiarioPrueba.getNss());
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
-			assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
-			assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
+			assertEquals(txtNIF.getText(), beneficiarioPrueba.getNif());
+			assertEquals(txtNSS.getText(), beneficiarioPrueba.getNss());
 			// En el textbox de médico, no debe aparecer ninguno
 			assertEquals(txtMedicoAsignado.getText(), "(ninguno)");
 		} catch(Exception e) {
@@ -402,8 +372,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
-			assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
-			assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
+			assertEquals(txtNIF.getText(), beneficiarioPrueba.getNif());
+			assertEquals(txtNSS.getText(), beneficiarioPrueba.getNss());
 			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
 			assertFalse(chkEditar.isSelected());
@@ -441,8 +411,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			txtIdentificacion.setText(beneficiarioPrueba.getNif());
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
 			// Para saber que se ha encontrado con éxito, comprobamos que los campos txtNIF y txtNSS no son vacios
-			assertEquals(jtxtNIF.getText(), beneficiarioPrueba.getNif());
-			assertEquals(jtxtNSS.getText(), beneficiarioPrueba.getNss());
+			assertEquals(txtNIF.getText(), beneficiarioPrueba.getNif());
+			assertEquals(txtNSS.getText(), beneficiarioPrueba.getNss());
 			// Comprobamos que, inicalmente, el checkbox Editar está habilitado y no está seleccionado
 			assertTrue(chkEditar.isEnabled());
 			assertFalse(chkEditar.isSelected());

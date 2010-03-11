@@ -2,11 +2,8 @@ package pruebas;
 
 import java.util.Date;
 import java.util.Vector;
-
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-
 import org.uispec4j.Button;
 import org.uispec4j.ComboBox;
 import org.uispec4j.Panel;
@@ -15,11 +12,9 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
 import presentacion.JPBeneficiarioConsultar;
 import presentacion.JPCitaVolanteTramitar;
 import presentacion.auxiliar.OperacionesInterfaz;
-
 import com.toedter.calendar.JDateChooser;
 import comunicaciones.ConfiguracionCliente;
 import dominio.conocimiento.Beneficiario;
@@ -71,29 +66,12 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	private TextBox txtMedico;
 	private Button btnRegistrar;
 	
-	// Componentes Swing
-	// Primera parte
-	private JButton jbtnBuscar;
 	private JComboBox jcmbIdentificacion;
-	private JTextField jtxtIdentificacion;
-	private JTextField jtxtNIF;
-	private JTextField jtxtNSS;
-	private JTextField jtxtNombre;
-	private JTextField jtxtApellidos;
-	// Segunda parte
-	private JTextField jtxtNumeroVolante;
-	private JButton jbtnBuscarVolante;
-	private JTextField jtxtMedicoAsignado;
-	private JTextField jtxtCentro;
-	// Tercera parte
-	private JTextField jtxtDiaCita;
 	private JComboBox jcmbHorasCitas;
-	private JTextField jtxtMedico;
-	private JButton jbtnRegistrar;
 	
-	private Medico cabecera1, cabecera2;
+	private Medico cabecera1;
 	private TipoMedico tCabecera;
-	private Medico especialista;
+	private Medico especialista1, especialista2;
 	private TipoMedico tEspecialista;
 	private Beneficiario beneficiarioPrueba;
 	
@@ -105,6 +83,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 	private boolean eliminado;
 	private Vector<Date> diaSustitucion;
 	
+	@SuppressWarnings("deprecation")
 	protected void setUp() {
 		medicosEliminados = new Vector<Medico>();
 		eliminado = false;
@@ -139,15 +118,6 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			cabecera1.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
 			cabecera1 = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera1); 
 			
-			// Creamos otro médico de cabecera para que pueda sustituir al primero 
-			tCabecera = new Cabecera();
-			cabecera2 = new Medico();
-			cabecera2.setNombre("Sustituto");
-			cabecera2.setApellidos("García");
-			cabecera2.setTipoMedico(tCabecera);
-			cabecera2.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Martes));
-			cabecera2 = (Medico)UtilidadesPruebas.crearUsuario(controlador, cabecera2); 
-
 			// Creamos el beneficiario en el mismo centro que el médico, para que no se le asigne otro diferente 
 			beneficiarioPrueba = new Beneficiario ();
 			beneficiarioPrueba.setNombre("beneficiario");
@@ -160,12 +130,20 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			
 			// Creamos el médico especialista que será el receptor de los volantes
 			tEspecialista = new Especialista("Neurologia");
-			especialista = new Medico();
-			especialista.setNombre("Juan");
-			especialista.setApellidos("Especialista");
-			especialista.setTipoMedico(tEspecialista);
-			especialista.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
-			especialista = (Medico)UtilidadesPruebas.crearUsuario(controlador, especialista); 
+			especialista1 = new Medico();
+			especialista1.setNombre("Juan");
+			especialista1.setApellidos("Especialista");
+			especialista1.setTipoMedico(tEspecialista);
+			especialista1.getCalendario().add(new PeriodoTrabajo(10, 16, DiaSemana.Miercoles));
+			especialista1 = (Medico)UtilidadesPruebas.crearUsuario(controlador, especialista1); 
+
+			// Creamos el médico especialista que sustituirá al anterior
+			especialista2 = new Medico();
+			especialista2.setNombre("Sustituto");
+			especialista2.setApellidos("Especialista");
+			especialista2.setTipoMedico(tEspecialista);
+			especialista2.getCalendario().add(new PeriodoTrabajo(17, 23, DiaSemana.Miercoles));
+			especialista2 = (Medico)UtilidadesPruebas.crearUsuario(controlador, especialista2); 
 
 			// Obtenemos el panel
 			Panel p1 = winPrincipal.getPanel("jPanelGestionarCitas");
@@ -194,16 +172,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			btnRegistrar = pnlPanel.getButton("btnRegistrar");
 
 			// Componentes Swing
-			// Primera parte
 			jcmbIdentificacion = (JComboBox)cmbIdentificacion.getAwtComponent();
-			jtxtIdentificacion = (JTextField)txtIdentificacion.getAwtComponent();
-			jtxtNIF = (JTextField)txtNIF.getAwtComponent();
-			jtxtNSS = (JTextField)txtNSS.getAwtComponent();
-			jtxtNombre = (JTextField)txtNombre.getAwtComponent();
-			jtxtApellidos = (JTextField)txtApellidos.getAwtComponent();
-			// Segunda parte
-
-			// Tercera parte
 			jcmbHorasCitas = (JComboBox)cmbHorasCitas.getAwtComponent();
 			
 		} catch(Exception e) {
@@ -221,7 +190,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			// Eliminamos el medico de prueba, beneficiario de prueba y el especialista de prueba
 			controlador.eliminarMedico(cabecera1);
 			if (!eliminado) controlador.eliminarBeneficiario(beneficiarioPrueba);
-			controlador.eliminarMedico(especialista);
+			controlador.eliminarMedico(especialista1);
 			// Cerramos la sesión y la ventana del controlador			
 			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
@@ -353,7 +322,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
 		try {
-			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista, cabecera1.getLogin(), cabecera1.getLogin());
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista1, cabecera1.getLogin(), cabecera1.getLogin());
 		} catch (Exception e) {
 			fail(e.toString());
 		}
@@ -362,8 +331,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			esperado = "Volante encontrado.";
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
 			// Comprobamos que los campos se actualizan correctamente
-			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
-			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			assertEquals(especialista1.getApellidos() + ", " + especialista1.getNombre() + " (" + especialista1.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista1.getCentroSalud().getNombre() + "; " + especialista1.getCentroSalud().getDireccion(), txtCentro.getText());
 			// Comprobamos que los campos de pedir cita se han habilitado
 			assertTrue(txtDiaCita.isEnabled());
 			assertTrue(cmbHorasCitas.isEnabled());
@@ -418,6 +387,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testTramitarVolanteCitaOtroBeneficiario () {
 		String esperado = "";
 		boolean valido = false;
@@ -445,7 +415,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		}while(!valido);
 		// Emitimos un segundo volante para este beneficiario
 		try {
-			idVolante = UtilidadesPruebas.emitirVolante(beneficiario, cabecera1, especialista, cabecera1.getLogin(), cabecera1.getLogin());
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiario, cabecera1, especialista1, cabecera1.getLogin(), cabecera1.getLogin());
 		} catch (Exception e) {
 			fail(e.toString());
 		}
@@ -507,7 +477,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertFalse(btnRegistrar.isEnabled());
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
 		try {
-			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista, cabecera1.getLogin(), cabecera1.getLogin());
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista1, cabecera1.getLogin(), cabecera1.getLogin());
 		} catch (Exception e) {
 			fail(e.toString());
 		}
@@ -516,8 +486,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			esperado = "Volante encontrado.";
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
 			// Comprobamos que los campos se actualizan correctamente
-			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
-			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			assertEquals(especialista1.getApellidos() + ", " + especialista1.getNombre() + " (" + especialista1.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista1.getCentroSalud().getNombre() + "; " + especialista1.getCentroSalud().getDireccion(), txtCentro.getText());
 			// Comprobamos que los campos de pedir cita se han habilitado
 			assertTrue(txtDiaCita.isEnabled());
 			assertTrue(cmbHorasCitas.isEnabled());	
@@ -529,7 +499,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			try {
 				// En este momento el segundo administrador pide una cita para el especialista receptor, en la hora seleccionada por el primero
 				// Para ello, se necesita un segundo volante con el mismo especialista. Se crea uno de prueba
-				idVolantePrueba = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista, cabecera1.getLogin(), cabecera1.getLogin());
+				idVolantePrueba = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista1, cabecera1.getLogin(), cabecera1.getLogin());
 				WindowInterceptor.init(new Trigger() {
 					@SuppressWarnings("deprecation")
 					public void run() throws Exception {
@@ -573,7 +543,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			}
 		}
 	}
-	
+
+	@SuppressWarnings("deprecation")
 	public void testObservadorCitasAnuladas () {
 	
 		String esperado = "";
@@ -603,7 +574,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertFalse(btnRegistrar.isEnabled());
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
 		try {
-			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista, cabecera1.getLogin(), cabecera1.getLogin());
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista1, cabecera1.getLogin(), cabecera1.getLogin());
 		} catch (Exception e) {
 			fail(e.toString());
 		}
@@ -612,8 +583,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			esperado = "Volante encontrado.";
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
 			// Comprobamos que los campos se actualizan correctamente
-			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
-			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			assertEquals(especialista1.getApellidos() + ", " + especialista1.getNombre() + " (" + especialista1.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista1.getCentroSalud().getNombre() + "; " + especialista1.getCentroSalud().getDireccion(), txtCentro.getText());
 			// Comprobamos que los campos de pedir cita se han habilitado
 			assertTrue(txtDiaCita.isEnabled());
 			assertTrue(cmbHorasCitas.isEnabled());	
@@ -625,7 +596,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			try {
 				// En este momento el segundo administrador pide una cita para el especialista receptor en la hora seleccionada por el primero
 				// Para ello, se necesita un segundo volante con el mismo especialista. Se crea uno de prueba
-				idVolantePrueba = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista, cabecera1.getLogin(), cabecera1.getLogin());
+				idVolantePrueba = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista1, cabecera1.getLogin(), cabecera1.getLogin());
 				WindowInterceptor.init(new Trigger() {
 					@SuppressWarnings("deprecation")
 					public void run() throws Exception {
@@ -662,7 +633,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				// La ventana del primer administrador se ha debido actualizar, mostrando que la fecha ya es válida 
 				txtDiaCita.setText("04/03/2015");
 				assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
-				assertEquals(txtMedico.getText(), especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")");
+				assertEquals(txtMedico.getText(), especialista1.getApellidos() + ", " + especialista1.getNombre() + " (" + especialista1.getNif() + ")");
 				
 				// Se emite una cita de prueba para el volante (desde el primer administrador)
 				controlador.pedirCita(beneficiarioPrueba, idVolante, new Date(2015-1900,3-1,4,horaInicio,0), IConstantes.DURACION_CITA);
@@ -726,7 +697,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertFalse(btnRegistrar.isEnabled());
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
 		try {
-			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista, cabecera1.getLogin(), cabecera1.getLogin());
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista1, cabecera1.getLogin(), cabecera1.getLogin());
 		} catch (Exception e) {
 			fail(e.toString());
 		}
@@ -735,8 +706,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			esperado = "Volante encontrado.";
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
 			// Comprobamos que los campos se actualizan correctamente
-			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
-			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			assertEquals(especialista1.getApellidos() + ", " + especialista1.getNombre() + " (" + especialista1.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista1.getCentroSalud().getNombre() + "; " + especialista1.getCentroSalud().getDireccion(), txtCentro.getText());
 			// Comprobamos que los campos de pedir cita se han habilitado
 			assertTrue(txtDiaCita.isEnabled());
 			assertTrue(cmbHorasCitas.isEnabled());
@@ -751,9 +722,9 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 					public void run() throws Exception {
 						Thread.sleep(100);
 						// Reemplazamos el periodo que ya tenia el medico
-						especialista.getCalendario().clear();
-						especialista.getCalendario().add(periodo2);
-						controladorAuxiliar.modificarMedico(especialista);
+						especialista1.getCalendario().clear();
+						especialista1.getCalendario().add(periodo2);
+						controladorAuxiliar.modificarMedico(especialista1);
 					}
 				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
@@ -770,7 +741,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				// Ahora procedemos a eliminar el medico desde el segundo administrador
 				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
-						controladorAuxiliar.eliminarMedico(especialista);
+						controladorAuxiliar.eliminarMedico(especialista1);
 					}
 				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
@@ -782,7 +753,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar borrando los campos, pues se ha eliminado el especialista
 				comprobarCamposRestablecidos();
-				medicosEliminados.add(especialista);
+				medicosEliminados.add(especialista1);
 			} catch (Exception e) {
 				fail (e.toString());
 			}
@@ -816,7 +787,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertFalse(btnRegistrar.isEnabled());
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
 		try {
-			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista, cabecera1.getLogin(), cabecera1.getLogin());
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista1, cabecera1.getLogin(), cabecera1.getLogin());
 		} catch (Exception e) {
 			fail(e.toString());
 		}
@@ -825,8 +796,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			esperado = "Volante encontrado.";
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), esperado);
 			// Comprobamos que los campos se actualizan correctamente
-			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
-			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			assertEquals(especialista1.getApellidos() + ", " + especialista1.getNombre() + " (" + especialista1.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista1.getCentroSalud().getNombre() + "; " + especialista1.getCentroSalud().getDireccion(), txtCentro.getText());
 			// Comprobamos que los campos de pedir cita se han habilitado
 			assertTrue(txtDiaCita.isEnabled());
 			assertTrue(cmbHorasCitas.isEnabled());
@@ -876,11 +847,12 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		}
 	}
 	
-	// TODO : Juanes, este método peta por el siguiente mensaje:
-	// excepciones.FechaNoValidaException: El médico que se quiere sustituir no trabaja en la fecha y horas indicadas.
+	@SuppressWarnings("deprecation")
 	public void testObservadorSustitucionRegistrada () {
+		String cadena;
+		
 		diaSustitucion = new Vector<Date>();
-		diaSustitucion.add(new Date("04/03/2015"));
+		diaSustitucion.add(new Date(2015 - 1900, 2, 4)); // Miércoles 4/Marzo/2015
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador
 			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN_AUXILIAR, IDatosConexionPruebas.PASSWORD_ADMIN_AUXILIAR);
@@ -906,7 +878,7 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 		assertFalse(btnRegistrar.isEnabled());
 		// Ahora emitimos un volante y lo buscamos para tramitarlo
 		try {
-			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista, cabecera1.getLogin(), cabecera1.getLogin());
+			idVolante = UtilidadesPruebas.emitirVolante(beneficiarioPrueba, cabecera1, especialista1, cabecera1.getLogin(), cabecera1.getLogin());
 		} catch (Exception e) {
 			fail(e.toString());
 		}
@@ -914,22 +886,25 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 			txtNumeroVolante.setText(String.valueOf(idVolante));
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscarVolante, OK_OPTION), "Volante encontrado.");
 			// Comprobamos que los campos se actualizan correctamente
-			assertEquals(especialista.getApellidos() + ", " + especialista.getNombre() + " (" + especialista.getNif() + ")", txtMedicoAsignado.getText());
-			assertEquals(especialista.getCentroSalud().getNombre() + "; " + especialista.getCentroSalud().getDireccion(), txtCentro.getText());
+			assertEquals(especialista1.getApellidos() + ", " + especialista1.getNombre() + " (" + especialista1.getNif() + ")", txtMedicoAsignado.getText());
+			assertEquals(especialista1.getCentroSalud().getNombre() + "; " + especialista1.getCentroSalud().getDireccion(), txtCentro.getText());
 			// Comprobamos que los campos de pedir cita se han habilitado
 			assertTrue(txtDiaCita.isEnabled());
 			assertTrue(cmbHorasCitas.isEnabled());
 			// Se selecciona un día en el que trabajará el médico
 			txtDiaCita.setText("04/03/2015");
 			assertEquals((horaFinal-horaInicio)*(60/IConstantes.DURACION_CITA), jcmbHorasCitas.getItemCount());
+			// Comprobamos que el médico que dará la cita será,
+			// en principio, el asignado al volante
+			cadena = especialista1.getApellidos() + ", " + especialista1.getNombre() + " (" + especialista1.getNif() + ")";
+			assertEquals(cadena, txtMedico.getText());
 			// Comprobamos que aparece seleccionada por defecto la primera hora disponible (las 10:00)
 			assertTrue(jcmbHorasCitas.getSelectedIndex() == 0);
 			try {
 				// En este momento el segundo administrador pide una sustitución para el médico asignado al beneficiario
 				WindowInterceptor.init(new Trigger() {
 					public void run() throws Exception {
-						controladorAuxiliar.asignarSustituto(cabecera1, diaSustitucion, 10, 13, cabecera2);
-						// TODO: Dice que el medico que se quiere sustituir no trabaja en ese día
+						controladorAuxiliar.asignarSustituto(especialista1, diaSustitucion, 10, 13, especialista2);
 					}
 				}).process(new WindowHandler() {
 					public Trigger process(Window window) {
@@ -940,7 +915,8 @@ public class PruebasJPCitaVolanteTramitar extends org.uispec4j.UISpecTestCase im
 				// Dormimos el hilo en espera de la respuesta del servidor
 				Thread.sleep(TIME_OUT);
 				// La ventana del primer administrador se ha debido actualizar con el nombre del médico que realmente va a dar la cita (el sustituto)
-				assertEquals(txtMedicoAsignado.getText(), "");
+				cadena = especialista2.getApellidos() + ", " + especialista2.getNombre() + " (" + especialista2.getNif() + "), sustituye a " + especialista1.getApellidos() + ", " + especialista1.getNombre() + " (" + especialista1.getNif() + ")";
+				assertEquals(cadena, txtMedico.getText());
 			} catch (Exception e) {
 				fail (e.toString());
 			}

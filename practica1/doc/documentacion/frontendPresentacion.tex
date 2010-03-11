@@ -1,2 +1,25 @@
-\paragraph{Capa de presentación}
+\paragraph{Capa de presentación} \label{presentacion-front-end}
 
+En el servidor front-end, la capa de presentación no tiene demasiada
+relevancia, ya que sólo se encarga de mostrar la ventana de estado del servidor
+al usuario y permitirle conectar, desconectar y configurar el servidor
+front-end. Se tomó la decisión de mostrar los mensajes de estado en el servidor
+(y no simplemente guardarlos en la base de datos) para que el administrador
+encargado de mantener el servidor tenga realimentación sobre las operaciones
+que realiza el sistema mientras está en ejecución.
+
+La clase encargada de mostrar los mensajes de estado en la ventana del
+servidor front-end es \textit{ConexionLogVentana}, una clase del paquete de
+comunicaciones a la que se hace referencia en la sección
+\ref{comunicaciones-front-end}. En esta clase se ha aplicado el patrón
+\textbf{Observador} para permitir que los mensajes se puedan mostrar en más
+de una ventana a la vez, sin necesidad de crear varias instancias de
+\textit{ConexionLogVentana}.
+
+Así pues, como se observa en el \diagrama{frontend}{clases}{Gestor Conexiones
+Log}, la clase \textit{ConexionLogVentana} tiene asociado cero, uno o más
+instancias de la interfaz \textit{IVentanaEstado}, a las que reenvía todos los
+mensajes que le llegan. En la implementación final del sistema, sólo hay una
+clase que implementa esta interfaz, que es la ventana principal del servidor
+front-end, \textit{JFServidorFrontend}, pero el uso del patrón
+\textbf{Observador} facilita notablemente la extensibilidad del sistema.

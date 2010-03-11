@@ -1,19 +1,14 @@
 package pruebas;
 
 import java.util.Vector;
-
 import javax.swing.JList;
-
 import org.uispec4j.Button;
 import org.uispec4j.ListBox;
 import org.uispec4j.Panel;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
-
 import presentacion.JFCalendarioLaboral;
-import presentacion.JPCalendarioConsultar;
-import presentacion.JPPeriodosTrabajo;
 import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.PeriodoTrabajo;
 
@@ -24,7 +19,6 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 
 	private Panel pnlCalendario;
 	private Panel pnlCalendarioConsultar;
-	private Panel pnlPeriodos;
 	private Button btnAceptar;
 	private Button btnRestablecer;
 	private Button btnRestablecerTodo;
@@ -32,11 +26,9 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 	private ListBox lstDiasSemana;
 
 	private JFCalendarioLaboral frmCalendario;
-	private JPCalendarioConsultar jpanelCalendario;
-	private JPPeriodosTrabajo jpanelPeriodos;
 	private JList jlstDiasSemana;
 	
-	private PeriodoTrabajo periodo1, periodo2;
+	private PeriodoTrabajo periodo1;
 	private Vector<PeriodoTrabajo> periodos;
 	
 	protected void setUp() {
@@ -67,7 +59,7 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 				public void run() {
 					try {
 						// Al iniciar la ventana, el número de horas debe ser 0
-						frmCalendario.show();
+						frmCalendario.setVisible(true);
 						assertEquals(frmCalendario.getHorasSemanales(), 0);
 						// No puede haber periodos de trabajo en el calendario (vector vacio)
 						assertEquals(frmCalendario.getPeriodosTrabajo(), periodos);
@@ -99,7 +91,7 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 			win = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						frmCalendario.show();
+						frmCalendario.setVisible(true);
 						// Establecemos el periodo de trabajo
 						frmCalendario.setPeriodosTrabajo(periodos);
 						assertEquals(frmCalendario.getHorasSemanales(), 1);
@@ -142,7 +134,7 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 			win = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						frmCalendario.show();
+						frmCalendario.setVisible(true);
 						// Establecemos el periodo de trabajo
 						frmCalendario.setPeriodosTrabajo(periodos);
 						assertEquals(frmCalendario.getHorasSemanales(), 1);
@@ -186,7 +178,7 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 			win = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						frmCalendario.show();
+						frmCalendario.setVisible(true);
 						// Establecemos el periodo de trabajo
 						frmCalendario.setPeriodosTrabajo(periodos);
 						assertEquals(frmCalendario.getHorasSemanales(), 6);
@@ -234,7 +226,7 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 			win = WindowInterceptor.run(new Trigger() {
 				public void run() {
 					try {
-						frmCalendario.show();
+						frmCalendario.setVisible(true);
 						// Establecemos los periodos de trabajo
 						frmCalendario.setPeriodosTrabajo(periodos);
 						assertEquals(frmCalendario.getHorasSemanales(), 6);

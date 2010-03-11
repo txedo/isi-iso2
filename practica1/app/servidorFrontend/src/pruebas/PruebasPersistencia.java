@@ -69,12 +69,6 @@ public class PruebasPersistencia extends PruebasBase {
 			centro1 = new CentroSalud("Centro A", "C/Pequeña, nº4");
 			centro2 = new CentroSalud("Centro B", "C/Media, nº10");
 			centro3 = new CentroSalud("Centro C", "C/Grande, nº5");
-			entrada1 = new EntradaLog("juan", new Timestamp(109, 11, 1, 10, 10, 10, 0), ITiposMensajeLog.TIPO_CREATE, "Entrada CREATE.");
-			entrada2 = new EntradaLog("luis", new Timestamp(109, 5, 25, 7, 30, 0, 0), ITiposMensajeLog.TIPO_READ, "Entrada READ.");
-			entrada3 = new EntradaLog("pepe", new Timestamp(109, 9, 4, 8, 0, 0, 0), ITiposMensajeLog.TIPO_UPDATE, "Entrada UPDATE.");
-			entrada4 = new EntradaLog("carmen", new Timestamp(109, 8, 10, 8, 0, 0, 0), ITiposMensajeLog.TIPO_DELETE, "Entrada DELETE.");
-			entrada5 = new EntradaLog("ana", new Timestamp(109, 1, 10, 8, 0, 0, 0), ITiposMensajeLog.TIPO_INFO, "Entrada INFO.");
-			entrada6 = new EntradaLog("mal", new Timestamp(109, 9, 7, 20, 0, 0, 0), "mal", "Entrada con errores.");
 			medico1 = new Medico("12345678A", "medPrueba", UtilidadesDominio.encriptarPasswordSHA1("abcdef"), "Eduardo", "P. C.", "", "", "", new Especialista("ninguna"));
 			medico2 = new Medico("87654321A", "medico2", UtilidadesDominio.encriptarPasswordSHA1("xxx"), "Carmen", "G. G.", "carmen@gmail.com", "", "666123123", new Cabecera());
 			medico3 = new Medico("29478569A", "otroMedico", UtilidadesDominio.encriptarPasswordSHA1("xxx"), "José", "R. B.", "josejose@uclm.es", "900112233", "600112233", new Cabecera());
@@ -82,6 +76,12 @@ public class PruebasPersistencia extends PruebasBase {
 			citador1 = new Citador("1112223A", "citador", UtilidadesDominio.encriptarPasswordSHA1("abcdef"), "Luis", "E. G.", "luiseg55@yahoo.com", "", "612121212");
 			citador2 = new Citador("9998887A", "citador", UtilidadesDominio.encriptarPasswordSHA1("abcdef"), "Ana", "B. E.", "", "989989989", "");
 			administrador1 = new Administrador("12121212A", "admin", UtilidadesDominio.encriptarPasswordSHA1("admin"), "Administrador", "", "adminssca@ssca.com", "900000000", "600000000");
+			entrada1 = new EntradaLog(citador1.getLogin(), new Timestamp(109, 11, 1, 10, 10, 10, 0), ITiposMensajeLog.TIPO_CREATE, "Entrada CREATE.");
+			entrada2 = new EntradaLog(null, new Timestamp(109, 5, 25, 7, 30, 0, 0), ITiposMensajeLog.TIPO_READ, "Entrada READ.");
+			entrada3 = new EntradaLog(medico1.getLogin(), new Timestamp(109, 9, 4, 8, 0, 0, 0), ITiposMensajeLog.TIPO_UPDATE, "Entrada UPDATE.");
+			entrada4 = new EntradaLog(administrador1.getLogin(), new Timestamp(109, 8, 10, 8, 0, 0, 0), ITiposMensajeLog.TIPO_DELETE, "Entrada DELETE.");
+			entrada5 = new EntradaLog(null, new Timestamp(109, 1, 10, 8, 0, 0, 0), ITiposMensajeLog.TIPO_INFO, "Entrada INFO.");
+			entrada6 = new EntradaLog(null, new Timestamp(109, 9, 7, 20, 0, 0, 0), "mal", "Entrada con errores.");
 			medico1.setCentroSalud(centro1);
 			medico2.setCentroSalud(centro1);
 			medico3.setCentroSalud(centro2);
@@ -548,6 +548,11 @@ public class PruebasPersistencia extends PruebasBase {
 		}
 		
 		try {
+			// Insertamos varios usuarios
+			FPCentroSalud.insertar(centro1);
+			FPUsuario.insertar(medico1);
+			FPUsuario.insertar(citador1);
+			FPUsuario.insertar(administrador1);
 			// Insertamos nuevas entradas válidas
 			// (y repetidas, que se permite)
 			FPEntradaLog.insertar(entrada1);

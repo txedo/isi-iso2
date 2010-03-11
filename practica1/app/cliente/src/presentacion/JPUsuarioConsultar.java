@@ -39,7 +39,6 @@ import dominio.conocimiento.Usuario;
 import dominio.conocimiento.RolesUsuario;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
-import excepciones.CadenaVaciaException;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.CorreoElectronicoIncorrectoException;
 import excepciones.LoginIncorrectoException;
@@ -443,9 +442,6 @@ public class JPUsuarioConsultar extends JPBase {
 			txtNIFBuscado.selectAll();
 			txtNIFBuscado.grabFocus();			
 
-		} catch(CadenaVaciaException e) {
-			Dialogos.mostrarDialogoError(getFrame(), "Error", "Debe introducir un NIF.");
-			txtNIFBuscado.grabFocus();	
 		} catch(NIFIncorrectoException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 			txtNIFBuscado.selectAll();
@@ -536,11 +532,14 @@ public class JPUsuarioConsultar extends JPBase {
 			Validacion.comprobarApellidos(txtApellidos.getText().trim());
 			Validacion.comprobarUsuario(txtLogin.getText().trim());
 			if((passwordCambiada || !(new String(txtPassword.getPassword()).equals(PASSWORD_OCULTA)))
-			   && (txtPassword.getPassword().length > 0 || txtPasswordConf.getPassword().length > 0)) { 
+			   && (txtPassword.getPassword().length > 0 || txtPasswordConf.getPassword().length > 0)) {
+				cambioPassword = true;
 				Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
 				if(!(new String(txtPassword.getPassword())).equals(new String(txtPasswordConf.getPassword()))) {
 					throw new ContraseñaIncorrectaException("Las contraseñas no coinciden.");
 				}
+			} else {
+				cambioPassword = false;
 			}
 			if(!campoVacio(txtCorreoElectronico)) {
 				Validacion.comprobarCorreoElectronico(txtCorreoElectronico.getText().trim());
@@ -565,11 +564,9 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			usuarioModif.setNif(txtNIF.getText().trim().toUpperCase());
 			usuarioModif.setLogin(txtLogin.getText().trim());
-			if(passwordCambiada && txtPassword.getPassword().length > 0) {
-				cambioPassword = true;
+			if(cambioPassword) {
 				usuarioModif.setPassword(new String(txtPassword.getPassword()));
 			} else {
-				cambioPassword = false;
 				usuarioModif.setPassword(usuario.getPassword());
 			}
 			usuarioModif.setNombre(txtNombre.getText().trim());
