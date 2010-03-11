@@ -1,1 +1,9 @@
 \paragraph{Capa de dominio}
+
+En el sistema del servidor de respaldo, la capa de dominio sólo contiene clases relacionadas con el control de este sistema, careciendo de clases de conocimiento.
+
+Una de las clases de este paquete de control, llamada \textit{ControladorRespaldo}, se centra en iniciar y detener el servidor de respaldo, así como de mostrar la interfaz gráfica de la capa de presentación.
+
+Por otra parte, la clase \textit{ServidorRespaldo} es la clase que implementa la interfaz \textit{IServidorRespaldo}, que, entre otros, tiene los métodos necesarios para actualizar la interfaz gráfica con las diferentes peticiones que se van recibiendo en este servidor, y métodos para ejecutar en el SGBD las sentencias SQL que recibe por parte del servidor front-end (a través de la capa de comunicaciones), encapsuladas en objetos de la clase \textit{ComandoSQL}.
+
+Estas comunicaciones entre capas se pueden observar en el \diagrama{respaldo}{paquetes}{División en Capas}.

@@ -1,2 +1,10 @@
 \paragraph{Capa de dominio}
-En el sistema cliente, la capa de dominio sólo contiene clases para el control de este sistema, que se encargan de mostrar los diferentes elementos de la capa de presentación y de comunicarse con el servidor front-end, utilizando para ello la capa de comunicaciones. 
+
+En el sistema cliente, la capa de dominio sólo contiene clases relacionadas con el control de este sistema, careciendo de clases de conocimiento, ya que todas esas clases se encuentran en el lado del servidor. De este modo, el cliente se limita a realizar peticiones al servidor (utilizando la capa de comunicaciones), obtener su respuesta y gestionar la capa de presentación según sea necesario. 
+
+Una de las clases de este paquete de control, llamada \textit{ControladorCliente}, se centra en controlar los diferentes elementos de la capa de presentación y de comunicarse con el servidor front-end, utilizando la capa de comunicaciones.
+
+Por otra parte, la clase \textit{Cliente} es la clase que implementa la interfaz \textit{ICliente}, que, entre otros métodos, tiene un método para que el controlador actualice la interfaz gráfica con las respuestas que obtiene del servidor, cuando otro cliente hace una petición. 
+
+Estas comunicaciones entre capas se pueden observar en el \diagrama{cliente}{paquetes}{División en Capas}.
+

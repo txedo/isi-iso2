@@ -1,123 +1,105 @@
+\section{¿¿EN QUE SECCION PONEMOS ESTA PARTE??}
+
 \subsection{Operaciones permitidas en el sistema}
 
 En la tabla \ref{tb:operacionesInterfaz} se muestran las acciones que un usuario puede realizar con el sistema (interactuando con su interfaz gráfica), junto con el rol que es necesario para poder llevarlas a cabo. Señalar que estas operaciones se corresponden con las distintas funcionalidades que el sistema ofrece al usuario, es decir, se corresponden con los distintos casos de uso del cliente (ver \diagrama{cliente}{casosUso}{Casos de Uso}).
 
-\begin{longtable}{| p{8cm} | p{8cm} |}
+\begin{longtable}{| p{6.3cm} | c | c | c |}
 \hline
-\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ACCIÓN}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ROL}} \\
+\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{OPERACIÓN}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ADMINISTRADOR}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{CITADOR}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{MÉDICO}} \\
 \hline
-Registrar beneficiario & Administrador, Citador\\
+\centering{Registrar beneficiario} & X & X & \\
 \hline
-Consultar beneficiario & Administrador, Citador, Médico\\
+\centering{Consultar beneficiario} & X & X & X \\
 \hline
-Modificar beneficiario & Administrador, Citador\\
+\centering{Modificar beneficiario} & X & X & \\
 \hline
-Eliminar beneficiario & Administrador, Citador\\
+\centering{Eliminar beneficiario} & X & X & \\
 \hline
-Registrar usuario & Administrador\\
+\centering{Registrar usuario} & X &  & \\
 \hline
-Consultar usuario & Administrador\\
+\centering{Consultar usuario} & X &  & \\
 \hline
-Modificar usuario & Administrador\\
+\centering{Modificar usuario} & X &  & \\
 \hline
-Eliminar usuario & Administrador\\
+\centering{Eliminar usuario} & X &  & \\
 \hline
-Tramitar cita & Administrador, Citador\\
+\centering{Registrar médico} & X &  & \\
 \hline
-Tramitar cita a partir de un volante & Administrador, Citador\\
+\centering{Consultar médico} & X & X & \\
 \hline
-Consultar citas de un beneficiario & Administrador, Citador\\
+\centering{Modificar médico} & X &  & \\
 \hline
-Consultar citas de un médico & Administrador, Citador\\
+\centering{Eliminar médico} & X &  & \\
 \hline
-Anular cita & Administrador, Citador\\
+\centering{Tramitar cita} & X & X & \\
 \hline
-Consultar citas propias de un médico & Médico\\
+\centering{Tramitar cita a partir de un volante} & X & X & \\
 \hline
-Emitir volante & Médico\\
+\centering{Consultar citas de un beneficiario} & X & X & \\
 \hline
-Establecer sustituto & Administrador\\
+\centering{Consultar citas de un médico} & X & X & \\
 \hline
-\caption{Operaciones que un usuario puede realizar con el sistema}
+\centering{Anular cita} & X & X & \\
+\hline
+\centering{Consultar citas propias de un médico} & & & X \\
+\hline
+\centering{Emitir volante} & & & X \\
+\hline
+\centering{Establecer sustituto} & X &  & \\
+\hline
+\caption{Operaciones que un usuario puede realizar en el sistema}
 \label{tb:operacionesInterfaz}
 \end{longtable}
 
-Estas operaciones se van a corresponder con los servicios que proporciona el servidor front-end en su interfaz. Sin embargo, algunas de las operaciones anteriores se apoya en la ejecución de otras acciones. Por ejemplo, para que un administrador pueda establecer una sustitución, primero debe buscar una lista de posibles sustitutos y elegir uno de ellos como sustituto de un médico; para que un médico pueda emitir un volante para un especialista, debe seleccionar un especialista de una lista; se deben calcular las horas a las que trabaja un médico para poder cita, etc. Por esta razón, se necesitan otras operaciones además de las mostradas en la tabla \ref{tb:operacionesInterfaz}, que se van a corresponder con la operación \textit{mensajeAuxiliar} del servidor front-end. 
 
-En la tabla \ref{tb:operaciones} se muestran, además de las operaciones anteriores, el resto de operaciones que existen en el sistema. Así, dicha tabla resume todas las operaciones que se pueden realizar en el sistema, junto con el rol necesario para poder ejecutarlas. Además, en esa tabla se resaltan aquellas operaciones que no aparecen en la tabla \ref{tb:operacionesInterfaz} y que, por tanto, son operaciones auxiliares.
+Estas operaciones se van a corresponder con los servicios que proporciona el servidor front-end en su interfaz. Sin embargo, algunas de las operaciones anteriores se apoya en la ejecución de otras acciones. Por ejemplo, para que un administrador pueda establecer una sustitución, primero debe buscar una lista de posibles sustitutos y elegir uno de ellos como sustituto de un médico; para que un médico pueda emitir un volante para un especialista, debe seleccionar un especialista de una lista; se deben calcular las horas a las que trabaja un médico para poder pedir cita, etc. Por esta razón, se necesitan otras operaciones además de las mostradas en la tabla \ref{tb:operacionesInterfaz}, que se van a corresponder con la operación \textit{mensajeAuxiliar} del servidor front-end. 
 
-\begin{longtable}{| p{8cm} | p{8cm} |}
+En la tabla \ref{tb:operaciones} se muestran, el resto de operaciones que existen en el sistema. Así, en dicha tabla se resumen aquellas operaciones auxiliares, junto con la operación de la tabla anterior a la que dan soporte. 
+
+\begin{longtable}{| p{7cm} | c |}
 \hline
-\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ACCIÓN}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ROL}} \\
+\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ACCIÓN}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{DA SOPORTE A}} \\
 \hline
-Registrar beneficiario & Administrador, Citador\\
+\centering{Consultar beneficiarios asignados a un médico} & ... \\
 \hline
-Consultar beneficiario & Administrador, Citador, Médico\\
+\centering{Corresponde NIF a un usuario} & ...\\
 \hline
-Modificar beneficiario & Administrador, Citador\\
+\centering{Consultar usuario que ha iniciado sesión} & ...\\
 \hline
-Eliminar beneficiario & Administrador, Citador\\
+\centering{Consultar centros de salud}& ...\\
 \hline
-\colorFila Consultar beneficiarios asignados a un médico & Administrador\\
+\centering{Registrar médico} & ...\\
 \hline
-Registrar usuario & Administrador\\
+\centering{Consultar médico} & ...\\
 \hline
-Consultar usuario & Administrador\\
+\centering{Modificar médico} & ...\\
 \hline
-Modificar usuario & Administrador\\
+\centering{Eliminar médico} & ...\\
 \hline
-Eliminar usuario & Administrador\\
+\centering{Consultar médicos de un tipo determinado} & ...\\
 \hline
-\colorFila Corresponde NIF a un usuario & Administrador, Citador, Médico\\
+\centering{Consultar posibles sustitutos} & ...\\
 \hline
-\colorFila Consultar usuario que ha iniciado sesión & Administrador, Citador, Médico\\
+\centering{Consultar médico que atiende una cita} & ...\\
 \hline
-\colorFila Consultar centros de salud & Administrador, Citador, Médico\\
+\centering{Consultar horario de un médico} & ...\\
 \hline
-\colorFila Registrar médico & Administrador\\
+\centering{Consultar horas de citas asignadas a un médico} & ...\\
 \hline
-\colorFila Consultar médico & Administrador, Citador\\
+\centering{Consultar días completos de un médico} & ...\\
 \hline
-\colorFila Modificar médico & Administrador\\
+\centering{Consultar citas en una fecha de un médico} & ...\\
 \hline
-\colorFila Eliminar médico & Administrador\\
+\centering{Consultar Volante} & ...\\
 \hline
-\colorFila Consultar médicos de un tipo determinado & Administrador\\
-\hline
-\colorFila Consultar posibles sustitutos & Administrador\\
-\hline
-Establecer sustituto & Administrador\\
-\hline
-\colorFila Consultar médico que atiende una cita & Administrador, Cita\\
-\hline
-Tramitar cita & Administrador, Citador\\
-\hline
-Tramitar cita a partir de un volante & Administrador, Citador\\
-\hline
-\colorFila Consultar horario de un médico & Administrador, Citador\\
-\hline
-\colorFila Consultar horas de citas asignadas a un médico & Administrador, Citador\\
-\hline
-\colorFila Consultar días completos de un médico & Administrador, Citador\\
-\hline
-Consultar citas de un beneficiario & Administrador, Citador\\
-\hline
-Consultar citas de un médico & Administrador, Citador\\
-\hline
-Anular cita & Administrador, Citador\\
-\hline
-Consultar citas propias de un médico & Médico\\
-\hline
-\colorFila Consultar citas en una fecha de un médico & Administrador, Citador\\
-\hline
-Emitir Volante & Médico\\
-\hline
-\colorFila Consultar Volante & Administrador, Citador, Médico\\
-\hline
-\caption{Operaciones soportadas en el sistema}
+\caption{Operaciones auxiliares}
 \label{tb:operaciones}
 \end{longtable}
 
-Estas operaciones auxiliares se detallan en la siguiente sección, donde se comentará el uso principal de cada una de ellas y a cuál de las acciones que puede realizar el usuario (es decir, a qué funcionalidad del sistema, ver tabla \ref{tb:operacionesInterfaz}) dan soporte. 
 
------------------ COMPLETAR ------------------
+----------------- COMPLETAR COMENTANDO UN POCO CADA UNA DE LAS OPERACIONES AUXILIARES (CON LA LISTA QUE HICIMOS, TXEDO)------------------
+\begin{milista}
+	\item \textbf{OPERACION TAL}: HACE TAL Y SE USA EN TAL.
+	\item \textbf{......}
+\end{milista}

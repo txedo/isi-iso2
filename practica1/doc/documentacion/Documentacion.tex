@@ -51,9 +51,9 @@
 %       Uso: \diagrama{nombre del sistema: frontend, respaldo o cliente}{tipo de diagrama}{nombre del diagrama}
 % -------------------------------------------------------------------------------------------------------------
 \def\diagrama#1#2#3{Fichero de Visual Paradigm correspondiente al 
- \ifthenelse{\equal{#1}{frontend}}{Servidor front-end}
- {\ifthenelse{\equal{#1}{cliente}}{Cliente}}
- {\ifthenelse{\equal{#1}{respaldo}}{Servidor de respaldo}{}}, diagrama de 
+ \ifthenelse{\equal{#1}{frontend}}{Servidor front-end,}
+ {\ifthenelse{\equal{#1}{cliente}}{Cliente, }}
+ {\ifthenelse{\equal{#1}{respaldo}}{Servidor de respaldo, }{}}diagrama de 
  \ifthenelse{\equal{#2}{análisis}}{clases de #2}
  {\ifthenelse{\equal{#2}{casosUso}}{casos de uso}}
  {\ifthenelse{\equal{#2}{estados}}{máquina de #2}{#2}} -\textgreater {} \textit{#3}
@@ -93,7 +93,6 @@
   commentstyle = \color [rgb]{0.133,0.545,0.133},
   stringstyle = \color [rgb]{0.627,0.126,0.941}
 }
-
 
 \begin{document}
 
