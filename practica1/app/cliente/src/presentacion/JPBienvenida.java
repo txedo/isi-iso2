@@ -1,10 +1,15 @@
 package presentacion;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+import java.awt.Canvas;
+import java.awt.Graphics;
+import java.awt.Image;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -24,29 +29,34 @@ import com.cloudgarden.layout.AnchorLayout;
 public class JPBienvenida extends JPanel {
 
 	private static final long serialVersionUID = 6607107361409604924L;
-	
-	private JTextArea txtAreaBienvenida;
+	private JLabel lblTitulo;
+	private JLabel lblImagen;
 
 	public JPBienvenida() {
 		super();
 		initGUI();
+		lblTitulo.setHorizontalAlignment(JLabel.CENTER);
+		lblImagen.setHorizontalAlignment(JLabel.CENTER);
 	}
 	
 	private void initGUI() {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setSize(565, 390);
 			this.setPreferredSize(new java.awt.Dimension(565, 390));
 			{
-				txtAreaBienvenida = new JTextArea();
-				this.add(txtAreaBienvenida, new AnchorConstraint(39, 979, 963, 22, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-				txtAreaBienvenida.setText("Mensaje de bienvenida");
-				txtAreaBienvenida.setPreferredSize(new java.awt.Dimension(539, 291));
-				txtAreaBienvenida.setFocusable(false);
-				txtAreaBienvenida.setEditable(false);
-				txtAreaBienvenida.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-				txtAreaBienvenida.setOpaque(false);
+				lblTitulo = new JLabel();
+				this.add(lblTitulo, new AnchorConstraint(53, 923, 147, 61, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_REL));
+				lblTitulo.setText("Sistema de Salud de Comunidades Autónomas");
+				lblTitulo.setPreferredSize(new java.awt.Dimension(487, 27));
+				lblTitulo.setFont(new java.awt.Font("Tahoma",1,20));
+			}
+			{
+				lblImagen = new JLabel();
+				this.add(lblImagen, new AnchorConstraint(168, 715, 878, 261, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_REL));
+				lblImagen.setPreferredSize(new java.awt.Dimension(257, 258));
+				lblImagen.setIcon(new ImageIcon(getClass().getClassLoader().getResource("imagenes/Health-care-shield-256.png")));
+				lblImagen.setMinimumSize(new java.awt.Dimension(258, 261));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
