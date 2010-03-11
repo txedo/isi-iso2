@@ -1,15 +1,10 @@
 package presentacion;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
-import java.awt.Canvas;
-import java.awt.Graphics;
-import java.awt.Image;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -49,12 +44,12 @@ public class JPBienvenida extends JPanel {
 				this.add(lblTitulo, new AnchorConstraint(53, 923, 147, 61, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_REL));
 				lblTitulo.setText("Sistema de Salud de Comunidades Autónomas");
 				lblTitulo.setPreferredSize(new java.awt.Dimension(487, 27));
-				lblTitulo.setFont(new java.awt.Font("Tahoma",1,20));
+				lblTitulo.setFont(new java.awt.Font("Tahoma",1,24));
 			}
 			{
 				lblImagen = new JLabel();
-				this.add(lblImagen, new AnchorConstraint(168, 715, 878, 261, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_REL));
-				lblImagen.setPreferredSize(new java.awt.Dimension(257, 258));
+				this.add(lblImagen, new AnchorConstraint(135, 714, 878, 261, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_REL));
+				lblImagen.setPreferredSize(new java.awt.Dimension(256, 284));
 				lblImagen.setIcon(new ImageIcon(getClass().getClassLoader().getResource("imagenes/Health-care-shield-256.png")));
 				lblImagen.setMinimumSize(new java.awt.Dimension(258, 261));
 			}

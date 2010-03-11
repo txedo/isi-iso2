@@ -74,7 +74,7 @@ public class JPCitaConsultarMedico extends JPBase {
 		try {
 			AnchorLayout thisLayout = new AnchorLayout();
 			this.setLayout(thisLayout);
-			this.setPreferredSize(new java.awt.Dimension(430, 471));
+			this.setPreferredSize(new java.awt.Dimension(430, 393));
 			{
 				btnHistoricoCitas = new JButton();
 				this.add(btnHistoricoCitas, new AnchorConstraint(916, 11, 11, 645, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
