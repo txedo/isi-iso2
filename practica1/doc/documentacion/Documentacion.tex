@@ -50,14 +50,19 @@
 % Macro para insertar un diagrama de un sistema
 %       Uso: \diagrama{nombre del sistema: frontend, respaldo o cliente}{tipo de diagrama}{nombre del diagrama}
 % -------------------------------------------------------------------------------------------------------------
-\def\diagrama#1#2#3{\textbf{Fichero de Visual Paradigm correspondiente al}
- \ifthenelse{\equal{#1}{frontend}}{\textbf{Servidor front-end,}}
- {\ifthenelse{\equal{#1}{cliente}}{\textbf{Cliente, }}}
- {\ifthenelse{\equal{#1}{respaldo}}{\textbf{Servidor de respaldo, }}{}}\textbf{diagrama de}
- \ifthenelse{\equal{#2}{análisis}}{\textbf{clases de #2}}
- {\ifthenelse{\equal{#2}{casosUso}}{\textbf{casos de uso}}}
- {\ifthenelse{\equal{#2}{estados}}{\textbf{máquina de #2}}{\textbf{#2}}} \textbf{-\textgreater {} \textit{#3}}
-}
+\def\diagrama#1#2#3{fichero de Visual Paradigm correspondiente al 
+ \ifthenelse{\equal{#1}{frontend}}{\textbf{Servidor front-end}, }
+ {\ifthenelse{\equal{#1}{cliente}}{\textbf{Cliente}, }
+ {\ifthenelse{\equal{#1}{respaldo}}{\textbf{Servidor de respaldo}, }{}}}\textbf{Diagrama de}
+ \ifthenelse{\equal{#2}{análisis}}{\textbf{Clases de Análisis}}
+ {\ifthenelse{\equal{#2}{secuencia}}{\textbf{Secuencia}}
+ {\ifthenelse{\equal{#2}{estados}}{\textbf{Máquina de Estados}}
+ {\ifthenelse{\equal{#2}{clases}}{\textbf{Clases}}
+ {\ifthenelse{\equal{#2}{casosUso}}{\textbf{Casos de Uso}}
+ {\ifthenelse{\equal{#2}{colaboracion}}{\textbf{Colaboración}}
+ {\ifthenelse{\equal{#2}{paquetes}}{\textbf{Paquetes}}
+ {\ifthenelse{\equal{#2}{componentes}}{\textbf{Componentes}}
+ {\ifthenelse{\equal{#2}{despliegue}}{\textbf{Despliegue}}{}}}}}}}}} -\textgreater {} \textit{#3}}
 
 % Macro para dar color a las filas de la tabla "`Operaciones"'
 \def\colorFila{

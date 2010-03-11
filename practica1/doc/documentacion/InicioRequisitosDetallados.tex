@@ -46,8 +46,10 @@ El médico de cabecera o pediatra asignado a cada beneficiario no se puede
 modificar, salvo si el beneficiario solicita que se le cambie el centro de
 salud en el que quiere pasar las citas. En este caso excepcional, que se puede
 dar si el beneficiario cambia de dirección, el sistema le asignará un médico
-diferente del nuevo centro de salud seleccionado. El NIF y el NSS de un
-beneficiario es fijo y no se puede modificar en ningún caso.
+diferente del nuevo centro de salud seleccionado. Otra situación en la que
+se deberá cambiar forzosamente el médico asignado a un beneficiario será cuando
+el médico asociado al beneficiario se elimine del sistema. El NIF y el NSS de
+un beneficiario es fijo y no se puede modificar en ningún caso.
 
 Los médicos asignados a los beneficiarios de menos de 14 años son pediatras,
 mientras que los asignados a beneficiarios con 14 o más años son médicos de
@@ -104,9 +106,12 @@ Los usuarios podrán pedir al administrador del sistema desarrollado la
 consulta, modificación y eliminación de sus datos registrados en el sistema,
 teniéndose que identificar para ello con su NIF. De los médicos también se
 podrán cambiar, si es necesario, su horario de trabajo, para añadir o eliminar
-horas. En general, debido a su relevancia, todas las operaciones relacionadas
-con la gestión de usuarios sólo las pueden realizar los usuarios del sistema
-con rol de administrador.
+horas, teniendo en cuenta que cuando se modifique el horario de trabajo de un
+médico, todas las citas pendientes que tuviera que queden fuera del nuevo
+horario se deberán anular automáticamente, avisando a los beneficiarios
+correspondientes. En general, debido a su relevancia, todas las operaciones
+relacionadas con la gestión de usuarios sólo las pueden realizar los usuarios
+del sistema con rol de administrador.
 
 \subsubsection{Gestión de citas}
 

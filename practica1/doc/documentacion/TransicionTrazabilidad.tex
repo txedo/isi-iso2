@@ -2,7 +2,7 @@
 
 En este apartado se va a mostrar un ejemplo de trazabilidad de un caso de uso,
 con el fin de ver cómo se ha ido desarrollando la funcionalidad del caso de uso
-a partir de los diferentes diagramas del Proceso Unificado de Desarrollo, así
+a partir de los diferentes artefactos del Proceso Unificado de Desarrollo, así
 como la coherencia existente entre los diagramas, la documentación y el código
 final del sistema.
 
@@ -12,15 +12,15 @@ funcional tiene en el sistema.
 
 \subsubsection{Identificación}
 
-Según el diagrama de casos de uso del cliente, el caso de uso \textbf{Tramitar
-cita} lo pueden realizar los citadores y, por herencia, también los
-administradores del sistema. Sin embargo, como se explica en la descripción del
-caso de uso, es necesario haber iniciado sesión primero, momento en el que se
-determinará el rol del usuario.
+Según el \diagrama{cliente}{casosUso}{Casos de uso}, el caso de uso
+\textbf{Tramitar cita} lo pueden realizar los citadores y, por herencia,
+también los administradores del sistema. Sin embargo, como se explica en la
+descripción del caso de uso, es necesario haber iniciado sesión primero,
+momento en el que se determinará el rol del usuario.
 
 Por este motivo, cuando comienza la aplicación, lo primero que se hace es
 mostrar la ventana de login al usuario, que como se puede observar en el
-diagrama \emph{Análisis - Iniciar sesión} del cliente, se define en la clase
+\diagrama{cliente}{análisis}{Análisis - Iniciar sesión}, se define en la clase
 \emph{JFLogin}.
 
 \texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaInicio.java}}
@@ -47,7 +47,8 @@ análisis.
 \texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaIdentificacion.java}}
 
 El ControladorCliente, cuando recibe la solicitud de inicio de sesión, sigue
-el flujo indicado en el diagrama \emph{Análisis - Iniciar sesión} del cliente:
+el flujo indicado en el \diagrama{cliente}{análisis}{Análisis - Iniciar
+sesión}:
 \begin{milista}
 \item Establece conexión con el servidor front-end mediante la clase
 \emph{ProxyServidorFrontend}.
@@ -62,12 +63,12 @@ principal, \emph{JFPrincipal}, con las operaciones disponibles al usuario
 (de esto se encarga el método \emph{iniciar}).
 \end{milista}
 
-La identificación del usuario, que en el diagrama de análisis se muestra con
-un único paso, se realiza en el código con dos debido a que la interfaz del
-servidor front-end propuesta e implementada posee dos métodos diferentes para
-identificarse y registrar el cliente en el sistema: \emph{identificar} y
-\emph{registrar}. Las clases que intervienen en este proceso se pueden ver en
-el diagrama \emph{Iniciar sesión} del cliente. \verb+<<<<<<<<<<<<<<<<<<<<<<<IMPORTANTE, ESTE DIAGRAMA NO ESTÁ HECHO TODAVÍA>>>>>>>>>>>>>>>>>>+
+La identificación del usuario, que en el diagrama de clases de análisis se
+muestra con un único paso, se realiza en el código con dos debido a que la
+interfaz del servidor front-end propuesta e implementada posee dos métodos
+diferentes para identificarse y registrar el cliente en el sistema:
+\emph{identificar} y \emph{registrar}. Las clases que intervienen en este
+proceso se pueden ver en el \diagrama{cliente}{clases}{Arquitectura}.
 
 \texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaConexion.java}}
 
@@ -79,21 +80,21 @@ primera precondición necesaria para poder llevar a cabo este caso de uso.
 Conviene decir que el cliente consulta al servidor las operaciones que tiene
 disponibles para mostrar los paneles que sean necesarios en la interfaz
 gráfica. Este hecho no se muestra ni en el diagrama de casos de uso ni en los
-diagramas de análisis porque es un detalle de implementación del caso de uso
-\textbf{Iniciar sesión}, que pretende hacer más extensible tanto el cliente
-como el servidor, para que haya que hacer los menores cambios posibles si un
-rol pasa a tener más o menos operaciones disponibles.
+diagramas de clases de análisis porque es un detalle de implementación del
+caso de uso \textbf{Iniciar sesión}, que pretende hacer más extensible tanto
+el cliente como el servidor, para que haya que hacer los menores cambios
+posibles si un rol pasa a tener más o menos operaciones disponibles.
 
 \subsubsection{Introducción del NIF/NSS del beneficiario}
 
 La clase de análisis \emph{JFPrincipal} mostrada en todos los diagramas de
-análisis del cliente se corresponde, en la implementación final, con un gran
-número de clases JPanel, que dividen la funcionalidad del cliente en cinco
-grandes grupos (gestión de beneficiarios, usuarios, citas, volantes y
+clases de análisis del cliente se corresponde, en la implementación final, con
+un gran número de clases JPanel, que dividen la funcionalidad del cliente en
+cinco grandes grupos (gestión de beneficiarios, usuarios, citas, volantes y
 sustituciones) y cada uno de estos grupos a su vez en las funcionalidades
 básicas (registrar beneficiario, tramitar cita, asignar sustituto, etc.). Para
 ver el esquema de clases que se ha utilizado en la interfaz gráfica se puede
-consultar el diagrama \emph{Interfaz gráfica} del cliente. \verb+<<<<<<<<<<<<<IMPORTANTE, ESTE DIAGRAMA NO ESTÁ HECHO TODAVÍA>>>>>>>>>>>>>+
+consultar el \diagrama{cliente}{clases}{Ventana Principal}.
 
 En concreto, el panel utilizado en el caso de uso \textbf{Tramitar cita} es
 \emph{JPCitaTramitar}, pero puesto que para tramitar una cita primero se debe
@@ -103,12 +104,12 @@ código demuestra que se ha utilizado la potencia de la orientación a objetos
 en el diseño de la interfaz gráfica del cliente, lo cual ha facilitado su
 desarrollo.
 
-Por tanto, los primeros pasos del diagrama \emph{Análisis - Tramitar cita} del
-cliente, en los que se obtiene y valida el NIF/NSS del beneficiario que quiere
-pedir cita y se comprueba si existe realmente, los realiza el panel
-\emph{JPBeneficiarioConsultar}, tal y como se puede ver en el diagrama de
-secuencia \emph{Tramitar cita (tramitación correcta)} del cliente. El
-siguiente fragmento de código muestra este proceso.
+Por tanto, los primeros pasos del \diagrama{cliente}{análisis}{Análisis -
+Tramitar cita}, en los que se obtiene y valida el NIF/NSS del beneficiario que
+quiere pedir cita y se comprueba si existe realmente, los realiza el panel
+\emph{JPBeneficiarioConsultar}, tal y como se puede ver en el
+\diagrama{cliente}{secuencia}{Tramitar cita (tramitación correcta)}.
+El siguiente fragmento de código muestra este proceso.
 
 \texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaBuscarBeneficiario.java}}
 
@@ -125,7 +126,7 @@ del anterior fragmento de código.
 Cuando el panel \emph{JPCitaTramitar} recibe la notificación de que se ha
 buscado un beneficiario, solicita al servidor, a través de varios mensajes, los
 días y horas en los que se puede pedir cita, tal y como se muestra en el
-diagrama de secuencia \emph{Tramitar cita (tramitación correcta)} del cliente.
+\diagrama{cliente}{secuencia}{Tramitar cita (tramitación correcta)}.
 Concretamente, con el fin de facilitar el manejo del sistema por parte del
 citador o administrador, se piden tres listas al servidor:
 \begin{milista}
@@ -177,8 +178,8 @@ clase \emph{ProxyServidorFrontend}, añadiendo a los datos recibidos el id de la
 sesión del citador o administrador, recuperado a partir de la sesión que se
 almacenó en el controlador cuando se inició sesión. Como se puede observar,
 todo este flujo se corresponde perfectamente con el representado en el
-diagrama de análisis \emph{Análisis - Tramitar cita} y el diagrama de
-secuencia \emph{Tramitar cita (tramitación correcta)} del cliente.
+\diagrama{cliente}{análisis}{Análisis - Tramitar cita} y el
+\diagrama{cliente}{secuencia}{Tramitar cita (tramitación correcta)}.
 
 \texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaRegistrarCita.java}}
 
@@ -186,25 +187,25 @@ secuencia \emph{Tramitar cita (tramitación correcta)} del cliente.
 
 Cuando el cliente envía la solicitud de tramitación de cita, empieza el flujo
 de eventos del caso de uso \textbf{Tramitar cita} del servidor front-end. Como
-se puede ver en el diagrama de análisis \emph{Análisis - Tramitar cita}, el
+se puede ver en el \diagrama{frontend}{análisis}{Análisis - Tramitar cita}, el
 cliente se conecta con el sistema a través del objeto remoto
 \emph{RemotoServidorFrontend}, que lo único que hace es llamar al gestor
 principal del servidor, la clase \emph{ServidorFrontend}.
 
-Nótese que, en el diagrama de análisis citado, la interacción comienza con la
-selección del beneficiario que quiere pedir cita, ya que es un paso
-imprescindible para solicitar una cita. Sin embargo, como nos estamos centrando
-en la trazabilidad del caso de uso \textbf{Tramitar cita}, no hemos comentado
-en detalle cómo se gestiona la recuperación del beneficiario en el servidor, y
-hemos pasado directamente al almacenamiento de la cita.
+Nótese que, en el diagrama de clases de análisis citado, la interacción
+comienza con la selección del beneficiario que quiere pedir cita, ya que es un
+paso imprescindible para solicitar una cita. Sin embargo, como nos estamos
+centrando en la trazabilidad del caso de uso \textbf{Tramitar cita}, no hemos
+comentado en detalle cómo se gestiona la recuperación del beneficiario en el
+servidor, y hemos pasado directamente al almacenamiento de la cita.
 
 \texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaCitaServidor.java}}
 
-A continuación, conforme al diagrama de análisis, la clase
+A continuación, conforme al diagrama de clases de análisis, la clase
 \emph{ServidorFrontend} llama a la clase \emph{GestorCitas} con los datos de la
 cita que se quiere tramitar. Esta clase, entonces, realiza toda la interacción
-mostrada en el diagrama \emph{Tramitar cita (tramitación correcta)} del
-servidor front-end para comprobar la validez de la cita y almacenarla en el
+mostrada en el \diagrama{frontend}{secuencia}{Tramitar cita (tramitación
+correcta)} para comprobar la validez de la cita y almacenarla en el
 sistema. Muchas de las comprobaciones que se hacen no serían necesarias si
 el servidor sólo pudiera ser utilizado por el cliente que se ha desarrollado,
 porque el propio cliente impide enviar peticiones inválidas al servidor. Sin
@@ -224,8 +225,8 @@ dentro del calendario de trabajo del médico, etc.).
 \end{milista}
 
 Todas las clases de la implementación final del servidor que intervienen en la
-gestión de citas se pueden consultar en el diagrama de clases \emph{Gestor
-Citas} del servidor front-end.
+gestión de citas se pueden consultar en el \diagrama{frontend}{clases}{Gestor
+Citas}.
 
 \texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaPedirCitaServidor.java}}
 
@@ -236,6 +237,6 @@ través de la clase \emph{GestorConexionesLog}), y se avisa a los clientes
 registrados de la tramitación de la nueva cita (mediante el
 \emph{GestorSesiones}). La secuencia de llamadas que realiza el
 \emph{GestorConexionesLog} para que todas las clases interesadas procesen el
-mensaje se puede ver en el diagrama \emph{Gestor Conexiones Log} del servidor.
+mensaje se puede ver en el \diagrama{frontend}{clases}{Gestor Conexiones Log}.
 
 \texttt{\lstinputlisting[inputencoding=latin1]{codigos/TrazaLogYClientes.java}}

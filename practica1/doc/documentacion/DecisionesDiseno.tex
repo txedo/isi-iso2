@@ -13,21 +13,20 @@ Utilizando este enfoque multicapa, se sigue el principio de mínimo acoplamiento 
 
 En los siguientes apartados se comentarán las decisiones de diseño que se han tenido en cuenta para cada una de las capas de cada sistema desarrollado.
 
-\input{UnidadCitacionComunicaciones.tex}
-\input{UnidadCitacionDominio.tex}
-\input{UnidadCitacionPresentacion.tex}
-\input{UnidadCitacionPersistencia.tex}
-\input{frontendComunicaciones.tex}
+\subsubsection{Servidor Front-end}
 \input{frontendDominio.tex}
 \input{frontendPresentacion.tex}
 \input{frontendPersistencia.tex}
-\input{respaldoComunicaciones.tex}
+\input{frontendComunicaciones.tex}
+
+\subsubsection{Servidor de Respaldo}
 \input{respaldoDominio.tex}
 \input{respaldoPresentacion.tex}
 \input{respaldoPersistencia.tex}
+\input{respaldoComunicaciones.tex}
 
-
-
-
-
-
+\subsubsection{Unidad de Citación}
+\input{UnidadCitacionDominio.tex}
+\input{UnidadCitacionPresentacion.tex}
+\input{UnidadCitacionPersistencia.tex}
+\input{UnidadCitacionComunicaciones.tex}

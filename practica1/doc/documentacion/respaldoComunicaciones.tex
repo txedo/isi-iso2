@@ -1,3 +1,38 @@
-\subsubsection{Servidor de respaldo}
-
 \paragraph{Capa de comunicaciones}
+
+En el paquete de comunicaciones del servidor de respaldo no se utiliza el
+patrón \textbf{Proxy} porque este sistema no se tiene que comunicar de forma
+activa con ningún otro sistema, sino que es el servidor front-end el que
+utiliza los servicios del servidor de respaldo.
+
+Como se puede observar en el \diagrama{respaldo}{clases}{Servidor de respaldo
+remoto}, la interfaz \textit{IServidorRespaldo} que contiene las operaciones
+que se pueden solicitar al servidor de respaldo es simplemente una agrupación
+de las interfaces \textit{IConexionBD} e \textit{IConexionLog}. Se decidió
+crear la interfaz de esta forma para que quedara claro que el servidor de
+respaldo tiene dos funcionalidades bien diferenciadas: acceder a la base de
+datos secundaria y mostrar los mensajes de estado en la ventana del servidor
+de respaldo.
+
+Una gran ventaja que se deriva de crear la interfaz \textit{IServidorRespaldo}
+de esta forma es que sólo es necesario exportar un objeto remoto para acceder
+a toda la funcionalidad del servidor de respaldo. Inicialmente, se planteó la
+posibilidad de exportar un objeto dedicado exclusivamente a acceder a la base
+de datos y otro que fuera el encargado de mostrar los mensajes en la ventana
+del servidor, pero eso tenía el inconveniente de que se necesitaban dos puertos
+diferentes para mantener la comunicación, haciendo poco extensible el sistema
+en caso de que posteriormente se añadieran nuevas funcionalidades.
+
+Además, otra ventaja es que se puede utilizar el objeto remoto que implementa
+la interfaz del servidor en los métodos donde se necesita una
+\textit{IConexionBD} y en los que hace falta una \textit{IConexionLog}.
+Además, si en el futuro se tuviera que añadir una nueva funcionalidad al
+servidor de respaldo, bastaría con hacer que la interfaz
+\textit{IServidorRespaldo} implementara otra interfaz más, no afectando al
+código existente.
+
+Por otro lado, al igual que se comentó en el paquete de comunicaciones del
+servidor front-end (ver sección \ref{comunicaciones-front-end}), también se
+busca una IP pública o privada automáticamente al exportar el objeto remoto
+\textit{RemotoServidorRespaldo}, para que funcione si el equipo donde se
+ejecuta el servidor pertenece a más de una red.
