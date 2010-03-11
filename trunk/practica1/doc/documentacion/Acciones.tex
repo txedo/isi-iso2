@@ -55,93 +55,26 @@ En la tabla \ref{tb:operacionesInterfaz} se muestran las acciones que un usuario
 
 Estas operaciones se van a corresponder con los servicios que proporciona el servidor front-end en su interfaz. Sin embargo, algunas de las operaciones anteriores se apoya en la ejecución de otras acciones. Por ejemplo, para que un administrador pueda establecer una sustitución, primero debe buscar una lista de posibles sustitutos y elegir uno de ellos como sustituto de un médico; para que un médico pueda emitir un volante para un especialista, debe seleccionar un especialista de una lista; se deben calcular las horas a las que trabaja un médico para poder pedir cita, etc. Por esta razón, se necesitan otras operaciones además de las mostradas en la tabla \ref{tb:operacionesInterfaz}, que se van a corresponder con la operación \textit{mensajeAuxiliar} del servidor front-end. 
 
-En la tabla \ref{tb:operaciones} se enumera el conjunto de operaciones auxiliares que existen en el sistema.
+A continuación se enumera el conjunto de operaciones auxiliares que existen en el sistema, que pueden ser tanto operacione que satisfacen requisitos funcionales del sistema como operaciones utilizadas para dar soporte al funcionamiento interno del sistema:
 
-%operaciones disponibles: se utiliza cuando un usuario inicia sesión, de este modo el interfaz se configura automáticamente para mostrar únicamente las operaciones que éste puede realizar.
-%
-%eliminar beneficiario:
-%
-%consultar usuario
-%crear usuario
-%modificar usuario
-%eliminar usuario
-%
-%corresponde nif a un usuario: cuando intentas buscar un beneficiario e introduces el nif de un usuario registrado en el sistema, se muestra un aviso de que ese nif corresponde a un usuario (se utiliza en tramitar cita para evitar lo que le dije yo, que se pregunte si quieres registrarlo).
-%
-%consultar usuario que ha iniciado sesion (consultar propio usuario): se utiliza para consultar las citas propias del médico que tiene la sesión activa.
-%
-%consultar centros de salud: se utiliza cuando se quiere registrar un beneficario para que se muestren los centros.
-%
-%obtener todos los médicos de un tipo: se utiliza cuando un médico quiere emitir un volante, para buscar todos los especialistas de una especialidad.
-%
-%consulta horario de un médico: para tramitar cita, sustituciones y volantes.
-%
-%consultar beneficarios asignados a un médico: cuando vas a eliminar un médico se consultan todos los beneficiarios que lo tenían asignado y se trata de asignar uno nuevo.
-%
-%consultar el médico que realmente va a dar una cita (consultar médico cita): se utiliza en las sustituciones
-%
-%obtener los posibles sustitutos:
-%
-%consultar las horas de las citas de un médico: se utiliza al tramitar cita y tramitar cita con volante
-%
-%consultar las citas de un médico (no propias):
-%
-%consultar los días completos: esto lo tengo que mirar porque juana no tiene ni puta idea. Cree que es para buscar el primer día y hora disponible
-%
-%consultar las citas pendientes de un beneficiario
-%
-%consultar las citas pendientes de un médico
-%
-%consultar las citas que tiene un médico en una fecha y hora determinada: se utiliza en sustituciones para pasarle al médico sustituto las citas que el médico sustituido tenía
-%
-%consultas citas propias de un médico (cuando inicia sesión como médico)
-%
-%consultar citas pendientes propias de un médico (cuando inicia sesión como médico)
-%
-%consultar volante: se utiliza para tramitar cita con volante
-
-\begin{longtable}{| p{7cm} | c |}
-\hline
-\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ACCIÓN}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{DESCRIPCIÓN}} \\
-\hline
-\centering{Operaciones disponibles} & ... \\
-\hline
-\centering{Eliminar un beneficiario} & ... \\
-\hline
-\centering{Crear/consultar/modificar/eliminar usuario} & ... \\
-\hline
-\centering{Comprobar si el NIF corresponde a un usuario} & ...\\
-\hline
-\centering{Consultar el usuario que ha iniciado sesión} & ...\\
-\hline
-\centering{Consultar los centros de salud}& ...\\
-\hline
-\centering{Consultar los médicos de un tipo determinado} & ...\\
-\hline
-\centering{Consultar el horario de un médico} & ...\\
-\hline
-\centering{Consultar los beneficiarios asignados a un médico} & ...\\
-\hline
-\centering{Consultar el médico que atiende una cita} & ...\\
-\hline
-\centering{Consultar los posibles sustitutos de un médico} & ...\\
-\hline
-\centering{Consultar las horas de citas asignadas a un médico} & ...\\
-\hline
-\centering{Consultar las citas de un médico} & ...\\
-\hline
-\centering{Consultar los días completos de un médico} & ...\\
-\hline
-\centering{Consultar las citas pendientes de un beneficiario} & ...\\
-\hline
-\centering{Consultar las citas pendientes de un médico} & ...\\
-\hline
-\centering{Consultar las citas de un médico en una fecha dada} & ...\\
-\hline
-\centering{Consultar las citas del médico con la sesión activa} & ...\\
-\hline
-\centering{Consultar Volante} & ...\\
-\hline
-\caption{Operaciones auxiliares}
-\label{tb:operaciones}
-\end{longtable}
+\begin{milista}
+	\item \textbf{Operaciones disponibles}: esta operación está destinada para soportar el funcionamiento interno de la aplicación y se ejecuta cada vez que se inicia una sesión correctamente. Gracias a ella, el interfaz se configura automáticamente para mostrar únicamente las funcionalidades que el usuario que puede realizar el usuario que ha iniciado la sesión.
+	\item \textbf{Eliminar un beneficiario}: esta operación no fue solicitada explíctamente por el cliente como requisito funcional, pero se ha incluido en el sistema ya que se considera una funcionalidad interesante a la hora de gestionar los beneficiarios.
+	\item \textbf{Crear/consultar/modificar/eliminar usuario}: dado que se trata de requisitos funcionales del sistema y la interfaz remota propuesto no contempla estas operaciones, ha sido necesario incluirlas en esta sección.
+	\item \textbf{Comprobar si el NIF corresponde a un usuario}: esta operación auxiliar es utilizada a la hora de tramitar una cita. Cuando el empleado desea tramitar una cita a un beneficiario debe introducir su NIF para comprobar si está dado de alta en el sistema. En caso afirmativo, se procede a configurar la cita y, en caso negativo, se pregunta si se desea dar de alta en el sistema al beneficiario. Para realizar esta operación sin crear inconsistencias en la base de datos, se ejecuta esta operación que comprueba si el NIF del beneficiario corresponde a un usuario del sistema o no.
+	\item \textbf{Consultar el usuario que ha iniciado sesión}: esta operación de soporte para el funcionamiento interno de la aplicación sirve para consultar los datos del usuario que tiene la sesión activa en el terminal. Por ejepmlo, cuando un médico trata de emitir un volante, esta operación recupera sus datos para declararlo como médico emisor.
+	\item \textbf{Consultar los centros de salud}: cuando se desea dar de alta un beneficiario en el sistema, se muestra una lista con los centros de salud disponibles a fin de que el beneficiario pueda elegir el que más le convenga. Esta operación es la que se encarga de recuperar dicha lista de centros de salud.
+	\item \textbf{Consultar los médicos de un tipo determinado}: como su nombre indica, esta operación se utiliza para consultar todos los médicos de n tipo determinado (cabecera, especialista o pediatra). Da soporte, por ejemplo, a la funcionalidad de emitir un volante, ya que se deben al médico emisor todos los médicos especialistas -clasificados según especialidad- receptores de dicho volante.
+	\item \textbf{Consultar el horario de un médico}: esta es otra operación utilizada para el funcionamiento interno del sistema. Se ejecuta cuando se desea tramitar una cita, un volante o una sustitución, a fin de conocer el horario del médico objeto y poder realizar la acción de una forma eficiente.
+	\item \textbf{Consultar los beneficiarios asignados a un médico}: gracias a esta operación se implementa una característica importante del sistema que en que consiste al hacer algún cambio en un médico -bien sea modificación o supresión- se realicen las acciones oportunas sobre sus beneficiarios asignados.
+	\item \textbf{Consultar el médico que atiende una cita}: otra de las funcionalidades del sistema es que al tramitar una cita a un beneficiario, si su médico tiene programada una sustitución para esa fecha y hora, la cita la pasará el médico sustituto asignado. Esta inferencia se hace gracias a esta operación.
+	\item \textbf{Consultar los posibles sustitutos de un médico}: cuando el administrador desea tramitar la sustitución de un médico, sólo puede asignar como sustituto a otro médico que pueda pasar consulta durante las horas en las que trabaja el médico sustituido. Esta operación es la que satisface este requisito funcional.
+	\item \textbf{Consultar las horas de citas asignadas a un médico}: esta operación de soporte hace posible que cuando se desea tramitar una cita o una cita con volante, al citador se le mostrarán marcadas las horas en las que el médico no puede pasar consulta porque ya están asignadas a otra cita.
+	\item \textbf{Consultar las citas de un médico}: como bien indica su nombre, esta operación -que corresponde con una funcionalidad del sistema- provee de la posibilidad de consultar las citas que tiene asignadas un médico.
+	\item \textbf{Consultar los días completos de un médico}: esta operación de soporte permite que al tramitar una cita o una cita con volante, el usuario del sistema obtenga por defecto la primera fecha laboral en la que trabaja el médico asignado al beneficiario.
+	\item \textbf{Consultar las citas pendientes de un beneficiario}: es una operación que provee de una funcionalidad del sistema, la cual consiste en consultar las citas que un beneficiario tiene pendientes.
+	\item \textbf{Consultar las citas pendientes de un médico}: del mismo modo que la operación anterior, pero en este caso consite en consultar las operaciones que un médico tiene pendientes.
+	\item \textbf{Consultar las citas de un médico en una fecha dada}: esta es una operación de soporte que provee al sistema de las citas que tiene asignadas un médico un día determinado y a una hora determinada. Sirve de soporte a la funcionalidad de tramitar sustituciones a fin de traspasar al médico sustituto las citas que el médico sustituido tiene pendientes en el día y hora indicados.
+	\item \textbf{Consultar las citas del médico con la sesión activa}: esta funcionalidad ha sido añadida por los desarrolladores, ya que parece interesante que un médico pueda consultar de forma sencilla sus propias citas una vez que ha iniciado la sesión en el sistema.
+	\item \textbf{Consultar Volante}: esta operación de soporte satisface la funcionalidad de tramitar cita con volante, ya que el citador debe introducir el identificador del volante para que pueda ser recuperado del sistema de almacenamiento.
+\end{milista}
