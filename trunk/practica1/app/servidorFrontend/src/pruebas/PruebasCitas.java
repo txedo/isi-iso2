@@ -914,7 +914,6 @@ public class PruebasCitas extends PruebasBase {
 			fecha = new Date(cal.get(Calendar.YEAR) - 1900, cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 			assertNull(citasMedico.get(fecha));
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 	}

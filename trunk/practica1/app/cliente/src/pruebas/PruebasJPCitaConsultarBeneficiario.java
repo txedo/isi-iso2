@@ -323,7 +323,6 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			// Eliminamos la cita que falta
 			controlador.anularCita(c2);
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 	}	

@@ -62,7 +62,7 @@
  {\ifthenelse{\equal{#2}{colaboracion}}{\textbf{Colaboración}}
  {\ifthenelse{\equal{#2}{paquetes}}{\textbf{Paquetes}}
  {\ifthenelse{\equal{#2}{componentes}}{\textbf{Componentes}}
- {\ifthenelse{\equal{#2}{despliegue}}{\textbf{Despliegue}}{}}}}}}}}} -\textgreater {} \textit{#3}}
+ {\ifthenelse{\equal{#2}{despliegue}}{\textbf{Despliegue}}{}}}}}}}}} -\textgreater {} \textit{\textbf{#3}}}
 
 % Macro para dar color a las filas de la tabla "`Operaciones"'
 \def\colorFila{
@@ -154,7 +154,6 @@
 \clearpage
 
 % Fase de construcción
-% Fase de Inicio
 \input{FaseConstruccion.tex}
 \clearpage
 

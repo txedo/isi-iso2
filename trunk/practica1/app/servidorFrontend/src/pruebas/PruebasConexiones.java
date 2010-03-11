@@ -101,7 +101,6 @@ public class PruebasConexiones extends TestCase {
 			resultados.next();
 			assertTrue(resultados.getString("apellidos").equals("Nuevo"));
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 
@@ -119,7 +118,6 @@ public class PruebasConexiones extends TestCase {
 			// (no se pueden hacer consultas porque la clase ResultSet
 			// no es serializable y no se puede enviar por RMI)
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 		
@@ -268,7 +266,6 @@ public class PruebasConexiones extends TestCase {
 			assertTrue(resultados.getString("mensaje").equals("Mensaje de prueba") || resultados.getString("mensaje").equals("Otro mensaje de prueba"));
 			assertFalse(resultados.next());
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 		
@@ -289,7 +286,6 @@ public class PruebasConexiones extends TestCase {
 			assertTrue(lineas[1].endsWith("Otro mensaje de prueba"));
 			assertTrue(ventana.getClientesEscuchando() == 3);
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 		
@@ -306,7 +302,6 @@ public class PruebasConexiones extends TestCase {
 			// porque en las PruebasRemotoServidor del servidor de respaldo
 			// se prueba la clase remota ServidorRespaldo
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
@@ -336,7 +331,6 @@ public class PruebasConexiones extends TestCase {
 			comando = new ComandoSQLSentencia("DELETE FROM volantes");
 			GestorConexionesBD.ejecutar(comando);
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 	}

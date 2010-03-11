@@ -760,12 +760,10 @@ public class JPUsuarioConsultar extends JPBase {
 				}
 				
 			} catch(SQLException e) {
-				e.printStackTrace();
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			} catch(RemoteException e) {
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());		
 			} catch(Exception e) {
-				e.printStackTrace();
 				Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 			}
 		}
@@ -976,8 +974,6 @@ public class JPUsuarioConsultar extends JPBase {
 		btnGuardar.setVisible(false);
 		btnEliminar.setVisible(false);
 	}
-	
-	// <métodos del observador>
 	
 	public void usuarioActualizado(Usuario usuario) {
 		if(this.usuario != null && this.usuario.getNif().equals(usuario.getNif())) {

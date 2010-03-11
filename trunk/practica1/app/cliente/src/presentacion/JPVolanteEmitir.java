@@ -243,7 +243,6 @@ public class JPVolanteEmitir extends JPBase {
 				btnAceptar.setEnabled(false);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
 		} catch(RemoteException e) {
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.toString());
@@ -321,8 +320,6 @@ public class JPVolanteEmitir extends JPBase {
 	}
 
 	// Métodos públicos
-	
-	// <Métodos del observador>
 	
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		pnlBeneficiario.beneficiarioActualizado(beneficiario);

@@ -161,7 +161,6 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Médico encontrado.");		
 			assertTrue(btnCitasHistorico.isEnabled());
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
@@ -213,7 +212,6 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 			controlador.anularCita(c1);
 			controlador.anularCita(c2);
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 	}	

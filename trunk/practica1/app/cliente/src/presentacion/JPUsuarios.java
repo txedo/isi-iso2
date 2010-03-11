@@ -211,8 +211,6 @@ public class JPUsuarios extends JPBase {
 		return (jPanelListaOperaciones.getNumeroOperaciones() > 0);
 	}
 	
-	// <métodos del observador>
-
 	public void usuarioActualizado(Usuario usuario) {
 		// Redirigimos la operación al panel seleccionado
 		switch(operacionSeleccionada) {

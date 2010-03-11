@@ -1,0 +1,165 @@
+\subsection{Vista de Implementación}
+
+Los diagramas de clases de análisis realizados en los tres sistemas, que se
+pueden ver en los correspondientes ficheros del Visual Paradigm, contienen
+notas que indican detalladamente el flujo de eventos de cada caso de uso. Por
+tanto, no se han diseñado diagramas de secuencia o estado que representen
+otra vez el flujo de eventos de todos los casos de uso, ya que no aportarían
+información al desarrollo.
+
+Sin embargo, sí se han definido con más detalle los casos de uso más
+importantes del sistema y algunos algoritmos que se han implementado para
+facilitar el desarrollo, tal y como se comenta en los próximos apartados.
+
+\subsubsection{Servidor front-end}
+
+En el \diagrama{frontend}{estados}{Identificar}, se muestran los pasos
+seguidos al identificar un cliente en el sistema. En el diagrama se puede ver
+que sólo es posible mantener una sesión por cada cliente registrado, ya que
+cuando un cliente intenta iniciar sesión por segunda vez, se cierra su sesión
+anterior. Nótese, también, que la implementación del código es casi directa
+a partir del diagrama creado, al estar en un nivel muy cercano a la
+implementación final.
+
+En el \diagrama{frontend}{secuencia}{Registrar médico (escenario correcto)} se
+muestra la interacción que se realiza al registrar un nuevo médico en el
+sistema. En general, la interacción que se realiza en todas las operaciones es
+similar, y se basa en lo siguiente:
+\begin{milista}
+\item La clase \textit{ServidorFrontend} llama al gestor adecuado según el
+tipo de operación.
+\item El gestor implementa toda la funcionalidad de control del sistema y
+utiliza las clases de persistencia FP para acceder a la base de datos (las
+cuales, a su vez, utilizan el \textit{GestorConexionesBD}).
+\item El \textit{GestorConexionesLog} se usa para guardar el resultado de la
+operación en la base de datos y mostrarlo en las ventanas de los servidores.
+\item El \textit{GestorSesiones} se usa para avisar a los clientes de los
+cambios en el sistema.
+\end{milista}
+
+La tramitación de citas se muestra detalladamente en el
+\diagrama{frontend}{secuencia}{Tramitar cita (escenario correcto)}. El flujo
+de eventos es el mismo que se ve en el \diagrama{frontend}{análisis}{Análisis -
+Tramitar cita}, pero se han desglosado las comprobaciones que se hacen para
+asegurarse de que la cita solicitada es válida. Nótese que de todas estas
+comprobaciones se encarga el \textit{GestorCitas} porque, como se ha contado en
+varias ocasiones, los gestores implementan la funcionalidad de todas las
+operaciones.
+
+En el \diagrama{frontend}{secuencia}{Emitir volante (escenario correcto)} se
+pueden ver los pasos seguidos al emitir un nuevo volante para un beneficiario.
+En la implementación del sistema, la consulta de los médicos especialistas y
+la emisión del volante se ha hecho de forma separada, aunque en el
+\diagrama{frontend}{análisis}{Análisis - Emitir volante} se mostraran juntos.
+El diagrama de secuencia únicamente muestra la emisión del volante, puesto que
+la consulta de los médicos especialistas es una operación trivial.
+
+Posiblemente, una de las tareas más complejas que realiza el servidor front-end
+sea la búsqueda de sustitutos para un médico. Por este motivo, se ha definido
+con detalle la interacción y todas las comprobaciones hechas de esta operación
+en el \diagrama{frontend}{secuencia}{Establecer sustituto (búsqueda de
+sustituto}), al que se han añadido varias notas para comprender mejor la
+secuencia de mensajes.
+
+Por otro lado, en el \diagrama{frontend}{secuencia}{Establecer sustituto
+(asignación de sustituto)} se muestran los mensajes que se pasan las clases del
+servidor al asignar a un médico uno de los sustitutos devueltos por el método
+representado en el anterior diagrama.
+
+Finalmente, los últimos diagramas que se han creado están relacionados con el
+gestor de conexiones de bases de datos y el gestor de conexiones de estado del
+servidor, que se han implementado respectivamente para mantener sincronizadas
+las dos (aunque podrían ser más) bases de datos del sistema y procesar los
+mensajes generados por el servidor.
+
+En el \diagrama{frontend}{secuencia}{Gestor Conexiones BD (consulta)} y en el
+\diagrama{frontend}{secuencia}{Gestor Conexiones BD (no consulta)} se puede
+ver cómo se utilizan las conexiones de bases de datos (que implementan la
+interfaz \textit{IConexionBD} cuando una clase del paquete de persistencia
+solicita acceso a ellas. Cuando se realiza una consulta, sólo se utiliza la
+conexión de la base de datos principal manejada por el servidor front-end,
+mientras que cuando se ejecuta una inserción, modificación o eliminación, se
+utilizan todas las conexiones (incluida la de la base de datos secundaria
+manejada por el servidor de respaldo), para mantener sincronizadas las bases
+de datos.
+
+Al ejecutar una operación de inserción, modificación o eliminación sobre una
+base de datos, no se confirma hasta que la misma operación se ha ejecutado
+correctamente sobre todas las bases de datos. De esta manera, si una base de
+datos produce un error, se puede revertir el estado de las demás para que
+todas sigan sincronizadas. Este proceso se puede ver con mucho más detalle en
+el \diagrama{frontend}{estados}{Gestor de conexiones BD (no consulta)}.
+
+Por último, en el \diagrama{frontend}{secuencia}{Gestor Conexiones Log} se
+observan las tres conexiones de estado (que implementan la interfaz
+\textit{IConexionLog}) que hacen uso de los mensajes generados por el
+servidor: una almacena los mensajes en la base de datos, otra los muestra en
+la ventana principal del servidor front-end y la última los envía al servidor
+de respaldo para que se muestren en su ventana principal.
+
+\subsubsection{Servidor de respaldo}
+
+Las funcionalidades implementadas por el servidor de respaldo son lo
+suficientemente sencillas como para que, con los diagramas de clases de
+análisis y de clases de diseño, se pueda implementar cada uno de los casos de
+uso del \diagrama{respaldo}{casosUso}{Casos de Uso}. Por este motivo, no se ha
+desarrollado ningún diagrama de secuencia o máquina de estados para este
+sistema.
+
+\subsubsection{Unidad de citación}
+
+Para la unidad de citación se han desarrollado los diagramas de secuencia que
+implementan la misma funcionalidad detallada con los diagramas del servidor
+front-end, pero desde el punto de vista del cliente. De esta forma, y como se
+verá con el ejemplo de trazabilidad (sección \ref{trazabilidad}), es posible
+cómo se pasa el flujo de la unidad de citación al servidor front-end y
+viceversa cuando se ejecutan los casos de uso más importantes.
+
+En el \diagrama{cliente}{secuencia}{Registrar Médico} se pueden ver las
+acciones realizadas por la unidad de citación para registrar un nuevo médico.
+Al igual que ocurría en el servidor front-end, la interacción entre los
+objetos del sistema sigue, en la mayor parte de los casos, un esquema claro,
+similar al siguiente:
+\begin{milista}
+\item El usuario (médico, citador o administrador) accede al sistema a través
+del panel de la ventana \textit{JFPrincipal} que implemente la funcionalidad
+que quiere utilizar.
+\item El panel utiliza la clase \textit{Validacion} para validar los datos
+introducidos por el usuario.
+\item Para cada operación que sea necesario solicitar al servidor, el panel
+llama al \textit{ControladorCliente}.
+\item El \textit{ControladorCliente} recupera el id de la sesión, registrada
+cuando se identificó el usuario, y utiliza el \textit{ProxyServidorFrontend}
+para comunicarse con el servidor front-end.
+\item Al final, el panel muestra un mensaje al usuario informando de los
+resultados de la operación.
+\end{milista}
+
+El \diagrama{cliente}{secuencia}{Tramitar Cita - Tramitación correcta}
+muestra el flujo de eventos que se lleva a cabo al tramitar una nueva cita.
+Como se puede ver, la unidad de citación solicita al servidor información
+sobre las citas que ya tiene asignadas el médico para poder mostrar al
+usuario del sistema un calendario con los días y las horas disponibles para
+dar la cita. Por otro lado, en el \diagrama{cliente}{secuencia}{Tramitar Cita
+(Beneficiario inexistente)} se muestra cómo, en caso de que el beneficiario
+que quiere pedir cita no exista en el sistema, se pasa el control a un panel
+diferente del de tramitación de citas en el que el ``citador'' puede registrar
+el beneficiario para luego tramitar su cita.
+
+En el \diagrama{cliente}{secuencia}{Emitir Volante} se ve toda la interacción
+del caso de uso Emitir Volante de la unidad de citación, teniendo en cuenta
+detalles de implementación como el hecho de que cuando se seleccione una
+especialidad, se soliciten los médicos de esa clase al servidor, en lugar de
+recibir toda la lista de médicos directamente del servidor.
+
+Finalmente, se puede ver la interacción de la asignación de sustitutos por
+parte del cliente en el \diagrama{cliente}{secuencia}{Establecer sustituto}.
+De este diagrama, conviene destacar el hecho de que la consulta del médico
+que se va a sustituir no la haga el panel \textit{JPSustitutoEstablecer}, sino
+\textit{JPUsuarioConsultar}, reutilizando así el panel de consulta de usuarios.
+Cuando se elige el médico, se activa el panel de sustituciones para que el
+usuario pueda, en primer lugar, seleccionar el día y las horas de la
+sustitución (el flujo continúa en el \diagrama{frontend}{secuencia}{Establecer
+sustituto (búsqueda de sustitutos)}), y después elegir el médico que hará la
+sustitución (el flujo continúa en el \diagrama{frontend}{secuencia}{Establecer
+sustituto (asignación de sustituto)}).

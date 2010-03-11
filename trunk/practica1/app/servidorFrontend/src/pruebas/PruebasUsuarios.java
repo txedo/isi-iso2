@@ -423,7 +423,6 @@ public class PruebasUsuarios extends PruebasBase {
 			assertTrue(clienteCitador.isLlamadoCerrarSesionEliminacion());
 			sesionCitadorCerrada = true;
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 

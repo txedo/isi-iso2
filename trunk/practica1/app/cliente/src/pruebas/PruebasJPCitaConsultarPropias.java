@@ -119,7 +119,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
 		} catch(Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 	}
 	
