@@ -1,0 +1,26 @@
+\subsubsection{Desarrollo de la base de datos del sistema}
+
+\paragraph{Diseño conceptual}
+
+El diseño conceptual de la base de datos del sistema está basado en las clases persistentes de la lógica del dominio (ver \diagrama{frontend}{clases}{Modelo de Dominio}), representando dichas clases y sus relaciones en un model ER (Entidad-Interrelación).
+ 
+Como dicho modelo es el modelo conceptual (de más alto nivel) en el diseño de una base de datos, las entidades se corresponden prácticamente con las clases del modelo de dominio, los atributos de dichas entidades se corresponden con los atributos de las clases, y las relaciones se corresponden con las asociaciones que existen entre las diferentes clases del modelo de conocimiento o dominio.
+
+----- Comentar qué entidades y relaciones se dferencian del modelo de dominio y porqué -----
+
+El modelo ER de la base de datos se muestra en la imagen \ref{fig:BaseDatosER} y está accesible en el \textbf{Fichero ....}.
+
+Cabe destacar que este modelo de la base de datos es el mismo para el servidor front-end y para el servidor de respaldo, pues la base de datos de este último servidor es una copia de seguridad de la base de datos del servidor front-end, por lo que ambas bases de datos deben tener las mismas entidades y relaciones. 
+
+\paragraph{Diseño lógico}
+
+Una vez se ha realizado el diagrama ER a partir de las clases y asociaciones del modelo de conocimiento del sistema, se debe traducir dicho diagrama a un modelo relacional o de tablas. Para realizar esto, se han tenido en cuenta las siguientes consideraciones: 
+
+\begin{milista}
+	\item Para representar la jerarquía de herencia de la entidad \textit{Usuario} y las entidades \textit{Administrador}, \textit{Citador} y \textit{Médico}, se ha utilizado el patrón de persistencia \textit{1 árbol de herencia, 1 tabla}, por lo que sólo se creará la tabla \textit{Usuarios}, que agrupará los atributos de todas las entidades anteriores. Sin embargo, es necesario añadir un nuevo atributo a la tabla \textit{Usuarios} para indicar el rol del usuario, correspondiente a cada una de las subclases. \\
+	La razón de utilizar dicho patrón es agrupar en única tabla toda la jerarquía de herencia que existe entre esas clases en el modelo de dominio, pues ninguna de las clases \textit{Administrador}, \textit{Citador} ni \textit{Médico} añaden nuevos atributos a la clase \textit{Usuario}, por lo que no se van a obtener atributos (columnas) nulas en la tabla resultante.
+	\item Para representar los dferentes tipos de médico, aunque en el modelo ER se represente con una herencia, por ser un modelo conceptual, la tabla que se obtiene es la tabla \textit{TiposMedico}, obtenida al aplicar el patrón de persistencia \textit{1 árbol de herencia, 1 tabla} sobre la clase \textit{Tipo Médico} que aparece en el modelo de dominio. Esta clase, a su vez, proviene de la aplicación del patrón \textbf{Estado}, como ya se comentó en el apartado .
+\end{milista}
+
+
+
