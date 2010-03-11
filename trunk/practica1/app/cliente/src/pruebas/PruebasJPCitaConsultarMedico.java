@@ -44,9 +44,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 	private Button btnBuscar;
 	private Button btnRestablecer;
 	private TextBox txtNIF;
-	private TextBox txtLogin;
 	private TextBox txtNombre;
-	private TextBox txtApellidos;	
 	private TextBox txtNIFBuscado;
 	private JTable jtblCitas;
 	private Window winPrincipal;
@@ -111,8 +109,6 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 			txtNIFBuscado = panelUsuario.getTextBox("txtNIFBuscado");
 			txtNIF = pnlPanel.getTextBox("txtNIF");
 			txtNombre = pnlPanel.getTextBox("txtNombre");
-			txtApellidos = pnlPanel.getTextBox("txtApellidos");
-			txtLogin = panelUsuario.getTextBox("txtLogin");
 			btnBuscar = panelUsuario.getButton("btnBuscar");
 			btnCitasHistorico = pnlPanel.getButton("btnHistoricoCitas");
 			btnRestablecer = pnlPanel.getButton("btnRestablecer");
@@ -176,6 +172,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 		assertTrue(tblCitas.getRowCount()==0);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testBuscarCita () {
 		// Creamos una cita para el beneficiario
 		Cita c1, c2;
@@ -224,6 +221,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 		assertTrue(txtNombre.getText().equals(""));
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testObservadorBeneficiarioActualizadoEliminado () {
 		// Iniciamos sesión con un segundo administrador
 		try {
@@ -335,6 +333,7 @@ public class PruebasJPCitaConsultarMedico extends org.uispec4j.UISpecTestCase im
 		}		
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testObservadorCitas() {
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador

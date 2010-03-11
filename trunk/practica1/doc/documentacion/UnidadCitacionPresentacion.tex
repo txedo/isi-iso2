@@ -1,1 +1,53 @@
 \paragraph{Capa de presentación}
+
+De las tres aplicaciones que forman el sistema construido, la unidad de
+citación es aquella en la que la capa de presentación es más importante,
+debido a que es la que utilizará el usuario final para manipular el sistema de
+salud.
+
+El desarrollo de la interfaz gráfica del cliente se ha basado en la división
+del sistema que se hizo en la gestión de requisitos (ver sección
+\ref{requisitos-detallados}). De esta forma, a cada gestor identificado
+(beneficiarios, usuarios, citas, volantes y sustituciones) se le ha asignado
+una pestaña en la interfaz gráfica, dentro de la cual se agrupan los paneles
+de todas las operaciones relacionadas. Por sencillez para el usuario, las
+operaciones de consulta, modificación y eliminación se han unido en una única
+operación, por lo que para eliminar o modificar un usuario primero se debe
+consultar.
+
+Un detalle interesante que conviene destacar de las operaciones disponibles
+para cada usuario es que éstas no están fijadas en el código de la unidad de
+citación, sino que cuando un usuario inicia sesión, pide las operaciones
+que puede realizar al servidor front-end y, en función de la respuesta
+recibida, se muestran unas u otras operaciones. La gran ventaja de esta forma
+de determinar las operaciones para un usuario es que, si se crea un nuevo tipo
+de usuario o cambian las operaciones asignadas a un tipo de usuario existente,
+los cambios que habría que hacer en la unidad de citación serían mínimos.
+
+A la hora de implementar la interfaz, se tomó la decisión de crear un panel
+(una clase) por cada operación que el usuario puede realizar con el sistema.
+Por tanto, hay un panel dedicado a registrar beneficiarios, otro a
+consultar/modificar/eliminar usuarios, otro diferente a tramitar citas, etc.
+Esta división ha permitido reutilizar paneles en otros paneles, aprovechando
+así la potencia de la orientación a objetos. Por ejemplo, en el panel de
+tramitación de citas, \textit{JPCitaTramitar}, se utiliza el panel de
+consulta de beneficiarios, \textit{JPBeneficiarioConsultar}, para elegir el
+beneficiario que quiere pedir cita. En el \diagrama{cliente}{clases}{Ventana
+Principal} se puede ver con detalle la jerarquía de paneles usada en la
+interfaz gráfica, así como los paneles que están formados de otros paneles.
+
+Debido a la gran cantidad de clases que tenía el paquete de presentación, se
+decidieron separar todas aquellas clases que no eran ventanas o paneles de la
+interfaz gráfica y moverlas al subpaquete \textit{presentacion.auxiliar}. Así
+pues, en este paquete se encuentran implementaciones personalizadas de algunos
+componentes Java, definiciones de eventos usados en algunos paneles y clases
+de utilidades con métodos que se reutilizan en varios paneles.
+
+Una clase especialmente importante en este subpaquete es \textit{Validacion},
+que es donde se encuentran todos los métodos encargados de validar los campos
+introducidos en el usuario. Como se puede ver en los diagramas de secuencia del
+cliente (por ejemplo, en el \diagrama{cliente}{secuencia}{Registrar Médico}),
+siempre que el usuario quiere realizar una operación con la unidad de
+citación, se llama a la clase \textit{Validacion} para comprobar que los datos
+de la operación tienen el formato correcto, con el fin de evitar enviar al
+servidor peticiones que se sabe que son incorrectas.

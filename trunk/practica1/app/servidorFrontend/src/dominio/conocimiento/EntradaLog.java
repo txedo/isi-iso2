@@ -73,7 +73,12 @@ public class EntradaLog {
 		dev = false;
 		if(o != null && o instanceof EntradaLog) {
 			e = (EntradaLog)o;
-			dev = usuario.equals(e.getUsuario()) && fecha.equals(e.getFecha()) && accion.equals(e.getAccion()) && mensaje.equals(e.getMensaje());
+			dev = fecha.equals(e.getFecha()) && accion.equals(e.getAccion()) && mensaje.equals(e.getMensaje());
+			if(usuario == null) {
+				dev = dev && e.getUsuario() == null;
+			} else {
+				dev = dev && usuario.equals(e.getUsuario());
+			}
 		}
 		return dev;
 	}

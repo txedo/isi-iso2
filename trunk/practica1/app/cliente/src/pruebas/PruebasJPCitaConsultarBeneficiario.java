@@ -1,11 +1,8 @@
 package pruebas;
 
 import java.util.Date;
-
 import javax.swing.JComboBox;
 import javax.swing.JTable;
-import javax.swing.JTextField;
-
 import org.uispec4j.Button;
 import org.uispec4j.ComboBox;
 import org.uispec4j.Panel;
@@ -15,13 +12,9 @@ import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
-
-import presentacion.JPBeneficiarioConsultar;
 import presentacion.JPCitaConsultarBeneficiario;
 import presentacion.auxiliar.OperacionesInterfaz;
-
 import comunicaciones.ConfiguracionCliente;
-
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.Cita;
@@ -58,13 +51,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 	private ComboBox cmbCentros;
 	private TextBox txtMedicoAsignado;
 	private JComboBox jcmbIdentificacion;
-	private JTextField jtxtIdentificacion;
-	private JTextField jtxtNIF;
-	private JTextField jtxtNSS;
-	private JTextField jtxtNombre;
-	private JTextField jtxtApellidos;
 	private JComboBox jcmbCentros;
-	private JTextField jtxtMedicoAsignado;
 	private JTable jtblCitas;
 	private Window winPrincipal;
 	
@@ -138,12 +125,6 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			tblCitas = pnlPanel.getTable("tblTablaCitas");
 			
 			jcmbIdentificacion = (JComboBox)cmbIdentificacion.getAwtComponent();
-			jtxtIdentificacion = (JTextField)txtIdentificacion.getAwtComponent();
-			jtxtNIF = (JTextField)txtNIF.getAwtComponent();
-			jtxtNSS = (JTextField)txtNSS.getAwtComponent();
-			jtxtNombre = (JTextField)txtNombre.getAwtComponent();
-			jtxtApellidos = (JTextField)txtApellidos.getAwtComponent();
-			jtxtMedicoAsignado = (JTextField)txtMedicoAsignado.getAwtComponent();
 			jcmbCentros = (JComboBox)cmbCentros.getAwtComponent();
 			jtblCitas = (JTable) tblCitas.getAwtComponent();
 			
@@ -231,6 +212,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		assertFalse(btnAnular.isEnabled());
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testBuscarCita () {
 		// Creamos una cita para el beneficiario
 		Cita c;
@@ -255,11 +237,12 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		}
 	}	
 	
+	@SuppressWarnings("deprecation")
 	public void testAnularCita () {
 		// Creamos una cita para el beneficiario
-		Cita c1, c2;
+		Cita c2;
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
+			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 		
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
@@ -291,7 +274,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		
 		// Probamos a tener más de una cita
 		try {
-			c1 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
+			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			c2 = controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,2*IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			// Probamos con el NIF de beneficiarioPrueba que es correcto y está dado de alta en el sistema
 			jcmbIdentificacion.grabFocus();
@@ -465,6 +448,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 			assertTrue(tblCitas.getRowCount()==0);
 			// Pedimos una cita desde el controlador auxiliar
 			WindowInterceptor.init(new Trigger() {
+				@SuppressWarnings("deprecation")
 				public void run() throws Exception {
 					controladorAuxiliar.pedirCita(beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado().getNif(), new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 				}
@@ -485,6 +469,7 @@ public class PruebasJPCitaConsultarBeneficiario extends org.uispec4j.UISpecTestC
 		try {
 			// Ahora procedemos a eliminar la cita desde el segundo administrador
 			WindowInterceptor.init(new Trigger() {
+				@SuppressWarnings("deprecation")
 				public void run() throws Exception {
 					controladorAuxiliar.anularCita(new Cita(new Date(2015-1900,3-1,4,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA, beneficiarioPrueba, beneficiarioPrueba.getMedicoAsignado()));
 				}

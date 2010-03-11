@@ -542,11 +542,12 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		}
 	}
 	
-	//TODO : Juanes, este método peta por el siguiente mensaje:
-	// excepciones.FechaNoValidaException: El médico que se quiere sustituir no trabaja en la fecha y horas indicadas.
+	@SuppressWarnings("deprecation")
 	public void testObservadorSustitucionRegistrada () {
+		String cadena;
+		
 		diaSustitucion = new Vector<Date>();
-		diaSustitucion.add(new Date("04/03/2015"));
+		diaSustitucion.add(new Date(2015 - 1900, 2, 4)); // Miércoles 4/Marzo/2015
 		try {
 			// Iniciamos el controlador auxiliar con otro usuario administrador
 			controladorAuxiliar = UtilidadesPruebas.crearControladorAuxiliar(IDatosConexionPruebas.USUARIO_ADMIN_AUXILIAR, IDatosConexionPruebas.PASSWORD_ADMIN_AUXILIAR);
@@ -559,8 +560,11 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		jcmbIdentificacion.setSelectedIndex(0);
 		txtIdentificacion.setText(beneficiarioPrueba.getNif());
 		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), "Beneficiario encontrado.");
-		// Se comprueba que tiene médico asignado
+		// Se comprueba que tiene médico asignado y que, en principio,
+		// el médico que va a dar la cita es el asignado al beneficiario
 		assertEquals(medicoAsignado.getApellidos() + ", " + medicoAsignado.getNombre() + " (" + medicoAsignado.getNif() + ")", txtMedicoAsignado.getText());
+		cadena = cabecera1.getApellidos() + ", " + cabecera1.getNombre() + " (" + cabecera1.getNif() + ")";
+		assertEquals(cadena, txtMedico.getText());
 		// Comprobamos que los componentes se han habilitado
 		assertTrue(txtFechaCita.isEnabled());
 		assertTrue(cmbHorasCitas.isEnabled());
@@ -576,7 +580,6 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.asignarSustituto(cabecera1, diaSustitucion, 10, 13, cabecera2);
-					// TODO: Dice que el medico que se quiere sustituir no trabaja en ese día
 				}
 			}).process(new WindowHandler() {
 				public Trigger process(Window window) {
@@ -586,8 +589,10 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			}).run();
 			// Dormimos el hilo en espera de la respuesta del servidor
 			Thread.sleep(TIME_OUT);
-			// La ventana del primer administrador se ha debido actualizar con el nombre del médico que realmente va a dar la cita (el sustituto)
-			assertEquals(txtMedicoAsignado.getText(), "");
+			// La ventana del primer administrador se ha debido actualizar con el
+			// nombre del médico que realmente va a dar la cita (el sustituto)
+			cadena = cabecera2.getApellidos() + ", " + cabecera2.getNombre() + " (" + cabecera2.getNif() + "), sustituye a " + cabecera1.getApellidos() + ", " + cabecera1.getNombre() + " (" + cabecera1.getNif() + ")";
+			assertEquals(cadena, txtMedico.getText());
 		} catch (Exception e) {
 			fail (e.toString());
 		}		
