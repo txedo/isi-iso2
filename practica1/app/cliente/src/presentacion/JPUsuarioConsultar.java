@@ -68,7 +68,7 @@ public class JPUsuarioConsultar extends JPBase {
 
 	private static final long serialVersionUID = 2736737327573021315L;
 	
-	private final String PASSWORD_OCULTA = ".....";
+	private final String PASSWORD_OCULTA = "........";
 	
 	private EventListenerList listenerList;
 	private Vector<PeriodoTrabajo> periodos;
@@ -250,6 +250,11 @@ public class JPUsuarioConsultar extends JPBase {
 				txtPasswordConf.setPreferredSize(new java.awt.Dimension(277, 23));
 				txtPasswordConf.setEditable(false);
 				txtPasswordConf.setName("txtPasswordConf");
+				txtPasswordConf.addFocusListener(new FocusAdapter() {
+					public void focusGained(FocusEvent evt) {
+						txtPasswordConfFocusGained(evt);
+					}
+				});
 			}
 			{
 				lblApellidos = new JLabel();
@@ -467,7 +472,7 @@ public class JPUsuarioConsultar extends JPBase {
 		txtNIF.setText(usuario.getNif());
 		txtLogin.setText(usuario.getLogin());
 		txtPassword.setText(PASSWORD_OCULTA);
-		txtPasswordConf.setText("");
+		txtPasswordConf.setText(PASSWORD_OCULTA);
 		txtNombre.setText(usuario.getNombre());
 		txtApellidos.setText(usuario.getApellidos());
 		txtCorreoElectronico.setText(usuario.getCorreo());
@@ -522,7 +527,7 @@ public class JPUsuarioConsultar extends JPBase {
 		JFAvisos frmAviso;
 		Usuario usuarioModif = null;
 		Vector<Cita> citas, citasAfectadas = null;
-		boolean actualizar = false, afectada;
+		boolean cambioPassword, actualizar = false, afectada;
 		
 		try {
 			
@@ -532,7 +537,7 @@ public class JPUsuarioConsultar extends JPBase {
 			Validacion.comprobarUsuario(txtLogin.getText().trim());
 			if((passwordCambiada || !(new String(txtPassword.getPassword()).equals(PASSWORD_OCULTA)))
 			   && (txtPassword.getPassword().length > 0 || txtPasswordConf.getPassword().length > 0)) { 
-				Validacion.comprobarContraseña(new String(txtPasswordConf.getPassword()));
+				Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
 				if(!(new String(txtPassword.getPassword())).equals(new String(txtPasswordConf.getPassword()))) {
 					throw new ContraseñaIncorrectaException("Las contraseñas no coinciden.");
 				}
@@ -560,10 +565,12 @@ public class JPUsuarioConsultar extends JPBase {
 			}
 			usuarioModif.setNif(txtNIF.getText().trim().toUpperCase());
 			usuarioModif.setLogin(txtLogin.getText().trim());
-			if(passwordCambiada && txtPassword.getPassword().length > 0) { 
+			if(passwordCambiada && txtPassword.getPassword().length > 0) {
+				cambioPassword = true;
 				usuarioModif.setPassword(new String(txtPassword.getPassword()));
 			} else {
-				usuarioModif.setPassword("");
+				cambioPassword = false;
+				usuarioModif.setPassword(usuario.getPassword());
 			}
 			usuarioModif.setNombre(txtNombre.getText().trim());
 			usuarioModif.setApellidos(txtApellidos.getText().trim());
@@ -610,10 +617,15 @@ public class JPUsuarioConsultar extends JPBase {
 			if(actualizar) {
 				// Si se le ha dado a botón de "Guardar" sin haber hecho ningún cambio, se muestra un aviso y no se realiza la operación
 				
-				// TODO: Juan G., no funciona el equals por la contraseña.
 				if (usuario.equals(usuarioModif))
 					Dialogos.mostrarDialogoAdvertencia(getFrame(), "Aviso", "No se ha hecho ningún cambio sobre el usuario.");
 				else {
+					// Si se va a mantener la contraseña, se deja en blanco
+					// el campo del usuario para que el servidor sepa que
+					// debe dejar la misma contraseña
+					if(!cambioPassword) {
+						usuarioModif.setPassword("");
+					}
 					// Solicitamos al servidor que se modifique el usuario
 					getControlador().modificarUsuario(usuarioModif);
 					// Mostramos el resultado de la operación y limpiamos el panel
@@ -808,6 +820,15 @@ public class JPUsuarioConsultar extends JPBase {
 	private void txtPasswordFocusGained(FocusEvent evt) {
 		if(txtPassword.isEditable() && !passwordCambiada) {
 			txtPassword.setText("");
+			txtPasswordConf.setText("");
+			passwordCambiada = true;
+		}
+	}
+
+	private void txtPasswordConfFocusGained(FocusEvent evt) {
+		if(txtPasswordConf.isEditable() && !passwordCambiada) {
+			txtPassword.setText("");
+			txtPasswordConf.setText("");
 			passwordCambiada = true;
 		}
 	}
