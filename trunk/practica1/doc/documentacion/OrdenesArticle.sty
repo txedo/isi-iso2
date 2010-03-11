@@ -73,7 +73,7 @@
 % figuras y tablas
 \ifOrdenes@cont
 	\RequirePackage{chngcntr}
-	\counterwithin*{section}{part} % En documentos a doble cara, es mejor dar distinto formato a las páginas pares e impares
+	\counterwithin*{section}{part}
 	\counterwithin{figure}{section}
 	\counterwithin{table}{section}
 \fi
@@ -100,6 +100,7 @@
 		{0.5pt}
 		{}
 \fi
+
 
 % Paquete para personalizar encabezados y
 % pies de p\'agina
@@ -129,3 +130,11 @@
 \setlength{\pdfpagewidth}{\paperwidth}
 \setlength{\pdfpageheight}{\paperheight}
 
+% Salto de línea tras título de secciones \paragraph
+\makeatletter % necesario para que reconozca a '@' como carácter normal
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\z@}{-3.25ex \@plus
+-1ex \@minus -.2ex}{1.5ex \@plus .2ex}{\normalfont\large\bfseries}}
+\makeatother % necesario para que restablezca '@' como carácter especial
+
+% Mostrar en el índice hasta el nivel de \paragraph
+\setcounter{tocdepth}{4}

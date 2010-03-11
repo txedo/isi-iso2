@@ -27,7 +27,7 @@ CREATE TABLE tiposMedico (
        nifMedico CHAR(9) NOT NULL,
        tipo INT NOT NULL default '-1',
        especialidad VARCHAR(255) NOT NULL default '',
-       PRIMARY KEY (nifMedico),
+       PRIMARY KEY (nifMedico, tipo),
        FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
@@ -67,6 +67,7 @@ CREATE TABLE beneficiarios (
 ) TYPE=InnoDB;
 
 CREATE TABLE direcciones (
+	   id INT NOT NULL AUTO_INCREMENT,
        nifBeneficiario CHAR(9) NOT NULL,
        domicilio VARCHAR(255) NOT NULL default '', 
        numero VARCHAR(255) NOT NULL default '',
@@ -75,9 +76,9 @@ CREATE TABLE direcciones (
        ciudad VARCHAR(255) NOT NULL default '',
        provincia VARCHAR(255) NOT NULL default '',
        cp INT NOT NULL default -1,       
-       PRIMARY KEY (nifBeneficiario),
+       PRIMARY KEY (id),
        FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
-) TYPE=InnoDB;
+) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE citas (
        id INT NOT NULL AUTO_INCREMENT,
