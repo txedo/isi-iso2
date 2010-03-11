@@ -55,51 +55,93 @@ En la tabla \ref{tb:operacionesInterfaz} se muestran las acciones que un usuario
 
 Estas operaciones se van a corresponder con los servicios que proporciona el servidor front-end en su interfaz. Sin embargo, algunas de las operaciones anteriores se apoya en la ejecución de otras acciones. Por ejemplo, para que un administrador pueda establecer una sustitución, primero debe buscar una lista de posibles sustitutos y elegir uno de ellos como sustituto de un médico; para que un médico pueda emitir un volante para un especialista, debe seleccionar un especialista de una lista; se deben calcular las horas a las que trabaja un médico para poder pedir cita, etc. Por esta razón, se necesitan otras operaciones además de las mostradas en la tabla \ref{tb:operacionesInterfaz}, que se van a corresponder con la operación \textit{mensajeAuxiliar} del servidor front-end. 
 
-En la tabla \ref{tb:operaciones} se muestran, el resto de operaciones que existen en el sistema. Así, en dicha tabla se resumen aquellas operaciones auxiliares, junto con la operación de la tabla anterior a la que dan soporte. 
+En la tabla \ref{tb:operaciones} se enumera el conjunto de operaciones auxiliares que existen en el sistema.
+
+%operaciones disponibles: se utiliza cuando un usuario inicia sesión, de este modo el interfaz se configura automáticamente para mostrar únicamente las operaciones que éste puede realizar.
+%
+%eliminar beneficiario:
+%
+%consultar usuario
+%crear usuario
+%modificar usuario
+%eliminar usuario
+%
+%corresponde nif a un usuario: cuando intentas buscar un beneficiario e introduces el nif de un usuario registrado en el sistema, se muestra un aviso de que ese nif corresponde a un usuario (se utiliza en tramitar cita para evitar lo que le dije yo, que se pregunte si quieres registrarlo).
+%
+%consultar usuario que ha iniciado sesion (consultar propio usuario): se utiliza para consultar las citas propias del médico que tiene la sesión activa.
+%
+%consultar centros de salud: se utiliza cuando se quiere registrar un beneficario para que se muestren los centros.
+%
+%obtener todos los médicos de un tipo: se utiliza cuando un médico quiere emitir un volante, para buscar todos los especialistas de una especialidad.
+%
+%consulta horario de un médico: para tramitar cita, sustituciones y volantes.
+%
+%consultar beneficarios asignados a un médico: cuando vas a eliminar un médico se consultan todos los beneficiarios que lo tenían asignado y se trata de asignar uno nuevo.
+%
+%consultar el médico que realmente va a dar una cita (consultar médico cita): se utiliza en las sustituciones
+%
+%obtener los posibles sustitutos:
+%
+%consultar las horas de las citas de un médico: se utiliza al tramitar cita y tramitar cita con volante
+%
+%consultar las citas de un médico (no propias):
+%
+%consultar los días completos: esto lo tengo que mirar porque juana no tiene ni puta idea. Cree que es para buscar el primer día y hora disponible
+%
+%consultar las citas pendientes de un beneficiario
+%
+%consultar las citas pendientes de un médico
+%
+%consultar las citas que tiene un médico en una fecha y hora determinada: se utiliza en sustituciones para pasarle al médico sustituto las citas que el médico sustituido tenía
+%
+%consultas citas propias de un médico (cuando inicia sesión como médico)
+%
+%consultar citas pendientes propias de un médico (cuando inicia sesión como médico)
+%
+%consultar volante: se utiliza para tramitar cita con volante
 
 \begin{longtable}{| p{7cm} | c |}
 \hline
-\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ACCIÓN}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{DA SOPORTE A}} \\
+\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{ACCIÓN}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{DESCRIPCIÓN}} \\
 \hline
-\centering{Consultar beneficiarios asignados a un médico} & ... \\
+\centering{Operaciones disponibles} & ... \\
 \hline
-\centering{Corresponde NIF a un usuario} & ...\\
+\centering{Eliminar un beneficiario} & ... \\
 \hline
-\centering{Consultar usuario que ha iniciado sesión} & ...\\
+\centering{Crear/consultar/modificar/eliminar usuario} & ... \\
 \hline
-\centering{Consultar centros de salud}& ...\\
+\centering{Comprobar si el NIF corresponde a un usuario} & ...\\
 \hline
-\centering{Registrar médico} & ...\\
+\centering{Consultar el usuario que ha iniciado sesión} & ...\\
 \hline
-\centering{Consultar médico} & ...\\
+\centering{Consultar los centros de salud}& ...\\
 \hline
-\centering{Modificar médico} & ...\\
+\centering{Consultar los médicos de un tipo determinado} & ...\\
 \hline
-\centering{Eliminar médico} & ...\\
+\centering{Consultar el horario de un médico} & ...\\
 \hline
-\centering{Consultar médicos de un tipo determinado} & ...\\
+\centering{Consultar los beneficiarios asignados a un médico} & ...\\
 \hline
-\centering{Consultar posibles sustitutos} & ...\\
+\centering{Consultar el médico que atiende una cita} & ...\\
 \hline
-\centering{Consultar médico que atiende una cita} & ...\\
+\centering{Consultar los posibles sustitutos de un médico} & ...\\
 \hline
-\centering{Consultar horario de un médico} & ...\\
+\centering{Consultar las horas de citas asignadas a un médico} & ...\\
 \hline
-\centering{Consultar horas de citas asignadas a un médico} & ...\\
+\centering{Consultar las citas de un médico} & ...\\
 \hline
-\centering{Consultar días completos de un médico} & ...\\
+\centering{Consultar los días completos de un médico} & ...\\
 \hline
-\centering{Consultar citas en una fecha de un médico} & ...\\
+\centering{Consultar las citas pendientes de un beneficiario} & ...\\
+\hline
+\centering{Consultar las citas pendientes de un médico} & ...\\
+\hline
+\centering{Consultar las citas de un médico en una fecha dada} & ...\\
+\hline
+\centering{Consultar las citas del médico con la sesión activa} & ...\\
 \hline
 \centering{Consultar Volante} & ...\\
 \hline
 \caption{Operaciones auxiliares}
 \label{tb:operaciones}
 \end{longtable}
-
-
------------------ COMPLETAR COMENTANDO UN POCO CADA UNA DE LAS OPERACIONES AUXILIARES (CON LA LISTA QUE HICIMOS, TXEDO)------------------
-\begin{milista}
-	\item \textbf{OPERACION TAL}: HACE TAL Y SE USA EN TAL.
-	\item \textbf{......}
-\end{milista}

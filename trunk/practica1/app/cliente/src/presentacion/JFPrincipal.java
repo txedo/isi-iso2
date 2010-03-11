@@ -106,7 +106,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			this.setPreferredSize(new java.awt.Dimension(850, 700));
 			this.setTitle("SSCA - Unidad de Citación");
-			this.setMinimumSize(new java.awt.Dimension(600, 450));
+			this.setMinimumSize(new java.awt.Dimension(850, 700));
 			setLocationRelativeTo(null);
 			this.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent evt) {
@@ -278,6 +278,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 				}
 			}
 			pack();
+			this.setSize(850, 700);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

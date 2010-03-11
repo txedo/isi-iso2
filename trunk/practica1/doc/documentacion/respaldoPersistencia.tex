@@ -1,3 +1,5 @@
-
-
 \paragraph{Capa de persistencia}
+
+Dado que el servidor de respaldo se limita a construir una réplica exacta de la base de datos del SGBD principal en la base de datos del SGBD de respaldo, este sistema carece de cualquier clase de conocimiento. Debido a esto, tampoco contiene las clase de persistencia que se comentaban en la capa de persistencia del servidor front-end (ver \ref{persistencia-front-end}), ya que su única función es ejecutar las sentencias que le envía el servidor front-end.
+
+Dicho esto, nótese que la capa de persistencia sólo contiene la clase que gestiona la conexiones al SGDB. Esta clase, al igual que en el servidor front-end (ver \ref{persistencia-front-end}), se ha diseñado por medio de los patrones \textbf{Agente} y \textbf{Singleton}.
