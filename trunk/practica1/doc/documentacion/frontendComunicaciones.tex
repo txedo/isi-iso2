@@ -1,3 +1,49 @@
-\subsubsection{Servidor front-end}
+\paragraph{Capa de comunicaciones} \label{comunicaciones-front-end}
 
-\paragraph{Capa de comunicaciones}
+En el paquete de comunicaciones se encuentran todas las clases relacionadas
+con la conexión entre el servidor front-end y la unidad de citación o el
+servidor de respaldo. Para facilitar la comprensión y el mantenimiento tanto
+de la unidad de citación como de los dos servidores, se ha utilizado una
+nomenclatura estándar para las clases principales de este paquete, de tal
+forma que las clases que comienzan por \textit{Remoto...} sirven para exportar
+objetos por RMI (como \textit{RemotoServidorFrontend}) y las clases que
+comienzan por \textit{Proxy...} se emplean para comunicarse con objetos
+remotos de otros sistemas (como \textit{ProxyCliente}).
+
+Como se puede observar, para comunicarse con el cliente y el servidor de
+respaldo, se ha hecho uso del patrón \textbf{Proxy}. Para ello, en este
+sistema se han creado dos clases \textit{ProxyCliente} y
+\textit{ProxyServidorRespaldo} que son las responsables de establecer conexión
+con la clases remotas exportadas por cada uno de los clientes registrados en
+el sistema y por el servidor de respaldo.
+
+Para comentar cómo funciona el patrón \textbf{Proxy} tomaremos como base la
+comunicación con el servidor de respaldo, siendo análoga la comunicación con
+los clientes. En este caso, la clase \textit{ProxyServidorRespaldo} implementa
+la interfaz \textit{IServidorRespaldo}, la cual contiene todas las operaciones
+que se le pueden pedir al servidor de respaldo. De esta forma, el controlador
+principal llama a la clase proxy de la misma forma que haría si el servidor
+de respaldo fuera local y estuviera implementado como parte del servidor
+front-end pero, siguiendo el patrón \textbf{Proxy}, la clase
+\textit{ProxyServidorRespaldo} reenvía todas las peticiones al objeto remoto
+que está en la máquina del servidor de respaldo.
+
+En este apartado conviene destacar que, con el fin de que el sistema funcione
+correctamente incluso si la unidad de citación o alguno de los servidores está
+dentro de varias redes, al exportar los objetos remotos se recorren todas las
+interfaces de red para buscar una IP según el siguiente orden:
+\begin{enumerate}
+	\item Si el ordenador pertenece a una red pública, se usa una IP pública.
+	\item Si el ordenador no pertenece a una red pública pero sí a una privada,
+	se utiliza una IP privada.
+	\item Si el ordenador no está conectado a ninguna red, se emplea la IP
+	localhost (127.0.0.1).
+\end{enumerate}
+
+Además, para que la comunicación con los objetos remotos se establezca
+correctamente, no sólo es necesario indicar la IP al exportar los objetos, sino
+que también hace falta modificar la propiedad
+\texttt{java.rmi.server.hostname} de la máquina virtual de Java (en los tres
+sistemas), que representa la IP del servidor RMI que contiene los objetos.
+Esta modificación, sin embargo, se realiza en el controlador principal de cada
+sistema, ya que no es responsabilidad de ningún objeto remoto en particular.

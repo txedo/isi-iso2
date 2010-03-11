@@ -20,6 +20,7 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
 	private static final long serialVersionUID = -6461417903923553869L;
 
 	private final int PUERTO_INICIAL_CLIENTE = 3995;
+	private final int PUERTO_FINAL_CLIENTE = PUERTO_INICIAL_CLIENTE + 1000;
 
 	private ICliente cliente;
 	private boolean registro;
@@ -56,6 +57,9 @@ public class RemotoCliente extends UnicastRemoteObject implements ICliente {
     					puertoUsado = false;
     				} catch(ExportException e) {
     					puerto++;
+    				}
+    				if(puerto > PUERTO_FINAL_CLIENTE) {
+    					throw new ExportException("No se ha encontrado ningún puerto disponible para exportar el objeto.");
     				}
     			} while(puertoUsado);
     			registro = true;

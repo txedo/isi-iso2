@@ -1,3 +1,14 @@
-\subsubsection{Unidad de Citación}
-
 \paragraph{Capa de comunicaciones}
+
+Del paquete de comunicaciones del cliente, cabe decir que se utiliza el patrón
+\textbf{Proxy} para comunicarse con el servidor front-end y que se busca de
+manera automática una IP pública o privada para exportar el objeto remoto del
+cliente, de la misma forma que se explicó en la capa de comunicaciones del
+servidor frontend (ver sección \ref{comunicaciones-front-end}).
+
+Además, al diseñar la unidad de citación, se ha tenido en cuenta que en una
+misma máquina puede haber varios clientes ejecutándose a la vez, algo que no
+tiene sentido en los servidores. Por este motivo, el puerto en el que cada
+cliente pone su objeto remoto \textit{ICliente} a la escucha no es fijo, sino
+que se selecciona dinámicamente, probando varios puertos si los que se intentan
+utilizar ya están en uso en el equipo.
