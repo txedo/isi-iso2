@@ -209,7 +209,6 @@ public class PruebasJPUsuarioRegistrar extends org.uispec4j.UISpecTestCase imple
 			jcmbEspecialidad.setSelectedIndex(-1);
 			assertTrue(txtNIF.getText().length() != 0);
 		} catch (Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 	}

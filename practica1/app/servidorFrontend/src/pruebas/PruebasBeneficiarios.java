@@ -279,7 +279,6 @@ public class PruebasBeneficiarios extends PruebasBase {
 			assertEquals(beneficiario, clienteMedico.getUltimoDato());
 			assertNull(clienteAdmin.getUltimoDato());
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 		

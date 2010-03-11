@@ -401,8 +401,6 @@ public class JPCitaTramitar extends JPBase {
 	
 	// Métodos públicos
 	
-	// <métodos del observador>
-	
 	public void beneficiarioActualizado(Beneficiario beneficiario) {
 		pnlBeneficiario.beneficiarioActualizado(beneficiario);
 	}

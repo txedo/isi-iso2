@@ -119,7 +119,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			winPrincipal.dispose();
 			frmAvisos.dispose();
 		} catch(Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 	}
 	
@@ -157,7 +157,6 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 						assertEquals(tblTablaAvisos.getRowCount(), 2);
 						btnCerrar.click();
 					} catch(Exception e) {
-						e.printStackTrace();
 						fail(e.toString());
 					}
 				}

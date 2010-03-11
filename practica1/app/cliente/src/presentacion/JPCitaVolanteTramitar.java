@@ -400,13 +400,10 @@ public class JPCitaVolanteTramitar extends JPBase {
 			cambiarEstadoTramitacion(true);
 			
 		} catch(SQLException e) {
-			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(RemoteException e) {
-			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		} catch(Exception e) {
-			e.printStackTrace();
 			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getLocalizedMessage());
 		}
 	}

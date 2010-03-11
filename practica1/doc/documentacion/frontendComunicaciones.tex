@@ -28,10 +28,32 @@ front-end pero, siguiendo el patrón \textbf{Proxy}, la clase
 \textit{ProxyServidorRespaldo} reenvía todas las peticiones al objeto remoto
 que está en la máquina del servidor de respaldo.
 
-En este apartado conviene destacar que, con el fin de que el sistema funcione
-correctamente incluso si la unidad de citación o alguno de los servidores está
-dentro de varias redes, al exportar los objetos remotos se recorren todas las
-interfaces de red para buscar una IP según el siguiente orden:
+Por otro lado, en el paquete de comunicaciones también se ha utilizado el
+patrón \textbf{Observador} al crear los gestores de conexiones de bases de
+datos y de estado. Como se muestra en el \diagrama{frontend}{clases}{Gestor
+Conexiones BBDD}, el \textit{GestorConexionesBD} tiene asociado un conjunto
+de interfaces \textit{IConexionBD}, a las que envía las peticiones de acceso
+de la base de datos generadas por la capa de persistencia. En el sistema
+desarrollado, hay dos clases que implementan la interfaz \textit{IConexionBD}:
+\textit{ConexionBDFrontend}, que da acceso a la base de datos principal; y
+\textit{ProxyServidorRespaldo}, que se conecta con el servidor de respaldo,
+quien maneja la base de datos secundaria.
+
+De forma análoga, en el \diagrama{frontend}{clases}{Gestor Conexiones Log}
+se observa que el \textit{GestorConexionesLog} tiene asociada una lista de
+objetos que implementan la interfaz \textit{IConexionLog}, a los que envía
+los mensajes generados por el servidor (concretamente, la clase
+controladora \textit{ServidorFrontend}). En el sistema desarrollado, hay tres
+clases que implementan esa interfaz: \textit{ConexionLogBD},
+\textit{ConexionLogVentana} y \textit{ProxyServidorRespaldo}, para guardar
+los mensajes en la base de datos y mostrarlos en las ventanas de los
+servidores.
+
+Por último, en este apartado conviene destacar que, con el fin de que el
+sistema funcione correctamente incluso si la unidad de citación o alguno de
+los servidores está dentro de varias redes, al exportar los objetos remotos se
+recorren todas las interfaces de red para buscar una IP según el siguiente
+orden:
 \begin{enumerate}
 	\item Si el ordenador pertenece a una red pública, se usa una IP pública.
 	\item Si el ordenador no pertenece a una red pública pero sí a una privada,

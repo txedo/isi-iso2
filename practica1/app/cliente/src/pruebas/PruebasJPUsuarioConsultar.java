@@ -292,7 +292,6 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			btnGuardar.click();
 			assertTrue(txtNIF.getText().length()!=0);
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
@@ -362,7 +361,6 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			// Comprobamos que en el textbox del nombre sale nuevoNombre
 			assertEquals(nuevoNombre, txtNombre.getText());
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 		
@@ -819,7 +817,6 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			eliminadoMedico = true;
 			controlador.eliminarBeneficiario(beneficiarioPrueba);
 		} catch(Exception e) {
-			e.printStackTrace();
 			fail(e.toString());
 		}
 	}

@@ -1,0 +1,34 @@
+%
+% Al que le toque hacer esta parte, que ponga esto cuando hable de los
+% diagramas de clases de análisis; lo iba a poner en decisiones de diseño,
+% pero los gestores aparecen desde la fase del análisis
+% (Juan G.)
+%
+
+Los dos gestores que aparecen en la mayoría de los diagramas de clases de
+análisis son una parte importante del sistema, cuyo funcionamiento será el
+siguiente:
+\begin{milista}
+\item \textbf{Gestor de conexiones de bases de datos}. Servirá para mantener
+sincronizadas las bases de datos utilizadas por el sistema, de manera que
+cuando haya que hacer una inserción/modificación/eliminación, se haga en todas
+las bases de datos, y si una operación falla se siga manteniendo la
+sincronización, lo cual será imprescindible para el correcto funcionamiento
+del sistema. En este caso, el gestor accederá a dos clases:
+	\subitem \textit{AgenteFrontend}, que es la interfaz de acceso a la base de
+	datos principal.
+	\subitem \textit{ProxyServidorRespaldo}, que se comunica con el servidor de
+	respaldo para poder utilizar la base de datos secundaria.
+\item \textbf{Gestor de conexiones de estado}. Servirá para que los mensajes
+de estado generados por el servidor front-end (principalmente después de
+que un usuario realice una operación) puedan ser procesados por todas las
+clases que los quieran recibir. En este caso, cada mensaje será utilizado por
+tres clases:
+	\subitem \textit{GestorConexionesBD}, para guardar el mensaje en la base
+	de datos y así mantener un registro de todas las operaciones realizadas,
+	como se pide en los requisitos.
+	\subitem \textit{JFServidorFrontend}, para mostrar el mensaje en la ventana
+	principal del servidor front-end.
+	\subitem \textit{ProxyServidorRespaldo}, para enviar el mensaje al servidor
+	de respaldo y que éste lo muestre en su ventana	principal.
+\end{milista}

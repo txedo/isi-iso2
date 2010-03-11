@@ -80,7 +80,6 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 						assertTrue(jlstDiasSemana.getSelectedIndex()==0);
 						btnAceptar.click();
 					} catch(Exception e) {
-						e.printStackTrace();
 						fail(e.toString());
 					}
 				}
@@ -124,7 +123,6 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 						assertEquals(frmCalendario.getPeriodosTrabajo(), periodos);
 						btnAceptar.click();
 					} catch(Exception e) {
-						e.printStackTrace();
 						fail(e.toString());
 					}
 				}
@@ -169,7 +167,6 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 						assertEquals(frmCalendario.getPeriodosTrabajo(), periodos);
 						btnAceptar.click();
 					} catch(Exception e) {
-						e.printStackTrace();
 						fail(e.toString());
 					}
 				}
@@ -217,7 +214,6 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 						assertEquals(frmCalendario.getPeriodosTrabajo(), periodos);
 						btnAceptar.click();
 					} catch(Exception e) {
-						e.printStackTrace();
 						fail(e.toString());
 					}
 				}
@@ -264,7 +260,6 @@ public class PruebasJFCalendarioLaboral  extends org.uispec4j.UISpecTestCase imp
 						assertTrue(frmCalendario.getPeriodosTrabajo().size()==5);
 						btnAceptar.click();
 					} catch(Exception e) {
-						e.printStackTrace();
 						fail(e.toString());
 					}
 				}
