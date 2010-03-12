@@ -1,0 +1,90 @@
+En los siguientes apartados se van a comentar los casos de uso que se han identificado en cada uno de los tres subsistemas comentados en el punto anterior. Dichos casos de uso van a representar las funcionalidades que debe tener el sistema de citación y que ya se han comentado en los apartados \ref{requisitosIniciales} y \ref{requisitos-detallados}.
+
+\subsubsection{Unidad de citación}
+
+Los casos de uso del subsistema del cliente tienen un mecanismo común de funcionamiento, como ya se vió en la arquitectura cliente-servidor (ver sección \ref{ClienteServidor}): se solicitan al usuario los datos que correspondan a la funcionalidad de ese caso de uso (datos del beneficiario, datos del médico, etc.) y se envian dichos datos al servidor, esperando su respuesta y mostrando los resultados. Por esta razón, los actores que aparecen en el diagrama de casos de uso de este subsistema son los diferentes usuarios del sistema y el servidor front-end.
+
+Por otra parte, según la especifiación de requisitos, se han extraido los siguientes casos de uso:
+
+\begin{milista}
+	\item \textbf{Iniciar Sesión:} este caso de uso, que puede ser ejecutado por cualquier usuario del sistema, es el que representa la identificación de un usuario en el sistema y, por tanto, su inicio de sesión en él. Es el primer caso de uso que debe ejecutarse en el sistema de citación, por lo que todos los demás casos de uso incluyen el comportamiento de éste. Pero, para facilitar la legibilidad del diagrama, no se han representado todas las relaciones de inclusión ("`include"') del resto de casos de uso hacia este caso.
+	\item \textbf{Cerrar Sesión:} este caso de uso, que puede ser ejecutado por cualquier usuario del sistema, es el que representa la desconexión de un usuario del sistema de citación.
+	\item \textbf{Registrar Beneficiario:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para registrar los datos de un beneficiario del sistema.
+	\item \textbf{Consultar Beneficiario:} este caso de uso, que puede ser ejecutado por cualquier usuario del sistema, representa la funcionalidad para consultar los datos de un beneficiario registrado en el sistema.
+	\item \textbf{Modificar Beneficiario:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para modificar los datos de un beneficiario registrado en el sistema. Para ello, se incluye la funcionalidad del caso de uso anterior, pues primero se consultan todos los datos del beneficiario y despúes se modifican aquellos datos que el usuario desee.
+	\item \textbf{Eliminar Beneficiario:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para eliminar un beneficiario registrado en el sistema.
+		\item \textbf{Registrar Usuario:} este caso de uso, que puede ser ejecutado por el administrador del sistema, representa la funcionalidad para registrar un nuevo usuario (administrador, citador o médico) del sistema. En el caso de registrar un nuevo médico, se debe introducir también los datos del calendario de dicho médico.
+	\item \textbf{Consultar Usuario:} este caso de uso, que puede ser ejecutado por el administrador del sistema, representa la funcionalidad para consultar los datos de un usuario registrado en el sistema. En el caso de consultar los datos de un médico, también se consultará su calendario de trabajo. 
+	\item \textbf{Modificar Usuario:} este caso de uso, que puede ser ejecutado por el administrador del sistema, representa la funcionalidad para modificar los datos de un usuario registrado en el sistema. Para ello, se incluye la funcionalidad del caso de uso anterior, pues primero se consultan todos los datos del usuario y despúes se modifican aquellos datos que se deseen. En el supuesto de modificar un médico, también se podría modificar su calendario laboral. 
+	\item \textbf{Eliminar Usuario:} este caso de uso, que puede ser ejecutado por el administrador del sistema, representa la funcionalidad para eliminar un usuario registrado en el sistema.
+	\item \textbf{Tramitar Cita:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para registrar una cita de un beneficiario con su médico. En el supuesto de que el beneficiario que desea pedir la cita no exista en el sistema, se podrá registrar. Además, se puede tramitar una cita para un volante, siempre que el beneficiario posea un volante para un especialista.
+	\item \textbf{Consultar citas:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para poder consultar las citas de un beneficiario o de un médico.
+		\item \textbf{Anular cita:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para poder anular una cita de un beneficiario. Se incluye la funcionalidad del caso de uso \textit{Consultar citas beneficiario}, pues primero se consultan todas las citas de ese beneficiario y después se anula la cita que dicho beneficiario desee.
+	\item \textbf{Emitir Volante:} este caso de uso reperesenta la funcionalidad de emisión de volantes para un beneficiario por parte de un médico. 
+	\item \textbf{Establecer Sustituto:} este caso de uso, que puede ser ejecutado por el administrador del sistema, representa la funcionalidad para asignar un médico sustituto a otro médico.
+	\item \textbf{Actualizar Ventanas:} este caso de uso reperesenta la funcionalidad para actualizar la interfaz gráfica del subsistema cliente cuando se recibe una notificación desde el servidor. La interfaz gráfica se actualiza si la operación que se ha notificado desde el servidor afecta a la ventana que se está mostrando al usuario. 
+\end{milista}
+
+Siguiendo con la especificación de requisitos detallada del apartado \ref{requisitos-detallados}, los casos de uso que pertenecen a cada uno de los gestores definidos en dicha especificación son: 
+
+\begin{milista}
+	\item \textbf{Gestión de beneficiarios}
+	\begin{itemize}
+		\item Registrar beneficiario
+		\item Consultar beneficiario
+		\item Modificar beneficiario
+		\item Eliminar beneficiario
+	\end{itemize}
+	\item \textbf{Gestión de usuarios}
+	\begin{itemize}
+		\item Registrar usuario
+		\item Consultar usuario
+		\item Modificar usuario
+		\item Eliminar usuario
+	\end{itemize}
+	\item \textbf{Gestión de citas}
+	\begin{itemize}
+		\item Tramitar citas
+		\item Consultar citas
+		\item Anular cita
+	\end{itemize}
+	\item \textbf{Gestión de volantes}
+	\begin{itemize}
+		\item Emitir volante
+	\end{itemize}
+	\item \textbf{Gestión de sustituciones}
+	\begin{itemize}
+		\item Establecer sustituto
+	\end{itemize}
+\end{milista}
+
+Para terminar, se ha utilizado una jerarquía de herencia entre los diferentes tipos de usuarios, pus hay operaciones que pueden realizar varios de ellos (por ejemplo, el administrador puede realizar las mismas operaciones que un citador, más las operaciones propias de adminsitrador).
+
+Este diagrama de casos de uso puede consultarse en el \diagrama{cliente}{casosUso}{Casos de Uso}.
+
+\subsubsection{Servidor front-end}
+
+En este subsistema, como ya se vió en la arquitectura cliente-servidor (ver sección \ref{ClienteServidor}), el modo de proceder es el siguiente: se reciben las peticiones del subsistema cliente, se opera con la lógica de control y de dominio, accediendo a la base de datos, se envía la operación al servidor de respaldo y a la base de datos principal y se envía la respuesta al cliente, notificando los posibles cambios. Por esta razón, los actores que aparecen en el diagrama de casos de uso de este subsistema son el subsistema cliente, el SGDB y el servidor de respaldo. 
+
+En cuanto a los casos de uso, aparecen los mismos que en el subsistema anterior, salvo los que se comentan a continuación:
+
+\begin{milista}
+	\item \textbf{Enviar Petición:} este caso de uso representa la funcionalidad para enviar una operación al servidor de respaldo, para que se ejecute en la base de datos de respaldo.
+	\item \textbf{Actualizar Estado:} ............
+\end{milista}
+
+Este diagrama de casos de uso puede consultarse en el \diagrama{frontend}{casosUso}{Casos de Uso}.
+
+\subsubsection{Servidor de respaldo}
+
+En este subsistema, los actores que aparecen en el diagrama de casos de uso son el subsistema del servidor front-end, del que recibe las peticiones, y el SGDB de la base de datos de respaldo.
+
+En cuanto a los casos de uso, en el servidor de respaldo sólo se definen dos casos:
+
+\begin{milista}
+	\item \textbf{Ejecutar Petición:} este caso de uso representa la funcionalidad para recibir una operación del servidor front-end, ejecutarla en la base de datos de respaldo y devolver una respuesta al servidor front-end.
+	\item \textbf{Actualizar Estado:} ............
+\end{milista}
+
+Este diagrama de casos de uso puede consultarse en el \diagrama{respaldo}{casosUso}{Casos de Uso}.
+
