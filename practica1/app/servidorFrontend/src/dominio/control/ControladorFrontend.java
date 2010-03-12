@@ -45,7 +45,7 @@ public class ControladorFrontend {
 		ventana.setVisible(false);
 	}
 
-	public void iniciarServidor(ConfiguracionFrontend configuracion) throws RemoteException, MalformedURLException, UnknownHostException, NotBoundException, SQLException {
+	public void iniciarServidor(ConfiguracionFrontend configuracion) throws RemoteException, MalformedURLException, UnknownHostException, NotBoundException, SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		ConexionLogBD logBD;
 		ConexionLogVentana logFrontend;
 

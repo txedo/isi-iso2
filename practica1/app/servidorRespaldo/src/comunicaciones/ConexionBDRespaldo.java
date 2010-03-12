@@ -13,7 +13,7 @@ public class ConexionBDRespaldo implements IConexionBD {
 	
 	private AgenteRespaldo agente;
 	
-	public ConexionBDRespaldo() {
+	public ConexionBDRespaldo() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		agente = AgenteRespaldo.getAgente();
 	}
 	

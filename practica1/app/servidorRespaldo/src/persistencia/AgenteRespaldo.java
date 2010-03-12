@@ -20,21 +20,13 @@ public class AgenteRespaldo {
 	private String ip;
 	private int puerto;
 	
-	protected AgenteRespaldo() {
-		try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch(IllegalAccessException e) {
-			System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
-		} catch(InstantiationException e) {
-			System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
-        } catch(ClassNotFoundException e) {
-        	System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
-        }
+	protected AgenteRespaldo() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
         // La conexión no se abre de forma predeterminada
         // porque se necesita establecer la IP
 	}
 	
-	public static AgenteRespaldo getAgente() {
+	public static AgenteRespaldo getAgente() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		if(instancia == null) {
 			instancia = new AgenteRespaldo();
 		}

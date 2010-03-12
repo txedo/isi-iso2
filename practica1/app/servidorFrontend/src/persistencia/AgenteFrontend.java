@@ -20,21 +20,11 @@ public class AgenteFrontend {
 	private String ip;
 	private int puerto;
 	
-	protected AgenteFrontend() {
-		try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch(IllegalAccessException e) {
-			System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
-		} catch(InstantiationException e) {
-			System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
-        } catch(ClassNotFoundException e) {
-        	System.out.println("Error al inicializar la conexión con la base de datos: " + e.getLocalizedMessage());
-        }
-        // La conexión no se abre de forma predeterminada
-        // porque se necesita establecer la IP
+	protected AgenteFrontend() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
 	}
 	
-	public static AgenteFrontend getAgente() {
+	public static AgenteFrontend getAgente() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		if(instancia == null) {
 			instancia = new AgenteFrontend();
 		}

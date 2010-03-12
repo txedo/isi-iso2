@@ -19,12 +19,12 @@ public class ServidorRespaldo implements IServidorRespaldo {
 	private ConexionBDRespaldo basedatos;
 	private ConexionLogVentana log;
 
-	protected ServidorRespaldo() {
+	protected ServidorRespaldo() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		basedatos = new ConexionBDRespaldo();
 		log = new ConexionLogVentana();
 	}
 	
-	public static ServidorRespaldo getServidor() {
+	public static ServidorRespaldo getServidor() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		if(instancia == null) {
 			instancia = new ServidorRespaldo();
 		}
