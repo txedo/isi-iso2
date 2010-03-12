@@ -36,7 +36,7 @@ public class ControladorRespaldo {
 		ventana.setVisible(false);
 	}
 	
-	public void iniciarServidorRespaldo(ConfiguracionRespaldo configuracion) throws MalformedURLException, RemoteException, SQLException {
+	public void iniciarServidorRespaldo(ConfiguracionRespaldo configuracion) throws MalformedURLException, RemoteException, SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		SimpleDateFormat formatoFecha;
 
 		// Obtenemos la IP de la máquina local

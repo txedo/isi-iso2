@@ -14,7 +14,7 @@ public class ConexionBDFrontend implements IConexionBD {
 
 	private AgenteFrontend agente;
 	
-	public ConexionBDFrontend() throws SQLException {
+	public ConexionBDFrontend() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		agente = AgenteFrontend.getAgente();
 	}
 	

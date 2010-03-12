@@ -132,9 +132,11 @@ public class UtilidadesPruebas {
 			controlador.cerrarSesion();
 			controlador.cerrarControlador();
 			RemotoCliente.getCliente().activar(UtilidadesComunicaciones.obtenerIPHost());
+			controlador = null;
 		}
 		if(winControlador != null) {
 			winControlador.dispose();
+			winControlador = null;
 		}
 	}
 	

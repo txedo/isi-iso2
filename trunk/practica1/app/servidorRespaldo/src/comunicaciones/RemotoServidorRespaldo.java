@@ -27,13 +27,13 @@ public class RemotoServidorRespaldo extends UnicastRemoteObject implements IServ
 
 	private static RemotoServidorRespaldo instancia;
 	
-	protected RemotoServidorRespaldo() throws RemoteException {
+	protected RemotoServidorRespaldo() throws RemoteException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		super();
 		servidor = ServidorRespaldo.getServidor();
 		registro = false;
 	}
 	
-	public static RemotoServidorRespaldo getServidor() throws RemoteException {
+	public static RemotoServidorRespaldo getServidor() throws RemoteException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		if(instancia == null) {
 			instancia = new RemotoServidorRespaldo();
 		}

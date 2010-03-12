@@ -184,8 +184,6 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 	
 	protected void tearDown() {
 		try {
-			// Cerramos la sesión auxiliar de las pruebas del observador
-			UtilidadesPruebas.cerrarControladorAuxiliar();
 			// Recuperamos los médicos borrados
 			for (Medico m : medicosEliminados) {
 				controlador.crearMedico(m);
@@ -196,6 +194,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 			// Cerramos la sesión y la ventana del controlador
 			controlador.getVentanaPrincipal().dispose();
 			controlador.cerrarSesion();
+			// Cerramos la sesión auxiliar de las pruebas del observador
+			UtilidadesPruebas.cerrarControladorAuxiliar();
 		} catch(Exception e) {
 			fail(e.toString());
 		}

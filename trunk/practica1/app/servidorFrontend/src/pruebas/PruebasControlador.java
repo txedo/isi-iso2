@@ -114,6 +114,7 @@ public class PruebasControlador extends UISpecTestCase {
 			controlador.detenerServidor(configuracion);
 			assertFalse(controlador.isServidorActivo());
 			// Comprobamos que se ha intentado cerrar el único cliente conectado
+			Thread.sleep(100);
 			assertTrue(cliente.isLlamadoServidorInaccesible());
 		} catch(Exception e) {
 			fail(e.toString());

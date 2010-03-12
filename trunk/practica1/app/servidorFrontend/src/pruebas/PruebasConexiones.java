@@ -254,7 +254,7 @@ public class PruebasConexiones extends TestCase {
 			resultados = sentencia.executeQuery();
 			assertFalse(resultados.next());
 			// Generamos nuevos mensajes y cambiamos los clientes a la escucha
-			GestorConexionesLog.ponerMensaje("prueba", ITiposMensajeLog.TIPO_INFO, "Mensaje de prueba");
+			GestorConexionesLog.ponerMensaje(null, ITiposMensajeLog.TIPO_INFO, "Mensaje de prueba");
 			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Otro mensaje de prueba");
 			GestorConexionesLog.actualizarClientesEscuchando(3);
 			// Comprobamos que ahora hay dos mensajes en la BD

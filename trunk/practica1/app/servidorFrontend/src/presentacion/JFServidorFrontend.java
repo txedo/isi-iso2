@@ -396,6 +396,12 @@ public class JFServidorFrontend extends javax.swing.JFrame implements IVentanaEs
 			// servidor, lo desconectamos para hacer el "unexport"
 			// y que se pueda conectar de nuevo más tarde
 			desactivarServidor();
+		} catch (InstantiationException e) {
+			ponerMensaje("Error: " + e.getLocalizedMessage());
+		} catch (IllegalAccessException e) {
+			ponerMensaje("Error: " + e.getLocalizedMessage());
+		} catch (ClassNotFoundException e) {
+			ponerMensaje("Error: " + e.getLocalizedMessage());
 		}
 		
 		return ok;
