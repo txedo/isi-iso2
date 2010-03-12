@@ -1,0 +1,21 @@
+Una vez detallados todos los requisitos funcionales que debe cumplir el sistema de citación de una comunidad autónoma, se procede a la división del sistema en los tres subsistemas que se plantean en la especificación inicial de requisitos (ver sección \ref{requisitosIniciales}). Estos subsistemas son: cliente o unidad de citación, servidor front-end y servidor de respaldo.
+
+Además, el sistema seguirá una arquitectura cliente-servidor, donde cada subsistema se comunica con otro u otros subsistemas, de la siguiente forma:
+
+\begin{milista}
+	\item \textbf{Subsistema Cliente:} este subsistema muestra una interfaz gráfica a los usuarios del sistema de citación, enviando la acción realizada por el usuario al servidor front-end, esperando su respuesta para actualizar la interfaz gráfica en consecuencia. 
+	\item \textbf{Subsistema Servidor front-end:} este subsistema se encarga de recibir las peticiones del subsistema cliente, procesarlas, almacenar y recuperar información de su base de datos y enviar la respuesta al cliente. También se encarga de enviar la petición al servidor de respaldo, para que todas las acciones queden registradas tanto en la base de datos principal como en la de respaldo.
+	\item \textbf{Subsistema Servidor de respaldo:} se encarga de recibir las peticiones del servidor front-end y ejecutarlas sobre las base de datos de respaldo. 
+\end{milista}
+
+Así, cada uno de los subsistemas se puede encontrar en máquinas diferentes, pues, siguiendo la arquitectura cliente-servidor, se comunican a través de RMI (Remote Method Invocation). Además, la base de datos principal y la base de datos de respaldo también se pueden encontrar en máquinas diferentes a las máquinas donde se encuentren los servidores. 
+Por tanto, algunas ventajas de utilizar este enfoque distribuido siguiendo la arquitectura cliente-servidor son: 
+
+\begin{milista}
+    \item \textbf{Centralización del control:} toda la lógica de dominio y control está centralizada en el servidor front-end, por lo que el sistema cliente es totalmente independiente de la implementación del servidor. Del mismo modo, el sistema cliente es independiente de como se realiza la gestión del conocimiento en el servidor. Además, los accesos, recursos y la integridad de los datos son controlados por el servidor de forma que un cliente defectuoso o no autorizado no pueda dañar el sistema.
+    \item \textbf{Escalabilidad:} se pueden añadir nuevos tipos de sistemas clientes para que se comuniquen con el servidor.
+    \item \textbf{Fácil mantenimiento:} al estar los sistemas distribuidos en diferentes máquinas, es posible reemplazar, reparar o actualizar un servidor, mientras que sus clientes no se verán afectados por ese cambio.
+\end{milista}
+
+
+----- ¿QUE DIAGRAMA SE PUEDE PONER AQUI? -----
