@@ -91,11 +91,25 @@ Comunicaciones & 96 & 460 & 479 \\
 \hline
 \multicolumn{4}{c}{} \\
 \hline
-\multicolumn{4}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{SUBSISTEMA: Unidad de citación (124 casos de prueba)}} \\
+\multicolumn{4}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{SUBSISTEMA: Unidad de citación (129 casos de prueba)}} \\
 \hline
 \multicolumn{4}{c}{} \\
 \hline
 \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{PAQUETE}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{COBERTURA(\%)}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3cm}|}{\textbf{INSTRUCCIONES CUBIERTAS}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{INSTRUCCIONES TOTALES}} \\
+\hline
+\textit{Unidad de Citación} & \textit{91.8} & \textit{28334} & \textit{30879} \\
+\hline
+Presentacion & 92.7 & 24877 & 26822 \\
+\hline
+Presentacion.auxiliar & 88.2 & 2107 & 2388 \\
+\hline
+Excepciones & 81.5 & 194 & 238 \\
+\hline
+Dominio & 82.4 & 89 & 108 \\
+\hline
+Dominio.control & 84.3 & 704 & 835 \\
+\hline
+Comunicaciones & 74.4 & 365 & 484 \\
 \hline
 \caption{Informe de cobertura de los subsistemas} 
 \label{tb:pruebas}
@@ -104,13 +118,22 @@ Comunicaciones & 96 & 460 & 479 \\
 Como se puede apreciar en el informe, en algunos paquetes se obtiene una cobertura que no está próxima al 90\%. Dichos paquetes son:
 
 \begin{milista}
+
 	\item \textbf{Servidor front-end:} en el paquete \textit{Dominio.control}, la cobertura alcanzada disminuye en las siguientes clases:
 		\begin{itemize}
 			\item \textit{ServidorFrontend}: como se comentó en la sección \ref{frontendDominio}, esta clase es una fachada del servidor front-end, por lo que en ella se deben capturar y tratar todas las excepciones que puedan ocurrir. Pero, como se comentá al inicio de esta sección, no todas las excepciones se han forzado con las pruebas, por lo que varios bloques de tratamiento no se prueban.
 			\item \textit{ControladorFrontend}: por la misma razón, la cobertura en esta clase es más baja, debido al tratamiento de algunas excepciones que no se fuerzan.
 		\end{itemize}
-	\item \textbf{Servidor de respaldo:} en el paquete \textit{Dominio}, la cobertura alcanzada disminuye en la siguiente clase:
+		
+	\item \textbf{Servidor de respaldo:} en el paquete \textit{Dominio}, la cobertura alcanzada disminuye, debido a que dicho paquete solo contiene la clase \textit{Main} de este servidor y algunas instrucciones no se marcan como ejecutadas.		
+		
+	\item \textbf{Unidad de citación:} la cobertura disminuye en los siguientes paquetes:
 		\begin{itemize}
-			\item \textit{Main}: ..................
+			\item Paquete \textit{Presentación.auxiliar}: en este paquete se incluyen, enre otras, varias clases encargadas de gestionar eventos compartidos entre ventanas de la interfaz gráfica y clases encargadas de cambiar el aspecto en el que se muestran tablas y listas de elementos. Es por ello que la cobertura es menor, pues hay eventos de estas clases que no se hazn forzado a ejecutarse con las pruebas de interfaz. 
+			\item Paquete \textit{Excepciones}: algunas excepciones incluyen dos métodos constructores, uno que no recibe mensaje y otro que sí lo recibe, para hacer más flexible el mensaje que se quiere mostrar cuando se produce dicha excepción. Sin embargo, no se han forzado situaciones en las pruebas para probar ambos constructores.
+			\item Paquete \textit{Dominio}: la cobertura alcanzada disminuye, debido a que en la clase \textit{Main} algunas instrucciones no se marcan como ejecutadas.		
+			\item Paquete \textit{Dominio.control}: la cobertura disminuye debido a ciertas excepciones que no se fuerzan, como ya se comentó al inicio de esta sección. También, no se fuerza la desconexión del servidor ni sesiones duplicadas, por lo que esas instrucciones no se han probado.
+			\item Paquete \textit{Comunicaciones}: la cobertura disminuye debido a ciertas excepciones que no se fuerzan, como ya se comentó al inicio de esta sección.
 		\end{itemize}
+		
 \end{milista}

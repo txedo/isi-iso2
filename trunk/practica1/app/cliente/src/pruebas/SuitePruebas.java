@@ -32,6 +32,7 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasJPUsuarioRegistrar.class);
 		suite.addTestSuite(PruebasJPUsuarioConsultar.class);
 		suite.addTestSuite(PruebasJPVolanteEmitir.class);
+		suite.addTestSuite(PruebasControlador.class);
 		return suite;
 	}
 	
