@@ -1,0 +1,26 @@
+\subsection{Valoración de dificultades}
+
+%patron observador con uispec
+
+
+A lo largo del desarrollo del sistema se han encontrado distintas dificultades en todas y cada una de las fases. No obstante, las más destacables se han producido en las fases de implementación y pruebas debido a ciertos detalles que están estrechamente ligados con la tecnología empleada. A continuación se enumeran algunos de ellos:
+
+\begin{milista}
+	\item \textbf{Java Remote Method Invocation (RMI)}: en una de las iteraciones en las que ya se disponía de una pequeña versión funcional de las tres aplicaciones que forman el sistema, se detectaron unos fallos en el funcionamiento normal cuando los distintos servidores se activaban y desactivaban una y otra vez. Después de investigar en Internet, se detectó que es necesario realizar las operaciones \textit{exportObject} y \textit{unexportObject} cuando se quiere activar o desactivar la exportación del objeto remoto.
+	
+	\item \textbf{Interfaces de red activas}: este problema está íntimamente relacionado con el anterior consiste en las interfaces de red que tiene activas el sistema sobre el que se ejecuta alguna de las aplicaciones. Como cada interfaz de red tiene asignada una dirección IP, al exportar un objeto, RMI cogerá aleatoriamente la dirección IP en la que se encuentra dicho objeto.
+	
+	Por ejemplo, supongamos que el sistema sobre el que se ejecuta la aplicación cliente tiene dos interfaces de red: la primera con una dirección IP privada y la segunda con una dirección IP pública. Al exportar el objeto, RMI cogerá aleatoriamente una dirección IP, supongamos que selecciona la IP privada. Ahora supongamos que en otra máquina fuera de la red privada se ejecuta la aplicación servidor a la cual se conecta el cliente para establecer una comunicación cliente-servidor, pero el objeto exportado tiene asignada una IP privada que el servidor no conoce, por lo que será imposible establecer la comunicación servidor-cliente, es decir, en el sentido contrario.
+	
+	Para resolver este problema, es necesario establecer en qué dirección IP estará a la escucha la aplicación. Esto se hace mediante la sentencia \texttt{System.setProperty("java.rmi.server.hostname", ip\_address)}, pero aún es necesario determinar qué dirección IP de entre todas las posibles se seleccionará para exportar el objeto. Para ello se ha realizado una pequeña función que recorre todas las interfaces de red activas en el sistema y las ordena, para su selección, según prioridad:
+	\begin{enumerate}
+		\item IP pública.
+		\item IP privada.
+		\item Loopback o localhost (127.0.0.1)
+	\end{enumerate}
+
+	\item \textbf{Pruebas de interfaz gráfica de usuario con UISpec4J}: como ya se detalla en la subsección \ref{informe-pruebas}, también se han realizado pruebas de la interfaz gráfica de usuario de las aplicaciones. Uno de los problemas que han surgido tiene que ver con las ventanas emergentes después de realizar algún tipo de acción. Por ejemplo, un mensaje de información que indica que una operación se ha hecho correctamente. La solución para manejar este tipo de situacoines se ha encontrado en la página web de UISpec4J \cite{uispec4j}.
+	
+	Por último, también se tuvieron serios problemas a la hora de probar el patrón de observador que dota a los clientes de la capacidad de actualizar la información que muestran por pantalla cuando se realiza una operación en el servidor desde cualquier otro terminal. La dificultad se encuentra en que el objeto remoto que exportan los clientes es \textit{singleton}, por lo que al tratar de simular la ejecución de dos clientes durante el diseño y ejecución de las pruebas existe un conflicto de condición de carrera en el que el segundo cliente que inicia sesión se liga al objeto remoto exportado, no siendo posible que el servidor se comunique con el primero de ellos. Para resolverlo, se evita que el segundo cliente de prueba que inicia sesión exporte el objeto remoto y se registre en el servidor, permitiendo que el servidor se comunique correctamente con el primero de ellos.
+		
+\end{milista}
