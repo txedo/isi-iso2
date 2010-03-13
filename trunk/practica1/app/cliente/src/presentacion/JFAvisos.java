@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
+import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.TableCellRendererCitas;
 import presentacion.auxiliar.UtilidadesTablas;
 
@@ -95,7 +96,7 @@ public class JFAvisos extends javax.swing.JFrame {
 			pack();
 			this.setSize(600, 350);
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		}
 	}
 	

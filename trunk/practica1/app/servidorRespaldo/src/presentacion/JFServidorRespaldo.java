@@ -52,7 +52,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 		try {
 			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
 		}
 	}
 	
@@ -260,7 +260,7 @@ public class JFServidorRespaldo extends javax.swing.JFrame implements IVentanaEs
 			pack();
 			this.setSize(577, 409);
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
 		}
 	}
 	

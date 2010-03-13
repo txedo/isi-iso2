@@ -3,6 +3,9 @@ package presentacion;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import presentacion.auxiliar.Dialogos;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
 
@@ -54,7 +57,7 @@ public class JPBienvenida extends JPanel {
 				lblImagen.setMinimumSize(new java.awt.Dimension(258, 261));
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(null, "Error", e.getMessage());
 		}
 	}
 	

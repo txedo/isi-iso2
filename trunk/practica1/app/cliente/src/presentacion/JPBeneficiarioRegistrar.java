@@ -348,7 +348,7 @@ public class JPBeneficiarioRegistrar extends JPBase {
 				lblCentro.setPreferredSize(new java.awt.Dimension(119, 14));
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		}
 	}
 

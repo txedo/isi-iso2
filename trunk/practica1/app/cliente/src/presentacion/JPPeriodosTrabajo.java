@@ -13,6 +13,7 @@ import java.util.Vector;
 import javax.swing.JCheckBox;
 import javax.swing.event.EventListenerList;
 
+import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.HoraNoSeleccionadaListener;
 import presentacion.auxiliar.HoraSeleccionadaListener;
 
@@ -80,7 +81,7 @@ public class JPPeriodosTrabajo extends javax.swing.JPanel implements IConstantes
 			this.setLayout(thisLayout);
 			this.setPreferredSize(new java.awt.Dimension(100, 100));
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(null, "Error", e.getMessage());
 		}
 	}
 	

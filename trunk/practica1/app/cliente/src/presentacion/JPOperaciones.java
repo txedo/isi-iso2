@@ -14,6 +14,7 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.OperacionCambiadaEvent;
 import presentacion.auxiliar.OperacionCambiadaListener;
 import presentacion.auxiliar.OperacionesInterfaz;
@@ -88,7 +89,7 @@ public class JPOperaciones extends JPanel {
 				}
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(null, "Error", e.getMessage());
 		}
 	}
 	

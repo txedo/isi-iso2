@@ -52,7 +52,7 @@ public class JFLogin extends javax.swing.JFrame {
 		try {
 			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		}
 	}
 
@@ -218,7 +218,7 @@ public class JFLogin extends javax.swing.JFrame {
 			}
 			pack();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		}
 	}
 	
