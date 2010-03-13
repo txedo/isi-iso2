@@ -78,6 +78,7 @@ public class JFAcercaDeCliente extends javax.swing.JFrame {
 				getContentPane().add(jPanel1, new AnchorConstraint(1, 1001, 1001, 1, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 				jPanel1.setPreferredSize(new java.awt.Dimension(394, 275));
 				jPanel1.setLayout(jPanel1Layout);
+				jPanel1.setName("JPAcercaDe");
 				{
 					lblTitulo2 = new JLabel();
 					jPanel1.add(lblTitulo2, new AnchorConstraint(36, 15, 210, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS));
@@ -131,6 +132,7 @@ public class JFAcercaDeCliente extends javax.swing.JFrame {
 			this.setPreferredSize(new java.awt.Dimension(400, 300));
 			this.setMaximumSize(new java.awt.Dimension(420, 300));
 			this.setMinimumSize(new java.awt.Dimension(420, 300));
+			this.setName("JFAcercaDe");
 			this.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent evt) {
 					thisWindowClosing(evt);
