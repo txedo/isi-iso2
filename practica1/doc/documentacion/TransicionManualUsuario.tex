@@ -1,0 +1,62 @@
+\subsection{Manual de Usuario}
+
+%requisitos
+%instalación de programas (java, mysql)
+%ejecución de aplicaciones
+%howtos
+
+\subsubsection{Requisitos del sistema}
+
+Las tres aplicaciones que forman parte del sistema se han desarrollado bajo el lenguaje de programación Java para hacer posible su portabilidad entre distintos sistemas, siempre y cuando éstos tengan instalada una máquina virtual de Java. De este modo, las aplicaciones son compatibles tanto en entornos basados en Windows 98/NT/XP/Vista/Seven como en entornos GNU/Linux.
+
+Si observamos el diagrama despliegue (ver \diagrama{sistema}{despliegue}{Despliegue}) se aprecia que el sistema es altamente distribuido ya que se pueden utilizar máquinas dedicadas a soportar los sistemas gestores de bases de datos, máquinas separadas para cada uno de los servidores y una o varias máquinas para cada una de las unidades de citación que se deseen. Nótese que en esta primera versión los sistemas gestores de bases de datos deben ser basados en MySQL \cite{mysql}.
+
+\subsubsection{Instalación y configuración de los entornos}
+Las máquinas destinadas a soportar los sistemas gestores de bases de datos deberán tener instalado como servicio el servidor MySQL y las máquinas sobre las cuales se ejecutarán las distintas aplicaciones cliente o servidor deberán tener instalado el entorno de ejecución de Java. A continuación se dan instrucciones de cómo instalar y configurar los entornos en sistemas basados en Windows.
+
+\paragraph{Entorno de Java}
+Para comprobar si ya dispone de una instalación del entorno de ejecucicón de Java en el equipo y que está configurado correctamente, abra una ventana de comandos \textit{(Inicio -\textgreater Ejecutar -\textgreater cmd)} y escriba "`java -version"'. Debe obtener un resultado similar al de la figura \ref{fig:java-version}:
+
+\imagen{./imagenes/usermanual/java-version.png}{0.80}{Cómo averiguar la versión de Java}{fig:java-version}
+
+Si aparece un mensaje de error, pruebe lo siguiente: 
+\begin{milista}
+	\item Compruebe si tiene instalado Java. Para ello compruebe que exista el directorio Java en \textit{C:\textbackslash Archivos de programa} (típicamente). Si lo está, configúrelo como se indica más abajo.
+	\item Si no existe, vaya a la siguiente dirección de Internet y descargue la última versión del  Java SE Development Kit (JDK) \cite{download-jdk}
+\end{milista}
+
+Una vez descargado, ejecute el archivo, elija el directorio de instalación y siga los pasos para completar la instalación. Tras instalarlo, debe configurarlo. Para ello vaya a \textit{Inicio} y haga clic derecho en \textit{Mi PC}. En las opciones, elija la pestaña de \textit{Opciones Avanzadas} y haga clic en \textit{Variables de entorno}. En la nueva ventana que aparece, busque la variable \textit{Path} y añada al final \texttt{;C:\textbackslash Archivos de programa\textbackslash Java\textbackslash jdk1.x.x\_xx\textbackslash bin}, donde "`x"' hace referencia a la versión que tiene instalada de Java.
+
+Ese es el directorio de instalación por defecto de Java. Si en la instalación eligió otro diferente, debe introducir el que eligió al instalarlo.
+
+Tras esto, pruebe de nuevo a ejecutar "java -versión" en una ventana de comandos.
+
+
+\paragraph{Servidor MySQL}
+
+Descargue el servidor de MySQL de \cite{download-mysql}. Ejecute el fichero de instalación y siga los pasos que se indican. Recuerde la contraseña que establezca para el usuario \textbf{root}.
+
+A continuación descargue e instale el toolkit MySQL Workbench \cite{download-workbench} que contiene la aplicación \textit{MySQL Administrator}. Ejecute \textbf{MySQL Administrator} e introduzca los datos de conexión al servidor MySQL instalado en el paso anterior (ver \ref{fig:mysql-admin-connection-settings}).
+
+\imagen{./imagenes/usermanual/mysql-administrator1.png}{0.80}{Conexión de MySQL Administrator con el servidor MySQL}{fig:mysql-admin-connection-settings}
+
+Si ha introducido correctamente la dirección IP del servidor, el nombre del usuario y la contraseña, se le abrirá una nueva ventana desde la cual podrá configurar cualquier aspecto relacionado con el servidor MySQL. A continuación se realizarán tres pasos idénticos sea cual sea el servidor que esté configurando (principal o de respaldo):
+\begin{enumerate}
+	\item \textbf{Creación de la base de datos}. En la barra de menús de la parte superior de la aplicación seleccione \textit{Tools -\textgreater MySQL Command Line Client} y obtendrá una consola similar a la de Windows. A continuación abra el fichero \textbf{install.txt} del servidor que esté configurando (principal o de respaldo), copie su contenido y péguelo en la consola de comandos de MySQL que ha abierto anteriormente.
+	\item \textbf{Creación del usuario}. En el menú de la izquierda diríjase a la sección \textbf{User Administration}. Una vez allí, cree el usuario correspondiente en función del servidor que esté configurando:
+	\begin{milista}
+		\item Servidor principal. Usuario \textit{iso}; Contraseña \textit{osi}.
+		\item Servidor de respaldo. Usuario \textit{isor}; Contraseña \textit{rosi}.
+	\end{milista}
+	\item \textbf{Configuración de los permisos de usuario}. Por último, debe dotar al usuario que acaba de crear de los permisos necesarios para manipular la base de datos que ha creado en el primer paso. Para ello, manténgase en la sección \textbf{User Administration} y seleccione el usuario que acaba crear. Observe que aparece una pestaña con tres columnas. En la primera columna seleccione la base de datos que ha creado en el primer paso. A continuación seleccione los permisos \textit{SELECT}, \textit{INSERT}, \textit{UPDATE} y \textit{DELETE} y muévalos a la columna central. Por último, aplique los cambios realizados (ver \ref{fig:mysql-admin-configure-privileges}).
+\end{enumerate}
+
+\imagen{./imagenes/usermanual/mysql-administrator2.png}{0.70}{Configuración de los privilegios de usuario}{fig:mysql-admin-configure-privileges}
+
+\subsubsection{Guías de uso}
+
+\paragraph{Servidor front-end}
+
+\paragraph{Servidor de respaldo}
+
+\paragraph{Unidad de citación}
