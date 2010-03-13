@@ -13,7 +13,9 @@ Algunas diferencias que existen entre el modelo de dominio y el modelo ER son:
 	\item Los diferentes tipos de médico se modelan como una jerarquía de herencia de la entidad \textit{Médico}, no apareciendo la entidad \textit{TipoMédico} correspondiente a la clase de dominio, pues esta clase aparece por la aplicación del patrón \textbf{Estado}, como ya se vió en la capa de dominio del servidor front-end (ver sección \ref{frontend}). 
 \end{milista}
 
-El modelo ER de la base de datos se muestra en la imagen \ref{fig:BaseDatosER} y está accesible en el fichero \textbf{DiagramaEntidad-Relacion.sdr}.
+El modelo ER de la base de datos se muestra en la imagen \ref{fig:BaseDatosER} y está accesible en el fichero \textbf{ModeloER.dia}.
+
+\imagen{./imagenes/ModeloER}{0.4}{Modelo ER de las bases de datos del sistema}{fig:BaseDatosER}
 
 Cabe destacar que este modelo de la base de datos es el mismo para el servidor front-end y para el servidor de respaldo, pues la base de datos de este último servidor es una copia de seguridad de la base de datos del servidor front-end, por lo que ambas bases de datos deben tener las mismas entidades y relaciones. 
 

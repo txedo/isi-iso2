@@ -53,7 +53,8 @@
 \def\diagrama#1#2#3{fichero de Visual Paradigm correspondiente al 
  \ifthenelse{\equal{#1}{frontend}}{\textbf{Servidor front-end}, }
  {\ifthenelse{\equal{#1}{cliente}}{\textbf{Cliente}, }
- {\ifthenelse{\equal{#1}{respaldo}}{\textbf{Servidor de respaldo}, }{}}}\textbf{Diagrama de}
+ {\ifthenelse{\equal{#1}{sistema}}{\textbf{Sistema Completo}, }
+ {\ifthenelse{\equal{#1}{respaldo}}{\textbf{Servidor de respaldo}, }{}}}}\textbf{Diagrama de}
  \ifthenelse{\equal{#2}{análisis}}{\textbf{Clases de Análisis}}
  {\ifthenelse{\equal{#2}{secuencia}}{\textbf{Secuencia}}
  {\ifthenelse{\equal{#2}{estados}}{\textbf{Máquina de Estados}}
@@ -169,10 +170,6 @@
 \input{ComparativaPlan.tex}
 \clearpage
 
-% ¿Seccion o subsección?
-\input{Acciones.tex}
-\clearpage
-
 % Sección de apéndices
 % Se añade el titulo de "Apéndices" al índice
 \addcontentsline{toc}{section}{Apéndices}
@@ -184,8 +181,8 @@
 \addcontentsline{toc}{section}{\bibname}
 
 % Bibliografía. En este caso se usa BibTeX
-%\bibliographystyle{plain}
-%\pagestyle{plain} 
-%\bibliography{Bibliografia}
+\bibliographystyle{plain}
+\pagestyle{plain} 
+\bibliography{Bibliografia}
 
 \end{document}
