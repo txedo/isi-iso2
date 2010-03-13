@@ -31,6 +31,7 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasJPVolanteEmitir.class);
 		suite.addTestSuite(PruebasJFAvisos.class);
 		suite.addTestSuite(PruebasJFCalendarioLaboral.class);
+		suite.addTestSuite(PruebasJFPrincipal.class);
 		return suite;
 	}
 	

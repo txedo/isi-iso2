@@ -89,8 +89,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 	private JButton btnCerrarSesion;
 	private JButton btnCerrarAplicacion;
 	private JLabel lblBarraEstado;
-	private JSeparator jSeparator1;
-	private JMenuItem menuitemManualUsuario;
 	private JPBienvenida jPanelBienvenida;
 	private JTabbedPane jTabbedPaneOperaciones;
 
@@ -150,15 +148,6 @@ public class JFPrincipal extends javax.swing.JFrame {
 					jMenuBar.add(jMenu4);
 					jMenu4.setText("Ayuda");
 					{
-						menuitemManualUsuario = new JMenuItem();
-						jMenu4.add(menuitemManualUsuario);
-						menuitemManualUsuario.setText("Manual de usuario");
-					}
-					{
-						jSeparator1 = new JSeparator();
-						jMenu4.add(jSeparator1);
-					}
-					{
 						menuitemAcercaDe = new JMenuItem();
 						jMenu4.add(menuitemAcercaDe);
 						menuitemAcercaDe.setText("Acerca de...");
@@ -188,6 +177,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 					jPanelOperaciones.add(btnCerrarSesion, new AnchorConstraint(930, 155, 11, 590, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnCerrarSesion.setText("Cerrar sesión");
 					btnCerrarSesion.setPreferredSize(new java.awt.Dimension(124, 30));
+					btnCerrarSesion.setName("btnCerrarSesion");
 					btnCerrarSesion.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnCerrarSesionActionPerformed(evt);
@@ -199,6 +189,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 					jPanelOperaciones.add(btnCerrarAplicacion, new AnchorConstraint(930, 16, 11, 799, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnCerrarAplicacion.setText("Cerrar aplicación");
 					btnCerrarAplicacion.setPreferredSize(new java.awt.Dimension(124, 30));
+					btnCerrarAplicacion.setName("btnCerrarAplicacion");
 					btnCerrarAplicacion.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnCerrarAplicacionActionPerformed(evt);
