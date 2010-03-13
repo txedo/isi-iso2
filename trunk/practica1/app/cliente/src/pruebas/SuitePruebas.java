@@ -18,6 +18,9 @@ public class SuitePruebas {
 		suite = new TestSuite("Pruebas completas para el cliente");
 		suite.addTestSuite(PruebasValidacion.class);
 		suite.addTestSuite(PruebasJFLogin.class);
+		suite.addTestSuite(PruebasJFAvisos.class);
+		suite.addTestSuite(PruebasJFCalendarioLaboral.class);
+		suite.addTestSuite(PruebasJFPrincipal.class);
 		suite.addTestSuite(PruebasJPSustitucionEstablecer.class);
 		suite.addTestSuite(PruebasJPBeneficiarioRegistrar.class);
 		suite.addTestSuite(PruebasJPBeneficiarioConsultar.class);
@@ -29,9 +32,6 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasJPUsuarioRegistrar.class);
 		suite.addTestSuite(PruebasJPUsuarioConsultar.class);
 		suite.addTestSuite(PruebasJPVolanteEmitir.class);
-		suite.addTestSuite(PruebasJFAvisos.class);
-		suite.addTestSuite(PruebasJFCalendarioLaboral.class);
-		suite.addTestSuite(PruebasJFPrincipal.class);
 		return suite;
 	}
 	

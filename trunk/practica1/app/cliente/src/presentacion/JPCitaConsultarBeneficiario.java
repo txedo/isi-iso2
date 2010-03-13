@@ -172,7 +172,16 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 	}
 	
 	private void btnHistoricoCitasActionPerformed(ActionEvent evt) {
-		mostrarHistoricoCitas();
+		// Si se estaban viendo las citas pendientes y se pincha el botón, se pasa a mostrar el 
+		// histórico de citas
+		if (!viendoHistorico) {
+			mostrarHistoricoCitas();
+			btnHistoricoCitas.setText("Ver citas pendientes");
+		}
+		else {
+			mostrarCitasPendientes();
+			btnHistoricoCitas.setText("Ver histórico de citas");
+		}
 	}
 	
 	private void btnAnularActionPerformed(ActionEvent evt) {
@@ -297,9 +306,9 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 			UtilidadesTablas.rellenarTablaCitasBeneficiario(tblTablaCitas, citas, pendientes, medicosReales);
 			
 			// Indicamos que estamos mostrando todas las citas
-			lblCitas.setText("Citas encontradas:");
+			lblCitas.setText("Histórico de citas encontradas:");
 			viendoHistorico = true;
-			btnHistoricoCitas.setEnabled(false);
+			btnHistoricoCitas.setEnabled(true);
 
 			// Seleccionamos la primera cita de la lista (si la hay)
 			if(citas.size() > 0) {
@@ -326,6 +335,7 @@ public class JPCitaConsultarBeneficiario extends JPBase {
 		btnHistoricoCitas.setEnabled(false);
 		lblCitas.setText("Citas pendientes encontradas:");
 		viendoHistorico = false;
+		btnHistoricoCitas.setText("Ver histórico de citas");
 		citas.clear();
 	}
 	
