@@ -45,7 +45,6 @@ public class JPCitaConsultarPropias extends JPBase {
 	
 	private JScrollPane scpTablaCitas;
 	private JButton btnCitasHistoricas;
-	private JButton btnCitasPendientes;
 	private JLabel lblCitas;
 	private JTable tblTablaCitas;
 	
@@ -69,18 +68,6 @@ public class JPCitaConsultarPropias extends JPBase {
 			this.setLayout(thisLayout);
 			this.setPreferredSize(new java.awt.Dimension(430, 280));
 			{
-				btnCitasPendientes = new JButton();
-				this.add(btnCitasPendientes, new AnchorConstraint(888, 164, 12, 289, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
-				btnCitasPendientes.setText("Ver citas pendientes");
-				btnCitasPendientes.setPreferredSize(new java.awt.Dimension(142, 26));
-				btnCitasPendientes.setName("btnCitasPendientes");
-				btnCitasPendientes.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						btnCitasPendientesActionPerformed(evt);
-					}
-				});
-			}
-			{
 				lblCitas = new JLabel();
 				this.add(lblCitas, new AnchorConstraint(12, 273, 506, 10, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS));
 				lblCitas.setText("Citas pendientes encontradas:");
@@ -102,7 +89,7 @@ public class JPCitaConsultarPropias extends JPBase {
 			{
 				btnCitasHistoricas = new JButton();
 				this.add(btnCitasHistoricas, new AnchorConstraint(888, 11, 12, 643, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
-				btnCitasHistoricas.setText("Ver histórico de citas");
+				btnCitasHistoricas.setText("Ver citas pendientes");
 				btnCitasHistoricas.setPreferredSize(new java.awt.Dimension(142, 26));
 				btnCitasHistoricas.setName("btnCitasHistorico");
 				btnCitasHistoricas.addActionListener(new ActionListener() {
@@ -119,11 +106,16 @@ public class JPCitaConsultarPropias extends JPBase {
 	//$hide>>$
 
 	private void btnCitasHistoricasActionPerformed(ActionEvent evt) {
-		mostrarHistoricoCitas();
-	}
-	
-	private void btnCitasPendientesActionPerformed(ActionEvent evt) {
-		mostrarCitasPendientes();
+		// Si se estaban viendo las citas pendientes y se pincha el botón, se pasa a mostrar el 
+		// histórico de citas
+		if (!viendoHistorico && btnCitasHistoricas.getText().equals("Ver histórico de citas")) {
+			mostrarHistoricoCitas();
+			btnCitasHistoricas.setText("Ver citas pendientes");
+		}
+		else {
+			mostrarCitasPendientes();
+			btnCitasHistoricas.setText("Ver histórico de citas");
+		}
 	}
 
 	private void mostrarCitasPendientes() {
@@ -173,7 +165,7 @@ public class JPCitaConsultarPropias extends JPBase {
 			UtilidadesTablas.rellenarTablaCitasMedico(tblTablaCitas, citas, pendientes);
 			
 			// Indicamos que estamos mostrando todas las citas
-			lblCitas.setText("Citas encontradas:");
+			lblCitas.setText("Histórico de citas encontradas:");
 			viendoHistorico = true;
 
 			// Seleccionamos la primera cita de la lista (si la hay)
@@ -194,6 +186,7 @@ public class JPCitaConsultarPropias extends JPBase {
 		UtilidadesTablas.limpiarTabla(tblTablaCitas);
 		lblCitas.setText("Citas pendientes encontradas:");
 		viendoHistorico = false;
+		btnCitasHistoricas.setText("Ver citas pendientes");
 		citas.clear();
 	}
 	

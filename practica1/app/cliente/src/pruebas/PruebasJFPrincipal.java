@@ -34,7 +34,7 @@ public class PruebasJFPrincipal extends org.uispec4j.UISpecTestCase implements I
 					}
 				}
 			});
-//			// Obtenemos los componentes del panel
+			// Obtenemos los componentes del panel
 			win = new Window(controlador.getVentanaPrincipal());
 			mniSalir = win.getMenuBar().getMenu("Archivo").getSubMenu("Salir");
 			mniAcercaDe = win.getMenuBar().getMenu("Ayuda").getSubMenu("Acerca de...");
