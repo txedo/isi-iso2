@@ -15,7 +15,7 @@ public class SuitePruebas {
 	public static Test suite() {
 		TestSuite suite;
 		
-		suite = new TestSuite("Pruebas completas para el servidor frontend");
+		suite = new TestSuite("Pruebas completas para el servidor front-end");
 		suite.addTest(DominioTest.suite());
 		suite.addTest(PersistenciaTest.suite());
 		suite.addTest(ComunicacionesTest.suite());
