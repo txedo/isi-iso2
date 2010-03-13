@@ -1,6 +1,7 @@
 package pruebas;
 
 import org.uispec4j.Button;
+import org.uispec4j.MenuItem;
 import org.uispec4j.Panel;
 import org.uispec4j.PasswordField;
 import org.uispec4j.TextBox;
@@ -116,30 +117,22 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 		}
 	}
 	
-	// Servidor no alcanzable
-	public void testServidorInalcanzable () {
-		String mensaje;
-		
-		txtUsuario.setText(USUARIO_ADMIN);
-		txtPassword.setPassword(PASSWORD_ADMIN);
-		// Abrimos las opciones avanzadas
-		btnAvanzado.click();
-		// Ponemos una IP en la que no hay un servidor a la escucha
-		txtDireccionServidor.setText("1.0.0.1");
-		// Pulsamos el botón Conectar y capturamos el texto de la ventana de error
-		mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnConectar, OK_OPTION);
-		String esperado = "No se puede conectar con el servidor front-end (IP " + txtDireccionServidor.getText() + ", puerto " + txtPuertoServidor.getText() + ").";
-		assertEquals(esperado, mensaje);
-	}
-	
 	// Loguea un usuario con la IP y el puerto del servidor por defecto
 	@SuppressWarnings("deprecation")
-	public void testLoginUsuarioCorrecto () {
+	public void testLoginUsuarioCorrecto() {
+		MenuItem mniAcercaDe;
+		Window dialogo;
+		
 		txtUsuario.setText(USUARIO_ADMIN);
 		txtPassword.setPassword(PASSWORD_ADMIN);
 		winPrincipal = WindowInterceptor.run(btnConectar.triggerClick());
 		winPrincipal.assertTitleEquals("SSCA - Unidad de Citación");
 		sesionIniciada = true;
+		
+		// Comprobamos que la la ventana de 'Acerca de' se muestra correctamente
+		mniAcercaDe = winPrincipal.getMenuBar().getMenu("Ayuda").getSubMenu("Acerca de...");
+		dialogo = WindowInterceptor.run(mniAcercaDe.triggerClick());
+		dialogo.getButton("btnAceptar").click();
 	}
 	
 	public void testOpcionesAvanzadas () {
@@ -172,4 +165,21 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 		assertFalse(txtPuertoServidor.isEditable());
 		assertFalse(txtPuertoServidor.isVisible());
 	}
+	
+	// Servidor no alcanzable
+	public void testServidorInalcanzable () {
+		String mensaje;
+		
+		txtUsuario.setText(USUARIO_ADMIN);
+		txtPassword.setPassword(PASSWORD_ADMIN);
+		// Abrimos las opciones avanzadas
+		btnAvanzado.click();
+		// Ponemos una IP en la que no hay un servidor a la escucha
+		txtDireccionServidor.setText("1.0.0.1");
+		// Pulsamos el botón Conectar y capturamos el texto de la ventana de error
+		mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnConectar, OK_OPTION);
+		String esperado = "No se puede conectar con el servidor front-end (IP " + txtDireccionServidor.getText() + ", puerto " + txtPuertoServidor.getText() + ").";
+		assertEquals(esperado, mensaje);
+	}
+	
 }

@@ -54,6 +54,13 @@ public class PruebasControlador extends UISpecTestCase {
 	}
 	
 	public void tearDown() {
+		try {
+			// Cerramos las bases de datos
+			GestorConexionesBD.cerrarConexiones();
+			GestorConexionesBD.quitarConexiones();
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 	}
 	
 	/** Pruebas del controlador */
