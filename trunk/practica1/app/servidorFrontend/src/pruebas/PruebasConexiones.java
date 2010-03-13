@@ -21,7 +21,7 @@ import junit.framework.TestCase;
  * Pruebas de los Gestores de conexiones de base de datos y de estado del
  * servidor.
  */
-public class PruebasConexiones extends TestCase {
+public class PruebasConexiones extends PruebasBase {
 
 	private ConexionBDFrontend conexionBD;
 	private ConexionLogBD conexionLogBD;
@@ -31,6 +31,7 @@ public class PruebasConexiones extends TestCase {
 	
 	protected void setUp() {
 		try {
+			super.setUp();
 			// Inicializamos las conexiones con las bases de datos
 			// y las ventanas de estado de los servidores
 			conexionBD = new ConexionBDFrontend();

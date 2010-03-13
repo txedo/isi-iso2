@@ -18,6 +18,7 @@ public class SuitePruebas {
 		suite = new TestSuite("Pruebas completas para el cliente");
 		suite.addTestSuite(PruebasValidacion.class);
 		suite.addTestSuite(PruebasJFLogin.class);
+		suite.addTestSuite(PruebasJPSustitucionEstablecer.class);
 		suite.addTestSuite(PruebasJPBeneficiarioRegistrar.class);
 		suite.addTestSuite(PruebasJPBeneficiarioConsultar.class);
 		suite.addTestSuite(PruebasJPCitaConsultarBeneficiario.class);
@@ -25,7 +26,6 @@ public class SuitePruebas {
 		suite.addTestSuite(PruebasJPCitaConsultarPropias.class);
 		suite.addTestSuite(PruebasJPCitaTramitar.class);
 		suite.addTestSuite(PruebasJPCitaVolanteTramitar.class);
-		suite.addTestSuite(PruebasJPSustitucionEstablecer.class);
 		suite.addTestSuite(PruebasJPUsuarioRegistrar.class);
 		suite.addTestSuite(PruebasJPUsuarioConsultar.class);
 		suite.addTestSuite(PruebasJPVolanteEmitir.class);

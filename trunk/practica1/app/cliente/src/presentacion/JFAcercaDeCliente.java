@@ -119,6 +119,7 @@ public class JFAcercaDeCliente extends javax.swing.JFrame {
 					jPanel1.add(btnAceptar, new AnchorConstraint(866, 14, 12, 753, AnchorConstraint.ANCHOR_NONE, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_ABS, AnchorConstraint.ANCHOR_NONE));
 					btnAceptar.setText("Aceptar");
 					btnAceptar.setPreferredSize(new java.awt.Dimension(83, 25));
+					btnAceptar.setName("btnAceptar");
 					btnAceptar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							btnAceptarActionPerformed(evt);

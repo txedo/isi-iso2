@@ -1,26 +1,102 @@
-Las pruebas se han diseñado siguiendo el modelo en V de la Figura \ref{fig:v-model}, de tal modo que se han realizado pruebas unitarias (funcionamiento de las clases), pruebas de integración (interacción entre objetos), pruebas de sistema (comunicación entre subsistemas) y pruebas de aceptación (casos de uso o funcionalidades), basándose en una combinación de los enfoques \textit{caja negra} y \textit{caja blanca}, y tratando de maximizar la cobertura de instrucciones, considerando el 90\% de cobertura como aceptable. Sin embargo, existen clases en las que no se alcanza dicho umbral debido a ciertos bloques correspondientes al tratamiento de excepciones que no se han forzado en las pruebas. Dichas excepciones estarían relacionadas con problemas de integridad e inconsistencias en la base de datos, no pudiéndose dar en ésta debido a que el sistema obliga a una correcta inserción de datos. De todos modos, si por causas externas al sistema (p.e. corrupción física de los datos) se diesen dichas excepciones, el sistema las tratará y notificará debidamente.
+Las pruebas se han diseñado siguiendo el modelo en V de la Figura \ref{fig:v-model}, de tal modo que se han realizado pruebas unitarias (funcionamiento de las clases), pruebas de integración (interacción entre objetos), pruebas de sistema (comunicación entre subsistemas) y pruebas de aceptación (casos de uso o funcionalidades del sistema), basándose en una combinación de los enfoques de \textit{caja negra} y \textit{caja blanca}, tratando de maximizar la cobertura de instrucciones, considerando el 90\% de cobertura como aceptable. \\
+\indent Sin embargo, como se muestra en el informde de cobertura (ver Tabla \ref{tb:pruebas}), existen clases en las que no se alcanza dicho umbral debido a que existen ciertos bloques correspondientes al tratamiento de excepciones que no se han forzado en las pruebas. Dichas excepciones estarían relacionadas con problemas de integridad e inconsistencias en las bases de datos, no pudiéndose dar en éstas, debido a que el sistema obliga a una correcta inserción de datos. De todos modos, si por causas externas al sistema (por ejemplo, corrupción física de los datos) se diesen dichas excepciones, el sistema las tratará y notificará debidamente.
 
-Además, se han utilizado las técnicas de clases de equivalencia, valores límite y conjetura de errores para proporcionar valores de entrada a los casos de prueba. Cabe destacar el uso de oráculos tanto positivos como negativos.
+\imagen{./imagenes/modeloV}{0.7}{Modelo en V}{fig:v-model}
 
-En las siguientes subsecciones se van a comentar los tipos de test que se han realizado en cada una de las aplicaciones de las que está compuesto el sistema. Por último, destacar que se han realizado las pruebas pertinentes en todas y cada una de las capas, incluyendo las interfaces gráficas de usuario.
+Además, se han utilizado las técnicas de \textit{clases de equivalencia}, \textit{valores límite} y \textit{conjetura de errores} para proporcionar valores de entrada a los casos de prueba. Cabe destacar también el uso de oráculos, tanto positivos como negativos, en los casos de prueba. 
+
+En los siguientes apartados se van a comentar los tipos de test que se han realizado en cada uno de los subsistemas de los que está compuesto el sistema. Por último, destacar que se han realizado las pruebas pertinentes en todas y cada una de las capas, incluyendo las interfaces gráficas de usuario.
 
 \subsubsection{Servidor Front-end}
-Todos los \textit{TestSuite} que se han implementado heredan de una clase cuya responsabilidad consiste en limpiar la base de datos antes de ejecutar cada caso de prueba e iniciar una conexión con el sistema gestor de bases de datos principal. El objetivo de esta decisión es evitar la repetición del mismo código en cada uno de ellos.
 
-En este sistema la interfaz gráfica es muy sencilla. Es por esto por lo que las pruebas más importantes son las de comunicaciones (tanto con el cliente como con el sistema gestor de bases de datos), las de dominio (control y conocimiento) y persistencia. Para una mayor legibilidad, se ha hecho un \textit{TestSuite} para los casos de prueba de cada capa, excepto en la capa de dominio que a su vez se ha jerarquizado en un \textit{TestSuite} para cada uno de los gestores definidos en la etapa de análisis de requisitos (ver Sección \ref{requisitos-detallados}).
+Todos los \textit{TestSuite} (colecciones de casos de prueba) que se han implementado heredan de una superclase, cuya responsabilidad consiste en limpiar la base de datos antes de ejecutar cada caso de prueba e iniciar una conexión con el sistema gestor de bases de datos principal. El objetivo de implementar esta superclase es evitar la repetición del mismo código en cada uno de los casos de prueba.
 
-A continuación se explica qué se prueba en cada \textit{TestSuite}:
+Por otra parte, en este sistema la interfaz gráfica de usuario es muy sencilla. Es por esto por lo que las pruebas más importantes son las pruebas correspondientes a la capa de comunicaciones (tanto con el cliente, con el servidor de respaldo y con el sistema gestor de bases de datos), las pruebas de la capa de dominio (control y conocimiento) y persistencia. Para mejorar la organización de dichas pruebas, se ha creado un \textit{TestSuite} para los casos de prueba de cada capa, excepto en la capa de dominio que a su vez se ha jerarquizado en un \textit{TestSuite} para cada uno de los gestores definidos en la etapa de análisis de requisitos (ver Sección \ref{requisitos-detallados}).
+
+A continuación se explica cual es el objetivo principal de cada \textit{TestSuite}:
+
 \begin{milista}
-	\item {ComunicacionesTest}: trata de probar que el servidor front-end se comunica de forma correcta con el sistema gestor de bases de datos principal y el servidor de respaldo. Se realizan pruebas de conexión, desconexión y transmisión de información, así como pruebas de un correcto comportamiento ante diferentes errores que se puedan producir; por ejemplo, la desconexión inesperada del servidor de respaldo que podría causar incoherencias entre la base de datos principal y la base de datos de respaldo. También prueba que el objeto se exporta correctamente para comprobar que las llamadas a los métodos del objeto remoto son satisfactorias.
-	\item {PersistenciaTest}: realiza distintas operaciones sobre la base de datos para comprobar que las clases de persistencia funcionan de forma correcta.
-	\item {DominioTest}: engloba las pruebas para comprobar el correcto funcionamiento de todas las clases de dominio, tanto de conocimento como de control. De este modo, se prueba la conexión con el subsistema cliente, creando un cliente fictio o \textit{dummy}, así como las distintas funcionalidades recogidas en los gestores ya comentados en la sección \ref{requisitos-detallados}.
-	\item {PresentacionTest}: engloba diferentes pruebas para probar la validación de direcciones IP y números de puertos, así como comprobar el buen funcionamiento de los diferentes elementos de la interfaz gráfica. 
+	\item \textbf{DominioTest:} engloba las pruebas para comprobar el correcto funcionamiento de todas las clases de dominio, tanto de conocimento como de control. De este modo, se prueba la conexión con el subsistema cliente, creando un cliente fictio o \textit{dummy}, así como las distintas funcionalidades recogidas en los gestores ya comentados en la sección \ref{requisitos-detallados}.
+		\item \textbf{PersistenciaTest:} realiza distintas operaciones sobre la base de datos principal para comprobar que las clases de persistencia funcionan de forma correcta.
+	\item \textbf{ComunicacionesTest:} su objetivo es comprobar que el servidor front-end se comunica de forma correcta con el sistema gestor de bases de datos principal y con el servidor de respaldo. Por ello, se realizan pruebas de conexión, desconexión y transmisión de información, así como pruebas de un correcto comportamiento ante diferentes errores que se puedan producir; por ejemplo, la desconexión inesperada del servidor de respaldo que podría causar incoherencias entre la base de datos principal y la base de datos de respaldo. También prueba que el objeto se exporta correctamente para comprobar que las llamadas a los métodos del objeto remoto son satisfactorias.
+	\item \textbf{PresentacionTest:} engloba diferentes pruebas para probar la validación de direcciones IP y números de puertos, así como comprobar el buen funcionamiento de los diferentes elementos de la interfaz gráfica. 
 \end{milista}
 
-Para una correcta ejecución de las pruebas es necesario tener en ejecucición y a la escucha el servidor de respaldo.
+Para una correcta ejecución de las pruebas es necesario tener en ejecución y a la escucha el servidor de respaldo.
 
 \subsubsection{Servidor de Respaldo}
-Este sistema es una versión minimalista del servidor front-end en la que se ha reutilizado gran parte de su código, por lo que la suite de pruebas se centra en probar la comunicación exportando el objeto y comprobando que dicho objeto remoto accede correctamente a la base de datos.
+
+Este sistema es una versión minimalista del servidor front-end en la que se ha reutilizado gran parte de su código, por lo que la suite de pruebas se centra en probar la comunicación con el servidor front-end, exportando el objeto y comprobando que dicho objeto remoto accede correctamente a la base de datos.
 
 \subsubsection{Unidad de Citación}
-Debido a que el sistema cliente se basa en la interfaz de usuario, ya que toda la lógica de dominio reside en el servidor front-end, las pruebas de este sistema se basan en pruebas de interfaz de usuario. Estas pruebas se han estructurado en \textit{TestSuites} que corresponden con cada una de las funcionalidades que debe cumplir el sistema. Cada uno de estos \textit{TestSuite} contiene \textit{TestCase} que corresponden a su vez con cada uno de los escenarios definidos en cada caso de uso, ya sean escenarios correctos o alternativos.
+
+Debido a que el subsistema cliente se basa en la interfaz gráfica de usuario, ya que toda la lógica de dominio reside en el servidor front-end, las pruebas de este sistema se basan en pruebas de interfaz gráfica de usuario. \\
+\indent Dichas pruebas se han estructurado en \textit{TestSuites} que corresponden con cada una de las funcionalidades que debe cumplir el sistema (es decir, con los casos de uso). A su vez, cada uno de estos \textit{TestSuite} contienen \textit{TestCase} que corresponden con cada uno de los escenarios definidos en cada caso de uso, ya sean escenarios correctos o alternativos.
+
+Así, las pruebas de interfaz gráfica del subsistema cliente aseguran que todos los datos que introduce el usuario tengan el formato adecuado y sean correctos. También prueban que la comunicación con el servidor front-end sea correcta, enviando las peticiones y recibiendo las notificaciones adecuadas, mostrando la realimentación oportuna al usuario. Además, en estas pruebas de interfaz se han incluido pruebas apra asegurar el correcto funcionamiento del patrón \textbf{Observador}, que ya fue comentado en la sección \ref{frontendDominio}.
+
+\subsubsection{Informe de cobertura}
+
+A continuación, se incluye una tabla que resume todos los casos de prueba ejecutados para cada uno de los subsistemas. En dicha tabla se detalla la cobertura de instrucciones obtenida para cada una de las capas (o paquetes) que componen cada subsistema. 
+
+\begin{longtable}{| c | c | c | c | c |}
+\hline
+\multicolumn{4}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{SUBSISTEMA: Servidor front-end (X casos de prueba)}} \\
+\hline
+\multicolumn{4}{c}{} \\
+\hline
+\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{PAQUETE}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{COBERTURA(\%)}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3cm}|}{\textbf{INSTRUCCIONES CUBIERTAS}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{INSTRUCCIONES TOTALES}} \\
+\hline
+\textbf{\textit{Servidor Front-end}} & \textbf{\textit{77.4}} & \textbf{\textit{17355}} & \textbf{\textit{22422}} \\ 
+\hline
+Presentacion & 89 & 2347 & 2636 \\ 
+\hline
+Presentacion.auxiliar & 89.2 & 66 & 74 \\ 
+\hline
+Persistencia & 92.4 & 2943 & 3186 \\ 
+\hline
+Excepciones & 100 & 94 & 94 \\ 
+\hline
+Dominio & 92.8 & 206 & 222 \\ 
+\hline
+Dominio.control & 63.8 & 7549 & 11830\\
+\hline
+Dominio.conocimiento & 94.8 & 3121 & 3292 \\ 
+\hline
+Comunicaciones & 94.6 & 1029 & 1088 \\ 
+\hline
+\multicolumn{4}{c}{} \\
+\hline
+\multicolumn{4}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{SUBSISTEMA: Servidor de respaldo (X casos de prueba)}} \\
+\hline
+\multicolumn{4}{c}{} \\
+\hline
+\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{PAQUETE}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{COBERTURA(\%)}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3cm}|}{\textbf{INSTRUCCIONES CUBIERTAS}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{INSTRUCCIONES TOTALES}} \\
+\hline
+\textbf{\textit{Servidor Respaldo}} & \textbf{\textit{91.6}} & \textbf{\textit{2861}} & \textbf{\textit{3123}} \\ 
+\hline
+Presentacion & 89.8 & 1963 & 2187 \\ 
+\hline
+Presentacion.auxiliar & 89.2 & 66 & 74 \\ 
+\hline
+Persistencia & 93.2 & 96 & 103 \\ 
+\hline
+Excepciones & 100 & 30 & 30 \\ 
+\hline
+Dominio & 70 & 7 & 10 \\
+\hline
+Dominio.control & 99.6 & 239 & 240 \\ 
+\hline
+Comunicaciones & 96 & 460 & 479 \\ 
+\hline
+\multicolumn{4}{c}{} \\
+\hline
+\multicolumn{4}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{SUBSISTEMA: Unidad de citación (124 casos de prueba)}} \\
+\hline
+\multicolumn{4}{c}{} \\
+\hline
+\multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{PAQUETE}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{COBERTURA(\%)}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3cm}|}{\textbf{INSTRUCCIONES CUBIERTAS}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{INSTRUCCIONES TOTALES}} \\
+\hline
+\caption{Informe de cobertura de los subsistemas} 
+\label{tb:pruebas}
+\end{longtable}

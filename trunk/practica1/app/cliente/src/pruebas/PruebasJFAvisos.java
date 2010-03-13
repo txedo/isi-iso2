@@ -91,7 +91,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 			beneficiarioPrueba2.setDireccion(new Direccion("lagasca", "", "", "", "Madrid", "Madrid", 28000));
 			beneficiarioPrueba2.setCentroSalud(controlador.consultarCentros().firstElement());
 			beneficiarioPrueba2.setMedicoAsignado(cabecera);
-			beneficiarioPrueba1 = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba2);
+			beneficiarioPrueba2 = UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba2);
 			
 			frmAvisos = new JFAvisos();
 			// Obtenemos los componentes del panel
@@ -106,9 +106,9 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 	
 	protected void tearDown() {
 		try {
-			controlador.eliminarMedico(cabecera);
 			controlador.eliminarBeneficiario(beneficiarioPrueba1);
 			controlador.eliminarBeneficiario(beneficiarioPrueba2);
+			controlador.eliminarMedico(cabecera);			
 			// Cerramos la sesión y la ventana del controlador
 			controlador.cerrarSesion();
 			winPrincipal.dispose();
@@ -166,7 +166,7 @@ public class PruebasJFAvisos extends org.uispec4j.UISpecTestCase implements IDat
 	public void testMostrarCitas() {
 		try {
 			// Registramos una cita para el medico
-			Cita c = controlador.pedirCita(beneficiarioPrueba1, cabecera.getNif(), new Date(2010-1900,8,8,10,15), IConstantes.DURACION_CITA);
+			Cita c = controlador.pedirCita(beneficiarioPrueba1, cabecera.getNif(), new Date(2010-1900,8,8,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			
 			Window win;
 			final Vector<Cita> citas = new Vector<Cita>();
