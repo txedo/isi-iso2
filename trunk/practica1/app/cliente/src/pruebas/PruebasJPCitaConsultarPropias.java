@@ -37,7 +37,6 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 	private JPCitaConsultarPropias panel;
 	private Panel pnlPanel;
 	private Table tblCitas;
-	private Button btnCitasPendientes;
 	private Button btnCitasHistorico;
 	private JTable jtblCitas;
 	private Window winPrincipal;
@@ -100,7 +99,6 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(panel);
 			tblCitas = pnlPanel.getTable("tblTablaCitas");
-			btnCitasPendientes = pnlPanel.getButton("btnCitasPendientes");
 			btnCitasHistorico = pnlPanel.getButton("btnCitasHistorico");		
 			
 			jtblCitas = (JTable) tblCitas.getAwtComponent();
@@ -128,8 +126,6 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 		// Al abrir la ventana, como el médico no tiene citas asignadas, no habrá ninguna fila (ni en citas pendientes ni en el historico)
 		btnCitasHistorico.click();
 		assertTrue(tblCitas.getRowCount()==0);
-		btnCitasPendientes.click();
-		assertTrue(tblCitas.getRowCount()==0);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -142,9 +138,11 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 
 			// Consultamos la cita del medico del beneficiario
 			btnCitasHistorico.click();
+			// Para citas pendientes
 			assertTrue(tblCitas.getRowCount()==1);
 			assertEquals(tblCitas.getContentAt(0, 3), beneficiarioPrueba.getNif());
-			btnCitasPendientes.click();
+			btnCitasHistorico.click();
+			// Para el historico
 			assertTrue(tblCitas.getRowCount()==1);
 			assertEquals(tblCitas.getContentAt(0, 3), beneficiarioPrueba.getNif());
 		} catch (Exception e) {
@@ -172,7 +170,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 			c1 = controladorAuxiliar.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010-1900,5,16,10,IConstantes.DURACION_CITA), IConstantes.DURACION_CITA);
 			
 			// Consultamos las citas del médico, que debe ser una
-			btnCitasPendientes.click();
+			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==1);
 		
 			// En este momento el administrador modifica el beneficiario de la cita
@@ -223,7 +221,7 @@ public class PruebasJPCitaConsultarPropias extends org.uispec4j.UISpecTestCase i
 	public void testObservadorCitas() {
 		try {
 			// Consultamos las citas del médico, que no debe tener ninguna
-			btnCitasPendientes.click();
+			btnCitasHistorico.click();
 			assertTrue(tblCitas.getRowCount()==0);
 			// Pedimos una cita para este médico desde el controlador auxiliar
 			WindowInterceptor.init(new Trigger() {
