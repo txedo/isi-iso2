@@ -1,28 +1,19 @@
 package pruebas;
 
 import org.uispec4j.Button;
-import org.uispec4j.MenuItem;
 import org.uispec4j.Panel;
-import org.uispec4j.TextBox;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowInterceptor;
-
-import comunicaciones.ConfiguracionCliente;
-
 import presentacion.JFAcercaDeCliente;
-import presentacion.JFPrincipal;
-import dominio.control.ControladorCliente;
-
-
 import junit.framework.TestCase;
 
-
+/**
+ * Pruebas de la ventana 'Acerca de...' del cliente.
+ */
 public class PruebasJFAcercaDe extends TestCase implements IDatosConexionPruebas {
 
-	private ControladorCliente controlador;
 	private Window winVentana;
-	private MenuItem mniAcercaDe;
 	private JFAcercaDeCliente frmAcercaDe;
 	private Panel pnlPanel;
 	private Button btnCerrar;
@@ -33,7 +24,6 @@ public class PruebasJFAcercaDe extends TestCase implements IDatosConexionPruebas
 			// Obtenemos los componentes del panel
 			pnlPanel = new Panel(frmAcercaDe);
 			btnCerrar = pnlPanel.getButton("btnAceptar");
-			
 		} catch(Exception e) {
 			fail(e.toString());
 		}
