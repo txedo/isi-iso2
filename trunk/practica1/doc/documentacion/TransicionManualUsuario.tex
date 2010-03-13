@@ -55,8 +55,24 @@ Si ha introducido correctamente la dirección IP del servidor, el nombre del usua
 
 \subsubsection{Guías de uso}
 
-\paragraph{Servidor front-end}
+\paragraph{Servidor front-end} \label{manual:frontend}
+Al ejecutar el fichero JAR correspondiente al servidor principal, denominado front-end, obtenemos una ventana como la que se muestra en la figura \ref{fig:frontend-ventanaprincipal}. Si la describimos de arriba abajo se aprecian los siguientes elementos:
+\begin{milista}
+	\item Una barra de menús (\textit{Archivo}, \textit{Opciones} y \textit{Ayuda}).
+	\item Tres botones para poner el servidor a la escucha, pararlo o cerrarlo.
+	\item Un área de texto donde se va mostrando el log de las acciones que realizan los clientes sobre el servidor.
+	\item Una barra de estado donde se muestra información relativa a las comunicaciones: clientes conectados, datos de conexión del servidor, datos de conexión del sistema gestor de bases de datos, y datos de conexión del servidor de respaldo.
+\end{milista}
+
+\imagen{./imagenes/usermanual/frontend-ventanaprincipal.png}{0.70}{Ventana principal del servidor front-end}{fig:frontend-ventanaprincipal}
+
+Una vez descrita la interfaz, configuraremos el servidor. Haga clic en \textit{Opciones} -\textgreater \textit{Configurar...} y obtendrá una ventana similar a la mostrada en la figura \ref{fig:frontend-configuracion}. En dicha ventana deberá introducir los datos de conexión del SGBD principal, los datos de conexión del servidor de respaldo (en caso de querer activarlo), y el puerto en el que el servidor front-end deberá ponerse a la escucha. Para confirmar los cambios, haga clic en \textit{Aceptar}.
+
+\imagen{./imagenes/usermanual/frontend-configuracion.png}{0.70}{Ventana de configuración servidor front-end}{fig:frontend-configuracion}
+
+Por último, ponga el servidor a la escucha haciendo clic en \textit{Conectar}. Cuando algún cliente se conecte aparecerá reflejado en la barra de estado. Si hay clientes conectados y desea desconectar o cerrar el servidor, se le pedirá confirmación para forzar la desconexión de los clientes activos.
 
 \paragraph{Servidor de respaldo}
+Dado que esta aplicación es similar al servidor principal, pero con funcionalidades reducidas, diríjase a la sección \ref{manual:frontend} para leer su guía de uso.
 
 \paragraph{Unidad de citación}
