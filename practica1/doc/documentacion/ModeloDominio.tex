@@ -1,10 +1,39 @@
 Una vez elaborados los diagramas de casos de uso y los diagramas de clases de análisis, se procede a elaborar un modelo de dominio o modelo de conocimiento.
 
-En dicho modelo se representan las clases y relaciones que pueden extraerse del dominio del sistema, es decir, se modelan las clases y relaciones que aparecen en la especificación de requisitos de las secciones \ref{requisitosIniciales} y \ref{requisitos-detallados}.
+En dicho modelo se representan las clases y relaciones que pueden extraerse del dominio del sistema, es decir, se modelan las clases cuya única responsabilidad es la de mantener el conocimiento del dominio del sistema. Dichas clases son las clases que se identificaron en el diagrama de clases de análisis. añadiéndoles más detalles, como atributos. 
 
-Así, según esta especificación de requisitos, se han modelado las siguientes clases de conocimiento: 
+Así, según la especificación de requisitos de las secciones \ref{requisitosIniciales} y \ref{requisitos-detallados}, se han modelado las siguientes clases de conocimiento, junto con sus relaciones: 
 
 \begin{milista}
-	\item 
+	\item \textbf{Usuario:} es la clase que representa los diferentes usuarios que pueden hacer uso del sistema de salud. Además, de dicha clase heredan los diferentes usuarios, como son los médicos, administrador y citador. Por esta razón, como se explicará posteriormente (ver sección \ref{frontendDominio}), la clase \textit{Usuario} es abstracta y se establece una jerarquía de herencia con las clases \textit{Médico}, \textit{Administrador} y \textit{Citador}. De la misma forma, se han creado clases para representar los distintos tipos de médico: cabecera, pediatra y especialista.
+	\item \textbf{Sesión:} es la clase encargada de almacenar toda la información sobre las sesiones que se inicien en el sistema.
+	\item \textbf{CentroSalud:} representa el centro de salud donde trabajan los diferentes usuarios y el centro de salud al que pertenecen los distintos beneficiarios. 
+	\item \textbf{Beneficiario:} es la clase encargada de almacenar toda la información sobre cada uno de los beneficiarios que pueden pedir cita en el sistema de salud.
+	\item \textbf{Dirección:} esta clase se decidió añadir para almacenar información sobre la dirección de un beneficiario, para no propagar todo este conocimiento a la clase anterior. 
+	\item \textbf{PeriodoTrabajo:} esta clase representa las horas de un día en las que un médico trabaja.
+	\item \textbf{Sustitución:} se encarga de almacenar toda la información referente a la sustitución que realiza un médico.
+	\item \textbf{Cita:} es la clase que representa las citas que se van tramitando para los distintos beneficiarios del sistema de salud.
+	\item \textbf{Volante:} almacena la información referente a los volantes que un médico emite para un beneficiario.
+	\item \textbf{EntradaLog:} por la especificación de requisitos, se debe mantener un histórico de todas las acciones realizadas en el sistema. Por tanto, esta es la clase que almacena información sobre quién, cuándo y qúe acción se ha realizado.
 \end{milista}
+
+En cuanto a las relaciones entre las clases anteriores, se han modelado las siguientes: 
+
+\begin{milista}
+	\item Una sesión se relaciona con un usuario, que es el que se identifica e inicia sesión en el sistema. 
+	\item Un usuario se relacion con un centro de salud, que es el que tiene asignado y donde trabaja.
+	\item Un médico tiene 0 o más periodos de trabajo, para representar los diferentes días y horas en los que trabaja. Al crearse un médico, puede ser que no se introduzca ningún periodo de trabajo e introducirse posteriormente, por eso la cardinalidad 0.
+	\item Una sustución se relaciona con dos médicos: uno de ellos es el que se quiere sustituir y el otro es el sustituido. 
+	\item Una cita se relaciona con el médico, ya que cada cita la atiende un médico. Además, un médico puede tener 0 o varias citas.
+	\item Al aplicar el patrón \textbf{Estado}, como se detalla en la sección \ref{frontendDominio}, un médico tiene asociado un tipo de médico.
+	\item Una cita corresponde a un beneficiario, pero un beneficiario puede tener 0 o más citas.
+	\item Un volante está relacionado con un médico emisor, un médico receptor y un beneficiario. Además, un beneficiario puede tener 0 o más volantes.
+	\item Un beneficiario tiene un médico asignado, de diferente tipo según su edad.
+	\item Un beneficiario tiene asignado un centro de salud donde pedir cita.
+	\item Un beneficiario se relaciona con una dirección.
+	\item La clase \textit{EntradaLog} utiliza la clase \textit{Usuario} para consultar el nombre de usuario que ha realizado la acción en el sistema. 
+\end{milista}
+
+Este modelo de dominio, con las clases y relaciones comentadas se puede consultar en el \diagrama{frontend}{clases}{Modelo de Dominio}.
+
 
