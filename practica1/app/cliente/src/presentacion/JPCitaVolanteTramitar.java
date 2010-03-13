@@ -265,7 +265,7 @@ public class JPCitaVolanteTramitar extends JPBase {
 				txtMedico.setName("txtMedico");
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		}
 	}
 	

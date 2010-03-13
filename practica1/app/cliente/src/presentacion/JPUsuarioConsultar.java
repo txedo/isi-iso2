@@ -408,7 +408,7 @@ public class JPUsuarioConsultar extends JPBase {
 				lblCorreoElectronico.setPreferredSize(new java.awt.Dimension(108, 15));
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		}
 	}
 	

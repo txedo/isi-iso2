@@ -19,6 +19,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.HoraNoSeleccionadaListener;
 import presentacion.auxiliar.HoraSeleccionadaListener;
 
@@ -131,7 +132,7 @@ public class JPCalendarioConsultar extends javax.swing.JPanel implements IConsta
 				lblHoras.setPreferredSize(new java.awt.Dimension(40, 16));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(null, "Error", e.getMessage());
 		}
 	}
 	

@@ -5,6 +5,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
+
+import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.OperacionCambiadaEvent;
 import presentacion.auxiliar.OperacionCambiadaListener;
 import presentacion.auxiliar.OperacionesInterfaz;
@@ -92,7 +94,7 @@ public class JPVolantes extends JPBase {
 				}
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		}
 	}
 	

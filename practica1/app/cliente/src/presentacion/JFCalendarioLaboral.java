@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.WindowConstants;
 import javax.swing.event.EventListenerList;
 
+import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.VentanaCerradaListener;
 
 import com.cloudgarden.layout.AnchorConstraint;
@@ -108,7 +109,7 @@ public class JFCalendarioLaboral extends javax.swing.JFrame {
 			}
 			pack();
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(this, "Error", e.getLocalizedMessage());
 		}
 	}
 	

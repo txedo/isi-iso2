@@ -12,7 +12,7 @@ public class ConfiguracionCliente {
 		ipFrontend = "127.0.0.1";
 		puertoFrontend = 2995;
 	}
-	
+		
 	public ConfiguracionCliente(String ipFrontend, int puertoFrontend) {
 		this.ipFrontend = ipFrontend;
 		this.puertoFrontend = puertoFrontend;

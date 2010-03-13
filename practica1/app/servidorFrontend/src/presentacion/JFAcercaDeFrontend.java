@@ -49,7 +49,7 @@ public class JFAcercaDeFrontend extends javax.swing.JFrame {
 		try {
 			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(null, "Error", e.getMessage());
 		}
 	}
 
@@ -138,7 +138,7 @@ public class JFAcercaDeFrontend extends javax.swing.JFrame {
 			});
 			pack();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
 		}
 	}
 	

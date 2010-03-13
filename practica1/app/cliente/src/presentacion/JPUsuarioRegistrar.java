@@ -336,7 +336,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 				txtCorreoElectronico.setName("txtCorreoElectronico");
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		}
 	}
 	

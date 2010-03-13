@@ -45,7 +45,7 @@ public class JFConfigRespaldo extends javax.swing.JFrame {
 		try {
 			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
 		}
 	}
 
@@ -168,7 +168,7 @@ public class JFConfigRespaldo extends javax.swing.JFrame {
 			pack();
 			this.setSize(237, 237);
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(this, "Error", e.getMessage());
 		}
 	}
 	

@@ -471,7 +471,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 			btnEliminar.setEnabled(false);
 			btnEliminar.setName("btnEliminar");
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		}
 	}
 

@@ -230,7 +230,7 @@ public class JPSustitucionEstablecer extends JPBase {
 				});
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		}
 	}
 

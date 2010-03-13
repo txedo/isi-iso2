@@ -186,7 +186,7 @@ public class JPCitaTramitar extends JPBase {
 				lblMedico.setPreferredSize(new java.awt.Dimension(99, 16));
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Dialogos.mostrarDialogoError(getFrame(), "Error", e.getMessage());
 		}
 	}
 
