@@ -162,6 +162,7 @@ public class JFPrincipal extends javax.swing.JFrame {
 						menuitemAcercaDe = new JMenuItem();
 						jMenu4.add(menuitemAcercaDe);
 						menuitemAcercaDe.setText("Acerca de...");
+						menuitemAcercaDe.setName("mniAcercaDe");
 						menuitemAcercaDe.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
 								menuitemAcercaDeActionPerformed(evt);

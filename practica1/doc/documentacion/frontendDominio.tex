@@ -1,4 +1,4 @@
-\paragraph{Capa de dominio}
+\paragraph{Capa de dominio} \label{frontendDominio}
 
 Una de las primeras decisiones tomadas fue la de dividir esta capa en un paquete de conocimiento y en otro de control. En el primero de ellos se encuentran todas las clases del modelo de dominio (además de algunas enumeraciones e interfaces con constantes), que son aquellas clases cuya única responsabilidad es la de mantener información. \\
 \indent Por otro lado, en el paquete de control se han colocado todas las clases que se encargan de gestionar las clases de conocimiento y las comunicaciones con la capa de persistencia, presentación y con la unidad de citación (a través de la capa de comunicaciones). Sin embargo, para cumplir con el principio de mínimo acoplamiento y máxima cohesión, estos \textit{gestores} agrupan responsabilidades que están relacionadas con la gestión de una clase del modelo de conocimiento. Por ejemplo, para gestionar la clase de conocimiento \textit{Beneficiario}, se ha creado la clase \textit{GestorBeneficiarios}, cuyas responsabilidades son consultar un beneficiario, crearlo, etc. \\

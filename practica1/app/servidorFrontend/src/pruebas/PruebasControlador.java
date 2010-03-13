@@ -54,7 +54,6 @@ public class PruebasControlador extends UISpecTestCase {
 	}
 	
 	public void tearDown() {
-		// No se necesita código de finalización 
 	}
 	
 	/** Pruebas del controlador */
