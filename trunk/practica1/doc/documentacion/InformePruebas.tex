@@ -1,4 +1,4 @@
-Las pruebas se han diseñado siguiendo el modelo en V de la Figura \ref{fig:v-model}, de tal modo que se han realizado pruebas unitarias (funcionamiento de las clases), pruebas de integración (interacción entre objetos), pruebas de sistema (comunicación entre subsistemas) y pruebas de aceptación (casos de uso o funcionalidades del sistema), basándose en una combinación de los enfoques de \textit{caja negra} y \textit{caja blanca}, tratando de maximizar la cobertura de instrucciones, considerando el 90\% de cobertura como aceptable. \\
+Las pruebas se han diseñado siguiendo el modelo en V de la Figura \ref{fig:v-model}, de tal modo que se han realizado pruebas unitarias (funcionamiento de las clases), pruebas de integración (interacción entre objetos), pruebas de sistema (comunicación entre subsistemas) y pruebas de aceptación (casos de uso o funcionalidades del sistema), basándose en una combinación de los enfoques de \textit{caja negra} y \textit{caja blanca}, tratando de maximizar la cobertura de instrucciones, considerando el 90\% (aproximadamente) de cobertura como aceptable. \\
 \indent Sin embargo, como se muestra en el informde de cobertura (ver Tabla \ref{tb:pruebas}), existen clases en las que no se alcanza dicho umbral debido a que existen ciertos bloques correspondientes al tratamiento de excepciones que no se han forzado en las pruebas. Dichas excepciones estarían relacionadas con problemas de integridad e inconsistencias en las bases de datos, no pudiéndose dar en éstas, debido a que el sistema obliga a una correcta inserción de datos. De todos modos, si por causas externas al sistema (por ejemplo, corrupción física de los datos) se diesen dichas excepciones, el sistema las tratará y notificará debidamente.
 
 \imagen{./imagenes/modeloV}{0.7}{Modelo en V}{fig:v-model}
@@ -41,7 +41,7 @@ A continuación, se incluye una tabla que resume todos los casos de prueba ejecut
 
 \begin{longtable}{| c | c | c | c | c |}
 \hline
-\multicolumn{4}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{SUBSISTEMA: Servidor front-end (X casos de prueba)}} \\
+\multicolumn{4}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{SUBSISTEMA: Servidor front-end (70 casos de prueba)}} \\
 \hline
 \multicolumn{4}{c}{} \\
 \hline
@@ -67,7 +67,7 @@ Comunicaciones & 94.6 & 1029 & 1088 \\
 \hline
 \multicolumn{4}{c}{} \\
 \hline
-\multicolumn{4}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{SUBSISTEMA: Servidor de respaldo (X casos de prueba)}} \\
+\multicolumn{4}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{SUBSISTEMA: Servidor de respaldo (12 casos de prueba)}} \\
 \hline
 \multicolumn{4}{c}{} \\
 \hline
@@ -100,3 +100,17 @@ Comunicaciones & 96 & 460 & 479 \\
 \caption{Informe de cobertura de los subsistemas} 
 \label{tb:pruebas}
 \end{longtable}
+
+Como se puede apreciar en el informe, en algunos paquetes se obtiene una cobertura que no está próxima al 90\%. Dichos paquetes son:
+
+\begin{milista}
+	\item \textbf{Servidor front-end:} en el paquete \textit{Dominio.control}, la cobertura alcanzada disminuye en las siguientes clases:
+		\begin{itemize}
+			\item \textit{ServidorFrontend}: como se comentó en la sección \ref{frontendDominio}, esta clase es una fachada del servidor front-end, por lo que en ella se deben capturar y tratar todas las excepciones que puedan ocurrir. Pero, como se comentá al inicio de esta sección, no todas las excepciones se han forzado con las pruebas, por lo que varios bloques de tratamiento no se prueban.
+			\item \textit{ControladorFrontend}: por la misma razón, la cobertura en esta clase es más baja, debido al tratamiento de algunas excepciones que no se fuerzan.
+		\end{itemize}
+	\item \textbf{Servidor de respaldo:} en el paquete \textit{Dominio}, la cobertura alcanzada disminuye en la siguiente clase:
+		\begin{itemize}
+			\item \textit{Main}: ..................
+		\end{itemize}
+\end{milista}

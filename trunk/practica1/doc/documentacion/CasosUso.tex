@@ -19,7 +19,8 @@ Por otra parte, según la especifiación de requisitos, se han extraido los siguie
 	\item \textbf{Eliminar Usuario:} este caso de uso, que puede ser ejecutado por el administrador del sistema, representa la funcionalidad para eliminar un usuario registrado en el sistema.
 	\item \textbf{Tramitar Cita:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para registrar una cita de un beneficiario con su médico. En el supuesto de que el beneficiario que desea pedir la cita no exista en el sistema, se podrá registrar. Además, se puede tramitar una cita para un volante, siempre que el beneficiario posea un volante para un especialista.
 	\item \textbf{Consultar citas:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para poder consultar las citas de un beneficiario o de un médico.
-		\item \textbf{Anular cita:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para poder anular una cita de un beneficiario. Se incluye la funcionalidad del caso de uso \textit{Consultar citas beneficiario}, pues primero se consultan todas las citas de ese beneficiario y después se anula la cita que dicho beneficiario desee.
+	\item \textbf{Consultar citas propias:} este caso de uso, que puede ser ejecutado por un médico del sistema, representa la funcionalidad para poder consultar las citas del médico que ha iniciado sesión en el sistema. 
+	\item \textbf{Anular cita:} este caso de uso, que puede ser ejecutado por el administrador o el citador del sistema, representa la funcionalidad para poder anular una cita de un beneficiario. Se incluye la funcionalidad del caso de uso \textit{Consultar citas beneficiario}, pues primero se consultan todas las citas de ese beneficiario y después se anula la cita que dicho beneficiario desee.
 	\item \textbf{Emitir Volante:} este caso de uso reperesenta la funcionalidad de emisión de volantes para un beneficiario por parte de un médico. 
 	\item \textbf{Establecer Sustituto:} este caso de uso, que puede ser ejecutado por el administrador del sistema, representa la funcionalidad para asignar un médico sustituto a otro médico.
 	\item \textbf{Actualizar Ventanas:} este caso de uso reperesenta la funcionalidad para actualizar la interfaz gráfica del subsistema cliente cuando se recibe una notificación desde el servidor. La interfaz gráfica se actualiza si la operación que se ha notificado desde el servidor afecta a la ventana que se está mostrando al usuario. 
@@ -70,7 +71,8 @@ En cuanto a los casos de uso, aparecen los mismos que en el subsistema anterior,
 
 \begin{milista}
 	\item \textbf{Enviar Petición:} este caso de uso representa la funcionalidad para enviar una operación al servidor de respaldo, para que se ejecute en la base de datos de respaldo.
-	\item \textbf{Actualizar Estado:} ............
+	\item \textbf{Actualizar Estado:} este caso de uso representa la funcionalidad para guardar en la base de datos el resultado de las operaciones hechas por los usuarios, mostrarlas en la ventana principal del servidor front-end y enviárselas al servidor de respaldo para que las muestre en su ventana. Todos los casos de uso del servidor front-end incluyen la funcionalidad de este caso de uso, pero no se ha representado en el diagrama para facilitar la legibilidad.
+
 \end{milista}
 
 Este diagrama de casos de uso puede consultarse en el \diagrama{frontend}{casosUso}{Casos de Uso}.
@@ -83,7 +85,7 @@ En cuanto a los casos de uso, en el servidor de respaldo sólo se definen dos cas
 
 \begin{milista}
 	\item \textbf{Ejecutar Petición:} este caso de uso representa la funcionalidad para recibir una operación del servidor front-end, ejecutarla en la base de datos de respaldo y devolver una respuesta al servidor front-end.
-	\item \textbf{Actualizar Estado:} ............
+	\item \textbf{Actualizar Estado:} este caso de uso representa la funcionalidad para guardar en la base de datos el resultado de las operaciones recibidas del servidor front-end y mostrarlas en la ventana principal del servidor de respaldo.
 \end{milista}
 
 Este diagrama de casos de uso puede consultarse en el \diagrama{respaldo}{casosUso}{Casos de Uso}.

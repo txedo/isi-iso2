@@ -1,0 +1,108 @@
+A partir del diagrama de casos de uso de cada subsistema, se crean los diagramas de clases de análisis, para representar, a muy alto nivel, los requisitos funcionales de cada caso de uso y las clases de conocimiento involucradas.
+
+A continuación, se listan y referencian los diagramas de clases de análisis de cada subsistema, correspondientes a cada uno de los casos de uso. En los diferentes diagrmas está comentado cuál es el flujo de eventos que se produce en cada uno de ellos.
+
+Sin embargo, hay dos gestores que aparecen en la mayoría de los diagramas de clases de
+análisis que merecen ser destacados: 
+
+\begin{milista}
+\item \textbf{Gestor de conexiones de bases de datos:} es una clase \textit{Controller} que servirá para mantener
+sincronizadas las bases de datos utilizadas por el sistema, de manera que
+cuando haya que hacer una inserción/modificación/eliminación, se haga en todas
+las bases de datos, y si una operación falla se siga manteniendo la
+sincronización, lo cual será imprescindible para el correcto funcionamiento
+del sistema. En este caso, el gestor accederá a dos clases:
+\begin{itemize}
+	\item \textit{AgenteFrontend}, que es la interfaz (clase \textit{Boundary}) de acceso a la base de
+	datos principal.
+	\item \textit{ProxyServidorRespaldo}, que se comunica con el servidor de
+	respaldo para poder utilizar la base de datos secundaria. Por ello, es un \textit{Boundary} para el servidor de respaldo.
+\end{itemize}
+	
+\item \textbf{Gestor de conexiones de estado:} es una clase \textit{Controller} que servirá para que los mensajes
+de estado generados por el servidor front-end (principalmente después de
+que un usuario realice una operación) puedan ser procesados por todas las
+clases que los quieran recibir. En este caso, cada mensaje será utilizado por
+tres clases:
+\begin{itemize}
+	\item \textit{GestorConexionesBD}, para guardar el mensaje en la base
+	de datos y así mantener un registro de todas las operaciones realizadas,
+	como se pide en los requisitos. Esta clase es el gestor anterior.
+	\item \textit{JFServidorFrontend}, para mostrar el mensaje en la ventana
+	principal del servidor front-end, por lo que es una clase \textit{Boundary}.
+	\item \textit{ProxyServidorRespaldo}, para enviar el mensaje al servidor
+	de respaldo y que éste lo muestre en su ventana	principal. Com se vió, dicha clase es un \textit{Boundary}.
+\end{itemize}
+	
+\end{milista}
+
+\subsubsection{Unidad de citación}
+
+Listado de diagramas de clases de análisis, para cada caso de uso:
+
+\begin{milista}
+	\item Clases de análisis para el caso de uso \textit{Iniciar sesión}: ver \diagrama{cliente}{análisis}{Análisis - Iniciar sesión}.
+	\item Clases de análisis para el caso de uso \textit{Cerrar sesión}: ver \diagrama{cliente}{análisis}{Análisis - Cerrar sesión}.
+	\item Clases de análisis para el caso de uso \textit{Registrar beneficiario}: ver \diagrama{cliente}{análisis}{Análisis - Registrar beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Consultar beneficiario}: ver \diagrama{cliente}{análisis}{Análisis - Consultar beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Modificar beneficiario}: ver \diagrama{cliente}{análisis}{Análisis - Modificar beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Eliminar beneficiario}: ver \diagrama{cliente}{análisis}{Análisis - Eliminar beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Registrar usuario}: ver \diagrama{cliente}{análisis}{Análisis - Registrar usuario}.
+	\item Clases de análisis para el caso de uso \textit{Consultar usuario}: ver \diagrama{cliente}{análisis}{Análisis - Consultar usuario}.
+	\item Clases de análisis para el caso de uso \textit{Modificar usuario}: ver \diagrama{cliente}{análisis}{Análisis - Modificar usuario}.
+	\item Clases de análisis para el caso de uso \textit{Eliminar usuario}: ver \diagrama{cliente}{análisis}{Análisis - Eliminar usuario}.
+	\item Clases de análisis para el caso de uso \textit{Registrar médico}: ver \diagrama{cliente}{análisis}{Análisis - Registrar médico}.
+	\item Clases de análisis para el caso de uso \textit{Consultar médico}: ver \diagrama{cliente}{análisis}{Análisis - Consultar médico}.
+	\item Clases de análisis para el caso de uso \textit{Modificar médico}: ver \diagrama{cliente}{análisis}{Análisis - Modificar médico}.
+	\item Clases de análisis para el caso de uso \textit{Tramitar cita}: ver \diagrama{cliente}{análisis}{Análisis - Tramitar cita}.
+	\item Clases de análisis para el caso de uso \textit{Tramitar cita con volante}: ver \diagrama{cliente}{análisis}{Análisis - Tramitar cita con volante}.
+	\item Clases de análisis para el caso de uso \textit{Consultar citas de beneficiario}: ver \diagrama{cliente}{análisis}{Análisis - Consultar citas de beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Consultar citas de médico}: ver \diagrama{cliente}{análisis}{Análisis - Consultar citas de médico}.
+	\item Clases de análisis para el caso de uso \textit{Consultar citas propias}: ver \diagrama{cliente}{análisis}{Análisis - Consultar citas propias}.
+	\item Clases de análisis para el caso de uso \textit{Anular cita}: ver \diagrama{cliente}{análisis}{Análisis - Anular cita}.
+	\item Clases de análisis para el caso de uso \textit{Emitir volante}: ver \diagrama{cliente}{análisis}{Análisis - Emitir volante}.
+	\item Clases de análisis para el caso de uso \textit{Establecer sustituto}: ver \diagrama{cliente}{análisis}{Análisis - Establecer sustituto}.
+	\item Clases de análisis para el caso de uso \textit{Actualizar ventanas}: ver \diagrama{cliente}{análisis}{Análisis - Actualizar ventanas}.
+\end{milista}
+
+\subsubsection{Servidor front-end}
+
+Listado de diagramas de clases de análisis, para cada caso de uso:
+
+\begin{milista}
+	\item Clases de análisis para el caso de uso \textit{Iniciar sesión}: ver \diagrama{frontend}{análisis}{Análisis - Iniciar sesión}.
+	\item Clases de análisis para el caso de uso \textit{Cerrar sesión}: ver \diagrama{frontend}{análisis}{Análisis - Cerrar sesión}.
+	\item Clases de análisis para el caso de uso \textit{Registrar beneficiario}: ver \diagrama{frontend}{análisis}{Análisis - Registrar beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Consultar beneficiario}: ver \diagrama{frontend}{análisis}{Análisis - Consultar beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Modificar beneficiario}: ver \diagrama{frontend}{análisis}{Análisis - Modificar beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Eliminar beneficiario}: ver \diagrama{frontend}{análisis}{Análisis - Eliminar beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Registrar usuario}: ver \diagrama{frontend}{análisis}{Análisis - Registrar usuario}.
+	\item Clases de análisis para el caso de uso \textit{Consultar usuario}: ver \diagrama{frontend}{análisis}{Análisis - Consultar usuario}.
+	\item Clases de análisis para el caso de uso \textit{Modificar usuario}: ver \diagrama{frontend}{análisis}{Análisis - Modificar usuario}.
+	\item Clases de análisis para el caso de uso \textit{Eliminar usuario}: ver \diagrama{frontend}{análisis}{Análisis - Eliminar usuario}.
+	\item Clases de análisis para el caso de uso \textit{Registrar médico}: ver \diagrama{frontend}{análisis}{Análisis - Registrar médico}.
+	\item Clases de análisis para el caso de uso \textit{Consultar médico}: ver \diagrama{frontend}{análisis}{Análisis - Consultar médico}.
+	\item Clases de análisis para el caso de uso \textit{Modificar médico}: ver \diagrama{frontend}{análisis}{Análisis - Modificar médico}.
+	\item Clases de análisis para el caso de uso \textit{Eliminar médico}: ver \diagrama{frontend}{análisis}{Análisis - Eliminar médico}.
+	\item Clases de análisis para el caso de uso \textit{Tramitar cita}: ver \diagrama{frontend}{análisis}{Análisis - Tramitar cita}.
+	\item Clases de análisis para el caso de uso \textit{Tramitar cita con volante}: ver \diagrama{frontend}{análisis}{Análisis - Tramitar cita con volante}.
+	\item Clases de análisis para el caso de uso \textit{Consultar citas de beneficiario}: ver \diagrama{frontend}{análisis}{Análisis - Consultar citas de beneficiario}.
+	\item Clases de análisis para el caso de uso \textit{Consultar citas de médico}: ver \diagrama{frontend}{análisis}{Análisis - Consultar citas de médico}.
+	\item Clases de análisis para el caso de uso \textit{Consultar citas propias}: ver \diagrama{frontend}{análisis}{Análisis - Consultar citas propias}.
+	\item Clases de análisis para el caso de uso \textit{Anular cita}: ver \diagrama{frontend}{análisis}{Análisis - Anular cita}.
+	\item Clases de análisis para el caso de uso \textit{Emitir volante}: ver \diagrama{frontend}{análisis}{Análisis - Emitir volante}.
+	\item Clases de análisis para el caso de uso \textit{Establecer sustituto}: ver \diagrama{frontend}{análisis}{Análisis - Establecer sustituto}.
+	\item Clases de análisis para el caso de uso \textit{Actualizar ventanas}: ver \diagrama{frontend}{análisis}{Análisis - Actualizar ventanas}.
+	\item Clases de análisis para el caso de uso \textit{Enviar petición}: ver \diagrama{frontend}{análisis}{Análisis - Enviar petición}.
+	\item Clases de análisis para el caso de uso \textit{Actualizar estado}: ver \diagrama{frontend}{análisis}{Análisis - Actualizar estado}.
+\end{milista}
+
+\subsubsection{Servidor de respaldo}
+
+Listado de diagramas de clases de análisis, para cada caso de uso:
+
+\begin{milista}
+	\item Clases de análisis para el caso de uso \textit{Ejecutar petición}: ver \diagrama{frontend}{análisis}{Análisis - Ejecutar petición}.
+	\item Clases de análisis para el caso de uso \textit{Actualizar estado}: ver \diagrama{frontend}{análisis}{Análisis - Actualizar estado}.
+\end{milista}
+
