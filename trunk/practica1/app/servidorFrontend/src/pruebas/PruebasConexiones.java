@@ -15,7 +15,6 @@ import comunicaciones.GestorConexionesBD;
 import comunicaciones.GestorConexionesLog;
 import comunicaciones.ProxyServidorRespaldo;
 import dominio.conocimiento.ITiposMensajeLog;
-import junit.framework.TestCase;
 
 /**
  * Pruebas de los Gestores de conexiones de base de datos y de estado del
