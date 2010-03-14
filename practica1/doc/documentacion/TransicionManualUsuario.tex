@@ -29,7 +29,7 @@ Una vez descargado, ejecute el archivo, elija el directorio de instalación y sig
 
 Ese es el directorio de instalación por defecto de Java. Si en la instalación eligió otro diferente, debe introducir el que eligió al instalarlo.
 
-Tras esto, pruebe de nuevo a ejecutar "java -versión" en una ventana de comandos.
+Tras esto, pruebe de nuevo a ejecutar "`java -versión"' en una ventana de comandos.
 
 
 \paragraph{Servidor MySQL}
@@ -76,3 +76,77 @@ Por último, ponga el servidor a la escucha haciendo clic en \textit{Conectar}. C
 Dado que esta aplicación es similar al servidor principal, pero con funcionalidades reducidas, diríjase a la sección \ref{manual:frontend} para leer su guía de uso.
 
 \paragraph{Unidad de citación}
+Al ejecutar el fichero JAR correspondiente a la Unidad de Citación del sistema, obtenemos una ventana de inicio de sesión. En ella se escribirá el nombre de usuario y la contraseña. Además, si se hace clic en el botón \textit{Avanzado \textgreater \textgreater} aparecerán las opciones avanzadas (ver Figura \ref{fig:cliente-login}), donde podrá configurar la dirección IP y el puerto del servidor principal.
+
+\imagen{./imagenes/usermanual/cliente-login.png}{0.70}{Ventana de inicio de sesión}{fig:cliente-login}
+
+Una vez que ha iniciado la sesión correctamente, obtendrá una ventana con diferentes pestañas. Cada pestaña contiene una  lista de operaciones. Las pestañas, que corresponden a grupos de operaciones, y las listas de operaciones pueden variar en función del rol que desempeña el usuario en el sistema. Para ver una lista de los distintos roles y las operaciones que puede desempeñar cada uno diríjase a la sección \ref{operaciones-rol}.
+
+A continuación se muestran las distintas operaciones que se pueden realizar con la aplicación:
+\begin{milista}
+	\item \textbf{Registrar un beneficiario} (ver Figura \ref{fig:cliente-registrarbeneficiario}). Para poder realizar operaciones con beneficiarios (p.e. tramitar una cita o emitir un volante) es necesario que previamente haya sido dado de alta en el sistema. Este panel es el que permite realizar dicha acción. Como se indica, los campos marcados con * son obligatorios y el resto opcionales. Para rellenar los datos es necesario ceñirse a determinadas normas:
+	\begin{milista}
+		\item El NIF (Número de Identificacion Fiscal) debe estar compuesto por 9 dígitos (incluyendo el cero del principio) y una letra.
+		\item El NSS (Número de Seguridad Social) debe constar de 12 dígitos.
+		\item El nombre, apellidos, domicilio, localidad y provincia deben ser cadenas válidas.
+		\item El código postal debe constar de 5 dígitos que expresen la provincia y el municipio.
+		\item El correo electrónico debe seguir un formato válido.
+		\item Los números de telefono fijo y móvil deben constar de 9 dígitos y empezar por 9 y 6 respectivamente.
+		\item Seleccionar un centro de saludo. La lista de centros de salud es extraída directamente de la base de datos del servidor.
+	\end{milista}
+	
+	Si en algún campo no se sigue el formato especificado se mostrará el mensaje de error correspondiente permitiendo al usuario que rectifique dicho dato. Sólo se podrá registrar el beneficiario cuando se hayan rellenado al menos todos los campos obligatorios y de forma correcta. El médico asignado al beneficiario se hace de forma aleatoria, pero siempre entre médicos que pertenecen al centro seleccionado en este formulario.
+	
+	Cabe destacar que los beneficiarios no son usuarios del sistema y, por consiguiente, no podrán iniciar sesión en él.
+	\imagen{./imagenes/usermanual/cliente-registrarbeneficiario.png}{0.50}{Ventana para registrar un beneficiario}{fig:cliente-registrarbeneficiario}
+	
+	\item \textbf{Consultar, editar o eliminar un beneficiario} (ver Figura \ref{fig:cliente-consultarbeneficiario}). Las operaciones de consulta, edición y supresión de un beneficiario únicamente pueden llevarse acabo sobre beneficiarios que previamente hayan sido dados de alta en el sistema. Para llevarlas acabo, basta con seleccionar el tipo de identificación sobre el cual vamos a realizar la búsqueda (NIF o NSS) y escribir dicho número en la caja de texto habilitada para tal fin. A continuación se presionará el botón \textit{Buscar}. Si el usuario no está dado de alta en el sistema se mostrará un mensaje de error; si por el contrario encuentra dado de alta en el sistema, se obtendrá un mensaje de verificación y se mostrarán sus datos.
+	
+	En este momento únicamente es posible visualizar su información. Para poder editarla o eliminar al beneficiario es necesario marcar la casilla \textit{Habilitar edición}. Una vez marcada, se habilitarán las cajas de texto susceptibles de edición, el botón \textit{Guardar cambios} y el botón \textit{Eliminar beneficiario}, permitiendo al usuario que realice las acciones pertinentes. A la hora de editar los cambios es necesario seguir el mismo tipo de los datos que cuando se registró al beneficiario. Nótese que hay campos como el NIF y el NSS que no son editables. Si por consecuencia de un error fuese necesario editarlos, se recomienda eliminar al beneficiario y volverlo a crear de nuevo.
+	\imagen{./imagenes/usermanual/cliente-consultarbeneficiario.png}{0.50}{Ventana para consultar, editar y eliminar un beneficiario}{fig:cliente-consultarbeneficiario}
+	
+	\item \textbf{Registrar un usuario (administrador, citador o médico)} (ver Figura \ref{fig:cliente-registrarusuario}). El procedimiento para registrar un usuario es similar al de registrar beneficiarios. La diferencia radica en que se debe especificar un nombre de usuario, una contraseña (y su confirmación) de al menos 8 caracteres alfanuméricos y el tipo de usuario. Esta información adicional es necesaria ya que este tipo de usuarios forman parte del conjunto de usuarios que pueden iniciar sesión en el sistema. Los distintos tipos de usuario son administradores, citadores y médicos y, dentro de los médicos, pueden ser de cabecera, pediatras o especialistas. Además, si se trata de un médico especialista hay que proporcionar su especialidad. Por último, en caso de que el usuario sea de tipo médico, será necesario configurar su horario laboral para que se puedan llevar a cabo los procesos de tramitación de citas y establecimiento de sustitutos.
+	
+		\imagen{./imagenes/usermanual/cliente-registrarusuario.png}{0.50}{Ventana para registrar un usuario (administrador, citador o médico)}{fig:cliente-registrarusuario}
+		
+	El horario laboral se puede configurar de un modo uniforme para los cinco días de la semana (calendario base) o puede variar de un día a otro. Como se puede observar en la figura \ref{fig:cliente-calendariolaboral}, las jornadas de trabajo se configuran por horas, pudiendo ser horas consecutivas para formar una jornada intensiva u horas no consecutivas para formar una jornada partida. Además, el botón \textit{Propagar selección} nos permite configurar los cinco días de la semana tal y como estamos configurando el día actual.
+	
+		\imagen{./imagenes/usermanual/cliente-calendariolaboral.png}{0.50}{Ventana de configuración del calendario laboral}{fig:cliente-calendariolaboral}
+	
+	\item \textbf{Consultar, editar o eliminar un usuario (administrador, citador o médico)} (ver Figura \ref{fig:cliente-consultarusuario}). Este panel nos permite la consulta, edición o supresión de un usuario. Para buscarlo será necesario proporcionar su NIF. Al igual que en el caso del registro, la única diferencia que aporta este panel con respecto al de consulta de beneficiarios es la necesidad de indicar el nombre de usuario, la contraseña, el tipo de usuario y, en caso de tratarse de un médico, el calendario laboral.
+	
+	Tenga en cuenta que si trata de eliminar un médico que ha sido asignado a beneficiarios o tiene citas pendientes, de forma automática se asignará un nuevo médico -del mismo centro de salud- a dichos beneficiarios y las citas serán eliminadas.
+	
+	Además, si elimina un usuario que en ese momento tiene una sesión activa, dicho usuario será desconectado automáticamente del sistema como medida de seguridad.
+	
+	\imagen{./imagenes/usermanual/cliente-consultarusuario.png}{0.50}{Ventana para consultar, editar y eliminar un usuario (administrador, citador o médico)}{fig:cliente-consultarusuario}
+	
+	\item \textbf{Emitir un volante} (ver Figura \ref{fig:cliente-emitirvolante}). Cualquier médico puede emitir un volante a un beneficiario para un especialista determinado. Para realizar dicha acción, únicamente deberá introducir el NIF o NSS del beneficiario, que debe haber sido de alta previamente en el sistema, y seleccionar la especialidad requerida. La lista de especialistas se irá actualizando conforme se vaya seleccionando una especialidad u otra. Por último, seleccione un especialista y emita el volante. El sistema de devolverá el número de identificación del volante y la fecha de caducidad del mismo. Facilite esta información al beneficiario para que posteriormente pueda tramitar la cita indicando el número identificador del volante.
+	
+	\imagen{./imagenes/usermanual/cliente-emitirvolante.png}{0.50}{Ventana para emitir volantes}{fig:cliente-emitirvolante}
+	
+	\item \textbf{Tramitar una cita} (ver Figura \ref{fig:cliente-tramitarcita}). Para tramitar una cita deberá introducir el NIF o el NSS del beneficiario, que una vez más debe haber sido dado de alta previamente en el sistema. A continuación deberá introducir un día del calendario en el que su médico asignado pase consulta. Para realizar esta acción tiene dos opciones: introducir la fecha a mano siguiendo un formato \textit{dd/mm/yyyy} o pulsando sobre el icono del calendario, donde únicamente aparecerán habilitados los días laborales del médico.
+	
+	Una vez que haya introducido un día válido se cargará la lista de horas en las que el médico puede atender al paciente. Nótese que las horas de color rojo corresponden a horas que ya han sido reservadas para otras citas y no podrán volver a seleccionarse. Si la caja de texto \textit{Médico} refleja un nombre distinto al del médico asignado para el beneficiario, significa que en la fecha y hora seleccionada hay programada una sustitución y dicho médico es quien realmente pasará la consulta.
+	
+	\imagen{./imagenes/usermanual/cliente-tramitarcita.png}{0.50}{Ventana para tramitar una cita}{fig:cliente-tramitarcita}
+	
+	\item \textbf{Tramitar una cita con volante} (ver Figura \ref{fig:cliente-tramitarcitavolante}). El funcionamiento es similar al panel de tramitar una cita normal. La única diferencia es que el beneficiario debe facilitar al usuario el número identificador del volante para poder llevar a cabo la operación.
+	
+	\imagen{./imagenes/usermanual/cliente-tramitarcitavolante.png}{0.50}{Ventana para tramitar una cita con volante}{fig:cliente-tramitarcitavolante}
+	
+	\item \textbf{Consultar o anular las citas de un beneficiario} (ver Figura \ref{fig:cliente-consultarcitasbeneficiarios}). Del mismo modo que el resto de operaciones que implican beneficiarios, el usuario deberá introducir el NIF o el NSS del beneficiario, que  debe haber sido dado de alta previamente en el sistema. Todas las citas pendientes que tenga el beneficiario serán mostradas en forma de tabla. Si además se desean ver las citas pasadas, es decir, el historial de citas del beneficiario, deberá pulsar el botón \textit{Ver histórico de citas}. Para eliminar una cita pendiente, selecciónela y pulse el botón \textit{Anular cita}.
+	
+\imagen{./imagenes/usermanual/cliente-consultarcitasbeneficiarios.png}{0.50}{Ventana para consultar y anular citas de un beneficiario}{fig:cliente-consultarcitasbeneficiarios}
+
+	\item \textbf{Consultar las citas de un médico} (ver Figura \ref{fig:cliente-consultarcitasmedicos}). Este panel funciona de forma similar al de \textit{Consultar o anular citas de un beneficiario} solo que en esta ocasión sirve para consultar las citas de un médico. Para poder ejecutar la operación basta con introducir el NIF del médico. Por defecto se muestran las citas pendientes. El botón \textit{Ver histórico de citas} tiene la misma funcionalidad que en el caso anterior.
+		\imagen{./imagenes/usermanual/cliente-consultarcitasmedicos.png}{0.50}{Ventana para consultar las citas de un médico}{fig:cliente-consultarcitasmedicos}
+	
+	\item \textbf{Consultar las citas propias del médico activo} (ver Figura \ref{fig:cliente-consultarcitaspropias}). La funcionalidad de consultar las citas de un médico no está disponible para ser llevada a cabo por un médico. Sin embargo, un médico sí puede consultar sus propias citas gracias a este panel. El botón \textit{Ver histórico de citas} tiene la misma funcionalidad que en los casos anteriores.	
+	\imagen{./imagenes/usermanual/cliente-consultarcitaspropias.png}{0.50}{Ventana para consultar las citas propias del médico con la sesión activa}{fig:cliente-consultarcitaspropias}
+	
+	\item \textbf{Establecer sustituciones} (ver Figura \ref{fig:cliente-sustitucion}). Es posible establecer periodos en los que un médico no pasará consulta y se le asignará un médico sustituto. El administrador deberá indicar el día en el que el médico desea ser sustituido así como el intervalo de horas de la sustitución. En este momento el sistema se encargará de buscar todos los médicos que podrían llevar a cabo la sustitución, que son aquellos que trabajen en el mismo centro y no les coincide su horario laboral con el del médico que va a ser sustituido. Por último, el administrador seleccionará un médico sustituto de la lista de posibles sustitutos y validará la operación.
+
+\imagen{./imagenes/usermanual/cliente-sustitucion.png}{0.50}{Ventana para establecer sustituciones}{fig:cliente-sustitucion}
+
+\end{milista}
