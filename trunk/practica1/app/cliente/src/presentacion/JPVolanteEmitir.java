@@ -264,16 +264,20 @@ public class JPVolanteEmitir extends JPBase {
 		// (puede ser null si ocurrió un error al buscar el beneficiario)
 		beneficiario = pnlBeneficiario.getBeneficiario();
 		if(beneficiario != null) {
-			for (int i=0; i<Especialidades.values().length; i++) 
-				valores[i] = Especialidades.values()[i].toString();
-			rellenarModeloComboBox(valores);
-			cbEspecialidad.setEnabled(true);
-			cbEspecialidad.setFocusable(true);
-			lstEspecialistas.setEnabled(true);
-			if (medicoBeneficiarioActualizado)
-				cbEspecialidad.setSelectedIndex(especialidadSeleccionada);
-			else
-				cbEspecialidad.setSelectedIndex(0);
+			if(beneficiario.getMedicoAsignado() == null) {
+				Dialogos.mostrarDialogoError(getFrame(), "Error", "No se puede emitir un volante para el beneficiario seleccionado\nporque no tiene ningún médico asignado.");
+			} else {
+				for (int i=0; i<Especialidades.values().length; i++) 
+					valores[i] = Especialidades.values()[i].toString();
+				rellenarModeloComboBox(valores);
+				cbEspecialidad.setEnabled(true);
+				cbEspecialidad.setFocusable(true);
+				lstEspecialistas.setEnabled(true);
+				if (medicoBeneficiarioActualizado)
+					cbEspecialidad.setSelectedIndex(especialidadSeleccionada);
+				else
+					cbEspecialidad.setSelectedIndex(0);
+			}
 		}
 	}
 	

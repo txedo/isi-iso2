@@ -68,7 +68,7 @@ CREATE TABLE beneficiarios (
 ) TYPE=InnoDB;
 
 CREATE TABLE direcciones (
-	   id INT NOT NULL AUTO_INCREMENT,
+       id INT NOT NULL AUTO_INCREMENT,
        nifBeneficiario CHAR(9) NOT NULL,
        domicilio VARCHAR(255) NOT NULL default '', 
        numero VARCHAR(255) NOT NULL default '',
@@ -119,21 +119,221 @@ CREATE TABLE sustituciones (
        FOREIGN KEY (nifSustituto) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
-INSERT INTO centros (nombre, direccion) VALUES ("Centro de Pruebas", "C/Mayor, n20");
-INSERT INTO usuarios VALUES ("11111111A", "admin", "d033e22ae348aeb5660fc2140aec35850c4da997", 0, "Admin", "Admin", "correo@correo.com", "", "666777888", 1);
-INSERT INTO usuarios VALUES ("22222222B", "admina", "d033e22ae348aeb5660fc2140aec35850c4da997", 0, "Admin2", "Admin2", "", "", "", 1);
-INSERT INTO centros (nombre, direccion) VALUES ("Otro centro", "C/Una");
-INSERT INTO usuarios VALUES ("11111111C", "citador", "ffd9b2d064e1527357af9f0a10015d9ef243430d", 1, "Citador", "Citador", "citador@gmail.com", "926112233", "626112233", 1);
-INSERT INTO usuarios VALUES ("12345678C", "cabecera", "dc0df8c0bb8431c0183c8600f527b8ac3ce8cb55", 2, "Cabecera", "Cabecera", "cabecera@yahoo.es", "926445566", "", 1);
-INSERT INTO usuarios VALUES ("12345679C", "medCabecera", "dc0df8c0bb8431c0183c8600f527b8ac3ce8cb55", 2, "Cabecera2", "Cabecera2", "", "", "678123123", 2);
-INSERT INTO tiposmedico (nifMedico, tipo) VALUES ("12345678C", 0);
-INSERT INTO tiposmedico (nifMedico, tipo) VALUES ("12345679C", 0);
-INSERT INTO usuarios VALUES ("12345678P", "pediatra", "4e709da3cdeb6f24bdae476f178cb1539ba93d31", 2, "Pediatra", "Pediatra", "pediatra@nada.com", "911222333", "", 1);
-INSERT INTO tiposmedico (nifMedico, tipo) VALUES ("12345678P", 1);
-INSERT INTO usuarios VALUES ("12345678E", "especialista", "c185fca5199a0e535100addcb696f3abc6e63861", 2, "Especialista", "Especialista", "especial@nada.com", "", "", 1);
-INSERT INTO tiposmedico VALUES ("12345678E", 2, "Neurología");
-INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia) VALUES ("12345678C", 9, 14, 2);
-INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia) VALUES ("12345678P", 9, 14, 2);
-INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia) VALUES ("12345678E", 9, 14, 2);
-INSERT INTO beneficiarios VALUES ("01233210A", "112233332211", "abcdef", "ghijkl", "", "1980-01-01", "900000000", "600000000", "12345678C", 1);
-INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp) VALUES ("01233210A", "calle prueba", "", "", "", "Ciudad Real", "Ciudad Real", 13003);
+INSERT INTO centros (nombre, direccion)
+   VALUES ("Hospital Central", "Ciudad Real, Calle Toledo, 24");
+INSERT INTO centros (nombre, direccion)
+   VALUES ("Centro de Salud de Toledo", "Toledo, Plaza Mayor, s/n");
+INSERT INTO centros (nombre, direccion)
+   VALUES ("Centro de Pediatría", "Albacete, Avenida Reyes Católicos, 35");
+
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("06941082A", "admin", "f865b53623b121fd34ee5426c792e5c33af8c227", 0, "Juan", "López Moreno", "juanlo10@gmail.com", "926119834", "646710882", 1);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("71221876E", "adminaux", "930ead6733e33fe8de50add8afcc4c37d90aa744", 0, "José", "Sánchez Ortiz", "jso789@yahoo.es", "923087119", "625101876", 3);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("38122740D", "citcr", "b5bee4977eb051ed7e5758e85bf2f237921e69a9", 1, "Gloria", "León Lara", "gloria67@yahoo.es", "921854710", "", 1);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("61851034P", "cit77", "3c36193c56eaa65af17e78ae79f96c1301e24c72", 1, "Arturo", "González Benito", "", "920761964", "630814275", 3);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("08231608F", "medpedro", "a9e08ac02a13ef12fa1a6f98a08f3baba1d59aaf", 2, "Pedro", "Romero García", "romerogarcia@hotmail.com", "", "606523189", 1);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("20145845H", "medcab30", "8ad691d0dbc114d4b765eac999f7703ca3c59d8d", 2, "Adolfo", "Gil Peinado", "", "", "689401326", 1);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("82589074C", "pedantonio", "094c412df5069afdea0b51169df1ce9de074bd46", 2, "Antonio", "Gómez Díaz", "antoniohosp@hotmail.com", "929141740", "683109532", 1);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("95103489R", "pedmari", "ac8d6edceb2060532ef79aa5caff7f2b7f1ec69f", 2, "María", "Serrano Martínez", "marimartin@gmail.com", "930129750", "", 1);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("06408517L", "trmjose50", "fdeae1d5465480e1db91e7c8678ecef08f06ecb2", 2, "José Luis", "López-Gil Rodríguez", "jllr50@terra.com", "", "", 1);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("15834012D", "cardio80", "3ba4aae94761c9338765c1f29c29f4f14495b198", 2, "Laura", "Ferrero Pérez", "lauracr@yahoo.es", "", "650217409", 1);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("54918531B", "neufelipe", "8f518d0cd639c07d909894a24b47dcc3963368d9", 2, "Felipe", "Martín Aranda", "", "950174310", "", 2);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("02195455T", "neubelen", "f48635b217a7c77aa425fbf2ab54a19d38d87b98", 2, "Belén", "Camacho Lara", "belcamacho@hotmail.com", "", "679128076", 2);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("49128574P", "pedjaime", "81757aff3f2b79cb321be82c2fd1936cb9035e75", 2, "Jaime", "Márquez Herrero", "", "", "", 3);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("60129589F", "pedpilar7", "bc5f5617acf65692ace640f54ff8a768664e15d2", 2, "Pilar", "Segura Moreno", "pilisegura@gmail.com", "924971008", "691330476", 3);
+
+INSERT INTO tiposmedico (nifMedico, tipo)
+   VALUES ("08231608F", 0);
+INSERT INTO tiposmedico (nifMedico, tipo)
+   VALUES ("20145845H", 0);
+INSERT INTO tiposmedico (nifMedico, tipo)
+   VALUES ("82589074C", 1);
+INSERT INTO tiposmedico (nifMedico, tipo)
+   VALUES ("95103489R", 1);
+INSERT INTO tiposmedico (nifMedico, tipo, especialidad)
+   VALUES ("06408517L", 2, "Traumatología");
+INSERT INTO tiposmedico (nifMedico, tipo, especialidad)
+   VALUES ("15834012D", 2, "Cardiología");
+INSERT INTO tiposmedico (nifMedico, tipo, especialidad)
+   VALUES ("54918531B", 2, "Neurología");
+INSERT INTO tiposmedico (nifMedico, tipo, especialidad)
+   VALUES ("02195455T", 2, "Neurología");
+INSERT INTO tiposmedico (nifMedico, tipo)
+   VALUES ("49128574P", 1);
+INSERT INTO tiposmedico (nifMedico, tipo)
+   VALUES ("60129589F", 1);
+
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("08231608F", 9, 14, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("08231608F", 9, 14, 1);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("08231608F", 9, 14, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("08231608F", 9, 14, 4);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("20145845H", 10, 12, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("20145845H", 16, 20, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("20145845H", 10, 12, 1);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("20145845H", 16, 20, 1);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("20145845H", 10, 12, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("20145845H", 16, 20, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("20145845H", 9, 14, 4);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("82589074C", 15, 19, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("82589074C", 15, 19, 1);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("82589074C", 15, 19, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("82589074C", 15, 19, 4);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("95103489R", 10, 13, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("95103489R", 10, 13, 1);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("95103489R", 12, 13, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("95103489R", 16, 20, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("95103489R", 9, 14, 4);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("06408517L", 10, 15, 1);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("06408517L", 10, 15, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("06408517L", 10, 15, 4);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("15834012D", 16, 20, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("15834012D", 10, 15, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("15834012D", 10, 15, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("15834012D", 16, 20, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("54918531B", 10, 13, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("54918531B", 17, 20, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("54918531B", 10, 13, 1);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("54918531B", 17, 20, 1);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("54918531B", 10, 13, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("54918531B", 17, 20, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("54918531B", 10, 13, 4);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("54918531B", 17, 20, 4);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("02195455T", 16, 19, 1);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("02195455T", 15, 20, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("02195455T", 16, 18, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("02195455T", 20, 21, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("49128574P", 12, 14, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("49128574P", 16, 17, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("49128574P", 19, 21, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("49128574P", 12, 14, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("49128574P", 16, 21, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("49128574P", 12, 14, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("49128574P", 16, 21, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("60129589F", 10, 14, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("60129589F", 15, 19, 0);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("60129589F", 10, 14, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("60129589F", 15, 19, 2);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("60129589F", 10, 14, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("60129589F", 15, 19, 3);
+INSERT INTO periodostrabajo (nifMedico, horaInicio, horaFinal, dia)
+   VALUES ("60129589F", 9, 15, 4);
+
+INSERT INTO beneficiarios (nif, nss, nombre, apellidos, correo, fechaNacimiento, telefono, movil, nifMedico, idCentro)
+   VALUES ("18451279R", "784198510471", "Daniel", "García-Cruz Garrido", "", "1972-03-05", "940127318", "", "20145845H", 1);
+INSERT INTO beneficiarios (nif, nss, nombre, apellidos, correo, fechaNacimiento, telefono, movil, nifMedico, idCentro)
+   VALUES ("01998234B", "957345634858", "Verónica", "Rincón Jiménez", "", "1999-01-08", "", "631881402", "82589074C", 1);
+INSERT INTO beneficiarios (nif, nss, nombre, apellidos, correo, fechaNacimiento, telefono, movil, nifMedico, idCentro)
+   VALUES ("02441013P", "457674538290", "Isabel", "Sánchez Molina", "isa80@gmail.com", "1980-11-25", "", "630644189", "20145845H", 1);
+INSERT INTO beneficiarios (nif, nss, nombre, apellidos, correo, fechaNacimiento, telefono, movil, nifMedico, idCentro)
+   VALUES ("47120891M", "340156169702", "Santiago", "Romero Díaz", "", "2004-08-10", "941881921", "", "60129589F", 3);
+INSERT INTO beneficiarios (nif, nss, nombre, apellidos, correo, fechaNacimiento, telefono, movil, nifMedico, idCentro)
+   VALUES ("06812983D", "148923756987", "Francisco", "Martín Serrano", "", "1950-04-04", "920131480", "", null, 2);
+INSERT INTO beneficiarios (nif, nss, nombre, apellidos, correo, fechaNacimiento, telefono, movil, nifMedico, idCentro)
+   VALUES ("04128393Z", "903674589174", "Luis", "Cruz Díaz", "", "1990-06-21", "942741382", "", "49128574P", 3);
+
+INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp)
+   VALUES ("18451279R", "Calle Santa Rita", "20", "4", "A", "Ciudad Real", "Ciudad Real", "13004");
+INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp)
+   VALUES ("01998234B", "Calle Ramón y Cajal", "45", "", "", "Ciudad Real", "Ciudad Real", "13001");
+INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp)
+   VALUES ("02441013P", "Calle Carlos V", "14", "", "", "Ciudad Real", "Ciudad Real", "13080");
+INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp)
+   VALUES ("47120891M", "Plaza Don Quijote", "3", "3", "D", "Albacete", "Albacete", "17100");
+INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp)
+   VALUES ("06812983D", "Calle Ancha", "71", "", "", "Toledo", "Toledo", "15100");
+INSERT INTO direcciones (nifBeneficiario, domicilio, numero, piso, puerta, ciudad, provincia, cp)
+   VALUES ("04128393Z", "Calle de la Tierra", "9", "2", "B", "Albacete", "Albacete", "17102");
+
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2009-11-10 11:20:00", 10, "18451279R", "20145845H");
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2009-11-16 17:00:00", 10, "02441013P", "20145845H");
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2010-03-24 15:30:00", 10, "47120891M", "60129589F");
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2010-03-26 18:00:00", 10, "47120891M", "54918531B");
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2010-04-08 15:00:00", 10, "01998234B", "82589074C");
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2010-04-01 11:00:00", 10, "18451279R", "20145845H");
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2010-04-19 16:30:00", 10, "02441013P", "15834012D");
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2003-01-13 19:40:00", 10, "04128393Z", "49128574P");
+
+INSERT INTO volantes (nifBeneficiario, nifMedicoEmisor, nifMedicoReceptor, fechaCaducidad, idCita)
+   VALUES ("47120891M", "60129589F", "54918531B", "2010-11-20", 4);
+INSERT INTO volantes (nifBeneficiario, nifMedicoEmisor, nifMedicoReceptor, fechaCaducidad, idCita)
+   VALUES ("02441013P", "20145845H", "15834012D", "2010-01-05", null);
+INSERT INTO volantes (nifBeneficiario, nifMedicoEmisor, nifMedicoReceptor, fechaCaducidad, idCita)
+   VALUES ("02441013P", "20145845H", "15834012D", "2010-10-05", 7);
+INSERT INTO volantes (nifBeneficiario, nifMedicoEmisor, nifMedicoReceptor, fechaCaducidad, idCita)
+   VALUES ("18451279R", "20145845H", "06408517L", "2010-08-04", null);
+
+INSERT INTO sustituciones (dia, horaInicio, horaFinal, nifMedico, nifSustituto)
+   VALUES ("2010-04-12", 16, 20, "20145845H", "08231608F");

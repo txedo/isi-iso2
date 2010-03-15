@@ -244,7 +244,7 @@ public class JFLogin extends javax.swing.JFrame {
 			
 			// Comprobamos los campos de la ventana
 			Validacion.comprobarUsuario(txtUsuario.getText().trim());
-			//TODO:quitado temporalmente... Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
+			Validacion.comprobarContraseña(new String(txtPassword.getPassword()));
 			Validacion.comprobarDireccionIP(txtDireccionServidor.getText().trim());
 			Validacion.comprobarPuerto(txtPuertoServidor.getText().trim());
 			

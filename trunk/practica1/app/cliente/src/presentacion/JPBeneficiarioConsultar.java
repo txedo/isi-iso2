@@ -528,7 +528,7 @@ public class JPBeneficiarioConsultar extends JPBase {
 				esBeneficiario = true;
 			if(preguntarRegistro && esBeneficiario) {
 				// Preguntamos si se quiere registrar este beneficiario
-				respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", e.getMessage() + "\n¿Quiere registrarlo para poder tramitar su cita?");
+				respuesta = Dialogos.mostrarDialogoPregunta(getFrame(), "Pregunta", e.getMessage() + "\n¿Quiere registrarlo en el sistema de salud?");
 				if(respuesta) {
 					getFrame().setOperacionSeleccionada(OperacionesInterfaz.RegistrarBeneficiario);
 				} else {
