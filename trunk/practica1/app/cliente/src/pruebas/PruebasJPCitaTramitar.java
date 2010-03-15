@@ -192,7 +192,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NIFIncorrectoException().getMessage());
 			// Probamos con un NIF que no esté dado de alta en el sistema y NO lo damos de alta en el sistema
 			txtIdentificacion.setText("00000000a");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, NO_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo para poder tramitar su cita?");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, NO_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo en el sistema de salud?");
 			// Buscamos un beneficiario por su NSS
 			jcmbIdentificacion.grabFocus();
 			jcmbIdentificacion.setSelectedIndex(1);
@@ -202,7 +202,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, OK_OPTION), new NSSIncorrectoException().getMessage());
 			// Probamos con un NSS que no esté dado de alta en el sistema y NO lo damos de alta en el sistema
 			txtIdentificacion.setText("000000000000");
-			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, NO_OPTION), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo para poder tramitar su cita?");
+			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, NO_OPTION), "El beneficiario con NSS 000000000000 no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo en el sistema de salud?");
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -217,7 +217,7 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		// Esteblecemos que se pregunte si se desea registrar el beneficiario
 		((JPBeneficiarioConsultar)panelBeneficiario.getAwtComponent()).setPreguntarRegistro(true);
 		// Al contestar que si, pasamos al panel de registrar beneficiario, por lo que ya no existirá la tabla para consultar las citas
-		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, YES_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo para poder tramitar su cita?");
+		assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnBuscar, YES_OPTION), "El beneficiario con NIF 00000000A no se encuentra dado de alta en el sistema.\n¿Quiere registrarlo en el sistema de salud?");
 		// Se ha debido pasar a la ventana de registro de beneficiario
 		assertEquals(OperacionesInterfaz.RegistrarBeneficiario, controlador.getVentanaPrincipal().getOperacionSeleccionada());
 		

@@ -7,6 +7,8 @@ Además, se han utilizado las técnicas de \textit{clases de equivalencia}, \texti
 
 En los siguientes apartados se van a comentar los tipos de test que se han realizado en cada uno de los subsistemas de los que está compuesto el sistema. Por último, destacar que se han realizado las pruebas pertinentes en todas y cada una de las capas, incluyendo las interfaces gráficas de usuario.
 
+Señalar que la base de datos que se ha utilizado para realizar las pruebas de cada subsistema, está contenida en el archivo \textit{install-pruebas} del servidor front-end, adjunto con el código fuente.
+
 \subsubsection{Servidor Front-end}
 
 Todos los \textit{TestSuite} (colecciones de casos de prueba) que se han implementado heredan de una superclase, cuya responsabilidad consiste en limpiar la base de datos antes de ejecutar cada caso de prueba e iniciar una conexión con el sistema gestor de bases de datos principal. El objetivo de implementar esta superclase es evitar la repetición del mismo código en cada uno de los casos de prueba.
@@ -33,11 +35,36 @@ Este sistema es una versión minimalista del servidor front-end en la que se ha r
 Debido a que el subsistema cliente se basa en la interfaz gráfica de usuario, ya que toda la lógica de dominio reside en el servidor front-end, las pruebas de este sistema se basan en pruebas de interfaz gráfica de usuario. \\
 \indent Dichas pruebas se han estructurado en \textit{TestSuites} que corresponden con cada una de las funcionalidades que debe cumplir el sistema (es decir, con los casos de uso). A su vez, cada uno de estos \textit{TestSuite} contienen \textit{TestCase} que corresponden con cada uno de los escenarios definidos en cada caso de uso, ya sean escenarios correctos o alternativos.
 
-Así, las pruebas de interfaz gráfica del subsistema cliente aseguran que todos los datos que introduce el usuario tengan el formato adecuado y sean correctos. También prueban que la comunicación con el servidor front-end sea correcta, enviando las peticiones y recibiendo las notificaciones adecuadas, mostrando la realimentación oportuna al usuario. Además, en estas pruebas de interfaz se han incluido pruebas apra asegurar el correcto funcionamiento del patrón \textbf{Observador}, que ya fue comentado en la sección \ref{frontendDominio}.
+Así, las pruebas de interfaz gráfica del subsistema cliente aseguran que todos los datos que introduce el usuario tengan el formato adecuado y sean correctos. También prueban que la comunicación con el servidor front-end sea correcta, enviando las peticiones y recibiendo las notificaciones adecuadas, mostrando la realimentación oportuna al usuario. Además, en estas pruebas de interfaz se han incluido pruebas para asegurar el correcto funcionamiento del patrón \textbf{Observador}, que ya fue comentado en la sección \ref{frontendDominio}.
 
 \subsubsection{Informe de cobertura}
 
-A continuación, se incluye una tabla que resume todos los casos de prueba ejecutados para cada uno de los subsistemas. En dicha tabla se detalla la cobertura de instrucciones obtenida para cada una de las capas (o paquetes) que componen cada subsistema. 
+En la Tabla \ref{tb:pruebas} se resumen todos los casos de prueba ejecutados para cada uno de los subsistemas. En dicha tabla se detalla la cobertura de instrucciones obtenida para cada una de las capas (o paquetes) que componen cada subsistema. 
+
+Como se puede apreciar en dicho informe, en algunos paquetes se obtiene una cobertura que no está próxima al 90\%. Dichos paquetes son:
+
+\begin{milista}
+
+	\item \textbf{Servidor front-end:} en el paquete \textit{Dominio.control}, la cobertura alcanzada disminuye en las siguientes clases:
+		\begin{itemize}
+			\item \textit{ServidorFrontend}: como se comentó en la sección \ref{frontendDominio}, esta clase es una fachada del servidor front-end, por lo que en ella se deben capturar y tratar todas las excepciones que puedan ocurrir. Pero, como se comentá al inicio de esta sección, no todas las excepciones se han forzado con las pruebas, por lo que varios bloques de tratamiento no se prueban.
+			\item \textit{ControladorFrontend}: por la misma razón, la cobertura en esta clase es más baja, debido al tratamiento de algunas excepciones que no se fuerzan.
+		\end{itemize}
+		
+	\item \textbf{Servidor de respaldo:} en el paquete \textit{Dominio}, la cobertura alcanzada disminuye, debido a que dicho paquete solo contiene la clase \textit{Main} de este servidor y algunas instrucciones no se marcan como ejecutadas.		
+		
+	\item \textbf{Unidad de citación:} la cobertura disminuye en los siguientes paquetes:
+		\begin{itemize}
+			\item Paquete \textit{Presentación.auxiliar}: en este paquete se incluyen, enre otras, varias clases encargadas de gestionar eventos compartidos entre ventanas de la interfaz gráfica y clases encargadas de cambiar el aspecto en el que se muestran tablas y listas de elementos. Es por ello que la cobertura es menor, pues hay eventos de estas clases que no se hazn forzado a ejecutarse con las pruebas de interfaz. 
+			\item Paquete \textit{Excepciones}: algunas excepciones incluyen dos métodos constructores, uno que no recibe mensaje y otro que sí lo recibe, para hacer más flexible el mensaje que se quiere mostrar cuando se produce dicha excepción. Sin embargo, no se han forzado situaciones en las pruebas para probar ambos constructores.
+			\item Paquete \textit{Dominio}: la cobertura alcanzada disminuye, debido a que en la clase \textit{Main} algunas instrucciones no se marcan como ejecutadas.		
+			\item Paquete \textit{Dominio.control}: la cobertura disminuye debido a ciertas excepciones que no se fuerzan, como ya se comentó al inicio de esta sección. También, no se fuerza la desconexión del servidor ni sesiones duplicadas, por lo que esas instrucciones no se han probado.
+			\item Paquete \textit{Comunicaciones}: la cobertura disminuye debido a ciertas excepciones que no se fuerzan, como ya se comentó al inicio de esta sección.
+		\end{itemize}
+		
+\end{milista}
+
+\clearpage
 
 \begin{longtable}{| c | c | c | c | c |}
 \hline
@@ -97,9 +124,9 @@ Comunicaciones & 96 & 460 & 479 \\
 \hline
 \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}c|}{\textbf{PAQUETE}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{COBERTURA(\%)}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3cm}|}{\textbf{INSTRUCCIONES CUBIERTAS}} & \multicolumn{1}{|>{\columncolor[rgb]{0.8, 0.8, 0.8}}p{3.7cm}|}{\textbf{INSTRUCCIONES TOTALES}} \\
 \hline
-\textbf{\textit{Unidad de Citación}} & \textbf{\textit{91.8}} & \textbf{\textit{28334}} & \textbf{\textit{30879}} \\
+\textbf{\textit{Unidad de Citación}} & \textbf{\textit{91.9}} & \textbf{\textit{28383}} & \textbf{\textit{31019}} \\
 \hline
-Presentacion & 92.7 & 24877 & 26822 \\
+Presentacion & 92.4 & 24924 & 26966 \\
 \hline
 Presentacion.auxiliar & 88.2 & 2107 & 2388 \\
 \hline
@@ -109,31 +136,8 @@ Dominio & 82.4 & 89 & 108 \\
 \hline
 Dominio.control & 84.3 & 704 & 835 \\
 \hline
-Comunicaciones & 74.4 & 365 & 484 \\
+Comunicaciones & 75.4 & 365 & 484 \\
 \hline
 \caption{Informe de cobertura de los subsistemas} 
 \label{tb:pruebas}
 \end{longtable}
-
-Como se puede apreciar en el informe, en algunos paquetes se obtiene una cobertura que no está próxima al 90\%. Dichos paquetes son:
-
-\begin{milista}
-
-	\item \textbf{Servidor front-end:} en el paquete \textit{Dominio.control}, la cobertura alcanzada disminuye en las siguientes clases:
-		\begin{itemize}
-			\item \textit{ServidorFrontend}: como se comentó en la sección \ref{frontendDominio}, esta clase es una fachada del servidor front-end, por lo que en ella se deben capturar y tratar todas las excepciones que puedan ocurrir. Pero, como se comentá al inicio de esta sección, no todas las excepciones se han forzado con las pruebas, por lo que varios bloques de tratamiento no se prueban.
-			\item \textit{ControladorFrontend}: por la misma razón, la cobertura en esta clase es más baja, debido al tratamiento de algunas excepciones que no se fuerzan.
-		\end{itemize}
-		
-	\item \textbf{Servidor de respaldo:} en el paquete \textit{Dominio}, la cobertura alcanzada disminuye, debido a que dicho paquete solo contiene la clase \textit{Main} de este servidor y algunas instrucciones no se marcan como ejecutadas.		
-		
-	\item \textbf{Unidad de citación:} la cobertura disminuye en los siguientes paquetes:
-		\begin{itemize}
-			\item Paquete \textit{Presentación.auxiliar}: en este paquete se incluyen, enre otras, varias clases encargadas de gestionar eventos compartidos entre ventanas de la interfaz gráfica y clases encargadas de cambiar el aspecto en el que se muestran tablas y listas de elementos. Es por ello que la cobertura es menor, pues hay eventos de estas clases que no se hazn forzado a ejecutarse con las pruebas de interfaz. 
-			\item Paquete \textit{Excepciones}: algunas excepciones incluyen dos métodos constructores, uno que no recibe mensaje y otro que sí lo recibe, para hacer más flexible el mensaje que se quiere mostrar cuando se produce dicha excepción. Sin embargo, no se han forzado situaciones en las pruebas para probar ambos constructores.
-			\item Paquete \textit{Dominio}: la cobertura alcanzada disminuye, debido a que en la clase \textit{Main} algunas instrucciones no se marcan como ejecutadas.		
-			\item Paquete \textit{Dominio.control}: la cobertura disminuye debido a ciertas excepciones que no se fuerzan, como ya se comentó al inicio de esta sección. También, no se fuerza la desconexión del servidor ni sesiones duplicadas, por lo que esas instrucciones no se han probado.
-			\item Paquete \textit{Comunicaciones}: la cobertura disminuye debido a ciertas excepciones que no se fuerzan, como ya se comentó al inicio de esta sección.
-		\end{itemize}
-		
-\end{milista}

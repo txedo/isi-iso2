@@ -159,7 +159,7 @@ public class PruebasConexiones extends PruebasBase {
 			GestorConexionesBD.ejecutar(comando);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
-			assertEquals("Error en el acceso a las bases de datos.", e.getMessage());
+			assertEquals("Error en el acceso a la base de datos secundaria.", e.getMessage());
 		} catch(Exception e) {
 			fail("Se esperaba una excepción SQLException");
 		}
@@ -187,7 +187,7 @@ public class PruebasConexiones extends PruebasBase {
 			GestorConexionesBD.ejecutar(comando);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
-			assertEquals("Error en el acceso a las bases de datos.", e.getMessage());
+			assertEquals("Error en el acceso a la base de datos secundaria.", e.getMessage());
 		} catch(Exception e) {
 			fail("Se esperaba una excepción SQLException");
 		}
@@ -215,7 +215,7 @@ public class PruebasConexiones extends PruebasBase {
 			GestorConexionesBD.ejecutar(comando);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
-			assertEquals("Error en el acceso a las bases de datos.", e.getMessage());
+			assertEquals("Error en el acceso a la base de datos principal.", e.getMessage());
 		} catch(Exception e) {
 			fail("Se esperaba una excepción SQLException");
 		}
