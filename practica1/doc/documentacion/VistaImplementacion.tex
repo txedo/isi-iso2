@@ -11,7 +11,19 @@ Sin embargo, sí se han definido con más detalle los casos de uso más
 importantes del sistema y algunos algoritmos que se han implementado para
 facilitar el desarrollo, tal y como se comenta en los próximos apartados.
 
-\verb+FALTA POR COMENTAR QUE EN LOS DIAGRAMAS DE SECUENCIA SE PONEN LLAMADAS A MÉTODOS CUANDO LA INTERACCIÓN ES CONOCIDA PORQUE SE INDICABA EN EL ENUNCIADO+
+Es importante resaltar que los diagramas de secuencia de este proyecto se han
+diseñado con un nivel intermedio de abstracción, de forma que intervienen
+clases de diseño y no de análisis, pero los mensajes que se envían entre sí
+no son llamadas a métodos en la mayoría de los casos, sino que únicamente
+describen la funcionalidad que deben implementar.
+
+No obstante, como en el pliego inicial de requisitos del sistema se especifica
+con detalle la interfaz que debe tener el servidor front-end y los únicos
+métodos que puede haber en la interfaz \textit{ISesion}, todos los mensajes de
+los diagramas de secuencia que se envían a estas clases sí se representan como
+llamadas a métodos, al ser conocidos de antemano. El resto de mensajes sólo
+indican, en texto natural, qué deben realizar, ya que la forma de implementarlo
+se decidirá en una fase más avanzada del desarrollo.
 
 \subsubsection{Servidor front-end}
 

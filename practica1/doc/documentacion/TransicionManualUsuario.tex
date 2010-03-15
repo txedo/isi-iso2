@@ -42,8 +42,8 @@ A continuación descargue e instale el toolkit MySQL Workbench \cite{download-wor
 
 Si ha introducido correctamente la dirección IP del servidor, el nombre del usuario y la contraseña, se le abrirá una nueva ventana desde la cual podrá configurar cualquier aspecto relacionado con el servidor MySQL. A continuación se realizarán tres pasos idénticos sea cual sea el servidor que esté configurando (principal o de respaldo):
 \begin{enumerate}
-	\item \textbf{Creación de la base de datos}. En la barra de menús de la parte superior de la aplicación seleccione \textit{Tools -\textgreater MySQL Command Line Client} y obtendrá una consola similar a la de Windows. A continuación abra el fichero \textbf{install.txt} del servidor que esté configurando (principal o de respaldo), copie su contenido y péguelo en la consola de comandos de MySQL que ha abierto anteriormente.
-	\item \textbf{Creación del usuario}. En el menú de la izquierda diríjase a la sección \textbf{User Administration}. Una vez allí, cree el usuario correspondiente en función del servidor que esté configurando:
+	\item \textbf{Creación de la base de datos}. En la barra de menús de la parte superior de la aplicación seleccione \textit{Tools -\textgreater{} MySQL Query Browser} y, en la nueva aplicación que se iniciará, elija \textit{File -\textgreater{} Open Script...}. Se mostrará un cuadro de diálogo en el que tendrá que abrir el fichero \textbf{install.txt} del servidor que esté configurando. A continuación, pulse el botón \textit{Execute} que se encuentra en la barra de herramientas para crear la base de datos.
+	\item \textbf{Creación del usuario}. En el menú de la izquierda de la aplicación \textit{MySQL Administrator} diríjase a la sección \textbf{User Administration}. Una vez allí, cree el usuario correspondiente en función del servidor que esté configurando:
 	\begin{milista}
 		\item Servidor principal. Usuario \textit{iso}; Contraseña \textit{osi}.
 		\item Servidor de respaldo. Usuario \textit{isor}; Contraseña \textit{rosi}.

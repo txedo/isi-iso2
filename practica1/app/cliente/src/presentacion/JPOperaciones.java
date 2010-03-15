@@ -187,8 +187,19 @@ public class JPOperaciones extends JPanel {
 	}
 		
 	public void setOperacion(OperacionesInterfaz operacion) {
+		Object[] listeners;
+		int i;
+		
 		if(operaciones.contains(operacion)) {
-			lstOperaciones.setSelectedValue(operaciones.indexOf(operacion), true);
+			lstOperaciones.setSelectedIndex(operaciones.indexOf(operacion));
+			
+			// Notificamos que ha cambiado la operación seleccionada
+			listeners = listenerList.getListenerList();
+			for(i = 0; i < listeners.length; i += 2) {
+				if(listeners[i] == OperacionCambiadaListener.class) {
+					((OperacionCambiadaListener)listeners[i + 1]).operacionCambiada(new OperacionCambiadaEvent(this, getOperacion()));
+				}
+			}
 		}
 	}
 	

@@ -6,6 +6,15 @@ manera automática una IP pública o privada para exportar el objeto remoto del
 cliente, de la misma forma que se explicó en la capa de comunicaciones del
 servidor frontend (ver sección \ref{comunicaciones-front-end}).
 
+Una decisión importante que se tomó al desarrollar esta parte del sistema fue
+mover la definición de la interfaz \textit{ICliente} de la unidad de citación,
+donde se pensó colocar inicialmente, al servidor front-end. De esta manera, lo
+que se consigue es que el servidor front-end sea totalmente independiente de
+los clientes que vayan a utilizarlo, por lo que debe ser la unidad de citación
+la que tenga que ajustarse a la interfaz \textit{ICliente} ofrecida por el
+servidor, y no al revés, que no tiene demasiado sentido en una arquitectura
+cliente-servidor.
+
 Además, al diseñar la unidad de citación, se ha tenido en cuenta que en una
 misma máquina puede haber varios clientes ejecutándose a la vez, algo que no
 tiene sentido en los servidores. Por este motivo, el puerto en el que cada
