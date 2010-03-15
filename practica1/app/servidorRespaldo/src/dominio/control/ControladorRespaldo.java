@@ -54,6 +54,7 @@ public class ControladorRespaldo {
 			remotoServidor = RemotoServidorRespaldo.getServidor();
 			((ServidorRespaldo)remotoServidor.getServidorExportado()).getConexionBD().getAgente().setIP(configuracion.getIPBDRespaldo());
 			((ServidorRespaldo)remotoServidor.getServidorExportado()).getConexionBD().getAgente().setPuerto(configuracion.getPuertoBDRespaldo());
+			((ServidorRespaldo)remotoServidor.getServidorExportado()).getConexionEstado().quitarVentanas();
 			((ServidorRespaldo)remotoServidor.getServidorExportado()).getConexionEstado().ponerVentana(ventana);
 			remotoServidor.activar(ipServidor, configuracion.getPuertoRespaldo());
 		} catch(RemoteException e) {

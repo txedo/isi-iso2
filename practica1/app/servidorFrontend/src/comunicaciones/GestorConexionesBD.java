@@ -70,7 +70,13 @@ public class GestorConexionesBD {
 					for(IConexionBD conexionUsada : conexionesUsadas) {
 						conexionUsada.rollback();
 					}
-					throw new SQLException("Error en el acceso a las bases de datos.", ex);
+					if(conexion instanceof ConexionBDFrontend) {
+						throw new SQLException("Error en el acceso a la base de datos principal.", ex);
+					} else if(conexion instanceof ProxyServidorRespaldo) {
+						throw new SQLException("Error en el acceso a la base de datos secundaria.", ex);
+					} else {
+						throw new SQLException("Error en el acceso a las bases de datos.", ex);
+					}
 				}
 			}
 			// Aplicamos los cambios en todas las conexiones

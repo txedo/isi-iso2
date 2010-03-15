@@ -20,6 +20,10 @@ public class ConexionLogVentana implements IConexionLog {
 		formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	}
 	
+	public void quitarVentanas() {
+		ventanas.clear();
+	}
+	
 	public void ponerVentana(IVentanaEstado ventana) {
 		ventanas.add(ventana);
 	}
