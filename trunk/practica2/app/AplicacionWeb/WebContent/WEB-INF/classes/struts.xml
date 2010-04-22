@@ -3,6 +3,9 @@
 
 <struts>
     <package name="default" namespace="/" extends="struts-default">
-
+		<action name="loginBeneficiario" class="acciones.loginBeneficiario">
+			<result name="success">menuBeneficiario.jsp</result>
+			<result name="error">error.jsp</result>
+		</action>
     </package>
 </struts>
