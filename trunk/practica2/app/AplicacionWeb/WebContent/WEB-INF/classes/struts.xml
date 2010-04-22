@@ -3,9 +3,6 @@
 
 <struts>
     <package name="default" namespace="/" extends="struts-default">
-        <action name="AllCombinations" class="AplicacionWeb.actions.AllCombinations">
-            <result name="success">executeOnStruts.jsp</result>
-            <result name="error">executeOnStruts.jsp</result>
-        </action>
+
     </package>
 </struts>
