@@ -1,0 +1,19 @@
+Introduccion
+	Que es symbian
+	Contextualizacion mercado Symbian
+	Caracteristicas tecnicas del SSOO   
+	Situacion actual: soporte operadoras Symbian
+	Marcas y dispositivos que usan Symbian
+	
+Desarrollo en Symbian 
+	Diferencias entre versiones Symbian
+	Entornos de desarrollo, API y SDK
+	Firma de aplicaciones y publicación aplicaciones
+	
+Aplicación de ejemplo
+Comparativa con otros SSOO
+Conclusiones
+Referencias
+
+www.allaboutsymbian.com
+www.s60.com
