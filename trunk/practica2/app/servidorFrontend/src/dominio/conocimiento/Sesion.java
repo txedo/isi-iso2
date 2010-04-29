@@ -4,29 +4,23 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Clase que representa una sesión iniciada por el cliente en el servidor
+ * Clase que representa una sesión iniciada por un cliente en el servidor
  * front-end.
  */
-public class Sesion implements ISesion, Serializable {
+public abstract class Sesion implements ISesion, Serializable {
 
 	private static final long serialVersionUID = 4617941634511694961L;
 	
 	private long idSesion;
 	private Date horaInicio;
-	private Usuario usuario;
-	
-	public Sesion(long idSesion, Usuario usuario) {
+
+	public Sesion(long idSesion) {
 		this.idSesion = idSesion;
 		this.horaInicio = new Date();
-		this.usuario = usuario;
 	}
 	
 	public long getId() {
 		return idSesion;
-	}
-
-	public long getRol() {
-		return usuario.getRol().ordinal();
 	}
 
 	public void setId(long idSesion) {
@@ -41,22 +35,18 @@ public class Sesion implements ISesion, Serializable {
 		this.horaInicio = horaInicio;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
-	}
+	public abstract long getRol();
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
-	
+	public abstract String getNombre();
+
 	public boolean equals(Object o) {
-		Sesion u;
+		Sesion s;
 		boolean dev;
 		
 		dev = false;
 		if(o != null && o instanceof Sesion) {
-			u = (Sesion)o;
-			dev = idSesion == u.getId() && usuario.equals(u.getUsuario()) && horaInicio.equals(u.getHoraInicio());
+			s = (Sesion)o;
+			dev = idSesion == s.getId() && getRol() == s.getRol() && horaInicio.equals(s.getHoraInicio());
 		}
 		return dev;
 	}

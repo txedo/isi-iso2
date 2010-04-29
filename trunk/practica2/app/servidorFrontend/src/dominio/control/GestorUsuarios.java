@@ -11,7 +11,8 @@ import dominio.conocimiento.Cita;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.PeriodoTrabajo;
-import dominio.conocimiento.RolesUsuario;
+import dominio.conocimiento.Roles;
+import dominio.conocimiento.SesionUsuario;
 import dominio.conocimiento.Usuario;
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
@@ -110,7 +111,7 @@ public class GestorUsuarios {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarPropioUsuario);
 		
 		// Obtenemos el usuario que ha ejecutado la operación a partir de su sesión
-		usuario = GestorSesiones.getSesion(idSesion).getUsuario();
+		usuario = ((SesionUsuario)GestorSesiones.getSesion(idSesion)).getUsuario();
 
 		return usuario;
 	}
@@ -223,7 +224,7 @@ public class GestorUsuarios {
 		
 		// Si el usuario modificado es un médico, eliminamos aquellas citas
 		// pendientes que ahora no quedan dentro del nuevo horario del médico
-		if(usuarioReal.getRol() == RolesUsuario.Médico) {
+		if(usuarioReal.getRol() == Roles.Médico) {
 			citas = FPCita.consultarPorMedico(usuario.getNif());
 			for(Cita cita : citas) {
 				if(cita.getFechaYHora().after(new Date())) {
@@ -260,7 +261,7 @@ public class GestorUsuarios {
 		
 		// Si se va a eliminar un médico, obtenemos su lista de
 		// beneficiarios para asignarle después un médico diferente
-		if(usuario.getRol() == RolesUsuario.Médico) {
+		if(usuario.getRol() == Roles.Médico) {
 			nifs = FPBeneficiario.consultarBeneficiariosMedico(usuario.getNif());
 			beneficiarios = new Vector<Beneficiario>();
 			for(String nif : nifs) {
@@ -272,7 +273,7 @@ public class GestorUsuarios {
 		FPUsuario.eliminar(usuario);
 
 		// Intentamos asignar nuevos médicos a los beneficiarios
-		if(usuario.getRol() == RolesUsuario.Médico) {
+		if(usuario.getRol() == Roles.Médico) {
 			for(Beneficiario beneficiario : beneficiarios) {
 				beneficiario.setMedicoAsignado(null);
 				nuevoMedico = GestorBeneficiarios.obtenerMedicoBeneficiario(beneficiario);

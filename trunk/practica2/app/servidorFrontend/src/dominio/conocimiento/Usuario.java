@@ -41,7 +41,7 @@ public abstract class Usuario implements Serializable, Cloneable {
 		centro = null;
 	}
 
-	public abstract RolesUsuario getRol();
+	public abstract Roles getRol();
 	
 	public String getNif() {
 		return nif;

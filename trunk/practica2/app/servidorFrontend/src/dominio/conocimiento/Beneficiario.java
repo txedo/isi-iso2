@@ -138,6 +138,10 @@ public class Beneficiario implements Serializable, Cloneable {
 		this.centroSalud = centro;
 	}
 	
+	public Roles getRol() {
+		return Roles.Beneficiario;
+	}
+	
 	public int getEdad() {
 		long msInicial, msFinal, diferencia;
 		double dias;

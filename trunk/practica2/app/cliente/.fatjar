@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Mon Mar 15 16:26:30 CET 2010
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=Cliente.jar
+manifest.mergeall=true
+manifest.mainclass=dominio.Main
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<po|cliente>~pruebas/;<jar|junit.jar>;<jar|uispec4j-2.2-jdk16.jar>
+includes=

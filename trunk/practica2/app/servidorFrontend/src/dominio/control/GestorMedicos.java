@@ -12,7 +12,7 @@ import dominio.conocimiento.DiaSemana;
 import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.RolesUsuario;
+import dominio.conocimiento.Roles;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
@@ -54,7 +54,7 @@ public class GestorMedicos {
 		}
 		
 		// Nos aseguramos de que el usuario devuelto tenga el rol esperado
-		if(usuario.getRol() != RolesUsuario.Médico) {
+		if(usuario.getRol() != Roles.Médico) {
 			throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 		}
 
@@ -137,7 +137,7 @@ public class GestorMedicos {
 		// Comprobamos que exista el médico
 		try {
 			usuario = FPUsuario.consultar(nifMedico);
-			if(usuario.getRol() != RolesUsuario.Médico) {
+			if(usuario.getRol() != Roles.Médico) {
 				throw new MedicoInexistenteException("El NIF introducido no pertenece a un médico.");
 			}
 			medico = (Medico)usuario;
@@ -201,7 +201,7 @@ public class GestorMedicos {
 		// En principio dará la cita el médico previsto
 		try {
 			usuario = FPUsuario.consultar(nifMedico);
-			if(usuario.getRol() != RolesUsuario.Médico) {
+			if(usuario.getRol() != Roles.Médico) {
 				throw new MedicoInexistenteException("El médico para el que se pretende pedir cita no es un usuario del sistema con rol de médico.");
 			}
 			medico = (Medico)usuario;

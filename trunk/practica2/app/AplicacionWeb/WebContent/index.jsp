@@ -12,7 +12,7 @@
 <%
 ProxyServidorFrontend s;
 s = new ProxyServidorFrontend();
-s.conectar("161.67.175.11", 2995);
+s.conectar("127.0.0.1", 2995);
 ISesion ses = s.identificar("admin", "admin123");
 //s.crear(ses.getId(), new Medico("88998899A", "medico", "medicoasdgha", "", "", "", "", "", new Cabecera()));
 Medico m = s.getMedico(ses.getId(), "88998899A");
