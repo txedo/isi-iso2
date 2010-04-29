@@ -17,8 +17,8 @@ public class Administrador extends Citador implements Serializable, Cloneable {
 		super(nif, login, password, nombre, apellidos, correo, telefono, movil);
 	}
 	
-	public RolesUsuario getRol() {
-		return RolesUsuario.Administrador;
+	public Roles getRol() {
+		return Roles.Administrador;
 	}
 	
 	public Object clone() {

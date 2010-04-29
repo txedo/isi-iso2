@@ -17,8 +17,8 @@ public class Citador extends Usuario implements Serializable, Cloneable {
 		super(nif, login, password, nombre, apellidos, correo, telefono, movil);
 	}
 	
-	public RolesUsuario getRol(){
-		return RolesUsuario.Citador;
+	public Roles getRol(){
+		return Roles.Citador;
 	}
 
 	public Object clone() {

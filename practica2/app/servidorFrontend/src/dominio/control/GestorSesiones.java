@@ -12,8 +12,9 @@ import comunicaciones.ProxyCliente;
 import dominio.UtilidadesDominio;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Operaciones;
-import dominio.conocimiento.RolesUsuario;
+import dominio.conocimiento.Roles;
 import dominio.conocimiento.Sesion;
+import dominio.conocimiento.SesionUsuario;
 import dominio.conocimiento.Usuario;
 import persistencia.FPUsuario;
 import excepciones.CentroSaludInexistenteException;
@@ -36,7 +37,7 @@ public class GestorSesiones {
 	// Tabla que asocia el identificador de cada sesión con el cliente
 	private static Hashtable<Long, ICliente> clientes = new Hashtable<Long, ICliente>();
 
-	// Metodo para identificar un cliente y crear una sesion
+	// Metodo para identificar un usuario y crear una sesion
 	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, RemoteException, Exception {
 		Enumeration<Sesion> sesionesAbiertas; 
 		Sesion sesion, sesionAbierta;
@@ -70,7 +71,8 @@ public class GestorSesiones {
 		encontrado = false;
 		while(sesionesAbiertas.hasMoreElements() && !encontrado) {
 			sesionAbierta = sesionesAbiertas.nextElement();
-			if(sesionAbierta.getUsuario().getNif().equals(usuario.getNif())) {
+			if(sesionAbierta instanceof SesionUsuario
+			 && ((SesionUsuario)sesionAbierta).getUsuario().getNif().equals(usuario.getNif())) {
 				encontrado = true;
 			}
 		}
@@ -99,7 +101,7 @@ public class GestorSesiones {
 		} while(sesiones.containsKey(idSesion));
 
 		// Creamos la sesión y la guardamos en la tabla de sesiones
-		sesion = new Sesion(idSesion, usuario);
+		sesion = new SesionUsuario(idSesion, usuario);
 		sesiones.put(idSesion, sesion);
 		
 		return (ISesion)sesion;
@@ -162,7 +164,7 @@ public class GestorSesiones {
 		operaciones.add(Operaciones.CorrespondeNIFUsuario);
 		
 		// Agregamos las operaciones permitidas para citadores y administradores
-		if(sesion.getRol() == RolesUsuario.Administrador.ordinal() || sesion.getRol() == RolesUsuario.Citador.ordinal()) {
+		if(sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
 			operaciones.add(Operaciones.RegistrarBeneficiario);
 			operaciones.add(Operaciones.ModificarBeneficiario);
 			operaciones.add(Operaciones.EliminarBeneficiario);
@@ -176,7 +178,7 @@ public class GestorSesiones {
 		}
 		
 		// Agregamos las operaciones permitidas para administradores
-		if(sesion.getRol() == RolesUsuario.Administrador.ordinal()) {
+		if(sesion.getRol() == Roles.Administrador.ordinal()) {
 			operaciones.add(Operaciones.ConsultarUsuario);
 			operaciones.add(Operaciones.RegistrarUsuario);
 			operaciones.add(Operaciones.ModificarUsuario);
@@ -191,7 +193,7 @@ public class GestorSesiones {
 		}
 		
 		// Agregamos las operaciones permitidas para médicos
-		if(sesion.getRol() == RolesUsuario.Médico.ordinal()) {
+		if(sesion.getRol() == Roles.Médico.ordinal()) {
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
 			operaciones.add(Operaciones.EmitirVolante);
 			operaciones.add(Operaciones.ConsultarCitasPropiasMedico);
@@ -216,7 +218,7 @@ public class GestorSesiones {
 
 		// Comprobamos si se tienen permisos para realizar la operación
 		if(!operaciones.contains(operacion)) {
-			throw new OperacionIncorrectaException("El rol " + RolesUsuario.values()[(int)sesion.getRol()] + " no tiene permiso para realizar la operación " + operacion.toString() + ".");
+			throw new OperacionIncorrectaException("El rol " + Roles.values()[(int)sesion.getRol()] + " no tiene permiso para realizar la operación " + operacion.toString() + ".");
 		}
 	}
 
@@ -249,7 +251,8 @@ public class GestorSesiones {
 		}
 	}
 	
-	public static void cerrarSesionCliente(String nifUsuario) throws Exception {
+	// Método para cerrar la sesión de un usuario
+	public static void cerrarSesionUsuario(String nifUsuario) throws Exception {
 		Enumeration<Sesion> sesionesAbiertas;
 		Sesion sesion, sesionUsuario;
 
@@ -258,7 +261,8 @@ public class GestorSesiones {
 		sesionesAbiertas = sesiones.elements();
 		while(sesionesAbiertas.hasMoreElements() && sesionUsuario == null) {
 			sesion = sesionesAbiertas.nextElement();
-			if(sesion.getUsuario().getNif().equals(nifUsuario)) {
+			if(sesion instanceof SesionUsuario
+			 && ((SesionUsuario)sesion).getUsuario().getNif().equals(nifUsuario)) {
 				sesionUsuario = sesion;
 			}
 		}

@@ -11,8 +11,8 @@ import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Pediatra;
-import dominio.conocimiento.RolesUsuario;
-import dominio.conocimiento.Sesion;
+import dominio.conocimiento.Roles;
+import dominio.conocimiento.SesionUsuario;
 import dominio.control.GestorSesiones;
 import dominio.control.ServidorFrontend;
 import excepciones.SesionInvalidaException;
@@ -95,7 +95,7 @@ public class PruebasSesiones extends PruebasBase {
 			// y comprobamos que la sesión tiene el rol correcto
 			sesion = servidor.identificar("admin", "admin");
 			assertNotNull(sesion);
-			assertEquals(RolesUsuario.Administrador.ordinal(), sesion.getRol());
+			assertEquals(Roles.Administrador.ordinal(), sesion.getRol());
 			// Realizamos una operación con la sesión obtenida
 			servidor.modificar(sesion.getId(), medico2);
 		} catch(Exception e) {
@@ -106,7 +106,7 @@ public class PruebasSesiones extends PruebasBase {
 			// Nos identificamos en el sistema con un usuario correcto
 			sesion = servidor.identificar("medPrueba", "abcdef");
 			assertNotNull(sesion);
-			assertEquals(RolesUsuario.Médico.ordinal(), sesion.getRol());
+			assertEquals(Roles.Médico.ordinal(), sesion.getRol());
 			// Esta espera evita que la prueba falle de vez en cuando,
 			// probablemente porque no da tiempo a almacenarse la sesión
 			Thread.sleep(50);
@@ -209,12 +209,12 @@ public class PruebasSesiones extends PruebasBase {
 	/** Pruebas de las operaciones de la clase Sesion */
 	@SuppressWarnings("deprecation")
 	public void testClaseSesion() {
-		Sesion sesion, sesionB;
+		SesionUsuario sesion, sesionB;
 		
 		try {
 			// Comprobamos que el método equals funciona bien
-			sesion = new Sesion(100, administrador1);
-			sesionB = new Sesion(100, administrador1);
+			sesion = new SesionUsuario(100, administrador1);
+			sesionB = new SesionUsuario(100, administrador1);
 			assertTrue(sesion.equals(sesionB));
 			sesionB.setUsuario(medico1);
 			assertFalse(sesion.equals(sesionB));

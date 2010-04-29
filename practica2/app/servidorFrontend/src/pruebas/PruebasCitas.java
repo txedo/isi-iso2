@@ -30,6 +30,7 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Sesion;
+import dominio.conocimiento.SesionUsuario;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Volante;
@@ -492,7 +493,7 @@ public class PruebasCitas extends PruebasBase {
 		
 		try {
 			// Insertamos varias citas válidas, tanto pendientes como pasadas
-			medico = (Medico)((Sesion)sesionMedico).getUsuario();
+			medico = (Medico)((SesionUsuario)sesionMedico).getUsuario();
 			if(medico.equals(medico1.getNif())) {
 				calendar = new GregorianCalendar(2015, 5, 12, 16, IConstantes.DURACION_CITA);
 				fechaCitaPendiente = calendar.getTime();

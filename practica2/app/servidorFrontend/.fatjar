@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Mon Mar 15 01:23:54 CET 2010
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=ServidorFrontendStubs.jar
+manifest.mergeall=false
+manifest.mainclass=
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<po|servidorFrontend>~comunicaciones/~ConexionBDFrontend.class;<po|servidorFrontend>~comunicaciones/~ConexionLogBD.class;<po|servidorFrontend>~comunicaciones/~ConexionLogVentana.class;<po|servidorFrontend>~comunicaciones/~ConfiguracionFrontend.class;<po|servidorFrontend>~comunicaciones/~GestorConexionesBD.class;<po|servidorFrontend>~comunicaciones/~GestorConexionesLog.class;<po|servidorFrontend>~comunicaciones/~ProxyCliente$HiloActualizarVentanas.class;<po|servidorFrontend>~comunicaciones/~ProxyCliente$HiloCerrarSesion.class;<po|servidorFrontend>~comunicaciones/~ProxyCliente$HiloCerrarSesionEliminacion.class;<po|servidorFrontend>~comunicaciones/~ProxyCliente$HiloServidorInaccesible.class;<po|servidorFrontend>~comunicaciones/~ProxyCliente.class;<po|servidorFrontend>~comunicaciones/~ProxyServidorRespaldo.class;<po|servidorFrontend>~comunicaciones/~RemotoServidorFrontend.class;<po|servidorFrontend>~comunicaciones/~UtilidadesComunicaciones.class;<po|servidorFrontend>~dominio/~conocimiento/~EntradaLog.class;<po|servidorFrontend>~dominio/~control/;<po|servidorFrontend>~dominio/~Main.class;<po|servidorFrontend>~dominio/~UtilidadesDominio.class;<po|servidorFrontend>~excepciones/~IPInvalidaException.class;<po|servidorFrontend>~excepciones/~PuertoInvalidoException.class;<po|servidorFrontend>~persistencia/~AgenteFrontend.class;<po|servidorFrontend>~persistencia/~FPBeneficiario.class;<po|servidorFrontend>~persistencia/~FPCentroSalud.class;<po|servidorFrontend>~persistencia/~FPCita.class;<po|servidorFrontend>~persistencia/~FPDireccion.class;<po|servidorFrontend>~persistencia/~FPEntradaLog.class;<po|servidorFrontend>~persistencia/~FPPeriodoTrabajo.class;<po|servidorFrontend>~persistencia/~FPSustitucion.class;<po|servidorFrontend>~persistencia/~FPTipoMedico.class;<po|servidorFrontend>~persistencia/~FPUsuario.class;<po|servidorFrontend>~persistencia/~FPVolante.class;<po|servidorFrontend>~persistencia/~UtilidadesPersistencia.class;<po|servidorFrontend>~presentacion/;<po|servidorFrontend>~pruebas/;<jar|junit.jar>;<jar|mysql-connector-java-5.1.10-bin.jar>;<jar|com.cloudgarden.layout.jar>;<jar|uispec4j-2.2-jdk16.jar>;<jar|ServidorRespaldoStubs.jar>
+includes=
