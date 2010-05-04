@@ -118,10 +118,5 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
 
-	@Override
-	public ISesion identificarBeneficiario(String arg0) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		// TODO ¿Se implementa este método? Desde un cliente de la aplicacion deescritorio no se puede identificar un beneficiario
-		return null;
-	}
 		
 }

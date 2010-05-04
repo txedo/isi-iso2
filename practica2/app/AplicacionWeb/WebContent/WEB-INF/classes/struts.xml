@@ -7,5 +7,9 @@
 			<result name="success">menuBeneficiario.jsp</result>
 			<result name="error">error.jsp</result>
 		</action>
+		<action name="loginMedico" class="acciones.loginMedico">
+			<result name="success">darVolante.jsp</result>
+			<result name="error">error.jsp</result>
+		</action>
     </package>
 </struts>

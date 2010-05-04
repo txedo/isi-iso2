@@ -9,9 +9,12 @@ import java.util.Date;
 import java.util.Vector;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.ICodigosMensajeAuxiliar;
+import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
+import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.BeneficiarioYaExistenteException;
 import excepciones.CitaNoValidaException;
@@ -51,8 +54,9 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 		return servidor.identificarUsuario(login, password);
 	}
 	
-	public ISesion identificarBeneficiario(String nss) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		return servidor.identificarBeneficiario(nss);
+	// En este caso, el idSesion no se utiliza, pues se va a identificar el beneficiario, por lo que aún no tiene idSesion asignado
+	public ISesion identificarBeneficiario(String nss) throws RemoteException, Exception {
+		return (ISesion) servidor.mensajeAuxiliar(-1, ICodigosMensajeAuxiliar.IDENTIFICAR_BENEFICIARIO, nss);
 	}
 
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
@@ -82,6 +86,10 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 	}
 	
 	// Métodos de gestión de médicos
+	
+	public Medico getMedicoPorLogin(long idSesion, String login) throws RemoteException, Exception {
+		return (Medico) servidor.mensajeAuxiliar(idSesion, ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_POR_LOGIN,login);
+	}
 	
 	public Medico getMedico(long idSesion, String dni) throws RemoteException, MedicoInexistenteException, Exception {
 		return servidor.getMedico(idSesion, dni);
@@ -123,6 +131,10 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 	
 	public long emitirVolante(long idSesion, Beneficiario bene, Medico emisor, Medico receptor) throws RemoteException, BeneficiarioInexistenteException, MedicoInexistenteException, SQLException, Exception {
 		return servidor.emitirVolante(idSesion, bene, emisor, receptor);
+	}
+	
+	public Volante getVolante(long idSesion, long idVolante) throws RemoteException, Exception {
+		return (Volante) servidor.mensajeAuxiliar(idSesion, ICodigosMensajeAuxiliar.CONSULTAR_VOLANTE, idVolante);
 	}
 	
 	// Método auxiliar

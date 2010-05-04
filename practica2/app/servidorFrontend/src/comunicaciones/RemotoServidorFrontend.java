@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Vector;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
+import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -96,10 +97,6 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
     
 	public ISesion identificarUsuario(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
 		return servidor.identificarUsuario(login, password);
-	}
-	
-	public ISesion identificarBeneficiario(String nss) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		return servidor.identificarBeneficiario(nss);
 	}
 	
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {

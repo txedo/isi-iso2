@@ -10,7 +10,8 @@ public interface ICodigosMensajeAuxiliar {
 	public final int OPERACIONES_DISPONIBLES = 1000;
 	
 	// Operaciones auxiliares del Gestor de Beneficiarios
-	public final int ELIMINAR_BENEFICIARIO = 1100;
+	public final int IDENTIFICAR_BENEFICIARIO = 1100;
+	public final int ELIMINAR_BENEFICIARIO = 1101;
 
 	// Operaciones auxiliares del Gestor de Usuarios
 	public final int CREAR_USUARIO = 1200;
@@ -22,11 +23,12 @@ public interface ICodigosMensajeAuxiliar {
 	public final int CONSULTAR_CENTROS = 1206;
 	
 	// Operaciones auxiliares del Gestor de Médicos
-	public final int OBTENER_MEDICOS_TIPO = 1300;
-	public final int CONSULTAR_HORARIO_MEDICO = 1301;
-	public final int OBTENER_POSIBLES_SUSTITUTOS = 1302;
-	public final int CONSULTAR_BENEFICIARIOS_MEDICO = 1303;
-	public final int CONSULTAR_MEDICO_CITA = 1304;
+	public final int CONSULTAR_MEDICO_POR_LOGIN = 1300;
+	public final int OBTENER_MEDICOS_TIPO = 1301;
+	public final int CONSULTAR_HORARIO_MEDICO = 1302;
+	public final int OBTENER_POSIBLES_SUSTITUTOS = 1303;
+	public final int CONSULTAR_BENEFICIARIOS_MEDICO = 1304;
+	public final int CONSULTAR_MEDICO_CITA = 1305;
 	
 	// Operaciones auxiliares del Gestor de Citas
 	public final int CONSULTAR_HORAS_CITAS_MEDICO = 1400;

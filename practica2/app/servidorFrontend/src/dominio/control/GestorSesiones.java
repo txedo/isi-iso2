@@ -116,7 +116,6 @@ public class GestorSesiones {
 		ICliente cliente;
 		Beneficiario bene;
 		Random rnd;
-		String passwordEncriptada;
 		boolean encontrado;
 		long idSesion;
 		
@@ -253,6 +252,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.ConsultarSustitutosPosibles);
 			operaciones.add(Operaciones.EstablecerSustituto);
 			operaciones.add(Operaciones.ConsultarBeneficiariosMedico);
+			operaciones.add(Operaciones.ConsultarPropioMedico);
 		}
 		
 		// Agregamos las operaciones permitidas para médicos
@@ -260,6 +260,8 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
 			operaciones.add(Operaciones.EmitirVolante);
 			operaciones.add(Operaciones.ConsultarCitasPropiasMedico);
+			operaciones.add(Operaciones.ConsultarPropioMedico);
+			
 		}
 		
 		return operaciones;
