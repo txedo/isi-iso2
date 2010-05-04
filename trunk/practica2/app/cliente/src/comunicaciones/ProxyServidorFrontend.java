@@ -38,8 +38,8 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 	
 	// Métodos de gestión de sesiones
 	
-	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		return servidor.identificar(login, password);
+	public ISesion identificarUsuario(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+		return servidor.identificarUsuario(login, password);
 	}
 
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
@@ -116,6 +116,12 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception {
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
+	}
+
+	@Override
+	public ISesion identificarBeneficiario(String arg0) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+		// TODO ¿Se implementa este método? Desde un cliente de la aplicacion deescritorio no se puede identificar un beneficiario
+		return null;
 	}
 		
 }

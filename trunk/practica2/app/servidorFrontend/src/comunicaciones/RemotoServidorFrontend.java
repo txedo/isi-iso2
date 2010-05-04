@@ -94,8 +94,12 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
     
     // Métodos de gestión de sesiones
     
-	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		return servidor.identificar(login, password);
+	public ISesion identificarUsuario(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+		return servidor.identificarUsuario(login, password);
+	}
+	
+	public ISesion identificarBeneficiario(String nss) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+		return servidor.identificarBeneficiario(nss);
 	}
 	
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
@@ -175,5 +179,5 @@ public class RemotoServidorFrontend extends UnicastRemoteObject implements IServ
 	public Object mensajeAuxiliar(long idSesion, long codigoMensaje, Object informacion) throws RemoteException, Exception {
 		return servidor.mensajeAuxiliar(idSesion, codigoMensaje, informacion);
 	}
-
+	
 }

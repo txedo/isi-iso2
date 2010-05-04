@@ -4,6 +4,8 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 import com.opensymphony.xwork2.ActionSupport;
+
+import comunicaciones.IConexion;
 import comunicaciones.ProxyServidorFrontend;
 
 import dominio.conocimiento.Beneficiario;
@@ -21,14 +23,12 @@ public class loginBeneficiario extends ActionSupport{
 	private Beneficiario beneficiario;
 		
 	public String execute() {
-		ProxyServidorFrontend p = new ProxyServidorFrontend();
+		ProxyServidorFrontend p;
 		ISesion s;
 		try {
-			// TODO: hacer que el porxy sea singleton y se conecte solo la primera vez que se necesite
-			// Esa vez será en el loginBeneficiario o en el loginMedico
-			p.conectar("127.0.0.1", 2995);
-			// TODO: cambiar la forma de autenticarse
-			s = p.identificar("admin", "admin123");
+			p = ProxyServidorFrontend.getProxy();
+			p.conectar(IConexion.IP, IConexion.PUERTO);
+			s = p.identificarBeneficiario(Nss);
 			// Se obtiene el beneficiario a partir del NSS introducido
 			beneficiario = p.getBeneficiarioPorNSS(s.getId(), Nss);
 		} catch (RemoteException e) {

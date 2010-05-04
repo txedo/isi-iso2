@@ -9,16 +9,17 @@
 <title>Menu Beneficiario</title>
 </head>
 <body>
-	Bienvenido, <%= ((Beneficiario) request.getSession(false).getAttribute("Beneficiario")).getNombre() %> <br>
-	Elija una opción: <br>
-	<input type="radio" name="grupoRadio" value="citaCabecera" onclick="window.location.href('citaCabecera.jsp')" >Cita con su médico de cabecera<br>
-	<input type="radio" name="grupoRadio" value="citaEspecialista" onclick="window.location.href('citaEspecialista.jsp')" >Cita con un médico especialista<br>
-	<input type="radio" name="grupoRadio" value="anularCita" onclick="window.location.href('anularCita.jsp')" >Anular cita
 	<%
 		// En la sesion, se podria guardar el objeto que haya colocado la accion en la ValueStack,
 		// para luego usarlo en las otras páginas para sacar el nombre, por ejemplo.
 		session=request.getSession(true);
 		session.setAttribute("Beneficiario",request.getAttribute("beneficiario"));
 	%>
+	Bienvenido, <%= ((Beneficiario) request.getSession(false).getAttribute("Beneficiario")).getNombre() %> <br>
+	Elija una opción: <br>
+	<input type="radio" name="grupoRadio" value="citaCabecera" onclick="window.location.href('citaCabecera.jsp')" >Cita con su médico de cabecera<br>
+	<input type="radio" name="grupoRadio" value="citaEspecialista" onclick="window.location.href('citaEspecialista.jsp')" >Cita con un médico especialista<br>
+	<input type="radio" name="grupoRadio" value="anularCita" onclick="window.location.href('anularCita.jsp')" >Anular cita
+	
 </body>
 </html>

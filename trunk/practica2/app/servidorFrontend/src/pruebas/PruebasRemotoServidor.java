@@ -101,13 +101,13 @@ public class PruebasRemotoServidor extends PruebasBase {
 		
 		try {
 			// Probamos las operaciones de gestión de sesiones
-			sesionAdmin = conexion.identificar(admin.getLogin(), admin.getLogin());
-			sesionMedico = conexion.identificar(medico.getLogin(), medico.getLogin());
+			sesionAdmin = conexion.identificarUsuario(admin.getLogin(), admin.getLogin());
+			sesionMedico = conexion.identificarUsuario(medico.getLogin(), medico.getLogin());
 			cliente = new ClientePrueba();
 			cliente.activar(UtilidadesComunicaciones.obtenerIPHost());
 			conexion.registrar(cliente, sesionAdmin.getId());
 			conexion.liberar(sesionAdmin.getId());
-			sesionAdmin = conexion.identificar(admin.getLogin(), admin.getLogin());
+			sesionAdmin = conexion.identificarUsuario(admin.getLogin(), admin.getLogin());
 		} catch(Exception e) {
 			fail(e.toString());
 		}

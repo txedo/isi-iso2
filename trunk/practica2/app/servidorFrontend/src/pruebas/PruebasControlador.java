@@ -97,7 +97,7 @@ public class PruebasControlador extends UISpecTestCase {
 			// Iniciamos sesión con un cliente
 			cliente = new ClientePrueba();
 			cliente.activar(IDatosPruebas.IP_ESCUCHA_CLIENTES);
-			sesion = ServidorFrontend.getServidor().identificar("admin", "admin");
+			sesion = ServidorFrontend.getServidor().identificarUsuario("admin", "admin");
 			ServidorFrontend.getServidor().registrar(cliente, sesion.getId());
 		} catch(Exception e) {
 			fail(e.toString());
