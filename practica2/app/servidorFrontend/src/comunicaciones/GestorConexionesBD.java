@@ -4,8 +4,14 @@ import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+
+import persistencia.ConsultaHibernate;
 import persistencia.ComandoSQL;
-import comunicaciones.IConexionBD;
+import persistencia.HibernateSessionFactory;
 
 /**
  * Gestor que permite acceder y modificar de forma sincronizada varias
@@ -51,6 +57,29 @@ public class GestorConexionesBD {
 		return datos;
 	}
 	
+	public static List<?> consultarHibernate(ConsultaHibernate comando) throws SQLException {
+		List<?> datos;
+		Session sesion;
+		
+		sesion = null;
+		try {
+			// Para hacer una consulta utilizamos la primera conexión
+			if(conexiones.size() == 0) {
+				throw new SQLException("La lista de conexiones está vacía.");
+			}
+			sesion = HibernateSessionFactory.getSession();
+			sesion.beginTransaction();
+			datos = comando.crearQuery(sesion).list();
+			sesion.getTransaction().commit();
+		} catch(HibernateException ex) {
+			sesion.getTransaction().rollback();
+			sesion.close();
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
+		
+		return datos;
+	}
+	
 	public static void ejecutar(ComandoSQL comando) throws SQLException {
 		ArrayList<IConexionBD> conexionesUsadas;
 		
@@ -85,6 +114,72 @@ public class GestorConexionesBD {
 			}
 		} catch(RemoteException ex) {
 			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
+		}
+	}
+	
+	public static void insertarHibernate(Object objeto) throws SQLException {
+		Session sesion;
+		
+		sesion = null;
+		try {
+			// Por el momento sólo se utiliza Hibernate con la primera conexión
+			if(conexiones.size() == 0) {
+				throw new SQLException("La lista de conexiones está vacía.");
+			}
+			// Almacenamos el objeto pasado como parámetro
+			sesion = HibernateSessionFactory.getSession();
+			sesion.beginTransaction();
+			sesion.save(objeto);
+			sesion.getTransaction().commit();
+		} catch(HibernateException ex) {
+			// Si se produce un error, hay que cerrar la sesión
+			sesion.getTransaction().rollback();
+			sesion.close();
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
+	}
+	
+	public static void actualizarHibernate(Object objeto) throws SQLException, HibernateException {
+		Session sesion;
+		
+		sesion = null;
+		try {
+			// Por el momento sólo se utiliza Hibernate con la primera conexión
+			if(conexiones.size() == 0) {
+				throw new SQLException("La lista de conexiones está vacía.");
+			}
+			// Actualizamos el objeto pasado como parámetro
+			sesion = HibernateSessionFactory.getSession();
+			sesion.beginTransaction();
+			sesion.update(objeto);
+			sesion.getTransaction().commit();
+		} catch(HibernateException ex) {
+			// Si se produce un error, hay que cerrar la sesión
+			sesion.getTransaction().rollback();
+			sesion.close();
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
+	}
+	
+	public static void borrarHibernate(Object objeto) throws SQLException, HibernateException {
+		Session sesion;
+		
+		sesion = null;
+		try {
+			// Por el momento sólo se utiliza Hibernate con la primera conexión
+			if(conexiones.size() == 0) {
+				throw new SQLException("La lista de conexiones está vacía.");
+			}
+			// Borramos el objeto pasado como parámetro
+			sesion = HibernateSessionFactory.getSession();
+			sesion.beginTransaction();
+			sesion.delete(objeto);
+			sesion.getTransaction().commit();
+		} catch(HibernateException ex) {
+			// Si se produce un error, hay que cerrar la sesión
+			sesion.getTransaction().rollback();
+			sesion.close();
+			throw new SQLException(ex.getLocalizedMessage(), ex);
 		}
 	}
 	

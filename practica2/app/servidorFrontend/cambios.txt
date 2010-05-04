@@ -1,8 +1,21 @@
 Cambios:
+
 - La clase Sesion ha pasado a ser abstracta y ya no tiene asociado un usuario, para poder generalizar las sesiones de los usuarios y los beneficiarios, que ahora también pueden iniciar sesión en el sistema.
+
 - Sesion tiene dos especializacioens: SesionUsuario y SesionBeneficiario, cada una de las cuales tiene asociado un objeto del tipo adecuado (Usuario o Beneficiario).
+
 - Para poder identificar unívocamente a los clientes que inician sesión sin conocer su tipo, se ha añadido el método abstracto "getNombre()" a la clase Sesion, que en la clase SesionUsuario devuelve el login del usuario y en la SesionBeneficiario el NIF del beneficiario.
+
 - Se ha cambiado el nombre de la enumeración RolesUsuario a Roles, y se ha añadido el valor Beneficiario. Esta enumeración representa los roles que puede tener un cliente que inicia sesión en el sistema; ahora esos clientes también pueden ser beneficiarios, y tal y como se ha hecho sería muy fácil definir varios tipos de beneficiarios con diferentes operaciones disponibles para cada uno de ellos.
+
 - Debido al cambio en las sesiones, se han tenido que cambiar las operaciones de algunos gestores que accedían al campo Usuario de la Sesion, y todas las llamadas en la clase ServidorFrontend a los métodos que escribían en el log, porque se utilizaba siempre el login del usuario (ahora se llama a "getNombre()").
+
 - En el cliente se han tenido que cambiar todas las referencias a RolesUsuario por Roles.
 
+- Se ha creado una nueva clase ConsultaHibernate que agrupa una cadena de consulta de Hibernate y sus parámetros, de forma análoga a lo que se hizo con ComandoSQL. Esta clase tiene un método crearQuery que toma una sesión de Hibernate y devuelve una consulta específica para esa sesión.
+
+- Modificado el GestorConexionesBD para poder realizar consultas, inserciones,  modificaciones y eliminaciones a través de Hibernate. Para las consultas se utiliza un método al que se le pasa una instancia de ConsultaHibernate, mientras que para las otras tres operaciones simplemente se pasa el objeto que se quiere crear/modificar/eliminar.
+
+- Modificado el FPCentroSalud para utilizar Hibernate.
+
+- Modificadas las tablas de la base de datos para tener el mismo nombre que las clases del dominio (por comodidad). Por ahora sólo se ha cambiado CentroSalud. <!>

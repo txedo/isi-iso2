@@ -270,7 +270,7 @@ public class PruebasPersistencia extends PruebasBase {
 	/** Pruebas de la tabla de centros de salud */
 	public void testCentrosSalud() {
 		Vector<CentroSalud> centros;
-		CentroSalud centro;
+		CentroSalud centro, centroAux;
 		
 		try {
 			// Intentamos buscar un centro aleatorio sin haber uno
@@ -300,9 +300,11 @@ public class PruebasPersistencia extends PruebasBase {
 		try {
 			// Intentamos insertar el mismo centro para ver si falla
 			// (no puede haber dos centros con el mismo nombre)
-			FPCentroSalud.insertar(centro1);
+			centroAux = new CentroSalud(centro1.getNombre(), centro1.getDireccion());
+			FPCentroSalud.insertar(centroAux);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
+			e.printStackTrace();
 		} catch(Exception e) {
 			fail("Se esperaba una excepción SQLException");
 		}
