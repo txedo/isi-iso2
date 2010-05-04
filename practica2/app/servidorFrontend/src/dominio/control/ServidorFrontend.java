@@ -58,12 +58,12 @@ public class ServidorFrontend implements IServidorFrontend {
     // Métodos de gestión de sesiones
     // ------------------------------
     
-	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+	public ISesion identificarUsuario(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
 		ISesion sesion;
 		
 		try {
 			// Nos identificamos en el sistema con el login y la password
-			sesion = GestorSesiones.identificar(login, password);
+			sesion = GestorSesiones.identificarUsuario(login, password);
 			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Usuario '" + login + "' autenticado.");
 		} catch(SQLException se) {
 			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error SQL mientras se autenticaba el usuario '" + login + "': " + se.getLocalizedMessage());
@@ -81,6 +81,32 @@ public class ServidorFrontend implements IServidorFrontend {
 		
 		return sesion;
 	}
+	
+	public ISesion identificarBeneficiario(String nss) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+		ISesion sesion;
+		
+		try {
+			// Nos identificamos en el sistema con el nss
+			sesion = GestorSesiones.identificarBeneficiario(nss);
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Beneficiario con NSS'" + nss + "' autenticado.");
+		} catch(SQLException se) {
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error SQL mientras se autenticaba el beneficiario con NSS '" + nss + "': " + se.getLocalizedMessage());
+			throw se;
+		} catch(UsuarioIncorrectoException uie) {
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al recuperar el beneficiario con NSS '" + nss + "' que se estaba autenticando: " + uie.getLocalizedMessage());
+			throw uie;
+		} catch(NullPointerException npe) {
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al intentar autenticar un beneficiario con datos no válidos: " + npe.getLocalizedMessage());
+			throw npe;
+		} catch(Exception e) {
+			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se autenticaba un beneficiario: " + e.toString());
+			throw e;
+		}
+		
+		return sesion;
+	}
+	
+	
 	
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
 		String nombre;

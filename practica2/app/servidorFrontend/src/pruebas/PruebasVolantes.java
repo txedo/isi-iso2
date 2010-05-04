@@ -122,9 +122,9 @@ public class PruebasVolantes extends PruebasBase {
 			FPVolante.insertar(volante1);
 			FPVolante.insertar(volante2);
 			// Iniciamos tres sesiones con roles de citador, administrador y medico
-			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
-			sesionAdmin = GestorSesiones.identificar(administrador1.getLogin(), "admin");
-			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
+			sesionCitador = GestorSesiones.identificarUsuario(citador1.getLogin(), "cit123");
+			sesionAdmin = GestorSesiones.identificarUsuario(administrador1.getLogin(), "admin");
+			sesionMedico = GestorSesiones.identificarUsuario(medico1.getLogin(), "abcdef");
 			// Registramos dos clientes
 			clienteAdmin = new ClientePrueba();
 			clienteMedico = new ClientePrueba();

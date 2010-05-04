@@ -109,7 +109,7 @@ public class ControladorCliente {
 		
 		try {
 			// Nos identificamos en el servidor
-			sesion = (ISesion)servidor.identificar(login, password);
+			sesion = (ISesion)servidor.identificarUsuario(login, password);
 			usuarioAutenticado = login;
 		} catch(RemoteException e) {
 			throw new RemoteException("No se puede identificar el usuario en el servidor front-end (IP " + configuracion.getIPFrontend() + ", puerto " + String.valueOf(configuracion.getPuertoFrontend()) + ").");

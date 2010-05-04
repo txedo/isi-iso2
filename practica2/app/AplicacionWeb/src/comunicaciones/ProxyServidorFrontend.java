@@ -28,18 +28,31 @@ import excepciones.VolanteNoValidoException;
 public class ProxyServidorFrontend implements IServidorFrontend {
 	
 	private IServidorFrontend servidor;
+	private static ProxyServidorFrontend instancia;
+	
+	public static ProxyServidorFrontend getProxy() throws RemoteException {
+		if(instancia == null) {
+			instancia = new ProxyServidorFrontend();
+		}
+		return instancia;
+	}
 	
 	public void conectar(String ip, int puerto) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
-		
-		url = "rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR;
-        servidor = (IServidorFrontend)Naming.lookup(url);
+		if (servidor==null) {
+			url = "rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR;
+			servidor = (IServidorFrontend)Naming.lookup(url);
+		}
 	}
 	
 	// Métodos de gestión de sesiones
 	
-	public ISesion identificar(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		return servidor.identificar(login, password);
+	public ISesion identificarUsuario(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+		return servidor.identificarUsuario(login, password);
+	}
+	
+	public ISesion identificarBeneficiario(String nss) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+		return servidor.identificarBeneficiario(nss);
 	}
 
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {

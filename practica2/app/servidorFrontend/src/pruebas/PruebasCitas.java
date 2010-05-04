@@ -150,9 +150,9 @@ public class PruebasCitas extends PruebasBase {
 			FPVolante.insertar(volante1);
 			FPVolante.insertar(volante2);
 			// Iniciamos tres sesiones con roles de citador, administrador y medico
-			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
-			sesionAdmin = GestorSesiones.identificar(administrador1.getLogin(), "admin");
-			sesionMedico = GestorSesiones.identificar(medico2.getLogin(), "xxx");
+			sesionCitador = GestorSesiones.identificarUsuario(citador1.getLogin(), "cit123");
+			sesionAdmin = GestorSesiones.identificarUsuario(administrador1.getLogin(), "admin");
+			sesionMedico = GestorSesiones.identificarUsuario(medico2.getLogin(), "xxx");
 			// Registramos dos clientes
 			clienteCitador = new ClientePrueba();
 			clienteMedico = new ClientePrueba();

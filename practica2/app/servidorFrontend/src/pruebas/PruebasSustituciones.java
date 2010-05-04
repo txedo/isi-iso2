@@ -74,8 +74,8 @@ public class PruebasSustituciones extends PruebasBase {
 			FPUsuario.insertar(citador1);
 			FPUsuario.insertar(admin1);
 			// Iniciamos dos sesiones con roles de citador y administrador
-			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
-			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "admin");
+			sesionCitador = GestorSesiones.identificarUsuario(citador1.getLogin(), "cit123");
+			sesionAdmin = GestorSesiones.identificarUsuario(admin1.getLogin(), "admin");
 			// Registramos dos clientes
 			clienteCitador = new ClientePrueba();
 			clienteAdmin = new ClientePrueba();

@@ -112,9 +112,9 @@ public class PruebasMedicos extends PruebasBase {
 			FPUsuario.insertar(admin1);
 			FPBeneficiario.insertar(beneficiario1);
 			// Iniciamos tres sesiones con roles de citador y administrador
-			sesionCitador = GestorSesiones.identificar(citador1.getLogin(), "cit123");
-			sesionMedico = GestorSesiones.identificar(medico1.getLogin(), "abcdef");
-			sesionAdmin = GestorSesiones.identificar(admin1.getLogin(), "admin");
+			sesionCitador = GestorSesiones.identificarUsuario(citador1.getLogin(), "cit123");
+			sesionMedico = GestorSesiones.identificarUsuario(medico1.getLogin(), "abcdef");
+			sesionAdmin = GestorSesiones.identificarUsuario(admin1.getLogin(), "admin");
 			// Registramos dos clientes
 			clienteAdmin = new ClientePrueba();
 			clienteMedico = new ClientePrueba();

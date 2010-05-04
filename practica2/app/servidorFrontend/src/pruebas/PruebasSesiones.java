@@ -74,7 +74,7 @@ public class PruebasSesiones extends PruebasBase {
 		
 		try {
 			// Intentamos identificarnos en el sistema con un usuario inexistente
-			servidor.identificar("administrador", "admin");
+			servidor.identificarUsuario("administrador", "admin");
 			fail("Se esperaba una excepción UsusarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
 		} catch(Exception e) {
@@ -83,7 +83,7 @@ public class PruebasSesiones extends PruebasBase {
 
 		try {
 			// Intentamos identificarnos en el sistema con una contraseña errónea
-			servidor.identificar("admin", "nniimmddaa");
+			servidor.identificarUsuario("admin", "nniimmddaa");
 			fail("Se esperaba una excepción UsusarioIncorrectoException");
 		} catch(UsuarioIncorrectoException e) {
 		} catch(Exception e) {
@@ -93,7 +93,7 @@ public class PruebasSesiones extends PruebasBase {
 		try {
 			// Nos identificamos en el sistema con un usuario correcto
 			// y comprobamos que la sesión tiene el rol correcto
-			sesion = servidor.identificar("admin", "admin");
+			sesion = servidor.identificarUsuario("admin", "admin");
 			assertNotNull(sesion);
 			assertEquals(Roles.Administrador.ordinal(), sesion.getRol());
 			// Realizamos una operación con la sesión obtenida
@@ -104,14 +104,14 @@ public class PruebasSesiones extends PruebasBase {
 		
 		try {
 			// Nos identificamos en el sistema con un usuario correcto
-			sesion = servidor.identificar("medPrueba", "abcdef");
+			sesion = servidor.identificarUsuario("medPrueba", "abcdef");
 			assertNotNull(sesion);
 			assertEquals(Roles.Médico.ordinal(), sesion.getRol());
 			// Esta espera evita que la prueba falle de vez en cuando,
 			// probablemente porque no da tiempo a almacenarse la sesión
 			Thread.sleep(50);
 			// Iniciamos una nueva sesión con el mismo usuario
-			sesion2 = servidor.identificar("medPrueba", "abcdef");
+			sesion2 = servidor.identificarUsuario("medPrueba", "abcdef");
 			assertNotNull(sesion);
 			assertTrue(sesion.getId() != sesion2.getId());
 			// Realizamos una operación con la última sesión
@@ -145,7 +145,7 @@ public class PruebasSesiones extends PruebasBase {
 
 		try {
 			// Iniciamos una sesión como administrador y registramos un cliente
-			sesion = servidor.identificar("admin", "admin");
+			sesion = servidor.identificarUsuario("admin", "admin");
 			servidor.registrar(cliente1, sesion.getId());
 			assertNotNull(GestorSesiones.getClientes().get(sesion.getId()));
 		} catch(Exception e) {
@@ -155,7 +155,7 @@ public class PruebasSesiones extends PruebasBase {
 		try {
 			// Volvemos a iniciar sesión como adminisrador para
 			// ver que se cierra la sesión anterior
-			sesion = servidor.identificar("admin", "admin");
+			sesion = servidor.identificarUsuario("admin", "admin");
 			Thread.sleep(100);
 			assertTrue(cliente1.isLlamadoCerrarSesion());
 		} catch(Exception e) {
@@ -197,7 +197,7 @@ public class PruebasSesiones extends PruebasBase {
 		
 		try {
 			// Iniciamos una sesión como administrador
-			sesion = servidor.identificar("admin", "admin");
+			sesion = servidor.identificarUsuario("admin", "admin");
 			// Obtenemos las operaciones disponibles
 			operaciones = (Vector<Operaciones>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.OPERACIONES_DISPONIBLES, null);
 			assertNotNull(operaciones);
@@ -227,7 +227,7 @@ public class PruebasSesiones extends PruebasBase {
 	public void testDatosNulos() {
 		try {
 			// Intentamos identificarnos con un nombre de usuario nulo
-			servidor.identificar(null, "");
+			servidor.identificarUsuario(null, "");
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {
@@ -236,7 +236,7 @@ public class PruebasSesiones extends PruebasBase {
 		
 		try {
 			// Intentamos identificarnos con una contraseña nula
-			servidor.identificar("", null);
+			servidor.identificarUsuario("", null);
 			fail("Se esperaba una excepción NullPointerException");
 		} catch(NullPointerException e) {
 		} catch(Exception e) {

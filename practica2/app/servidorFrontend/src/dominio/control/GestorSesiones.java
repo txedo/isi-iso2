@@ -10,12 +10,15 @@ import java.util.Vector;
 import comunicaciones.ICliente;
 import comunicaciones.ProxyCliente;
 import dominio.UtilidadesDominio;
+import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Operaciones;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.Sesion;
+import dominio.conocimiento.SesionBeneficiario;
 import dominio.conocimiento.SesionUsuario;
 import dominio.conocimiento.Usuario;
+import persistencia.FPBeneficiario;
 import persistencia.FPUsuario;
 import excepciones.CentroSaludInexistenteException;
 import excepciones.DireccionInexistenteException;
@@ -38,7 +41,7 @@ public class GestorSesiones {
 	private static Hashtable<Long, ICliente> clientes = new Hashtable<Long, ICliente>();
 
 	// Metodo para identificar un usuario y crear una sesion
-	public static ISesion identificar(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, RemoteException, Exception {
+	public static ISesion identificarUsuario(String login, String password) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, RemoteException, Exception {
 		Enumeration<Sesion> sesionesAbiertas; 
 		Sesion sesion, sesionAbierta;
 		ICliente cliente;
@@ -102,6 +105,66 @@ public class GestorSesiones {
 
 		// Creamos la sesión y la guardamos en la tabla de sesiones
 		sesion = new SesionUsuario(idSesion, usuario);
+		sesiones.put(idSesion, sesion);
+		
+		return (ISesion)sesion;
+	}
+	
+	public static ISesion identificarBeneficiario(String nss) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException, RemoteException, Exception {
+		Enumeration<Sesion> sesionesAbiertas; 
+		Sesion sesion, sesionAbierta;
+		ICliente cliente;
+		Beneficiario bene;
+		Random rnd;
+		String passwordEncriptada;
+		boolean encontrado;
+		long idSesion;
+		
+		// Comprobamos los parámetros pasados
+		if(nss == null) {
+			throw new NullPointerException("El NSS de un beneficiario no puede ser nulo.");		
+		}
+		
+		// Consultamos el beneficiario
+		bene = FPBeneficiario.consultarPorNSS(nss);
+
+		// Comprobamos si el beneficiario ya tenía una sesión iniciada
+		sesionesAbiertas = sesiones.elements();
+		sesionAbierta = null;
+		encontrado = false;
+		while(sesionesAbiertas.hasMoreElements() && !encontrado) {
+			sesionAbierta = sesionesAbiertas.nextElement();
+			if(sesionAbierta instanceof SesionUsuario
+			 && ((SesionBeneficiario)sesionAbierta).getBeneficiario().getNif().equals(bene.getNif())) {
+				encontrado = true;
+			}
+		}
+		
+		// Si el beneficiario ya tenía una sesion iniciada, se cierra
+		if(encontrado) {
+			cliente = clientes.get(sesionAbierta.getId());
+			// El cliente devuelto puede ser null si nunca se llamó al
+			// método registrar (por ejemplo, en las pruebas del sistema)
+			if(cliente != null) {
+				try {
+					// Forzamos a que el cliente antiguo salga del sistema
+					cliente.cerrarSesion();
+				} catch(RemoteException e) {
+					// Ignoramos la excepción
+				}
+			}
+			ServidorFrontend.getServidor().liberar(sesionAbierta.getId());
+		}
+
+		// Creamos un identificador único para la nueva sesión
+		rnd = new Random();
+		rnd.setSeed(System.currentTimeMillis());
+		do {
+			idSesion = Math.abs(rnd.nextLong());
+		} while(sesiones.containsKey(idSesion));
+
+		// Creamos la sesión y la guardamos en la tabla de sesiones
+		sesion = new SesionBeneficiario(idSesion, bene);
 		sesiones.put(idSesion, sesion);
 		
 		return (ISesion)sesion;
