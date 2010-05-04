@@ -49,8 +49,7 @@ CREATE TABLE entradalog (
        fecha DATETIME NOT NULL,
        accion ENUM ('create', 'read', 'update', 'delete', 'info') NOT NULL,
        mensaje VARCHAR(255) NOT NULL default '',
-       PRIMARY KEY (id), 
-       FOREIGN KEY (usuario) REFERENCES usuarios (login) ON DELETE SET NULL ON UPDATE CASCADE       
+       PRIMARY KEY (id)
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE beneficiarios (
