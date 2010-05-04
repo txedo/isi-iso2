@@ -28,7 +28,7 @@ public class PruebasBase extends TestCase {
 			bd = agente.getConexion();
 			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
 			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM centros");
+			sentencia = bd.prepareStatement("DELETE FROM centrosalud");
 			sentencia.executeUpdate();
 			sentencia = bd.prepareStatement("DELETE FROM citas");
 			sentencia.executeUpdate();

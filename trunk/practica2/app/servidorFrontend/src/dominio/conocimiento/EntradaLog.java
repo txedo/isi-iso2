@@ -8,12 +8,14 @@ import java.util.Date;
  */
 public class EntradaLog {
 	
+	private int id;
 	private String usuario;
 	private Timestamp fecha;
 	private String accion;
 	private String mensaje;
 	
 	public EntradaLog() {
+		id = -1;
 		usuario = "";
 		fecha = new Timestamp((new Date()).getTime());
 		accion = "";
@@ -21,6 +23,7 @@ public class EntradaLog {
 	}
 	
 	public EntradaLog(String usuario, Timestamp fecha, String accion, String mensaje) {
+		id = -1;
 		this.usuario = usuario;
 		this.fecha = fecha;
 		this.accion = accion;
@@ -28,10 +31,19 @@ public class EntradaLog {
 	}
 
 	public EntradaLog(String usuario, String accion, String mensaje) {
+		id = -1;
 		this.usuario = usuario;
 		this.fecha = new Timestamp((new Date()).getTime());
 		this.accion = accion;
 		this.mensaje = mensaje;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getUsuario() {

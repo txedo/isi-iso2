@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Mon Mar 15 01:23:29 CET 2010
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=ServidorRespaldoStubs.jar
+manifest.mergeall=true
+manifest.mainclass=
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<po|servidorRespaldo>~comunicaciones/~ConexionBDRespaldo.class;<po|servidorRespaldo>~comunicaciones/~ConexionLogVentana.class;<po|servidorRespaldo>~comunicaciones/~ConfiguracionRespaldo.class;<po|servidorRespaldo>~comunicaciones/~RemotoServidorRespaldo.class;<po|servidorRespaldo>~comunicaciones/~UtilidadesComunicaciones.class;<po|servidorRespaldo>~dominio/;<po|servidorRespaldo>~excepciones/;<po|servidorRespaldo>~persistencia/;<po|servidorRespaldo>~presentacion/;<po|servidorRespaldo>~pruebas/;<jar|junit.jar>;<jar|mysql-connector-java-5.1.10-bin.jar>;<jar|ServidorFrontendStubs.jar>;<jar|uispec4j-2.2-jdk16.jar>;<jar|com.cloudgarden.layout.jar>
+includes=

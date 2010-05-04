@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="dominio.conocimiento">
+	<class name="CentroSalud" table="centrosalud">
+		<id name="id" column="id" type="int">
+			<generator class="native" />
+		</id>
+		<property name="nombre" column="nombre" type="string" unique="true" />
+		<property name="direccion" column="direccion" type="string" />
+	</class>
+</hibernate-mapping>
