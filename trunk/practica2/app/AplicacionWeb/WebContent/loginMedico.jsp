@@ -5,8 +5,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Login Médico</title>
 </head>
 <body>
+	<s:form action="loginMedico">
+		<s:textfield name="login" label="Login"></s:textfield>
+		<s:password name="password" label="Contraseña"></s:password>
+		<s:submit value="Aceptar"></s:submit>
+	</s:form>
 </body>
 </html>

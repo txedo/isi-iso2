@@ -53,6 +53,24 @@ public class GestorUsuarios {
 		return usuario;
 	}
 	
+	public static Usuario consultarUsuarioPorLogin(long idSesion, String login) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+		Usuario usuario;
+		
+		// Comprobamos los parámetros pasados
+		if(login == null) {
+			throw new NullPointerException("El login del usuario buscado no puede ser nulo.");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarPropioUsuario);
+		
+		// Llamamos al método común para consultar usuarios y médicos
+		usuario = consultarUsuarioPorLogin(login);
+		
+		return usuario;
+	}
+	
+	
 	// Método para añadir un nuevo usuario al sistema
 	public static Usuario crearUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
 		Usuario usuarioCreado;
@@ -139,6 +157,21 @@ public class GestorUsuarios {
 			usuario = FPUsuario.consultar(nif);
 		} catch(UsuarioIncorrectoException ex) {
 			throw new UsuarioInexistenteException("No existe ningún usuario con el NIF introducido.");
+		}
+		
+		return usuario;
+	}
+	
+	// Método para consultar los datos de un usuario a partir de su login (que es único en la base de datos)
+	// (es público porque se utiliza desde otro gestor, no es accesible a los clientes)
+	public static Usuario consultarUsuarioPorLogin(String login) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+		Usuario usuario;
+		
+		// Obtenemos el usuario del sistema con el login indicado
+		try {
+			usuario = FPUsuario.consultarPorLogin(login);
+		} catch(UsuarioIncorrectoException ex) {
+			throw new UsuarioInexistenteException("No existe ningún usuario con el login introducido.");
 		}
 		
 		return usuario;

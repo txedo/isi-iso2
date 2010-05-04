@@ -61,6 +61,32 @@ public class GestorMedicos {
 		return (Medico)usuario;
 	}
 	
+	public static Medico consultarMedicoPorLogin(long idSesion, String login) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
+		Usuario usuario;
+		
+		// Comprobamos los parámetros pasados
+		if(login == null) {
+			throw new NullPointerException("El login del médico buscado no puede ser nulo.");
+		}
+		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarPropioMedico);
+		
+		// Llamamos al método común para consultar usuarios y médicos
+		try {
+			usuario = GestorUsuarios.consultarUsuarioPorLogin(login);
+		} catch(UsuarioInexistenteException e) {
+			throw new MedicoInexistenteException("No existe ningún médico con el login introducido.");
+		}
+		
+		// Nos aseguramos de que el usuario devuelto tenga el rol esperado
+		if(usuario.getRol() != Roles.Médico) {
+			throw new MedicoInexistenteException("El login introducido no pertenece a un médico.");
+		}
+
+		return (Medico)usuario;
+	}
+	
 	// Método para añadir un nuevo médico al sistema
 	public static Medico crearMedico(long idSesion, Medico medico) throws SQLException, MedicoYaExistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
 		Medico medicoCreado;

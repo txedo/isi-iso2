@@ -82,32 +82,6 @@ public class ServidorFrontend implements IServidorFrontend {
 		return sesion;
 	}
 	
-	public ISesion identificarBeneficiario(String nss) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		ISesion sesion;
-		
-		try {
-			// Nos identificamos en el sistema con el nss
-			sesion = GestorSesiones.identificarBeneficiario(nss);
-			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Beneficiario con NSS'" + nss + "' autenticado.");
-		} catch(SQLException se) {
-			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error SQL mientras se autenticaba el beneficiario con NSS '" + nss + "': " + se.getLocalizedMessage());
-			throw se;
-		} catch(UsuarioIncorrectoException uie) {
-			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al recuperar el beneficiario con NSS '" + nss + "' que se estaba autenticando: " + uie.getLocalizedMessage());
-			throw uie;
-		} catch(NullPointerException npe) {
-			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al intentar autenticar un beneficiario con datos no válidos: " + npe.getLocalizedMessage());
-			throw npe;
-		} catch(Exception e) {
-			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se autenticaba un beneficiario: " + e.toString());
-			throw e;
-		}
-		
-		return sesion;
-	}
-	
-	
-	
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception {
 		String nombre;
 		
@@ -916,7 +890,26 @@ public class ServidorFrontend implements IServidorFrontend {
 			break;
 			
 		// Métodos auxiliares de gestión de beneficiarios
+		case ICodigosMensajeAuxiliar.IDENTIFICAR_BENEFICIARIO:
+			try {
+				// Nos identificamos en el sistema con el nss
+				resultado = GestorSesiones.identificarBeneficiario((String)informacion);
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Beneficiario con NSS' " + (String)informacion + "' autenticado.");
+			} catch(SQLException se) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error SQL mientras se autenticaba el beneficiario con NSS '" + (String)informacion + "': " + se.getLocalizedMessage());
+				throw se;
+			} catch(UsuarioIncorrectoException uie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al recuperar el beneficiario con NSS '" + (String)informacion + "' que se estaba autenticando: " + uie.getLocalizedMessage());
+				throw uie;
+			} catch(NullPointerException npe) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al intentar autenticar un beneficiario con datos no válidos: " + npe.getLocalizedMessage());
+				throw npe;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se autenticaba un beneficiario: " + e.toString());
+				throw e;
+			}
 			
+			break;
 		case ICodigosMensajeAuxiliar.ELIMINAR_BENEFICIARIO:
 			try {
 				// Eliminamos un beneficiario del sistema
@@ -1195,6 +1188,44 @@ public class ServidorFrontend implements IServidorFrontend {
 
 		// Métodos auxiliares de gestión de médicos
 			
+		case ICodigosMensajeAuxiliar.CONSULTAR_MEDICO_POR_LOGIN:
+			try {
+				resultado = GestorMedicos.consultarMedicoPorLogin(idSesion, (String)informacion);
+				nombre = GestorSesiones.getSesion(idSesion).getNombre();
+				GestorConexionesLog.ponerMensaje(nombre, ITiposMensajeLog.TIPO_READ, "Consultado el médico con login " + (String)informacion + ".");
+			} catch(SQLException se) {
+				nombre = GestorSesiones.getSesion(idSesion).getNombre();
+				GestorConexionesLog.ponerMensaje(nombre, ITiposMensajeLog.TIPO_READ, "Error SQL mientras se consultaba el médico con loing " + (String)informacion + ": " + se.getLocalizedMessage());
+				throw se;
+			} catch(MedicoInexistenteException mie) {
+				nombre = GestorSesiones.getSesion(idSesion).getNombre();
+				GestorConexionesLog.ponerMensaje(nombre, ITiposMensajeLog.TIPO_READ, "Error al recuperar un médico mientras se consultaba el médico con login " + (String)informacion + ": " + mie.getLocalizedMessage());
+				throw mie;
+			} catch(CentroSaludInexistenteException csie) {
+				nombre = GestorSesiones.getSesion(idSesion).getNombre();
+				GestorConexionesLog.ponerMensaje(nombre, ITiposMensajeLog.TIPO_READ, "Error al recuperar un centro de salud mientras se consultaba el médico con login " + (String)informacion + ": " + csie.getLocalizedMessage());
+				throw csie;
+			} catch(DireccionInexistenteException die) {
+				nombre = GestorSesiones.getSesion(idSesion).getNombre();
+				GestorConexionesLog.ponerMensaje(nombre, ITiposMensajeLog.TIPO_READ, "Error al recuperar una dirección mientras se consultaba el médico con login " + (String)informacion + ": " + die.getLocalizedMessage());
+				throw die;
+			} catch(NullPointerException npe) {
+				nombre = GestorSesiones.getSesion(idSesion).getNombre();
+				GestorConexionesLog.ponerMensaje(nombre, ITiposMensajeLog.TIPO_READ, "Error al intentar consultar un médico con datos no válidos: " + npe.getLocalizedMessage());
+				throw npe;
+			} catch(OperacionIncorrectaException oie) {
+				nombre = GestorSesiones.getSesion(idSesion).getNombre();
+				GestorConexionesLog.ponerMensaje(nombre, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta del médico con login " + (String)informacion + ": " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar el médico con login " + (String)informacion + ": " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se consultaba un médico: " + e.toString());
+				throw e;
+			}
+		
+			break;
 		case ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO:
 			try {
 				// Obtenemos todos los médicos que son de un tipo determinado

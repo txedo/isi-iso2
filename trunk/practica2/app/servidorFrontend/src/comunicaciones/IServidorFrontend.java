@@ -31,9 +31,7 @@ public interface IServidorFrontend extends Remote {
 	// Métodos de gestión de sesiones
 	
 	public ISesion identificarUsuario(String login, String password) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception;
-	
-	public ISesion identificarBeneficiario(String nss) throws RemoteException, SQLException, UsuarioIncorrectoException, Exception;
-	
+		
 	public void registrar(ICliente cliente, long idSesion) throws RemoteException, SesionNoIniciadaException, Exception;	
 	
 	public void liberar(long idSesion) throws RemoteException, Exception;

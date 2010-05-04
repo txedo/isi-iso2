@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Cita con el médico de cabecera</title>
+<title>Cita con su médico</title>
 </head>
 <body>
 <%= ((Beneficiario) request.getSession(false).getAttribute("Beneficiario")).getNombre() %>, elija su día y hora: <br> 

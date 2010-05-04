@@ -8,6 +8,6 @@
 <title>Dar Volante</title>
 </head>
 <body>
-	
+	<s:property value="medico.nif"/>
 </body>
 </html>

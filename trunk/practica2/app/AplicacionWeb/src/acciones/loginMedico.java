@@ -1,37 +1,44 @@
 package acciones;
 
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 import com.opensymphony.xwork2.ActionSupport;
-
 import comunicaciones.IConexion;
 import comunicaciones.ProxyServidorFrontend;
 
-import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.ISesion;
+import dominio.conocimiento.Medico;
 import excepciones.UsuarioIncorrectoException;
 
-public class loginBeneficiario extends ActionSupport{
-	
+public class loginMedico extends ActionSupport {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1830263215915906207L;
+	private static final long serialVersionUID = 5026160115822864726L;
 	
-	private String Nss = "";
-	private Beneficiario beneficiario;
-	private ISesion sesion;
-		
+	private Medico medico;
+	private String login;
+	private String password;
+	
 	public String execute() {
 		ProxyServidorFrontend p;
+		ISesion s;
 		try {
 			p = ProxyServidorFrontend.getProxy();
 			p.conectar(IConexion.IP, IConexion.PUERTO);
-			sesion = p.identificarBeneficiario(Nss);
-			// Se obtiene el beneficiario a partir del NSS introducido
-			beneficiario = p.getBeneficiarioPorNSS(sesion.getId(), Nss);
+			s = p.identificarUsuario(login, password);
+			medico = (Medico) p.getMedicoPorLogin(s.getId(), login);
 		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotBoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -44,24 +51,22 @@ public class loginBeneficiario extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(sesion.getId());
+		
 		return SUCCESS;
 	}
 	
-	public void setNss(String Nss) {
-		this.Nss= Nss;
+	
+	public Medico getMedico() {
+		return medico;
 	}
 
-	public String getNss() {
-		return Nss;
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
-	public Beneficiario getBeneficiario() {
-		return beneficiario;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-	public ISesion getSesion() {
-		return sesion;
-	}
 
 }
