@@ -44,7 +44,6 @@ public class loginBeneficiario extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(sesion.getId());
 		return SUCCESS;
 	}
 	

@@ -5,12 +5,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Login Médico</title>
+<title>Login Medico</title>
 </head>
 <body>
 	<s:form action="loginMedico">
-		<s:textfield name="login" label="Login"></s:textfield>
-		<s:password name="password" label="Contraseña"></s:password>
+		<s:textfield name="username" label="Login"></s:textfield>
+		<s:password name="pass" label="Contraseña"></s:password>
 		<s:submit value="Aceptar"></s:submit>
 	</s:form>
 </body>

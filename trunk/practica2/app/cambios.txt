@@ -19,3 +19,17 @@ Cambios:
 - Modificado el FPCentroSalud para utilizar Hibernate.
 
 - Modificadas las tablas de la base de datos para tener el mismo nombre que las clases del dominio (por comodidad). Por ahora sólo se ha cambiado CentroSalud. <!>
+
+- El método "identificar" se ha renombrado por "identificarUsuario" y se ha creado el método "identificarBeneficiario". Se han actualizado las clases GestorSesion, ServidorFrontend y el proxy de la web.
+
+- Añadido en el gestor de medicos el metodo para consultar un medico por login
+
+- Añadido en el gestor de usuarios el metodo para consultar un usuario por login
+	NOTA: el método para consultar por login ya estaba hecho en el FPUsuarios
+	
+- Para seguir manteniendo la interfaz IServidor, el identificar beneficiario se pasa al mensaje auxiliar. Lo mismo para consultar un medico por su login.
+
+- La operacion "identificarBeneficiario" y "consultarPorLogin" solo se han añadido al proxy de la aplicación Web, pues los clientes de la aplicación de escritorio no la va a utilizar
+
+- Para consultar un medico por login, se ha creado una operacion nueva que se llama ConsultarPropioMedico, que la puede realizar el medico o el administrador.
+	NOTA: no hace falta una operacion nueva para consultar un beneficiario, pues cualquier usuario puede hacerlo.
