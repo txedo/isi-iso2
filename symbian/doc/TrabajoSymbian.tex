@@ -128,6 +128,12 @@
 \pagenumbering{arabic}
 \pagestyle{fancy}
 
+%Introduccion
+\input{1introduccion.tex}
+\clearpage
+% Desarrollo
+\input{2desarrollo.tex}
+\clearpage
 
 % Sección de apéndices
 % Se añade el titulo de "Apéndices" al índice
@@ -136,12 +142,12 @@
 %\input{Apendices.tex}
 
 % Añadimos la bibliografia al índice
-%\clearpage\phantomsection
-%\addcontentsline{toc}{section}{Referencias}
+\clearpage\phantomsection
+\addcontentsline{toc}{section}{Referencias}
 
 % Bibliografía. En este caso se usa BibTeX
-%\bibliographystyle{plain}
-%\pagestyle{plain} 
-%\bibliography{Bibliografia}
+\bibliographystyle{plain}
+\pagestyle{plain} 
+\bibliography{Bibliografia}
 
 \end{document}
