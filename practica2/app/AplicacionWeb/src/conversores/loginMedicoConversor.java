@@ -19,7 +19,7 @@ public class loginMedicoConversor extends StrutsTypeConverter {
 
 	public Object convertFromString(Map map, String[] values, Class toClass) {
 		Medico medico = null;
-		if (values!=null && values.length==0) {
+		if (values!=null && values.length>0) {
 				String login = values[0];
 				String password = values[1];
 				ProxyServidorFrontend p = null;

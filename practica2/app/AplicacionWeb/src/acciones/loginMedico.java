@@ -21,17 +21,17 @@ public class loginMedico extends ActionSupport {
 	private static final long serialVersionUID = 5026160115822864726L;
 	
 	private Medico medico;
-	private String login;
-	private String password;
+	private String username;
+	private String pass;
+	private ISesion sesion;
 	
 	public String execute() {
 		ProxyServidorFrontend p;
-		ISesion s;
 		try {
 			p = ProxyServidorFrontend.getProxy();
 			p.conectar(IConexion.IP, IConexion.PUERTO);
-			s = p.identificarUsuario(login, password);
-			medico = (Medico) p.getMedicoPorLogin(s.getId(), login);
+			sesion = p.identificarUsuario(username, pass);
+			medico = (Medico) p.getMedicoPorLogin(sesion.getId(), username);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,12 +60,21 @@ public class loginMedico extends ActionSupport {
 		return medico;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setUsername(String login) {
+		this.username = login;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPass(String password) {
+		this.pass = password;
+	}
+
+	public void setMedico(Medico medico) {
+		this.medico = medico;
+	}
+
+
+	public ISesion getSesion() {
+		return sesion;
 	}
 
 

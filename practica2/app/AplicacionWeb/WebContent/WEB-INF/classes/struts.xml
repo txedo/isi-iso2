@@ -6,9 +6,15 @@
 		<action name="loginBeneficiario" class="acciones.loginBeneficiario">
 			<result name="success">menuBeneficiario.jsp</result>
 			<result name="error">error.jsp</result>
+			<result name="input">loginBeneficiario.jsp</result>
 		</action>
 		<action name="loginMedico" class="acciones.loginMedico">
 			<result name="success">darVolante.jsp</result>
+			<result name="error">error.jsp</result>
+			<result name="input">loginMedico.jsp</result>
+		</action>
+		<action name="citaEspecialista" class="acciones.citaEspecialista">
+			<result name="success">citaEspecialista.jsp?cargado=true</result>
 			<result name="error">error.jsp</result>
 		</action>
     </package>
