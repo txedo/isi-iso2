@@ -5,9 +5,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Vector;
+
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
-import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
@@ -271,7 +271,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			assertEquals(beneficiario, beneficiarioGet);			
 			// Vemos si se le ha asignado un pediatra como médico de cabecera
 			assertNotNull(beneficiarioGet.getMedicoAsignado());
-			assertEquals(FPTipoMedico.consultar(beneficiarioGet.getMedicoAsignado().getNif()), new Pediatra());
+			assertEquals(beneficiarioGet.getMedicoAsignado().getTipoMedico(), new Pediatra());
 			// Comprobamos que se ha avisado a los clientes del registro del beneficiario
 			Thread.sleep(100);
 			beneficiario.setMedicoAsignado(null);
@@ -294,7 +294,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			assertEquals(beneficiario, beneficiarioGet);			
 			// Vemos si se le ha asignado un médico de cabecera que no es pediatra
 			assertNotNull(beneficiarioGet.getMedicoAsignado());
-			assertEquals(FPTipoMedico.consultar(beneficiarioGet.getMedicoAsignado().getNif()), new Cabecera());
+			assertEquals(beneficiarioGet.getMedicoAsignado().getTipoMedico(), new Cabecera());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -358,6 +358,7 @@ public class PruebasBeneficiarios extends PruebasBase {
 			// que se asigne automáticamente un nuevo médico
 			beneficiario1.setFechaNacimiento(fecha2);
 			servidor.modificar(sesionCitador.getId(), beneficiario1);
+			beneficiario1 = (Beneficiario)beneficiario1.clone();
 			// Comprobamos que el beneficiario se haya actualizado correctamente
 			beneficiarioGet = servidor.getBeneficiario(sesionCitador.getId(), beneficiario1.getNif());
 			assertFalse(beneficiarioGet.getMedicoAsignado().equals(beneficiario1.getMedicoAsignado()));

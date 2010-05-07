@@ -9,10 +9,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+
+import persistencia.ConsultaHibernate;
 import dominio.control.ServidorRespaldo;
-import persistencia.ComandoSQL;
 
 /**
  * Clase que exporta la instancia que será utilizada por el servidor
@@ -80,22 +81,30 @@ public class RemotoServidorRespaldo extends UnicastRemoteObject implements IServ
     
 	// Métodos de acceso a la base de datos
 	
-	public void abrir() throws RemoteException, SQLException {
-		servidor.abrir();
-	}
-	
-	public void cerrar() throws RemoteException, SQLException {
-		servidor.cerrar();
-	}
-	
-	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
-		return servidor.consultar(comando);
+	public List<?> consultar(ConsultaHibernate consulta) throws RemoteException, SQLException {
+		return servidor.consultar(consulta);
 	}
 
-	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException {
-		servidor.ejecutar(comando);
+	public void iniciarTransaccion() throws RemoteException, SQLException {
+		servidor.iniciarTransaccion();
 	}
 
+	public Object insertar(Object objeto) throws RemoteException, SQLException {
+		return servidor.insertar(objeto);
+	}
+
+	public void actualizar(Object objeto) throws RemoteException, SQLException {
+		servidor.actualizar(objeto);
+	}
+
+	public void eliminar(Object objeto) throws RemoteException, SQLException {
+		servidor.eliminar(objeto);
+	}
+
+	public void borrarCache(Object objeto) throws RemoteException, SQLException {
+		servidor.borrarCache(objeto);
+	}
+	
 	public void commit() throws RemoteException, SQLException {
 		servidor.commit();
 	}

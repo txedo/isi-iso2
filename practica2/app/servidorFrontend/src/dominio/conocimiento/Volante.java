@@ -9,7 +9,7 @@ import dominio.UtilidadesDominio;
  * Clase que representa un volante que relaciona un beneficiario, un médico
  * emisor y un médico receptor.
  */
-public class Volante implements Serializable {
+public class Volante implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -8633666128386005254L;
 	
@@ -86,6 +86,14 @@ public class Volante implements Serializable {
 		this.fechaCaducidad = fechaCaducidad;
 	}
 	
+	public Object clone() {
+		Volante v;
+		
+		v = new Volante((Medico)getEmisor().clone(), (Medico)getReceptor().clone(), (Beneficiario)getBeneficiario().clone(), (getCita() == null ? null : (Cita)getCita().clone()), (Date)getFechaCaducidad().clone());
+		v.setId(getId());
+		return v;
+	}
+	
 	public boolean equals(Object o) {
 		Volante v;
 		boolean dev;
@@ -93,18 +101,22 @@ public class Volante implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Volante) {
 			v = (Volante)o;
-			dev = receptor.equals(v.getReceptor()) && emisor.equals(v.getEmisor()) && beneficiario.equals(v.getBeneficiario()) && UtilidadesDominio.fechaIgual(fechaCaducidad, v.getFechaCaducidad(), false);
-			if(cita == null) {
+			dev = getReceptor().equals(v.getReceptor()) && getEmisor().equals(v.getEmisor())
+			    && getBeneficiario().equals(v.getBeneficiario())
+			    && UtilidadesDominio.fechaIgual(getFechaCaducidad(), v.getFechaCaducidad(), false);
+			if(getCita() == null) {
 				dev = dev && v.getCita() == null;
 			} else {
-				dev = dev && v.getCita() != null && cita.equals(v.getCita());
+				dev = dev && v.getCita() != null && getCita().equals(v.getCita());
 			}
 		}
 		return dev;
 	}
 
 	public String toString() {
-		return "E:" + emisor.getNif() + ", R:" + receptor.getNif() + ", B:" + beneficiario.getNif() + ", " + (cita == null ? "(sin cita)" : cita.getFechaYHora().toString());
+		return "E:" + getEmisor().getNif() + ", R:" + getReceptor().getNif()
+		       + ", B:" + getBeneficiario().getNif() + ", "
+		       + (getCita() == null ? "(sin cita)" : getCita().getFechaYHora().toString());
 	}
 	
 }

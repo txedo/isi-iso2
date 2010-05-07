@@ -1,12 +1,15 @@
 package dominio.conocimiento;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
 /**
  * Clase que representa una entrada en el log del sistema.
  */
-public class EntradaLog {
+public class EntradaLog implements Serializable, Cloneable {
+	
+	private static final long serialVersionUID = 7845723551715284252L;
 	
 	private int id;
 	private String usuario;
@@ -78,6 +81,15 @@ public class EntradaLog {
 		this.mensaje = mensaje;
 	}
 	
+	public Object clone() {
+		EntradaLog e;
+		
+		e = new EntradaLog(getUsuario(), getAccion(), getMensaje());
+		e.setFecha((Timestamp)getFecha().clone());
+		e.setId(getId());
+		return e;
+	}
+	
 	public boolean equals(Object o) {
 		EntradaLog e;
 		boolean dev;
@@ -85,11 +97,12 @@ public class EntradaLog {
 		dev = false;
 		if(o != null && o instanceof EntradaLog) {
 			e = (EntradaLog)o;
-			dev = fecha.equals(e.getFecha()) && accion.equals(e.getAccion()) && mensaje.equals(e.getMensaje());
-			if(usuario == null) {
+			dev = getFecha().equals(e.getFecha()) && getAccion().equals(e.getAccion())
+			    && getMensaje().equals(e.getMensaje());
+			if(getUsuario() == null) {
 				dev = dev && e.getUsuario() == null;
 			} else {
-				dev = dev && usuario.equals(e.getUsuario());
+				dev = dev && getUsuario().equals(e.getUsuario());
 			}
 		}
 		return dev;

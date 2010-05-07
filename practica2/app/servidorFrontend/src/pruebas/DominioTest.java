@@ -16,7 +16,7 @@ public class DominioTest extends TestCase {
 		suite.addTestSuite(PruebasSustituciones.class);
 		suite.addTestSuite(PruebasUsuarios.class);
 		suite.addTestSuite(PruebasVolantes.class);
-		suite.addTestSuite(PruebasControlador.class); 
+		suite.addTestSuite(PruebasControlador.class);
 		return suite;
 	}
 

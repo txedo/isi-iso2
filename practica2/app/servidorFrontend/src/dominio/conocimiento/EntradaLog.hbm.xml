@@ -3,13 +3,13 @@
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="dominio.conocimiento">
-	<class name="EntradaLog" table="entradalog">
+	<class name="EntradaLog" table="entradaslog" lazy="false">
 	  	<id name="id" column="id" type="int">
-	  		<generator class="native"></generator>
+	  		<generator class="native" />
 	  	</id>
 	  	<property name="usuario" column="usuario" type="string" />
-	  	<property name="fecha" column="fecha" type="timestamp" />
-	  	<property name="accion" column="accion" type="string" />
-	  	<property name="mensaje" column="mensaje" type="string" />
+	  	<property name="fecha" column="fecha" type="timestamp" not-null="true" />
+	  	<property name="accion" column="accion" type="string" not-null="true" />
+	  	<property name="mensaje" column="mensaje" type="string" not-null="true" />
 	</class>
 </hibernate-mapping>

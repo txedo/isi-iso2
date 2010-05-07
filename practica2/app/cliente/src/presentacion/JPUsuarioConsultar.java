@@ -10,7 +10,9 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.EventObject;
+import java.util.HashSet;
 import java.util.Vector;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -20,12 +22,15 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
+
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.UsuarioBuscadoListener;
 import presentacion.auxiliar.Validacion;
 import presentacion.auxiliar.VentanaCerradaListener;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
 import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
@@ -35,8 +40,8 @@ import dominio.conocimiento.Citador;
 import dominio.conocimiento.Especialista;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.PeriodoTrabajo;
-import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Roles;
+import dominio.conocimiento.Usuario;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.ContraseñaIncorrectaException;
@@ -481,7 +486,7 @@ public class JPUsuarioConsultar extends JPBase {
 			btnCalendario.setVisible(true);
 			btnCalendario.setEnabled(true);
 			lblHorasSemanales.setVisible(true);
-			periodos = ((Medico)usuario).getCalendario();
+			periodos = new Vector<PeriodoTrabajo>(((Medico)usuario).getCalendario());
 			horas = 0;
 			for(PeriodoTrabajo periodo : periodos) {
 				horas += periodo.getNumeroHoras();
@@ -580,7 +585,7 @@ public class JPUsuarioConsultar extends JPBase {
 
 			// Cambiamos los atributos propios de los médicos
 			if(usuarioModif.getRol() == Roles.Médico) {
-				((Medico)usuarioModif).setCalendario(periodos);
+				((Medico)usuarioModif).setCalendario(new HashSet<PeriodoTrabajo>(periodos));
 				((Medico)usuarioModif).setTipoMedico(((Medico)usuario).getTipoMedico());
 			}
 
@@ -904,7 +909,7 @@ public class JPUsuarioConsultar extends JPBase {
 		
 		cmbRolesModel = new DefaultComboBoxModel();
 		for(Roles rol : Roles.values()) {
-			if(rol != Roles.Médico) {
+			if(rol != Roles.Médico && rol != Roles.Beneficiario) {
 				cmbRolesModel.addElement(rol.name());
 			}
 		}

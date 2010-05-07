@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="dominio.conocimiento">
+	<class name="Cita" table="citas" lazy="false">
+		<id name="id" column="id" type="long">
+			<generator class="native" />
+		</id>
+		<property name="fechaYHora" column="fecha" type="timestamp" not-null="true" />
+		<property name="duracion" column="duracion" type="long" not-null="true" />
+		<many-to-one name="beneficiario" column="nifBeneficiario" class="Beneficiario" lazy="false" />
+		<many-to-one name="medico" column="nifMedico" class="Medico" lazy="false" />
+	</class>
+</hibernate-mapping>

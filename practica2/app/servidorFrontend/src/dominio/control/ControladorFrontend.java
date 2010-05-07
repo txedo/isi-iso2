@@ -5,16 +5,19 @@ import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+
 import presentacion.JFServidorFrontend;
+
 import comunicaciones.ConexionBDFrontend;
 import comunicaciones.ConexionLogBD;
 import comunicaciones.ConexionLogVentana;
 import comunicaciones.ConfiguracionFrontend;
-import comunicaciones.RemotoServidorFrontend;
 import comunicaciones.GestorConexionesBD;
 import comunicaciones.GestorConexionesLog;
 import comunicaciones.ProxyServidorRespaldo;
+import comunicaciones.RemotoServidorFrontend;
 import comunicaciones.UtilidadesComunicaciones;
+
 import dominio.conocimiento.ITiposMensajeLog;
 
 /**
@@ -58,24 +61,13 @@ public class ControladorFrontend {
 		// privada como IP del host y las comunicaciones entrantes no funcionen
 		System.setProperty("java.rmi.server.hostname", ipServidor);
 
-		// Cerramos las conexiones que pudiera haber abiertas
-		// (ignoramos los errores que pudieran producirse)
-		try {
-			GestorConexionesBD.cerrarConexiones();
-		} catch(SQLException e) {
-		}
+		// Vaciamos las listas de conexiones
 		GestorConexionesBD.quitarConexiones();
 		GestorConexionesLog.quitarConexiones();
 		
-		// Creamos una conexión con la base de datos local
-		try {
-			basedatos = new ConexionBDFrontend();
-			basedatos.getAgente().setIP(configuracion.getIPBDPrincipal());
-			basedatos.getAgente().setPuerto(configuracion.getPuertoBDPrincipal());
-			basedatos.abrir();
-		} catch(SQLException e) {
-			throw new SQLException("No se puede establecer una conexión con el servidor de la base de datos principal (IP " + configuracion.getIPBDPrincipal() + ", puerto " + String.valueOf(configuracion.getPuertoBDPrincipal()) + ").");
-		}
+		// Creamos la conexión con la base de datos local mediante Hibernate
+		basedatos = new ConexionBDFrontend();
+//TODO: IP Y PUERTO!
 		GestorConexionesBD.ponerConexion(basedatos);
 		
 		// Añadimos las conexiones que mostrarán los mensaje del servidor
@@ -91,14 +83,10 @@ public class ControladorFrontend {
 			try {
 				proxy = new ProxyServidorRespaldo();
 				proxy.conectar(configuracion.getIPRespaldo(), configuracion.getPuertoRespaldo());
-				// Abrimos la base de datos
-				proxy.abrir();
 			} catch(NotBoundException e) {
 				throw new NotBoundException("No se puede conectar con el servidor de respaldo porque está desactivado (IP " + configuracion.getIPRespaldo() + ", puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
 			} catch(RemoteException e) {
 				throw new RemoteException("No se puede conectar con el servidor de respaldo (IP " + configuracion.getIPRespaldo() + ", puerto " + String.valueOf(configuracion.getPuertoRespaldo()) + ").");
-			} catch(SQLException e) {
-				throw new SQLException("No se puede establecer una conexión con el servidor de la base de datos de respaldo.");
 			}
 			GestorConexionesBD.ponerConexion(proxy);
 			GestorConexionesLog.ponerConexion(proxy);
@@ -144,12 +132,8 @@ public class ControladorFrontend {
 		} catch(RemoteException e) {
 		}
 		
-		// Cerramos las conexiones con las BD y vaciamos la lista
-		try {
-			GestorConexionesBD.cerrarConexiones();
-			GestorConexionesBD.quitarConexiones();
-		} catch(SQLException e) {
-		}
+		// Vaciamos la lista de conexiones
+		GestorConexionesBD.quitarConexiones();
 		
 		// Desconectamos el servidor
 		if(remotoServidor != null) {

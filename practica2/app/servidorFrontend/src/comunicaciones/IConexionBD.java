@@ -2,9 +2,10 @@ package comunicaciones;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import persistencia.ComandoSQL;
+import java.util.List;
+
+import persistencia.ConsultaHibernate;
 
 /**
  * Interfaz que deben implementar las clases que proporcionen acceso a una
@@ -13,13 +14,17 @@ import persistencia.ComandoSQL;
  */
 public interface IConexionBD extends Remote {
 	
-	public void abrir() throws RemoteException, SQLException;
-	
-	public void cerrar() throws RemoteException, SQLException;
+	public List<?> consultar(ConsultaHibernate consulta) throws RemoteException, SQLException;
 
-	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException;
+	public void iniciarTransaccion() throws RemoteException, SQLException;
 	
-	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException;
+	public Object insertar(Object objeto) throws RemoteException, SQLException;
+
+	public void actualizar(Object objeto) throws RemoteException, SQLException;
+
+	public void eliminar(Object objeto) throws RemoteException, SQLException;
+
+	public void borrarCache(Object objeto) throws RemoteException, SQLException;
 	
 	public void commit() throws RemoteException, SQLException;
 	

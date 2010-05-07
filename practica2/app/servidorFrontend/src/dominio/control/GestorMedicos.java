@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import persistencia.FPSustitucion;
-import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import dominio.UtilidadesDominio;
 import dominio.conocimiento.DiaSemana;
@@ -18,6 +18,7 @@ import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludInexistenteException;
+import excepciones.CitaNoValidaException;
 import excepciones.DireccionInexistenteException;
 import excepciones.FechaNoValidaException;
 import excepciones.MedicoInexistenteException;
@@ -110,7 +111,7 @@ public class GestorMedicos {
 	}
 	
 	// Método para modificar un médico existente del sistema
-	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
+	public static void modificarMedico(long idSesion, Medico medico) throws SQLException, MedicoInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CitaNoValidaException {
 		// Comprobamos los parámetros pasados
 		if(medico == null) {
 			throw new NullPointerException("El médico que se va a modificar no puede ser nulo.");
@@ -194,7 +195,7 @@ public class GestorMedicos {
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarMedicosTipo);
 		
 		// Obtenemos los NIFs de todos los médicos del tipo dado
-		nifs = FPTipoMedico.consultarMedicos(tipo);
+		nifs = FPUsuario.consultarMedicos(tipo);
 		
 		// Recuperamos los médicos con los NIFs anteriores
 		medicos = new Vector<Medico>();

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="dominio.conocimiento">
+	<class name="Volante" table="volantes" lazy="false">
+		<id name="id" column="id" type="long">
+			<generator class="native" />
+		</id>
+		<property name="fechaCaducidad" column="fechaCaducidad" type="date" not-null="true" />
+		<many-to-one name="emisor" column="nifMedicoEmisor" class="Medico" not-null="true" lazy="false" />
+		<many-to-one name="receptor" column="nifMedicoReceptor" class="Medico" not-null="true" lazy="false" />
+		<many-to-one name="beneficiario" column="nifBeneficiario" class="Beneficiario" not-null="true" lazy="false" />
+		<many-to-one name="cita" column="idCita" class="Cita" />
+	</class>
+</hibernate-mapping>

@@ -4,6 +4,15 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Vector;
+
+import persistencia.FPBeneficiario;
+import persistencia.FPCentroSalud;
+import persistencia.FPCita;
+import persistencia.FPEntradaLog;
+import persistencia.FPSustitucion;
+import persistencia.FPUsuario;
+import persistencia.FPVolante;
+import persistencia.UtilidadesPersistencia;
 import dominio.UtilidadesDominio;
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Beneficiario;
@@ -21,26 +30,13 @@ import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Sustitucion;
-import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
 import dominio.conocimiento.Volante;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludInexistenteException;
 import excepciones.CitaNoValidaException;
-import excepciones.DireccionInexistenteException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
-import persistencia.FPBeneficiario;
-import persistencia.FPCentroSalud;
-import persistencia.FPCita;
-import persistencia.FPDireccion;
-import persistencia.FPEntradaLog;
-import persistencia.FPPeriodoTrabajo;
-import persistencia.FPSustitucion;
-import persistencia.FPTipoMedico;
-import persistencia.FPUsuario;
-import persistencia.FPVolante;
-import persistencia.UtilidadesPersistencia;
 
 /**
  * Pruebas de las clases de persistencia.
@@ -56,7 +52,7 @@ public class PruebasPersistencia extends PruebasBase {
 	private Administrador administrador1;
 	private Beneficiario beneficiario1, beneficiario2, beneficiario3;
 	private Cita cita1, cita2, cita3;
-	private PeriodoTrabajo periodo1, periodo2;
+	private PeriodoTrabajo periodo1, periodo2, periodo3;
 	private Sustitucion sustitucion1, sustitucion2;
 	private Volante volante1, volante2;
 	
@@ -91,6 +87,7 @@ public class PruebasPersistencia extends PruebasBase {
 			administrador1.setCentroSalud(centro1);
 			periodo1 = new PeriodoTrabajo(10, 12, DiaSemana.Lunes);
 			periodo2 = new PeriodoTrabajo(16, 20, DiaSemana.Jueves);
+			periodo3 = new PeriodoTrabajo(16, 20, DiaSemana.Jueves);
 			direccion1 = new Direccion("Calle Toledo", "3", "", "", "Ciudad", "Provincia", 15500);
 			direccion2 = new Direccion("Plaza de España", "12", "", "", "Ciudad", "Provincia", 16500);
 			direccion3 = new Direccion("Avenida Principal", "4", "3", "A", "Ciudad", "Provincia", 17500);
@@ -208,8 +205,8 @@ public class PruebasPersistencia extends PruebasBase {
 			beneficiario1.setApellidos("V. L.");
 			beneficiario1.setCentroSalud(centro2);
 			beneficiario1.setCorreo("nuevocorreo@terra.com");
-			beneficiario1.getDireccion().setCiudad("Nueva cuidad");
-			beneficiario1.getDireccion().setCP(15000);
+			beneficiario1.getDireccion().setCiudad("Nueva ciudad");
+			beneficiario1.getDireccion().setCP(11223);
 			beneficiario1.setFechaNacimiento(new Date(1985 - 1900, 4, 2));
 			beneficiario1.setMovil("612312333");
 			beneficiario1.setNombre("Pedro");
@@ -242,16 +239,6 @@ public class PruebasPersistencia extends PruebasBase {
 		} catch(BeneficiarioInexistenteException e) {
 		} catch(Exception e) {
 			fail("Se esperaba una excepción BeneficiarioInexistenteException");
-		}
-		
-		try {
-			// Comprobamos que al borrar un beneficiario se
-			// elimina también su dirección asociada
-			FPDireccion.consultar(beneficiario2.getNif());
-			fail("Se esperaba una excepción DireccionIncorrectaException");
-		} catch(DireccionInexistenteException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción DireccionIncorrectaException");
 		}
 		
 		try {
@@ -300,11 +287,11 @@ public class PruebasPersistencia extends PruebasBase {
 		try {
 			// Intentamos insertar el mismo centro para ver si falla
 			// (no puede haber dos centros con el mismo nombre)
-			centroAux = new CentroSalud(centro1.getNombre(), centro1.getDireccion());
+			centroAux = (CentroSalud)centro1.clone();
+			centroAux.setId(-1);
 			FPCentroSalud.insertar(centroAux);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
-			e.printStackTrace();
 		} catch(Exception e) {
 			fail("Se esperaba una excepción SQLException");
 		}
@@ -457,85 +444,7 @@ public class PruebasPersistencia extends PruebasBase {
 			fail(e.toString());
 		}
 	}
-	
-	/** Pruebas de la tabla de direcciones */
-	public void testDirecciones() {
-		Direccion direccion;
 		
-		try {
-			// Intentamos buscar la dirección de un beneficiario inexistente
-			FPDireccion.consultar("88118811N");
-			fail("Se esperaba una excepción DireccionInexistenteException");
-		} catch(DireccionInexistenteException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción DireccionInexistenteException");
-		}
-		
-		try {
-			// Añadimos los centros de salud asociados a los médicos
-			FPCentroSalud.insertar(centro1);
-			FPCentroSalud.insertar(centro2);
-			FPCentroSalud.insertar(centro3);
-			// Insertamos los médicos de los beneficiarios
-			FPUsuario.insertar(medico1);
-			FPUsuario.insertar(medico2);
-			FPUsuario.insertar(medico3);
-			// Insertamos varios beneficiarios
-			// (se llama automáticamente a FPDireccion)
-			FPBeneficiario.insertar(beneficiario1);
-			FPBeneficiario.insertar(beneficiario2);
-			FPBeneficiario.insertar(beneficiario3);
-			// Recuperamos la dirección de los beneficiarios creados
-			direccion = FPDireccion.consultar(beneficiario1.getNif());
-			assertEquals(direccion1, direccion);
-			direccion = FPDireccion.consultar(beneficiario2.getNif());
-			assertEquals(direccion2, direccion);
-			direccion = FPDireccion.consultar(beneficiario3.getNif());
-			assertEquals(direccion3, direccion);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-
-		try {
-			// Modificamos una dirección existente
-			direccion2.setCiudad("Más lejos");
-			direccion2.setCP(9001);
-			direccion2.setDomicilio("Nuevo domicilio");
-			direccion2.setNumero("8A");
-			direccion2.setPiso("5");
-			direccion2.setProvincia("Nueva provincia");
-			direccion2.setPuerta("L");
-			FPDireccion.modificar(beneficiario2.getNif(), direccion2);
-			// Comprobamos que los cambios han tenido efecto
-			direccion = FPDireccion.consultar(beneficiario2.getNif());
-			assertEquals(direccion2, direccion);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Eliminamos una dirección existente
-			FPDireccion.eliminar(beneficiario3.getNif());
-			// Comprobamos que los cambios han tenido efecto
-			FPDireccion.consultar(beneficiario3.getNif());
-			fail("Se esperaba una excepción DireccionInexistenteException");
-		} catch(DireccionInexistenteException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción DireccionInexistenteException");
-		}
-		
-		try {
-			// Comprobamos que las direcciones no borradas siguen existiendo
-			// Recuperamos la dirección de los beneficiarios creados
-			direccion = FPDireccion.consultar(beneficiario1.getNif());
-			assertEquals(direccion1, direccion);
-			direccion = FPDireccion.consultar(beneficiario2.getNif());
-			assertEquals(direccion2, direccion);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-	}
-	
 	/** Pruebas de la tabla de entradas del log */
 	public void testEntradasLog() {
 		Vector<EntradaLog> log;
@@ -559,7 +468,7 @@ public class PruebasPersistencia extends PruebasBase {
 			// (y repetidas, que se permite)
 			FPEntradaLog.insertar(entrada1);
 			FPEntradaLog.insertar(entrada2);
-			FPEntradaLog.insertar(entrada1);
+			FPEntradaLog.insertar((EntradaLog)entrada1.clone());
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -589,72 +498,6 @@ public class PruebasPersistencia extends PruebasBase {
 			FPEntradaLog.insertar(entrada3);
 			FPEntradaLog.insertar(entrada4);
 			FPEntradaLog.insertar(entrada5);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-	}
-
-	/** Pruebas de la tabla de períodos de trabajo */
-	public void testPeriodosTrabajo() {
-		Vector<PeriodoTrabajo> periodos;
-		
-		try {
-			// Intentamos consultar los períodos de trabajo antes de
-			// añadirlos para ver que se devuelve una lista vacía
-			periodos = FPPeriodoTrabajo.consultarHorario("11223344W");
-			assertTrue(periodos.size() == 0);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Añadimos un médico a la base de datos
-			FPCentroSalud.insertar(centro1);
-			FPUsuario.insertar(medico1);
-			// Insertamos varios períodos de trabajo correctos
-			FPPeriodoTrabajo.insertar(medico1.getNif(), periodo1);
-			FPPeriodoTrabajo.insertar(medico1.getNif(), periodo2);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-
-		try {
-			// Intentamos insertar un período de trabajo
-			// asociado a un NIF que no es de ningún usuario
-			FPPeriodoTrabajo.insertar("00110011X", periodo2);
-			fail("Se esperaba una SQLException");
-		} catch(SQLException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una SQLException");
-		}
-		
-		try {
-			// Modificamos un período de trabajo existente
-			periodo1.setHoraInicio(9);
-			periodo1.setHoraFinal(11);
-			periodo1.setDia(DiaSemana.Viernes);
-			FPPeriodoTrabajo.modificar(periodo1);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Recuperamos los períodos de trabajo almacenados
-			// y comprobamos si la modificación tuvo efecto
-			periodos = FPPeriodoTrabajo.consultarHorario(medico1.getNif());
-			assertTrue((periodos.get(0).equals(periodo1) && periodos.get(1).equals(periodo2)
-			           || (periodos.get(0).equals(periodo2) && periodos.get(1).equals(periodo1))));
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Eliminamos un período de trabajo
-			FPPeriodoTrabajo.eliminar(periodo1);
-			// Comprobamos si los cambios han tenido efecto
-			periodos = FPPeriodoTrabajo.consultarHorario(medico1.getNif());
-			assertTrue(periodos.size() == 1);
-			assertTrue(periodos.get(0).equals(periodo2));
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -735,88 +578,10 @@ public class PruebasPersistencia extends PruebasBase {
 		}
 	}
 	
-	/** Pruebas de la tabla de tipos de médicos */
-	public void testTiposMedico() {
-		Vector<String> medicos;
-		TipoMedico tipo;
-		
-		try {
-			// Intentamos obtener el tipo de un médico inexistente
-			FPTipoMedico.consultar("98777789A");
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(UsuarioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		}
-		
-		try {
-			// Intentamos obtener una lista con los médicos especialistas
-			// antes de añadirlos para ver que se devuelve una lista vacía
-			medicos = FPTipoMedico.consultarMedicos(new Especialista(""));
-			assertTrue(medicos.size() == 0);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Insertamos varios centros y médicos
-			// (se llama automáticamente a FPTipoMedico)
-			FPCentroSalud.insertar(centro1);
-			FPCentroSalud.insertar(centro2);
-			FPUsuario.insertar(medico1);
-			FPUsuario.insertar(medico2);
-			FPUsuario.insertar(medico3);
-			FPUsuario.insertar(medico4);
-			// Recuperamos varios de los tipos de médicos insertados
-			tipo = FPTipoMedico.consultar(medico1.getNif());
-			assertEquals(tipo, medico1.getTipoMedico());
-			tipo = FPTipoMedico.consultar(medico2.getNif());
-			assertEquals(tipo, medico2.getTipoMedico());
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Obtenemos una lista con los médicos de cabecera
-			medicos = FPTipoMedico.consultarMedicos(new Cabecera());
-			assertTrue(medicos.size() == 2);
-			assertTrue((medicos.get(0).equals(medico2.getNif()) && medicos.get(1).equals(medico3.getNif()))
-			           || (medicos.get(0).equals(medico3.getNif()) && medicos.get(1).equals(medico2.getNif())));
-			// Obtenemos una lista con los médidos pediatras
-			medicos = FPTipoMedico.consultarMedicos(new Pediatra());
-			assertTrue(medicos.size() == 1);
-			assertTrue(medicos.get(0).equals(medico4.getNif()));
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-
-		try {
-			// Eliminamos uno de los tipos de médicos
-			FPTipoMedico.eliminar(medico2.getNif());
-			// Comprobamos que los cambios han tenido efecto
-			medicos = FPTipoMedico.consultarMedicos(new Cabecera());
-			assertTrue(medicos.size() == 1);
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Comprobamos que los tipos de médicos no borrados siguen existiendo
-			tipo = FPTipoMedico.consultar(medico1.getNif());
-			assertEquals(tipo, medico1.getTipoMedico());
-			tipo = FPTipoMedico.consultar(medico3.getNif());
-			assertEquals(tipo, medico3.getTipoMedico());
-			tipo = FPTipoMedico.consultar(medico4.getNif());
-			assertEquals(tipo, medico4.getTipoMedico());
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-	}
-	
 	/** Pruebas de la tabla de usuarios */
 	public void testUsuarios() {
-		Vector<PeriodoTrabajo> horario;
-		Usuario usuario;
+		Vector<String> medicos;
+		Usuario usuario, usuarioAux;
 		
 		try {
 			// Intentamos buscar un usuario sin haber creado ninguno
@@ -846,6 +611,15 @@ public class PruebasPersistencia extends PruebasBase {
 		}
 		
 		try {
+			// Intentamos obtener una lista con los médicos especialistas
+			// antes de añadirlos para ver que se devuelve una lista vacía
+			medicos = FPUsuario.consultarMedicos(new Especialista(""));
+			assertTrue(medicos.size() == 0);
+		} catch(Exception e) {
+			fail(e.toString());
+		}
+
+		try {
 			// Añadimos los centros de salud asociados a los usuarios
 			FPCentroSalud.insertar(centro1);
 			FPCentroSalud.insertar(centro2);
@@ -855,6 +629,8 @@ public class PruebasPersistencia extends PruebasBase {
 			medico2.getCalendario().add(periodo2);
 			FPUsuario.insertar(medico1);
 			FPUsuario.insertar(medico2);
+			FPUsuario.insertar(medico3);
+			FPUsuario.insertar(medico4);
 			FPUsuario.insertar(citador1);
 			FPUsuario.insertar(administrador1);
 		} catch(Exception e) {
@@ -863,7 +639,8 @@ public class PruebasPersistencia extends PruebasBase {
 		
 		try {
 			// Intentamos insertar un usuario con un NIF existente
-			FPUsuario.insertar(medico1);
+			usuarioAux = (Usuario)medico1.clone();
+			FPUsuario.insertar(usuarioAux);
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 		} catch(Exception e) {
@@ -913,17 +690,32 @@ public class PruebasPersistencia extends PruebasBase {
 		} catch(Exception e) {
 			fail(e.toString());
 		}
+				
+		try {
+			// Obtenemos una lista con los médicos de cabecera
+			medicos = FPUsuario.consultarMedicos(new Cabecera());
+			assertTrue(medicos.size() == 2);
+			assertTrue((medicos.get(0).equals(medico2.getNif()) && medicos.get(1).equals(medico3.getNif()))
+			           || (medicos.get(0).equals(medico3.getNif()) && medicos.get(1).equals(medico2.getNif())));
+			// Obtenemos una lista con los médidos pediatras
+			medicos = FPUsuario.consultarMedicos(new Pediatra());
+			assertTrue(medicos.size() == 1);
+			assertTrue(medicos.get(0).equals(medico4.getNif()));
+		} catch(Exception e) {
+			fail(e.toString());
+		}
 		
 		try {
 			// Modificamos un médico
 			medico1.setLogin("nuevologin");
-			medico1.getCalendario().add(periodo2);
+			medico1.getCalendario().add(periodo3);
 			medico1.setTipoMedico(new Cabecera());
 			FPUsuario.modificar(medico1);
 			// Comprobamos si los cambios han tenido efecto
 			usuario = FPUsuario.consultar(medico1.getNif());
 			assertEquals(medico1, usuario);
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 		
@@ -957,25 +749,6 @@ public class PruebasPersistencia extends PruebasBase {
 		} catch(UsuarioIncorrectoException e) {
 		} catch(Exception e) {
 			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		}
-		
-		try {
-			// Comprobamos que al borrar el médico también se
-			// ha eliminado la información sobre su tipo
-			FPTipoMedico.consultar(medico1.getNif());
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		} catch(UsuarioIncorrectoException e) {
-		} catch(Exception e) {
-			fail("Se esperaba una excepción UsuarioIncorrectoException");
-		}
-		
-		try {
-			// Comprobamos que al borrar el médico también se
-			// ha eliminado su calendario completo
-			horario = FPPeriodoTrabajo.consultarHorario(medico1.getNif());
-			assertTrue(horario.size() == 0);
-		} catch(Exception e) {
-			fail(e.toString());
 		}
 		
 		try {

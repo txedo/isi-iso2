@@ -338,7 +338,7 @@ public class GestorCitas {
 		// tiene ya una cita en esa misma fecha y hora
 		citas = FPCita.consultarPorMedico(idMedico);	
 		for(Cita c : citas) {
-			if(c.getFechaYHora().equals(fechaYHora)) {
+			if(UtilidadesDominio.fechaIgual(c.getFechaYHora(), fechaYHora, true)) {
 				throw new CitaNoValidaException("El médico con NIF " + idMedico + " ya tiene una cita en la fecha y hora indicadas.");
 			}
 		}
@@ -418,7 +418,7 @@ public class GestorCitas {
 		// tiene ya una cita en esa misma fecha y hora
 		citas = FPCita.consultarPorMedico(medico.getNif());	
 		for(Cita c : citas) {
-			if(c.getFechaYHora().equals(fechaYHora)) {
+			if(UtilidadesDominio.fechaIgual(c.getFechaYHora(), fechaYHora, true)) {
 				throw new CitaNoValidaException("El médico con NIF " + medico.getNif() + " ya tiene una cita en la fecha y hora indicadas.");
 			}
 		}

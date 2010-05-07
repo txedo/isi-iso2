@@ -579,7 +579,6 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 			// Modificamos los datos del médico sustituido mostrado en la ventana del
 			// controlador principal desde el controlador auxiliar
 			pediatra1.setNombre("Ana2");
-			pediatra1.getCalendario().remove(1);
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.modificarMedico(pediatra1);
@@ -608,7 +607,7 @@ public class PruebasJPSustitucionEstablecer extends org.uispec4j.UISpecTestCase 
 			assertTrue(UtilidadesPruebas.comprobarListaUsuarios(lstSustitutos, new Usuario[] { pediatra2 }));
 			// Modificamos desde el controlador auxiliar los datos de un médico que podría
 			// ser un posible sustituto, para ver si se muestra en el controlador principal
-			pediatra3.getCalendario().removeAllElements();
+			pediatra3.getCalendario().clear();
 			WindowInterceptor.init(new Trigger() {
 				public void run() throws Exception {
 					controladorAuxiliar.modificarMedico(pediatra3);

@@ -24,12 +24,8 @@ public class Administrador extends Citador implements Serializable, Cloneable {
 	public Object clone() {
 		Administrador a;
 		
-		a = new Administrador(nif, login, password, nombre, apellidos, correo, telefono, movil);
-		if(centro == null) {
-			a.setCentroSalud(null);
-		} else {
-			a.setCentroSalud((CentroSalud)centro.clone());
-		}
+		a = new Administrador(getNif(), getLogin(), getPassword(), getNombre(), getApellidos(), getCorreo(), getTelefono(), getMovil());
+		a.setCentroSalud((getCentroSalud() == null) ? null : (CentroSalud)getCentroSalud().clone());
 		return a;
 	}
 	

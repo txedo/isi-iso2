@@ -24,8 +24,8 @@ public class Citador extends Usuario implements Serializable, Cloneable {
 	public Object clone() {
 		Citador c;
 		
-		c = new Citador(nif, login, password, nombre, apellidos, correo, telefono, movil);
-		c.setCentroSalud(centro);
+		c = new Citador(getNif(), getLogin(), getPassword(), getNombre(), getApellidos(), getCorreo(), getTelefono(), getMovil());
+		c.setCentroSalud((getCentroSalud() == null) ? null : (CentroSalud)getCentroSalud().clone());
 		return c;
 	}
 	

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="dominio.conocimiento">
+	<class name="Sustitucion" table="sustituciones" lazy="false">
+		<id name="id" column="id" type="int">
+			<generator class="native" />
+		</id>
+		<property name="dia" column="dia" type="date" not-null="true" />
+		<property name="horaInicio" column="horaInicio" type="int" not-null="true" />
+		<property name="horaFinal" column="horaFinal" type="int" not-null="true" />
+		<many-to-one name="medico" column="nifMedico" class="Medico" not-null="true" lazy="false" />
+		<many-to-one name="sustituto" column="nifSustituto" class="Medico" not-null="true" lazy="false" />
+	</class>
+</hibernate-mapping>

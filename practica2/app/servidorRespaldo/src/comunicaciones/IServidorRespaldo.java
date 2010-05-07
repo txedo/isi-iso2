@@ -2,9 +2,10 @@ package comunicaciones;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import persistencia.ComandoSQL;
+import java.util.List;
+
+import persistencia.ConsultaHibernate;
 
 /**
  * Interfaz con las operaciones que se pueden solicitar al servidor
@@ -16,13 +17,17 @@ public interface IServidorRespaldo extends Remote, IConexionBD, IConexionLog {
 	
 	// Métodos de acceso a la base de datos (IConexionBD)
 	
-	public void abrir() throws RemoteException, SQLException;
-	
-	public void cerrar() throws RemoteException, SQLException;
+	public List<?> consultar(ConsultaHibernate consulta) throws RemoteException, SQLException;
 
-	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException;
+	public void iniciarTransaccion() throws RemoteException, SQLException;
 	
-	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException;
+	public Object insertar(Object objeto) throws RemoteException, SQLException;
+
+	public void actualizar(Object objeto) throws RemoteException, SQLException;
+
+	public void eliminar(Object objeto) throws RemoteException, SQLException;
+
+	public void borrarCache(Object objeto) throws RemoteException, SQLException;
 	
 	public void commit() throws RemoteException, SQLException;
 	

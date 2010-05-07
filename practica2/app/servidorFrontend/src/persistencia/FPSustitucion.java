@@ -1,10 +1,11 @@
 package persistencia;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Vector;
+
 import comunicaciones.GestorConexionesBD;
-import dominio.conocimiento.Medico;
+
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.Sustitucion;
 import dominio.conocimiento.Usuario;
@@ -14,121 +15,88 @@ import excepciones.UsuarioIncorrectoException;
 
 /**
  * Clase que permite consultar e insertar sustituciones de médicos en la
- * base de datos.
+ * base de datos utilizando Hibernate.
  */
 public class FPSustitucion {
 
-	private static final String TABLA_SUSTITUCIONES = "sustituciones";
+	private static final String CLASE_SUSTITUCION = "Sustitucion";
 	
-	private static final String COL_ID = "id";
-	private static final String COL_DIA = "dia";
-	private static final String COL_HORA_INICIO = "horaInicio";
-	private static final String COL_HORA_FINAL = "horaFinal";
-	private static final String COL_NIF_MEDICO = "nifMedico";
-	private static final String COL_NIF_SUSTITUTO = "nifSustituto";
+	private static final String ATRIB_NIF_MEDICO = "medico.nif";
+	private static final String ATRIB_NIF_SUSTITUTO = "sustituto.nif";
 	
 	public static Vector<Sustitucion> consultarPorSustituido(String nifMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		ComandoSQL comando;
-		ResultSet datos;
-		Vector<Sustitucion> lista;
-		Usuario medico, sustituto;
-		Sustitucion sustitucion;
+		ConsultaHibernate consulta;
+		List<?> resultados;
+		Vector<Sustitucion> sustituciones;
+		Usuario usuario;
 		
-		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_SUSTITUCIONES
-				+ " WHERE " + COL_NIF_MEDICO + " = ?", nifMedico);
-		datos = GestorConexionesBD.consultar(comando);
-		
-		// Obtenemos los datos del médico sustituido
-		medico = FPUsuario.consultar(nifMedico);
-		if(medico.getRol() != Roles.Médico) {
-			datos.close();
+		// Comprobamos que el médico exista
+		usuario = FPUsuario.consultar(nifMedico);
+		if(usuario.getRol() != Roles.Médico) {
 			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones del usuario con NIF " + String.valueOf(nifMedico) + " porque no es un médico.");
 		}
-		
-		// Devolvemos la lista de sustituciones que tiene el médico
-		lista = new Vector<Sustitucion>();
-		while(datos.next()) {
-			sustitucion = new Sustitucion();
-			sustitucion.setId(datos.getInt(COL_ID));
-			sustitucion.setDia(datos.getDate(COL_DIA));
-			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
-			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
-			sustitucion.setMedico((Medico)medico);
-			sustituto = FPUsuario.consultar(datos.getString(COL_NIF_SUSTITUTO));
-			if(sustituto.getRol() != Roles.Médico) {
-				datos.close();
-				throw new UsuarioIncorrectoException("Alguna de las sustituciones del médico con NIF " + String.valueOf(nifMedico) + " no tiene asociado un usuario con rol de médico.");
-			}
-			sustitucion.setSustituto((Medico)sustituto);
-			lista.add(sustitucion);
-		}
-		datos.close();
 
-		return lista;
+		// Consultamos la base de datos
+		consulta = new ConsultaHibernate("FROM " + CLASE_SUSTITUCION + " WHERE "
+				 + ATRIB_NIF_MEDICO + " = ?", nifMedico);
+		resultados = GestorConexionesBD.consultar(consulta);
+				
+		// Devolvemos la lista de sustituciones del médico
+		sustituciones = new Vector<Sustitucion>();
+		for(Object sustitucion : resultados) {
+			sustituciones.add((Sustitucion)((Sustitucion)sustitucion).clone());
+		}
+		
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
+		}
+
+		return sustituciones;
 	}
 	
 	public static Vector<Sustitucion> consultarPorSustituto(String nifMedico) throws SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		ComandoSQL comando;
-		ResultSet datos;
-		Vector<Sustitucion> lista;
-		Usuario medico, sustituto;
-		Sustitucion sustitucion;
+		ConsultaHibernate consulta;
+		List<?> resultados;
+		Vector<Sustitucion> sustituciones;
+		Usuario usuario;
 		
-		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_SUSTITUCIONES
-				+ " WHERE " + COL_NIF_SUSTITUTO + " = ?", nifMedico);
-		datos = GestorConexionesBD.consultar(comando);
-		
-		// Obtenemos los datos del médico sustituto
-		sustituto = FPUsuario.consultar(nifMedico);
-		if(sustituto.getRol() != Roles.Médico) {
-			datos.close();
+		// Comprobamos que el médico exista
+		usuario = FPUsuario.consultar(nifMedico);
+		if(usuario.getRol() != Roles.Médico) {
 			throw new UsuarioIncorrectoException("No se pueden consultar las sustituciones hechas por el usuario con NIF " + String.valueOf(nifMedico) + " porque no es un médico.");
 		}
-		
-		// Devolvemos la lista de sustituciones que va a hacer el médico
-		lista = new Vector<Sustitucion>();
-		while(datos.next()) {
-			sustitucion = new Sustitucion();
-			sustitucion.setId(datos.getInt(COL_ID));
-			sustitucion.setDia(datos.getDate(COL_DIA));
-			sustitucion.setHoraInicio(datos.getInt(COL_HORA_INICIO));
-			sustitucion.setHoraFinal(datos.getInt(COL_HORA_FINAL));
-			medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-			if(medico.getRol() != Roles.Médico) {
-				datos.close();
-				throw new UsuarioIncorrectoException("Alguna de las sustituciones hechas por el médico con NIF " + String.valueOf(nifMedico) + " no tiene asociado un usuario con rol de médico.");
-			}
-			sustitucion.setMedico((Medico)medico);
-			sustitucion.setSustituto((Medico)sustituto);
-			lista.add(sustitucion);
+
+		// Consultamos la base de datos
+		consulta = new ConsultaHibernate("FROM " + CLASE_SUSTITUCION + " WHERE "
+				 + ATRIB_NIF_SUSTITUTO + " = ?", nifMedico);
+		resultados = GestorConexionesBD.consultar(consulta);
+				
+		// Devolvemos la lista de sustituciones del médico
+		sustituciones = new Vector<Sustitucion>();
+		for(Object sustitucion : resultados) {
+			sustituciones.add((Sustitucion)((Sustitucion)sustitucion).clone());
 		}
-		datos.close();
 		
-		return lista;
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
+		}
+
+		return sustituciones;
 	}
 	
 	public static void insertar(Sustitucion sustitucion) throws SQLException {
-		ComandoSQL comando;
-		ResultSet datos;
-
-		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_SUSTITUCIONES
-				+ " (" + COL_DIA + ", " + COL_HORA_INICIO + ", " + COL_HORA_FINAL
-				+ ", " + COL_NIF_MEDICO + ", " + COL_NIF_SUSTITUTO
-				+ ") VALUES (?, ?, ?, ?, ?)",
-				sustitucion.getDia(), sustitucion.getHoraInicio(),
-				sustitucion.getHoraFinal(), sustitucion.getMedico().getNif(),
-				sustitucion.getSustituto().getNif());
-		GestorConexionesBD.ejecutar(comando);
+		Sustitucion sustitucionNueva;
 		
-		// Recuperamos el id autonumérico asignado a la nueva cita
-		comando = new ComandoSQLSentencia("SELECT LAST_INSERT_ID()");			
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
-		sustitucion.setId(datos.getInt("LAST_INSERT_ID()"));
-		datos.close();
+		// Modificamos la base de datos y copiamos el id asignado
+		try {
+			GestorConexionesBD.iniciarTransaccion();
+			sustitucionNueva = (Sustitucion)GestorConexionesBD.insertar(sustitucion.clone());
+			sustitucion.setId(sustitucionNueva.getId());
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
 	}
 	
 }

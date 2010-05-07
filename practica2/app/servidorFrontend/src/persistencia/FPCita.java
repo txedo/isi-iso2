@@ -1,225 +1,166 @@
 package persistencia;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
+
 import comunicaciones.GestorConexionesBD;
-import dominio.conocimiento.Beneficiario;
+
 import dominio.conocimiento.Cita;
-import dominio.conocimiento.Medico;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
-import excepciones.CentroSaludInexistenteException;
 import excepciones.CitaNoValidaException;
-import excepciones.DireccionInexistenteException;
 import excepciones.UsuarioIncorrectoException;
 
 /**
- * Clase que permite consultar, insertar y eliminar citas de la base de datos.
+ * Clase que permite consultar, insertar y eliminar citas de la base de datos
+ * utilizando Hibernate.
  */
 public class FPCita {
 
-	private static final String TABLA_CITAS = "citas";
+	private static final String CLASE_CITA = "Cita";
 	
-	private static final String COL_ID = "id";
-	private static final String COL_FECHA = "fecha";
-	private static final String COL_DURACION = "duracion";
-	private static final String COL_NIF_BENEFICIARIO = "nifBeneficiario";
-	private static final String COL_NIF_MEDICO = "nifMedico";
+	private static final String ATRIB_ID = "id";
+	private static final String ATRIB_FECHA = "fecha";
+	private static final String ATRIB_DURACION = "duracion";
+	private static final String ATRIB_NIF_BENEFICIARIO = "beneficiario.nif";
+	private static final String ATRIB_NIF_MEDICO = "medico.nif";
 	
-	public static Cita consultar(long id) throws SQLException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		ComandoSQL comando;
-		ResultSet datos;
-		Beneficiario beneficiario;
-		Usuario medico;
+	public static Cita consultar(long id) throws SQLException, CitaNoValidaException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
 		Cita cita;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CITAS
-				+ " WHERE " + COL_ID + " = ?", id);
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
+		consulta = new ConsultaHibernate("FROM " + CLASE_CITA + " WHERE "
+				 + ATRIB_ID + " = ?", id);
+		resultados = GestorConexionesBD.consultar(consulta);
 		
-		// Si no se obtienen datos, es porque no existe la cita
-		if(datos.getRow() == 0) {
-			datos.close();
+		// Si no se obtienen datos, es porque la cita no existe
+		if(resultados.size() == 0) {
 			throw new CitaNoValidaException("No existe ninguna cita con el id " + String.valueOf(id) + ".");
 		} else {
-			// Establecemos los datos de la cita
-			cita = new Cita();
-			cita.setId(datos.getInt(COL_ID));
-			cita.setFechaYHora(new Date(datos.getTimestamp(COL_FECHA).getTime()));
-			cita.setDuracion(datos.getInt(COL_DURACION));
-			beneficiario = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
-			cita.setBeneficiario(beneficiario);
-			medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-			if(medico.getRol() != Roles.Médico) {
-				datos.close();
-				throw new UsuarioIncorrectoException("La cita con id " + String.valueOf(id) + " no tiene asociado un usuario con rol de médico.");
+			// Recuperamos la cita leída
+			cita = (Cita)((Cita)resultados.get(0)).clone();
+			// Borramos los objetos leídos de la caché
+			for(Object objeto : resultados) {
+				GestorConexionesBD.borrarCache(objeto);
 			}
-			cita.setMedico((Medico)medico);
-			datos.close();
 		}
 		
 		return cita;
 	}
 	
-	public static Cita consultar(Date fechaYHora, long duracion, String nifMedico, String nifBeneficiario) throws SQLException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		ComandoSQL comando;
-		ResultSet datos;
-		Beneficiario beneficiario;
-		Usuario medico;
+	public static Cita consultar(Date fechaYHora, long duracion, String nifMedico, String nifBeneficiario) throws SQLException, CitaNoValidaException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
 		Cita cita;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CITAS
-				+ " WHERE " + COL_FECHA + " = ? AND " + COL_DURACION + " = ? AND "
-				+ COL_NIF_MEDICO + " = ? AND " + COL_NIF_BENEFICIARIO + " = ?",
-				fechaYHora, duracion, nifMedico, nifBeneficiario);
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
+		consulta = new ConsultaHibernate("FROM " + CLASE_CITA + " WHERE "
+				 + ATRIB_FECHA + " = ? AND " + ATRIB_DURACION + " = ? AND "
+				 + ATRIB_NIF_MEDICO + " = ? AND " + ATRIB_NIF_BENEFICIARIO + " = ?",
+				 fechaYHora, duracion, nifMedico, nifBeneficiario);
+		resultados = GestorConexionesBD.consultar(consulta);
 		
-		// Si no se obtienen datos, es porque no existe la cita 
-		if(datos.getRow() == 0) {
-			datos.close();
+		// Si no se obtienen datos, es porque la cita no existe
+		if(resultados.size() == 0) {
 			throw new CitaNoValidaException("No existe ninguna cita con los datos indicados.");
 		} else {
-			// Establecemos los datos de la cita
-			cita = new Cita();
-			cita.setId(datos.getInt(COL_ID));
-			cita.setFechaYHora(new Date(datos.getTimestamp(COL_FECHA).getTime()));
-			cita.setDuracion(datos.getInt(COL_DURACION));
-			beneficiario = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
-			cita.setBeneficiario(beneficiario);
-			medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-			if(medico.getRol() != Roles.Médico) {
-				datos.close();
-				throw new UsuarioIncorrectoException("La cita con los datos indicados no tiene asociado un usuario con rol de médico.");
+			// Recuperamos el centro de salud leído
+			cita = (Cita)((Cita)resultados.get(0)).clone();
+			// Borramos los objetos leídos de la caché
+			for(Object objeto : resultados) {
+				GestorConexionesBD.borrarCache(objeto);
 			}
-			cita.setMedico((Medico)medico);
-			datos.close();
 		}
 		
 		return cita;
 	}
 	
-	public static Vector<Cita> consultarPorBeneficiario(String nifBeneficiario) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		ComandoSQL comando;
-		ResultSet datos;
+	public static Vector<Cita> consultarPorBeneficiario(String nifBeneficiario) throws SQLException, BeneficiarioInexistenteException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
 		Vector<Cita> citas;
-		Beneficiario beneficiario;
-		Usuario medico;
-		Cita cita;
+		
+		// Comprobamos que el beneficiario exista
+		FPBeneficiario.consultarPorNIF(nifBeneficiario);
 
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CITAS
-				+ " WHERE " + COL_NIF_BENEFICIARIO + " = ? ORDER BY " + COL_FECHA
-				+ " ASC", nifBeneficiario);
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
-
-		// Obtenemos los datos del beneficiario
-		beneficiario = FPBeneficiario.consultarPorNIF(nifBeneficiario);
+		consulta = new ConsultaHibernate("FROM " + CLASE_CITA + " WHERE "
+				 + ATRIB_NIF_BENEFICIARIO + " = ? ORDER BY " + ATRIB_FECHA + " ASC",
+				 nifBeneficiario);
+		resultados = GestorConexionesBD.consultar(consulta);
 		
-		// Si no se obtienen datos, es porque el beneficiario no tiene citas,
-		// en ese caso no lanzamos un error y devolvemos una lista vacía
+		// Devolvemos la lista de citas del beneficiario
 		citas = new Vector<Cita>();
-		if(datos.getRow() > 0) {
-			// Recorremos todas las filas de la consulta
-			do {
-				// Establecemos los datos de la cita
-				cita = new Cita();
-				cita.setId(datos.getInt(COL_ID));
-				cita.setFechaYHora(new Date(datos.getTimestamp(COL_FECHA).getTime()));
-				cita.setDuracion(datos.getInt(COL_DURACION));
-				cita.setBeneficiario(beneficiario);
-				medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-				if(medico.getRol() != Roles.Médico) {
-					datos.close();
-					throw new UsuarioIncorrectoException("Alguna de las citas del beneficiario con NIF " + nifBeneficiario + " no tiene asociado un usuario con rol de médico.");
-				}
-				cita.setMedico((Medico)medico);
-				citas.add(cita);
-			} while(datos.next());
-			datos.close();
+		for(Object cita : resultados) {
+			citas.add((Cita)((Cita)cita).clone());
+		}
+		
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
 		}
 
 		return citas;
 	}
 
-	public static Vector<Cita> consultarPorMedico(String nifMedico) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		ComandoSQL comando;
-		ResultSet datos;
+	public static Vector<Cita> consultarPorMedico(String nifMedico) throws SQLException, UsuarioIncorrectoException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
 		Vector<Cita> citas;
-		Beneficiario beneficiario;
-		Usuario medico;
-		Cita cita;
-
-		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_CITAS
-				+ " WHERE " + COL_NIF_MEDICO + " = ? ORDER BY " + COL_FECHA
-				+ " ASC", nifMedico);
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
-
-		// Obtenemos los datos del médico
-		medico = FPUsuario.consultar(nifMedico);
-		if(medico.getRol() != Roles.Médico) {
-			datos.close();
+		Usuario usuario;
+		
+		// Comprobamos que el médico exista
+		usuario = FPUsuario.consultar(nifMedico);
+		if(usuario.getRol() != Roles.Médico) {
 			throw new UsuarioIncorrectoException("No se pueden consultar las citas del usuario con NIF " + String.valueOf(nifMedico) + " porque no es un médico.");
 		}
-		
-		// Si no se obtienen datos, es porque el médico no tiene citas,
-		// en ese caso no lanzamos un error y devolvemos una lista vacía
+
+		// Consultamos la base de datos
+		consulta = new ConsultaHibernate("FROM " + CLASE_CITA + " WHERE "
+				 + ATRIB_NIF_MEDICO + " = ? ORDER BY " + ATRIB_FECHA + " ASC",
+				 nifMedico);
+		resultados = GestorConexionesBD.consultar(consulta);
+				
+		// Devolvemos la lista de citas del médico
 		citas = new Vector<Cita>();
-		if(datos.getRow() > 0) {
-			// Recorremos todas las filas de la consulta
-			do {
-				// Establecemos los datos de la cita
-				cita = new Cita();
-				cita.setId(datos.getInt(COL_ID));
-				cita.setFechaYHora(new Date(datos.getTimestamp(COL_FECHA).getTime()));
-				cita.setDuracion(datos.getInt(COL_DURACION));
-				beneficiario = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
-				cita.setBeneficiario(beneficiario);
-				cita.setMedico((Medico)medico);
-				citas.add(cita);
-			} while(datos.next());
-			datos.close();
+		for(Object cita : resultados) {
+			citas.add((Cita)((Cita)cita).clone());
+		}
+		
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
 		}
 
 		return citas;
 	}
 
 	public static void insertar(Cita cita) throws SQLException {
-		ComandoSQL comando;
-		ResultSet datos;
-
-		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_CITAS
-				+ " (" + COL_FECHA + ", " + COL_DURACION + ", " + COL_NIF_BENEFICIARIO
-				+ ", " + COL_NIF_MEDICO + ") VALUES (?, ?, ?, ?)",
-				cita.getFechaYHora(), cita.getDuracion(),
-				cita.getBeneficiario().getNif(), cita.getMedico().getNif());
-		GestorConexionesBD.ejecutar(comando);
+		Cita citaNueva;
 		
-		// Recuperamos el id autonumérico asignado a la nueva cita
-		comando = new ComandoSQLSentencia("SELECT LAST_INSERT_ID()");			
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
-		cita.setId(datos.getInt("LAST_INSERT_ID()"));
-		datos.close();
+		// Modificamos la base de datos y copiamos el id asignado
+		try {
+			GestorConexionesBD.iniciarTransaccion();
+			citaNueva = (Cita)GestorConexionesBD.insertar(cita.clone());
+			cita.setId(citaNueva.getId());
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
 	}
 
-	public static void eliminar(Cita cita) throws SQLException {
-		ComandoSQL comando;
-
+	public static void eliminar(Cita cita) throws SQLException, CitaNoValidaException {
 		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_CITAS
-				+ " WHERE " + COL_ID + " = ?", cita.getId());
-		GestorConexionesBD.ejecutar(comando);
+		try {
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.eliminar(consultar(cita.getFechaYHora(), cita.getDuracion(), cita.getMedico().getNif(), cita.getBeneficiario().getNif()));
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
 	}
 
 }

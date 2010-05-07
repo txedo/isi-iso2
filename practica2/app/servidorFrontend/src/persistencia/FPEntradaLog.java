@@ -14,7 +14,7 @@ import dominio.conocimiento.EntradaLog;
  */
 public class FPEntradaLog {
 
-	private static final String CLASE_ENTRADA_LOG = "entradalog";
+	private static final String CLASE_ENTRADALOG = "EntradaLog";
 	
 	public static Vector<EntradaLog> consultarLog() throws SQLException {
 		ConsultaHibernate consulta;
@@ -22,21 +22,31 @@ public class FPEntradaLog {
 		Vector<EntradaLog> log;
 		
 		// Consultamos la base de datos
-		consulta = new ConsultaHibernate("FROM " + CLASE_ENTRADA_LOG);
-		resultados = GestorConexionesBD.consultarHibernate(consulta);
+		consulta = new ConsultaHibernate("FROM " + CLASE_ENTRADALOG);
+		resultados = GestorConexionesBD.consultar(consulta);
 		
 		// Devolvemos la lista completa de entradas del log
 		log = new Vector<EntradaLog>();
 		for(Object entrada : resultados) {
-			log.add((EntradaLog)entrada);
+			log.add((EntradaLog)((EntradaLog)entrada).clone());
 		}
 		
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
+		}
+
 		return log;
 	}
 
 	public static void insertar(EntradaLog entrada) throws SQLException {
 		// Modificamos la base de datos
-		GestorConexionesBD.insertarHibernate(entrada);
+		try {
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.insertar(entrada.clone());
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
 	}
 	
 }

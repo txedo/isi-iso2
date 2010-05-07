@@ -4,9 +4,10 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import persistencia.ComandoSQL;
+import java.util.List;
+
+import persistencia.ConsultaHibernate;
 
 /**
  * Proxy utilizado para conectarse con el servidor de respaldo.
@@ -42,42 +43,63 @@ public class ProxyServidorRespaldo implements IServidorRespaldo {
 
 	// Métodos de acceso a la base de datos
 	
-	public void abrir() throws RemoteException, SQLException {
+	public List<?> consultar(ConsultaHibernate consulta) throws RemoteException, SQLException {
+		List<?> datos;
+	
 		try {
-			servidor.abrir();
+			datos = servidor.consultar(consulta);
 		} catch(RemoteException e) {
 			reconectar();
-			servidor.abrir();
-		}
-	}
-
-	public void cerrar() throws RemoteException, SQLException {
-		try {
-			servidor.cerrar();
-		} catch(RemoteException e) {
-			reconectar();
-			servidor.cerrar();
-		}
-	}
-
-	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
-		ResultSet datos;
-		
-		try {
-			datos = servidor.consultar(comando);
-		} catch(RemoteException e) {
-			reconectar();
-			datos = servidor.consultar(comando);
+			datos = servidor.consultar(consulta);
 		}
 		return datos;
 	}
 
-	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException {
+	public void iniciarTransaccion() throws RemoteException, SQLException {
 		try {
-			servidor.ejecutar(comando);
+			servidor.iniciarTransaccion();
 		} catch(RemoteException e) {
 			reconectar();
-			servidor.ejecutar(comando);
+			servidor.iniciarTransaccion();
+		}
+	}
+	
+	public Object insertar(Object objeto) throws RemoteException, SQLException {
+		Object copia;
+		
+		try {
+			copia = servidor.insertar(objeto);
+		} catch(RemoteException e) {
+			reconectar();
+			copia = servidor.insertar(objeto);
+		}
+		return copia;
+	}
+
+	public void actualizar(Object objeto) throws RemoteException, SQLException {
+		try {
+			servidor.actualizar(objeto);
+		} catch(RemoteException e) {
+			reconectar();
+			servidor.actualizar(objeto);
+		}
+	}
+
+	public void eliminar(Object objeto) throws RemoteException, SQLException {
+		try {
+			servidor.eliminar(objeto);
+		} catch(RemoteException e) {
+			reconectar();
+			servidor.eliminar(objeto);
+		}
+	}
+	
+	public void borrarCache(Object objeto) throws RemoteException, SQLException {
+		try {
+			servidor.borrarCache(objeto);
+		} catch(RemoteException e) {
+			reconectar();
+			servidor.borrarCache(objeto);
 		}
 	}
 

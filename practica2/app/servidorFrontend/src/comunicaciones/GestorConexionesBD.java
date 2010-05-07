@@ -1,17 +1,10 @@
 package comunicaciones;
 
-import java.rmi.RemoteException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-
 import persistencia.ConsultaHibernate;
-import persistencia.ComandoSQL;
-import persistencia.HibernateSessionFactory;
 
 /**
  * Gestor que permite acceder y modificar de forma sincronizada varias
@@ -31,155 +24,170 @@ public class GestorConexionesBD {
 		conexiones.clear();
 	}
 	
-	public static void cerrarConexiones() throws SQLException {
-		try {
-			// Cerramos todas las conexiones con bases de datos
-			for(IConexionBD conexion : conexiones) {
-				conexion.cerrar();
-			}
-		} catch(RemoteException ex) {
-			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
-		}
-	}
-	
-	public static ResultSet consultar(ComandoSQL comando) throws SQLException {
-		ResultSet datos;
-		
-		try {
-			// Para hacer una consulta utilizamos la primera conexión
-			if(conexiones.size() == 0) {
-				throw new SQLException("La lista de conexiones está vacía.");
-			}
-			datos = conexiones.get(0).consultar(comando);
-		} catch(RemoteException ex) {
-			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
-		}
-		return datos;
-	}
-	
-	public static List<?> consultarHibernate(ConsultaHibernate comando) throws SQLException {
+	public static List<?> consultar(ConsultaHibernate consulta) throws SQLException {
 		List<?> datos;
-		Session sesion;
 		
-		sesion = null;
+		// Para hacer una consulta utilizamos sólo la primera conexión
+		if(conexiones.size() == 0) {
+			throw new SQLException("La lista de conexiones está vacía.");
+		}
 		try {
-			// Para hacer una consulta utilizamos la primera conexión
-			if(conexiones.size() == 0) {
-				throw new SQLException("La lista de conexiones está vacía.");
+			datos = conexiones.get(0).consultar(consulta);
+		} catch(Exception ex) {
+			if(conexiones.get(0) instanceof ConexionBDFrontend) {
+				throw new SQLException("Error en el acceso a la base de datos principal.", ex);
+			} else if(conexiones.get(0) instanceof ProxyServidorRespaldo) {
+				throw new SQLException("Error en el acceso a la base de datos secundaria.", ex);
+			} else {
+				throw new SQLException("Error en el acceso a las bases de datos.", ex);
 			}
-			sesion = HibernateSessionFactory.getSession();
-			sesion.beginTransaction();
-			datos = comando.crearQuery(sesion).list();
-			sesion.getTransaction().commit();
-		} catch(HibernateException ex) {
-			sesion.getTransaction().rollback();
-			sesion.close();
-			throw new SQLException(ex.getLocalizedMessage(), ex);
 		}
 		
 		return datos;
 	}
 	
-	public static void ejecutar(ComandoSQL comando) throws SQLException {
-		ArrayList<IConexionBD> conexionesUsadas;
-		
-		try {
-			// Para hacer una modificación accedemos a todas las bases de
-			// datos, y si alguna falla revertimos los cambios de las anteriores
-			if(conexiones.size() == 0) {
-				throw new SQLException("La lista de conexiones está vacía.");
-			}
-			conexionesUsadas = new ArrayList<IConexionBD>();
-			for(IConexionBD conexion : conexiones) {
-				try {
-					conexion.ejecutar(comando);
-					conexionesUsadas.add(conexion);
-				} catch(Exception ex) {
-					// Deshacemos los cambios en las conexiones
-					for(IConexionBD conexionUsada : conexionesUsadas) {
-						conexionUsada.rollback();
-					}
-					if(conexion instanceof ConexionBDFrontend) {
-						throw new SQLException("Error en el acceso a la base de datos principal.", ex);
-					} else if(conexion instanceof ProxyServidorRespaldo) {
-						throw new SQLException("Error en el acceso a la base de datos secundaria.", ex);
-					} else {
-						throw new SQLException("Error en el acceso a las bases de datos.", ex);
-					}
+	public static void iniciarTransaccion() throws SQLException {
+		// Iniciamos una transacción que puede estar formada
+		// por más de una operación sobre la base de datos
+		if(conexiones.size() == 0) {
+			throw new SQLException("La lista de conexiones está vacía.");
+		}
+		for(IConexionBD conexion : conexiones) {
+			try {
+				conexion.iniciarTransaccion();
+			} catch(Exception ex) {
+				if(conexion instanceof ConexionBDFrontend) {
+					throw new SQLException("Error en el acceso a la base de datos principal.", ex);
+				} else if(conexion instanceof ProxyServidorRespaldo) {
+					throw new SQLException("Error en el acceso a la base de datos secundaria.", ex);
+				} else {
+					throw new SQLException("Error en el acceso a las bases de datos.", ex);
 				}
 			}
-			// Aplicamos los cambios en todas las conexiones
-			for(IConexionBD conexion : conexiones) {
+		}
+	}
+	
+	public static void terminarTransaccion() throws SQLException {
+		SQLException excepcion;
+		boolean error;
+		
+		// Intentamos finalizar la última transacción iniciada
+		if(conexiones.size() == 0) {
+			throw new SQLException("La lista de conexiones está vacía.");
+		}
+		error = false;
+		excepcion = null;
+		for(IConexionBD conexion : conexiones) {
+			try {
 				conexion.commit();
+			} catch(Exception ex) {
+				try {
+					conexion.rollback();
+				} catch(Exception ex2) {
+				}
+				error = true;
+				if(conexion instanceof ConexionBDFrontend) {
+					excepcion = new SQLException("Error en el acceso a la base de datos principal.", ex);
+				} else if(conexion instanceof ProxyServidorRespaldo) {
+					excepcion = new SQLException("Error en el acceso a la base de datos secundaria.", ex);
+				} else {
+					excepcion = new SQLException("Error en el acceso a las bases de datos.", ex);
+				}
 			}
-		} catch(RemoteException ex) {
-			throw new SQLException("Error en la conexión con una base de datos remota.", ex);
+		}
+		if(error) {
+			throw excepcion;
 		}
 	}
 	
-	public static void insertarHibernate(Object objeto) throws SQLException {
-		Session sesion;
+	public static Object insertar(Object objeto) throws SQLException {
+		Object copia;
 		
-		sesion = null;
-		try {
-			// Por el momento sólo se utiliza Hibernate con la primera conexión
-			if(conexiones.size() == 0) {
-				throw new SQLException("La lista de conexiones está vacía.");
+		// Insertamos el objeto en todas las conexiones, y nos quedamos
+		// con la copia devuelta por la primera conexión
+		if(conexiones.size() == 0) {
+			throw new SQLException("La lista de conexiones está vacía.");
+		}
+		copia = null;
+		for(IConexionBD conexion : conexiones) {
+			try {
+				if(copia == null) {
+					copia = conexion.insertar(objeto);
+				} else {
+					conexion.insertar(objeto);
+				}
+			} catch(Exception ex) {
+				if(conexion instanceof ConexionBDFrontend) {
+					throw new SQLException("Error en el acceso a la base de datos principal.", ex);
+				} else if(conexion instanceof ProxyServidorRespaldo) {
+					throw new SQLException("Error en el acceso a la base de datos secundaria.", ex);
+				} else {
+					throw new SQLException("Error en el acceso a las bases de datos.", ex);
+				}
 			}
-			// Almacenamos el objeto pasado como parámetro
-			sesion = HibernateSessionFactory.getSession();
-			sesion.beginTransaction();
-			sesion.save(objeto);
-			sesion.getTransaction().commit();
-		} catch(HibernateException ex) {
-			// Si se produce un error, hay que cerrar la sesión
-			sesion.getTransaction().rollback();
-			sesion.close();
-			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
+		
+		return copia;
+	}
+	
+	public static void actualizar(Object objeto) throws SQLException {
+		// Actualizamos el objeto en todas las conexiones
+		if(conexiones.size() == 0) {
+			throw new SQLException("La lista de conexiones está vacía.");
+		}
+		for(IConexionBD conexion : conexiones) {
+			try {
+				conexion.actualizar(objeto);
+			} catch(Exception ex) {
+				if(conexion instanceof ConexionBDFrontend) {
+					throw new SQLException("Error en el acceso a la base de datos principal.", ex);
+				} else if(conexion instanceof ProxyServidorRespaldo) {
+					throw new SQLException("Error en el acceso a la base de datos secundaria.", ex);
+				} else {
+					throw new SQLException("Error en el acceso a las bases de datos.", ex);
+				}
+			}
 		}
 	}
 	
-	public static void actualizarHibernate(Object objeto) throws SQLException, HibernateException {
-		Session sesion;
-		
-		sesion = null;
-		try {
-			// Por el momento sólo se utiliza Hibernate con la primera conexión
-			if(conexiones.size() == 0) {
-				throw new SQLException("La lista de conexiones está vacía.");
+	public static void eliminar(Object objeto) throws SQLException {
+		// Eliminamos el objeto en todas las conexiones
+		if(conexiones.size() == 0) {
+			throw new SQLException("La lista de conexiones está vacía.");
+		}
+		for(IConexionBD conexion : conexiones) {
+			try {
+				conexion.eliminar(objeto);
+			} catch(Exception ex) {
+				if(conexion instanceof ConexionBDFrontend) {
+					throw new SQLException("Error en el acceso a la base de datos principal.", ex);
+				} else if(conexion instanceof ProxyServidorRespaldo) {
+					throw new SQLException("Error en el acceso a la base de datos secundaria.", ex);
+				} else {
+					throw new SQLException("Error en el acceso a las bases de datos.", ex);
+				}
 			}
-			// Actualizamos el objeto pasado como parámetro
-			sesion = HibernateSessionFactory.getSession();
-			sesion.beginTransaction();
-			sesion.update(objeto);
-			sesion.getTransaction().commit();
-		} catch(HibernateException ex) {
-			// Si se produce un error, hay que cerrar la sesión
-			sesion.getTransaction().rollback();
-			sesion.close();
-			throw new SQLException(ex.getLocalizedMessage(), ex);
 		}
 	}
-	
-	public static void borrarHibernate(Object objeto) throws SQLException, HibernateException {
-		Session sesion;
-		
-		sesion = null;
-		try {
-			// Por el momento sólo se utiliza Hibernate con la primera conexión
-			if(conexiones.size() == 0) {
-				throw new SQLException("La lista de conexiones está vacía.");
+
+	public static void borrarCache(Object objeto) throws SQLException {
+		// Borramos el objeto de la caché de todas las conexiones
+		if(conexiones.size() == 0) {
+			throw new SQLException("La lista de conexiones está vacía.");
+		}
+		for(IConexionBD conexion : conexiones) {
+			try {
+				// Borramos el objeto
+				conexion.borrarCache(objeto);
+			} catch(Exception ex) {
+				if(conexion instanceof ConexionBDFrontend) {
+					throw new SQLException("Error en el acceso a la base de datos principal.", ex);
+				} else if(conexion instanceof ProxyServidorRespaldo) {
+					throw new SQLException("Error en el acceso a la base de datos secundaria.", ex);
+				} else {
+					throw new SQLException("Error en el acceso a las bases de datos.", ex);
+				}
 			}
-			// Borramos el objeto pasado como parámetro
-			sesion = HibernateSessionFactory.getSession();
-			sesion.beginTransaction();
-			sesion.delete(objeto);
-			sesion.getTransaction().commit();
-		} catch(HibernateException ex) {
-			// Si se produce un error, hay que cerrar la sesión
-			sesion.getTransaction().rollback();
-			sesion.close();
-			throw new SQLException(ex.getLocalizedMessage(), ex);
 		}
 	}
 	

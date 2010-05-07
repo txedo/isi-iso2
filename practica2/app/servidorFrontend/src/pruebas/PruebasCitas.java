@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import persistencia.FPBeneficiario;
 import persistencia.FPCentroSalud;
 import persistencia.FPCita;
@@ -714,6 +715,7 @@ public class PruebasCitas extends PruebasBase {
 			fail("Se esperaba una excepción VolanteNoValidoException");
 		} catch(VolanteNoValidoException e) {
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail("Se esperaba una excepción VolanteNoValidoException");
 		}
 		

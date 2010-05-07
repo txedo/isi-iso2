@@ -3,6 +3,8 @@ package dominio.conocimiento;
 import java.io.Serializable;
 import java.util.Date;
 
+import dominio.UtilidadesDominio;
+
 /**
  * Clase que representa una sesión iniciada por un cliente en el servidor
  * front-end.
@@ -46,7 +48,8 @@ public abstract class Sesion implements ISesion, Serializable {
 		dev = false;
 		if(o != null && o instanceof Sesion) {
 			s = (Sesion)o;
-			dev = idSesion == s.getId() && getRol() == s.getRol() && horaInicio.equals(s.getHoraInicio());
+			dev = getId() == s.getId() && getRol() == s.getRol()
+			    && UtilidadesDominio.fechaIgual(getHoraInicio(), s.getHoraInicio(), true);
 		}
 		return dev;
 	}

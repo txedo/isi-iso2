@@ -3,6 +3,9 @@ package dominio.conocimiento;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -12,41 +15,58 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 
 	private static final long serialVersionUID = -8629345838800810415L;
 
-	private Vector<PeriodoTrabajo> calendario;
-	private TipoMedico tipoMedico;
+	private Set<PeriodoTrabajo> calendario;
+	private Set<TipoMedico> tiposMedico;
 	
 	public Medico() {
 		super();
-		calendario = new Vector<PeriodoTrabajo>();
-		tipoMedico = null;
+		calendario = new HashSet<PeriodoTrabajo>();
+		tiposMedico = new HashSet<TipoMedico>();
 	}
 	
 	public Medico(String nif, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil, TipoMedico tipo) {
 		super(nif, login, password, nombre, apellidos, correo, telefono, movil);
-		calendario = new Vector<PeriodoTrabajo>();
-		tipoMedico = tipo;
+		calendario = new HashSet<PeriodoTrabajo>();
+		tiposMedico = new HashSet<TipoMedico>();
+		tiposMedico.add(tipo);
 	}
 	
 	public Roles getRol() {
 		return Roles.Médico;
 	}
 	
-	public Vector<PeriodoTrabajo> getCalendario() {
+	public Set<PeriodoTrabajo> getCalendario() {
 		return calendario;
 	}
 
-	public void setCalendario(Vector<PeriodoTrabajo> calendario) {
+	public void setCalendario(Set<PeriodoTrabajo> calendario) {
 		this.calendario = calendario;
 	}
 	
+	public Set<TipoMedico> getTiposMedico() {
+		return tiposMedico;
+	}
+
+	public void setTiposMedico(Set<TipoMedico> tiposMedico) {
+		this.tiposMedico = tiposMedico;
+	}
+
 	public TipoMedico getTipoMedico() {
-		return tipoMedico;
+		TipoMedico tipo;
+		
+		if(tiposMedico == null || tiposMedico.size() == 0) {
+			tipo = null;
+		} else {
+			tipo = (TipoMedico)tiposMedico.toArray()[0];
+		}
+		return tipo;
 	}
 
 	public void setTipoMedico(TipoMedico tipoMedico) {
-		this.tipoMedico = tipoMedico;
+		tiposMedico = new HashSet<TipoMedico>();
+		tiposMedico.add(tipoMedico);
 	}
-	
+
 	public boolean fechaEnCalendario(Date fecha, long duracion) {
 		Calendar calend;
 		double horaInicio;
@@ -92,7 +112,7 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 		// hay algún período de trabajo que englobe las horas obtenidas 
 		fechaOk = false;
 		if(diaOk) {
-			for(PeriodoTrabajo periodo : calendario) {
+			for(PeriodoTrabajo periodo : getCalendario()) {
 				if(periodo.getDia() == dia && horaInicio >= (double)periodo.getHoraInicio() && horaFinal <= (double)periodo.getHoraFinal()) {
 					fechaOk = true;
 				}
@@ -111,7 +131,7 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 		// Generamos una lista con las horas a las que un médico podría
 		// dar cita en un determinado día de la semana
 		horas = new Vector<String>();
-		for(PeriodoTrabajo periodo : calendario) {
+		for(PeriodoTrabajo periodo : getCalendario()) {
 			if(periodo.getDia() == dia) {
 				// Calculamos cuántas citas se pueden dar en este período de trabajo
 				intervalos = (((periodo.getHoraFinal() - periodo.getHoraInicio()) * 60) / duracionCitas);
@@ -140,7 +160,7 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 		// Generamos una lista con las horas a las que un médico podría dar
 		// cita en un determinado día de la semana y un rango limitado de horas
 		horas = new Vector<String>();
-		for(PeriodoTrabajo periodo : calendario) {
+		for(PeriodoTrabajo periodo : getCalendario()) {
 			if(periodo.getDia() == dia && periodo.horaEnPeriodo(horaInicio, horaFinal)) {
 				// Reducimos el período según el rango de horas pasado
 				if(periodo.getHoraInicio() < horaInicio) {
@@ -172,36 +192,59 @@ public class Medico extends Usuario implements IMedico, Serializable, Cloneable 
 	
 	@SuppressWarnings("unchecked")
 	public Object clone() {
+		Iterator<PeriodoTrabajo> it;
+		HashSet<PeriodoTrabajo> periodos;
 		Medico m;
 		
-		m = new Medico(nif, login, password, nombre, apellidos, correo, telefono, movil, (TipoMedico)tipoMedico.clone());
-		if(centro == null) {
-			m.setCentroSalud(null);
-		} else {
-			m.setCentroSalud((CentroSalud)centro.clone());
+		m = new Medico(getNif(), getLogin(), getPassword(), getNombre(), getApellidos(), getCorreo(), getTelefono(), getMovil(), (TipoMedico)getTipoMedico().clone());
+		m.setCentroSalud(getCentroSalud() == null ? null : (CentroSalud)getCentroSalud().clone());
+		periodos = new HashSet<PeriodoTrabajo>();
+		it = getCalendario().iterator();
+		while(it.hasNext()) {
+			periodos.add((PeriodoTrabajo)it.next().clone());			
 		}
-		m.setCalendario((Vector<PeriodoTrabajo>)calendario.clone());
+		m.setCalendario(periodos);
+		m.setTipoMedico((TipoMedico)getTipoMedico().clone());
 		return m;
 	}
 	
 	public boolean equals(Object o) {
+		Iterator<PeriodoTrabajo> it1, it2;
+		PeriodoTrabajo periodo;
 		Medico m;
-		boolean dev;
-		int i;
+		boolean ok, dev;
 		
 		dev = false;
 		if(o != null && o instanceof Medico) {
 			m = (Medico)o;
-			dev = super.equals(m) && tipoMedico.equals(m.getTipoMedico());
+			dev = super.equals(m) && getTipoMedico().equals(m.getTipoMedico());
 			// Para que dos médicos sean iguales, deben tener el
 			// mismo calendario (aunque los períodos de trabajo
 			// no tienen por qué estar en el mismo orden)
-			dev = dev && calendario.size() == m.getCalendario().size();
-			for(i = 0; dev && i < calendario.size(); i++) {
-				dev = dev && m.getCalendario().contains(calendario.get(i));
+			dev = dev && getCalendario().size() == m.getCalendario().size();
+			it1 = getCalendario().iterator();
+			while(it1.hasNext()) {
+				periodo = it1.next();
+				it2 = m.getCalendario().iterator();
+				ok = false;
+				while(it2.hasNext()) {
+					if(periodo.equals(it2.next())) {
+						ok = true;
+					}
+				}
+				dev = dev && ok;
 			}
-			for(i = 0; dev && i < m.getCalendario().size(); i++) {
-				dev = dev && calendario.contains(m.getCalendario().get(i));
+			it1 = m.getCalendario().iterator();
+			while(it1.hasNext()) {
+				periodo = it1.next();
+				it2 = calendario.iterator();
+				ok = false;
+				while(it2.hasNext()) {
+					if(periodo.equals(it2.next())) {
+						ok = true;
+					}
+				}
+				dev = dev && ok;
 			}
 		}
 		return dev;

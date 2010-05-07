@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Clase de tipo de médico que representa un médico especialista para el
  * que se puede pedir cita teniendo un volante.
  */
-public class Especialista extends TipoMedico implements Serializable{
+public class Especialista extends TipoMedico implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 8975103923917109469L;
 	
@@ -35,7 +35,7 @@ public class Especialista extends TipoMedico implements Serializable{
 	}
 	
 	public Object clone() {
-		return new Especialista(especialidad);
+		return new Especialista(getEspecialidad());
 	}
 	
 	public boolean equals(Object o) {
@@ -45,13 +45,13 @@ public class Especialista extends TipoMedico implements Serializable{
 		dev = false;
 		if(o != null && o instanceof Especialista) {
 			e = (Especialista)o;
-			dev = especialidad.equals(e.getEspecialidad());
+			dev = getEspecialidad().equals(e.getEspecialidad());
 		}
 		return dev;
 	}
 	
 	public String toString() {
-		return super.toString() + " (" + especialidad + ")";
+		return super.toString() + " (" + getEspecialidad() + ")";
 	}
 	
 }

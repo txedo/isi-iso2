@@ -6,10 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import dominio.UtilidadesDominio;
+
 /**
  * Clase que representa una cita solicitada por un beneficiario para un médico.
  */
-public class Cita implements Serializable {
+public class Cita implements Serializable, Cloneable {
 		
 	private static final long serialVersionUID = 590630882906518367L;
 	
@@ -86,7 +88,7 @@ public class Cita implements Serializable {
 		// Devuelve true si la hora de la cita está contenida en
 		// el rango de horas pasado como parámtro
 		calend = Calendar.getInstance();
-		calend.setTime(fechaYHora);
+		calend.setTime(getFechaYHora());
 		horaD = calend.get(Calendar.HOUR_OF_DAY);
 		dev = (horaD >= horaDesde && horaD < horaHasta);
 		return dev;
@@ -104,6 +106,14 @@ public class Cita implements Serializable {
 		return formatoHora.parse(fechaYHora);
 	}
 	
+	public Object clone() {
+		Cita c;
+		
+		c = new Cita((Date)getFechaYHora().clone(), getDuracion(), (Beneficiario)getBeneficiario().clone(), (Medico)getMedico().clone());
+		c.setId(getId());
+		return c;
+	}
+	
 	public boolean equals(Object o) {
 		Cita c;
 		boolean dev;
@@ -111,7 +121,9 @@ public class Cita implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Cita) {
 			c = (Cita)o;
-			dev = fechaYHora.equals(c.getFechaYHora()) && duracion == c.getDuracion() && beneficiario.equals(c.getBeneficiario()) && medico.equals(c.getMedico());
+			dev = UtilidadesDominio.fechaIgual(getFechaYHora(), c.getFechaYHora(), true)
+			    && getDuracion() == c.getDuracion() && getBeneficiario().equals(c.getBeneficiario())
+			    && getMedico().equals(c.getMedico());
 		}
 		return dev;
 	}

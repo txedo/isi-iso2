@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.EventObject;
+import java.util.HashSet;
 import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -21,11 +23,14 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import presentacion.auxiliar.Dialogos;
 import presentacion.auxiliar.Validacion;
 import presentacion.auxiliar.VentanaCerradaListener;
+
 import com.cloudgarden.layout.AnchorConstraint;
 import com.cloudgarden.layout.AnchorLayout;
+
 import dominio.conocimiento.Administrador;
 import dominio.conocimiento.Cabecera;
 import dominio.conocimiento.CategoriasMedico;
@@ -33,13 +38,13 @@ import dominio.conocimiento.CentroSalud;
 import dominio.conocimiento.Citador;
 import dominio.conocimiento.Especialidades;
 import dominio.conocimiento.Especialista;
+import dominio.conocimiento.IConstantes;
 import dominio.conocimiento.Medico;
 import dominio.conocimiento.Pediatra;
 import dominio.conocimiento.PeriodoTrabajo;
 import dominio.conocimiento.Roles;
 import dominio.conocimiento.TipoMedico;
 import dominio.conocimiento.Usuario;
-import dominio.conocimiento.IConstantes;
 import dominio.control.ControladorCliente;
 import excepciones.ApellidoIncorrectoException;
 import excepciones.ContraseñaIncorrectaException;
@@ -412,7 +417,7 @@ public class JPUsuarioRegistrar extends JPBase implements IConstantes {
 					break;
 				}
 				((Medico)usuario).setTipoMedico(tipo);
-				((Medico)usuario).setCalendario(periodos);
+				((Medico)usuario).setCalendario(new HashSet<PeriodoTrabajo>(periodos));
 			}
 			
 			// Solicitamos al servidor que se cree el usuario

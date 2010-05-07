@@ -1,0 +1,130 @@
+DROP DATABASE IF EXISTS bdsscarespaldo;
+
+CREATE DATABASE bdsscarespaldo CHARACTER SET utf8 COLLATE utf8_bin;
+USE bdsscarespaldo;
+
+CREATE TABLE centros (
+       id INT NOT NULL AUTO_INCREMENT,
+       nombre VARCHAR(255) UNIQUE NOT NULL default '', 
+       direccion VARCHAR(255) NOT NULL default '',
+       PRIMARY KEY (id)
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
+CREATE TABLE usuarios (
+       nif CHAR(9) NOT NULL, 
+       login VARCHAR(255) UNIQUE NOT NULL default '',
+       password VARCHAR(255) NOT NULL default '', 
+       rol INT NOT NULL default '-1',
+       nombre VARCHAR(255) NOT NULL default '',
+       apellidos VARCHAR(255) NOT NULL default '',
+       correo VARCHAR(255) default '',
+       telefono VARCHAR(9) default '',
+       movil VARCHAR(9) default '',
+       idCentro INT default '-1',
+       PRIMARY KEY (nif),
+       FOREIGN KEY (idCentro) REFERENCES centros (id) ON DELETE SET NULL ON UPDATE CASCADE
+) TYPE=InnoDB;
+
+CREATE TABLE tiposmedico (
+       id INT NOT NULL AUTO_INCREMENT,
+       nifMedico CHAR(9) NOT NULL,
+       tipo INT NOT NULL default '-1',
+       especialidad VARCHAR(255) NOT NULL default '',
+       PRIMARY KEY (id),
+       FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB;
+
+CREATE TABLE periodostrabajo (
+       id INT NOT NULL AUTO_INCREMENT,
+       nifMedico CHAR(9) NOT NULL default '',
+       horaInicio INT NOT NULL default -1,
+       horaFinal INT NOT NULL default -1,
+       dia INT NOT NULL default -1,
+       PRIMARY KEY (id),
+       FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB;
+
+CREATE TABLE entradaslog (
+       id INT NOT NULL AUTO_INCREMENT,
+       usuario VARCHAR(255) default '',
+       fecha DATETIME NOT NULL,
+       accion ENUM ('create', 'read', 'update', 'delete', 'info') NOT NULL,
+       mensaje VARCHAR(255) NOT NULL default '',
+       PRIMARY KEY (id)
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
+CREATE TABLE beneficiarios (
+       nif CHAR(9) NOT NULL,
+       nss CHAR(12) UNIQUE NOT NULL,
+       nombre VARCHAR(255) NOT NULL default '', 
+       apellidos VARCHAR(255) NOT NULL default '',
+       correo VARCHAR(255) default '',
+       fechaNacimiento DATETIME NOT NULL,
+       telefono VARCHAR(9) default '',
+       movil VARCHAR(9) default '',
+       nifMedico CHAR(9) default '',
+       idCentro INT default -1,
+       PRIMARY KEY (nif),
+       FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE SET NULL ON UPDATE CASCADE,
+       FOREIGN KEY (idCentro) REFERENCES centros (id) ON DELETE SET NULL ON UPDATE CASCADE
+) TYPE=InnoDB;
+
+CREATE TABLE direcciones (
+       id INT NOT NULL AUTO_INCREMENT,
+       nifBeneficiario CHAR(9) NOT NULL,
+       domicilio VARCHAR(255) NOT NULL default '', 
+       numero VARCHAR(255) NOT NULL default '',
+       piso VARCHAR(255) NOT NULL default '',
+       puerta VARCHAR(255) NOT NULL default '',
+       ciudad VARCHAR(255) NOT NULL default '',
+       provincia VARCHAR(255) NOT NULL default '',
+       cp INT NOT NULL default -1,       
+       PRIMARY KEY (id),
+       FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
+CREATE TABLE citas (
+       id INT NOT NULL AUTO_INCREMENT,
+       fecha DATETIME NOT NULL,
+       duracion INT NOT NULL default -1,
+       nifBeneficiario CHAR(9) NOT NULL default '',
+       nifMedico CHAR(9) NOT NULL default '',
+       PRIMARY KEY (id),
+       UNIQUE (fecha, nifMedico),
+       FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
+CREATE TABLE volantes (
+       id INT NOT NULL AUTO_INCREMENT,
+       nifBeneficiario CHAR(9) NOT NULL default '',
+       nifMedicoEmisor CHAR(9) NOT NULL default '',
+       nifMedicoReceptor CHAR(9) NOT NULL default '',
+       fechaCaducidad DATETIME NOT NULL,
+       idCita INT,
+       PRIMARY KEY (id),
+       FOREIGN KEY (nifBeneficiario) REFERENCES beneficiarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (nifMedicoEmisor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (nifMedicoReceptor) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (idCita) REFERENCES citas (id) ON DELETE SET NULL ON UPDATE CASCADE
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
+CREATE TABLE sustituciones (
+       id INT NOT NULL AUTO_INCREMENT,
+       dia DATETIME NOT NULL,
+       horaInicio INT NOT NULL default -1,
+       horaFinal INT NOT NULL default -1,
+       nifMedico CHAR(9) NOT NULL default '',
+       nifSustituto CHAR(9) NOT NULL default '',
+       PRIMARY KEY (id),
+       FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (nifSustituto) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB AUTO_INCREMENT=1;
+
+INSERT INTO centros (nombre, direccion)
+   VALUES ("Centro de Pruebas", "Ciudad Real, Calle Ninguna, s/n");
+
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("11111111A", "admin", "f865b53623b121fd34ee5426c792e5c33af8c227", 0, "Admin", "Administrador", "correo@correo.com", "999888777", "666555444", 1);
+INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)
+   VALUES ("22222222A", "admina", "f865b53623b121fd34ee5426c792e5c33af8c227", 0, "Admin", "Auxiliar", "otrocorreo@correo.com", "999000111", "666222333", 1);

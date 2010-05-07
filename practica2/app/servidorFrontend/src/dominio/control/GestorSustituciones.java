@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
+
 import persistencia.FPSustitucion;
-import persistencia.FPTipoMedico;
 import persistencia.FPUsuario;
 import dominio.UtilidadesDominio;
 import dominio.conocimiento.IConstantes;
@@ -104,7 +104,7 @@ public class GestorSustituciones {
 		// Obtenemos los médicos del sistema que son del mismo tipo
 		// que el médico pasado como parámetro, para limitar un
 		// poco la búsqueda de sustitutos
-		nifs = FPTipoMedico.consultarMedicos(medico.getTipoMedico());
+		nifs = FPUsuario.consultarMedicos(medico.getTipoMedico());
 		
 		// Nos quedamos con los médicos encontrados que realmente pueden
 		// hacer una sustitución en la fecha y hora dadas
