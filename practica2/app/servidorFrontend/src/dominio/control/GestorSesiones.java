@@ -257,10 +257,12 @@ public class GestorSesiones {
 		
 		// Agregamos las operaciones permitidas para médicos
 		if(sesion.getRol() == Roles.Médico.ordinal()) {
+			operaciones.add(Operaciones.ConsultarMedico);
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
 			operaciones.add(Operaciones.EmitirVolante);
 			operaciones.add(Operaciones.ConsultarCitasPropiasMedico);
 			operaciones.add(Operaciones.ConsultarPropioMedico);
+			operaciones.add(Operaciones.ConsultarBeneficiariosMedico);
 			
 		}
 		

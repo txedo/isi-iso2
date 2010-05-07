@@ -55,7 +55,7 @@
  	
 	<s:form action="citaEspecialista">
 		<s:textfield name="nVolante" label="Volante"></s:textfield>
-		<s:submit value="Aceptar" onclick="cargarSpan()"></s:submit>
+		<s:submit value="Aceptar"></s:submit>
 	</s:form>
 
 	<!-- Esta parte es si no se utiliza Struts y se hace con AJAX de manera convencional
