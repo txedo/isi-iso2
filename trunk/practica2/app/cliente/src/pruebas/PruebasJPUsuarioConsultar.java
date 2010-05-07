@@ -393,7 +393,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			assertTrue(btnGuardar.isEnabled());
 			// Editamos el rol del administrador
 			jcmbRol.grabFocus();
-			jcmbRol.setSelectedIndex(1);
+			jcmbRol.setSelectedItem("Citador");
 			// Guardamos el administrador
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
 			// Comprobamos que el administrador ha sido modificado correctamente
@@ -484,7 +484,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			assertTrue(btnGuardar.isEnabled());
 			// Editamos el rol del citador
 			jcmbRol.grabFocus();
-			jcmbRol.setSelectedIndex(0);
+			jcmbRol.setSelectedItem("Administrador");
 			// Guardamos el citador
 			assertEquals(UtilidadesPruebas.obtenerTextoDialogo(btnGuardar, OK_OPTION), "El usuario ha sido modificado correctamente.");
 			// Comprobamos que el citador ha sido modificado correctamente
@@ -630,7 +630,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
 			
 			// Creamos una cita de prueba		
-			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, IConstantes.DURACION_CITA), dominio.conocimiento.IConstantes.DURACION_CITA);
+			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2015 - 1900, 4, 13, 10, IConstantes.DURACION_CITA), dominio.conocimiento.IConstantes.DURACION_CITA);
 		
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());
@@ -798,7 +798,7 @@ public class PruebasJPUsuarioConsultar extends org.uispec4j.UISpecTestCase imple
 			UtilidadesPruebas.crearBeneficiario(controlador, beneficiarioPrueba);
 			
 			// Creamos una cita de prueba		
-			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2010 - 1900, 3, 14, 10, IConstantes.DURACION_CITA), dominio.conocimiento.IConstantes.DURACION_CITA);
+			controlador.pedirCita(beneficiarioPrueba, cabecera.getNif(), new Date(2015 - 1900, 4, 13, 10, IConstantes.DURACION_CITA), dominio.conocimiento.IConstantes.DURACION_CITA);
 
 			// Buscamos el usuario
 			txtNIFBuscado.setText(cabecera.getNif());

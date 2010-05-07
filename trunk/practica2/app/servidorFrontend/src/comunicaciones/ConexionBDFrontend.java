@@ -1,51 +1,94 @@
 package comunicaciones;
 
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import persistencia.AgenteFrontend;
-import persistencia.ComandoSQL;
+import java.util.List;
+
+import org.hibernate.HibernateException;
+
+import persistencia.ConsultaHibernate;
+import persistencia.HibernateSessionFactory;
 
 /**
- * Clase intermedia para conectarse con el agente de la base de datos
- * principal.
+ * Clase intermedia para acceder a la base de datos principal utilizando
+ * Hibernate.
  */
 public class ConexionBDFrontend implements IConexionBD {
 
-	private AgenteFrontend agente;
-	
-	public ConexionBDFrontend() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		agente = AgenteFrontend.getAgente();
+	public ConexionBDFrontend() {
 	}
 	
-	public AgenteFrontend getAgente() {
-		return agente;
-	}
+	// Métodos de acceso a la base de datos
 	
-	// Métodos del agente
-	
-	public void abrir() throws RemoteException, SQLException {
-		agente.abrir();
+	public List<?> consultar(ConsultaHibernate consulta) throws RemoteException, SQLException {
+		List<?> datosLeidos;
+		
+		try {
+			HibernateSessionFactory.getSession().beginTransaction();
+			datosLeidos = consulta.crearQuery(HibernateSessionFactory.getSession()).list();
+		} catch(HibernateException ex) {
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
+
+		return datosLeidos;
 	}
 
-	public void cerrar() throws RemoteException, SQLException {
-		agente.cerrar();
+	public void iniciarTransaccion() throws RemoteException, SQLException {
+		try {
+			HibernateSessionFactory.getSession().beginTransaction();
+		} catch(HibernateException ex) {
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
 	}
 
-	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
-		return agente.consultar(comando);
+	public Object insertar(Object objeto) throws RemoteException, SQLException {
+		try {
+			HibernateSessionFactory.getSession().save(objeto);
+		} catch(HibernateException ex) {
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
+		return objeto;
 	}
 
-	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException {
-		agente.ejecutar(comando);
+	public void actualizar(Object objeto) throws RemoteException, SQLException {
+		try {
+			HibernateSessionFactory.getSession().update(objeto);
+		} catch(HibernateException ex) {
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
+	}
+
+	public void eliminar(Object objeto) throws RemoteException, SQLException {
+		try {
+			HibernateSessionFactory.getSession().delete(objeto);
+		} catch(HibernateException ex) {
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
+	}
+
+	public void borrarCache(Object objeto) throws RemoteException, SQLException {
+		try {
+			HibernateSessionFactory.getSession().evict(objeto);
+		} catch(HibernateException ex) {
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
 	}
 
 	public void commit() throws RemoteException, SQLException {
-		agente.commit();
+		try {
+			HibernateSessionFactory.getSession().getTransaction().commit();
+		} catch(HibernateException ex) {
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
 	}
 
 	public void rollback() throws RemoteException, SQLException {
-		agente.rollback();
+		try {
+			HibernateSessionFactory.getSession().getTransaction().rollback();
+			HibernateSessionFactory.closeSession();
+		} catch(HibernateException ex) {
+			throw new SQLException(ex.getLocalizedMessage(), ex);
+		}
 	}
 
 }

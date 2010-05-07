@@ -15,7 +15,7 @@ public abstract class Usuario implements Serializable, Cloneable {
 	protected String correo;
 	protected String telefono;
 	protected String movil;
-	protected CentroSalud centro;
+	protected CentroSalud centroSalud;
 	
 	public Usuario() {
 		nif = "";
@@ -26,7 +26,7 @@ public abstract class Usuario implements Serializable, Cloneable {
 		correo = "";
 		telefono = "";
 		movil = "";
-		centro = null;
+		centroSalud = null;
 	}
 	
 	public Usuario(String nif, String login, String password, String nombre, String apellidos, String correo, String telefono, String movil) {
@@ -38,7 +38,7 @@ public abstract class Usuario implements Serializable, Cloneable {
 		this.correo = correo;
 		this.telefono = telefono;
 		this.movil = movil;
-		centro = null;
+		centroSalud = null;
 	}
 
 	public abstract Roles getRol();
@@ -108,11 +108,11 @@ public abstract class Usuario implements Serializable, Cloneable {
 	}
 	
 	public CentroSalud getCentroSalud() {
-		return centro;
+		return centroSalud;
 	}
 	
 	public void setCentroSalud(CentroSalud centro) {
-		this.centro = centro;
+		this.centroSalud = centro;
 	}
 
 	public abstract Object clone();
@@ -124,12 +124,15 @@ public abstract class Usuario implements Serializable, Cloneable {
 		dev = false;
 		if(o != null && o instanceof Usuario) {
 			u = (Usuario)o;
-			if(u.getClass().equals(this.getClass())) {
-				dev = nif.equals(u.getNif()) && login.equals(u.getLogin()) && password.equals(u.getPassword()) && nombre.equals(u.getNombre()) && apellidos.equals(u.getApellidos()) && correo.equals(u.getCorreo()) && telefono.equals(u.getTelefono()) && movil.equals(u.getMovil());
-				if(centro == null) {
-					dev = dev & (u.getCentroSalud() == null);
+			if(getRol() == u.getRol()) {
+				dev = getNif().equals(u.getNif()) && getLogin().equals(u.getLogin())
+				    && getPassword().equals(u.getPassword()) && getNombre().equals(u.getNombre())
+				    && getApellidos().equals(u.getApellidos()) && getCorreo().equals(u.getCorreo())
+				    && getTelefono().equals(u.getTelefono()) && getMovil().equals(u.getMovil());
+				if(getCentroSalud() == null) {
+					dev = dev && (u.getCentroSalud() == null);
 				} else {
-					dev = dev & centro.equals(u.getCentroSalud());
+					dev = dev && getCentroSalud().equals(u.getCentroSalud());
 				}
 			}
 		}
@@ -137,7 +140,10 @@ public abstract class Usuario implements Serializable, Cloneable {
 	}
 
 	public String toString() {
-		return getRol().toString() + ": " + nif + ", " + login + ", " + password + ", " + nombre + ", " + apellidos + ", " + correo + ", " + telefono + ", " + movil + ", C: " + (centro == null ? "(ninguno)" : centro.getNombre());
+		return getRol().toString() + ": " + getNif() + ", " + getLogin() + ", " + getPassword()
+		       + ", " + getNombre() + ", " + getApellidos() + ", " + getCorreo() + ", "
+		       + getTelefono() + ", " + getMovil()
+		       + ", C: " + (getCentroSalud() == null ? "(ninguno)" : getCentroSalud().getNombre());
 	}
 	
 }

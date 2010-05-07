@@ -50,7 +50,7 @@ public class UtilidadesDominio {
 		
 		if(considerarHora) {
 			// Comparamos directamente las dos fechas
-			dev = fecha1.equals(fecha2);
+			dev = fecha1.getTime() == fecha2.getTime();
 		} else {
 			// Nos quedamos sólo con la información del día
 			calend = Calendar.getInstance();
@@ -66,7 +66,7 @@ public class UtilidadesDominio {
 			calendSH.set(Calendar.DAY_OF_MONTH, calend.get(Calendar.DAY_OF_MONTH));
 			fecha2SH = calendSH.getTime();
 			// Comparamos las dos fechas
-			dev = fecha1SH.equals(fecha2SH);
+			dev = fecha1SH.getTime() == fecha2SH.getTime();
 		}
 		
 		return dev;

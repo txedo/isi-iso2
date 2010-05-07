@@ -6,27 +6,27 @@ import java.io.Serializable;
  * Clase que representa un período de tiempo en el que un médico puede
  * atender pacientes.
  */
-public class PeriodoTrabajo implements Serializable {
+public class PeriodoTrabajo implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 8623785764161131532L;
 	
 	private int id;
 	private int horaInicio;
 	private int horaFinal;
-	private DiaSemana dia;
+	private int diaNumero;
 	
 	public PeriodoTrabajo() {
 		id = -1;
 		horaInicio = 0;
 		horaFinal = 0;
-		dia = DiaSemana.Lunes;
+		diaNumero = -1;
 	}
 	
 	public PeriodoTrabajo(int horaInicio, int horaFinal, DiaSemana dia) {
 		id = -1;
 		this.horaInicio = horaInicio;
 		this.horaFinal = horaFinal;
-		this.dia = dia;
+		this.diaNumero = dia.ordinal();
 	}
 
 	public int getId() {
@@ -53,16 +53,24 @@ public class PeriodoTrabajo implements Serializable {
 		this.horaFinal = horaFinal;
 	}
 	
+	public int getDiaNumero() {
+		return diaNumero;
+	}
+	
+	public void setDiaNumero(int diaNumero) {
+		this.diaNumero = diaNumero;
+	}
+	
 	public DiaSemana getDia() {
-		return dia;
+		return DiaSemana.values()[diaNumero];
 	}
 	
 	public void setDia(DiaSemana dia) {
-		this.dia = dia;
+		this.diaNumero = dia.ordinal();
 	}
 	
 	public int getNumeroHoras() {
-		return (horaFinal - horaInicio);
+		return (getHoraFinal() - getHoraInicio());
 	}
 
 	public boolean horaEnPeriodo(int horaInicio, int horaFinal) {
@@ -70,10 +78,18 @@ public class PeriodoTrabajo implements Serializable {
 		
 		// Devuelve true si este período se solapa con
 		// alguna de las horas del rango indicado
-		dev = (horaInicio >= this.horaInicio && horaInicio < this.horaFinal);
-		dev = dev || (horaFinal > this.horaInicio && horaFinal <= this.horaFinal);
-		dev = dev || (horaInicio <= this.horaInicio && horaFinal >= this.horaFinal);
+		dev = (horaInicio >= getHoraInicio() && horaInicio < getHoraFinal());
+		dev = dev || (horaFinal > getHoraInicio() && horaFinal <= getHoraFinal());
+		dev = dev || (horaInicio <= getHoraInicio() && horaFinal >= getHoraFinal());
 		return dev;
+	}
+	
+	public Object clone() {
+		PeriodoTrabajo p;
+		
+		p = new PeriodoTrabajo(getHoraInicio(), getHoraFinal(), getDia());
+		p.setId(getId());
+		return p;
 	}
 		
 	public boolean equals(Object o) {
@@ -83,7 +99,8 @@ public class PeriodoTrabajo implements Serializable {
 		dev = false;
 		if(o != null && o instanceof PeriodoTrabajo) {
 			p = (PeriodoTrabajo)o;
-			dev = horaInicio == getHoraInicio() && horaFinal == p.getHoraFinal() && dia.equals(p.getDia());
+			dev = getHoraInicio() == getHoraInicio() && getHoraFinal() == p.getHoraFinal()
+			    && getDiaNumero() == p.getDiaNumero();
 		}
 		return dev;
 	}

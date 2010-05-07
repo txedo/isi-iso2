@@ -12,9 +12,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
-import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;

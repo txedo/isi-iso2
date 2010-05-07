@@ -3,7 +3,7 @@ DROP DATABASE IF EXISTS bdssca;
 CREATE DATABASE bdssca CHARACTER SET utf8 COLLATE utf8_bin;
 USE bdssca;
 
-CREATE TABLE centrosalud (
+CREATE TABLE centros (
        id INT NOT NULL AUTO_INCREMENT,
        nombre VARCHAR(255) UNIQUE NOT NULL default '', 
        direccion VARCHAR(255) NOT NULL default '',
@@ -22,18 +22,19 @@ CREATE TABLE usuarios (
        movil VARCHAR(9) default '',
        idCentro INT default '-1',
        PRIMARY KEY (nif),
-       FOREIGN KEY (idCentro) REFERENCES centrosalud (id) ON DELETE SET NULL ON UPDATE CASCADE
+       FOREIGN KEY (idCentro) REFERENCES centros (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
-CREATE TABLE tiposMedico (
+CREATE TABLE tiposmedico (
+       id INT NOT NULL AUTO_INCREMENT,
        nifMedico CHAR(9) NOT NULL,
        tipo INT NOT NULL default '-1',
        especialidad VARCHAR(255) NOT NULL default '',
-       PRIMARY KEY (nifMedico, tipo),
+       PRIMARY KEY (id),
        FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
-CREATE TABLE periodosTrabajo (
+CREATE TABLE periodostrabajo (
        id INT NOT NULL AUTO_INCREMENT,
        nifMedico CHAR(9) NOT NULL default '',
        horaInicio INT NOT NULL default -1,
@@ -43,7 +44,7 @@ CREATE TABLE periodosTrabajo (
        FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
-CREATE TABLE entradalog (
+CREATE TABLE entradaslog (
        id INT NOT NULL AUTO_INCREMENT,
        usuario VARCHAR(255) default '',
        fecha DATETIME NOT NULL,
@@ -65,7 +66,7 @@ CREATE TABLE beneficiarios (
        idCentro INT default -1,
        PRIMARY KEY (nif),
        FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE SET NULL ON UPDATE CASCADE,
-       FOREIGN KEY (idCentro) REFERENCES centrosalud (id) ON DELETE SET NULL ON UPDATE CASCADE
+       FOREIGN KEY (idCentro) REFERENCES centros (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
 CREATE TABLE direcciones (
@@ -120,11 +121,11 @@ CREATE TABLE sustituciones (
        FOREIGN KEY (nifSustituto) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
-INSERT INTO centrosalud (nombre, direccion)
+INSERT INTO centros (nombre, direccion)
    VALUES ("Hospital Central", "Ciudad Real, Calle Toledo, 24");
-INSERT INTO centrosalud (nombre, direccion)
+INSERT INTO centros (nombre, direccion)
    VALUES ("Centro de Salud de Toledo", "Toledo, Plaza Mayor, s/n");
-INSERT INTO centrosalud (nombre, direccion)
+INSERT INTO centros (nombre, direccion)
    VALUES ("Centro de Pediatría", "Albacete, Avenida Reyes Católicos, 35");
 
 INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, correo, telefono, movil, idCentro)

@@ -1,9 +1,11 @@
 package dominio.control;
 
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import persistencia.ComandoSQL;
+import java.util.List;
+
+import persistencia.ConsultaHibernate;
+
 import comunicaciones.ConexionBDRespaldo;
 import comunicaciones.ConexionLogVentana;
 import comunicaciones.IServidorRespaldo;
@@ -41,20 +43,28 @@ public class ServidorRespaldo implements IServidorRespaldo {
 	
 	// Métodos de acceso a la base de datos
 	
-	public void abrir() throws RemoteException, SQLException {
-		basedatos.abrir();
-	}
-	
-	public void cerrar() throws RemoteException, SQLException {
-		basedatos.cerrar();
-	}
-	
-	public ResultSet consultar(ComandoSQL comando) throws RemoteException, SQLException {
-		return basedatos.consultar(comando);
+	public List<?> consultar(ConsultaHibernate consulta) throws RemoteException, SQLException {
+		return basedatos.consultar(consulta);
 	}
 
-	public void ejecutar(ComandoSQL comando) throws RemoteException, SQLException {
-		basedatos.ejecutar(comando);
+	public void iniciarTransaccion() throws RemoteException, SQLException {
+		basedatos.iniciarTransaccion();
+	}
+
+	public Object insertar(Object objeto) throws RemoteException, SQLException {
+		return basedatos.insertar(objeto);
+	}
+
+	public void actualizar(Object objeto) throws RemoteException, SQLException {
+		basedatos.actualizar(objeto);
+	}
+
+	public void eliminar(Object objeto) throws RemoteException, SQLException {
+		basedatos.eliminar(objeto);
+	}
+
+	public void borrarCache(Object objeto) throws RemoteException, SQLException {
+		basedatos.borrarCache(objeto);
 	}
 
 	public void commit() throws RemoteException, SQLException {

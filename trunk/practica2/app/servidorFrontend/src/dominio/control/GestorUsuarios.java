@@ -21,6 +21,7 @@ import persistencia.FPUsuario;
 import persistencia.UtilidadesPersistencia;
 import excepciones.BeneficiarioInexistenteException;
 import excepciones.CentroSaludInexistenteException;
+import excepciones.CitaNoValidaException;
 import excepciones.DireccionInexistenteException;
 import excepciones.OperacionIncorrectaException;
 import excepciones.SesionInvalidaException;
@@ -90,7 +91,7 @@ public class GestorUsuarios {
 	}
 	
 	// Método para modificar un usuario existente del sistema
-	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
+	public static void modificarUsuario(long idSesion, Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CitaNoValidaException {
 		// Comprobamos los parámetros pasados
 		if(usuario == null) {
 			throw new NullPointerException("El usuario que se va a modificar no puede ser nulo.");
@@ -225,9 +226,10 @@ public class GestorUsuarios {
 	
 	// Método para modificar un usuario existente del sistema
 	// (es público porque se utiliza desde otro gestor, no es accesible a los clientes)
-	public static void modificarUsuario(Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException {
+	public static void modificarUsuario(Usuario usuario) throws SQLException, UsuarioInexistenteException, SesionInvalidaException, OperacionIncorrectaException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CitaNoValidaException {
 		Vector<Cita> citas;
-		Usuario usuarioAntiguo, usuarioReal;
+		Usuario usuarioAntiguo;
+		String antiguaPassword;
 		boolean afectada;
 		
 		// Comprobamos si realmente existe el usuario que se quiere modificar
@@ -236,33 +238,32 @@ public class GestorUsuarios {
 		} catch(UsuarioIncorrectoException e) {
 			throw new UsuarioInexistenteException(e.getMessage());
 		}
-		
-		// Vemos si es necesario cambiar la contraseña (siempre
-		// hacemos una copia del usuario para no modificar el original)
-		usuarioReal = (Usuario)usuario.clone();
+				
+		// Vemos si es necesario cambiar la contraseña
+		antiguaPassword = usuario.getPassword();
 		if(!usuario.getPassword().trim().equals("")) {
 			// Encriptamos la nueva contraseña del usuario
 			try {
-				usuarioReal.setPassword(UtilidadesDominio.encriptarPasswordSHA1(usuario.getPassword()));
+				usuario.setPassword(UtilidadesDominio.encriptarPasswordSHA1(usuario.getPassword()));
 			} catch(NoSuchAlgorithmException e) {
 				throw new SQLException("No se puede encriptar la contraseña del usuario.");
 			}
 		} else {
-			// Mantenemos la contraseña antigua
-			usuarioReal.setPassword(usuarioAntiguo.getPassword());
+			// Dejamos la contraseña actual
+			usuario.setPassword(usuarioAntiguo.getPassword());			
 		}
 		
 		// Modificamos los datos del usuario
-		FPUsuario.modificar(usuarioReal);
+		FPUsuario.modificar(usuario);
 		
 		// Si el usuario modificado es un médico, eliminamos aquellas citas
 		// pendientes que ahora no quedan dentro del nuevo horario del médico
-		if(usuarioReal.getRol() == Roles.Médico) {
+		if(usuario.getRol() == Roles.Médico) {
 			citas = FPCita.consultarPorMedico(usuario.getNif());
 			for(Cita cita : citas) {
 				if(cita.getFechaYHora().after(new Date())) {
 					afectada = true;
-					for(PeriodoTrabajo periodo : ((Medico)usuarioReal).getCalendario()) {
+					for(PeriodoTrabajo periodo : ((Medico)usuario).getCalendario()) {
 						if(UtilidadesDominio.diaFecha(cita.getFechaYHora()) == periodo.getDia()
 						 && cita.citaEnHoras(periodo.getHoraInicio(), periodo.getHoraFinal())) {
 							// La cita queda dentro del nuevo horario
@@ -276,6 +277,9 @@ public class GestorUsuarios {
 				}
 			}
 		}
+		
+		// Revertimos los cambios hechos a la instancia del usuario
+		usuario.setPassword(antiguaPassword);
 	}
 
 	// Método para eliminar un usuario del sistema
@@ -290,7 +294,7 @@ public class GestorUsuarios {
 			FPUsuario.consultar(usuario.getNif());
 		} catch(UsuarioIncorrectoException e) {
 			throw new UsuarioInexistenteException(e.getMessage());
-		}	
+		}
 		
 		// Si se va a eliminar un médico, obtenemos su lista de
 		// beneficiarios para asignarle después un médico diferente

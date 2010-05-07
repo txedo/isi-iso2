@@ -14,11 +14,15 @@ Cambios:
 
 - Se ha creado una nueva clase ConsultaHibernate que agrupa una cadena de consulta de Hibernate y sus parámetros, de forma análoga a lo que se hizo con ComandoSQL. Esta clase tiene un método crearQuery que toma una sesión de Hibernate y devuelve una consulta específica para esa sesión.
 
-- Modificado el GestorConexionesBD para poder realizar consultas, inserciones,  modificaciones y eliminaciones a través de Hibernate. Para las consultas se utiliza un método al que se le pasa una instancia de ConsultaHibernate, mientras que para las otras tres operaciones simplemente se pasa el objeto que se quiere crear/modificar/eliminar.
+- Modificado el GestorConexionesBD para poder realizar consultas, inserciones,  modificaciones y eliminaciones a través de Hibernate. Para las consultas se utiliza un método al que se le pasa una instancia de ConsultaHibernate, mientras que para las otras tres operaciones simplemente se pasa el objeto que se quiere crear/modificar/eliminar. Para poder realizar las operaciones más complejas de modificación de usuarios y beneficiarios, se han tenido que añadir nuevos métodos, como iniciarTransaccion, terminarTransaccion y borrarCache.
 
-- Modificado el FPCentroSalud para utilizar Hibernate.
+- La interfaz IConexionBD y todas las clases que la implementan se han adaptado a los nuevos métodos del GestorConexionesBD: ya no hay métodos abrir y cerrar, porque la base de datos la gestiona Hibernate; hay métodos consultar/insertar/actualizar/eliminar; y se han añadido los métodos iniciarTransaccion y borrarCache.
 
-- Modificadas las tablas de la base de datos para tener el mismo nombre que las clases del dominio (por comodidad). Por ahora sólo se ha cambiado CentroSalud. <!>
+- Modificadas todas las clases de persistencia (FPs y Utilidades) para utilizar Hibernate. Como ahora toda la persistencia se realiza mediante Hibernate, se han eliminado todas las clases relacionadas con el agente de la bases de datos, tanto en el servidor front-end como en el de resplado (AgenteFrontend, AgenteRespaldo, ComandoSQL, etc.).
+
+- Para que las clases del dominio sean compatibles con Hibernate, las relaciones uno-a-muchos entre clases personalizadas (por ejemplo, Beneficiario y Direccion) deben estar implementadas con colecciones de tipo Set, y no Vector como estaban en la práctica del primer cuatrimestre. Por eso, ha sido necesario modificar la clase Beneficiario y Medico y otras clases relacionadas para que pasen a utilizar clases Set.
+
+- Aunque se ha mantenido la estructura de clases que permitiría al servidor front-end funcionar junto con el de respaldo, la gestión de la persistencia mediante Hibernate da bastantes problemas cuando se usan ambos servidores. Por eso, he deshabilitado la opción de utilizar el servidor de respaldo en la ventana principal del servidor front-end, y además, por comodidad, ahora tampoco se puede cambiar la IP de la base de datos, se supone que debe estar en la misma máquina que el servidor (esto se podría dejar como estaba cambiando dinámicamente el fichero hibernate.cfg.xml).
 
 - El método "identificar" se ha renombrado por "identificarUsuario" y se ha creado el método "identificarBeneficiario". Se han actualizado las clases GestorSesion, ServidorFrontend y el proxy de la web.
 

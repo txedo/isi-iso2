@@ -1,110 +1,98 @@
 package persistencia;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+
 import comunicaciones.GestorConexionesBD;
-import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.Cita;
-import dominio.conocimiento.Medico;
+
 import dominio.conocimiento.Volante;
-import excepciones.BeneficiarioInexistenteException;
-import excepciones.CentroSaludInexistenteException;
-import excepciones.CitaNoValidaException;
-import excepciones.DireccionInexistenteException;
-import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
 
 /**
  * Clase que permite consultar, insertar y modificar volantes de la
- * base de datos.
+ * base de datos utilizando Hibernate.
  */
 public class FPVolante {
 
-	private static final String TABLA_VOLANTES = "volantes";
+	private static final String CLASE_VOLANTE = "Volante";
 	
-	private static final String COL_ID_VOLANTE = "id";
-	private static final String COL_NIF_BENEFICIARIO = "nifBeneficiario";
-	private static final String COL_NIF_MEDICO_EMISOR = "nifMedicoEmisor";
-	private static final String COL_NIF_MEDICO_RECEPTOR = "nifMedicoReceptor";
-	private static final String COL_ID_CITA = "idCita";
-	private static final String COL_FECHA_CADUCIDAD = "fechaCaducidad";
+	private static final String ATRIB_ID = "id";
 	
-	public static Volante consultar(long id) throws SQLException, VolanteNoValidoException, CitaNoValidaException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		ComandoSQL comando;
-		ResultSet datos;
+	public static Volante consultar(long id) throws SQLException, VolanteNoValidoException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
 		Volante volante;
-		Medico medEmisor;
-		Medico medReceptor;
-		Beneficiario bene;
-		Cita cita;
 		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_VOLANTES
-				+ " WHERE " + COL_ID_VOLANTE + " = ?", id);
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
+		consulta = new ConsultaHibernate("FROM " + CLASE_VOLANTE + " WHERE "
+				 + ATRIB_ID + " = ?", id);
+		resultados = GestorConexionesBD.consultar(consulta);
 		
-		// Si no se obtienen datos, es porque no existe el volante 
-		if(datos.getRow() == 0) {
-			datos.close();
+		// Si no se obtienen datos, es porque el volante no existe
+		if(resultados.size() == 0) {
 			throw new VolanteNoValidoException("No existe ningún volante con el id " + String.valueOf(id) + ".");
 		} else {
-			// Establecemos los datos del volante
-			volante = new Volante();
-			bene = FPBeneficiario.consultarPorNIF(datos.getString(COL_NIF_BENEFICIARIO));
-			medEmisor = (Medico)FPUsuario.consultar(datos.getString(COL_NIF_MEDICO_EMISOR));
-			medReceptor = (Medico)FPUsuario.consultar(datos.getString(COL_NIF_MEDICO_RECEPTOR));
-			if(datos.getString(COL_ID_CITA) == null) {
-				cita = null;
-			} else {
-				cita = FPCita.consultar(datos.getInt(COL_ID_CITA));
+			// Recuperamos el volante leído
+			volante = (Volante)((Volante)resultados.get(0)).clone();
+			// Borramos los objetos leídos de la caché
+			for(Object objeto : resultados) {
+				GestorConexionesBD.borrarCache(objeto);
 			}
-			volante.setId(id);
-			volante.setBeneficiario(bene);
-			volante.setEmisor(medEmisor);
-			volante.setReceptor(medReceptor);
-			volante.setCita(cita);
-			volante.setFechaCaducidad(datos.getDate(COL_FECHA_CADUCIDAD));
 		}
 		
 		return volante;
 	}
 		
 	public static void insertar(Volante volante) throws SQLException {
-		ComandoSQL comando;
-		ResultSet datos;
-
-		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_VOLANTES
-				+ " (" + COL_NIF_BENEFICIARIO + ", " + COL_NIF_MEDICO_EMISOR
-				+ ", " + COL_NIF_MEDICO_RECEPTOR + ", " + COL_FECHA_CADUCIDAD
-				+ ", " + COL_ID_CITA + ") VALUES (?, ?, ?, ?, ?)",
-				volante.getBeneficiario().getNif(), volante.getEmisor().getNif(),
-				volante.getReceptor().getNif(), volante.getFechaCaducidad(),
-				(volante.getCita() == null ? null : volante.getCita().getId()));
-		GestorConexionesBD.ejecutar(comando);
+		Volante volanteNuevo;
 		
-		// Recuperamos el id autonumérico asignado al nuevo volante
-		comando = new ComandoSQLSentencia("SELECT LAST_INSERT_ID()");			
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
-		volante.setId(datos.getInt("LAST_INSERT_ID()"));
-		datos.close();
+		// Modificamos la base de datos y copiamos el id asignado
+		try {
+			GestorConexionesBD.iniciarTransaccion();
+			volanteNuevo = (Volante)GestorConexionesBD.insertar(volante.clone());
+			volante.setId(volanteNuevo.getId());
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
 	}
 
-	public static void modificar(Volante volante) throws SQLException {
-		ComandoSQL comando;
-
-		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("UPDATE " + TABLA_VOLANTES + " SET "
-				+ COL_NIF_BENEFICIARIO + " = ?, " + COL_NIF_MEDICO_EMISOR + " = ?, "
-				+ COL_NIF_MEDICO_RECEPTOR + " = ?, " + COL_FECHA_CADUCIDAD + " = ?, "
-				+ COL_ID_CITA + "= ? WHERE " + COL_ID_VOLANTE + " = ?",
-				volante.getBeneficiario().getNif(), volante.getEmisor().getNif(),
-				volante.getReceptor().getNif(), volante.getFechaCaducidad(),
-				(volante.getCita() == null ? null : volante.getCita().getId()),
-				volante.getId());
-		GestorConexionesBD.ejecutar(comando);
+	public static void modificar(Volante volante) throws SQLException, VolanteNoValidoException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
+		Volante volanteActual;
+		
+		// Consultamos la base de datos
+		consulta = new ConsultaHibernate("FROM " + CLASE_VOLANTE + " WHERE "
+				 + ATRIB_ID + " = ?", volante.getId());
+		resultados = GestorConexionesBD.consultar(consulta);
+		
+		// Si no se obtienen datos, es porque el volante no existe
+		if(resultados.size() == 0) {
+			throw new VolanteNoValidoException("No existe ningún volante con el id " + String.valueOf(volante.getId()) + ".");
+		} else {
+			// Recuperamos el volante que hay actualmente en la base de datos
+			volanteActual = (Volante)resultados.get(0);
+		}
+		
+		try {
+			GestorConexionesBD.iniciarTransaccion();
+			// Actualizamos los datos del volante
+			volanteActual.setBeneficiario(volante.getBeneficiario());
+			volanteActual.setCita(volante.getCita());
+			volanteActual.setEmisor(volante.getEmisor());
+			volanteActual.setReceptor(volante.getReceptor());
+			volanteActual.setFechaCaducidad(volante.getFechaCaducidad());
+			volanteActual.setId(volante.getId());
+			// Modificamos la base de datos
+			GestorConexionesBD.actualizar(volanteActual);
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
+		
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
+		}
 	}
 	
 }

@@ -1,10 +1,12 @@
 package dominio.conocimiento;
 
+import java.io.Serializable;
+
 /**
  * Clase que representa una sesión iniciada por un beneficiario del
  * sistema en el servidor front-end.
  */
-public class SesionBeneficiario extends Sesion {
+public class SesionBeneficiario extends Sesion implements Serializable {
 
 	private static final long serialVersionUID = -3947203248144292723L;
 	
@@ -40,7 +42,7 @@ public class SesionBeneficiario extends Sesion {
 		dev = false;
 		if(o != null && o instanceof SesionUsuario) {
 			s = (SesionBeneficiario)o;
-			dev = super.equals(s) && beneficiario.equals(s.getBeneficiario());
+			dev = super.equals(s) && getBeneficiario().equals(s.getBeneficiario());
 		}
 		return dev;
 	}

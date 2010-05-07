@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="dominio.conocimiento">
+	<class name="Beneficiario" table="beneficiarios" lazy="false">
+		<id name="nif" column="nif" type="string" />
+		<property name="nss" column="nss" type="string" unique="true" not-null="true" />
+		<property name="nombre" column="nombre" type="string" not-null="true" />
+		<property name="apellidos" column="apellidos" type="string" not-null="true" />
+		<property name="correo" column="correo" type="string" />
+		<property name="fechaNacimiento" column="fechaNacimiento" type="date" not-null="true" />
+		<property name="telefono" column="telefono" type="string" />
+		<property name="movil" column="movil" type="string" />
+		<many-to-one name="medicoAsignado" column="nifMedico" class="Medico" lazy="false" />
+		<many-to-one name="centroSalud" column="idCentro" class="CentroSalud" lazy="false" />
+		<set name="direcciones" cascade="all" lazy="false">
+			<key column="nifBeneficiario" unique="true" not-null="true" />
+			<one-to-many class="Direccion" />
+		</set>
+	</class>
+</hibernate-mapping>

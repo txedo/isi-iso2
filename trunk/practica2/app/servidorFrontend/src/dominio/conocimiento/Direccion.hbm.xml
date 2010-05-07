@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="dominio.conocimiento">
+	<class name="Direccion" table="direcciones" lazy="false">
+		<id name="id" column="id" type="int">
+			<generator class="native" />
+		</id>
+		<property name="domicilio" column="domicilio" type="string" not-null="true" />
+		<property name="numero" column="numero" type="string" not-null="true" />
+		<property name="piso" column="piso" type="string" not-null="true" />
+		<property name="puerta" column="puerta" type="string" not-null="true" />
+		<property name="ciudad" column="ciudad" type="string" not-null="true" />
+		<property name="provincia" column="provincia" type="string" not-null="true" />
+		<property name="CP" column="cp" type="int" not-null="true" />
+	</class>
+</hibernate-mapping>

@@ -25,15 +25,16 @@ CREATE TABLE usuarios (
        FOREIGN KEY (idCentro) REFERENCES centros (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
-CREATE TABLE tiposMedico (
+CREATE TABLE tiposmedico (
+       id INT NOT NULL AUTO_INCREMENT,
        nifMedico CHAR(9) NOT NULL,
        tipo INT NOT NULL default '-1',
        especialidad VARCHAR(255) NOT NULL default '',
-       PRIMARY KEY (nifMedico, tipo),
+       PRIMARY KEY (id),
        FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
-CREATE TABLE periodosTrabajo (
+CREATE TABLE periodostrabajo (
        id INT NOT NULL AUTO_INCREMENT,
        nifMedico CHAR(9) NOT NULL default '',
        horaInicio INT NOT NULL default -1,
@@ -43,14 +44,13 @@ CREATE TABLE periodosTrabajo (
        FOREIGN KEY (nifMedico) REFERENCES usuarios (nif) ON DELETE CASCADE ON UPDATE CASCADE
 ) TYPE=InnoDB;
 
-CREATE TABLE entradasLog (
+CREATE TABLE entradaslog (
        id INT NOT NULL AUTO_INCREMENT,
        usuario VARCHAR(255) default '',
        fecha DATETIME NOT NULL,
        accion ENUM ('create', 'read', 'update', 'delete', 'info') NOT NULL,
        mensaje VARCHAR(255) NOT NULL default '',
-       PRIMARY KEY (id), 
-       FOREIGN KEY (usuario) REFERENCES usuarios (login) ON DELETE SET NULL ON UPDATE CASCADE       
+       PRIMARY KEY (id)
 ) TYPE=InnoDB AUTO_INCREMENT=1;
 
 CREATE TABLE beneficiarios (

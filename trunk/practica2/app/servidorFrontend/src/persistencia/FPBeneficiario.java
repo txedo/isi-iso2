@@ -1,205 +1,167 @@
 package persistencia;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 import comunicaciones.GestorConexionesBD;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Direccion;
-import dominio.conocimiento.Medico;
-import dominio.conocimiento.Roles;
-import dominio.conocimiento.Usuario;
 import excepciones.BeneficiarioInexistenteException;
-import excepciones.CentroSaludInexistenteException;
-import excepciones.DireccionInexistenteException;
-import excepciones.UsuarioIncorrectoException;
 
 /**
  * Clase que permtie consultar, insertar, modificar y eliminar
- * beneficiarios de la base de datos.
+ * beneficiarios de la base de datos utilizando Hibernate.
  */
 public class FPBeneficiario {
 
-	private static final String TABLA_BENEFICIARIOS = "beneficiarios";
+	private static final String CLASE_BENEFICIARIO = "Beneficiario";
 	
-	private static final String COL_NIF = "nif";
-	private static final String COL_NSS = "nss";
-	private static final String COL_NOMBRE = "nombre";
-	private static final String COL_APELLIDOS = "apellidos";
-	private static final String COL_CORREO = "correo";
-	private static final String COL_FECHA_NACIMIENTO = "fechaNacimiento";
-	private static final String COL_TELEFONO = "telefono";
-	private static final String COL_MOVIL = "movil";
-	private static final String COL_NIF_MEDICO = "nifMedico";
-	private static final String COL_BENEFICIARIOS_NIF = "nif";
-	private static final String COL_ID_CENTRO = "idCentro";
+	private static final String ATRIB_NIF = "nif";
+	private static final String ATRIB_NSS = "nss";
 
-	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		ComandoSQL comando;
-		ResultSet datos;
+	public static Beneficiario consultarPorNIF(String nif) throws SQLException, BeneficiarioInexistenteException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
 		Beneficiario beneficiario;
-		Usuario medico;
-		Direccion direccion;
-
+		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS
-				+ " WHERE " + COL_NIF + " = ?", nif);
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
-
+		consulta = new ConsultaHibernate("FROM " + CLASE_BENEFICIARIO + " WHERE "
+				 + ATRIB_NIF + " = ?", nif);
+		resultados = GestorConexionesBD.consultar(consulta);
+		
 		// Si no se obtienen datos, es porque el beneficiario no existe
-		if(datos.getRow() == 0) {
-			datos.close();
+		if(resultados.size() == 0) {
 			throw new BeneficiarioInexistenteException("El beneficiario con NIF " + nif + " no se encuentra dado de alta en el sistema.");
 		} else {
-			// Establecemos los datos del beneficiario
-			beneficiario = new Beneficiario();
-			beneficiario.setNif(datos.getString(COL_NIF));
-			beneficiario.setNss(datos.getString(COL_NSS));
-			beneficiario.setNombre(datos.getString(COL_NOMBRE));
-			beneficiario.setApellidos(datos.getString(COL_APELLIDOS));
-			beneficiario.setCorreo(datos.getString(COL_CORREO));
-			beneficiario.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
-			beneficiario.setTelefono(datos.getString(COL_TELEFONO));
-			beneficiario.setMovil(datos.getString(COL_MOVIL));
-			direccion = FPDireccion.consultar(beneficiario.getNif());
-			beneficiario.setDireccion(direccion);
-			if(datos.getString(COL_NIF_MEDICO) == null) {
-				beneficiario.setMedicoAsignado(null);
-			} else {
-				medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-				if(medico.getRol() != Roles.Médico) {
-					datos.close();
-					throw new UsuarioIncorrectoException("El beneficiario con NIF " + nif + " no tiene asignado un usuario con rol de médico.");
-				}
-				beneficiario.setMedicoAsignado((Medico)medico);
+			// Recuperamos el beneficiario leído
+			beneficiario = (Beneficiario)((Beneficiario)resultados.get(0)).clone();
+			// Borramos los objetos leídos de la caché
+			for(Object objeto : resultados) {
+				GestorConexionesBD.borrarCache(objeto);
 			}
-			beneficiario.setCentroSalud(FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO)));
-			datos.close();
 		}
-
+		
 		return beneficiario;
 	}
 	
-	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, DireccionInexistenteException {
-		ComandoSQL comando;
-		ResultSet datos;
+	public static Beneficiario consultarPorNSS(String nss) throws SQLException, BeneficiarioInexistenteException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
 		Beneficiario beneficiario;
-		Usuario medico;
-		Direccion direccion;
-
+		
 		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT * FROM " + TABLA_BENEFICIARIOS
-				+ " WHERE " + COL_NSS + " = ?", nss);
-		datos = GestorConexionesBD.consultar(comando);
-		datos.next();
-
+		consulta = new ConsultaHibernate("FROM " + CLASE_BENEFICIARIO + " WHERE "
+				 + ATRIB_NSS + " = ?", nss);
+		resultados = GestorConexionesBD.consultar(consulta);
+		
 		// Si no se obtienen datos, es porque el beneficiario no existe
-		if(datos.getRow() == 0) {
-			datos.close();
+		if(resultados.size() == 0) {
 			throw new BeneficiarioInexistenteException("El beneficiario con NSS " + nss + " no se encuentra dado de alta en el sistema.");
 		} else {
-			// Establecemos los datos del beneficiario
-			beneficiario = new Beneficiario();
-			beneficiario.setNif(datos.getString(COL_NIF));
-			beneficiario.setNss(datos.getString(COL_NSS));
-			beneficiario.setNombre(datos.getString(COL_NOMBRE));
-			beneficiario.setApellidos(datos.getString(COL_APELLIDOS));
-			beneficiario.setCorreo(datos.getString(COL_CORREO));
-			beneficiario.setFechaNacimiento(new Date(datos.getTimestamp(COL_FECHA_NACIMIENTO).getTime()));
-			beneficiario.setTelefono(datos.getString(COL_TELEFONO));
-			beneficiario.setMovil(datos.getString(COL_MOVIL));
-			direccion = FPDireccion.consultar(beneficiario.getNif());
-			beneficiario.setDireccion(direccion);
-			if(datos.getString(COL_NIF_MEDICO) == null) {
-				beneficiario.setMedicoAsignado(null);
-			} else {
-				medico = FPUsuario.consultar(datos.getString(COL_NIF_MEDICO));
-				if(medico.getRol() != Roles.Médico) {
-					datos.close();
-					throw new UsuarioIncorrectoException("El beneficiario con NSS " + nss + " no tiene asignado un usuario con rol de médico.");
-				}
-				beneficiario.setMedicoAsignado((Medico)medico);
+			// Recuperamos el beneficiario leído
+			beneficiario = (Beneficiario)((Beneficiario)resultados.get(0)).clone();
+			// Borramos los objetos leídos de la caché
+			for(Object objeto : resultados) {
+				GestorConexionesBD.borrarCache(objeto);
 			}
-			beneficiario.setCentroSalud(FPCentroSalud.consultar(datos.getInt(COL_ID_CENTRO)));
-			datos.close();
 		}
-
+		
 		return beneficiario;
 	}
 	
 	public static Vector<String> consultarBeneficiariosMedico(String nifMedico) throws SQLException {
-		ComandoSQL comando;
-		ResultSet datos;
-		Vector<String> nifsBeneficiarios;
-     
-		// Consultamos la base de datos
-		comando = new ComandoSQLSentencia("SELECT " + COL_BENEFICIARIOS_NIF + " FROM "
-				+ TABLA_BENEFICIARIOS + " WHERE " + COL_NIF_MEDICO + " = ? ", nifMedico);
-		datos = GestorConexionesBD.consultar(comando);
- 
-		// Devolvemos la lista de beneficiarios
-		nifsBeneficiarios = new Vector<String>();
-		while(datos.next()) {
-			nifsBeneficiarios.add(datos.getString(COL_BENEFICIARIOS_NIF));
-		}
-		datos.close();
+		ConsultaHibernate consulta;
+		List<?> resultados;
+		Vector<String> nifs;
 		
-		return nifsBeneficiarios;
+		// Consultamos la base de datos
+		consulta = new ConsultaHibernate("FROM " + CLASE_BENEFICIARIO + " WHERE "
+				 + "medicoAsignado.nif = ?", nifMedico);
+		resultados = GestorConexionesBD.consultar(consulta);
+		
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
+		}
+		
+		// Devolvemos la lista de NIFs de los beneficiarios
+		nifs = new Vector<String>();
+		for(Object beneficiario : resultados) {
+			nifs.add(((Beneficiario)beneficiario).getNif());
+		}
+		
+		return nifs;
 	}
 
 	public static void insertar(Beneficiario beneficiario) throws SQLException {
-		ComandoSQL comando;
-		
-		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("INSERT INTO " + TABLA_BENEFICIARIOS
-				+ " (" + COL_NIF + ", " + COL_NSS + ", " + COL_NOMBRE
-				+ ", " + COL_APELLIDOS  + ", " + COL_CORREO + ", " + COL_FECHA_NACIMIENTO
-				+ ", " + COL_TELEFONO + ", " + COL_MOVIL + ", " + COL_NIF_MEDICO + ", " + COL_ID_CENTRO
-				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				beneficiario.getNif(), beneficiario.getNss(), beneficiario.getNombre(),
-				beneficiario.getApellidos(), beneficiario.getCorreo(),
-				new Timestamp(beneficiario.getFechaNacimiento().getTime()),
-				beneficiario.getTelefono(), beneficiario.getMovil(),
-				(beneficiario.getMedicoAsignado() == null ? null : beneficiario.getMedicoAsignado().getNif()),
-				beneficiario.getCentroSalud().getId());
-		GestorConexionesBD.ejecutar(comando);
-		// Insertamos la dirección del beneficiario
-		FPDireccion.insertar(beneficiario.getNif(), beneficiario.getDireccion());
+		// Modificamos la base de datos (automáticamente
+		// se inserta la dirección del beneficiario)
+		try {
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.insertar(beneficiario.clone());
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
 	}
 
-	public static void modificar(Beneficiario beneficiario) throws SQLException {
-		ComandoSQL comando;
+	public static void modificar(Beneficiario beneficiario) throws SQLException, BeneficiarioInexistenteException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
+		Beneficiario beneficiarioActual;
 		
-		// Modificamos la base de datos
-		// (el NIF y el NSS no se pueden cambiar)
-		comando = new ComandoSQLSentencia("UPDATE " + TABLA_BENEFICIARIOS + " SET "
-				+ COL_NOMBRE + " = ?, " + COL_APELLIDOS + " = ?, " + COL_CORREO + " = ?, "
-				+ COL_FECHA_NACIMIENTO + " = ?, " + COL_TELEFONO + " = ?, "
-				+ COL_MOVIL + " = ?, " + COL_NIF_MEDICO + " = ?, " + COL_ID_CENTRO
-				+ " = ? WHERE " + COL_NIF + " = ? ", 
-				beneficiario.getNombre(), beneficiario.getApellidos(),
-				beneficiario.getCorreo(), new Timestamp(beneficiario.getFechaNacimiento().getTime()),
-				beneficiario.getTelefono(), beneficiario.getMovil(),
-				(beneficiario.getMedicoAsignado() == null ? null : beneficiario.getMedicoAsignado().getNif()),
-				beneficiario.getCentroSalud().getId(), beneficiario.getNif());
-		GestorConexionesBD.ejecutar(comando);
+		// Consultamos la base de datos
+		consulta = new ConsultaHibernate("FROM " + CLASE_BENEFICIARIO + " WHERE "
+				 + ATRIB_NIF + " = ?", beneficiario.getNif());
+		resultados = GestorConexionesBD.consultar(consulta);
 		
-		// Modificamos la dirección del beneficiario
-		FPDireccion.modificar(beneficiario.getNif(), beneficiario.getDireccion());
+		// Si no se obtienen datos, es porque el beneficiario no existe
+		if(resultados.size() == 0) {
+			throw new BeneficiarioInexistenteException("El beneficiario con NIF " + beneficiario.getNif() + " no se encuentra dado de alta en el sistema.");
+		} else {
+			// Recuperamos el beneficiario que hay actualmente en la base de datos
+			beneficiarioActual = (Beneficiario)resultados.get(0);
+		}
+		
+		try {
+			// Eliminamos a mano los campos que hacen referencia a otras
+			// tablas, porque al actualizarlos Hibernate no borra los
+			// campos antiguos automáticamente, sino que los mantiene
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.eliminar(beneficiarioActual.getDireccion());
+			// Actualizamos los datos del beneficiario
+			beneficiarioActual.setApellidos(beneficiario.getApellidos());
+			beneficiarioActual.setCentroSalud(beneficiario.getCentroSalud());
+			beneficiarioActual.setCorreo(beneficiario.getCorreo());
+			beneficiarioActual.setDireccion((Direccion)beneficiario.getDireccion().clone());
+			beneficiarioActual.getDireccion().setId(-1);
+			beneficiarioActual.setFechaNacimiento(beneficiario.getFechaNacimiento());
+			beneficiarioActual.setMedicoAsignado(beneficiario.getMedicoAsignado());
+			beneficiarioActual.setMovil(beneficiario.getMovil());
+			beneficiarioActual.setNombre(beneficiario.getNombre());
+			beneficiarioActual.setTelefono(beneficiario.getTelefono());
+			// Modificamos la base de datos
+			GestorConexionesBD.actualizar(beneficiarioActual);
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
+		
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
+		}
 	}
 
-	public static void eliminar(Beneficiario beneficiario) throws SQLException {
-		ComandoSQL comando;
-
-		// Modificamos la base de datos
-		comando = new ComandoSQLSentencia("DELETE FROM " + TABLA_BENEFICIARIOS
-				+ " WHERE " + COL_NIF + " = ?",
-				beneficiario.getNif()); 
-		GestorConexionesBD.ejecutar(comando);
+	public static void eliminar(Beneficiario beneficiario) throws SQLException, BeneficiarioInexistenteException {
+		// Modificamos la base de datos (automáticamente
+		// se elimina la dirección del beneficiario)
+		try {
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.eliminar(consultarPorNIF(beneficiario.getNif()));
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
 	}
 	
 }

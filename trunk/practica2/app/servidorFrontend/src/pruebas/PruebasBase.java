@@ -1,11 +1,13 @@
 package pruebas;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import persistencia.AgenteFrontend;
+import java.util.List;
+
+import junit.framework.TestCase;
+import persistencia.ConsultaHibernate;
+import persistencia.HibernateSessionFactory;
+
 import comunicaciones.ConexionBDFrontend;
 import comunicaciones.GestorConexionesBD;
-import junit.framework.TestCase;
 
 /**
  * Clase base para las pruebas, que prepara y abre la conexión con la
@@ -14,51 +16,44 @@ import junit.framework.TestCase;
 public class PruebasBase extends TestCase {
 	
 	protected void setUp() {
-		Connection bd;
-		PreparedStatement sentencia;
+		ConsultaHibernate consulta;
+		List<?> datos;
 		ConexionBDFrontend conexion;
-		AgenteFrontend agente;
+		boolean iniciado;
 		
 		try {
-			// Borramos la base de datos
-			agente = AgenteFrontend.getAgente();
-			agente.setIP(IDatosPruebas.IP_BASEDATOS_PRINCIPAL);
-			agente.setPuerto(IDatosPruebas.PUERTO_BASEDATOS_PRINCIPAL);
-			agente.abrir();
-			bd = agente.getConexion();
-			sentencia = bd.prepareStatement("DELETE FROM beneficiarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM centrosalud");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM citas");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM direcciones");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM entradasLog");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM periodosTrabajo");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM sustituciones");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM tiposMedico");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM usuarios");
-			sentencia.executeUpdate();
-			sentencia = bd.prepareStatement("DELETE FROM volantes");
-			sentencia.executeUpdate();
-			bd.commit();
 			// Ponemos la conexión local con la base de datos
 			conexion = new ConexionBDFrontend();
 			GestorConexionesBD.ponerConexion(conexion);
+			// Cerramos la sesión de Hibernate para que no haya
+			// problemas al reutilizar los objetos de las pruebas
+			HibernateSessionFactory.closeSession();
+			// Borramos la base de datos
+			iniciado = false;
+			for(String clase : new String[] { "Sustitucion", "Volante", "Cita", "Beneficiario", "Usuario", "CentroSalud", "EntradaLog" }) {
+				consulta = new ConsultaHibernate("FROM " + clase);
+				datos = GestorConexionesBD.consultar(consulta);
+				for(Object objeto : datos) {
+					if(!iniciado) {
+						GestorConexionesBD.iniciarTransaccion();
+						iniciado = true;
+					}
+					GestorConexionesBD.borrarCache(objeto);
+					GestorConexionesBD.eliminar(objeto);
+				}
+			}
+			if(iniciado) {
+				GestorConexionesBD.terminarTransaccion();
+			}
 		} catch(Exception e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
 	
 	protected void tearDown() {
 		try {
-			// Cerramos la conexión local con la base de datos
-			GestorConexionesBD.cerrarConexiones();
+			// Vaciamos la lista de conexiones
 			GestorConexionesBD.quitarConexiones();
 		} catch(Exception e) {
 			fail(e.toString());

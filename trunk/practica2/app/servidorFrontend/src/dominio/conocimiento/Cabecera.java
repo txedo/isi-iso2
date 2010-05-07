@@ -31,5 +31,5 @@ public class Cabecera extends TipoMedico implements Serializable {
 		}
 		return dev;
 	}
-		
+	
 }

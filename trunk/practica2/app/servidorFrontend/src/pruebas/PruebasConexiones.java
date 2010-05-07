@@ -1,32 +1,37 @@
 package pruebas;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import persistencia.AgenteFrontend;
-import persistencia.ComandoSQL;
-import persistencia.ComandoSQLSentencia;
+import java.util.Date;
+import java.util.List;
+
+import org.uispec4j.UISpecTestCase;
+
+import persistencia.ConsultaHibernate;
 import presentacion.JFServidorFrontend;
+
 import comunicaciones.ConexionBDFrontend;
 import comunicaciones.ConexionLogBD;
 import comunicaciones.ConexionLogVentana;
 import comunicaciones.GestorConexionesBD;
 import comunicaciones.GestorConexionesLog;
-import comunicaciones.ProxyServidorRespaldo;
+
+import dominio.conocimiento.Beneficiario;
+import dominio.conocimiento.CentroSalud;
+import dominio.conocimiento.Direccion;
+import dominio.conocimiento.EntradaLog;
 import dominio.conocimiento.ITiposMensajeLog;
 
 /**
  * Pruebas de los Gestores de conexiones de base de datos y de estado del
  * servidor.
  */
-public class PruebasConexiones extends PruebasBase {
+public class PruebasConexiones extends UISpecTestCase {
 
 	private ConexionBDFrontend conexionBD;
 	private ConexionLogBD conexionLogBD;
 	private ConexionLogVentana conexionLogVentana;
 	private JFServidorFrontend ventana;
-	private ProxyServidorRespaldo conexionRespaldo;
+	//private ProxyServidorRespaldo conexionRespaldo;
 	
 	protected void setUp() {
 		try {
@@ -34,41 +39,33 @@ public class PruebasConexiones extends PruebasBase {
 			// Inicializamos las conexiones con las bases de datos
 			// y las ventanas de estado de los servidores
 			conexionBD = new ConexionBDFrontend();
-			conexionBD.getAgente().setIP(IDatosPruebas.IP_BASEDATOS_PRINCIPAL);
-			conexionBD.getAgente().setPuerto(IDatosPruebas.PUERTO_BASEDATOS_PRINCIPAL);
 			conexionLogBD = new ConexionLogBD();
 			conexionLogVentana = new ConexionLogVentana();
 			ventana = new JFServidorFrontend(null);
 			conexionLogVentana.ponerVentana(ventana);
-			conexionRespaldo = new ProxyServidorRespaldo();
-			conexionRespaldo.conectar(IDatosPruebas.IP_SERVIDOR_RESPALDO, IDatosPruebas.PUERTO_SERVIDOR_RESPALDO);
-			// Abrimos las bases de datos
-			conexionBD.abrir();
-			conexionRespaldo.abrir();
+			/*conexionRespaldo = new ProxyServidorRespaldo();
+			conexionRespaldo.conectar(IDatosPruebas.IP_SERVIDOR_RESPALDO, IDatosPruebas.PUERTO_SERVIDOR_RESPALDO);*/
 		} catch(Exception e) {
 			fail(e.toString() + "\nPara ejecutar esta prueba se necesita tener activado el servidor de respaldo.");
 		}
 	}
 	
 	protected void tearDown() {
-		try {
-			// Cerramos las bases de datos
-			conexionBD.cerrar();
-			conexionRespaldo.cerrar();
-		} catch(Exception e) {
-			fail(e.toString());
-		}
+		// No es necesario ningún código de finalización
 	}
 	
+	//TODO: No funciona con la BD secundaria
 	/** Pruebas de las conexiones con las bases de datos */
+	@SuppressWarnings("deprecation")
 	public void testConexionBD() {
-		ResultSet resultados;
-		ComandoSQL comando;
+		Beneficiario beneficiario, beneficiarioGet;
+		//Usuario usuario, usuarioGet;
+		//CentroSalud centro;
 		
 		try {
 			// Intentamos ejecutar un comando sin ninguna base de datos configurada
 			GestorConexionesBD.quitarConexiones();
-			GestorConexionesBD.consultar(new ComandoSQLSentencia("SELECT * FROM usuarios"));
+			GestorConexionesBD.consultar(new ConsultaHibernate("FROM Usuario"));
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 			assertEquals("La lista de conexiones está vacía.", e.getMessage());
@@ -77,8 +74,10 @@ public class PruebasConexiones extends PruebasBase {
 		}
 
 		try {
-			// Intentamos ejecutar un comando sin ninguna base de datos configurada
-			GestorConexionesBD.ejecutar(new ComandoSQLSentencia("DELETE FROM centros"));
+			// Intentamos insertar un objeto sin ninguna base de datos configurada
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.insertar(new CentroSalud("ABC", "DEF"));
+			GestorConexionesBD.terminarTransaccion();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 			assertEquals("La lista de conexiones está vacía.", e.getMessage());
@@ -91,32 +90,42 @@ public class PruebasConexiones extends PruebasBase {
 			GestorConexionesBD.quitarConexiones();
 			GestorConexionesBD.ponerConexion(conexionBD);
 			borrarBaseDatos();
-			// Ejecutamos varias sentencias SQL
-			comando = new ComandoSQLSentencia("INSERT INTO beneficiarios (nif, nss, nombre, apellidos, fechaNacimiento, nifMedico, idCentro) VALUES (\"11223344O\", \"112233009988\", \"A\", \"B\", \"1980-01-01\", null, null)");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("UPDATE beneficiarios SET apellidos = \"Nuevo\" WHERE nif = \"11223344O\"");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("SELECT apellidos FROM beneficiarios WHERE nss = \"112233009988\"");
-			resultados = GestorConexionesBD.consultar(comando);
-			resultados.next();
-			assertTrue(resultados.getString("apellidos").equals("Nuevo"));
+			// Ejecutamos varias operaciones sobre la base de datos
+			beneficiario = new Beneficiario("11223344O", "112233009988", "A", "B", new Date(1980 - 1900, 3, 6), new Direccion("A", "3", "", "", "B", "C", 10000), "", "", "");
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.insertar(beneficiario);
+			GestorConexionesBD.terminarTransaccion();
+			beneficiario.setApellidos("Nuevo");
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.actualizar(beneficiario);
+			GestorConexionesBD.terminarTransaccion();
+			beneficiarioGet = (Beneficiario)GestorConexionesBD.consultar(new ConsultaHibernate("FROM Beneficiario WHERE nss='112233009988'")).get(0);
+			assertEquals(beneficiarioGet.getApellidos(), "Nuevo");
+			GestorConexionesBD.borrarCache(beneficiario);
+			GestorConexionesBD.borrarCache(beneficiarioGet);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 
-		try {
+		/*try {
 			// Configuramos y borramos la base de datos secundaria
 			GestorConexionesBD.quitarConexiones();
 			GestorConexionesBD.ponerConexion(conexionRespaldo);
 			borrarBaseDatos();
 			// Ejecutamos varias sentencias SQL para comprobar que
 			// se tienen permisos para modificar la BD secundaria
-			comando = new ComandoSQLSentencia("INSERT INTO beneficiarios (nif, nss, nombre, apellidos, fechaNacimiento, nifMedico, idCentro) VALUES (\"11223344O\", \"112233009988\", \"A\", \"B\", \"1980-01-01\", null, null)");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("UPDATE beneficiarios SET apellidos = \"Nuevo\" WHERE nif = \"11223344O\"");
-			GestorConexionesBD.ejecutar(comando);
-			// (no se pueden hacer consultas porque la clase ResultSet
-			// no es serializable y no se puede enviar por RMI)
+			beneficiario = new Beneficiario("11223344O", "112233009988", "A", "B", new Date(1980 - 1900, 3, 6), new Direccion("A", "3", "", "", "B", "C", 10000), "", "", "");
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.insertar(beneficiario);
+			GestorConexionesBD.terminarTransaccion();
+			beneficiario.setApellidos("Nuevo");
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.actualizar(beneficiario);
+			GestorConexionesBD.terminarTransaccion();
+			beneficiarioGet = (Beneficiario)GestorConexionesBD.consultar(new ConsultaHibernate("FROM Beneficiario WHERE nss='112233009988'")).get(0);
+			assertEquals(beneficiarioGet.getApellidos(), "Nuevo");
+			GestorConexionesBD.borrarCache(beneficiario);
+			GestorConexionesBD.borrarCache(beneficiarioGet);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -128,10 +137,17 @@ public class PruebasConexiones extends PruebasBase {
 			GestorConexionesBD.ponerConexion(conexionRespaldo);
 			borrarBaseDatos();
 			// Ejecutamos varias sentencias SQL sobre las dos bases de datos
-			comando = new ComandoSQLSentencia("INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, idCentro) VALUES (\"88776655O\", \"login\", \"pass\", 0, \"C\", \"D\", null)");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("UPDATE usuarios SET password = \"nuevapassword\" WHERE nif = \"88776655O\"");
-			GestorConexionesBD.ejecutar(comando);
+			centro = new CentroSalud("AAA", "BBB");
+			usuario = new Administrador("88776655O", "login", "pass", "J", "K", "", "", "");
+			usuario.setCentroSalud(centro);
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.insertar(usuario);
+			GestorConexionesBD.terminarTransaccion();
+			usuario.setPassword("nuevapassword");
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.actualizar(usuario);
+			GestorConexionesBD.terminarTransaccion();
+			GestorConexionesBD.borrarCache(usuario);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -140,23 +156,24 @@ public class PruebasConexiones extends PruebasBase {
 			// Vemos si los cambios se han aplicado en la BD principal
 			GestorConexionesBD.quitarConexiones();
 			GestorConexionesBD.ponerConexion(conexionBD);
-			comando = new ComandoSQLSentencia("SELECT password, rol, apellidos FROM usuarios WHERE nif = \"88776655O\"");
-			resultados = GestorConexionesBD.consultar(comando);
-			resultados.next();
-			assertTrue(resultados.getString("password").equals("nuevapassword"));
-			assertTrue(resultados.getInt("rol") == 0);
-			assertTrue(resultados.getString("apellidos").equals("D"));
+			usuarioGet = (Usuario)GestorConexionesBD.consultar(new ConsultaHibernate("FROM Usuario WHERE nif='88776655O'")).get(0);
+			assertTrue(usuarioGet.getPassword().equals("nuevapassword"));
+			assertTrue(usuarioGet.getRol() == Roles.Administrador);
+			assertTrue(usuarioGet.getApellidos().equals("K"));
+			GestorConexionesBD.borrarCache(usuarioGet);
 		} catch(Exception e) {
 			fail(e.toString());
 		}
 
 		try {
 			// Vemos si los cambios se han aplicado en la BD secundaria
-			// (como no se pueden hacer consultas, intentamos repetir una clave primaria)
+			// (intentamos repetir una clave primaria)
 			GestorConexionesBD.quitarConexiones();
 			GestorConexionesBD.ponerConexion(conexionRespaldo);
-			comando = new ComandoSQLSentencia("INSERT INTO usuarios (nif, login, password, rol, nombre, apellidos, idCentro) VALUES (\"88776655O\", \"aaa\", \"bbb\", 0, \"C\", \"D\", null)");
-			GestorConexionesBD.ejecutar(comando);
+			usuario = new Administrador("88776655O", "aaa", "bbb", "J", "K", "", "", "");
+			GestorConexionesBD.iniciarTransaccion();
+			GestorConexionesBD.insertar(usuario);
+			GestorConexionesBD.terminarTransaccion();
 			fail("Se esperaba una excepción SQLException");
 		} catch(SQLException e) {
 			assertEquals("Error en el acceso a la base de datos secundaria.", e.getMessage());
@@ -231,14 +248,12 @@ public class PruebasConexiones extends PruebasBase {
 			GestorConexionesBD.ejecutar(comando);
 		} catch(Exception e) {
 			fail(e.toString());
-		}
+		}*/
 	}
 	
 	/** Pruebas de las conexiones para actualizar el estado del servidor */
 	public void testConexionLog() {
-		Connection bd;
-		PreparedStatement sentencia;
-		ResultSet resultados;
+		List<?> datos;
 		String[] lineas;
 		
 		try {
@@ -249,22 +264,16 @@ public class PruebasConexiones extends PruebasBase {
 			GestorConexionesBD.ponerConexion(conexionBD);
 			borrarBaseDatos();
 			// Comprobamos que ahora no hay ningún mensaje en la BD
-			bd = AgenteFrontend.getAgente().getConexion();
-			sentencia = bd.prepareStatement("SELECT * FROM entradaslog");
-			resultados = sentencia.executeQuery();
-			assertFalse(resultados.next());
+			assertTrue(GestorConexionesBD.consultar(new ConsultaHibernate("FROM EntradaLog")).size() == 0);
 			// Generamos nuevos mensajes y cambiamos los clientes a la escucha
 			GestorConexionesLog.ponerMensaje(null, ITiposMensajeLog.TIPO_INFO, "Mensaje de prueba");
 			GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_UPDATE, "Otro mensaje de prueba");
 			GestorConexionesLog.actualizarClientesEscuchando(3);
 			// Comprobamos que ahora hay dos mensajes en la BD
-			sentencia = bd.prepareStatement("SELECT * FROM entradaslog");
-			resultados = sentencia.executeQuery();
-			assertTrue(resultados.next());
-			assertTrue(resultados.getString("mensaje").equals("Mensaje de prueba") || resultados.getString("mensaje").equals("Otro mensaje de prueba"));
-			assertTrue(resultados.next());
-			assertTrue(resultados.getString("mensaje").equals("Mensaje de prueba") || resultados.getString("mensaje").equals("Otro mensaje de prueba"));
-			assertFalse(resultados.next());
+			datos = GestorConexionesBD.consultar(new ConsultaHibernate("FROM EntradaLog"));
+			assertTrue(datos.size() == 2);
+			assertTrue(((EntradaLog)datos.get(0)).getMensaje().equals("Mensaje de prueba") || ((EntradaLog)datos.get(0)).getMensaje().equals("Otro mensaje de prueba"));
+			assertTrue(((EntradaLog)datos.get(1)).getMensaje().equals("Mensaje de prueba") || ((EntradaLog)datos.get(1)).getMensaje().equals("Otro mensaje de prueba"));
 		} catch(Exception e) {
 			fail(e.toString());
 		}
@@ -289,7 +298,7 @@ public class PruebasConexiones extends PruebasBase {
 			fail(e.toString());
 		}
 		
-		try {
+		/*try {
 			// Configuramos la visualización de los mensajes en el servidor de respaldo
 			GestorConexionesLog.quitarConexiones();
 			GestorConexionesLog.ponerConexion(conexionRespaldo);
@@ -303,33 +312,31 @@ public class PruebasConexiones extends PruebasBase {
 			// se prueba la clase remota ServidorRespaldo
 		} catch(Exception e) {
 			fail(e.toString());
-		}
+		}*/
 	}
 	
 	private void borrarBaseDatos() {
-		ComandoSQL comando;
+		ConsultaHibernate consulta;
+		List<?> datos;
+		boolean iniciado;
 		
 		try {
-			comando = new ComandoSQLSentencia("DELETE FROM beneficiarios");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("DELETE FROM centros");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("DELETE FROM citas");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("DELETE FROM direcciones");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("DELETE FROM entradasLog");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("DELETE FROM periodosTrabajo");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("DELETE FROM sustituciones");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("DELETE FROM tiposMedico");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("DELETE FROM usuarios");
-			GestorConexionesBD.ejecutar(comando);
-			comando = new ComandoSQLSentencia("DELETE FROM volantes");
-			GestorConexionesBD.ejecutar(comando);
+			iniciado = false;
+			for(String clase : new String[] { "Sustitucion", "Volante", "Cita", "Beneficiario", "Usuario", "CentroSalud", "EntradaLog" }) {
+				consulta = new ConsultaHibernate("FROM " + clase);
+				datos = GestorConexionesBD.consultar(consulta);
+				for(Object objeto : datos) {
+					if(!iniciado) {
+						GestorConexionesBD.iniciarTransaccion();
+						iniciado = true;
+					}
+					GestorConexionesBD.borrarCache(objeto);
+					GestorConexionesBD.eliminar(objeto);
+				}
+			}
+			if(iniciado) {
+				GestorConexionesBD.terminarTransaccion();
+			}
 		} catch(Exception e) {
 			fail(e.toString());
 		}

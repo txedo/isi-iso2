@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">rosi</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/bdsscarespaldo</property>
+        <property name="hibernate.connection.username">isor</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <mapping resource="dominio/conocimiento/EntradaLog.hbm.xml" />
+        <mapping resource="dominio/conocimiento/CentroSalud.hbm.xml" />
+        <mapping resource="dominio/conocimiento/Usuario.hbm.xml" />
+        <mapping resource="dominio/conocimiento/PeriodoTrabajo.hbm.xml" />
+        <mapping resource="dominio/conocimiento/TipoMedico.hbm.xml" />
+        <mapping resource="dominio/conocimiento/Direccion.hbm.xml" />
+        <mapping resource="dominio/conocimiento/Beneficiario.hbm.xml" />
+        <mapping resource="dominio/conocimiento/Cita.hbm.xml" />
+        <mapping resource="dominio/conocimiento/Volante.hbm.xml" />
+        <mapping resource="dominio/conocimiento/Sustitucion.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>

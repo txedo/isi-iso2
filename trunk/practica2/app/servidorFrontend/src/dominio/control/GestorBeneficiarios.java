@@ -124,7 +124,7 @@ public class GestorBeneficiarios {
 	
 	// Método para modificar un beneficiario existente en el sistema
 	public static void modificarBeneficiario(long idSesion, Beneficiario beneficiario) throws OperacionIncorrectaException, SesionInvalidaException, BeneficiarioInexistenteException, SQLException, UsuarioIncorrectoException, CentroSaludInexistenteException, NullPointerException, DireccionInexistenteException {
-		Medico medico;
+		Medico medico, antiguoMedico;
 		
 		// Comprobamos los parámetros pasados
 		if(beneficiario == null) {
@@ -139,14 +139,17 @@ public class GestorBeneficiarios {
 
 		// Comprobamos si existe el beneficiario que se quiere modificar
 		FPBeneficiario.consultarPorNIF(beneficiario.getNif());
-
+		
 		// Miramos si es necesario cambiar el médico asignado al beneficiario
-		beneficiario = (Beneficiario)beneficiario.clone();
+		antiguoMedico = beneficiario.getMedicoAsignado();
 		medico = obtenerMedicoBeneficiario(beneficiario);
 		beneficiario.setMedicoAsignado(medico);
 
 		// Modificamos los datos del beneficiario
 		FPBeneficiario.modificar(beneficiario);
+		
+		// Revertimos los cambios hechos a la instancia del beneficiario
+		beneficiario.setMedicoAsignado(antiguoMedico);
 	}
 	
 	// Método para eliminar un beneficiario del sistema

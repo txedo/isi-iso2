@@ -2,6 +2,10 @@ package dominio.conocimiento;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import dominio.UtilidadesDominio;
 
 /**
  * Clase que representa un beneficiario del sistema de salud.
@@ -14,7 +18,7 @@ public class Beneficiario implements Serializable, Cloneable {
 	private String nss;
 	private String nombre;
 	private String apellidos;
-	private Direccion direccion;
+	private Set<Direccion> direcciones;
 	private String correo;
 	private String telefono;
 	private String movil;
@@ -27,7 +31,7 @@ public class Beneficiario implements Serializable, Cloneable {
 		nss = "";
 		nombre = "";
 		apellidos = "";
-		direccion = new Direccion();
+		direcciones = new HashSet<Direccion>();
 		correo = "";
 		telefono = "";
 		movil = "";
@@ -41,7 +45,8 @@ public class Beneficiario implements Serializable, Cloneable {
 		this.nss = nss;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
-		this.direccion = direccion;
+		direcciones = new HashSet<Direccion>();
+		direcciones.add(direccion);
 		this.correo = correo;
 		this.telefono = telefono;
 		this.movil = movil;
@@ -105,7 +110,7 @@ public class Beneficiario implements Serializable, Cloneable {
 	public void setMovil(String movil) {
 		this.movil = movil;
 	}
-
+	
 	public Medico getMedicoAsignado() {
 		return medicoAsignado;
 	}
@@ -121,13 +126,22 @@ public class Beneficiario implements Serializable, Cloneable {
 	public void setFechaNacimiento(Date fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
 	}
+
+	public Set<Direccion> getDirecciones() {
+		return direcciones;
+	}
+
+	public void setDirecciones(Set<Direccion> direcciones) {
+		this.direcciones = direcciones;
+	}
 	
 	public Direccion getDireccion() {
-		return direccion;
+		return (Direccion)direcciones.toArray()[0];
 	}
 
 	public void setDireccion(Direccion direccion) {
-		this.direccion = direccion;
+		direcciones = new HashSet<Direccion>();
+		direcciones.add(direccion);
 	}
 	
 	public CentroSalud getCentroSalud() {
@@ -148,7 +162,7 @@ public class Beneficiario implements Serializable, Cloneable {
 		int edad;
 		
 		// Calculamos la diferencia entre las fechas en milisegundos
-		msInicial = fechaNacimiento.getTime();
+		msInicial = getFechaNacimiento().getTime();
 		msFinal = new Date().getTime();
 		diferencia = msFinal - msInicial;
 
@@ -164,9 +178,9 @@ public class Beneficiario implements Serializable, Cloneable {
 	public Object clone() {
 		Beneficiario b;
 		
-		b = new Beneficiario(nif, nss, nombre, apellidos, (Date)fechaNacimiento.clone(), (Direccion)direccion.clone(), correo, telefono, movil);
-		b.setCentroSalud((centroSalud == null) ? null : (CentroSalud)centroSalud.clone());
-		b.setMedicoAsignado((medicoAsignado == null) ? null : (Medico)medicoAsignado.clone());
+		b = new Beneficiario(getNif(), getNss(), getNombre(), getApellidos(), (Date)getFechaNacimiento().clone(), (Direccion)getDireccion().clone(), getCorreo(), getTelefono(), getMovil());
+		b.setCentroSalud((getCentroSalud() == null) ? null : (CentroSalud)getCentroSalud().clone());
+		b.setMedicoAsignado((getMedicoAsignado() == null) ? null : (Medico)getMedicoAsignado().clone());
 		return b;
 	}
 	
@@ -177,23 +191,31 @@ public class Beneficiario implements Serializable, Cloneable {
 		dev = false;
 		if(o != null && o instanceof Beneficiario) {
 			b = (Beneficiario)o;
-			dev = nif.equals(b.getNif()) && nss.equals(b.getNss()) && nombre.equals(b.getNombre()) && apellidos.equals(b.getApellidos()) && direccion.equals(b.getDireccion()) && correo.equals(b.getCorreo()) && telefono.equals(b.getTelefono()) && movil.equals(b.getMovil());
-			if(centroSalud == null) {
+			dev = getNif().equals(b.getNif()) && getNss().equals(b.getNss())
+			    && getNombre().equals(b.getNombre()) && getApellidos().equals(b.getApellidos())
+			    && getDireccion().equals(b.getDireccion()) && getCorreo().equals(b.getCorreo())
+			    && getTelefono().equals(b.getTelefono()) && getMovil().equals(b.getMovil())
+			    && UtilidadesDominio.fechaIgual(getFechaNacimiento(), b.getFechaNacimiento(), false);
+			if(getCentroSalud() == null) {
 				dev = dev && (b.getCentroSalud() == null);
 			} else {
-				dev = dev && centroSalud.equals(b.getCentroSalud());
+				dev = dev && getCentroSalud().equals(b.getCentroSalud());
 			}
-			if(medicoAsignado == null) {
+			if(getMedicoAsignado() == null) {
 				dev = dev && (b.getMedicoAsignado() == null); 
 			} else {
-				dev = dev && medicoAsignado.equals(b.getMedicoAsignado());
+				dev = dev && getMedicoAsignado().equals(b.getMedicoAsignado());
 			}
 		}
 		return dev;
 	}
 	
 	public String toString() {
-		return nif + ", " + nss + ", " + nombre + ", " + apellidos + ", " + direccion.toString() + ", " + correo + ", " + telefono + ", " + movil + ", " + fechaNacimiento.toString() + ", C: " + ((centroSalud == null) ? "(ninguno)" : centroSalud.getNombre()) + ", M:" + ((medicoAsignado == null) ? "(ninguno)" : medicoAsignado.getNif()); 
+		return getNif() + ", " + getNss() + ", " + getNombre() + ", " + getApellidos()
+		       + ", " + getDireccion().toString() + ", " + getCorreo() + ", " + getTelefono()
+		       + ", " + getMovil() + ", " + getFechaNacimiento().toString()
+		       + ", C: " + ((getCentroSalud() == null) ? "(ninguno)" : getCentroSalud().getNombre())
+		       + ", M:" + ((getMedicoAsignado() == null) ? "(ninguno)" : getMedicoAsignado().getNif()); 
 	}
 
 }

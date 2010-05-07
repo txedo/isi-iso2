@@ -53,8 +53,8 @@ public class CentroSalud implements Serializable, Cloneable {
 	public Object clone() {
 		CentroSalud c;
 		
-		c = new CentroSalud(nombre, direccion);
-		c.setId(id);
+		c = new CentroSalud(getNombre(), getDireccion());
+		c.setId(getId());
 		return c;
 	}
 	
@@ -65,13 +65,13 @@ public class CentroSalud implements Serializable, Cloneable {
 		dev = false;
 		if(o != null && o instanceof CentroSalud) {
 			c = (CentroSalud)o;
-			dev = nombre.equals(c.getNombre()) && direccion.equals(c.getDireccion());
+			dev = getNombre().equals(c.getNombre()) && getDireccion().equals(c.getDireccion());
 		}
 		return dev;
 	}
 	
 	public String toString() {
-		return id + " " + nombre + " " + direccion;
+		return getId() + " " + getNombre() + " " + getDireccion();
 	}
 	
 }

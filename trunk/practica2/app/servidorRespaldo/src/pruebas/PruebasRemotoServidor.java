@@ -1,13 +1,12 @@
 package pruebas;
 
-import java.sql.ResultSet;
+import junit.framework.TestCase;
+import presentacion.JFServidorRespaldo;
+
 import comunicaciones.RemotoServidorRespaldo;
+
 import dominio.conocimiento.ITiposMensajeLog;
 import dominio.control.ServidorRespaldo;
-import persistencia.ComandoSQL;
-import persistencia.ComandoSQLSentencia;
-import presentacion.JFServidorRespaldo;
-import junit.framework.TestCase;
 
 /**
  * Pruebas del objeto remoto exportado por el servidor de respaldo para
@@ -52,23 +51,13 @@ public class PruebasRemotoServidor extends TestCase {
 	
 	/** Pruebas de la conexión con la base de datos */
 	public void testConexionBD() {
-		ComandoSQL comando;
-		ResultSet resultado;
-		
+//TODO: 
+		/*
 		try {
-			// Configuramos la base de datos
-			ServidorRespaldo.getServidor().getConexionBD().getAgente().setIP("127.0.0.1");
-			ServidorRespaldo.getServidor().getConexionBD().getAgente().setPuerto(3306);
-			// Activamos la conexión y abrimos la base de datos
-			conexion.activar("127.0.0.1", PUERTO_CONEXION);
-			conexion.abrir();
-		} catch(Exception e) {
-			fail(e.toString());
-		}
-		
-		try {
-			// Realizamos una modificación
+			// Realizamos una consulta
 			comando = new ComandoSQLSentencia("DELETE FROM centros");
+			
+			
 			conexion.ejecutar(comando);
 			conexion.commit();
 			comando = new ComandoSQLSentencia("INSERT INTO centros (nombre, direccion) VALUES (?, ?)", "Centro de prueba", "C\\Ninguna S/N");
@@ -102,7 +91,7 @@ public class PruebasRemotoServidor extends TestCase {
 			conexion.desactivar("127.0.0.1", PUERTO_CONEXION);
 		} catch(Exception e) {
 			fail(e.toString());
-		}
+		}*/
 	}
 
 	/** Pruebas de la conexión con la ventana de estado */

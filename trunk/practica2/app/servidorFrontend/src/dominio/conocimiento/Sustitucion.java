@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
+import dominio.UtilidadesDominio;
+
 /**
  * Clase que representa el día y la hora en la que un médico va
  * a sustituir a otro.
  */
-public class Sustitucion implements Serializable {
+public class Sustitucion implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1215359054386009877L;
 	
@@ -90,9 +92,9 @@ public class Sustitucion implements Serializable {
 		
 		// Devuelve true si las horas de esta sustitución se solapan
 		// con alguna de las horas del rango indicado
-		dev = (horaInicio >= this.horaInicio && horaInicio < this.horaFinal);
-		dev = dev || (horaFinal > this.horaInicio && horaFinal <= this.horaFinal);
-		dev = dev || (horaInicio <= this.horaInicio && horaFinal >= this.horaFinal);
+		dev = (horaInicio >= getHoraInicio() && horaInicio < getHoraFinal());
+		dev = dev || (horaFinal > getHoraInicio() && horaFinal <= getHoraFinal());
+		dev = dev || (horaInicio <= getHoraInicio() && horaFinal >= getHoraFinal());
 		return dev;
 	}
 	
@@ -105,8 +107,16 @@ public class Sustitucion implements Serializable {
 		calend = Calendar.getInstance();
 		calend.setTime(hora);
 		horaD = calend.get(Calendar.HOUR_OF_DAY);
-		dev = (horaD >= horaInicio && horaD < horaFinal);
+		dev = (horaD >= getHoraInicio() && horaD < getHoraFinal());
 		return dev;
+	}
+	
+	public Object clone() {
+		Sustitucion s;
+		
+		s = new Sustitucion((Date)getDia().clone(), getHoraInicio(), getHoraFinal(), (Medico)getMedico().clone(), (Medico)getSustituto().clone());
+		s.setId(getId());
+		return s;
 	}
 	
 	public boolean equals(Object o) {
@@ -116,7 +126,8 @@ public class Sustitucion implements Serializable {
 		dev = false;
 		if(o != null && o instanceof Sustitucion) {
 			s = (Sustitucion)o;
-			dev = dia.equals(s.getDia()) && medico.equals(s.getMedico()) && sustituto.equals(s.getSustituto());
+			dev = UtilidadesDominio.fechaIgual(getDia(), s.getDia(), false)
+			    && getMedico().equals(s.getMedico()) && getSustituto().equals(s.getSustituto());
 		}
 		return dev;
 	}

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="dominio.conocimiento">
+	<class name="Usuario" table="usuarios" discriminator-value="-1" lazy="false">
+		<id name="nif" column="nif" type="string" />
+		<discriminator column="rol" type="int" not-null="true" />
+		<property name="login" column="login" type="string" unique="true" not-null="true" />
+		<property name="password" column="password" type="string" not-null="true" />
+		<property name="nombre" column="nombre" type="string" not-null="true" />
+		<property name="apellidos" column="apellidos" type="string" not-null="true" />
+		<property name="correo" column="correo" type="string" />
+		<property name="telefono" column="telefono" type="string" />
+		<property name="movil" column="movil" type="string" />
+		<many-to-one name="centroSalud" column="idCentro" class="CentroSalud" lazy="false" />
+		<subclass name="Administrador" discriminator-value="0" />
+		<subclass name="Citador" discriminator-value="1" />
+		<subclass name="Medico" discriminator-value="2">
+			<set name="calendario" cascade="all" lazy="false">
+				<key column="nifMedico" not-null="true" />
+				<one-to-many class="PeriodoTrabajo" />
+			</set>
+			<set name="tiposMedico" cascade="all" lazy="false">
+				<key column="nifMedico" unique="true" not-null="true" />
+				<one-to-many class="TipoMedico" />
+			</set>
+		</subclass>
+	</class>
+</hibernate-mapping>

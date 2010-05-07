@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="dominio.conocimiento">
+	<class name="PeriodoTrabajo" table="periodostrabajo" lazy="false">
+		<id name="id" column="id" type="int">
+			<generator class="native" />
+		</id>
+		<property name="horaInicio" column="horaInicio" type="int" not-null="true" />
+		<property name="horaFinal" column="horaFinal" type="int" not-null="true" />
+		<property name="diaNumero" column="dia" type="int" not-null="true" />
+	</class>
+</hibernate-mapping>

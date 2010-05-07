@@ -9,6 +9,7 @@ public class Direccion implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -8460925743520811251L;
 	
+	private int id;
 	private String domicilio;
 	private String numero;
 	private String piso;
@@ -18,6 +19,7 @@ public class Direccion implements Serializable, Cloneable {
 	private int cp;
 	
 	public Direccion() {
+		id = -1;
 		domicilio = "";
 		numero = "";
 		piso = "";
@@ -28,6 +30,7 @@ public class Direccion implements Serializable, Cloneable {
 	}
 
 	public Direccion(String domicilio, String numero, String piso, String puerta, String ciudad, String provincia, int cp) {
+		id = -1;
 		this.domicilio = domicilio;
 		this.puerta = puerta;
 		this.ciudad = ciudad;
@@ -37,6 +40,14 @@ public class Direccion implements Serializable, Cloneable {
 		this.cp = cp;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getDomicilio() {
 		return domicilio;
 	}
@@ -96,7 +107,7 @@ public class Direccion implements Serializable, Cloneable {
 	public Object clone() {
 		Direccion d;
 		
-		d = new Direccion(domicilio, numero, piso, puerta, ciudad, provincia, cp);
+		d = new Direccion(getDomicilio(), getNumero(), getPiso(), getPuerta(), getCiudad(), getProvincia(), getCP());
 		return d;
 	}
 	
@@ -107,7 +118,10 @@ public class Direccion implements Serializable, Cloneable {
 		dev = false;
 		if(o != null && o instanceof Direccion) {
 			d = (Direccion)o;
-			dev = d.getDomicilio().equals(domicilio) && d.getNumero().equals(numero) && d.getPiso().equals(piso) && d.getPuerta().equals(puerta) && d.getCiudad().equals(ciudad) && d.getProvincia().equals(provincia) && d.getCP() == cp; 
+			dev = getDomicilio().equals(d.getDomicilio()) && getNumero().equals(d.getNumero())
+			    && getPiso().equals(d.getPiso()) && getPuerta().equals(d.getPuerta())
+			    && getCiudad().equals(d.getCiudad()) && getProvincia().equals(d.getProvincia())
+			    && getCP() == d.getCP(); 
 		}
 		return dev;
 	}
@@ -115,19 +129,19 @@ public class Direccion implements Serializable, Cloneable {
 	public String toString() {
 		String direccion;
 		
-		direccion = domicilio;
-		if(numero.equals("")) {
+		direccion = getDomicilio();
+		if(getNumero().equals("")) {
 			direccion += " s/n";
 		} else {
-			direccion += " " + numero;
+			direccion += " " + getNumero();
 		}
-		if(!piso.equals("")) {
-			direccion += ", " + piso + "º";
+		if(!getPiso().equals("")) {
+			direccion += ", " + getPiso() + "º";
 		}
-		if(!puerta.equals("")) {
-			direccion += " " + puerta;
+		if(!getPuerta().equals("")) {
+			direccion += " " + getPuerta();
 		}
-		direccion += ". " + ciudad + " (" + cp + "), " + provincia;
+		direccion += ". " + getCiudad() + " (" + cp + "), " + getProvincia();
 		return direccion;
 	}
 	

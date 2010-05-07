@@ -16,7 +16,7 @@ import excepciones.CentroSaludInexistenteException;
  */
 public class FPCentroSalud {
 
-	private static final String CLASE_CENTROS = "CentroSalud";
+	private static final String CLASE_CENTROSALUD = "CentroSalud";
 	
 	private static final String ATRIB_ID = "id";
 	
@@ -26,16 +26,20 @@ public class FPCentroSalud {
 		CentroSalud centro;
 		
 		// Consultamos la base de datos
-		consulta = new ConsultaHibernate("FROM " + CLASE_CENTROS + " WHERE "
+		consulta = new ConsultaHibernate("FROM " + CLASE_CENTROSALUD + " WHERE "
 				 + ATRIB_ID + " = ?", id);
-		resultados = GestorConexionesBD.consultarHibernate(consulta);
+		resultados = GestorConexionesBD.consultar(consulta);
 		
 		// Si no se obtienen datos, es porque el centro no existe
 		if(resultados.size() == 0) {
 			throw new CentroSaludInexistenteException("No existe ningún centro de salud con el id " + String.valueOf(id) + ".");
 		} else {
 			// Recuperamos el centro de salud leído
-			centro = (CentroSalud)resultados.get(0);
+			centro = (CentroSalud)((CentroSalud)resultados.get(0)).clone();
+			// Borramos los objetos leídos de la caché
+			for(Object objeto : resultados) {
+				GestorConexionesBD.borrarCache(objeto);
+			}
 		}
 		
 		return centro;
@@ -48,8 +52,8 @@ public class FPCentroSalud {
 		Random rnd;
 
 		// Consultamos la base de datos
-		consulta = new ConsultaHibernate("FROM " + CLASE_CENTROS);
-		resultados = GestorConexionesBD.consultarHibernate(consulta);
+		consulta = new ConsultaHibernate("FROM " + CLASE_CENTROSALUD);
+		resultados = GestorConexionesBD.consultar(consulta);
 		
 		// Si no se obtienen datos, es porque no hay ningún centro
 		if(resultados.size() == 0) {
@@ -57,7 +61,11 @@ public class FPCentroSalud {
 		} else {
 			// Devolvemos un centro aleatorio
 			rnd = new Random(System.currentTimeMillis());
-			centro = (CentroSalud)resultados.get(rnd.nextInt(resultados.size()));
+			centro = (CentroSalud)((CentroSalud)resultados.get(rnd.nextInt(resultados.size()))).clone();
+			// Borramos los objetos leídos de la caché
+			for(Object objeto : resultados) {
+				GestorConexionesBD.borrarCache(objeto);
+			}
 		}
 		
 		return centro;
@@ -69,22 +77,34 @@ public class FPCentroSalud {
 		Vector<CentroSalud> lista;
 
 		// Consultamos la base de datos
-		consulta = new ConsultaHibernate("FROM " + CLASE_CENTROS);
-		resultados = GestorConexionesBD.consultarHibernate(consulta);
+		consulta = new ConsultaHibernate("FROM " + CLASE_CENTROSALUD);
+		resultados = GestorConexionesBD.consultar(consulta);
 		
 		// Devolvemos la lista de centros de salud
 		lista = new Vector<CentroSalud>();
 		for(Object centro : resultados) {
-			lista.add((CentroSalud)centro);
+			lista.add((CentroSalud)((CentroSalud)centro).clone());
 		}
 		
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
+		}
+
 		return lista;
 	}
 	
 	public static void insertar(CentroSalud centro) throws SQLException {
-		// Modificamos la base de datos (automáticamente se
-		// establece el id autonumérico asignado al centro)
-		GestorConexionesBD.insertarHibernate(centro);
+		CentroSalud centroNuevo;
+		
+		// Modificamos la base de datos y copiamos el id asignado
+		try {
+			GestorConexionesBD.iniciarTransaccion();
+			centroNuevo = (CentroSalud)GestorConexionesBD.insertar(centro.clone());
+			centro.setId(centroNuevo.getId());
+		} finally {
+			GestorConexionesBD.terminarTransaccion();
+		}
 	}
 
 }
