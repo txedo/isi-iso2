@@ -33,11 +33,11 @@ Cambios:
 	
 - Para seguir manteniendo la interfaz IServidor, el identificar beneficiario se pasa al mensaje auxiliar. Lo mismo para consultar un medico por su login.
 
-- La operacion "identificarBeneficiario" y "consultarPorLogin" solo se han añadido al proxy de la aplicación Web, pues los clientes de la aplicación de escritorio no la va a utilizar
+- Las operaciones "identificarBeneficiario" y "consultarPorLogin" solo se han añadido al proxy de la aplicación Web, pues los clientes de la aplicación de escritorio no la va a utilizar
 
 - Para consultar un medico por login, se ha creado una operacion nueva que se llama ConsultarPropioMedico, que la puede realizar el medico o el administrador.
 	NOTA: no hace falta una operacion nueva para consultar un beneficiario, pues cualquier usuario puede hacerlo.
 
-- Cuando se loguea un médico y se pasa a la página "darVolante.jsp", se necesitan consultar los beneficiarios asociados a ese médico. Por tanto, la operacion "Consultar_beneficiarios_medico" la debe poder hacer el médico también, además del beneficiario.
+- Cuando se loguea un médico y se pasa a la página "darVolante.jsp", se necesitan consultar los beneficiarios asociados a ese médico. Por tanto, la operacion "Consultar_beneficiarios_medico" la debe poder hacer el médico también, además del administrador.
 
 - La operacion "ConsultarMedico" la hace ahora también un médico, porque se necesita consultar el receptor para poder emitir un volante. Esto es asi, porque en el combobox de la pagina "darVolante.jsp" solo guardo el NIF del medico y luego hay que consultarlo.
