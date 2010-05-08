@@ -1,0 +1,1 @@
+Ficheros extraídos del paquete "OpenGL ES 1.1 plug-in for S60 3rd Edition SDK".

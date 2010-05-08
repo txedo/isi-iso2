@@ -6,7 +6,7 @@ Introduccion
 Desarrollo en Symbian 
    <Juan A> Diferencias entre versiones Symbian
    <Juan G> Entornos de desarrollo, API y SDK
-            Firma de aplicaciones y publicación aplicaciones (
+   <Juan G> Firma de aplicaciones y publicación aplicaciones
 	
 <Juan G> Aplicación de ejemplo
 <Txedo>  Comparativa con otros SSOO

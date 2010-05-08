@@ -1,0 +1,108 @@
+// Identificador del recurso
+NAME    LABE // ID de 4 letras
+
+#include <eikon.rh>
+#include "laberinto.hrh"
+#include "laberinto.rls"
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.mbg>
+#include <appinfo.rh>
+
+// == Definición de los recursos de la aplicación ==
+
+// Firma del archivo de recursos 
+RESOURCE RSS_SIGNATURE
+	{
+	}
+
+// Nombre del documento
+RESOURCE TBUF
+	{
+		buf = "Laberinto";
+	}
+
+// Información básica de la aplicación
+RESOURCE EIK_APP_INFO
+	{
+		menubar = r_laberinto_menubar;
+		cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;     
+	}
+
+// Barra de menús de la aplicación
+RESOURCE MENU_BAR r_laberinto_menubar
+	{
+		titles =
+			{
+				MENU_TITLE
+				{
+					menu_pane = r_laberinto_salir;
+				},
+				MENU_TITLE 
+				{ 
+					menu_pane = r_laberinto_acercade; 
+				},
+				MENU_TITLE 
+				{ 
+					menu_pane = r_laberinto_cambiarcamara; 
+				}
+			};
+	}
+
+// Opción "Salir" de la barra de menús
+RESOURCE MENU_PANE r_laberinto_salir
+	{
+		items =
+			{
+				MENU_ITEM 
+				{ 
+					command = EAknCmdExit; 
+					txt = qtn_laberinto_salir; 
+				}
+			};
+	}
+
+// Opción "Acerca de..." de la barra de menús
+RESOURCE MENU_PANE r_laberinto_acercade
+	{
+		items =
+			{
+				MENU_ITEM 
+				{ 
+					command = ELaberintoAcercaDe;
+					txt = qtn_laberinto_acercade; 
+				}
+			};
+	}
+
+// Opción "Cambiar cámara" de la barra de menús
+RESOURCE MENU_PANE r_laberinto_cambiarcamara
+	{
+		items =
+			{
+				MENU_ITEM 
+				{ 
+					command = ELaberintoCambiarCamara;
+					txt = qtn_laberinto_cambiarcamara; 
+				}
+			};
+	}
+
+// Cadenas de texto
+RESOURCE TBUF r_about_dialog_text
+	{
+		buf = qtn_about_dialog_text;
+	}
+
+// Nombre e icono de la aplicación
+RESOURCE LOCALISABLE_APP_INFO r_laberinto_localisable_app_info
+	{
+		short_caption = qtn_app_short_caption_string;
+		caption_and_icon =
+		CAPTION_AND_ICON_INFO
+			{
+			caption         = qtn_app_caption_string;
+			number_of_icons = 1;
+			icon_file       = "\\resource\\apps\\laberinto_icon.mif";
+			};
+	}
