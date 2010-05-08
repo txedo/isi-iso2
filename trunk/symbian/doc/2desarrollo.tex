@@ -1,4 +1,4 @@
-\section{Desarrollo en Symbian}
+\section{Desarrollo de aplicaciones en Symbian}
 
 \subsection{Versiones de Symbian}
 
@@ -60,6 +60,35 @@ En lo que respecta a la versión 9.5 de Symbian (lanzada en el año 2007), ésta in
 
 Para terminar, cabe destacar que la \textit{Symbian Foundation} liberó la plataforma de desarrollo Symbian en el año 2009, bajo licencia \textit{Eclipse Public License (EPL}). En cuanto a cifras de mercado, a fecha del año 2009, se han comercializado más de 250 millones de dispositivos que ejecutan el sistema operativo Symbian.
 
-\subsection{Entornos de desarrollo, API y SDK de Symbian}
+\subsection{SDKs y entornos de desarrollo para Symbian}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Las características más importantes que ofrecen los kits de desarrollo para Symbian son:
+\begin{milista}
+	\item Acceso a la mayoría de las funciones de la API de Symbian en todos los lenguajes de programación soportados por el SDK.
+	\item Emuladores para diferentes dispositivos y plataformas, que permiten probar las aplicaciones sin necesidad de un dispositivo real.
+	\item Herramientas para definir localizaciones y rutas que permitan probar aplicaciones que usen sistemas de localización como GPS.
+	\item Depuración de aplicaciones C++ y Java sobre los emuladores y dispositivos reales.
+	\item Utilidades de diagnóstico para los emuladores con los que se puede monitorizar el tráfico de red y las operaciones solicitadas por los programas.
+\end{milista}
+
+\paragraph{Desarrollo en Symbian C++}
+
+Symbian C++ es el lenguaje de programación nativo para Symbian OS, sobre el que se ha construido toda la plataforma de desarrollo S60. Se trata de una versión optimizada de C++ para dispositivos móviles, que incorpora varias características con las que se intenta mejorar la eficiencia en el uso de los recursos y reducir el consumo de batería y memoria. Así pues, en Symbian C++ se puede controlar el ciclo de vida de los objetos, manejar cadenas de texto mediante descriptores e implementar el modelo cliente/servidor.
+
+Aunque existen otros entornos de ejecución para el sistema operativo de Symbian que permiten ejecutar aplicaciones desarrolladas con Java o Flash, el entorno de Symbian C++ es el que dispone de la API más flexible y potente, ya que permite acceder y controlar todos los aspectos del dispositivo. Sin embargo, la curva de aprendizaje de este lenguaje de programación es considerablemente mayor que la del resto de lenguajes con los que se puede programar en Symbian, debido a su complejidad y a las diferencias existentes entre el C++ estándar y Symbian C++.
+
+El entorno de desarrollo recomendado para programar aplicaciones en Symbian C++ es \textbf{Carbide.c++}, un entorno basado en Eclipse creado por Nokia y la Symbian Foundation que incluye varios plug-ins específicos para facilitar la creación, compliación, prueba y distribución de aplicaciones para Symbian OS. Aunque las primeras versiones de este IDE eran comerciales, desde la versión 2.0 (lanzada a finales de 2008) el entorno es gratuito y de código abierto.
+
+\paragraph{Desarrollo en Java ME}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{Desarrollo en Flash}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Firma y publicación de aplicaciones}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
