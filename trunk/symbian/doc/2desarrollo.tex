@@ -17,7 +17,7 @@ En cuanto a la versión 6.1, se incorpora el soporte para una cámara VGA con reso
 
 \paragraph{Symbian OS 7.0}
 
-Esta versión se publica en el año 2003, añadiendo soporte para IPv6, para la tecnología EDGE (\textit{Enhanced Data Rates for GSM}) y para Java, siguiendo el estándar Java ME. Esta versión se utiliza con cualquier tipo de interfaz de usuario, incluyéndose en las series \textbf{Serie 80 2nd Edition}, \textbf{Serie 90 1st y 2nd Edition}, \textbf{Serie 60 2n Edition}, \textbf{UIQ 2.0} y \textbf{UIQ 2.1}.
+Esta versión se publica en el año 2003, añadiendo soporte para IPv6, para la tecnología EDGE (\textit{Enhanced Data Rates for GSM}) y para Java, siguiendo el estándar Java ME. Esta versión se utiliza con cualquier tipo de interfaz de usuario, incluyéndose en las series \textbf{Serie 80 2nd Edition}, \textbf{Serie 90 1st y 2nd Edition}, \textbf{Serie 60 2nd Edition}, \textbf{UIQ 2.0} y \textbf{UIQ 2.1}.
 
 Por otra parte, ésta es la primera versión de Symbian con un problema de seguridad grave, ya que es infectada por el gusano llamado \textit{Cabir}, capaz de transmitirse a otros móviles con Symbian OS a través de Bluetooth.
 
@@ -62,32 +62,47 @@ Para terminar, cabe destacar que la \textit{Symbian Foundation} liberó la plataf
 
 \subsection{SDKs y entornos de desarrollo para Symbian}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Nokia ofrece varios kits de desarrollo (SDK) con los que se pueden crear nuevas aplicaciones para las diferentes versiones del sistema operativo Symbian OS explicadas en el apartado anterior. En la actualidad, hay disponibles SDKs para las series \textbf{Series 60 3rd Edition} y \textbf{Series 60 5th Edition} (\textbf{Symbian$\wedge$1}), y además hay una versión \emph{alpha} para la incipiente plataforma de desarrollo de código abierto \textbf{Symbian$\wedge$3}.
 
-Las características más importantes que ofrecen los kits de desarrollo para Symbian son:
+Cada kit de desarrollo incluye todos los recursos necesarios para crear, compilar, probar y distribuir aplicaciones para Symbian OS. Así pues, disponen de una amplia documentación, varias aplicaciones de ejemplo, diversos compiladores y emuladores, etc. Sin embargo, una herramienta que no se incluye en los SDK es el entorno de desarrollo (IDE), ya que no es imprescindible para utilizar el SDK. De todas formas, Nokia ha desarrollado varios entornos propios y plug-ins para entornos existentes que facilitan la utilización de los SDK.
+
+De forma resumida, las características más importantes de los kits de desarrollo para Symbian OS son las siguientes:
 \begin{milista}
-	\item Acceso a la mayoría de las funciones de la API de Symbian en todos los lenguajes de programación soportados por el SDK.
+	\item Bibliotecas y APIs para todos los lenguajes soportados por el SDK que dan acceso a la mayoría de las funciones de los dispositivos Symbian.
 	\item Emuladores para diferentes dispositivos y plataformas, que permiten probar las aplicaciones sin necesidad de un dispositivo real.
-	\item Herramientas para definir localizaciones y rutas que permitan probar aplicaciones que usen sistemas de localización como GPS.
-	\item Depuración de aplicaciones C++ y Java sobre los emuladores y dispositivos reales.
+	\item Herramientas para definir ubicaciones y rutas, que facilitan la depuración de aplicaciones que utilizan sistemas de localización como GPS.
+	\item Depuración de aplicaciones escritas en C++ y Java, tanto sobre los emuladores que incluye el SDK como sobre dispositivos reales.
 	\item Utilidades de diagnóstico para los emuladores con los que se puede monitorizar el tráfico de red y las operaciones solicitadas por los programas.
 \end{milista}
 
+Los dos principales lenguajes de programación soportados por los SDKs son \textbf{Symbian C++} y \textbf{Java}. A continuación se explican las diferencias entre cada uno de estos lenguajes, qué herramientas se necesitan para programar en ellos y cuáles son los entornos de desarrollo recomendados en cada caso.
+
 \paragraph{Desarrollo en Symbian C++}
 
-Symbian C++ es el lenguaje de programación nativo para Symbian OS, sobre el que se ha construido toda la plataforma de desarrollo S60. Se trata de una versión optimizada de C++ para dispositivos móviles, que incorpora varias características con las que se intenta mejorar la eficiencia en el uso de los recursos y reducir el consumo de batería y memoria. Así pues, en Symbian C++ se puede controlar el ciclo de vida de los objetos, manejar cadenas de texto mediante descriptores e implementar el modelo cliente/servidor.
+\textbf{Symbian C++} es el lenguaje de programación nativo para Symbian OS, sobre el que se ha construido toda la plataforma de desarrollo S60. Se trata de una versión optimizada de C++ para dispositivos móviles, que incorpora varias características con las que se intenta mejorar la eficiencia en el uso de los recursos y reducir el consumo de batería y memoria. Así pues, Symbian C++ permite controlar el ciclo de vida de los objetos, manejar cadenas de texto mediante descriptores e implementar el modelo cliente/servidor.
 
-Aunque existen otros entornos de ejecución para el sistema operativo de Symbian que permiten ejecutar aplicaciones desarrolladas con Java o Flash, el entorno de Symbian C++ es el que dispone de la API más flexible y potente, ya que permite acceder y controlar todos los aspectos del dispositivo. Sin embargo, la curva de aprendizaje de este lenguaje de programación es considerablemente mayor que la del resto de lenguajes con los que se puede programar en Symbian, debido a su complejidad y a las diferencias existentes entre el C++ estándar y Symbian C++.
+Aunque existen otros entornos de ejecución para el sistema operativo de Symbian que permiten ejecutar aplicaciones desarrolladas con Java y otros lenguajes, el entorno de Symbian C++ es el que dispone de la API más flexible y potente, ya que permite acceder y controlar todos los aspectos del dispositivo. Sin embargo, la curva de aprendizaje de este lenguaje de programación es considerablemente mayor que la del resto de lenguajes con los que se puede programar en Symbian, debido a su complejidad y a las diferencias existentes entre el C++ estándar y el utilizado por Symbian OS.
 
-El entorno de desarrollo recomendado para programar aplicaciones en Symbian C++ es \textbf{Carbide.c++}, un entorno basado en Eclipse creado por Nokia y la Symbian Foundation que incluye varios plug-ins específicos para facilitar la creación, compliación, prueba y distribución de aplicaciones para Symbian OS. Aunque las primeras versiones de este IDE eran comerciales, desde la versión 2.0 (lanzada a finales de 2008) el entorno es gratuito y de código abierto.
+Los SDK de Symbian ya incluyen todas las herramientas necesarias para construir aplicaciones con Symbian C++, por lo que en general no se necesita instalar ningún paquete adicional además del SDK. Sólo si se van a utilizar funciones específicas de los dispositivos (como gestión de la red inalámbrica, captura de imágenes, gráficos 3D, etc.) podría hacer falta instalar plug-ins para el SDK que añadieran nuevas bibliotecas.
 
-\paragraph{Desarrollo en Java ME}
+En cuanto al entorno de desarrollo, el más potente que existe para Symbian C++ actualmente es \emph{Carbide.c++}, un entorno basado en Eclipse creado por Nokia y la Symbian Foundation que incluye varios plug-ins específicos que se integran con el SDK para facilitar la creación de aplicaciones para Symbian OS. Aunque las primeras versiones de este IDE eran comerciales, desde la versión 2.0 (lanzada a finales de 2008) el entorno es gratuito y de código abierto.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Desarrollo en Java}
 
-\paragraph{Desarrollo en Flash}
+Todas las versiones del sistema operativo Symbian OS a partir de la 7.0 son compatibles con la plataforma de desarrollo \textbf{Java ME} (Java Micro Edition), una versión simplificada de Java SE (Java Standard Edition) diseñada específicamente para los dispositivos móviles y empotrados.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Los teléfonos Symbian más recientes soportan el \emph{Mobile Information Device Profile} (MIDP) 2.1, implementado sobre la \emph{Connected Limited Device Configuration} (CLDC) 1.1. Además, son compatibles con un gran número de extensiones de Java ME, lo que permite utilizar este lenguaje para, entre otras cosas: comunicarse inalámbricamente con otros dispositivos mediante Bluetooth, enviar y recibir mensajes SMS, recibir datos de un GPS integrado, mostrar contenidos multimedia, renderizar gráficos 3D, etc.
+
+Desarrollar software con Java ME es más sencillo que con C++ debido a que Java es un lenguaje de mayor nivel y automatiza tareas como la recolección de basura, la gestión de la memoria o la seguridad. Además, se tiene la importante ventaja de que una aplicación Java ME para Symbian OS puede ser fácilmente portada a otras plataformas o dispositivos que también soporten la tecnología Java ME, algo que sería mucho más complicado si la aplicación se escribiera en Symbian C++. \\
+\indent No obstante, puesto que los programas Java se ejecutan sobre una máquina virtual y no directamente sobre el sistema operativo, su ejecución es más lenta, y además existen menos bibliotecas y APIs disponibles para Java ME que para Symbian C++. En general, las funciones que ofrece Java ME son suficientes para desarrollar una aplicación 'normal', pero si se quieren aprovechar todas las características de los dispositivos Symbian se debe utilizar Symbian C++.
+
+Para construir aplicaciones con Java ME, tanto en plataformas Symbian como en cualquier otro sistema operativo o entorno que lo soporte, se necesitan instalar los kits de desarrollo \emph{Java SE Development Kit} y \emph{Sun Java Wireless Toolkit for CLDC} (que, desde la versión 3.0, ha sido sustituido por el \emph{Java ME SDK}). Estos dos paquetes, junto con el SDK de Symbian correspondiente a la plataforma sobre la que se quiera programar, contienen todas las herramientas necesarias para desarrollar software basado en Java ME para Symbian OS.
+
+De forma análoga al Carbide.c++, Nokia lanzó un entorno de desarrollo para crear aplicaciones Java ME destinadas a dispositivos Symbian llamado \textbf{Carbide.j}. Sin embargo, en la actualidad este entorno está descontinuado, y en su lugar se pueden utilizar conocidos entornos como \textbf{Eclipse}, \textbf{NetBeans} o el que se incluye con las versiones 3.0 y superiores del kit de desarrollo \textbf{Java ME SDK}.
+
+\paragraph{Desarrollo en otros lenguajes}
+
+Aunque Symbian C++ y Java son los dos lenguajes de programación más utilizados en la actualidad en el desarrollo de software para Symbian OS, en los últimos años se han añadido a los dispositivos Symbian entornos de ejecución compatibles con tecnologías como \textbf{Adobe Flash Lite}, una versión reducida de Adobe Flash; o \textbf{Qt}, un framework multiplataforma para el desarrollo de aplicaciones gráficas.
 
 \subsection{Firma y publicación de aplicaciones}
 
