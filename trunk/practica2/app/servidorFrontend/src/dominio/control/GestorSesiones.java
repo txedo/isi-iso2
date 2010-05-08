@@ -133,7 +133,7 @@ public class GestorSesiones {
 		encontrado = false;
 		while(sesionesAbiertas.hasMoreElements() && !encontrado) {
 			sesionAbierta = sesionesAbiertas.nextElement();
-			if(sesionAbierta instanceof SesionUsuario
+			if(sesionAbierta instanceof SesionBeneficiario
 			 && ((SesionBeneficiario)sesionAbierta).getBeneficiario().getNif().equals(bene.getNif())) {
 				encontrado = true;
 			}
