@@ -1,0 +1,13 @@
+// === Cadenas de localización === 
+
+// Nombre de la aplicación
+#define qtn_app_caption_string       "Laberinto"
+#define qtn_app_short_caption_string "Laberinto"
+
+// Opciones de menú
+#define qtn_laberinto_salir          "Salir"
+#define qtn_laberinto_cambiarcamara  "Cambiar cámara"
+#define qtn_laberinto_acercade       "Acerca de..."
+
+// Cuadro de diálogo "Acerca de..."
+#define qtn_about_dialog_text        "Laberinto v1.1\n\nEjemplo de aplicación para Symbian.\nCreado por Juan G."

@@ -1,0 +1,11 @@
+#ifndef LABERINTO_HRH
+#define LABERINTO_HRH
+
+#define _UID3 0xEE2FB867
+
+enum TLaberintoMenuCommands {
+	ELaberintoCambiarCamara = 1,
+	ELaberintoAcercaDe = 2
+};
+
+#endif

@@ -1,0 +1,19 @@
+#include <appinfo.rh>
+#include <laberinto.rsg>
+#include "laberinto.hrh"
+
+// == Definición de la información de registro de la aplicación ==
+
+// Identificadores de la aplicación
+UID2 KUidAppRegistrationResourceFile
+UID3 _UID3
+
+// Información de registro
+RESOURCE APP_REGISTRATION_INFO
+{
+    app_file                  = "Laberinto";
+    localisable_resource_file = "\\resource\\apps\\laberinto";
+    localisable_resource_id   = R_LABERINTO_LOCALISABLE_APP_INFO;
+    embeddability             = KAppNotEmbeddable;
+    newfile                   = KAppDoesNotSupportNewFile;
+}

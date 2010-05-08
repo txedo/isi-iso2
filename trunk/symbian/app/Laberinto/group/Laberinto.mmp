@@ -1,0 +1,65 @@
+// ==================================
+// Fichero de definición del proyecto
+// ==================================
+
+// Información del ejecutable generado
+TARGET          Laberinto.exe
+TARGETTYPE      EXE
+
+// Identificador único de la aplicación (UID2 y UID3)
+UID             0x100039CE 0xEE2FB867
+
+// Archivos de códigos fuente de la aplicación
+SOURCEPATH      ..\src
+SOURCE          Laberinto.cpp LaberintoApp.cpp LaberintoAppUi.cpp
+SOURCE          LaberintoView.cpp LaberintoDocument.cpp
+SOURCEPATH      ..\src\OpenGL
+SOURCE          Glutils.cpp Mathutils.cpp Textureutils.cpp Utils3d.cpp
+SOURCEPATH		..\data
+
+// Rutas de búsqueda de ficheros de cabecera
+USERINCLUDE	   ..\inc
+USERINCLUDE    ..\inc\OpenGL
+SYSTEMINCLUDE  \epoc32\include
+
+// Librerías utilizadas por la aplicación
+LIBRARY		   euser.lib
+LIBRARY		   apparc.lib
+LIBRARY		   cone.lib
+LIBRARY		   eikcore.lib
+LIBRARY		   avkon.lib
+LIBRARY		   commonengine.lib
+LIBRARY		   efsrv.lib 
+LIBRARY		   estor.lib
+LIBRARY        aknnotify.lib
+LIBRARY        hlplch.lib
+LIBRARY        libgles_cm.lib
+LIBRARY        ImageConversion.lib
+LIBRARY        ws32.lib
+
+// Declaración del archivo de recursos de la aplicación
+START RESOURCE  ..\data\laberinto.rss
+HEADER
+TARGETPATH      \\resource\\apps
+LANG            SC
+END //RESOURCE
+
+// Declaración del archivo con la información de registro
+START RESOURCE ..\data\laberinto_reg.rss
+#ifdef WINSCW
+TARGETPATH 	  \private\10003a3f\apps
+#else
+TARGETPATH 	  \private\10003a3f\import\apps
+#endif
+END
+
+// Funciones del teléfono que puede utilizar la aplicación
+CAPABILITY	  	  ReadUserData
+
+// Otras opciones
+LANG SC
+VENDORID	  	  0
+SECUREID		  0xEE2FB867
+#ifdef ENABLE_ABIV2_MODE
+DEBUGGABLE_UDEBONLY
+#endif

@@ -1,0 +1,12 @@
+// ====================================
+// Fichero de construcción del proyecto
+// ====================================
+
+// Plataformas soportadas
+PRJ_PLATFORMS
+WINSCW ARMV5 GCCE
+
+// Componentes del proyecto
+PRJ_MMPFILES
+gnumakefile icons_scalable_dc.mk
+Laberinto.mmp
