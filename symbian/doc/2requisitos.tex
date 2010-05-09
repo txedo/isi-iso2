@@ -1,0 +1,40 @@
+\section{Requisitos técnicos}
+Es difícil estimar los requisitos técnicos de hardware que necesita un dispositivo móvil para soportar este sistema operativo, ya que las especificaciones de hardware están motivadas por las funcionalidades que éste debe satisfacer, la usabilidad y el rendimiento. No obstante, basándose en el rendimiento que se desea obtener y las características que se desean ofrecer, se trata de ofrecer una especificación hardware recomendada que debe cumplir el dispositivo móvil.
+
+\paragraph{Procesador}
+Las plataformas soportadas por Symbian son x86 y ARM, siendo ésta última la más explotada en la producción de dispositivos móviles. En concreto, Symbian requiere al menos un procesador de la versión ARM v5TE o superior, ya que éstos tienen el juego de instrucciones mínimo para todo el software que puede ejecutarse sobre Symbian. Estos procesadores también se utilizan en dispositivos como \textit{Nintendo DS} y \textit{Nokia N-Gage}.
+
+La elección del procesador se realiza en base a los periféricos que se conectarán al dispositivo. En \cite{symbian-hw-requirements} puede observar una tabla en la que aparecen distintas familias de procesadores ARM categorizados en base a su rendimiento, así como las posibilidades de vídeo y conexión de periféricos que ofrecen. Es importante realizar una buena elección del procesador ya que condiciona enormemente el consumo de batería del dispositivo.
+
+\paragraph{Memoria DRAM}
+La memoria flash que debe tener el dispositivo está íntimamente ligada con la versión de Symbian que va a ejecutar, ya que en cada versión se han ido añadiendo más funcionalidades. Las imágenes de Symbian pueden ocupar desde 20 MB (para una ROM básica) hasta 80 MB (para una ROM comercial con una interfaz gráfica personalizada), por tanto es recomendable que el dispositivo disponga de al menos 100 MB de memoria o más.
+
+\paragraph{Pantalla}
+Symbian soporta las siguientes resoluciones de pantalla:
+\begin{milista}
+	\item 176x208 (obsoleta desde S60 3th Edition)
+	\item 240x320
+	\item 352x416 (obsoleta desde S60 3th Edition)
+	\item 360x640 (desde S60 5th Edition hasta la actualidad)
+\end{milista}
+
+Por otro lado, la calidad del color se varía desde los 12 bits (4096 colores) de los primeros dispositivos, hasta los 24 bits (16.777.216 colores) de los dispositivos actuales.
+
+\paragraph{Teclado}
+Para poder hacer uso de todas las funcionalidades que ofrece Symbian es necesario que el teclado del dispositivo cumpla ciertas características. Claramente, estas características o requisitos no se imponen a dispositivos táctiles. Las teclas que debe contener el dispositivo son las siguientes (ver Figura \ref{fig:keyboard}):
+\begin{milista}
+	\item Dos teclas programables, también llamadas \textit{softkeys} \cite{wikipedia-softkey}, que puedan ser configuradas por el operador o el usuario como acceso directo a determinadas funcionalidades.
+	\item Una tecla de 5 posiciones que permita navegar en 4 direcciones (arriba, abajo, izquierda y derecha) y seleccionar. Algunos dispositivos incluyen esta tecla para 9 posiciones o incluso \textit{trackballs}.
+	\item Dos teclas para iniciar y finalizar llamadas.
+	\item Una tecla para acceder al menú principal.
+	\item Teclado alfanumérico con dígitos de 0 a 9 y los símbolos * y \#.
+	\item Una tecla \textit{clear}.
+\end{milista}
+
+Nótese que en la lista de teclas requeridas no aparece ninguna tecla que haga referencia al apagado/encendido del dispositivo. Para realizar estas funciones habrá que realizar una larga pulsación sobre la tecla de \textit{fin de llamada}.
+
+\imagen{imagenes/teclado.png}{0.5}{Ejemplo de un teclado}{fig:keyboard}
+
+También existen una serie de teclas adicionales que no son \textit{requeridas} por el sistema operativo, pero que aún así las soporta. Se trata de las teclas de \textit{cámara}, \textit{volumen} y \textit{encendido/apagado}. Algunos dispositivos también pueden incluir teclados QWERTY.
+
+Para los dispositivos táctiles, las únicas teclas requeridas son las de \textit{enviar} y \textit{finalizar} llamadas y la de abrir el menú de aplicaciones. El resto de funcionalidades se satisfarán con teclas extra o mediante un teclado virtual.
