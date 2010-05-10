@@ -34,6 +34,16 @@
 \addtolength{\topsep}{-7.5pt}
 }}%
 {\end{list}}
+% Macro para definir una lista personalizada con un icono diferente
+\newenvironment{milista2}%
+{\begin{list}{\tiny{\ding{'156}}}%
+{\settowidth{\labelwidth}{\textbullet} \setlength{\leftmargin}{\dimexpr\labelsep+\labelwidth+5pt}
+\setlength{\itemsep}{\dimexpr 0.5ex plus 0.25ex minus 0.25ex}
+\setlength{\parsep}{\itemsep}
+\setlength{\partopsep}{\itemsep}
+\addtolength{\topsep}{-7.5pt}
+}}%
+{\end{list}}
 
 % Macro para insertar una imagen
 %       Uso: \imagen{nombreFichero}{Factor escala}{Caption (leyenda)}{Label (identificador para referenciarla)}
@@ -129,13 +139,21 @@
 \pagestyle{fancy}
 
 \input{1introduccion.tex}
+\clearpage
 \input{2requisitos.tex}
+\clearpage
 \input{3caracteristicas.tex}
+\clearpage
 \input{4marcas.tex}
+\clearpage
 \input{5versiones.tex}
+\clearpage
 \input{6desarrollo.tex}
+\clearpage
 \input{7ejemplo.tex}
+\clearpage
 \input{8comparativa.tex}
+\clearpage
 
 % Sección de apéndices
 % Se añade el titulo de "Apéndices" al índice
