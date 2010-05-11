@@ -1,22 +1,22 @@
 \section{Aplicación de ejemplo}
 
-Para probar y examinar más a fondo los kits y entornos de desarrollo disponibles para Symbian OS se ha programado una pequeña aplicación de ejemplo, adaptando para ello un sencillo juego 3D realizado para la asignatura de Informática Gráfica de la UCLM.
+Para probar y examinar más a fondo los kits y entornos de desarrollo disponibles para Symbian OS se ha programado una pequeña aplicación de ejemplo, adaptando para ello un sencillo juego 3D realizado en la asignatura de Informática Gráfica de la UCLM.
 
-La aplicación ha sido desarrollada en Symbian C++ utilizando el SDK de las series S60 3rd Edition, ya que se disponía de un móvil compatible con esta plataforma para probar el software. De hecho, la serie S60 3rd Edition es la que tiene mayor compatibilidad con los teléfonos móviles Symbian que hay actualmente en el mercado, ya que los programas desarrollados para esa serie también funcionan en todos los móviles de las series posteriores.
+La aplicación ha sido desarrollada en Symbian C++ utilizando el SDK de las series S60 3rd Edition, ya que se disponía de un móvil compatible con esta plataforma para probar el software. De hecho, la serie S60 3rd Edition es la que tiene mayor compatibilidad con los teléfonos Symbian que hay actualmente en el mercado, porque los programas desarrollados para esa serie también funcionan en todos los móviles de las series posteriores.
 
-Las herramientas que se han utilizado para programar, compilar y probar la aplicación son las siguientes:
+Para programar, compilar y probar la aplicación de ejemplo se han utilizado las siguientes herramientas, algunas de las cuales se han citado en el apartado anterior:
 \begin{milista}
-	\item ActivePerl 5.10.1.1007. (\cite{perl})
-	\item S60 3rd Edition SDK for Symbian OS, Feature Pack 2. (\cite{sdk-symbian})
-	\item OpenGL ES 1.1 plug-in for S60 3rd Edition SDK. (\cite{opengl-symbian})
-	\item Carbide.c++ 2.3. (\cite{carbide})
+	\item ActivePerl 5.10.1.1007 \cite{perl}.
+	\item S60 3rd Edition SDK for Symbian OS, Feature Pack 2 \cite{sdk-symbian}.
+	\item OpenGL ES 1.1 plug-in for S60 3rd Edition SDK \cite{opengl-symbian}.
+	\item Carbide.c++ 2.3 \cite{carbide}.
 \end{milista}
 
-A continuación se explicará la estructura de directorios del programa de ejemplo que se ha desarrollado para este trabajo. Casi todas las aplicaciones y juegos desarrolladas con Symbian C++ siguen esta misma estructura.
+A continuación se explicará la estructura de directorios del programa de ejemplo que se ha desarrollado para este trabajo. Casi todas las aplicaciones y juegos que se programan con Symbian C++ siguen esta misma estructura. 
 
 \begin{milista}
 
-	\item \textbf{data}: en este directorio se almacenan todos los recursos de la aplicación, como menús, cuadros de diálogo, cadenas de texto, iconos, etc. Dentro de él se encuentran los siguientes archivos:
+	\item \textbf{data}: en este directorio se almacenan todos los recursos de la aplicación, como menús, iconos, cuadros de diálogo, cadenas de texto, etc. Dentro de él se encuentran los siguientes archivos:
 	\begin{milista2}
 		\item \textit{Laberinto\_reg.rss}: define los identificadores únicos (UID) y la información de registro de la aplicación.
 		\item \textit{Laberinto.rls}: contiene todas las cadenas de texto mostradas en el programa, con el fin de que sea fácil traducirlas a otros idiomas.
@@ -25,7 +25,7 @@ A continuación se explicará la estructura de directorios del programa de ejemplo
 	
 	\item \textbf{gfx}: en esta carpeta se suelen colocar todos los archivos de imagen utilizados por el programa. Symbian C++ soporta los formatos de imagen BMP, JPG, PNG, GIF y una versión simplificada del formato vectorial SVG.
 	
-	\item \textbf{group}: este directorio es uno de los más importantes, ya que agrupa dos ficheros que describen los datos del proyecto y especifican cómo compilarlo. Estos archivos son:
+	\item \textbf{group}: este directorio es uno de los más importantes, ya que en él se encuentran los ficheros que describen cómo compilar el proyecto. Estos archivos son:
 	\begin{milista2}
 		\item \textit{Laberinto.mmp}: indica los ficheros de código fuente (.cpp) que constituyen la aplicación, dónde se deben buscar los archivos de cabecera (.h), qué librerías externas y recursos se utilizan, etc.
 		\item \textit{bld.inf}: define las plataformas de destino soportadas por el proyecto (por ejemplo, ARM v5TE) y los ficheros .mmp que se deben procesar para construirlo.
@@ -35,15 +35,26 @@ A continuación se explicará la estructura de directorios del programa de ejemplo
 	\begin{milista2}
 		\item \textit{LaberintoApp.cpp}: define una clase derivada de \emph{CAknApplication} que es la que se ejecuta en primer lugar y lanza la aplicación.
 		\item \textit{LaberintoAppUi.cpp}: contiene la clase encargada de crear la vista principal y manejar los eventos del teclado y los menús, que es una especialización de \emph{CAknAppUi}.
-		\item \textit{LaberintoView.cpp}: posee la clase que inicializa la vista principal y dibuja el contenido o los controles de la aplicación en la pantalla del dispositivo. Tanto esta clase como todas las de los controles de Symbian C++ heredan de \emph{CCoeControl}.
-		\item \textit{LaberintoDocument.cpp}: contiene una clase heredada de \emph{CAknDocument} que se utiliza en la inicialización del programa. En las aplicaciones más complejas, se puede utilizar esta clase para guardar el estado del programa en un fichero y recuperarlo más adelante.
+		\item \textit{LaberintoView.cpp}: incluye la clase que inicializa la vista principal y dibuja el contenido o los controles de la aplicación en la pantalla del dispositivo. Tanto esta clase como todas las de los controles de Symbian C++ heredan de \emph{CCoeControl}.
+		\item \textit{LaberintoDocument.cpp}: contiene una clase heredada de \emph{CAknDocument} que se utiliza en la inicialización del programa. En las aplicaciones más complejas, se puede emplear esta clase para guardar el estado del programa en un fichero y recuperarlo más adelante.
 	\end{milista2}
 	
 	\item \textbf{inc}: este directorio contiene los ficheros de cabecera (.h) correspondientes a los archivos de código fuente (.cpp) del proyecto.
 	
-	\item \textbf{sis}: en esta carpeta se guarda el fichero .pkg que especifica cómo generar el ejecutable final. Tras la compilación, las aplicaciones Symbian se empaquetan en ficheros con extensión .sis, que son los que se pueden instalar en los dispositivos.
+	\item \textbf{sis}: en esta carpeta se guarda el fichero .pkg que contiene toda la información necesaria para generar un paquete autoinstalable con el ejecutable final. Una vez que se compila la aplicación para una cierta plataforma, se crea un fichero empaquetado con extensión .sis en este directorio que se puede instalar directamente en el terminal.
 
 \end{milista}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%poner pantallazo de la aplicación
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%comentar que se ha probado en emulador y un dispostivo real
+El programa de ejemplo que se ha desarrollado muestra un sencillo laberinto tridimensional de 10x10 casillas por el que el usuario se puede mover pulsando las teclas de dirección (arriba, abajo, izquierda y derecha). Pulsando la tecla \textit{left soft-key} del teléfono (ver Figura \ref{fig:keyboard}) se puede cambiar la cámara desde la que se ve el laberinto, existiendo dos posibilidades: cámara superior y cámara de primera persona. Como el laberinto no tiene principio ni final, la única forma de cerrar la aplicación es pulsando la tecla \textit{left soft-key} y seleccionado la opción `Salir'.
+
+En la Figura \ref{fig:ejemplos} se observan varios pantallazos del emulador que incorpora el S60 3rd Edition SDK de Symbian con la aplicación de ejemplo en ejecución, en los que se pueden ver las dos cámaras disponibles y el menú de opciones.
+
+\begin{figure}[h]
+\includegraphics[scale=0.45]{imagenes/ejemplo1.png} \hfill %
+\includegraphics[scale=0.45]{imagenes/ejemplo2.png} \hfill %
+\includegraphics[scale=0.45]{imagenes/ejemplo3.png} %
+\caption{Aplicación de ejemplo funcionando sobre el emulador del SDK.}
+\label{fig:ejemplos}
+\end{figure}
+
+Finalmente, conviene decir que, además de probar este programa en el emulador del SDK, también se instaló y ejecutó con éxito en un teléfono móvil real Nokia 6210 Navigator.
