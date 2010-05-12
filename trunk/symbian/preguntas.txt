@@ -1,8 +1,0 @@
-Preguntas de test del trabajo
------------------------------
-
-1) ¿Con qué lenguaje se puede desarrollar una aplicación para el sistema operativo Symbian OS?
-    a) Java
-    b) Python
-    c) C++
-  > d) Todas las anteriores son correctas
