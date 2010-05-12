@@ -1,0 +1,29 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{enumitem}
+
+% Macro para insertar una imagen
+%       Uso: \imagen{nombreFichero}{Factor escala}{Caption (leyenda)}{Label (identificador para referenciarla)}
+%-------------------------------
+\def\imagen#1#2#3#4{
+ \begin{figure}[h]
+ \begin{center}
+   \scalebox{#2}{\includegraphics{#1}}
+ \caption {#3}
+ \label{#4}
+ \end{center}
+ \end{figure}
+}
+
+\begin{document}
+\title{{\scshape \huge Ingeniería del Software II \\ \Large Preguntas de tipo test: Symbian OS}}
+\author{Juan Andrada Romero; Juan Gallaro Casero; Jose Domingo López López}
+\date{\today}
+\maketitle
+
+\input{1preguntas.tex}
+
+\end{document}
