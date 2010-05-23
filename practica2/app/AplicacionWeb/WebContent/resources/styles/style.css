@@ -1,0 +1,83 @@
+body 
+{
+	background-image:url("../images/fondoDegradado.png");
+	margin:0;
+	padding:0;
+	background-repeat: repeat;
+}
+
+#header
+{
+	background-image: url( "../images/header.png" );
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-bottom: 6px solid #C0C0C0;
+	border-color: #008080;
+	float: none;
+	/*font-family: Tahoma;
+	font-size: 12px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;	*/
+	line-height: normal;
+	margin: 0 auto;
+	padding: 0;
+	text-decoration: none;
+	text-transform: none;
+	width: 1020px;
+	height: 100px;
+}
+
+.textoCabecera 
+{
+	text-align: left;
+	padding-top: 35px;
+	font-family: Verdana;
+	padding-left: 340px;
+	padding-right: auto;
+	font-weight: bold;
+	font-size: 20pt;
+	margin-right: auto;
+	width: 800px;
+}
+
+#contenido
+{
+	-moz-box-shadow:0 0 1em gray;
+	background-color:#FFFFFF;
+	line-height:normal;
+	margin:0 auto;
+	height:600px;
+	padding:15px 0 0;
+	width:1020px;
+}
+
+.textoCuerpo 
+{
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: large; 
+	font-weight: bold; 
+	color: #171C56;
+	padding-left:100px;
+}
+
+.imagenesLogin 
+{
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:80px;
+	text-align:justify;
+}
+
+#pie
+{
+	background: #BBF7FF none repeat scroll 0 0;
+	border-top: 6px solid #C0C0C0;
+	border-color: #008080;
+	border-width: 6px thin thin;
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+	width: 1020px;
+}
+
