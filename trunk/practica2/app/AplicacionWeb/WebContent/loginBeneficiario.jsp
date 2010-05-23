@@ -5,12 +5,24 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" href="resources/styles/style.css" type="text/css" />
 <title>Login beneficiario</title>
 </head>
 <body>
-	<s:form action="loginBeneficiario">
-		<s:textfield name="Nss" label="Escriba su nº de S. Social"></s:textfield>
-		<s:submit value="Aceptar"></s:submit>
-	</s:form>
+	<div id="header">
+		<div class="textoCabecera">Título de la cabecera</div>
+	</div>
+
+	<div id="contenido">
+		<div class="textoCuerpo">
+			<s:form action="loginBeneficiario">
+				<s:textfield name="Nss" label="Escriba su número de S. Social"></s:textfield>
+				<s:submit value="Aceptar"></s:submit>
+			</s:form>
+		</div>
+	</div>
+	<div id="pie">
+        Texto del pie
+    </div>
 </body>
 </html>

@@ -224,6 +224,8 @@ public class GestorSesiones {
 		operaciones.add(Operaciones.ConsultarCentros);
 		operaciones.add(Operaciones.ConsultarVolante);
 		operaciones.add(Operaciones.CorrespondeNIFUsuario);
+		operaciones.add(Operaciones.ConsultarMedico);
+		operaciones.add(Operaciones.ConsultarCitasBeneficiario);
 		
 		// Agregamos las operaciones permitidas para citadores y administradores
 		if(sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
@@ -232,7 +234,6 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.EliminarBeneficiario);
 			operaciones.add(Operaciones.ConsultarMedico);
 			operaciones.add(Operaciones.ConsultarMedicoCita);
-			operaciones.add(Operaciones.ConsultarCitasBeneficiario);
 			operaciones.add(Operaciones.ConsultarCitasMedico);
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.TramitarCitaVolante);
@@ -257,7 +258,6 @@ public class GestorSesiones {
 		
 		// Agregamos las operaciones permitidas para médicos
 		if(sesion.getRol() == Roles.Médico.ordinal()) {
-			operaciones.add(Operaciones.ConsultarMedico);
 			operaciones.add(Operaciones.ConsultarMedicosTipo);
 			operaciones.add(Operaciones.EmitirVolante);
 			operaciones.add(Operaciones.ConsultarCitasPropiasMedico);

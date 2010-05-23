@@ -13,8 +13,8 @@
 			<result name="error">error.jsp</result>
 			<result name="input">loginMedico.jsp</result>
 		</action>
-		<action name="citaEspecialista" class="acciones.citaEspecialista">
-			<result name="success">citaEspecialista.jsp?cargado=true</result>
+		<action name="darCitaEspecialista" class="acciones.darCitaEspecialista">
+			<result name="success">citaEspecialistaExito.jsp</result>
 			<result name="error">error.jsp</result>
 		</action>
     </package>
