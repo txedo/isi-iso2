@@ -3,7 +3,8 @@
 <%@ page import="comunicaciones.ProxyServidorFrontend" %>
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Cita" %>
-<%@page import="java.util.Vector;"%>
+<%@page import="java.util.Vector"%>
+<%@page import="java.util.Date"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%
@@ -18,12 +19,27 @@
 <select id="citas" name="citas">
 	<% for(int i=0; i<citas.size(); i++) { 
 		if (i==0 && citas.size()>0) {
+			// Si la cita es anterior a la fecha actual, se pone como id -1, para luego validarlo
+			if (citas.get(i).getFechaYHora().before(new Date())) {
 	%>
-			<option selected value="<%=citas.get(i).getId() %>"><%= citas.get(i).toString()%></option>
+				<option selected value="-1"><%= citas.get(i).toString()%></option>
 	<%
-		} else if (citas.size()>0) {
+			} else {
 	%>
-			<option value="<%=citas.get(i).getId() %>"><%= citas.get(i).toString()%></option>
+				<option selected value="<%=citas.get(i).getId() %>"><%= citas.get(i).toString()%></option>
+	<%
+			}
+		} else if (citas.size()>0) {
+			if (citas.get(i).getFechaYHora().before(new Date())) {
+	%>
+				<option value="-1"><%= citas.get(i).toString()%></option>
+	<%
+			} else {
+	%>
+				<option value="<%=citas.get(i).getId() %>"><%= citas.get(i).toString()%></option>
+	<%
+			}
+	%>
 	<%  }
 	   } // Fin for
 	   if (citas.size()==0) {

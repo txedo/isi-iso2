@@ -39,6 +39,7 @@ public interface ICodigosMensajeAuxiliar {
 	public final int CONSULTAR_CITAS_FECHA_MEDICO = 1405;
 	public final int CONSULTAR_CITAS_PROPIAS_MEDICO = 1406;
 	public final int CONSULTAR_CITAS_PENDIENTES_PROPIAS_MEDICO = 1407;
+	public final int CONSULTAR_CITA_BENEFICIARIO = 1408;
 	
 	// Operaciones auxiliares del Gestor de Volantes
 	public final int CONSULTAR_VOLANTE = 1500;

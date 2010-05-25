@@ -45,3 +45,8 @@ Esto es asi, porque en el combobox de la pagina "darVolante.jsp" solo guardo el 
 Además, cuando se introduce un volante en "citaEspecialista.jsp", hay que consultar los dias ocupados de ese especialista, usando la sesion del beneficiario
 
 - Cambiado el permiso para que un beneficiario pueda consultar sus citas
+
+- Añadido un permiso para que un beneficiario pueda anular una cita
+
+- Creado un método en GestorCitas para consultar una cita, dado su ID. Se usa el metodo del FPCita que ya existe.
+Este método se hace a través del mensaje auxiliar, con la operación CONSULTAR_CITA_BENEFICIARIO

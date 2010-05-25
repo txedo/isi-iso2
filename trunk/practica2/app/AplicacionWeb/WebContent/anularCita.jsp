@@ -29,8 +29,8 @@
 			return xmlhttp;
 		}
 		
+		var peticion = nuevoAjax();
 		function obtenerCitas(nif, url){
-			var peticion = nuevoAjax();
 			if (peticion){
 				peticion.open("post", url, true);
 				var parametros = "nif=" + nif;
@@ -43,6 +43,30 @@
 				peticion.send(parametros);
 			}
 		}
+		
+		function anularCita(nif, url){
+			if (peticion) {
+				peticion.open("post", url, true);
+				var selectCita = document.getElementById("citas");
+				var idCita = selectCita.options[selectCita.selectedIndex].value;
+				if (idCita != -1) {
+					var parametros = "idCita=" + idCita;
+					peticion.onReadyStateChange=function() {
+						if (peticion.readyState==4) {					
+							document.getElementById("mensaje").innerHTML=peticion.responseText;
+							// Recargamos las citas
+							this.obtenerCitas(nif, 'obtenerCitas.jsp');
+						}						
+					}
+					peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					peticion.send(parametros);
+					
+				}
+				else
+					alert("Solo se puede anular una cita posterior al día de hoy");
+			}
+		}
+		
 	</script>
 	
 	
@@ -58,6 +82,10 @@
 		  <%= b.getNombre() %>, elija la cita que desee anular: <br>	
 			<br>
 			<span id="areaCitas">
+			</span>
+			<input type="submit" value="Aceptar" onclick="anularCita('<%=b.getNif()%>', 'eliminarCita.jsp')" />
+			<br><br>
+			<span id="mensaje">
 			</span>
 		</div>
 	</div>

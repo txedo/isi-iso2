@@ -63,6 +63,17 @@ public class GestorCitas {
 		return citas;
 	}
 	
+	// Método para consultar una cita, conociendo su id
+	public static Cita consultarCita(long idSesion, long idCita) throws SQLException, CitaNoValidaException, SesionInvalidaException, OperacionIncorrectaException {		
+		// Comprobamos si se tienen permisos para realizar la operación
+		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasBeneficiario);
+		
+		// Recuperamos la cita del beneficiario
+		Cita c = FPCita.consultar(idCita);
+		
+		return c;
+	}
+	
 	// Método para obtener todas las citas pendientes de un beneficiario
 	public static Vector<Cita> consultarCitasPendientesBeneficiario(long idSesion, String nif) throws SQLException, BeneficiarioInexistenteException, UsuarioIncorrectoException, CentroSaludInexistenteException, SesionInvalidaException, OperacionIncorrectaException, NullPointerException, DireccionInexistenteException {
 		Vector<Cita> citas, pendientes;
