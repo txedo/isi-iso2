@@ -1440,6 +1440,25 @@ public class ServidorFrontend implements IServidorFrontend {
 
 		// Métodos auxiliares de gestión de citas
 		
+		case ICodigosMensajeAuxiliar.CONSULTAR_CITA_BENEFICIARIO:
+			try {
+				resultado = GestorCitas.consultarCita(idSesion, (Long)informacion);
+			} catch(SQLException se) {
+				nombre = GestorSesiones.getSesion(idSesion).getNombre();
+				GestorConexionesLog.ponerMensaje(nombre, ITiposMensajeLog.TIPO_READ, "Error SQL mientras se consultaban una cita del beneficiario: " + se.getLocalizedMessage());
+				throw se;
+			} catch(OperacionIncorrectaException oie) {
+				nombre = GestorSesiones.getSesion(idSesion).getNombre();
+				GestorConexionesLog.ponerMensaje(nombre, ITiposMensajeLog.TIPO_READ, "Error al intentar realizar una operación no permitida de consulta de una cita del beneficiario: " + oie.getLocalizedMessage());
+				throw oie;
+			} catch(SesionInvalidaException sie) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error al comprobar la sesión con id " + idSesion + " para consultar una cita del beneficiario: " + sie.getLocalizedMessage());
+				throw sie;
+			} catch(Exception e) {
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error inesperado mientras se consultaban las citas de un médico: " + e.toString());
+				throw e;
+			}
+			break;
 		case ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS_MEDICO:
 			try {
 				// Consultamos las citas del médico con el NIF indicado

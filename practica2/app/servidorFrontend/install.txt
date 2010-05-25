@@ -324,6 +324,10 @@ INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
 INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
    VALUES ("2010-04-01 11:00:00", 10, "18451279R", "20145845H");
 INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2010-09-01 10:10:00", 10, "18451279R", "20145845H");
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2011-06-28 10:20:00", 10, "18451279R", "20145845H");
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
    VALUES ("2010-04-19 16:30:00", 10, "02441013P", "15834012D");
 INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
    VALUES ("2003-01-13 19:40:00", 10, "04128393Z", "49128574P");
