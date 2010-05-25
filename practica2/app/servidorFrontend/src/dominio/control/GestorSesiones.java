@@ -224,6 +224,7 @@ public class GestorSesiones {
 		operaciones.add(Operaciones.ConsultarCentros);
 		operaciones.add(Operaciones.ConsultarVolante);
 		operaciones.add(Operaciones.CorrespondeNIFUsuario);
+		operaciones.add(Operaciones.ConsultarCitasMedico);
 
 		// Agregamos las operaciones permitidas para los beneficiarios
 		if(sesion.getRol() == Roles.Beneficiario.ordinal()) {
@@ -240,7 +241,6 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.EliminarBeneficiario);
 			operaciones.add(Operaciones.ConsultarMedico);
 			operaciones.add(Operaciones.ConsultarMedicoCita);
-			operaciones.add(Operaciones.ConsultarCitasMedico);
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.TramitarCitaVolante);
 			operaciones.add(Operaciones.AnularCita);

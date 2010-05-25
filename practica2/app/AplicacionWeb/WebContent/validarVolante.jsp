@@ -22,10 +22,14 @@
 	Volante v = null;
 	try {
 		p = ProxyServidorFrontend.getProxy();
-		p.conectar(IConexion.IP, IConexion.PUERTO);
 		v = p.getVolante(idSesion, nVolante);
-		fechas = (Vector<Date>) p.mensajeAuxiliar(idSesion, ICodigosMensajeAuxiliar.CONSULTAR_DIAS_COMPLETOS, v.getReceptor().getNif());
-	} catch (RemoteException e) {
+		/* Se pone el especialista en la sesión del beneficiario para no tener que volver a consultar el
+		especialista cuando se quieran mostrar las horas laborales en cada dia seleccionado. Asi, se
+		ahorran consultas, ya que si no, cada vez que se cambie el dia del calendario y se tengan que refrescar
+		las horas, se tendría que consultar el volante y su receptor */
+		session = request.getSession(false);
+		session.setAttribute("especialista", v.getReceptor());
+		} catch (RemoteException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	} catch (MalformedURLException e) {

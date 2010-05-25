@@ -4,7 +4,6 @@
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.Especialista" %>
-<%@ page import="dominio.conocimiento.Especialidades" %>
 <%@ page import="dominio.conocimiento.ICodigosMensajeAuxiliar" %>
 <%@ page import="java.util.Vector" %>
 <%@ taglib prefix="s" uri="/struts-tags" %> 
