@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
+<%@ page import="java.util.Date" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -37,18 +38,32 @@
 			return xmlhttp;
 		}
 		
+		var peticion = nuevoAjax();
 		function validarVolante(url) {
-			var peticion = nuevoAjax();
 			if (peticion){
 				var volante = document.getElementById("nVolante").value;
 				peticion.open("post", url, true);
 				var parametros = "nVolante=" + volante;
 				peticion.onReadyStateChange=function() {
-					if (peticion.readyState==4) {					
+					if (peticion.readyState==4) {
 						document.getElementById("spanEspecialista").innerHTML=peticion.responseText + 
 						"<br><br>Seleccione un día laboral del especialista: ";
-						document.getElementById("campofecha").style.visibility = "visible";						
-						document.getElementById("formAccion").style.visibility = "visible";
+						document.getElementById("campofecha").style.visibility = "visible";
+					}						
+				}
+				peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				peticion.send(parametros);
+			}
+		}
+		
+		function consultarHoras (url, dia) {
+			alert("llega");
+			if (peticion){
+				peticion.open("post", url, true);
+				var parametros = "dia=" + dia;
+				peticion.onReadyStateChange=function() {
+					if (peticion.readyState==4) {					
+						document.getElementById("spanHoras").innerHTML=peticion.responseText;
 					}						
 				}
 				peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -92,13 +107,28 @@
 		$(function(){
 			$("#campofecha").datepicker({
 							changeYear: true,
-							beforeShowDay: desactivarDias,
-							altField: '#fechaElegida',
+							defaultDate: new Date(),
+							minDate: new Date(),
+							beforeShowDay: $.datepicker.noWeekends,
 							onSelect: function(textoFecha, objDatepicker){
 								$("#mensaje").html("Ha elegido el día: " + textoFecha);
+								// Cargamos las horas del medico al cambiar el dia
+								if (peticion){
+									peticion.open("post", 'obtenerHoras.jsp', true);
+									var parametros = "dia=" + textoFecha;
+									peticion.onReadyStateChange=function() {
+										if (peticion.readyState==4) {	
+											document.getElementById("spanHoras").innerHTML=peticion.responseText;
+										}						
+									}
+									peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+									peticion.send(parametros);
+								}
 							}
-				});
+			});
+				
 		});
+
 	</script>
 		
 <body>
@@ -121,13 +151,9 @@
 			
 			<!-- En este div se carga el datepicker -->
 			<div id="campofecha" style="visibility:hidden"></div>
-			
-			<div id="formAccion" style="visibility:hidden">
-				<s:form action="darCitaEspecialista"> 
-					<s:textfield name="fecha" id="fechaElegida" label="Fecha Seleccionada" readonly="true"></s:textfield>
-					<s:submit value="Obtener Cita"></s:submit>
-				</s:form>
-			</div>
+			<div id="mensaje"></div>
+			<br> <br>
+			<span id="spanHoras"></span>
 		</div>	
 	</div>
 	<div id="pie">
