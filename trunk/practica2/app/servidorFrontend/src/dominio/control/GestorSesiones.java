@@ -224,7 +224,6 @@ public class GestorSesiones {
 		operaciones.add(Operaciones.ConsultarCentros);
 		operaciones.add(Operaciones.ConsultarVolante);
 		operaciones.add(Operaciones.CorrespondeNIFUsuario);
-		operaciones.add(Operaciones.ConsultarCitasMedico);
 
 		// Agregamos las operaciones permitidas para los beneficiarios
 		if(sesion.getRol() == Roles.Beneficiario.ordinal()) {
@@ -232,6 +231,9 @@ public class GestorSesiones {
 			// Esta operación la tiene que hacer un beneficiario para poder consultar los especialistas
 			operaciones.add(Operaciones.ConsultarMedico);
 			operaciones.add(Operaciones.AnularCita);
+			operaciones.add(Operaciones.TramitarCita);
+			operaciones.add(Operaciones.TramitarCitaVolante);
+			operaciones.add(Operaciones.ConsultarCitasMedico);
 		}
 		
 		// Agregamos las operaciones permitidas para citadores y administradores
@@ -244,6 +246,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.TramitarCitaVolante);
 			operaciones.add(Operaciones.AnularCita);
+			operaciones.add(Operaciones.ConsultarCitasMedico);
 		}
 		
 		// Agregamos las operaciones permitidas para administradores
