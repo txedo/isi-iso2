@@ -8,31 +8,30 @@
 <%@ page import="java.util.Vector" %>
 <%@ page import="java.util.Date" %>
 <%@page import="dominio.conocimiento.ICodigosMensajeAuxiliar"%>
-<%@page import="java.text.DateFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
+<%@page import="dominio.conocimiento.Volante"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-
+<link rel="stylesheet" href="resources/styles/style.css" type="text/css" />
 <%
 	// Recuperamos las horas en las que trabaja el especialista ese dia y se muestran en un select (si trabaja alguna hora) 
 	ProxyServidorFrontend p;
 	// Tomamos el idSesion del HTTPSession
 	ISesion s = (ISesion) session.getAttribute("SesionFrontend");
 	// Se coge tambien el especialista, pues a esta pagina se llega si el volante se ha validado
-	Medico e = (Medico) session.getAttribute("especialista");
+	Medico e = (Medico) ((Volante) session.getAttribute("volante")).getReceptor();;
 	String dia = request.getParameter("dia");
 	Date diaHoy = new Date();
-	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 	Date diaSeleccionado = df.parse(dia); ;
-	// Si hoy es sabado o domingo, no se hace nada mas y se muestra el select con un mensaje
+	// Si hoy es sabado o domingo, no se hace nada mas y se muestra un mensaje
 	if (diaHoy.getDay() == 0 || diaHoy.getDay() == 6) {
 %>
-	<select id="horas" name="horas">
-		<option selected value="-2">El día actual (<%=dia%>) no es laborable</option>
-	</select>
-	
+		El día <%=df.format(diaHoy)%> no es laborable por ser
+		<% if (diaHoy.getDay()==0) { %> Domingo. 
+		<% }else{ %> Sábado. <%} %>
 <%
 	} else {
 		p = ProxyServidorFrontend.getProxy();
@@ -65,19 +64,23 @@
 			// Los médicos no trabajan los fines de semana
 			break;
 		}		
+		
+		
 %>
+		Horario del especialista <%=e.getApellidos()%> para el día <%=df.format(diaSeleccionado)%>
 		<select id="horas" name="horas">
 <%
 		// Si no hay horas disponibles, se muestra un mensaje
 		if (horas.size()==0) {
 %>
-			<option selected value="-1">El día seleccionado no es laborable para este especialista></option>
+			<option selected value="-1">El día seleccionado no es laborable para este especialista</option>
 <%
 		} else {
 			for (int i=0; i<horas.size(); i++) {
 				if (citasOcupadasDia.contains(horas.get(i))) {
+					// Las horas ocupadas se colorean de rojo y se pone el valor como -2, para mostrar un error si se elige una cita en esa hora
 %>
-					<option class="color" value="<%=horas.get(i)%>"><%=horas.get(i)%></option>
+					<option class="ocupado" value="-2"><%=horas.get(i)%></option>
 <%
 				} else {
 %>
@@ -88,6 +91,8 @@
 		}
 %>
 		</select>
+		<!-- Se coloca también el botón para obtener la cita -->
+		<br> <input type="submit" value="Obtener Cita" onclick="darCita('darCitaEspecialista.jsp')" />
 <%
 	}
 %>

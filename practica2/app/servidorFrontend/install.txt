@@ -331,6 +331,12 @@ INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
    VALUES ("2010-04-19 16:30:00", 10, "02441013P", "15834012D");
 INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
    VALUES ("2003-01-13 19:40:00", 10, "04128393Z", "49128574P");
+   
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2010-06-11 19:40:00", 10, "18451279R", "54918531B");
+   
+INSERT INTO citas (fecha, duracion, nifBeneficiario, nifMedico)
+   VALUES ("2010-06-28 10:30:00", 10, "18451279R", "54918531B");
 
 INSERT INTO volantes (nifBeneficiario, nifMedicoEmisor, nifMedicoReceptor, fechaCaducidad, idCita)
    VALUES ("47120891M", "60129589F", "54918531B", "2010-11-20", 4);

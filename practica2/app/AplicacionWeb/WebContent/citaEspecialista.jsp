@@ -49,6 +49,10 @@
 						document.getElementById("spanEspecialista").innerHTML=peticion.responseText + 
 						"<br><br>Seleccione un día laboral del especialista: ";
 						document.getElementById("campofecha").style.visibility = "visible";
+						// Al mostrar el calendario, se muestran, por defecto, las horas disponibles del día actual
+						var fecha = new Date();
+						var stringDia = fecha.getDate()+"/"+(fecha.getMonth()+1)+"/"+(fecha.getFullYear());
+						consultarHoras('obtenerHoras.jsp', stringDia);
 					}						
 				}
 				peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -56,13 +60,38 @@
 			}
 		}
 		
-		function consultarHoras (url, dia) {
-			alert("llega");
+		// Por defecto, el día elegido es el día de hoy
+		var diaSeleccionado = new Date();
+		var stringDiaSeleccionado = diaSeleccionado.getDate()+"/"+(diaSeleccionado.getMonth()+1)+"/"+diaSeleccionado.getYear();		
+		function darCita(url) {
+			if (peticion){
+				peticion.open("post", url, true);
+				var selectHoras = document.getElementById("horas");
+				var horaSeleccionada = selectHoras.options[selectHoras.selectedIndex].value;
+				if (horaSeleccionada == -1)
+					alert("El día seleccionado no es laborable.\nPor favor, elija otro día.");
+				else if (horaSeleccionada == -2)
+					alert("La hora seleccionada para la cita ya está ocupada.\nPor favor, elija otra hora.");
+				else {
+					var parametros = "dia=" + stringDiaSeleccionado + "&hora=" + horaSeleccionada;
+					peticion.onReadyStateChange=function() {
+						if (peticion.readyState==4) {	
+							// Se muestra la página de éxito para las citas
+							document.location='citaExito.jsp';
+						}						
+					}
+					peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					peticion.send(parametros);
+				}
+			}
+		}
+		
+		function consultarHoras (url, dia) {			
 			if (peticion){
 				peticion.open("post", url, true);
 				var parametros = "dia=" + dia;
 				peticion.onReadyStateChange=function() {
-					if (peticion.readyState==4) {					
+					if (peticion.readyState==4) {	
 						document.getElementById("spanHoras").innerHTML=peticion.responseText;
 					}						
 				}
@@ -111,19 +140,10 @@
 							minDate: new Date(),
 							beforeShowDay: $.datepicker.noWeekends,
 							onSelect: function(textoFecha, objDatepicker){
-								$("#mensaje").html("Ha elegido el día: " + textoFecha);
+								//$("#mensaje").html("Ha elegido el día: " + textoFecha);
 								// Cargamos las horas del medico al cambiar el dia
-								if (peticion){
-									peticion.open("post", 'obtenerHoras.jsp', true);
-									var parametros = "dia=" + textoFecha;
-									peticion.onReadyStateChange=function() {
-										if (peticion.readyState==4) {	
-											document.getElementById("spanHoras").innerHTML=peticion.responseText;
-										}						
-									}
-									peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-									peticion.send(parametros);
-								}
+								stringDiaSeleccionado = textoFecha;
+								consultarHoras('obtenerHoras.jsp', textoFecha);
 							}
 			});
 				

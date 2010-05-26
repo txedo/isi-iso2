@@ -51,4 +51,6 @@ Además, cuando se introduce un volante en "citaEspecialista.jsp", hay que consul
 - Creado un método en GestorCitas para consultar una cita, dado su ID. Se usa el metodo del FPCita que ya existe.
 Este método se hace a través del mensaje auxiliar, con la operación CONSULTAR_CITA_BENEFICIARIO
 
-- Modificados los permisos para que un beneficiario (ademas del admin y del citador) pueda consultar las horas libres y ocupadas de un médico
+- Modificados los permisos para que un beneficiario (ademas del administrador y del citador) pueda consultar las horas libres y ocupadas de un médico.
+
+- Modificados los permisos para que un beneficiario (ademas del administrador y del citador) pueda tramitar una cita, con y sin volante.

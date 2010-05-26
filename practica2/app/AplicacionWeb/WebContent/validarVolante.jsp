@@ -23,12 +23,12 @@
 	try {
 		p = ProxyServidorFrontend.getProxy();
 		v = p.getVolante(idSesion, nVolante);
-		/* Se pone el especialista en la sesión del beneficiario para no tener que volver a consultar el
-		especialista cuando se quieran mostrar las horas laborales en cada dia seleccionado. Asi, se
-		ahorran consultas, ya que si no, cada vez que se cambie el dia del calendario y se tengan que refrescar
-		las horas, se tendría que consultar el volante y su receptor */
+		// Se pone el volante en la sesión del beneficiario para no tener que volver a consultar el
+		// especialista cuando se quieran mostrar las horas laborales en cada dia seleccionado. Asi, se
+		// ahorran consultas, ya que si no, cada vez que se cambie el dia del calendario y se tengan que refrescar
+		// las horas, se tendría que consultar el volante y su receptor
 		session = request.getSession(false);
-		session.setAttribute("especialista", v.getReceptor());
+		session.setAttribute("volante", v);
 		} catch (RemoteException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
