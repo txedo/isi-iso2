@@ -6,10 +6,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" type="text/css" />
-<link rel="stylesheet" href="resources/styles/style.css" type="text/css" />
-<title>Cita con especialista</title>	
+	<%@ include file="header.jsp"%>
+	<script type="text/javascript" src="resources/scripts/ajax.js"></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" type="text/css" />
+	<title>Cita con especialista</title>	
 </head>
 
 <!--  Se cargan los scripts necesarios para el Datepicker -->
@@ -20,31 +20,14 @@
 
 <!--  scripts necesarios para AJAX -->
 <script language="JavaScript" type="text/javascript"> 
-		function nuevoAjax(){
-			var xmlhttp=false;
-		 	try {
-		 		xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 	} catch (e) {
-		 		try {
-		 			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		 		} catch (E) {
-		 			xmlhttp = false;
-		 		}
-		  	}
-		
-			if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-		 		xmlhttp = new XMLHttpRequest();
-			}
-			return xmlhttp;
-		}
-		
-		var peticion = nuevoAjax();
+		var peticion = null;
+		peticion = nuevoAjax();
 		function validarVolante(url) {
 			if (peticion){
 				var volante = document.getElementById("nVolante").value;
 				peticion.open("post", url, true);
 				var parametros = "nVolante=" + volante;
-				peticion.onReadyStateChange=function() {
+				peticion.onreadystatechange=function() {
 					if (peticion.readyState==4) {
 						document.getElementById("spanEspecialista").innerHTML=peticion.responseText + 
 						"<br><br>Seleccione un día laboral del especialista: ";
@@ -74,7 +57,7 @@
 					alert("La hora seleccionada para la cita ya está ocupada.\nPor favor, elija otra hora.");
 				else {
 					var parametros = "dia=" + stringDiaSeleccionado + "&hora=" + horaSeleccionada;
-					peticion.onReadyStateChange=function() {
+					peticion.onreadystatechange=function() {
 						if (peticion.readyState==4) {	
 							// Se muestra la página de éxito para las citas
 							document.location='citaExito.jsp';
@@ -90,7 +73,7 @@
 			if (peticion){
 				peticion.open("post", url, true);
 				var parametros = "dia=" + dia;
-				peticion.onReadyStateChange=function() {
+				peticion.onreadystatechange=function() {
 					if (peticion.readyState==4) {	
 						document.getElementById("spanHoras").innerHTML=peticion.responseText;
 					}						
@@ -152,15 +135,10 @@
 	</script>
 		
 <body>
-	
-	<div id="header">
-        <div class="textoCabecera">Título de la cabecera</div>
-	</div>
+	<%@ include file="top.jsp"%>
 	
     <div id="contenido">
-
 		<div class="textoCuerpo">
-
 			<%= ((Beneficiario) request.getSession(false).getAttribute("Beneficiario")).getNombre() %>, escriba su número de volante <br>		
 			<br>Volante: <s:textfield id="nVolante" name="nVolante"></s:textfield>
 			<input type="submit" value="Aceptar" onclick="validarVolante('validarVolante.jsp')"/>
@@ -176,8 +154,7 @@
 			<span id="spanHoras"></span>
 		</div>	
 	</div>
-	<div id="pie">
-        Texto del pie
-    </div>
+	
+	<%@ include file="foot.jsp"%>
 </body>
 </html>

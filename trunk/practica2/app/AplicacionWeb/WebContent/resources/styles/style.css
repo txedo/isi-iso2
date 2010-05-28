@@ -1,3 +1,44 @@
+img
+{
+	border: none;
+}
+
+a:link
+{
+	text-decoration: none;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 12px;
+	color: navy;
+	background: none;
+}  /* for unvisited links */
+
+a:visited
+{
+	text-decoration: none;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 12px;
+	color: navy;
+	background: none;
+} /* for visited links */
+
+a:active
+{
+	text-decoration: none;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 12px;
+	color: navy;
+	background: none;
+} /* when link is clicked */
+
+a:hover
+{
+	text-decoration: none;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 12px;
+	color: teal;
+	background: none;
+} /* when mouse is over link */
+
 body 
 {
 	background-image:url("../images/fondoDegradado.png");
@@ -28,17 +69,27 @@ body
 	height: 100px;
 }
 
+.logoCabecera 
+{
+	padding-top: 35px;
+	padding-left: 0px;
+	padding-right: auto;
+	margin-right: auto;
+	width: 200px;
+	float: left;
+}
+
 .textoCabecera 
 {
 	text-align: left;
 	padding-top: 35px;
 	font-family: Verdana;
-	padding-left: 340px;
+	padding-left: 300px;
 	padding-right: auto;
 	font-weight: bold;
 	font-size: 20pt;
 	margin-right: auto;
-	width: 800px;
+	width: 600px;
 }
 
 #contenido
