@@ -1,0 +1,142 @@
+% Tipo de documento. En este caso es un artículo, para folios A4, tamaño de la fuente 11pt y con página separada para el título
+\documentclass[a4paper,11pt,titlepage]{article}
+
+% Carga de paquetes necesarios. OrdenesArticle es un paquete personalizado
+\usepackage[spanish]{babel} 
+\RequirePackage[T1]{fontenc}
+\RequirePackage[ansinew]{inputenx} 
+\usepackage[spanish,cap,cont,title,fancy]{OrdenesArticle}
+\usepackage{lmodern}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{colortbl}
+\usepackage{color}
+\usepackage{ifthen}
+\usepackage{longtable}
+\hypersetup{bookmarksopen,bookmarksopenlevel=4,linktocpage,colorlinks,urlcolor=blue,citecolor=blue,
+						linkcolor=blue,filecolor=blue,pdfnewwindow,
+						pdftitle={Práctica Segundo Cuatrimestre Ingeniería Software II},
+						pdfauthor={Juan Andrada Romero, Juan Gallardo Casero, Jose Domingo López López},
+						pdfsubject={Ingeniería del Software II}}
+
+
+% Macro para definir una lista personalizada 
+\newenvironment{milista}%
+{\begin{list}{\textbullet}%
+{\settowidth{\labelwidth}{\textbullet} \setlength{\leftmargin}{\dimexpr\labelsep+\labelwidth+5pt}
+\setlength{\itemsep}{\dimexpr 0.5ex plus 0.25ex minus 0.25ex}
+\setlength{\parsep}{\itemsep}
+\setlength{\partopsep}{\itemsep}
+\addtolength{\topsep}{-7.5pt}
+}}%
+{\end{list}}
+
+% Macro para insertar una imagen
+%       Uso: \imagen{nombreFichero}{Factor escala}{Caption (leyenda)}{Label (identificador para referenciarla)}
+% -------------------------------------------------------------------------------------------------------------
+\def\imagen#1#2#3#4{
+ \begin{figure}[h]
+ \begin{center}
+   \scalebox{#2}{\includegraphics{#1}}
+ \caption {#3}
+ \label{#4}
+ \end{center}
+ \end{figure}
+}
+
+% Macro para insertar un diagrama de un sistema
+%       Uso: \diagrama{nombre del sistema: frontend, respaldo o cliente}{tipo de diagrama}{nombre del diagrama}
+% -------------------------------------------------------------------------------------------------------------
+\def\diagrama#1#2#3{fichero de Visual Paradigm correspondiente al 
+ \ifthenelse{\equal{#1}{frontend}}{\textbf{Servidor front-end}, }
+ {\ifthenelse{\equal{#1}{cliente}}{\textbf{Cliente}, }
+ {\ifthenelse{\equal{#1}{sistema}}{\textbf{Sistema Completo}, }
+ {\ifthenelse{\equal{#1}{respaldo}}{\textbf{Servidor de respaldo}, }{}}}}\textbf{Diagrama de}
+ \ifthenelse{\equal{#2}{análisis}}{\textbf{Clases de Análisis}}
+ {\ifthenelse{\equal{#2}{secuencia}}{\textbf{Secuencia}}
+ {\ifthenelse{\equal{#2}{estados}}{\textbf{Máquina de Estados}}
+ {\ifthenelse{\equal{#2}{clases}}{\textbf{Clases}}
+ {\ifthenelse{\equal{#2}{casosUso}}{\textbf{Casos de Uso}}
+ {\ifthenelse{\equal{#2}{colaboracion}}{\textbf{Colaboración}}
+ {\ifthenelse{\equal{#2}{paquetes}}{\textbf{Paquetes}}
+ {\ifthenelse{\equal{#2}{componentes}}{\textbf{Componentes}}
+ {\ifthenelse{\equal{#2}{despliegue}}{\textbf{Despliegue}}{}}}}}}}}} -\textgreater {} \textit{\textbf{#3}}}
+
+% Definicion del "listings" para el lenguaje Java
+\lstdefinelanguage{Java}
+{
+ morecomment = [l]{//}, 
+ morecomment = [l]{///},
+ morecomment = [s]{/*}{*/},
+ morestring = [b]", 
+ sensitive = true,
+ morekeywords = {package, static, while, switch, break, line, void, String, Object, int, Integer, instanceof, else, if, for, private, return, new, public, class, import, int, boolean, true, false, extends, final, super, protected, abstract, this, do, float, double, null, try, catch, implements}
+}
+
+% Configuración del código incluido para el lenguaje Java
+\lstset{
+  language=Java,
+  basicstyle=\footnotesize,
+  backgroundcolor=\color{white},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  tabsize=2,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=false,
+  escapeinside={\%},
+  keywordstyle = \color [rgb]{0,0,1},
+  commentstyle = \color [rgb]{0.133,0.545,0.133},
+  stringstyle = \color [rgb]{0.627,0.126,0.941}
+}
+
+\begin{document}
+
+% En las páginas de portada e índices, no hay encabezado ni pie de página
+\pagestyle{empty} 
+
+% Se incluye la portada
+\input{Portada.tex}
+\clearpage
+
+% En las páginas de índices y prefacio, se utiliza numeración romana
+\pagenumbering{Roman}
+
+% Se crea el índice
+\tableofcontents
+% Se pasa página y se añade el índice de figuras al índice principal
+%\clearpage\phantomsection
+%\addcontentsline{toc}{section}{\listfigurename}
+% Se crea el índice de figuras
+%\listoffigures
+% Si se quiere crear un índice de tablas se pondría: \listoftables
+
+\newpage
+
+% Se ajusta la separación entre párrafos
+\parskip=10pt
+
+% Se añade el prefacio al índice
+%\clearpage\phantomsection
+%\addcontentsline{toc}{section}{Prefacio}
+
+% Comienza el contenido del documento. Se utilizan números arábigos y el encabezado y pie de página personalizado
+\pagenumbering{arabic}
+\pagestyle{fancy}
+
+% Añadimos la bibliografia al índice
+\clearpage\phantomsection
+\addcontentsline{toc}{section}{Referencias}
+
+% Bibliografía. En este caso se usa BibTeX
+\bibliographystyle{plain}
+\pagestyle{plain} 
+\bibliography{Bibliografia}
+
+\end{document}
