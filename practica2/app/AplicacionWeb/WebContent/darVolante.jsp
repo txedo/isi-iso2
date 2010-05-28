@@ -5,34 +5,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Dar Volante</title>
-
+	<%@ include file="header.jsp"%>
+	<title>Dar Volante</title>
 	<script language="JavaScript" type="text/javascript"> 
-		function nuevoAjax(){
-			var xmlhttp=false;
-		 	try {
-		 		xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 	} catch (e) {
-		 		try {
-		 			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		 		} catch (E) {
-		 			xmlhttp = false;
-		 		}
-		  	}
-		
-			if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-		 		xmlhttp = new XMLHttpRequest();
-			}
-			return xmlhttp;
-		}
-				
+		var peticion = null;
+		peticion = nuevoAjax();	
 		function cargarReceptor(url, select) {
 			var especialidad = select.options[select.selectedIndex].value;
-			var peticion = nuevoAjax();
 			if (peticion) {
 				peticion.open('post',url,true);
-				peticion.onReadyStateChange=function() {
+				peticion.onreadystatechange=function() {
 					if (peticion.readyState==4) {
 						document.getElementById("especialistasCargados").innerHTML=peticion.responseText;
 					}						
@@ -43,10 +25,9 @@
 		}
 		
 		function darVolante(url) {
-			var peticion = nuevoAjax();
 			if (peticion) {
 				peticion.open('post',url,true);
-				peticion.onReadyStateChange=function() {
+				peticion.onreadystatechange=function() {
 					if (peticion.readyState==4) {
 						document.getElementById("volanteEmitido").innerHTML=peticion.responseText;
 					}	
@@ -65,9 +46,9 @@
 		}
 		
 	</script>
-
 </head>
 <body> 
+	<%@ include file="top.jsp"%>
 	<%
 		// En la sesion, se guarda el objeto que haya colocado la accion en la ValueStack,
 		// para luego usarlo en las otras páginas para sacar el nombre del médico, por ejemplo.
@@ -88,11 +69,13 @@
 	</s:select>
 	<span id="especialistasCargados">
 	<br>	Dr./Dra.: <select id="especialista" name="especialista"><option value="-1">Seleccione especialidad...</option>
-					  <select>
+					  </select>
 	</span>
 	<br><input type="button" onclick="darVolante('emitirVolante.jsp')" value="Aceptar">
 	<span id="volanteEmitido">
 	<br><br><br> Introduce los datos para pedir un volante ...
 	</span>
+	
+	<%@ include file="foot.jsp"%>
 </body>
 </html>
