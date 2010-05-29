@@ -21,10 +21,10 @@
 	Medico e = (Medico) ((Volante) session.getAttribute("volante")).getReceptor();;
 	String dia = request.getParameter("dia");
 	Date diaHoy = new Date();
-	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-	Date diaSeleccionado = df.parse(dia); ;
-	// Si hoy es sabado o domingo, no se hace nada mas y se muestra un mensaje
-	if (diaHoy.getDay() == 0 || diaHoy.getDay() == 6) {
+	SimpleDateFormat df = new SimpleDateFormat("dd/M/yyyy");
+	Date diaSeleccionado = df.parse(dia);
+	// Si hoy es sabado o domingo y no es el dia seleccionado, no se hace nada mas y se muestra un mensaje
+	if (dia.equals(df.format(diaHoy)) && (diaHoy.getDay() == 0 || diaHoy.getDay() == 6)) {
 %>
 		El día <%=df.format(diaHoy)%> no es laborable por ser
 		<% if (diaHoy.getDay()==0) { %> Domingo. 

@@ -23,7 +23,7 @@ public class loginBeneficiario extends ActionSupport{
 	private Beneficiario beneficiario;
 	private ISesion sesion;
 		
-	public String execute() {
+	public String execute() throws RemoteException, SQLException, UsuarioIncorrectoException, Exception{
 		ProxyServidorFrontend p;
 		try {
 			p = ProxyServidorFrontend.getProxy();
@@ -31,20 +31,17 @@ public class loginBeneficiario extends ActionSupport{
 			sesion = p.identificarBeneficiario(Nss);
 			// Se obtiene el beneficiario a partir del NSS introducido
 			beneficiario = p.getBeneficiarioPorNSS(sesion.getId(), Nss);
+			return SUCCESS;
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		} catch (UsuarioIncorrectoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
-		return SUCCESS;
+		
 	}
 	
 	public void setNss(String Nss) {
