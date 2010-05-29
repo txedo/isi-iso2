@@ -1,7 +1,5 @@
 package acciones;
 
-import java.net.MalformedURLException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -35,7 +33,7 @@ public class loginMedico extends ActionSupport {
 	private Vector<String> especialidades = new Vector<String>();
 	private Vector<Beneficiario> beneficiarios;
 	
-	public String execute() {
+	public String execute() throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
 		ProxyServidorFrontend p;
 		try {
 			p = ProxyServidorFrontend.getProxy();
@@ -47,28 +45,16 @@ public class loginMedico extends ActionSupport {
 				especialidades.add(esp.name());
 			// Consultamos los beneficiarios del médico
 			beneficiarios = (Vector<Beneficiario>) p.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico.getNif());
-			
+			return SUCCESS;
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		} catch (UsuarioIncorrectoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
-		
-		return SUCCESS;
 	}
 	
 	

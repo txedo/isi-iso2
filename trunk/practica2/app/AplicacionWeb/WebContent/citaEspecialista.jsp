@@ -29,14 +29,17 @@
 				var parametros = "nVolante=" + volante;
 				peticion.onreadystatechange=function() {
 					if (peticion.readyState==4) {
-						document.getElementById("spanEspecialista").innerHTML=peticion.responseText + 
-						"<br><br>Seleccione un día laboral del especialista: ";
-						document.getElementById("campofecha").style.visibility = "visible";
-						// Al mostrar el calendario, se muestran, por defecto, las horas disponibles del día actual
-						var fecha = new Date();
-						var stringDia = fecha.getDate()+"/"+(fecha.getMonth()+1)+"/"+(fecha.getFullYear());
-						consultarHoras('obtenerHoras.jsp', stringDia);
-					}						
+						document.getElementById("spanEspecialista").innerHTML=peticion.responseText;
+						if (!peticion.responseText.contains("Error")) {
+							document.getElementById("spanEspecialista").innerHTML=peticion.responseText + 
+							"<br><br>Seleccione un día laboral del especialista: ";
+							document.getElementById("campofecha").style.visibility = "visible";
+							// Al mostrar el calendario, se muestran, por defecto, las horas disponibles del día actual
+							var fecha = new Date();
+							var stringDia = fecha.getDate()+"/"+(fecha.getMonth()+1)+"/"+(fecha.getFullYear());
+							consultarHoras('obtenerHoras.jsp', stringDia);
+						}
+					}					
 				}
 				peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				peticion.send(parametros);
@@ -86,36 +89,8 @@
 	</script>
 	
 	<!-- script necesario para mostrar el Datepicker y darle formato. En este caso, se 
-	deshabilitan días ocupados -->
-	<script type="text/javascript"> 
-			/* Días ocupados del especialista */
-			var disabledDays = ["10/07/2010"];
-
-			/* Desactivar los dias no laborables del especialista */
-			function desactivarDias(date) {
-				var mes = date.getMonth(), dia = date.getDate(), año = date.getFullYear();
-				for (i = 0; i < disabledDays.length; i++) {
-					if(ArrayContains(disabledDays, dia + '/' + (mes+1) + '/' + año) || new Date() > date) {
-						return [false];
-					}
-				}
-				return [true];
-			}
-			
-			function ArrayIndexOf(array,item,from){
-				var len = array.length;
-				for (var i = (from < 0) ? Math.max(0, len + from) : from || 0; i < len; i++){
-					if (array[i] === item) return i;
-				}
-				return -1;
-			}
-			
-			function ArrayContains(array,item,from){
-				return ArrayIndexOf(array,item,from) != -1;
-			}
-		
-		// La fecha seleccionada se muestra en una label y además se pasa el valor
-		// al campo "fechaElegida", que es un campo de texto de struts2
+	deshabilitan los fines de semana -->
+	<script type="text/javascript"> 		
 		$(function(){
 			$("#campofecha").datepicker({
 							changeYear: true,
@@ -123,7 +98,6 @@
 							minDate: new Date(),
 							beforeShowDay: $.datepicker.noWeekends,
 							onSelect: function(textoFecha, objDatepicker){
-								//$("#mensaje").html("Ha elegido el día: " + textoFecha);
 								// Cargamos las horas del medico al cambiar el dia
 								stringDiaSeleccionado = textoFecha;
 								consultarHoras('obtenerHoras.jsp', textoFecha);

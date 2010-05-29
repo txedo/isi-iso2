@@ -1,12 +1,7 @@
-<%@page import="java.util.Vector"%>
-<%@page import="java.util.Date"%>
-<%@page import="dominio.conocimiento.ICodigosMensajeAuxiliar"%>
+<%@page import="excepciones.VolanteNoValidoException"%>
 <%@page import="dominio.conocimiento.Volante"%>
 <%@page import="java.sql.SQLException"%>
-<%@page import="java.rmi.NotBoundException"%>
-<%@page import="java.net.MalformedURLException"%>
 <%@page import="java.rmi.RemoteException"%>
-<%@page import="comunicaciones.IConexion"%>
 <%@page import="dominio.conocimiento.ISesion"%>
 <%@page import="comunicaciones.ProxyServidorFrontend"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
@@ -18,7 +13,6 @@
 	long idSesion = ((ISesion) request.getSession(false).getAttribute("SesionFrontend")).getId();
 	long nVolante = Long.parseLong(request.getParameter("nVolante"));
 	ProxyServidorFrontend p;
-	Vector<Date> fechas = null;
 	Volante v = null;
 	try {
 		p = ProxyServidorFrontend.getProxy();
@@ -29,22 +23,20 @@
 		// las horas, se tendría que consultar el volante y su receptor
 		session = request.getSession(false);
 		session.setAttribute("volante", v);
-		} catch (RemoteException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (MalformedURLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (NotBoundException e) {
+%>
+		Le atenderá el Dr. <%= v.getReceptor().getApellidos() %>
+<%
+	} catch (RemoteException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+	} catch(VolanteNoValidoException e) {%>
+		Error: <%=e.getMessage()%>
+<%
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
 %>
-
-Le atenderá el Dr. <%= v.getReceptor().getApellidos() %>
