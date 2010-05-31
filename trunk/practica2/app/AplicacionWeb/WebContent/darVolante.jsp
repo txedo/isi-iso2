@@ -6,6 +6,7 @@
 <html>
 <head>
 	<%@ include file="header.jsp"%>
+	<script type="text/javascript" src="resources/scripts/ajax.js"></script>
 	<title>SSCAWeb - Dar Volante</title>
 	<script language="JavaScript" type="text/javascript"> 
 		var peticion = null;
