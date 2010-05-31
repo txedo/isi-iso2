@@ -7,10 +7,10 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Vector;
+
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.Cita;
 import dominio.conocimiento.ICodigosMensajeAuxiliar;
-import dominio.conocimiento.ICodigosOperacionesCliente;
 import dominio.conocimiento.IMedico;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -26,7 +26,7 @@ import excepciones.UsuarioIncorrectoException;
 import excepciones.VolanteNoValidoException;
 
 /**
- * Proxy utilizado para conectarse con el servidor front-end.
+ * Proxy singleton utilizado para conectarse con el servidor front-end.
  */
 public class ProxyServidorFrontend implements IServidorFrontend {
 	
@@ -42,9 +42,15 @@ public class ProxyServidorFrontend implements IServidorFrontend {
 	
 	public void conectar(String ip, int puerto) throws MalformedURLException, RemoteException, NotBoundException {
 		String url;
-		if (servidor==null) {
-			url = "rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR;
-			servidor = (IServidorFrontend)Naming.lookup(url);
+		if(servidor == null) {
+			try {
+				url = "rmi://" + ip + ":" + String.valueOf(puerto) + "/" + NOMBRE_SERVIDOR;
+				servidor = (IServidorFrontend)Naming.lookup(url);
+			} catch(RemoteException ex) {
+				throw new RemoteException("No se puede conectar con el servidor front-end.");
+			} catch(NotBoundException ex) {
+				throw new NotBoundException("El servidor front-end está desactivado.");
+			}
 		}
 	}
 	

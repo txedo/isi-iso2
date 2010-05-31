@@ -129,15 +129,35 @@ public class Cita implements Serializable, Cloneable {
 	}
 	
 	public String toString() {
-		String dia="";
-		switch (this.fechaYHora.getDay()) {
-		case 0: dia="Domingo"; break;
-		case 1: dia="Lunes"; break;
-		case 2: dia="Martes"; break;
-		case 3: dia="Miercoles"; break;
-		case 4: dia="Jueves"; break;
-		case 5: dia="Viernes"; break;
-		case 6: dia="Sábado"; break;
+		Calendar cal;
+		String dia;
+		
+		cal = Calendar.getInstance();
+		cal.setTime(this.fechaYHora);
+		switch(cal.get(Calendar.DAY_OF_WEEK)) {
+			case Calendar.MONDAY:
+				dia = "Lunes";
+				break;
+			case Calendar.TUESDAY:
+				dia = "Martes";
+				break;
+			case Calendar.WEDNESDAY:
+				dia = "Miercoles";
+				break;
+			case Calendar.THURSDAY:
+				dia = "Jueves";
+				break;
+			case Calendar.FRIDAY:
+				dia = "Viernes";
+				break;
+			case Calendar.SATURDAY:
+				dia = "Sábado";
+				break;
+			case Calendar.SUNDAY:
+				dia = "Domingo";
+				break;
+			default:
+				dia = "";
 		}
 		dia += " " + cadenaDiaCita(this.fechaYHora) + ", " + cadenaHoraCita(this.fechaYHora);
 		return dia;

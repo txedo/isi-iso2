@@ -7,7 +7,7 @@
 <head>
 	<%@ include file="header.jsp"%>
 	<script type="text/javascript" src="resources/scripts/ajax.js"></script>
-	<title>Anular Cita</title>
+	<title>SSCAWeb - Anular Cita</title>
 	<script language="JavaScript" type="text/javascript"> 	
 		var peticion = null;
 		peticion = nuevoAjax();
@@ -37,7 +37,7 @@
 						if (peticion.readyState==4) {					
 							document.getElementById("mensaje").innerHTML=peticion.responseText;
 							// Recargamos las citas
-							this.obtenerCitas(nif, 'obtenerCitas.jsp');
+							this.obtenerCitas(nif, 'ajaxObtenerCitas.jsp');
 						}
 					}
 					peticion.send(parametros);
@@ -51,7 +51,7 @@
 </head>
 <% Beneficiario b = (Beneficiario) request.getSession(false).getAttribute("Beneficiario"); %>
 			
-<body onload="javascript:obtenerCitas('<%=b.getNif()%>', 'obtenerCitas.jsp')">
+<body onload="javascript:obtenerCitas('<%=b.getNif()%>', 'ajaxObtenerCitas.jsp')">
 	<%@ include file="top.jsp"%>
 	
     <div id="contenido">
@@ -60,7 +60,7 @@
 			<br>
 			<span id="areaCitas">
 			</span>
-			<input type="submit" value="Aceptar" onclick="anularCita('<%=b.getNif()%>', 'eliminarCita.jsp')" />
+			<input type="submit" value="Aceptar" onclick="anularCita('<%=b.getNif()%>', 'ajaxEliminarCita.jsp')" />
 			<br><br>
 			<span id="mensaje">
 			</span>

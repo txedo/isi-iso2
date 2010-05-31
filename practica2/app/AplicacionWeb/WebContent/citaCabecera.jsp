@@ -6,7 +6,7 @@
 <head>
 	<%@ include file="header.jsp"%>
 	<script type="text/javascript" src="resources/scripts/ajax.js"></script>
-	<title>Cita con su médico</title>
+	<title>SSCAWeb - Cita con Médico</title>
 </head>
 <body>
 	<%@ include file="top.jsp"%>

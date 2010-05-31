@@ -9,7 +9,7 @@
 	<%@ include file="header.jsp"%>
 	<script type="text/javascript" src="resources/scripts/ajax.js"></script>
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" type="text/css" />
-	<title>Cita con especialista</title>	
+	<title>SSCAWeb - Cita con Especialista</title>	
 </head>
 
 <!--  Se cargan los scripts necesarios para el Datepicker -->
@@ -37,7 +37,7 @@
 							// Al mostrar el calendario, se muestran, por defecto, las horas disponibles del día actual
 							var fecha = new Date();
 							var stringDia = fecha.getDate()+"/"+(fecha.getMonth()+1)+"/"+(fecha.getFullYear());
-							consultarHoras('obtenerHoras.jsp', stringDia);
+							consultarHoras('ajaxObtenerHoras.jsp', stringDia);
 						}
 					}					
 				}
@@ -100,7 +100,7 @@
 							onSelect: function(textoFecha, objDatepicker){
 								// Cargamos las horas del medico al cambiar el dia
 								stringDiaSeleccionado = textoFecha;
-								consultarHoras('obtenerHoras.jsp', textoFecha);
+								consultarHoras('ajaxObtenerHoras.jsp', textoFecha);
 							}
 			});
 				
@@ -115,7 +115,7 @@
 		<div class="textoCuerpo">
 			<%= ((Beneficiario) request.getSession(false).getAttribute("Beneficiario")).getNombre() %>, escriba su número de volante <br>		
 			<br>Volante: <s:textfield id="nVolante" name="nVolante"></s:textfield>
-			<input type="submit" value="Aceptar" onclick="validarVolante('validarVolante.jsp')"/>
+			<input type="submit" value="Aceptar" onclick="validarVolante('ajaxValidarVolante.jsp')"/>
 
 			<br><br><br>
 			<span id="spanEspecialista">
