@@ -4,7 +4,6 @@
 <%@ page import="comunicaciones.ProxyServidorFrontend" %>
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Cita" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%
 	// Consultamos la cita, dado su id

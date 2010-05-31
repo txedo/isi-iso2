@@ -7,7 +7,6 @@
 <%@page import="dominio.conocimiento.Beneficiario"%>
 <%@page import="dominio.conocimiento.IConstantes"%>
 <%@page import="java.util.Date"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%
 	ProxyServidorFrontend p;

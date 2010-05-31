@@ -6,7 +6,7 @@
 <html>
 <head>
 	<%@ include file="header.jsp"%>
-	<title>Dar Volante</title>
+	<title>SSCAWeb - Dar Volante</title>
 	<script language="JavaScript" type="text/javascript"> 
 		var peticion = null;
 		peticion = nuevoAjax();	
@@ -65,13 +65,13 @@
 	
 	<br><br><s:select id="beneficiario" name="beneficiario" list="beneficiarios" listKey="nif" listValue="apellidos, nombre" label="Beneficiario"></s:select>
 	<br>
-	<s:select name="especialidad" list="especialidades" label="Especialidad" onchange="cargarReceptor('obtenerEspecialistas.jsp',this)">
+	<s:select name="especialidad" list="especialidades" label="Especialidad" onchange="cargarReceptor('ajaxObtenerEspecialistas.jsp',this)">
 	</s:select>
 	<span id="especialistasCargados">
 	<br>	Dr./Dra.: <select id="especialista" name="especialista"><option value="-1">Seleccione especialidad...</option>
 					  </select>
 	</span>
-	<br><input type="button" onclick="darVolante('emitirVolante.jsp')" value="Aceptar">
+	<br><input type="button" onclick="darVolante('ajaxEmitirVolante.jsp')" value="Aceptar">
 	<span id="volanteEmitido">
 	<br><br><br> Introduce los datos para pedir un volante ...
 	</span>

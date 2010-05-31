@@ -4,8 +4,6 @@
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
-    
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%
 	ProxyServidorFrontend p;

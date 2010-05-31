@@ -5,7 +5,7 @@
 <html>
 <head>
 	<%@ include file="header.jsp" %>
-	<title>SSCAWeb - Login beneficiario</title>
+	<title>SSCAWeb - Login Beneficiario</title>
 </head>
 <body>
 	<%@ include file="top.jsp" %>

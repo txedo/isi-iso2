@@ -5,11 +5,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<%@ include file="header.jsp"%>
-	<title>Menu Beneficiario</title>
+	<%@ include file="header.jsp" %>
+	<title>SSCAWeb - Menú Beneficiario</title>
 </head>
 <body>
-	<%@ include file="top.jsp"%>
+	<%@ include file="top.jsp" %>
     <div id="contenido">
 	<%
 		// En la sesion, se podria guardar el objeto que haya colocado la accion en la ValueStack,
@@ -20,10 +20,10 @@
 		Beneficiario bene = (Beneficiario) request.getSession(false).getAttribute("Beneficiario"); 
 	%>
 		<div class="textoCuerpo">
-			Bienvenido, <%= bene.getNombre() %> <br><br>
+			Bienvenido/a, <%= bene.getNombre() %>.<br><br>
 			Elija una opción: <br>
 		</div>
-		<div style="padding-left:130px;">
+		<div style="padding-left:250px;">
 			<input type="radio" name="grupoRadio" value="citaCabecera" onclick="document.location='citaCabecera.jsp'" >Cita con su médico 
 			<%  // Se muestra el tipo de médico adecuado en la opción, según la edad del beneficiario
 				String mensaje; 
@@ -38,6 +38,6 @@
 		</div>
 	</div>
 	
-	<%@ include file="foot.jsp"%>
+	<%@ include file="foot.jsp" %>
 </body>
 </html>

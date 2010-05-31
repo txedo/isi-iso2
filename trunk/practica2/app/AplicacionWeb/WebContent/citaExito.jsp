@@ -4,7 +4,7 @@
 <html>
 <head>
 	<%@ include file="header.jsp"%>
-	<title>Insert title here</title>
+	<title>SSCAWeb - Cita tramitada</title>
 </head>
 <body>
 	<%@ include file="top.jsp"%>

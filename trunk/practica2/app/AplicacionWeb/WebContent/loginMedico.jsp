@@ -4,11 +4,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<%@ include file="header.jsp"%>
-	<title>SSCAWeb - Login Medico</title>
+	<%@ include file="header.jsp" %>
+	<title>SSCAWeb - Login Médico</title>
 </head>
 <body>
-	<%@ include file="top.jsp"%>
+	<%@ include file="top.jsp" %>
 
 	<div id="contenido">
 		<div class="textoCuerpo">
@@ -21,6 +21,6 @@
 		</div>
 	</div>
 	
-	<%@ include file="foot.jsp"%>
+	<%@ include file="foot.jsp" %>
 </body>
 </html>

@@ -10,7 +10,6 @@
 <%@page import="dominio.conocimiento.ICodigosMensajeAuxiliar"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="dominio.conocimiento.Volante"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%
 	// Recuperamos las horas en las que trabaja el especialista ese dia y se muestran en un select (si trabaja alguna hora) 
