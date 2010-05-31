@@ -10,48 +10,51 @@ import comunicaciones.ProxyServidorFrontend;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.ISesion;
+import excepciones.BeneficiarioInexistenteException;
 import excepciones.UsuarioIncorrectoException;
 
-public class loginBeneficiario extends ActionSupport{
+/**
+ * Acción ejecutada cuando un beneficiario quiere iniciar sesión en
+ * la aplicación web.
+ */
+public class loginBeneficiario extends ActionSupport {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1830263215915906207L;
 	
-	private String Nss = "";
+	private String nss;
 	private Beneficiario beneficiario;
 	private ISesion sesion;
 		
-	public String execute() throws RemoteException, SQLException, UsuarioIncorrectoException, Exception{
-		ProxyServidorFrontend p;
+	public String execute() throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+		ProxyServidorFrontend servidor;
+		
 		try {
-			p = ProxyServidorFrontend.getProxy();
-			p.conectar(IConexion.IP, IConexion.PUERTO);
-			sesion = p.identificarBeneficiario(Nss);
-			// Se obtiene el beneficiario a partir del NSS introducido
-			beneficiario = p.getBeneficiarioPorNSS(sesion.getId(), Nss);
-			return SUCCESS;
-		} catch (RemoteException e) {
+			// Establecemos conexión con el servidor front-end 
+			servidor = ProxyServidorFrontend.getProxy();
+			servidor.conectar(IConexion.IP, IConexion.PUERTO);
+			// Iniciamos sesión con el NSS introducido
+			sesion = servidor.identificarBeneficiario(nss);
+			// Obtenemos los datos del beneficiario
+			beneficiario = servidor.getBeneficiarioPorNSS(sesion.getId(), nss);
+		} catch(RemoteException e) {
 			throw e;
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			throw e;
-		} catch (UsuarioIncorrectoException e) {
-			throw e;
-		} catch (Exception e) {
+		} catch(BeneficiarioInexistenteException e) {
 			throw e;
 		}
-		
+
+		return SUCCESS;
 	}
 	
-	public void setNss(String Nss) {
-		this.Nss= Nss;
+	public void setNss(String nss) {
+		this.nss = nss;
 	}
 
 	public String getNss() {
-		return Nss;
+		return nss;
 	}
-
+	
 	public Beneficiario getBeneficiario() {
 		return beneficiario;
 	}

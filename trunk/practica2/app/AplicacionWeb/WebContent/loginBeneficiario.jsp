@@ -4,21 +4,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<%@ include file="header.jsp"%>
-	<title>Login beneficiario</title>
+	<%@ include file="header.jsp" %>
+	<title>SSCAWeb - Login beneficiario</title>
 </head>
 <body>
-	<%@ include file="top.jsp"%>
+	<%@ include file="top.jsp" %>
 
 	<div id="contenido">
 		<div class="textoCuerpo">
 			<s:form action="loginBeneficiario">
-				<s:textfield name="Nss" label="Escriba su número de S. Social"></s:textfield>
-				<s:submit value="Aceptar"></s:submit>
+				<s:textfield name="nss" label="Escriba su número de S. Social" />
+				<s:submit value="Aceptar" />
 			</s:form>
 		</div>
 	</div>
 	
-	<%@ include file="foot.jsp"%>
+	<%@ include file="foot.jsp" %>
+	
 </body>
 </html>

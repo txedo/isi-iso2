@@ -3,14 +3,14 @@
         "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
 
 <validators>
-    <field name="Nss">
+    <field name="nss">
         <field-validator type="requiredstring">
         	<param name="trim">true</param>
-            <message>El NSS no puede ser vacio</message>
+            <message>El NSS no puede ser vacío.</message>
         </field-validator>    
-         <field-validator type="regex">
+     	<field-validator type="regex">
             <param name="expression">^[0-9]{12}$</param>
-            <message>El NSS solo debe contener 12 dígitos</message>
+            <message>El NSS debe contener 12 dígitos.</message>
         </field-validator>
 	</field>
 </validators>

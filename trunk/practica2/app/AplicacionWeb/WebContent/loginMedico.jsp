@@ -5,7 +5,7 @@
 <html>
 <head>
 	<%@ include file="header.jsp"%>
-	<title>Login Medico</title>
+	<title>SSCAWeb - Login Medico</title>
 </head>
 <body>
 	<%@ include file="top.jsp"%>
@@ -13,9 +13,10 @@
 	<div id="contenido">
 		<div class="textoCuerpo">
 			<s:form action="loginMedico">
-				<s:textfield name="username" label="Login"></s:textfield>
-				<s:password name="pass" label="Contraseña"></s:password>
-				<s:submit value="Aceptar"></s:submit><s:reset value="Restablecer"></s:reset>
+				<s:textfield name="username" label="Login" />
+				<s:password name="pass" label="Contraseña" />
+				<s:submit value="Aceptar" />
+				<s:reset value="Restablecer" />
 			</s:form>
 		</div>
 	</div>

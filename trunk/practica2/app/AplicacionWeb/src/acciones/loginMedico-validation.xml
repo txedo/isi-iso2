@@ -2,3 +2,29 @@
         "-//OpenSymphony Group//XWork Validator 1.0.2//EN"
         "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
 
+<validators>
+	<field name="username">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message>El nombre de usuario no puede ser vacío.</message>
+		</field-validator>
+     	<field-validator type="regex">
+            <param name="expression">^[a-zA-Z0-9]*$</param>
+            <message>El login sólo puede tener caracteres alfanuméricos.</message>
+        </field-validator>
+	</field>
+	<field name="pass">
+		<field-validator type="requiredstring">
+			<param name="trim">false</param>
+			<message>La contraseña no puede ser vacía.</message>
+		</field-validator>
+		<field-validator type="stringlength">
+			<param name="minLength">8</param>
+			<message>La contraseña debe tener al menos 8 caracteres.</message>
+		</field-validator>
+     	<field-validator type="regex">
+            <param name="expression">^[a-zA-Z0-9]*$</param>
+            <message>La contraseña sólo puede tener caracteres alfanuméricos.</message>
+        </field-validator>
+	</field>
+</validators>
