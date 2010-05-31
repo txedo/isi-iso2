@@ -2,7 +2,7 @@
 <html>
 <head>
 	<%@ include file="header.jsp"%>
-	<title>SSCA-Web</title>
+	<title>SSCAWeb - Inicio</title>
 </head>
 <body>
 	<%@ include file="top.jsp"%>

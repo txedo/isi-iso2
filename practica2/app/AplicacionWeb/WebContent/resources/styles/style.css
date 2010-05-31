@@ -82,7 +82,7 @@ body
 .textoCabecera 
 {
 	text-align: left;
-	padding-top: 35px;
+	padding-top: 30px;
 	font-family: Verdana;
 	padding-left: 300px;
 	padding-right: auto;
@@ -109,7 +109,7 @@ body
 	font-size: large; 
 	font-weight: bold; 
 	color: #171C56;
-	padding-left:100px;
+	padding-left: 250px;
 }
 
 .imagenesLogin 

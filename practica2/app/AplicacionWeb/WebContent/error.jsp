@@ -5,7 +5,7 @@
 <html>
 <head>
 	<%@ include file="header.jsp"%>
-	<title>Insert title here</title>
+	<title>SSCAWeb - Error</title>
 </head>
 <body>
 	<%@ include file="top.jsp"%>
@@ -13,7 +13,8 @@
 	<div id="contenido">
     	<div class="textoCuerpo">
     		<!-- Excepción provocada en una acción de struts -->
-			<s:property value="exception.message"/>
+			<s:property value="exception.message"/> <br>
+			<button onclick="javascript:history.go(-1)">Atr&aacute;s</button>
 		</div>
 	</div>
 	
