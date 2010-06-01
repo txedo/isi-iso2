@@ -1,5 +1,6 @@
 package conversores;
 
+/*
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -57,3 +58,4 @@ public class loginMedicoConversor extends StrutsTypeConverter {
 	}
 
 }
+*/

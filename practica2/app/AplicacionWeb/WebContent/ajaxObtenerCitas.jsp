@@ -29,7 +29,7 @@
 	// gris las citas pasadas y se selecciona la primera cita no pasada)
 	options = new Vector<String>();
 	if(citas.size() == 0) {
-		options.add("<option style=\"color:#AAAAAA;\" value=\"-1\">No tiene ninguna cita asignada.</option>");
+		options.add("<option style=\"color:#AAAAAA;\" value=\"-2\">No tiene ninguna cita asignada.</option>");
 	} else {
 		selec = false;
 		for(int i = 0; i < citas.size(); i++) {
@@ -48,7 +48,7 @@
 	
 %>
 
-<select id="citas" name="citas" size="4" style="width:200px">
+<select id="citas" name="citas" size="4" style="width:250px">
 	<% for(int i = 0; i < options.size(); i++) { %>
 		<%= options.get(i) %>
 	<% } %>

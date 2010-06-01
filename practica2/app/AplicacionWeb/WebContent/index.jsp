@@ -1,7 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<%@ include file="header.jsp"%>
+	<%@ include file="resources/templates/header.htm" %>
 	<title>SSCAWeb - Inicio</title>
 	<script type="text/javascript">
 		function setLocation(url) {
@@ -10,47 +13,67 @@
 	</script>
 </head>
 <body>
-	<%@ include file="top.jsp"%>
+	<%@ include file="resources/templates/top.htm" %>
 	
-    <div id="contenido">
-		<%
-   		if (request.getSession(false).getAttribute("Beneficiario") != null) {
-   			// se trata de un beneficiario
-	    %>
-   			<script type="text/javascript">setLocation('menuBeneficiario.jsp');</script>
-	    <%
-   		}
-   		else {
-   			if (request.getSession(false).getAttribute("Medico") != null) {
-   			// se trata de un médico
-	    %>
-   			<script type="text/javascript">setLocation('menuMedico.jsp');</script>
-	    <%			
-   			}
-   			else {
-	    %>
+	<%
+		String paginaMenu;
+	
+		// Comprobamos si ya hay un cliente (beneficiario o médico) que ha
+		// iniciado sesión, y en ese caso le redirigimos a su menú principal
+		paginaMenu = "";
+		if(request.getSession(false) != null) {
+			if(request.getSession(false).getAttribute("Beneficiario") != null) {
+				paginaMenu = "menuBeneficiario.jsp";
+			} else if(request.getSession(false).getAttribute("Medico") != null) {
+				paginaMenu = "menuMedico.jsp";
+			}
+		}
+	%>
+	
+	<%
+		if(paginaMenu.equals("")) {
+	%>
+	
+			<!-- Menú de selección de rol -->
+		    <div id="contenido">
 		        <div class="imagenesLogin">
 		            <div class="textoCuerpo" style="text-align:center;">
 		                Seleccione su rol:
-		            </div>
-		            <table width="300px" cellspacing="1" cellpadding="60" border="0" align="center">
+		            	<table width="300px" cellspacing="1" cellpadding="50" border="0" align="center">
 		                    <tbody>
 		                        <tr>
 		                            <td align="center">
-		                            	<a href="loginMedico.jsp"><img src="resources/images/doctor.png" alt="Seleccione el rol M&eacute;dico" />Médico</a>
+		                            	<a href="loginMedico.jsp">
+		                            		<img src="resources/images/doctor.png" alt="Rol M&eacute;dico" />
+		                            		Médico
+		                            	</a>
 		                            </td>
 		                            <td align="center">
-		                            	<a href="loginBeneficiario.jsp"><img src="resources/images/patient.png" alt="Seleccoine el rol Beneficiario" />Beneficiario</a>
+		                            	<a href="loginBeneficiario.jsp">
+		                            		<img src="resources/images/patient.png" alt="Rol Beneficiario" />
+		                            		Beneficiario
+		                            	</a>
 		                            </td>
 			                    </tr>
 		                    </tbody>  
-		            </table>
+		            	</table>
+		            </div>
 		        </div>
-	    <%
-   			}
-   		}
-	    %>
-    </div>
+		    </div>
+
+	<%
+		} else {
+	%>
+
+			<!-- Carga del menú principal -->
+			<script type="text/javascript">
+				setLocation('<%= paginaMenu %>');
+			</script>
+
+	<%
+		} // Fin if(redirigir.equals(""))
+	%>
     
-	<%@ include file="foot.jsp"%>
+	<%@ include file="resources/templates/foot.htm" %>
+</body>
 </html>
