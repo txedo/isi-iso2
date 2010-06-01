@@ -13,13 +13,17 @@ import dominio.conocimiento.Especialidades;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 
+/**
+ * Acción ejecutada cuando un médico va a emitir un volante para un
+ * beneficiario.
+ */
 public class darVolante extends ActionSupport {
 
 	private static final long serialVersionUID = 8606059954495046094L;
+	
 	private Vector<String> especialidades;
 	private Vector<Beneficiario> beneficiarios;
 	
-
 	public String execute () throws RemoteException, Exception {
 		// Establecemos conexión con el servidor front-end 
 		ServidorFrontend servidor = ServidorFrontend.getServidor();

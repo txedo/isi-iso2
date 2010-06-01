@@ -2,10 +2,11 @@
     pageEncoding="ISO-8859-1"%>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<%@ include file="header.jsp"%>
+	<%@ include file="resources/templates/header.htm" %>
 	<script type="text/javascript" src="resources/scripts/ajax.js"></script>
 	<title>SSCAWeb - Dar Volante</title>
 	<script language="JavaScript" type="text/javascript"> 
@@ -49,7 +50,8 @@
 	</script>
 </head>
 <body> 
-	<%@ include file="top.jsp"%>
+	<%@ include file="resources/templates/top.htm" %>
+	
 	<%
 		// En la sesion, se guarda el objeto que haya colocado la accion en la ValueStack,
 		// para luego usarlo en las otras páginas para sacar el nombre del médico, por ejemplo.
@@ -85,6 +87,6 @@
 		</div>
 	</div>
 	
-	<%@ include file="foot.jsp"%>
+	<%@ include file="resources/templates/foot.htm" %>
 </body>
 </html>

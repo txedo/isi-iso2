@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
-<%@ page import="java.util.Date" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<%@ include file="header.jsp"%>
+	<%@ include file="resources/templates/header.htm" %>
+	<title>SSCAWeb - Cita con Especialista</title>	
 	<script type="text/javascript" src="resources/scripts/ajax.js"></script>
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" type="text/css" />
-	<title>SSCAWeb - Cita con Especialista</title>	
 </head>
 
 <!--  Se cargan los scripts necesarios para el Datepicker -->
@@ -114,7 +114,7 @@
 	</script>
 		
 <body>
-	<%@ include file="top.jsp"%>
+	<%@ include file="resources/templates/top.htm" %>
 	
     <div id="contenido">
 		<div class="textoCuerpo">
@@ -137,6 +137,6 @@
 		</div>
 	</div>
 	
-	<%@ include file="foot.jsp"%>
+	<%@ include file="resources/templates/foot.htm" %>
 </body>
 </html>

@@ -43,14 +43,14 @@ public class loginBeneficiario extends ActionSupport {
 		return SUCCESS;
 	}
 	
+	public String getNss() {
+		return nss;
+	}
+
 	public void setNss(String nss) {
 		this.nss = nss;
 	}
 
-	public String getNss() {
-		return nss;
-	}
-	
 	public Beneficiario getBeneficiario() {
 		return beneficiario;
 	}
