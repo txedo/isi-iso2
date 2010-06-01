@@ -131,7 +131,10 @@
 			<div id="mensaje"></div>
 			<br> <br>
 			<span id="spanHoras"></span>
-		</div>	
+		</div>
+		<div class="volver">
+			<input type="button" onclick="history.go(-1)" value="Volver atrás">
+		</div>
 	</div>
 	
 	<%@ include file="foot.jsp"%>

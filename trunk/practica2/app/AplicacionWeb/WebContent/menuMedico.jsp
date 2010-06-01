@@ -59,8 +59,6 @@
 					Elija una opción: <br>
 				</div>
 				<div style="padding-left:250px;">
-					<!-- <input type="radio" name="grupoRadio" value="darVolante" onclick="document.location='darVolante'" >Emitir volante-->
-					<!-- <s:action name="darVolante" executeResult="true"/> -->
 					<a href="darVolante">Emitir Volante</a>
 				</div>
 				<br>
