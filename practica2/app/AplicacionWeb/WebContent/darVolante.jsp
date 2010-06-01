@@ -80,6 +80,9 @@
 			<br><br><br> Introduce los datos para pedir un volante ...
 			</span>
 		</div>
+		<div class="volver">
+			<input type="button" onclick="history.go(-1)" value="Volver atrás">
+		</div>
 	</div>
 	
 	<%@ include file="foot.jsp"%>
