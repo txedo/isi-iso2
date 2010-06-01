@@ -4,6 +4,8 @@
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Cita" %>
 <%@ page import="excepciones.CitaNoValidaException" %>
+<%@page import="java.rmi.RemoteException"%>
+<%@page import="java.sql.SQLException"%>
 
 <%
 
@@ -20,34 +22,27 @@
 	idCita = Long.parseLong(request.getParameter("idCita"));
 	
 	// Obtenemos los datos de la cita
-	servidor = ServidorFrontend.getServidor();
-	cita = null;
 	try {
+		servidor = ServidorFrontend.getServidor();
+		cita = null;
 		cita = servidor.consultarCitaBeneficiario(sesion.getId(), idCita);
-		noExiste = false;
-	} catch(CitaNoValidaException ex) {
-		noExiste = true;
-	}
-	
-	// Anulamos la cita
-	if(!noExiste) {
-		try {
-			servidor.anularCita(sesion.getId(), cita);
-			noExiste = false;
-		} catch(CitaNoValidaException ex) {
-			noExiste = true;
-		}
-	}
-	
-	// Mostramos los resultados de la anulación
-	if(noExiste) {
-		%>
-			La cita seleccionada no existe o no se puede anular.
-		<%
-	} else {
+		servidor.anularCita(sesion.getId(), cita);
 		%>
 			La cita del día <%= Cita.cadenaDiaCita(cita .getFechaYHora()) %>, a las <%= Cita.cadenaHoraCita(cita.getFechaYHora()) %>, se ha anulado correctamente.
 		<%
 	}
-	
+	catch (RemoteException e) { %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (SQLException e) {  %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (CitaNoValidaException e) { %>
+		Error: <%=e.getMessage()%>
+<%		
+	} catch (Exception e) { %>
+		Error: <%=e.getMessage()%>
+<%		
+	}
+		
 %>

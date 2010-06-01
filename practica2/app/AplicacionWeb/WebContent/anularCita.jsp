@@ -12,19 +12,6 @@
 	<script language="JavaScript" type="text/javascript"> 	
 		var peticion = null;
 		peticion = nuevoAjax();
-		function obtenerCitas(nif, url){
-			if(peticion) {
-				peticion.open('POST', url, true);
-				var parametros = "nif=" + nif;
-				peticion.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-				peticion.onreadystatechange = function() {
-					if (peticion.readyState == 4) {
-						document.getElementById("areaCitas").innerHTML = peticion.responseText;
-					}						
-				}
-				peticion.send(parametros);
-			}
-		}
 		
 		function anularCita(nif, url) {
 			if(peticion) {
@@ -37,8 +24,10 @@
 					peticion.onreadystatechange=function() {
 						if (peticion.readyState==4) {					
 							document.getElementById("mensaje").innerHTML = peticion.responseText;
-							// Recargamos las citas
-							this.obtenerCitas(nif, 'ajaxObtenerCitas.jsp');
+							// Recargamos las citas, si no hay error
+							if (peticion.responseText.indexOf("Error")==-1) {
+								obtenerCitas(nif, 'ajaxObtenerCitas.jsp');
+							}
 						}
 					}
 					peticion.send(parametros);
@@ -47,6 +36,24 @@
 				} else {
 					alert("Sólo se puede anular una cita posterior al día de hoy.");
 				}
+			}
+		}
+		
+		function obtenerCitas(nif, url){
+			if(peticion) {
+				peticion.open('POST', url, true);
+				var parametros = "nif=" + nif;
+				peticion.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+				peticion.onreadystatechange = function() {
+					if (peticion.readyState == 4) {
+						if (peticion.responseText.indexOf("Error")==-1) {
+							document.getElementById("areaCitas").innerHTML = peticion.responseText;
+						} else {
+							document.getElementById("mensaje").innerHTML = peticion.responseText;
+						}
+					}						
+				}
+				peticion.send(parametros);
 			}
 		}
 	</script>
@@ -62,9 +69,6 @@
 			<br>
 			<span id="areaCitas">
 			</span>
-			<br>
-			<input type="submit" value="Aceptar" onclick="anularCita('<%=b.getNif()%>', 'ajaxEliminarCita.jsp')" />
-			<br><br>
 			<span id="mensaje">
 			</span>
 		</div>

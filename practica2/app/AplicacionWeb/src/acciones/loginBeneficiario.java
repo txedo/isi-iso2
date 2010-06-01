@@ -23,22 +23,15 @@ public class loginBeneficiario extends ActionSupport {
 	private Beneficiario beneficiario;
 	private ISesion sesion;
 		
-	public String execute() throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
+	public String execute() throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		ServidorFrontend servidor;
-		
-		try {
+	
 			// Iniciamos sesión con el NSS introducido
 			servidor = ServidorFrontend.getServidor();
 			sesion = servidor.identificarBeneficiario(nss);
 			// Obtenemos los datos del beneficiario
 			beneficiario = servidor.consultarBeneficiarioPorNSS(sesion.getId(), nss);
-		} catch(RemoteException e) {
-			throw e;
-		} catch(SQLException e) {
-			throw e;
-		} catch(BeneficiarioInexistenteException e) {
-			throw e;
-		}
+
 
 		return SUCCESS;
 	}
