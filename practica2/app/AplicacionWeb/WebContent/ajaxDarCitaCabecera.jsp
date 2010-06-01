@@ -1,30 +1,48 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1" %>
+<%@ page import="comunicaciones.ServidorFrontend" %>
 <%@ page import="dominio.conocimiento.ISesion" %>
-<%@ page import="comunicaciones.ProxyServidorFrontend" %>
-<%@page import="java.text.SimpleDateFormat"%>
-<%@page import="dominio.conocimiento.Volante"%>
-<%@page import="dominio.conocimiento.Beneficiario"%>
-<%@page import="dominio.conocimiento.IConstantes"%>
-<%@page import="java.util.Date"%>
+<%@ page import="dominio.conocimiento.Beneficiario" %>
+<%@ page import="dominio.conocimiento.IConstantes" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.Calendar" %>
 
 <%
-	ProxyServidorFrontend p;
-	// Tomamos el idSesion del HTTPSession
-	ISesion s = (ISesion) session.getAttribute("SesionFrontend");
-	// Tomamos el dia y la hora de la cita
-	String dia = request.getParameter("dia");
-	String hora = request.getParameter("hora");
-	// Tomamos el beneficiario
-	Beneficiario b = (Beneficiario) session.getAttribute("Beneficiario");
+
+	ServidorFrontend servidor;
+	Beneficiario beneficiario;
+	ISesion sesion;
+	SimpleDateFormat formatoDia, formatoHora;
+	Calendar cal1, cal2;
+	Date fechaCita, horaCita;
+	String dia, hora;
+
+	// Tomamos la sesión del cliente de la sesión HTTP
+	sesion = (ISesion)session.getAttribute("SesionFrontend");
+	// Tomamos el beneficiario que está usando el sistema de la sesión HTTP
+	beneficiario = (Beneficiario)session.getAttribute("Beneficiario");
+	
+	// Tomamos el día y la hora de la cita de los parámetros pasados al JSP
+	dia = request.getParameter("dia");
+	hora = request.getParameter("hora");
+	
 	// Establecemos el formato para los días y las horas
-	SimpleDateFormat formatoDia = new SimpleDateFormat("dd/MM/yyyy");
-	SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm");
-	// Tomamos la fecha de la cita como un objeto Date
-	Date diaElegido = formatoDia.parse(dia);
-	Date horaElegida = formatoHora.parse(hora);
-	Date fechaCita = new Date(diaElegido.getYear(), diaElegido.getMonth(), diaElegido.getDate(), horaElegida.getHours(), horaElegida.getMinutes());
-	// Emitimos la cita
-	p = ProxyServidorFrontend.getProxy();
-	p.pedirCita(s.getId(), b, b.getMedicoAsignado().getNif(), fechaCita, IConstantes.DURACION_CITA);
+	formatoDia = new SimpleDateFormat("dd/MM/yyyy");
+	formatoHora = new SimpleDateFormat("HH:mm");
+	
+	// Generamos la fecha de la cita a partir del día y la hora
+	fechaCita = formatoDia.parse(dia);
+	horaCita = formatoHora.parse(hora);
+	cal1 = Calendar.getInstance();
+	cal1.setTime(fechaCita);
+	cal2 = Calendar.getInstance();
+	cal2.setTime(horaCita);
+	cal1.set(Calendar.HOUR_OF_DAY, cal2.get(Calendar.HOUR_OF_DAY));
+	cal1.set(Calendar.MINUTE, cal2.get(Calendar.MINUTE));
+	
+	// Emitimos la cita para el médico de cabecera
+	servidor = ServidorFrontend.getServidor();
+	servidor.pedirCita(sesion.getId(), beneficiario, beneficiario.getMedicoAsignado().getNif(), fechaCita, IConstantes.DURACION_CITA);
+	
 %>

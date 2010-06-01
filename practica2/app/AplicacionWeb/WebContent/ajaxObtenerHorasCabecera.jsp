@@ -4,7 +4,7 @@
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.DiaSemana" %>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
-<%@ page import="comunicaciones.ProxyServidorFrontend" %>
+<%@ page import="comunicaciones.ServidorFrontend" %>
 <%@ page import="java.util.Hashtable" %>
 <%@ page import="java.util.Vector" %>
 <%@ page import="java.util.Date" %>
@@ -14,7 +14,7 @@
 
 <%
 	// Recuperamos las horas en las que trabaja el especialista ese dia y se muestran en un select (si trabaja alguna hora) 
-	ProxyServidorFrontend p;
+	ServidorFrontend p;
 	// Tomamos el idSesion del HTTPSession
 	ISesion s = (ISesion) session.getAttribute("SesionFrontend");
 	// Se coge el médico asignado al beneficiario
@@ -31,9 +31,9 @@
 		<% }else{ %> Sábado. <%} %>
 <%
 	} else {
-		p = ProxyServidorFrontend.getProxy();
-		Hashtable<Date, Vector<String>> citasOcupadas = (Hashtable<Date, Vector<String>>) p.mensajeAuxiliar(s.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS_MEDICO, c.getNif());
-		Hashtable<DiaSemana, Vector<String>> horasCitas = (Hashtable<DiaSemana, Vector<String>>)p.mensajeAuxiliar(s.getId(), ICodigosMensajeAuxiliar.CONSULTAR_HORARIO_MEDICO, c.getNif());
+		p = ServidorFrontend.getServidor();
+		Hashtable<Date, Vector<String>> citasOcupadas = p.consultarHorasCitasMedico(s.getId(), c.getNif());
+		Hashtable<DiaSemana, Vector<String>> horasCitas = p.consultarHorarioMedico(s.getId(), c.getNif());
 		// Se toman las citas ocupadas del días pasado como parametro
 		Vector<String> citasOcupadasDia = citasOcupadas.get(diaSeleccionado);
 		// Si no existen citas ocupadas, se inicializa a la lista vacia, ya que lo anterior devuelve null

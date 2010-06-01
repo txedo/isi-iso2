@@ -1459,6 +1459,7 @@ public class ServidorFrontend implements IServidorFrontend {
 				throw e;
 			}
 			break;
+			
 		case ICodigosMensajeAuxiliar.CONSULTAR_HORAS_CITAS_MEDICO:
 			try {
 				// Consultamos las citas del médico con el NIF indicado

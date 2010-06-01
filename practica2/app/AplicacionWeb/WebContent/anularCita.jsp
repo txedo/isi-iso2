@@ -60,6 +60,7 @@
 			<br>
 			<span id="areaCitas">
 			</span>
+			<br>
 			<input type="submit" value="Aceptar" onclick="anularCita('<%=b.getNif()%>', 'ajaxEliminarCita.jsp')" />
 			<br><br>
 			<span id="mensaje">

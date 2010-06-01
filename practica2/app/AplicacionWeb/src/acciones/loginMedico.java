@@ -2,15 +2,10 @@ package acciones;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.Vector;
 
 import com.opensymphony.xwork2.ActionSupport;
-import comunicaciones.IConexion;
-import comunicaciones.ProxyServidorFrontend;
+import comunicaciones.ServidorFrontend;
 
-import dominio.conocimiento.Beneficiario;
-import dominio.conocimiento.Especialidades;
-import dominio.conocimiento.ICodigosMensajeAuxiliar;
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
 import excepciones.UsuarioIncorrectoException;
@@ -30,16 +25,14 @@ public class loginMedico extends ActionSupport {
 	
 	@SuppressWarnings("unchecked")
 	public String execute() throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		ProxyServidorFrontend servidor;
+		ServidorFrontend servidor;
 
 		try {
-			// Establecemos conexión con el servidor front-end 
-			servidor = ProxyServidorFrontend.getProxy();
-			servidor.conectar(IConexion.IP, IConexion.PUERTO);
 			// Iniciamos sesión con el usuario y la contraseña introducidos
+			servidor = ServidorFrontend.getServidor();
 			sesion = servidor.identificarUsuario(username, pass);
 			// Obtenemos los datos del médico
-			medico = (Medico)servidor.getMedicoPorLogin(sesion.getId(), username);
+			medico = (Medico)servidor.consultarMedicoPorLogin(sesion.getId(), username);
 		} catch (RemoteException e) {
 			throw e;
 		} catch (SQLException e) {
@@ -78,7 +71,5 @@ public class loginMedico extends ActionSupport {
 	public ISesion getSesion() {
 		return sesion;
 	}
-
-
 
 }

@@ -4,7 +4,7 @@
 	<%@ include file="header.jsp"%>
 	<title>SSCAWeb - Inicio</title>
 	<script type="text/javascript">
-		function setLocation (url) {
+		function setLocation(url) {
 			document.location = url;
 		}
 	</script>
