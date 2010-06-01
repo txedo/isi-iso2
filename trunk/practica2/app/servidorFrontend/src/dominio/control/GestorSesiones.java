@@ -272,6 +272,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.ConsultarCitasPropiasMedico);
 			operaciones.add(Operaciones.ConsultarPropioMedico);
 			operaciones.add(Operaciones.ConsultarBeneficiariosMedico);
+			operaciones.add(Operaciones.ConsultarMedico);
 			
 		}
 		

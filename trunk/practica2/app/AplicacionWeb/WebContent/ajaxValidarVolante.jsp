@@ -25,17 +25,17 @@
 %>
 		Le atenderá el Dr. <%= v.getReceptor().getApellidos() %>
 <%
-	} catch (RemoteException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch(VolanteNoValidoException e) {%>
+	}
+	catch (RemoteException e) { %>
 		Error: <%=e.getMessage()%>
 <%
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+	} catch (SQLException e) {  %>
+		Error: <%=e.getMessage()%>
+<%	} catch(VolanteNoValidoException e) {%>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (Exception e) {%>
+		Error: <%=e.getMessage()%>
+<%
 	}
 %>

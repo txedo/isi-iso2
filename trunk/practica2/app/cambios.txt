@@ -54,3 +54,5 @@ Este método se hace a través del mensaje auxiliar, con la operación CONSULTAR_CI
 - Modificados los permisos para que un beneficiario (ademas del administrador y del citador) pueda consultar las horas libres y ocupadas de un médico.
 
 - Modificados los permisos para que un beneficiario (ademas del administrador y del citador) pueda tramitar una cita, con y sin volante.
+
+- Modificado los permisos para que un medico pueda consultar el receptor de un volante, necesario para emitir un volante

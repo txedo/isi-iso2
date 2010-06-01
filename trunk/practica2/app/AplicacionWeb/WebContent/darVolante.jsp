@@ -12,13 +12,19 @@
 	<script language="JavaScript" type="text/javascript"> 
 		var peticion = null;
 		peticion = nuevoAjax();	
-		function cargarReceptor(url, select) {
+		function cargarReceptor(url) {
+			var select = document.getElementById("especialidad");
 			var especialidad = select.options[select.selectedIndex].value;
 			if (peticion) {
+				document.getElementById("mensaje").innerHTML='';
 				peticion.open('post',url,true);
 				peticion.onreadystatechange=function() {
 					if (peticion.readyState==4) {
-						document.getElementById("especialistasCargados").innerHTML=peticion.responseText;
+						if (peticion.responseText.indexOf("Error")==-1){
+							document.getElementById("especialistasCargados").innerHTML=peticion.responseText;
+						} else {
+							document.getElementById("mensaje").innerHTML=peticion.responseText;
+						}
 					}						
 				}
 				peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -31,14 +37,18 @@
 				peticion.open('post',url,true);
 				peticion.onreadystatechange=function() {
 					if (peticion.readyState==4) {
-						document.getElementById("volanteEmitido").innerHTML=peticion.responseText;
+						document.getElementById("mensaje").innerHTML=peticion.responseText;
 					}	
 				}
 				var selectBene = document.getElementById("beneficiario");
 				var bene = selectBene.options[selectBene.selectedIndex].value;
 				var selReceptor = document.getElementById("especialista");
 				var nifReceptor = selReceptor.options[selReceptor.selectedIndex].value;
-				if (bene!=null && nifReceptor!="-1") {	
+				if (bene==null)
+					alert("Seleccione un beneficiario");
+				else if (nifReceptor=="-1") 
+					alert("Seleccione una especialidad en la que exista algún especialista");
+				else if (bene!=null && nifReceptor!="-1"){	
 					peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 					peticion.send("nifBeneficiario="+bene+"&nifReceptor="+nifReceptor);
 					
@@ -49,7 +59,7 @@
 		
 	</script>
 </head>
-<body> 
+<body onload="javascript:cargarReceptor('ajaxObtenerEspecialistas.jsp')"> 
 	<%@ include file="resources/templates/top.htm" %>
 	
 	<%
@@ -71,15 +81,13 @@
 			
 			<br><br><s:select id="beneficiario" name="beneficiario" list="beneficiarios" listKey="nif" listValue="apellidos, nombre" label="Beneficiario"></s:select>
 			<br>
-			<s:select name="especialidad" list="especialidades" label="Especialidad" onchange="cargarReceptor('ajaxObtenerEspecialistas.jsp',this)">
+			<s:select id="especialidad" name="especialidad" list="especialidades" label="Especialidad" onchange="cargarReceptor('ajaxObtenerEspecialistas.jsp')">
 			</s:select>
 			<span id="especialistasCargados">
-			<br>	Dr./Dra.: <select id="especialista" name="especialista"><option value="-1">Seleccione especialidad...</option>
-							  </select>
 			</span>
 			<br><input type="button" onclick="darVolante('ajaxEmitirVolante.jsp')" value="Aceptar">
-			<span id="volanteEmitido">
-			<br><br><br> Introduce los datos para pedir un volante ...
+			<br>
+			<span id="mensaje">
 			</span>
 		</div>
 		<div class="volver">

@@ -7,6 +7,8 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Calendar" %>
+<%@page import="java.rmi.RemoteException"%>
+<%@page import="java.sql.SQLException"%>
 
 <%
 
@@ -41,8 +43,20 @@
 	cal1.set(Calendar.HOUR_OF_DAY, cal2.get(Calendar.HOUR_OF_DAY));
 	cal1.set(Calendar.MINUTE, cal2.get(Calendar.MINUTE));
 	
-	// Emitimos la cita para el médico de cabecera
-	servidor = ServidorFrontend.getServidor();
-	servidor.pedirCita(sesion.getId(), beneficiario, beneficiario.getMedicoAsignado().getNif(), fechaCita, IConstantes.DURACION_CITA);
-	
+	try {
+		// Emitimos la cita para el médico de cabecera
+		servidor = ServidorFrontend.getServidor();
+		servidor.pedirCita(sesion.getId(), beneficiario, beneficiario.getMedicoAsignado().getNif(), new Date(fechaCita.getYear(), fechaCita.getMonth(), fechaCita.getDate(), horaCita.getHours(), horaCita.getMinutes()), IConstantes.DURACION_CITA);
+	}
+	catch (RemoteException e) { %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (SQLException e) {  %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (Exception e) { %>
+		Error: <%=e.getMessage()%>
+<%		
+	}
+		
 %>
