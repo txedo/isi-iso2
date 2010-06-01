@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.struts2.util.StrutsTypeConverter;
 
 import comunicaciones.IConexion;
-import comunicaciones.ProxyServidorFrontend;
+import comunicaciones.ServidorFrontend;
 
 import dominio.conocimiento.ISesion;
 import dominio.conocimiento.Medico;
@@ -22,9 +22,9 @@ public class loginMedicoConversor extends StrutsTypeConverter {
 		if (values!=null && values.length>0) {
 				String login = values[0];
 				String password = values[1];
-				ProxyServidorFrontend p = null;
+				ServidorFrontend p = null;
 				try {
-					p = ProxyServidorFrontend.getProxy();
+					p = ServidorFrontend.getServidor();
 					p.conectar(IConexion.IP, IConexion.PUERTO);
 					ISesion s = p.identificarUsuario(login, password);
 					//medico = (Medico) p.getMedicoPorLogin(s.getId(), login);

@@ -3,7 +3,7 @@
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.rmi.RemoteException"%>
 <%@page import="dominio.conocimiento.ISesion"%>
-<%@page import="comunicaciones.ProxyServidorFrontend"%>
+<%@page import="comunicaciones.ServidorFrontend"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -11,11 +11,11 @@
 <% 
 	long idSesion = ((ISesion) request.getSession(false).getAttribute("SesionFrontend")).getId();
 	long nVolante = Long.parseLong(request.getParameter("nVolante"));
-	ProxyServidorFrontend p;
+	ServidorFrontend p;
 	Volante v = null;
 	try {
-		p = ProxyServidorFrontend.getProxy();
-		v = p.getVolante(idSesion, nVolante);
+		p = ServidorFrontend.getServidor();
+		v = p.consultarVolante(idSesion, nVolante);
 		// Se pone el volante en la sesión del beneficiario para no tener que volver a consultar el
 		// especialista cuando se quieran mostrar las horas laborales en cada dia seleccionado. Asi, se
 		// ahorran consultas, ya que si no, cada vez que se cambie el dia del calendario y se tengan que refrescar

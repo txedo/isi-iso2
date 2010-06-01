@@ -64,14 +64,16 @@ public class GestorCitas {
 	}
 	
 	// Método para consultar una cita, conociendo su id
-	public static Cita consultarCita(long idSesion, long idCita) throws SQLException, CitaNoValidaException, SesionInvalidaException, OperacionIncorrectaException {		
+	public static Cita consultarCita(long idSesion, long idCita) throws SQLException, CitaNoValidaException, SesionInvalidaException, OperacionIncorrectaException {
+		Cita cita;
+		
 		// Comprobamos si se tienen permisos para realizar la operación
 		GestorSesiones.comprobarPermiso(idSesion, Operaciones.ConsultarCitasBeneficiario);
 		
 		// Recuperamos la cita del beneficiario
-		Cita c = FPCita.consultar(idCita);
+		cita = FPCita.consultar(idCita);
 		
-		return c;
+		return cita;
 	}
 	
 	// Método para obtener todas las citas pendientes de un beneficiario

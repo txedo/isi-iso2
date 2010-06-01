@@ -1,44 +1,96 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1" %>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
-<%@ taglib prefix="s" uri="/struts-tags" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<%@ include file="header.jsp" %>
 	<title>SSCAWeb - Menú Beneficiario</title>
+	<script type="text/javascript">
+		function setLocation(url) {
+			document.location = url;
+		}
+	</script>
 </head>
 <body>
 	<%@ include file="top.jsp" %>
-    <div id="contenido">
+
 	<%
-		// En la sesion, se podria guardar el objeto que haya colocado la accion en la ValueStack,
-		// para luego usarlo en las otras páginas para sacar el nombre, por ejemplo.
-		if (request.getSession(false) == null || request.getSession(false).getAttribute("Beneficiario") == null) {
-			session=request.getSession(true);
-			session.setAttribute("Beneficiario",request.getAttribute("beneficiario"));
-			session.setAttribute("SesionFrontend", request.getAttribute("sesion"));
+		Beneficiario beneficiario;
+		Object attr;
+		String tipoMedico;
+		boolean sesionInvalida;
+		
+		// Comprobamos si el cliente no tiene ninguna sesión activa
+		sesionInvalida = false;
+		if(request.getSession(false) == null || request.getSession(false).getAttribute("Beneficiario") == null) {
+			// Creamos una nueva sesión HTTP
+			session = request.getSession(true);
+			// Obtenemos la sesión y el beneficiario pasados a la página JSP
+			// desde la acción 'loginBeneficiario' de Struts 2; si algún valor
+			// es null, es porque se ha accedido incorrectamente a esta página
+			attr = request.getAttribute("beneficiario");
+			if(attr == null) {
+				sesionInvalida = true;
+			} else {
+				session.setAttribute("Beneficiario", attr);
+			}
+			attr = request.getAttribute("sesion");
+			if(attr == null) {
+				sesionInvalida = true;
+			} else {
+				session.setAttribute("SesionFrontend", attr);
+			}
 		}
-		Beneficiario bene = (Beneficiario) request.getSession(false).getAttribute("Beneficiario"); 
+	
 	%>
-		<div class="textoCuerpo">
-			Bienvenido/a, <%= bene.getNombre() %>.<br><br>
-			Elija una opción: <br>
-		</div>
-		<div style="padding-left:250px;">
-			<input type="radio" name="grupoRadio" value="citaCabecera" onclick="document.location='citaCabecera.jsp'" >Cita con su médico 
-			<%  // Se muestra el tipo de médico adecuado en la opción, según la edad del beneficiario
-				String mensaje; 
-				if (bene.getEdad()> 14)
-					mensaje = "de cabecera";
-				else
-					mensaje = "pediatra";
-			%> <%= mensaje %>
-			<br>
-			<input type="radio" name="grupoRadio" value="citaEspecialista" onclick="document.location='citaEspecialista.jsp'" >Cita con un médico especialista<br>
-			<input type="radio" name="grupoRadio" value="anularCita" onclick="document.location='anularCita.jsp'">Anular cita
-		</div>
-	</div>
+	
+	<%
+		if(!sesionInvalida) {
+			
+			// Obtenemos los datos del beneficiario
+			beneficiario = (Beneficiario)session.getAttribute("Beneficiario");
+			// Comprobamos si el beneficiario tiene médico de cabecera o pediatra
+			if(beneficiario.getEdad() > 14) {
+				tipoMedico = "de cabecera";
+			} else {
+				tipoMedico = "pediatra";
+			}
+	%>
+	
+			<!-- Sesión válida -->
+		    <div id="contenido">
+				<div class="textoCuerpo">
+					Bienvenido/a, <%= beneficiario.getNombre() %>.<br><br>
+					Elija una opción: <br>
+				</div>
+				<div style="padding-left:250px;">
+					<input type="radio" name="grupoRadio" value="citaCabecera" onclick="document.location='citaCabecera.jsp'">
+					Cita con su médico <%= tipoMedico %><br>
+					<input type="radio" name="grupoRadio" value="citaEspecialista" onclick="document.location='citaEspecialista.jsp'">
+					Cita con un médico especialista<br>
+					<input type="radio" name="grupoRadio" value="anularCita" onclick="document.location='anularCita.jsp'">
+					Anular cita
+				</div>
+				<br>
+				<div style="padding-left:250px;">
+					<button onclick="setLocation('logout.jsp');">Cerrar sesión</button>
+				</div>
+			</div>
+	
+	<%
+		} else {
+	%>
+	
+			<!-- Sesión inválida -->
+			<script type="text/javascript">
+				setLocation('index.jsp');
+			</script>
+	
+	<%
+		} // Fin if(!sesionInvalida)
+	%>
 	
 	<%@ include file="foot.jsp" %>
 </body>

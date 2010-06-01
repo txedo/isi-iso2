@@ -4,9 +4,7 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 import com.opensymphony.xwork2.ActionSupport;
-
-import comunicaciones.IConexion;
-import comunicaciones.ProxyServidorFrontend;
+import comunicaciones.ServidorFrontend;
 
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.ISesion;
@@ -26,16 +24,14 @@ public class loginBeneficiario extends ActionSupport {
 	private ISesion sesion;
 		
 	public String execute() throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
-		ProxyServidorFrontend servidor;
+		ServidorFrontend servidor;
 		
 		try {
-			// Establecemos conexión con el servidor front-end 
-			servidor = ProxyServidorFrontend.getProxy();
-			servidor.conectar(IConexion.IP, IConexion.PUERTO);
 			// Iniciamos sesión con el NSS introducido
+			servidor = ServidorFrontend.getServidor();
 			sesion = servidor.identificarBeneficiario(nss);
 			// Obtenemos los datos del beneficiario
-			beneficiario = servidor.getBeneficiarioPorNSS(sesion.getId(), nss);
+			beneficiario = servidor.consultarBeneficiarioPorNSS(sesion.getId(), nss);
 		} catch(RemoteException e) {
 			throw e;
 		} catch(SQLException e) {

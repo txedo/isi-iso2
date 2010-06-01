@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="comunicaciones.ProxyServidorFrontend" %>
+<%@ page import="comunicaciones.ServidorFrontend" %>
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.Especialista" %>
@@ -9,12 +9,12 @@
 <%@ taglib prefix="s" uri="/struts-tags" %> 
 
 <%
-	ProxyServidorFrontend p;
+	ServidorFrontend p;
 	// Tomamos el idSesion del HTTPSession
 	ISesion s = (ISesion) session.getAttribute("SesionFrontend");
-	p = ProxyServidorFrontend.getProxy();
+	p = ServidorFrontend.getServidor();
 	String especialidad = request.getParameter("especialidad");
-	Vector<Medico> especialistas = (Vector<Medico>) p.mensajeAuxiliar(s.getId(), ICodigosMensajeAuxiliar.OBTENER_MEDICOS_TIPO, new Especialista(especialidad));
+	Vector<Medico> especialistas = p.obtenerMedicosTipo(s.getId(), new Especialista(especialidad));
 	int i=0;
 %>
 

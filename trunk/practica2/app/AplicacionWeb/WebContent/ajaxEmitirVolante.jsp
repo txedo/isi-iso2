@@ -1,19 +1,37 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<%@ page import="comunicaciones.ProxyServidorFrontend" %>
+    pageEncoding="ISO-8859-1" %>
+<%@ page import="comunicaciones.ServidorFrontend" %>
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
 
 <%
-	ProxyServidorFrontend p;
-	// Tomamos el idSesion del HTTPSession
-	ISesion s = (ISesion) session.getAttribute("SesionFrontend");
-	p = ProxyServidorFrontend.getProxy();
-	Beneficiario bene = p.getBeneficiario(s.getId(), request.getParameter("nifBeneficiario"));
-	Medico emisor = (Medico) session.getAttribute("Medico");
-	Medico receptor = p.getMedico(s.getId(), request.getParameter("nifReceptor"));
-	long idVolante = p.emitirVolante(s.getId(), bene, emisor, receptor);
+
+	ServidorFrontend servidor;
+	Medico emisor, receptor;
+	Beneficiario beneficiario;
+	ISesion sesion;
+	String nifBeneficiario, nifReceptor;
+	long idVolante;
+
+	// Tomamos la sesión del cliente de la sesión HTTP
+	sesion = (ISesion)session.getAttribute("SesionFrontend");
+	// Tomamos el médico que está usando el sistema de la sesión HTTP
+	emisor = (Medico) session.getAttribute("Medico");
+	
+	// Tomamos el NIF del beneficiario de los parámetros pasados al JSP
+	nifBeneficiario = request.getParameter("nifBeneficiario");
+	// Tomamos el NIF del especialista de los parámetros pasados al JSP
+	nifReceptor = request.getParameter("nifReceptor");
+	
+	// Consultamos los datos del beneficiario y el médico receptor del volante
+	servidor = ServidorFrontend.getServidor();
+	beneficiario = servidor.consultarBeneficiarioPorNIF(sesion.getId(), nifBeneficiario);
+	receptor = servidor.consultarMedico(sesion.getId(), nifReceptor);
+	
+	// Emitimos el volante
+	idVolante = servidor.emitirVolante(sesion.getId(), beneficiario, emisor, receptor);
+	
 %>
 
-<br><br><br>El numero de volante emitido es el: <%= idVolante %> 
+<br><br><br>El numero de volante emitido es el: <%= idVolante %>.
