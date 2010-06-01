@@ -10,7 +10,7 @@
 			<result name="exceptionLogin">error.jsp</result>
 			<exception-mapping exception="java.rmi.RemoteException" result="exceptionLogin"></exception-mapping>
 			<exception-mapping exception="java.sql.SQLException" result="exceptionLogin"></exception-mapping>
-			<exception-mapping exception="excepciones.BeneficiarioInexistenteException" result="exceptionLogin"></exception-mapping>
+			<exception-mapping exception="excepciones.BeneficiarioInexitenteException" result="exceptionLogin"></exception-mapping>
 			<exception-mapping exception="java.lang.Exception" result="exceptionLogin"></exception-mapping>
 		</action>
 		<action name="loginMedico" class="acciones.loginMedico">
@@ -26,6 +26,9 @@
 		<action name="darVolante" class="acciones.darVolante">
 			<result name="success">darVolante.jsp</result>
 			<result name="error">error.jsp</result>
+			<result name="exceptionLogin">error.jsp</result>
+			<exception-mapping exception="java.rmi.RemoteException" result="exceptionLogin"></exception-mapping>
+			<exception-mapping exception="java.lang.Exception" result="exceptionLogin"></exception-mapping>
 		</action>
     </package>
 </struts>

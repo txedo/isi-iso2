@@ -49,9 +49,9 @@ public class ProxyServidorFrontend implements IServidorFrontend {
         try {
 			servidor = (IServidorFrontend)Naming.lookup(url);
 		} catch(NotBoundException e) {
-			throw new RemoteException(e.getMessage());
+			throw new RemoteException("El servidor front-end está desactivado");
 		} catch(MalformedURLException e) {
-			throw new RemoteException(e.getMessage());
+			throw new RemoteException("El servidor fornt-end está desactivado");
 		}
 	}
 

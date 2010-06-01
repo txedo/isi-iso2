@@ -27,19 +27,12 @@ public class loginMedico extends ActionSupport {
 	public String execute() throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
 		ServidorFrontend servidor;
 
-		try {
 			// Iniciamos sesión con el usuario y la contraseña introducidos
 			servidor = ServidorFrontend.getServidor();
 			sesion = servidor.identificarUsuario(username, pass);
 			// Obtenemos los datos del médico
 			medico = (Medico)servidor.consultarMedicoPorLogin(sesion.getId(), username);
-		} catch (RemoteException e) {
-			throw e;
-		} catch (SQLException e) {
-			throw e;
-		} catch (UsuarioIncorrectoException e) {
-			throw e;
-		}
+		
 
 		return SUCCESS;
 	}

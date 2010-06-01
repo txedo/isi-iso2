@@ -5,6 +5,8 @@
 <%@page import="dominio.conocimiento.Cita"%>
 <%@page import="java.util.Vector"%>
 <%@page import="java.util.Date"%>
+<%@page import="java.rmi.RemoteException"%>
+<%@page import="java.sql.SQLException"%>
 
 <%
 
@@ -22,34 +24,53 @@
 	nifBeneficiario = request.getParameter("nif");
 	
 	// Consultamos las citas del beneficiario
-	servidor = ServidorFrontend.getServidor();
-	citas = servidor.consultarHistoricoCitas(sesion.getId(), nifBeneficiario);
+	try {
+		servidor = ServidorFrontend.getServidor();
+		citas = servidor.consultarHistoricoCitas(sesion.getId(), nifBeneficiario);
 	
-	// Generamos la lista HTML con los datos de las citas (se marcan en
-	// gris las citas pasadas y se selecciona la primera cita no pasada)
-	options = new Vector<String>();
-	if(citas.size() == 0) {
-		options.add("<option style=\"color:#AAAAAA;\" value=\"-2\">No tiene ninguna cita asignada.</option>");
-	} else {
-		selec = false;
-		for(int i = 0; i < citas.size(); i++) {
-			if(citas.get(i).getFechaYHora().before(new Date())) {
-				options.add("<option style=\"color:#AAAAAA;\" value=\"-1\">" + citas.get(i).toString() + "</option>");
-			} else {
-				if(selec) {
-					options.add("<option value=\"" + citas.get(i).getId() + "\">" + citas.get(i).toString() + "</option>");
+		// Generamos la lista HTML con los datos de las citas (se marcan en
+		// gris las citas pasadas y se selecciona la primera cita no pasada)
+		options = new Vector<String>();
+		if(citas.size() == 0) {
+			options.add("<option style=\"color:#AAAAAA;\" value=\"-2\">No tiene ninguna cita asignada.</option>");
+		} else {
+			selec = false;
+			for(int i = 0; i < citas.size(); i++) {
+				if(citas.get(i).getFechaYHora().before(new Date())) {
+					options.add("<option style=\"color:#AAAAAA;\" value=\"-1\">" + citas.get(i).toString() + "</option>");
 				} else {
-					options.add("<option selected value=\"" + citas.get(i).getId() + "\">" + citas.get(i).toString() + "</option>");
-					selec = true;
+					if(selec) {
+						options.add("<option value=\"" + citas.get(i).getId() + "\">" + citas.get(i).toString() + "</option>");
+					} else {
+						options.add("<option selected value=\"" + citas.get(i).getId() + "\">" + citas.get(i).toString() + "</option>");
+						selec = true;
+					}
 				}
 			}
 		}
+%>
+		<select id="citas" name="citas" size="4" style="width:250px">
+			<% for(int i = 0; i < options.size(); i++) { %>
+				<%= options.get(i) %>
+			<% } %>
+		</select>
+		
+		<br>
+			<input type="submit" value="Aceptar" onclick="anularCita('<%=nifBeneficiario%>', 'ajaxEliminarCita.jsp')" />
+		<br><br>
+<%
+	} 
+
+	catch (RemoteException e) { %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (SQLException e) {  %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (Exception e) { %>
+		Error: <%=e.getMessage()%>
+<%		
 	}
-	
+		
 %>
 
-<select id="citas" name="citas" size="4" style="width:250px">
-	<% for(int i = 0; i < options.size(); i++) { %>
-		<%= options.get(i) %>
-	<% } %>
-</select>

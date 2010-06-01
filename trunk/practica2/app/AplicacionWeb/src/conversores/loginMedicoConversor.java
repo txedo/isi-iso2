@@ -26,7 +26,6 @@ public class loginMedicoConversor extends StrutsTypeConverter {
 				ServidorFrontend p = null;
 				try {
 					p = ServidorFrontend.getServidor();
-					p.conectar(IConexion.IP, IConexion.PUERTO);
 					ISesion s = p.identificarUsuario(login, password);
 					//medico = (Medico) p.getMedicoPorLogin(s.getId(), login);
 				} catch (RemoteException e) {
