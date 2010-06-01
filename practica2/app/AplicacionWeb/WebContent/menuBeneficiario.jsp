@@ -14,9 +14,11 @@
 	<%
 		// En la sesion, se podria guardar el objeto que haya colocado la accion en la ValueStack,
 		// para luego usarlo en las otras páginas para sacar el nombre, por ejemplo.
-		session=request.getSession(true);
-		session.setAttribute("Beneficiario",request.getAttribute("beneficiario"));
-		session.setAttribute("SesionFrontend", request.getAttribute("sesion"));
+		if (request.getSession(false) == null || request.getSession(false).getAttribute("Beneficiario") == null) {
+			session=request.getSession(true);
+			session.setAttribute("Beneficiario",request.getAttribute("beneficiario"));
+			session.setAttribute("SesionFrontend", request.getAttribute("sesion"));
+		}
 		Beneficiario bene = (Beneficiario) request.getSession(false).getAttribute("Beneficiario"); 
 	%>
 		<div class="textoCuerpo">

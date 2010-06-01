@@ -11,7 +11,7 @@
 	
 	<div id="contenido">
     	<div class="textoCuerpo">
-
+    		Se ha emitido la cita el d&iacute;a <%=request.getParameter("dia")%>, a las <%=request.getParameter("hora")%>
 		</div>
 	</div>
 	
