@@ -53,29 +53,34 @@
 	<%
 		// En la sesion, se guarda el objeto que haya colocado la accion en la ValueStack,
 		// para luego usarlo en las otras páginas para sacar el nombre del médico, por ejemplo.
-		session=request.getSession(true);
-		session.setAttribute("Medico",request.getAttribute("medico"));
-		session.setAttribute("SesionFrontend", request.getAttribute("sesion"));
+		if (request.getSession(false) == null || request.getSession(false).getAttribute("Medico") == null) {
+			session=request.getSession(true);
+			session.setAttribute("Medico",request.getAttribute("medico"));
+			session.setAttribute("SesionFrontend", request.getAttribute("sesion"));
+		}
 		Medico med = (Medico) request.getSession(false).getAttribute("Medico");
 	%>
 	
 		
-	
-	Medico emisor: <input type="text" value="Dr./Dra. <%= med.getApellidos()%>" readonly="readonly"/>
-	<!-- El "select" para mostrar la especialidad es un select normal donde se asociará al evento "onchange" la función de AJAX -->
-	
-	<br><br><s:select id="beneficiario" name="beneficiario" list="beneficiarios" listKey="nif" listValue="apellidos, nombre" label="Beneficiario"></s:select>
-	<br>
-	<s:select name="especialidad" list="especialidades" label="Especialidad" onchange="cargarReceptor('ajaxObtenerEspecialistas.jsp',this)">
-	</s:select>
-	<span id="especialistasCargados">
-	<br>	Dr./Dra.: <select id="especialista" name="especialista"><option value="-1">Seleccione especialidad...</option>
-					  </select>
-	</span>
-	<br><input type="button" onclick="darVolante('ajaxEmitirVolante.jsp')" value="Aceptar">
-	<span id="volanteEmitido">
-	<br><br><br> Introduce los datos para pedir un volante ...
-	</span>
+	<div id="contenido">
+    	<div class="textoCuerpo">
+			Medico emisor: <input type="text" value="Dr./Dra. <%= med.getApellidos()%>" readonly="readonly"/>
+			<!-- El "select" para mostrar la especialidad es un select normal donde se asociará al evento "onchange" la función de AJAX -->
+			
+			<br><br><s:select id="beneficiario" name="beneficiario" list="beneficiarios" listKey="nif" listValue="apellidos, nombre" label="Beneficiario"></s:select>
+			<br>
+			<s:select name="especialidad" list="especialidades" label="Especialidad" onchange="cargarReceptor('ajaxObtenerEspecialistas.jsp',this)">
+			</s:select>
+			<span id="especialistasCargados">
+			<br>	Dr./Dra.: <select id="especialista" name="especialista"><option value="-1">Seleccione especialidad...</option>
+							  </select>
+			</span>
+			<br><input type="button" onclick="darVolante('ajaxEmitirVolante.jsp')" value="Aceptar">
+			<span id="volanteEmitido">
+			<br><br><br> Introduce los datos para pedir un volante ...
+			</span>
+		</div>
+	</div>
 	
 	<%@ include file="foot.jsp"%>
 </body>

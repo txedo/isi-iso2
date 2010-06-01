@@ -14,7 +14,7 @@
 			<exception-mapping exception="java.lang.Exception" result="exceptionLogin"></exception-mapping>
 		</action>
 		<action name="loginMedico" class="acciones.loginMedico">
-			<result name="success">darVolante.jsp</result>
+			<result name="success">menuMedico.jsp</result>
 			<result name="error">error.jsp</result>
 			<result name="input">loginMedico.jsp</result>
 			<result name="exceptionLogin">error.jsp</result>
@@ -22,6 +22,10 @@
 			<exception-mapping exception="java.sql.SQLException" result="exceptionLogin"></exception-mapping>
 			<exception-mapping exception="excepciones.UsuarioIncorrectoException" result="exceptionLogin"></exception-mapping>
 			<exception-mapping exception="java.lang.Exception" result="exceptionLogin"></exception-mapping>
+		</action>
+		<action name="darVolante" class="acciones.darVolante">
+			<result name="success">darVolante.jsp</result>
+			<result name="error">error.jsp</result>
 		</action>
     </package>
 </struts>

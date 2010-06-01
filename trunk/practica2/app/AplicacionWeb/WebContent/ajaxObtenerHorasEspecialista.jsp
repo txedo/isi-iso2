@@ -17,7 +17,7 @@
 	// Tomamos el idSesion del HTTPSession
 	ISesion s = (ISesion) session.getAttribute("SesionFrontend");
 	// Se coge tambien el especialista, pues a esta pagina se llega si el volante se ha validado
-	Medico e = (Medico) ((Volante) session.getAttribute("volante")).getReceptor();;
+	Medico e = (Medico) ((Volante) session.getAttribute("volante")).getReceptor();
 	String dia = request.getParameter("dia");
 	Date diaHoy = new Date();
 	SimpleDateFormat df = new SimpleDateFormat("dd/M/yyyy");
@@ -88,7 +88,7 @@
 %>
 		</select>
 		<!-- Se coloca también el botón para obtener la cita -->
-		<br> <input type="submit" value="Obtener Cita" onclick="darCita('darCitaEspecialista.jsp')" />
+		<br> <input type="submit" value="Obtener Cita" onclick="darCita('ajaxDarCitaEspecialista.jsp')" />
 <%
 	}
 %>

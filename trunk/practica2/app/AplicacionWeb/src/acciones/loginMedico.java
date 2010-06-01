@@ -27,8 +27,6 @@ public class loginMedico extends ActionSupport {
 	private String username;
 	private String pass;
 	private ISesion sesion;
-	private Vector<String> especialidades;
-	private Vector<Beneficiario> beneficiarios;
 	
 	@SuppressWarnings("unchecked")
 	public String execute() throws RemoteException, SQLException, UsuarioIncorrectoException, Exception {
@@ -42,13 +40,6 @@ public class loginMedico extends ActionSupport {
 			sesion = servidor.identificarUsuario(username, pass);
 			// Obtenemos los datos del médico
 			medico = (Medico)servidor.getMedicoPorLogin(sesion.getId(), username);
-			// Consultamos las especialidades
-			especialidades = new Vector<String>();
-			for(Especialidades esp: Especialidades.values()) {
-				especialidades.add(esp.name());
-			}
-			// Consultamos los beneficiarios del médico
-			beneficiarios = (Vector<Beneficiario>)servidor.mensajeAuxiliar(sesion.getId(), ICodigosMensajeAuxiliar.CONSULTAR_BENEFICIARIOS_MEDICO, medico.getNif());
 		} catch (RemoteException e) {
 			throw e;
 		} catch (SQLException e) {
@@ -88,12 +79,6 @@ public class loginMedico extends ActionSupport {
 		return sesion;
 	}
 
-	public Vector<Beneficiario> getBeneficiarios() {
-		return beneficiarios;
-	}
 
-	public Vector<String> getEspecialidades() {
-		return especialidades;
-	}
 
 }
