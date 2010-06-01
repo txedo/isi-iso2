@@ -4,6 +4,8 @@
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
+<%@page import="java.rmi.RemoteException"%>
+<%@page import="java.sql.SQLException"%>
 
 <%
 
@@ -24,14 +26,29 @@
 	// Tomamos el NIF del especialista de los parámetros pasados al JSP
 	nifReceptor = request.getParameter("nifReceptor");
 	
-	// Consultamos los datos del beneficiario y el médico receptor del volante
-	servidor = ServidorFrontend.getServidor();
-	beneficiario = servidor.consultarBeneficiarioPorNIF(sesion.getId(), nifBeneficiario);
-	receptor = servidor.consultarMedico(sesion.getId(), nifReceptor);
+	try {
+		// Consultamos los datos del beneficiario y el médico receptor del volante
+		servidor = ServidorFrontend.getServidor();
+		beneficiario = servidor.consultarBeneficiarioPorNIF(sesion.getId(), nifBeneficiario);
+		receptor = servidor.consultarMedico(sesion.getId(), nifReceptor);
 	
-	// Emitimos el volante
-	idVolante = servidor.emitirVolante(sesion.getId(), beneficiario, emisor, receptor);
+		// Emitimos el volante
+		idVolante = servidor.emitirVolante(sesion.getId(), beneficiario, emisor, receptor);
+%>	
+		<br><br><br>El numero de volante emitido es el: <%= idVolante %>.
+		
+<%  }
+	catch (RemoteException e) { %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (SQLException e) {  %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (Exception e) { %>
+		Error: <%=e.getMessage()%>
+<%		
+	}
 	
 %>
 
-<br><br><br>El numero de volante emitido es el: <%= idVolante %>.
+

@@ -8,6 +8,8 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Calendar" %>
+<%@page import="java.rmi.RemoteException"%>
+<%@page import="java.sql.SQLException"%>
 
 <%
 
@@ -46,7 +48,19 @@
 	cal1.set(Calendar.MINUTE, cal2.get(Calendar.MINUTE));
 	
 	// Emitimos la cita para el volante dado
-	servidor = ServidorFrontend.getServidor();	
-	servidor.pedirCita(sesion.getId(), beneficiario, volante.getId(), fechaCita, IConstantes.DURACION_CITA);
+	try {
+		servidor = ServidorFrontend.getServidor();	
+		servidor.pedirCita(sesion.getId(), beneficiario, volante.getId(), new Date(fechaCita.getYear(), fechaCita.getMonth(), fechaCita.getDate(), horaCita.getHours(), horaCita.getMinutes()), IConstantes.DURACION_CITA);
+	}
+	catch (RemoteException e) { %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (SQLException e) {  %>
+		Error: <%=e.getMessage()%>
+<%
+	} catch (Exception e) { %>
+		Error: <%=e.getMessage()%>
+<%		
+	}
 	
 %>

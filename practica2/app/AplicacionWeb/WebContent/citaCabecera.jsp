@@ -37,8 +37,12 @@
 					var parametros = "dia=" + stringDiaSeleccionado + "&hora=" + horaSeleccionada;
 					peticion.onreadystatechange=function() {
 						if (peticion.readyState==4) {	
-							// Se muestra la página de éxito para las citas
-							document.location='citaExito.jsp?'+parametros;
+							if (peticion.responseText.indexOf("Error")==-1){
+								// Se muestra la página de éxito para las citas, si no hay errores
+								document.location='citaExito.jsp?'+parametros;
+							} else {
+								document.getElementById("mensaje").innerHTML=peticion.responseText;
+							}
 						}						
 					}
 					peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -52,7 +56,7 @@
 				peticion.open("post", url, true);
 				var parametros = "dia=" + dia;
 				peticion.onreadystatechange=function() {
-					if (peticion.readyState==4) {	
+					if (peticion.readyState==4) {
 						document.getElementById("spanHoras").innerHTML=peticion.responseText;
 					}						
 				}
@@ -96,9 +100,9 @@
 			
 			<!-- En este div se carga el datepicker -->
 			<div id="campofecha"></div>
-			<div id="mensaje"></div>
 			<br> <br>
 			<span id="spanHoras"></span>
+			<span id="mensaje"></span>
 		</div>
 		<div class="volver">
 			<input type="button" onclick="history.go(-1)" value="Volver atrás">

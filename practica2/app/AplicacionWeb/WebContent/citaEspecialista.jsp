@@ -24,6 +24,8 @@
 		peticion = nuevoAjax();
 		function validarVolante(url) {
 			if (peticion){
+				// Se limpia el mensaje de error, por si lo hubiera
+				document.getElementById("mensaje").innerHTML='';
 				var volante = document.getElementById("nVolante").value;
 				peticion.open("post", url, true);
 				var parametros = "nVolante=" + volante;
@@ -33,7 +35,6 @@
 							document.getElementById("spanEspecialista").innerHTML=peticion.responseText + 
 							"<br><br>Seleccione un día laboral del especialista: ";
 							document.getElementById("campofecha").style.visibility = "visible";
-							document.getElementById("spanHoras").style.visibility = "visible";
 							// Al mostrar el calendario, se muestran, por defecto, las horas disponibles del día actual
 							var fecha = new Date();
 							var stringDia = fecha.getDate()+"/"+(fecha.getMonth()+1)+"/"+(fecha.getFullYear());
@@ -42,7 +43,7 @@
 						else {
 							document.getElementById("spanEspecialista").innerHTML=peticion.responseText;
 							document.getElementById("campofecha").style.visibility = "hidden";
-							document.getElementById("spanHoras").style.visibility = "hidden";
+							document.getElementById("spanHoras").innerHTML='';
 						}
 					}					
 				}
@@ -67,8 +68,12 @@
 					var parametros = "dia=" + stringDiaSeleccionado + "&hora=" + horaSeleccionada;
 					peticion.onreadystatechange=function() {
 						if (peticion.readyState==4) {	
-							// Se muestra la página de éxito para las citas
-							document.location='citaExito.jsp?'+parametros;
+							if (peticion.responseText.indexOf("Error")==-1){
+								// Se muestra la página de éxito para las citas, si no hay errores
+								document.location='citaExito.jsp?'+parametros;
+							} else {
+								document.getElementById("mensaje").innerHTML=peticion.responseText;
+							}
 						}						
 					}
 					peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -128,9 +133,10 @@
 			
 			<!-- En este div se carga el datepicker -->
 			<div id="campofecha" style="visibility:hidden"></div>
-			<div id="mensaje"></div>
 			<br> <br>
 			<span id="spanHoras"></span>
+			<br><br>
+			<span id="mensaje"></span>
 		</div>
 		<div class="volver">
 			<input type="button" onclick="history.go(-1)" value="Volver atrás">
