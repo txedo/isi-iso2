@@ -44,9 +44,6 @@
 			}
 		}
 	
-	%>
-	
-	<%
 		if(!sesionInvalida) {
 			
 			// Obtenemos los datos del beneficiario

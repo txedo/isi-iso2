@@ -43,9 +43,6 @@
 			}
 		}
 	
-	%>
-	
-	<%
 		if(!sesionInvalida) {
 			
 			// Obtenemos los datos del médico

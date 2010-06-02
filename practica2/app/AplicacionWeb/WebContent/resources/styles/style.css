@@ -84,7 +84,7 @@ body
 	text-align: left;
 	padding-top: 30px;
 	font-family: Verdana;
-	padding-left: 300px;
+	padding-left: 290px;
 	padding-right: auto;
 	font-weight: bold;
 	font-size: 20pt;
@@ -106,7 +106,7 @@ body
 .textoCuerpo 
 {
 	font-family: Arial, Helvetica, sans-serif; 
-	font-size: large; 
+	font-size: medium;
 	font-weight: bold; 
 	color: #171C56;
 	padding-left: 250px;

@@ -22,19 +22,19 @@
 	Vector<String> citasOcupadasDia, horas;
 	Vector<String> options = null;
 	ISesion sesion;
-	Medico cabecera;
+	Medico medico;
 	SimpleDateFormat formatoFecha;
 	Calendar cal;
 	Date diaHoy, diaSeleccionado;
-	String dia, mensaje;
+	String dia, mensaje, configLista = "";
 	
 	// Tomamos la sesión del cliente de la sesión HTTP
 	sesion = (ISesion)session.getAttribute("SesionFrontend");
 	
 	// Tomamos el médico de cabecera asociado al beneficiario
 	// pasado como parámetro al JSP
-	cabecera = ((Beneficiario)session.getAttribute("Beneficiario")).getMedicoAsignado();
-	// Tomamos el día para el que se pretende dar la cita
+	medico = ((Beneficiario)session.getAttribute("Beneficiario")).getMedicoAsignado();
+	// Tomamos el día para el que se pretende dar la cita de los parámetros JSP
 	dia = request.getParameter("dia");
 	
 	// Convertimos la cadena con la fecha en una instancia de Date
@@ -59,8 +59,8 @@
 			// Recuperamos las horas en las que trabaja el especialista
 			// el día seleccionado y las citas que tiene ocupadas ese día
 			servidor = ServidorFrontend.getServidor();
-			citasOcupadas = servidor.consultarHorasCitasMedico(sesion.getId(), cabecera.getNif());
-			horasCitas = servidor.consultarHorarioMedico(sesion.getId(), cabecera.getNif());
+			citasOcupadas = servidor.consultarHorasCitasMedico(sesion.getId(), medico.getNif());
+			horasCitas = servidor.consultarHorarioMedico(sesion.getId(), medico.getNif());
 			citasOcupadasDia = citasOcupadas.get(diaSeleccionado);
 			// Si el médico no tiene citas ocupadas, se inicializa la
 			// lista, ya que el método anterior devuelve null
@@ -79,8 +79,10 @@
 			// cita, marcando de color rojo las horas ocupadas
 			options = new Vector<String>();
 			if(horas.size() == 0) {
-				options.add("<option style=\"color:#AAAAAA;\" selected value =\"-1\">El día seleccionado no es laborable para este m&eacute;dico</option>");
+				options.add("<option style=\"color:#AAAAAA;\" selected value =\"-1\">Día no laborable para este m&eacute;dico</option>");
+				configLista = "disabled";
 			} else {
+				configLista = "";
 				for(int i = 0; i < horas.size(); i++) {
 					if(citasOcupadasDia.contains(horas.get(i))) {
 						options.add("<option class=\"ocupado\" value=\"-2\">" + horas.get(i) + "</option>");
@@ -89,6 +91,10 @@
 					}
 				}
 			}
+			// Guardamos el médico del beneficiario en la sesión HTTP
+			// para utilizarlo cuando queramos ver si le sustituye
+			// alguien en una determinada fecha y hora
+			session.setAttribute("medicoCitas", medico);
 			mensaje = "";
 		} catch(RemoteException e) {
 			mensaje = "Error: " + e.getMessage();
@@ -100,14 +106,16 @@
 	}
 	
 	if(mensaje.equals("")) { %>
-		Horario del m&eacute;dico <%= cabecera.getApellidos() %> para el día <%= dia %>
-		<select id="horas" name="horas">
+		Horario del Dr./Dra. <%= medico.getApellidos() %> para el día <%= dia %>:&nbsp;
+		<select id="horas" name="horas" <%= configLista %>
+		 onchange="ponerMedicoReal('ajaxConsultarMedicoCita.jsp')"
+		 onkeyup="ponerMedicoReal('ajaxConsultarMedicoCita.jsp')"> 
 			<% for(int i = 0; i < options.size(); i++) { %>
 				<%= options.get(i) %>
 			<% } %>
 		</select>
-		<!-- Se coloca también el botón para obtener la cita -->
-		<br> <input type="submit" value="Obtener Cita" onclick="darCita('ajaxDarCitaCabecera.jsp')" /> <%
+		<br><br>
+		<input type="submit" value="Pedir cita" onclick="darCita('ajaxDarCitaCabecera.jsp')" /> <%
 	} else {
 		%> <%= mensaje %> <%
 	}

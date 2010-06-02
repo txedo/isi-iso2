@@ -12,7 +12,7 @@
 	
 	<div id="contenido">
     	<div class="textoCuerpo">
-    		Se ha emitido la cita el d&iacute;a <%=request.getParameter("dia")%>, a las <%=request.getParameter("hora")%>
+    		Se ha tramitado correctamente la cita para el el d&iacute;a <%=request.getParameter("dia")%>, a las <%=request.getParameter("hora")%>.
 		</div>
 	</div>
 	
