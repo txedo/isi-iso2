@@ -67,7 +67,7 @@
 				<%= options.get(i) %>
 			<% } %>
 		</select>
-		<br>
+		<br><br>
 		<input type="submit" value="Aceptar" onclick="anularCita('<%= nifBeneficiario %>', 'ajaxEliminarCita.jsp')" />
 		<br><br> <%
 	} else {
