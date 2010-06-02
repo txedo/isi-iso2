@@ -1,107 +1,115 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1" %>
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.DiaSemana" %>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
+<%@ page import="dominio.UtilidadesDominio" %>
 <%@ page import="comunicaciones.ServidorFrontend" %>
+<%@ page import="java.util.Calendar" %>
 <%@ page import="java.util.Hashtable" %>
 <%@ page import="java.util.Vector" %>
 <%@ page import="java.util.Date" %>
-<%@page import="java.text.SimpleDateFormat"%>
-<%@page import="java.rmi.RemoteException"%>
-<%@page import="java.sql.SQLException"%>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.rmi.RemoteException" %>
+<%@ page import="java.sql.SQLException" %>
 
 <%
-	// Recuperamos las horas en las que trabaja el especialista ese dia y se muestran en un select (si trabaja alguna hora) 
-	ServidorFrontend p;
-	// Tomamos el idSesion del HTTPSession
-	ISesion s = (ISesion) session.getAttribute("SesionFrontend");
-	// Se coge el médico asignado al beneficiario
-	Medico c = ((Beneficiario)session.getAttribute("Beneficiario")).getMedicoAsignado();
-	String dia = request.getParameter("dia");
-	Date diaHoy = new Date();
-	SimpleDateFormat df = new SimpleDateFormat("dd/M/yyyy");
-	Date diaSeleccionado = df.parse(dia);
-	// Si hoy es sabado o domingo y no es el dia seleccionado, no se hace nada mas y se muestra un mensaje
-	if (dia.equals(df.format(diaHoy)) && (diaHoy.getDay() == 0 || diaHoy.getDay() == 6)) {
-%>
-		El día <%=df.format(diaHoy)%> no es laborable por ser
-		<% if (diaHoy.getDay()==0) { %> Domingo. 
-		<% }else{ %> Sábado. <%} %>
-<%
+
+	ServidorFrontend servidor;
+	Hashtable<Date, Vector<String>> citasOcupadas;
+	Hashtable<DiaSemana, Vector<String>> horasCitas;
+	Vector<String> citasOcupadasDia, horas;
+	Vector<String> options = null;
+	ISesion sesion;
+	Medico cabecera;
+	SimpleDateFormat formatoFecha;
+	Calendar cal;
+	Date diaHoy, diaSeleccionado;
+	String dia, mensaje;
+	
+	// Tomamos la sesión del cliente de la sesión HTTP
+	sesion = (ISesion)session.getAttribute("SesionFrontend");
+	
+	// Tomamos el médico de cabecera asociado al beneficiario
+	// pasado como parámetro al JSP
+	cabecera = ((Beneficiario)session.getAttribute("Beneficiario")).getMedicoAsignado();
+	// Tomamos el día para el que se pretende dar la cita
+	dia = request.getParameter("dia");
+	
+	// Convertimos la cadena con la fecha en una instancia de Date
+	formatoFecha = new SimpleDateFormat("dd/M/yyyy");
+	diaSeleccionado = formatoFecha.parse(dia);
+	diaHoy = new Date();
+	cal = Calendar.getInstance();
+	cal.setTime(diaHoy);
+
+	// Si hoy es sábado o domingo y no es el día seleccionado, no se
+	// hace nada más y se muestra un mensaje de error
+	if(UtilidadesDominio.fechaIgual(diaSeleccionado, diaHoy, false)
+	  && (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)) {
+		mensaje = "El día " + formatoFecha.format(diaHoy) + " no es laborable por ser";
+		if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+			mensaje += "domingo.";
+		} else {
+			mensaje += "sábado.";
+		}
 	} else {
 		try {
-			p = ServidorFrontend.getServidor();
-			Hashtable<Date, Vector<String>> citasOcupadas = p.consultarHorasCitasMedico(s.getId(), c.getNif());
-			Hashtable<DiaSemana, Vector<String>> horasCitas = p.consultarHorarioMedico(s.getId(), c.getNif());
-			// Se toman las citas ocupadas del días pasado como parametro
-			Vector<String> citasOcupadasDia = citasOcupadas.get(diaSeleccionado);
-			// Si no existen citas ocupadas, se inicializa a la lista vacia, ya que lo anterior devuelve null
-			if (citasOcupadasDia == null)
+			// Recuperamos las horas en las que trabaja el especialista
+			// el día seleccionado y las citas que tiene ocupadas ese día
+			servidor = ServidorFrontend.getServidor();
+			citasOcupadas = servidor.consultarHorasCitasMedico(sesion.getId(), cabecera.getNif());
+			horasCitas = servidor.consultarHorarioMedico(sesion.getId(), cabecera.getNif());
+			citasOcupadasDia = citasOcupadas.get(diaSeleccionado);
+			// Si el médico no tiene citas ocupadas, se inicializa la
+			// lista, ya que el método anterior devuelve null
+			if(citasOcupadasDia == null) {
 				citasOcupadasDia = new Vector<String>();
+			}
 			// Se toman las horas donde trabaja el medico en el dia seleccionado
-			Vector<String> horas = new Vector<String>();
-			switch(diaSeleccionado.getDay()) {
-			case 1:
-				horas.addAll(horasCitas.get(DiaSemana.Lunes));
-				break;
-			case 2:
-				horas.addAll(horasCitas.get(DiaSemana.Martes));
-				break;
-			case 3:
-				horas.addAll(horasCitas.get(DiaSemana.Miercoles));
-				break;
-			case 4:
-				horas.addAll(horasCitas.get(DiaSemana.Jueves));
-				break;
-			case 5:
-				horas.addAll(horasCitas.get(DiaSemana.Viernes));
-				break;
-			default:
+			horas = new Vector<String>();
+			cal.setTime(diaSeleccionado);
+			if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
 				// Los médicos no trabajan los fines de semana
-				break;
-			}	
-	%>
-			Horario del m&eacute;dico <%=c.getApellidos()%> para el día <%=df.format(diaSeleccionado)%>
-			<select id="horas" name="horas">
-	<%
-			// Si no hay horas disponibles, se muestra un mensaje
-			if (horas.size()==0) {
-	%>
-				<option selected value="-1">El día seleccionado no es laborable para este m&eacute;dico</option>
-	<%
 			} else {
-				for (int i=0; i<horas.size(); i++) {
-					if (citasOcupadasDia.contains(horas.get(i))) {
-						// Las horas ocupadas se colorean de rojo y se pone el valor como -2, para mostrar un error si se elige una cita en esa hora
-	%>
-						<option class="ocupado" value="-2"><%=horas.get(i)%></option>
-	<%
+				horas.addAll(horasCitas.get(UtilidadesDominio.diaFecha(diaSeleccionado)));
+			}
+			// Generamos la lista HTML con las horas en las que el médico pasa
+			// cita, marcando de color rojo las horas ocupadas
+			options = new Vector<String>();
+			if(horas.size() == 0) {
+				options.add("<option style=\"color:#AAAAAA;\" selected value =\"-1\">El día seleccionado no es laborable para este m&eacute;dico</option>");
+			} else {
+				for(int i = 0; i < horas.size(); i++) {
+					if(citasOcupadasDia.contains(horas.get(i))) {
+						options.add("<option class=\"ocupado\" value=\"-2\">" + horas.get(i) + "</option>");
 					} else {
-	%>
-						<option value="<%=horas.get(i)%>"><%=horas.get(i)%></option>
-	<%
+						options.add("<option value=\"" + horas.get(i) + "\">" + horas.get(i) + "</option>");
 					}
 				}
 			}
-	%>
-			</select>
-			<!-- Se coloca también el botón para obtener la cita -->
-			<br> <input type="submit" value="Obtener Cita" onclick="darCita('ajaxDarCitaCabecera.jsp')" />
-	<%
-		}
-		catch (RemoteException e) { %>
-			Error: <%=e.getMessage()%>
-<%
-		} catch (SQLException e) {  %>
-			Error: <%=e.getMessage()%>
-<%
-		} catch (Exception e) { %>
-			Error: <%=e.getMessage()%>
-<%		
+			mensaje = "";
+		} catch(RemoteException e) {
+			mensaje = "Error: " + e.getMessage();
+		} catch(SQLException e) {
+			mensaje = "Error: " + e.getMessage();
+		} catch(Exception e) {
+			mensaje = "Error: " + e.getMessage();
 		}
 	}
-				
+	
+	if(mensaje.equals("")) { %>
+		Horario del m&eacute;dico <%= cabecera.getApellidos() %> para el día <%= dia %>
+		<select id="horas" name="horas">
+			<% for(int i = 0; i < options.size(); i++) { %>
+				<%= options.get(i) %>
+			<% } %>
+		</select>
+		<!-- Se coloca también el botón para obtener la cita -->
+		<br> <input type="submit" value="Obtener Cita" onclick="darCita('ajaxDarCitaCabecera.jsp')" /> <%
+	} else {
+		%> <%= mensaje %> <%
+	}
+	
 %>
-

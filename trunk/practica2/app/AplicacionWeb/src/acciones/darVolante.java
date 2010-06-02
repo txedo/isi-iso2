@@ -1,7 +1,5 @@
 package acciones;
 
-import java.net.MalformedURLException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Vector;
@@ -26,19 +24,25 @@ public class darVolante extends ActionSupport {
 	private Vector<String> especialidades;
 	private Vector<Beneficiario> beneficiarios;
 	
-	public String execute () throws RemoteException, Exception {
-		// Establecemos conexión con el servidor front-end 
-		ServidorFrontend servidor = ServidorFrontend.getServidor();
-		// Consultamos las especialidades
+	public String execute() throws RemoteException, Exception {
+		Map<String, Object> parametros;
+		ServidorFrontend servidor;
+		ISesion sesion;
+		Medico medico;
+		
+		// Creamos la lista de especialidades
 		especialidades = new Vector<String>();
-		for(Especialidades esp: Especialidades.values()) {
+		for(Especialidades esp : Especialidades.values()) {
 			especialidades.add(esp.name());
 		}
-		Map<String, Object> parametros = ActionContext.getContext().getSession();
-        ISesion sesion = (ISesion) parametros.get("SesionFrontend");
-		Medico medico = (Medico) parametros.get("Medico");
+		// Obtenemos la sesión del cliente y el médico de la sesión HTTP
+		parametros = ActionContext.getContext().getSession();
+        sesion = (ISesion)parametros.get("SesionFrontend");
+		medico = (Medico)parametros.get("Medico");
 		// Consultamos los beneficiarios del médico
+		servidor = ServidorFrontend.getServidor();
 		beneficiarios = servidor.obtenerBeneficiariosMedico(sesion.getId(), medico.getNif());
+		
 		return SUCCESS;
 	}
 	

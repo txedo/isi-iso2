@@ -1,54 +1,66 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1" %>
 <%@ page import="comunicaciones.ServidorFrontend" %>
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.Especialista" %>
-<%@ page import="dominio.conocimiento.ICodigosMensajeAuxiliar" %>
 <%@ page import="java.util.Vector" %>
-<%@page import="java.rmi.RemoteException"%>
-<%@page import="java.sql.SQLException"%>
+<%@ page import="java.rmi.RemoteException" %>
+<%@ page import="java.sql.SQLException" %>
 
 <%
-	ServidorFrontend p;
-	// Tomamos el idSesion del HTTPSession
-	ISesion s = (ISesion) session.getAttribute("SesionFrontend");
-	p = ServidorFrontend.getServidor();
-	String especialidad = request.getParameter("especialidad");
+
+	ServidorFrontend servidor;
+	Vector<Medico> especialistas;
+	Vector<String> options = null;
+	ISesion sesion;
+	String especialidad, mensaje;
+	boolean selec;
+	
+	// Tomamos la sesión del cliente de la sesión HTTP
+	sesion = (ISesion)session.getAttribute("SesionFrontend");
+
+	// Tomamos la especialidad de los parámetros pasados al JSP
+	especialidad = request.getParameter("especialidad");
+
 	try {
-		Vector<Medico> especialistas = p.obtenerMedicosTipo(s.getId(), new Especialista(especialidad));
-		int i=0;
-		%>
-		
-		<br>Dr./Dra.: <select id="especialista" name="especialistas">
-			<% for(i=0; i<especialistas.size(); i++) { 
-				if (i==0 && especialistas.size()>0) {
-			%>
-					<option selected value="<%=especialistas.get(i).getNif() %>"><%= especialistas.get(i).getApellidos() +", "+ especialistas.get(i).getNombre()%></option>
-			<%
-				} else if (especialistas.size()>0) {
-			%>
-					<option value="<%= especialistas.get(i).getNif() %>"><%= especialistas.get(i).getApellidos() +", "+ especialistas.get(i).getNombre()%></option>
-			<%  }
-			   } // Fin for
-			   if (especialistas.size()==0) {
-			%>
-					<option value="-1">No existe ningun especialista de esa especialidad</option>
-			<%
-			   }
-			%>
-		</select>
-<%
+		// Consultamos los médicos de la especialidad indicada
+		servidor = ServidorFrontend.getServidor();
+		especialistas = servidor.obtenerMedicosTipo(sesion.getId(), new Especialista(especialidad));
+		// Generamos la lista HTML con los nombres de los especialistas
+		options = new Vector<String>();
+		if(especialistas.size() == 0) {
+			options.add("<option style=\"color:#AAAAAA;\" value=\"-1\">No existe ningun especialista de esa especialidad</option>");
+		} else {
+			selec = false;
+			for(int i = 0; i < especialistas.size(); i++) {
+				if(selec) {
+					options.add("<option value=\"" + especialistas.get(i).getNif() + "\">" + especialistas.get(i).getApellidos() + ", " + especialistas.get(i).getNombre() + "</option>");
+				} else {
+					options.add("<option selected value=\"" + especialistas.get(i).getNif() + "\">" + especialistas.get(i).getApellidos() + ", " + especialistas.get(i).getNombre() + "</option>");
+					selec = true;
+				}
+			}
+		}
+		mensaje = "";
+	} catch(RemoteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(SQLException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(Exception e) {
+		mensaje = "Error: " + e.getMessage();
 	}
-	catch (RemoteException e) { %>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (SQLException e) {  %>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (Exception e) { %>
-		Error: <%=e.getMessage()%>
-<%		
+
+	// Mostramos la lista de especialistas o el mensaje de error
+	if(mensaje.equals("")) { %>
+		<br>Dr./Dra.:
+		<select id="especialista" name="especialistas">
+			<% for(int i = 0; i < options.size(); i++) { %>
+				<%= options.get(i) %>
+			<% } %>
+		</select> <%
+	} else {
+		%> <%= mensaje %> <%
 	}
 	
 %>
