@@ -226,7 +226,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 		}
 	}
 	
-	//TODO: No funciona, SlateStateException
+	// No funciona, Hibernate produce una excepción StaleStateException
 	public void testEspecialistasVacios() {
 		Vector<Medico> especialistas;
 		try {
@@ -261,7 +261,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 		}
 	}
 	
-	//TODO: StaleStateException
+	// No funciona, Hibernate produce una excepción StaleStateException
 	/*public void testEmitirVolanteIncorrecto() {
 		Vector<Medico> especialistas;
 		try {
@@ -405,7 +405,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 		}
 	}
 	
-	//TODO: No funciona, SlateStateException
+	// No funciona, Hibernate produce una excepción StaleStateException
 	/*public void testObservadorUsuario () {
 		// Comprueba que cuando se actualiza o elimina un usuario desde un terminal,
 		// las ventanas de otros terminales se actualizan correctamente
@@ -513,7 +513,7 @@ public class PruebasJPVolanteEmitir extends org.uispec4j.UISpecTestCase implemen
 		}		
 	}*/
 	
-	//TODO: No funciona, SlateStateException
+	// No funciona, Hibernate produce una excepción StaleStateException
 	/*public void testObservadorEspecialista() {
 		try {
 			// Creamos (como administrador) el médico especialista que se va a eliminar

@@ -223,7 +223,8 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		
 	}
 	
-	//TODO: No funciona: StaleStateException al recrear médicos eliminados en tearDown
+	// No funciona, Hibernate produce una excepción StaleStateException
+	// en el tearDown al recrear los médicos eliminados 
 	/*public void testBuscarBeneficiarioPorNIFSinMedicoAsignado () {
 		// Borramos todos los médicos del tipo de médico asignado al beneficiario
 		// para evitar que el sistema le asigne otro automáticamente
@@ -250,7 +251,8 @@ public class PruebasJPCitaTramitar extends org.uispec4j.UISpecTestCase implement
 		comprobarControlesDeshabilitados();
 	}*/
 
-	//TODO: No funciona: StaleStateException al recrear médicos eliminados en tearDown
+	// No funciona, Hibernate produce una excepción StaleStateException
+	// en el tearDown al recrear los médicos eliminados 
 	/*public void testBuscarBeneficiarioPorNSSSinMedicoAsignado () {
 		// Borramos todos los médicos del tipo de médico asignado al beneficiario
 		// para evitar que el sistema le asigne otro automáticamente

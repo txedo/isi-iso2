@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
 
 import persistencia.ConsultaHibernate;
 import persistencia.HibernateSessionFactory;
@@ -15,7 +16,42 @@ import persistencia.HibernateSessionFactory;
  */
 public class ConexionBDFrontend implements IConexionBD {
 
-	public ConexionBDFrontend() {
+	private String ip;
+	private int puerto;
+	
+	public ConexionBDFrontend() {	 
+	}
+	
+	public void setIP(String ip) {
+		this.ip = ip;
+		actualizarURL();
+	}
+	
+	public void setPuerto(int puerto) {
+		this.puerto = puerto;
+		actualizarURL();
+	}
+	
+	@SuppressWarnings("deprecation")
+	public boolean probarConexion() {
+		Session sesion;
+		boolean ok;
+		
+		try {
+			// Creamos una sesión de Hibernate y vemos si la
+			// conexión JDBC creada internamente es válida
+			sesion = HibernateSessionFactory.getSession();
+			ok = sesion.connection().isValid(1000);
+		} catch(SQLException ex) {
+			ok = false;
+		} catch(HibernateException ex) {
+			ok = false;
+		}
+		return ok;
+	}
+	
+	private void actualizarURL() {
+		HibernateSessionFactory.setDatabaseURL("jdbc:mysql://" + ip + ":" + String.valueOf(puerto) + "/bdssca");
 	}
 	
 	// Métodos de acceso a la base de datos

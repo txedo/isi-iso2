@@ -51,6 +51,7 @@ public class ControladorFrontend {
 	public void iniciarServidor(ConfiguracionFrontend configuracion) throws RemoteException, MalformedURLException, UnknownHostException, NotBoundException, SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		ConexionLogBD logBD;
 		ConexionLogVentana logFrontend;
+		boolean ok;
 
 		// Obtenemos la IP de la máquina local
 		ipServidor = UtilidadesComunicaciones.obtenerIPHost();
@@ -67,7 +68,12 @@ public class ControladorFrontend {
 		
 		// Creamos la conexión con la base de datos local mediante Hibernate
 		basedatos = new ConexionBDFrontend();
-//TODO: IP Y PUERTO!
+		basedatos.setIP(configuracion.getIPBDPrincipal());
+		basedatos.setPuerto(configuracion.getPuertoBDPrincipal());
+		ok = basedatos.probarConexion();
+		if(!ok) {
+			throw new SQLException("No se puede establecer una conexión con el servidor de la base de datos principal (IP " + configuracion.getIPBDPrincipal() + ", puerto " + String.valueOf(configuracion.getPuertoBDPrincipal()) + ").");
+		}
 		GestorConexionesBD.ponerConexion(basedatos);
 		
 		// Añadimos las conexiones que mostrarán los mensaje del servidor

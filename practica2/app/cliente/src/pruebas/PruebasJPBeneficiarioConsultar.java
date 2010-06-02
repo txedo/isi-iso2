@@ -340,7 +340,8 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		assertEquals(txtNSS.getText(), beneficiarioPrueba.getNss());
 	}
 	
-	//TODO: No funciona: StaleStateException al recrear médicos eliminados en tearDown
+	// No funciona, Hibernate produce una excepción StaleStateException
+	// en el tearDown al recrear los médicos eliminados 
 	/*public void testBuscarBeneficiarioSinMedicoAsignado () {
 		try {
 			// Borramos todos los médicos de cabecera para que no se le asigne ninguno
@@ -500,7 +501,7 @@ public class PruebasJPBeneficiarioConsultar extends org.uispec4j.UISpecTestCase 
 		}
 	}
 	
-	//TODO: No funciona, StaleStateException
+	// No funciona, Hibernate produce una excepción StaleStateException
 	/*public void testObservadorUsuarioActualizadoEliminado () {
 		// Iniciamos sesión con un segundo administrador
 		try {

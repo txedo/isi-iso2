@@ -166,9 +166,8 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 		assertFalse(txtPuertoServidor.isVisible());
 	}
 	
-	//TODO: Comentada para no estar media hora esperando :)
 	// Servidor no alcanzable
-	/*public void testServidorInalcanzable () {
+	public void testServidorInalcanzable () {
 		String mensaje;
 		
 		txtUsuario.setText(USUARIO_ADMIN);
@@ -181,6 +180,6 @@ public class PruebasJFLogin extends org.uispec4j.UISpecTestCase implements IDato
 		mensaje = UtilidadesPruebas.obtenerTextoDialogo(btnConectar, OK_OPTION);
 		String esperado = "No se puede conectar con el servidor front-end (IP " + txtDireccionServidor.getText() + ", puerto " + txtPuertoServidor.getText() + ").";
 		assertEquals(esperado, mensaje);
-	}*/
+	}
 	
 }
