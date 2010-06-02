@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="dominio.conocimiento.Medico" %>
+<%@ page errorPage= "error.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="excepciones.SesionNoIniciadaException"%>
 <html>
 <head>
 	<%@ include file="resources/templates/header.htm" %>
@@ -63,14 +65,14 @@
 	<%@ include file="resources/templates/top.htm" %>
 	
 	<%
-		// En la sesion, se guarda el objeto que haya colocado la accion en la ValueStack,
-		// para luego usarlo en las otras páginas para sacar el nombre del médico, por ejemplo.
-		if (request.getSession(false) == null || request.getSession(false).getAttribute("Medico") == null) {
-			session=request.getSession(true);
-			session.setAttribute("Medico",request.getAttribute("medico"));
-			session.setAttribute("SesionFrontend", request.getAttribute("sesion"));
+		Medico med;
+		if (request.getSession(false)==null)
+			throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
+		else {
+			med = (Medico) request.getSession(false).getAttribute("Medico");
+			if (med==null)
+				throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
 		}
-		Medico med = (Medico) request.getSession(false).getAttribute("Medico");
 	%>
 	
 		

@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
+<%@ page errorPage= "error.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="excepciones.SesionNoIniciadaException"%>
 <html>
 <head>
 	<%@ include file="resources/templates/header.htm" %>
@@ -154,7 +156,16 @@
 	
     <div id="contenido">
 		<div class="textoCuerpo">
-			<%= ((Beneficiario) request.getSession(false).getAttribute("Beneficiario")).getNombre() %>, escriba su número de volante:<br>		
+			<%  Beneficiario b = null;
+				if(request.getSession(false)==null) {
+					throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
+				} else {
+					b = (Beneficiario) request.getSession(false).getAttribute("Beneficiario");
+					if (b==null) 
+						throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
+				}
+			%>
+			<%= b.getNombre() %>, escriba su número de volante:<br>		
 			<br>Volante: <s:textfield id="nVolante" name="nVolante"></s:textfield>
 			<input type="submit" value="Aceptar" onclick="validarVolante('ajaxValidarVolante.jsp')"/>
 

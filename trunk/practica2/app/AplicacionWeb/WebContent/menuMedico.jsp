@@ -56,7 +56,7 @@
 					Elija una opción: <br>
 				</div>
 				<div style="padding-left:250px;">
-					<a href="darVolante">Emitir Volante</a>
+					<a href="obtenerBeneficiariosMedico">Emitir Volante</a>
 				</div>
 				<br>
 				<div style="padding-left:250px;">
