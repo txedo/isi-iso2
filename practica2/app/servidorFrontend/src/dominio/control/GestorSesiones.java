@@ -237,15 +237,16 @@ public class GestorSesiones {
 		}
 		
 		// Agregamos las operaciones permitidas para citadores y administradores
-		if(sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {
+		if(sesion.getRol() == Roles.Administrador.ordinal() || sesion.getRol() == Roles.Citador.ordinal()) {	
 			operaciones.add(Operaciones.RegistrarBeneficiario);
 			operaciones.add(Operaciones.ModificarBeneficiario);
 			operaciones.add(Operaciones.EliminarBeneficiario);
 			operaciones.add(Operaciones.ConsultarMedicoCita);
+			operaciones.add(Operaciones.ConsultarCitasBeneficiario);
+			operaciones.add(Operaciones.ConsultarCitasMedico);
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.TramitarCitaVolante);
 			operaciones.add(Operaciones.AnularCita);
-			operaciones.add(Operaciones.ConsultarCitasMedico);
 		}
 		
 		// Agregamos las operaciones permitidas para administradores
