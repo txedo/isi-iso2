@@ -3,8 +3,10 @@
 <%@ page import="dominio.conocimiento.Beneficiario" %>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.CategoriasMedico" %>
+<%@ page errorPage= "error.jsp" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="excepciones.SesionNoIniciadaException"%>
 <html>
 <head>
 	<%@ include file="resources/templates/header.htm" %>
@@ -131,30 +133,41 @@
 	<%@ include file="resources/templates/top.htm" %>
 
 	<%
-		Beneficiario beneficiario;
-		Medico medico;
-		String tipoMedico;
-		
-		// TODO: Aquí salta una NullPointerException si el
-		// beneficiario no tiene médico asignado
+		if (request.getSession(false)==null) {
+			throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
+		}
+		Beneficiario beneficiario = null;
+		Medico medico = null;
+		String tipoMedico = null;
+		boolean tieneMedico = true;
 		beneficiario = (Beneficiario)request.getSession(false).getAttribute("Beneficiario");
+		if (beneficiario == null)
+			throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
 		medico = beneficiario.getMedicoAsignado();
-		tipoMedico = (medico.getTipoMedico().getCategoria() == CategoriasMedico.Cabecera) ? "médico de cabecera" : "pediatra";
+		if (medico == null)
+			tieneMedico = false;
+		else 
+			tipoMedico = (medico.getTipoMedico().getCategoria() == CategoriasMedico.Cabecera) ? "médico de cabecera" : "pediatra";
 	%>
 
     <div id="contenido">
     	<div class="textoCuerpo">
-    		<%= beneficiario.getNombre() %>, su <%= tipoMedico %> es el Dr./Dra. <%= medico.getApellidos() %>.
-			<br>
-			<br>
-			Elija el d&iacute;a y hora de la cita:
-			<br>
-			<!-- En este div se carga el datepicker -->
-			<div id="campofecha"></div>
-			<br>
-			<span id="spanHoras"></span>
-			<br>
-			<span id="mensaje"></span>
+    	<% 
+    		if (tieneMedico) { %>
+    			<%= beneficiario.getNombre() %>, su <%= tipoMedico %> es el Dr./Dra. <%= medico.getApellidos() %>.
+				<br>
+				<br>
+				Elija el d&iacute;a y hora de la cita:
+				<br>
+				<!-- En este div se carga el datepicker -->
+				<div id="campofecha"></div>
+				<br>
+				<span id="spanHoras"></span>
+				<br>
+				<span id="mensaje"></span>
+		<%  } else { %>
+			<%= beneficiario.getNombre() %>, no tiene m&eacute;dico asignado, por lo que no puede pedir una cita
+		<%  } %>
 		</div>
 		<div class="volver">
 			<input type="button" onclick="history.go(-1)" value="Volver atrás">

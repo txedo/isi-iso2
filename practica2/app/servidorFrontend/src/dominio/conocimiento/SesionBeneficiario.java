@@ -22,7 +22,7 @@ public class SesionBeneficiario extends Sesion implements Serializable {
 	}
 
 	public String getNombre() {
-		// TODO: Alguna forma de identificar unívocamente a los beneficiarios
+		// Alguna forma de identificar unívocamente a los beneficiarios
 		// (el equivalente al Login de los usuarios)
 		return beneficiario.getNif();
 	}
