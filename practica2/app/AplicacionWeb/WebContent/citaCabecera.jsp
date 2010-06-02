@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1" %>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
+<%@ page import="dominio.conocimiento.Medico" %>
+<%@ page import="dominio.conocimiento.CategoriasMedico" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -128,12 +130,25 @@
 <body>
 	<%@ include file="resources/templates/top.htm" %>
 
+	<%
+		Beneficiario beneficiario;
+		Medico medico;
+		String tipoMedico;
+		
+		// TODO: Aquí salta una NullPointerException si el
+		// beneficiario no tiene médico asignado
+		beneficiario = (Beneficiario)request.getSession(false).getAttribute("Beneficiario");
+		medico = beneficiario.getMedicoAsignado();
+		tipoMedico = (medico.getTipoMedico().getCategoria() == CategoriasMedico.Cabecera) ? "médico de cabecera" : "pediatra";
+	%>
+
     <div id="contenido">
     	<div class="textoCuerpo">
-    		<% Beneficiario b = (Beneficiario) request.getSession(false).getAttribute("Beneficiario"); %>
-			<%= b.getNombre() %>, elija el d&iacute;a y hora de la cita: <br>
+    		<%= beneficiario.getNombre() %>, su <%= tipoMedico %> es el Dr./Dra. <%= medico.getApellidos() %>.
 			<br>
-			
+			<br>
+			Elija el d&iacute;a y hora de la cita:
+			<br>
 			<!-- En este div se carga el datepicker -->
 			<div id="campofecha"></div>
 			<br>
