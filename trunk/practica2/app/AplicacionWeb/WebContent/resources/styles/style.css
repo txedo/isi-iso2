@@ -60,15 +60,10 @@ body
 #header
 {
 	background-image: url( "../images/header.png" );
-	background-position: center center;
 	background-repeat: repeat-x;
 	border-bottom: 6px solid #C0C0C0;
 	border-color: #008080;
 	line-height: normal;
-	margin: 0 auto;
-	padding: 0;
-	text-decoration: none;
-	text-transform: none;
 	height: 100px;
 	width: 100%;
 }
