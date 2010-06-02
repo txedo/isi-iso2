@@ -22,8 +22,8 @@
 	sesion = (ISesion)session.getAttribute("SesionFrontend");
 	
 	// Tomamos el NIF del beneficiario para el que se quieren obtener
-	// las citas de los parámetros pasados al JSP
-	nifBeneficiario = request.getParameter("nif");
+	// las citas
+	nifBeneficiario = ((Beneficiario)session.getAttribute("Beneficiario")).getNif();
 	
 	try {
 		// Consultamos las citas del beneficiario
@@ -62,13 +62,14 @@
 
 	// Mostramos la lista de citas o el mensaje de error
 	if(mensaje.equals("")) { %>
-		<select id="citas" name="citas" size="4" style="width:250px">
+		<%@page import="dominio.conocimiento.Beneficiario"%>
+<select id="citas" name="citas" size="4" style="width:250px">
 			<% for(int i = 0; i < options.size(); i++) { %>
 				<%= options.get(i) %>
 			<% } %>
 		</select>
 		<br><br>
-		<input type="submit" value="Aceptar" onclick="anularCita('<%= nifBeneficiario %>', 'ajaxEliminarCita.jsp')" />
+		<input type="submit" value="Aceptar" onclick="anularCita('ajaxEliminarCita.jsp')" />
 		<br><br> <%
 	} else {
 		%> <%= mensaje %> <%
