@@ -1,33 +1,34 @@
-<%@page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<%@page import="comunicaciones.ServidorFrontend"%>
-<%@page import="dominio.conocimiento.ISesion"%>
-<%@page import="dominio.conocimiento.Cita"%>
-<%@page import="java.util.Vector"%>
-<%@page import="java.util.Date"%>
-<%@page import="java.rmi.RemoteException"%>
-<%@page import="java.sql.SQLException"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1" %>
+<%@ page import="comunicaciones.ServidorFrontend" %>
+<%@ page import="dominio.conocimiento.ISesion" %>
+<%@ page import="dominio.conocimiento.Cita" %>
+<%@ page import="excepciones.BeneficiarioInexistenteException" %>
+<%@ page import="java.util.Vector" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.rmi.RemoteException" %>
+<%@ page import="java.sql.SQLException" %>
 
 <%
 
 	ServidorFrontend servidor;
 	Vector<Cita> citas;
-	Vector<String> options;
+	Vector<String> options = null;
 	ISesion sesion;
-	String nifBeneficiario;
+	String nifBeneficiario, mensaje;
 	boolean selec;
 	
 	// Tomamos la sesión del cliente de la sesión HTTP
 	sesion = (ISesion)session.getAttribute("SesionFrontend");
+	
 	// Tomamos el NIF del beneficiario para el que se quieren obtener
 	// las citas de los parámetros pasados al JSP
 	nifBeneficiario = request.getParameter("nif");
 	
-	// Consultamos las citas del beneficiario
 	try {
+		// Consultamos las citas del beneficiario
 		servidor = ServidorFrontend.getServidor();
 		citas = servidor.consultarHistoricoCitas(sesion.getId(), nifBeneficiario);
-	
 		// Generamos la lista HTML con los datos de las citas (se marcan en
 		// gris las citas pasadas y se selecciona la primera cita no pasada)
 		options = new Vector<String>();
@@ -48,29 +49,29 @@
 				}
 			}
 		}
-%>
+		mensaje = "";
+	} catch(RemoteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(SQLException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(BeneficiarioInexistenteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(Exception e) {
+		mensaje = "Error: " + e.getMessage();
+	}
+
+	// Mostramos la lista de citas o el mensaje de error
+	if(mensaje.equals("")) { %>
 		<select id="citas" name="citas" size="4" style="width:250px">
 			<% for(int i = 0; i < options.size(); i++) { %>
 				<%= options.get(i) %>
 			<% } %>
 		</select>
-		
 		<br>
-			<input type="submit" value="Aceptar" onclick="anularCita('<%=nifBeneficiario%>', 'ajaxEliminarCita.jsp')" />
-		<br><br>
-<%
-	} 
-
-	catch (RemoteException e) { %>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (SQLException e) {  %>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (Exception e) { %>
-		Error: <%=e.getMessage()%>
-<%		
+		<input type="submit" value="Aceptar" onclick="anularCita('<%= nifBeneficiario %>', 'ajaxEliminarCita.jsp')" />
+		<br><br> <%
+	} else {
+		%> <%= mensaje %> <%
 	}
-		
+	
 %>
-

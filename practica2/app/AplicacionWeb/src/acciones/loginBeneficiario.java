@@ -9,7 +9,6 @@ import comunicaciones.ServidorFrontend;
 import dominio.conocimiento.Beneficiario;
 import dominio.conocimiento.ISesion;
 import excepciones.BeneficiarioInexistenteException;
-import excepciones.UsuarioIncorrectoException;
 
 /**
  * Acción ejecutada cuando un beneficiario quiere iniciar sesión en
@@ -26,12 +25,11 @@ public class loginBeneficiario extends ActionSupport {
 	public String execute() throws RemoteException, SQLException, BeneficiarioInexistenteException, Exception {
 		ServidorFrontend servidor;
 	
-			// Iniciamos sesión con el NSS introducido
-			servidor = ServidorFrontend.getServidor();
-			sesion = servidor.identificarBeneficiario(nss);
-			// Obtenemos los datos del beneficiario
-			beneficiario = servidor.consultarBeneficiarioPorNSS(sesion.getId(), nss);
-
+		// Iniciamos sesión con el NSS introducido
+		servidor = ServidorFrontend.getServidor();
+		sesion = servidor.identificarBeneficiario(nss);
+		// Obtenemos los datos del beneficiario
+		beneficiario = servidor.consultarBeneficiarioPorNSS(sesion.getId(), nss);
 
 		return SUCCESS;
 	}

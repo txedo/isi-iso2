@@ -1,41 +1,52 @@
-<%@page import="excepciones.VolanteNoValidoException"%>
-<%@page import="dominio.conocimiento.Volante"%>
-<%@page import="java.sql.SQLException"%>
-<%@page import="java.rmi.RemoteException"%>
-<%@page import="dominio.conocimiento.ISesion"%>
-<%@page import="comunicaciones.ServidorFrontend"%>
-<%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1" %>
+<%@ page import="comunicaciones.ServidorFrontend" %>
+<%@ page import="dominio.conocimiento.Volante" %>
+<%@ page import="dominio.conocimiento.ISesion" %>
+<%@ page import="excepciones.VolanteNoValidoException" %>
+<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.rmi.RemoteException" %>
 
-<% 
-	long idSesion = ((ISesion) request.getSession(false).getAttribute("SesionFrontend")).getId();
-	long nVolante = Long.parseLong(request.getParameter("nVolante"));
-	ServidorFrontend p;
-	Volante v = null;
+<%
+
+	ServidorFrontend servidor;
+	ISesion sesion;
+	Volante volante;
+	String mensaje;
+	long nVolante;
+	
+	// Tomamos la sesión del cliente de la sesión HTTP
+	sesion = (ISesion)session.getAttribute("SesionFrontend");
+	
+	// Tomamos el id del volante de los parámetros pasados al JSP
+	nVolante = Long.parseLong(request.getParameter("nVolante"));
+	
 	try {
-		p = ServidorFrontend.getServidor();
-		v = p.consultarVolante(idSesion, nVolante);
-		// Se pone el volante en la sesión del beneficiario para no tener que volver a consultar el
-		// especialista cuando se quieran mostrar las horas laborales en cada dia seleccionado. Asi, se
-		// ahorran consultas, ya que si no, cada vez que se cambie el dia del calendario y se tengan que refrescar
-		// las horas, se tendría que consultar el volante y su receptor
-		session = request.getSession(false);
-		session.setAttribute("volante", v);
-%>
-		Le atenderá el Dr. <%= v.getReceptor().getApellidos() %>
-<%
+		// Consultamos los datos del volante indicado
+		servidor = ServidorFrontend.getServidor();
+		volante = servidor.consultarVolante(sesion.getId(), nVolante);
+		// Ponemos el volante en la sesión HTTP del beneficiario para
+		// no tener que volver a consultar el especialista cuando se
+		// quieran mostrar las horas laborales en cada dia seleccionado.
+		// Asi, se ahorran consultas, ya que si no, cada vez que se
+		// cambie el dia del calendario y se tengan que refrescar las
+		// horas, se tendría que consultar el volante y su receptor
+		session.setAttribute("volante", volante);
+		mensaje = "Le atenderá el Dr. " + volante.getReceptor().getApellidos() +
+		          ", " + volante.getReceptor().getNombre() + ".";
+	} catch(RemoteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(SQLException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(VolanteNoValidoException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(Exception e) {
+		mensaje = "Error: " + e.getMessage();
 	}
-	catch (RemoteException e) { %>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (SQLException e) {  %>
-		Error: <%=e.getMessage()%>
-<%	} catch(VolanteNoValidoException e) {%>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (Exception e) {%>
-		Error: <%=e.getMessage()%>
-<%
+
+	// Mostramos el resultado de la operación o el mensaje de error
+	if(!mensaje.equals("")) {
+		%> <%= mensaje %> <%
 	}
+
 %>

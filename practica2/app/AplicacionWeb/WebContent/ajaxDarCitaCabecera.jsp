@@ -4,11 +4,14 @@
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
 <%@ page import="dominio.conocimiento.IConstantes" %>
+<%@ page import="excepciones.FechaNoValidaException" %>
+<%@ page import="excepciones.MedicoInexistenteException" %>
+<%@ page import="excepciones.BeneficiarioInexistenteException" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Calendar" %>
-<%@page import="java.rmi.RemoteException"%>
-<%@page import="java.sql.SQLException"%>
+<%@ page import="java.rmi.RemoteException" %>
+<%@ page import="java.sql.SQLException" %>
 
 <%
 
@@ -17,8 +20,8 @@
 	ISesion sesion;
 	SimpleDateFormat formatoDia, formatoHora;
 	Calendar cal1, cal2;
-	Date fechaCita, horaCita;
-	String dia, hora;
+	Date diaCita, horaCita, fechaCita;
+	String dia, hora, mensaje;
 
 	// Tomamos la sesión del cliente de la sesión HTTP
 	sesion = (ISesion)session.getAttribute("SesionFrontend");
@@ -34,29 +37,39 @@
 	formatoHora = new SimpleDateFormat("HH:mm");
 	
 	// Generamos la fecha de la cita a partir del día y la hora
-	fechaCita = formatoDia.parse(dia);
+	diaCita = formatoDia.parse(dia);
 	horaCita = formatoHora.parse(hora);
 	cal1 = Calendar.getInstance();
-	cal1.setTime(fechaCita);
+	cal1.setTime(diaCita);
 	cal2 = Calendar.getInstance();
 	cal2.setTime(horaCita);
 	cal1.set(Calendar.HOUR_OF_DAY, cal2.get(Calendar.HOUR_OF_DAY));
 	cal1.set(Calendar.MINUTE, cal2.get(Calendar.MINUTE));
+	cal1.set(Calendar.SECOND, 0);
+	fechaCita = cal1.getTime();
 	
 	try {
 		// Emitimos la cita para el médico de cabecera
 		servidor = ServidorFrontend.getServidor();
-		servidor.pedirCita(sesion.getId(), beneficiario, beneficiario.getMedicoAsignado().getNif(), new Date(fechaCita.getYear(), fechaCita.getMonth(), fechaCita.getDate(), horaCita.getHours(), horaCita.getMinutes()), IConstantes.DURACION_CITA);
+		servidor.pedirCita(sesion.getId(), beneficiario, beneficiario.getMedicoAsignado().getNif(), fechaCita, IConstantes.DURACION_CITA);
+		mensaje = "";
+	} catch(RemoteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(SQLException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(BeneficiarioInexistenteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(MedicoInexistenteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(FechaNoValidaException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(Exception e) {
+		mensaje = "Error: " + e.getMessage();
 	}
-	catch (RemoteException e) { %>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (SQLException e) {  %>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (Exception e) { %>
-		Error: <%=e.getMessage()%>
-<%		
+	
+	// Mostramos el resultado de la operación o el mensaje de error
+	if(!mensaje.equals("")) {
+		%> <%= mensaje %> <%
 	}
-		
+	
 %>

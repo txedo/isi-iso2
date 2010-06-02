@@ -4,16 +4,22 @@
 <%@ page import="dominio.conocimiento.ISesion" %>
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
-<%@page import="java.rmi.RemoteException"%>
-<%@page import="java.sql.SQLException"%>
+<%@ page import="dominio.conocimiento.Volante" %>
+<%@ page import="excepciones.BeneficiarioInexistenteException" %>
+<%@ page import="excepciones.MedicoInexistenteException" %>
+<%@ page import="java.rmi.RemoteException" %>
+<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 
 <%
 
 	ServidorFrontend servidor;
 	Medico emisor, receptor;
 	Beneficiario beneficiario;
+	Volante volante;
 	ISesion sesion;
-	String nifBeneficiario, nifReceptor;
+	SimpleDateFormat formatoFecha;
+	String nifBeneficiario, nifReceptor, mensaje;
 	long idVolante;
 
 	// Tomamos la sesión del cliente de la sesión HTTP
@@ -31,24 +37,28 @@
 		servidor = ServidorFrontend.getServidor();
 		beneficiario = servidor.consultarBeneficiarioPorNIF(sesion.getId(), nifBeneficiario);
 		receptor = servidor.consultarMedico(sesion.getId(), nifReceptor);
-	
 		// Emitimos el volante
 		idVolante = servidor.emitirVolante(sesion.getId(), beneficiario, emisor, receptor);
-%>	
-		<br><br><br>El numero de volante emitido es el: <%= idVolante %>.
-		
-<%  }
-	catch (RemoteException e) { %>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (SQLException e) {  %>
-		Error: <%=e.getMessage()%>
-<%
-	} catch (Exception e) { %>
-		Error: <%=e.getMessage()%>
-<%		
+		// Consultamos los datos del volante recién emitido
+		volante = servidor.consultarVolante(sesion.getId(), idVolante);
+		formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+		mensaje = "El número del volante emitido es el " + idVolante +
+		          ", y se podrá utilizar hasta el " + formatoFecha.format(volante.getFechaCaducidad()) + ".";
+	} catch(RemoteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(SQLException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(BeneficiarioInexistenteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(MedicoInexistenteException e) {
+		mensaje = "Error: " + e.getMessage();
+	} catch(Exception e) {
+		mensaje = "Error: " + e.getMessage();		
+	}
+
+	// Mostramos el resultado de la operación o el mensaje de error
+	if(!mensaje.equals("")) {
+		%> <%= mensaje %> <%
 	}
 	
 %>
-
-
