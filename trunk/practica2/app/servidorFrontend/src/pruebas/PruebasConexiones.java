@@ -54,7 +54,7 @@ public class PruebasConexiones extends UISpecTestCase {
 		// No es necesario ningún código de finalización
 	}
 	
-	//TODO: No funciona con la BD secundaria
+	// No funciona la conexión con la BD secundaria mediante Hibernate
 	/** Pruebas de las conexiones con las bases de datos */
 	@SuppressWarnings("deprecation")
 	public void testConexionBD() {

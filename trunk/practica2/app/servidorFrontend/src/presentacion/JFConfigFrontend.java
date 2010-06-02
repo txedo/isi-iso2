@@ -133,14 +133,12 @@ public class JFConfigFrontend extends javax.swing.JFrame {
 						pnlBDPrincipal.add(txtPuertoBDPrincipal);
 						txtPuertoBDPrincipal.setName("txtPuertoBDPrincipal");
 						txtPuertoBDPrincipal.setBounds(90, 51, 103, 20);
-						txtPuertoBDPrincipal.setEnabled(false);
 					}
 					{
 						txtIPBDPrincipal = new JTextField();
 						pnlBDPrincipal.add(txtIPBDPrincipal);
 						txtIPBDPrincipal.setName("txtIPBDPrincipal");
 						txtIPBDPrincipal.setBounds(90, 22, 103, 20);
-						txtIPBDPrincipal.setEnabled(false);
 					}
 					{
 						lblPuertoBDPrincipal = new JLabel();

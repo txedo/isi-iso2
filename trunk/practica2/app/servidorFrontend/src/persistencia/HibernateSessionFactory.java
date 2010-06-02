@@ -1,5 +1,7 @@
 package persistencia;
 
+import java.util.Properties;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
@@ -24,18 +26,19 @@ public class HibernateSessionFactory {
 	private static Configuration configuration = new Configuration();    
 	private static org.hibernate.SessionFactory sessionFactory;
 	private static String configFile = CONFIG_FILE_LOCATION;
+	private static String databaseURL = "";
 
-	static {
-		try {
-			configuration.configure(configFile);
-			sessionFactory = configuration.buildSessionFactory();
-		} catch (Exception e) {
-			System.err
-			.println("%%%% Error Creating SessionFactory %%%%");
-			e.printStackTrace();
-		}
-	}
 	private HibernateSessionFactory() {
+	}
+	
+	/**
+	 * Sets database URL (overrides Hibernate configuration).
+	 * Session factory will be rebuilded in the next call.
+	 */
+	public static void setDatabaseURL(String databaseURL) {
+		HibernateSessionFactory.databaseURL = databaseURL;
+		closeSession();
+		sessionFactory = null;
 	}
 
 	/**
@@ -65,12 +68,17 @@ public class HibernateSessionFactory {
 	 *
 	 */
 	public static void rebuildSessionFactory() {
+		Properties props;
+		
 		try {
+			props = new Properties();
+			props.setProperty("hibernate.connection.url", databaseURL);
+			configuration = new Configuration();
 			configuration.configure(configFile);
+			configuration.addProperties(props);
 			sessionFactory = configuration.buildSessionFactory();
 		} catch (Exception e) {
-			System.err
-			.println("%%%% Error Creating SessionFactory %%%%");
+			System.err.println("%%%% Error Creating SessionFactory %%%%");
 			e.printStackTrace();
 		}
 	}
