@@ -36,6 +36,5 @@
 	</script>
     
 	<%@ include file="resources/templates/foot.htm" %>
-	
 </body>
 </html>

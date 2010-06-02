@@ -233,6 +233,7 @@ public class GestorSesiones {
 			operaciones.add(Operaciones.TramitarCita);
 			operaciones.add(Operaciones.TramitarCitaVolante);
 			operaciones.add(Operaciones.ConsultarCitasMedico);
+			operaciones.add(Operaciones.ConsultarMedicoCita);
 		}
 		
 		// Agregamos las operaciones permitidas para citadores y administradores

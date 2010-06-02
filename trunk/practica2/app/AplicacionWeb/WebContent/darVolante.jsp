@@ -87,7 +87,6 @@
 			</span>
 			<br><input type="button" onclick="darVolante('ajaxEmitirVolante.jsp')" value="Aceptar">
 			<br>
-			<br>
 			<span id="mensaje">
 			</span>
 		</div>

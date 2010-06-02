@@ -22,6 +22,21 @@
 <script language="JavaScript" type="text/javascript"> 
 		var peticion = null;
 		peticion = nuevoAjax();
+		
+		// Por defecto, el día elegido es el día de hoy
+		var diaSeleccionado = new Date();
+		var stringDiaSeleccionado;
+		if(diaSeleccionado.getDate()<10) {
+			stringDiaSeleccionado = "0" + diaSeleccionado.getDate();
+		} else {
+			stringDiaSeleccionado = diaSeleccionado.getDate();
+		}
+		if(diaSeleccionado.getMonth()<9) {
+			stringDiaSeleccionado = stringDiaSeleccionado+"/0"+(diaSeleccionado.getMonth()+1)+"/"+(1900 + diaSeleccionado.getYear());
+		} else {
+			stringDiaSeleccionado = stringDiaSeleccionado+"/"+(diaSeleccionado.getMonth()+1)+"/"+(1900 + diaSeleccionado.getYear());
+		}
+		
 		function validarVolante(url) {
 			if (peticion){
 				// Se limpia el mensaje de error, por si lo hubiera
@@ -33,12 +48,10 @@
 					if (peticion.readyState==4) {
 						if (peticion.responseText.indexOf("Error")==-1) {
 							document.getElementById("spanEspecialista").innerHTML=peticion.responseText + 
-							"<br><br>Seleccione un día laboral del especialista: ";
+							"<br><br>Elija el día y la hora de la cita:<br>";
 							document.getElementById("campofecha").style.visibility = "visible";
 							// Al mostrar el calendario, se muestran, por defecto, las horas disponibles del día actual
-							var fecha = new Date();
-							var stringDia = fecha.getDate()+"/"+(fecha.getMonth()+1)+"/"+(fecha.getFullYear());
-							consultarHoras('ajaxObtenerHorasEspecialista.jsp', stringDia);
+							consultarHoras('ajaxObtenerHorasEspecialista.jsp', stringDiaSeleccionado);
 						}
 						else {
 							document.getElementById("spanEspecialista").innerHTML=peticion.responseText;
@@ -52,9 +65,6 @@
 			}
 		}
 		
-		// Por defecto, el día elegido es el día de hoy
-		var diaSeleccionado = new Date();
-		var stringDiaSeleccionado = diaSeleccionado.getDate()+"/"+(diaSeleccionado.getMonth()+1)+"/"+diaSeleccionado.getYear();		
 		function darCita(url) {
 			if (peticion){
 				peticion.open("post", url, true);
@@ -82,20 +92,42 @@
 			}
 		}
 		
-		function consultarHoras (url, dia) {			
-			if (peticion){
+		// Consulta la lista de horas disponibles para el médico
+		// (página 'ajaxObtenerHorasEspecialista.jsp')
+		function consultarHoras(url, dia) {			
+			if(peticion) {
 				peticion.open("post", url, true);
 				var parametros = "dia=" + dia;
-				peticion.onreadystatechange=function() {
-					if (peticion.readyState==4) {	
-						document.getElementById("spanHoras").innerHTML=peticion.responseText;
-					}						
+				peticion.onreadystatechange = function() {
+					if(peticion.readyState == 4) {	
+						document.getElementById("spanHoras").innerHTML = peticion.responseText;
+						ponerMedicoReal("ajaxConsultarMedicoCita.jsp");
+					}
 				}
 				peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				peticion.send(parametros);
 			}
 		}
 	
+		// Consulta el médico real que dará la cita seleccionada
+		// (página 'ajaxConsultarMedicoCita.jsp')
+		function ponerMedicoReal(url) {
+			var selectHoras = document.getElementById("horas");
+			var hora = selectHoras.options[selectHoras.selectedIndex].value;
+			
+			if(peticion) {
+				peticion.open("post", url, true);
+				var parametros = "dia=" + stringDiaSeleccionado + "&hora=" + hora;
+				peticion.onreadystatechange = function() {
+					if(peticion.readyState == 4) {
+						document.getElementById("mensaje").innerHTML = peticion.responseText;
+					}						
+				}
+				peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				peticion.send(parametros);
+			}
+		}
+		
 	</script>
 	
 	<!-- script necesario para mostrar el Datepicker y darle formato. En este caso, se 
@@ -113,7 +145,6 @@
 								consultarHoras('ajaxObtenerHorasEspecialista.jsp', textoFecha);
 							}
 			});
-				
 		});
 
 	</script>
@@ -123,19 +154,19 @@
 	
     <div id="contenido">
 		<div class="textoCuerpo">
-			<%= ((Beneficiario) request.getSession(false).getAttribute("Beneficiario")).getNombre() %>, escriba su número de volante <br>		
+			<%= ((Beneficiario) request.getSession(false).getAttribute("Beneficiario")).getNombre() %>, escriba su número de volante:<br>		
 			<br>Volante: <s:textfield id="nVolante" name="nVolante"></s:textfield>
 			<input type="submit" value="Aceptar" onclick="validarVolante('ajaxValidarVolante.jsp')"/>
 
-			<br><br><br>
+			<br><br>
 			<span id="spanEspecialista">
 			</span>
 			
 			<!-- En este div se carga el datepicker -->
 			<div id="campofecha" style="visibility:hidden"></div>
-			<br> <br>
+			<br>
 			<span id="spanHoras"></span>
-			<br><br>
+			<br>
 			<span id="mensaje"></span>
 		</div>
 		<div class="volver">
