@@ -63,9 +63,11 @@
 					Elija una opción: <br>
 				</div>
 				<div style="padding-left:250px;">
-			<a href="citaCabecera.jsp" title="Pedir cita con su médico <%= tipoMedico %>">Pedir cita con su m&eacute;dico <%= tipoMedico %></a><br>
-			<a href="citaEspecialista.jsp" title="Pedir cita con un médico especialista">Pedir cita con un m&eacute;dico especialista</a><br>
-			<a href="anularCita.jsp" title="Anular una cita">Anular una cita</a>
+			<ul type="disc">
+			<li><a href="citaCabecera.jsp" title="Pedir cita con su médico <%= tipoMedico %>">Pedir cita con su m&eacute;dico <%= tipoMedico %></a></li>
+			<li><a href="citaEspecialista.jsp" title="Pedir cita con un médico especialista">Pedir cita con un m&eacute;dico especialista</a></li>
+			<li><a href="anularCita.jsp" title="Anular una cita">Anular una cita</a></li>
+			</ul>
 				</div>
 				<br>
 				<div style="padding-left:250px;">

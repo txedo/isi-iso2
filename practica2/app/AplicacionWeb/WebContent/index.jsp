@@ -33,37 +33,27 @@
 	%>
 	<%@ include file="resources/templates/top.htm" %>
 	
-		<div id="divMenu">
 		<ul class="menu">
-			<li>
-				<a href="index.jsp">Login</a>
-			</li>
+			<div class="navegacion">Inicio</div>
 		</ul>
-		</div>
 
 			<!-- Menú de selección de rol -->
 		    <div id="contenido">
-		        <div class="imagenesLogin">
-		            <div class="textoCuerpo" style="text-align:center;">
-		                Seleccione su rol:
-		            	<table width="300px" cellspacing="1" cellpadding="50" border="0" align="center">
-		                    <tbody>
+		            <div class="textoCuerpo" style="text-align:center;">		         
+		            	<div style="text-align:left;margin-top:30px;margin-left:50px;">Bienvenido/a a la p&aacute;gina Web del SSCA.<br /><br />Seleccione su rol:</div>
+		           		<div class="imagenesLogin">
+			            	<table width="300px" cellspacing="1" cellpadding="25" border="0" align="left">
 		                        <tr>
 		                            <td align="center">
-		                            	<a href="loginMedico.jsp">
-		                            		<img src="resources/images/doctor.png" alt="Rol M&eacute;dico" />
-		                            		Médico
-		                            	</a>
+		                            	<a href="loginMedico.jsp"><img src="resources/images/doctor.png" alt="Rol M&eacute;dico" /></a>
+		                            	<a href="loginMedico.jsp">Médico</a>
 		                            </td>
 		                            <td align="center">
-		                            	<a href="loginBeneficiario.jsp">
-		                            		<img src="resources/images/patient.png" alt="Rol Beneficiario" />
-		                            		Beneficiario
-		                            	</a>
+		                            	<a href="loginBeneficiario.jsp"><img src="resources/images/patient.png" alt="Rol Beneficiario" /></a>
+		                            	<a href="loginBeneficiario.jsp">Beneficiario</a>
 		                            </td>
 			                    </tr>
-		                    </tbody>  
-		            	</table>
+			            	</table>
 		            </div>
 		        </div>
 		    </div>
