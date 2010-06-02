@@ -1,0 +1,61 @@
+\section{Conexión de la aplicación Web con el servidor front-end}
+
+% Comentar algo, en plan de pequeña introducción
+% Incluir secciones del diagrama de clases y comentar el proxy 
+
+
+\subsection{Cambios realizados en el servidor front-end} \label{cambios}
+
+Ha sido necesario realizar ligeras modificaciones en el sistema desarrollado con anterioridad para poder dar soporte a la funcionalidad que debe tener la aplicación Web y para que dicha aplicación pueda utilizar y comunicarse con el servidor front-end ya desarrollado. 
+
+Dichas modificaciones se enumeran a continuación, comentando el motivo de realizar dicho cambio.
+
+\begin{milista}
+
+	\item La aplicación Web debe permitir iniciar sesión a un beneficiario, por lo que es necesario incluir en el servidor front-end una sesion para ellos. Por tanto, la clase \textit{Sesión} del servidor front-end ha pasado a ser abstracta y ya no tiene asociado un usuario, para poder generalizar las sesiones de los usuarios y los beneficiarios. \\
+	De este modo, la clase abstracta \textit{Sesión} tiene tiene dos especializaciones: \textit{SesionUsuario} y \textit{SesionBeneficiario}, cada una de las cuales tiene asociado un objeto del tipo adecuado (usuario o beneficiario).
+	Además, se ha incluido el rol de ''Beneficiario'' en la enumeración de roles que ya existía en el sistema, renombrándose por \textit{Roles}, en lugar de \textit{RolesUsuario}.
+
+	\item Para poder identificar unívocamente a los clientes que inician sesión en la alicación Web sin conocer su rol (médico o beneficiario), se ha añadido el método abstracto ''getNombre()'' a la clase \textit{Sesión}, el cual se implementa en la clase \textit{SesionUsuario}, devolviendo el login del usuario, y en la clase \textit{SesionBeneficiario}, devolviendo el NIF del beneficiario.
+
+	\item Debido al cambio en las sesiones, se han tenido que cambiar las operaciones de algunos gestores que accedían al campo ''usuario'' de la \textit{Sesión}, accediendo ahora a dicho campo de la clase \textit{SesionUsurio}. Además, todas las llamadas a los métodos de la clase \textit{ServidorFrontend} que escribían en el log también se han modificado, para utilizar el nuevo método ''getNombre()'' para identificar al cliente que inicie sesión.
+
+	\item En el cliente se han modificado todas las referencias a la enumeración \textit{RolesUsuario} por \textit{Roles}.
+
+	\item El método ''identificar'' del servidor front-end se ha renombrado por ''identificarUsuario'' y se ha creado el método ''identificarBeneficiario'', actualizándose las clases \textit{GestorSesion} y \textit{ServidorFrontend}.
+
+	\item Añadido en la clase \textit{GestorMédicos} el método para consultar un médico a partir de su login, necesario para recuperar el objeto de tipo médico cuando un cliente con este rol inicia sesión en la aplicación Web. Dicho método también se ha añadido en la clase \textit{GestorUsuarios}.
+	
+	\item Para seguir manteniendo la interfaz \textit{IServidor}, el método para identificar un beneficiario se realiza con el método ''mensajeAuxiliar''. Lo mismo sucede para para consultar un medico por su login.
+
+	\item Las operaciones ''identificarBeneficiario'' y ''consultarPorLogin'' sólo se han añadido al proxy de la aplicación Web, pues los clientes de la aplicación de escritorio no utilizan dichos métodos.
+
+	\item Creado un método en la clase \textit{GestorCitas} para consultar una cita, dado su identificador. Este método se invoca a través del mensaje auxiliar de la interfaz \textit{IServidor}.
+
+	\item Ha sido necesario modificar los permisos de las operaciones que pueden realizar los diferentes roles, para poder permitir realizar dichas operaciones al beneficiario y al médico. A continuación, se citan los permisos que se han añadido al rol de beneficiario y de médico: 
+	\begin{itemize}
+		\item El médico debe poder consultar los beneficiarios que tiene asignados, para mostrarlos en la página Web ''darVolante.jsp''. 	
+		\item La operación ''ConsultarMedico'' la puede realizar ahora también un médico y un beneficiario, porque se necesita consultar el médico receptor para poder emitir un volante. 
+		\item Para consultar un medico por su login, se ha creado una operación nueva que se llama ''ConsultarPropioMedico'', que la puede realizar un medico o el administrador del sistema.	
+		\item Se ha añadido un permiso para que un beneficiario pueda consultar sus citas.
+		\item Añadido un permiso para que un beneficiario pueda anular una cita.
+		\item Modificados los permisos para que un beneficiario pueda consultar las horas libres y ocupadas de un médico.
+		\item Modificados los permisos para que un beneficiario pueda tramitar una cita, con y sin volante.
+	\end{itemize}
+
+\end{milista}
+
+
+\subsubsection{Cambios referentes a la conexión con la base de datos} \label{cambiosHibernate}
+
+%\item  Se ha creado una nueva clase ConsultaHibernate que agrupa una cadena de consulta de Hibernate y sus parámetros, de forma análoga a lo que se hizo con ComandoSQL. Esta clase tiene un método crearQuery que toma una sesión de Hibernate y devuelve una consulta específica para esa sesión.
+%
+%\item  Modificado el GestorConexionesBD para poder realizar consultas, inserciones,  modificaciones y eliminaciones a través de Hibernate. Para las consultas se utiliza un método al que se le pasa una instancia de ConsultaHibernate, mientras que para las otras tres operaciones simplemente se pasa el objeto que se quiere crear/modificar/eliminar. Para poder realizar las operaciones más complejas de modificación de usuarios y beneficiarios, se han tenido que añadir nuevos métodos, como iniciarTransaccion, terminarTransaccion y borrarCache.
+%
+%\item  La interfaz IConexionBD y todas las clases que la implementan se han adaptado a los nuevos métodos del GestorConexionesBD: ya no hay métodos abrir y cerrar, porque la base de datos la gestiona Hibernate; hay métodos consultar/insertar/actualizar/eliminar; y se han añadido los métodos iniciarTransaccion y borrarCache.
+%
+%\item  Modificadas todas las clases de persistencia (FPs y Utilidades) para utilizar Hibernate. Como ahora toda la persistencia se realiza mediante Hibernate, se han eliminado todas las clases relacionadas con el agente de la bases de datos, tanto en el servidor front\item end como en el de resplado (AgenteFrontend, AgenteRespaldo, ComandoSQL, etc.).
+%
+%\item  Para que las clases del dominio sean compatibles con Hibernate, las relaciones uno\item a\item muchos entre clases personalizadas (por ejemplo, Beneficiario y Direccion) deben estar implementadas con colecciones de tipo Set, y no Vector como estaban en la práctica del primer cuatrimestre. Por eso, ha sido necesario modificar la clase Beneficiario y Medico y otras clases relacionadas para que pasen a utilizar clases Set.
+%
+%\item  Aunque se ha mantenido la estructura de clases que permitiría al servidor front\item end funcionar junto con el de respaldo, la gestión de la persistencia mediante Hibernate da bastantes problemas cuando se usan ambos servidores. Por eso, he deshabilitado la opción de utilizar el servidor de respaldo en la ventana principal del servidor front\item end, y además, por comodidad, ahora tampoco se puede cambiar la IP de la base de datos, se supone que debe estar en la misma máquina que el servidor (esto se podría dejar como estaba cambiando dinámicamente el fichero hibernate.cfg.xml).
