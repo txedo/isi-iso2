@@ -54,7 +54,6 @@ body
 	background-repeat: no-repeat;
 	border-bottom: 6px solid #C0C0C0;
 	border-color: #008080;
-	float: none;
 	/*font-family: Tahoma;
 	font-size: 12px;
 	font-style: normal;
@@ -71,26 +70,74 @@ body
 
 .logoCabecera 
 {
-	padding-top: 35px;
+	background-image: url("../images/health-care-shield-256.png");
+	margin-top: 15px;
 	padding-left: 0px;
+	float:left;
 	padding-right: auto;
 	margin-right: auto;
-	width: 200px;
 	float: left;
+	width:256px;
+	height:256px;
 }
 
 .textoCabecera 
 {
-	text-align: left;
-	padding-top: 30px;
+	text-align: right;
+	margin-top: -70px;
+	float:left;
 	font-family: Verdana;
-	padding-left: 290px;
-	padding-right: auto;
 	font-weight: bold;
 	font-size: 20pt;
 	margin-right: auto;
-	width: 600px;
+	margin-left:-70px;
+	width: 800px;
 }
+
+.tagLine
+{
+	text-align: right;
+	float: left;
+	font-family: Verdana;
+	padding-right: auto;
+	font-weight: bold;
+	font-size: 10pt;
+	margin-right: auto;
+	color: #008080;
+	width: 800px;
+}
+
+#divMenu{
+	width:1020px;
+	height:30px;
+	background:#008080;
+	margin: 0 auto;
+	padding: 0;
+	margin-top:-20px;
+}
+
+.menu {	
+	list-style:none outside none;
+
+}
+.menu li {
+	float:right;
+}
+
+.menu a {
+	background: right #333333;
+	color:#CCCCCC;
+	font-weight:normal;
+	margin:0 auto;
+	padding:8px 12px;
+	text-decoration:none;
+	margin-top:-5px;
+}
+.menu a:hover {
+	background: scroll center bottom #4A7425;
+	color:#FFFFFF;
+}
+
 
 #contenido
 {

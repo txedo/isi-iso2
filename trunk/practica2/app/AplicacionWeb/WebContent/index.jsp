@@ -12,9 +12,7 @@
 		}
 	</script>
 </head>
-<body>
-	<%@ include file="resources/templates/top.htm" %>
-	
+<body>	
 	<%
 		String paginaMenu;
 	
@@ -33,7 +31,16 @@
 	<%
 		if(paginaMenu.equals("")) {
 	%>
+	<%@ include file="resources/templates/top.htm" %>
 	
+		<div id="divMenu">
+		<ul class="menu">
+			<li>
+				<a href="index.jsp">Login</a>
+			</li>
+		</ul>
+		</div>
+
 			<!-- Menú de selección de rol -->
 		    <div id="contenido">
 		        <div class="imagenesLogin">
