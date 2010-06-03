@@ -53,7 +53,6 @@
 
 	// Mostramos la lista de especialistas o el mensaje de error
 	if(mensaje.equals("")) { %>
-		<br>Dr./Dra.:
 		<select id="especialista" name="especialistas">
 			<% for(int i = 0; i < options.size(); i++) { %>
 				<%= options.get(i) %>

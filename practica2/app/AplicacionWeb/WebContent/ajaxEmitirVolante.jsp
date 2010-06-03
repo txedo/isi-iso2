@@ -43,7 +43,7 @@
 		volante = servidor.consultarVolante(sesion.getId(), idVolante);
 		formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 		mensaje = "El número del volante emitido es el " + idVolante +
-		          ", y se podrá utilizar hasta el " + formatoFecha.format(volante.getFechaCaducidad()) + ".";
+		          " y se podrá utilizar hasta el " + formatoFecha.format(volante.getFechaCaducidad()) + ".";
 	} catch(RemoteException e) {
 		mensaje = "Error: " + e.getMessage();
 	} catch(SQLException e) {
