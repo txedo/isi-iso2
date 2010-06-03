@@ -26,8 +26,8 @@
 
 <!-- En este div se carga el datepicker -->
 <div id="campofecha" style="visibility:hidden"></div>
-<br>
-<span id="spanHoras"></span>
-<br>
-<span id="mensaje"></span>
-
+<div id="campohoras">
+	<span id="spanHoras"></span>
+	<br>
+	<span id="mensaje"></span>
+</div>

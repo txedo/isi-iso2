@@ -60,19 +60,16 @@ body
 #header
 {
 	background-image: url( "../images/header.png" );
-	background-repeat: repeat-x;
-	border-bottom: 6px solid #C0C0C0;
-	border-color: #008080;
-	line-height: normal;
+	background-repeat: no-repeat;
 	width: 100%;
 	padding: 20px;
 }
 
 .logoCabecera 
 {
-	background-image: url("../images/health-care-shield-256.png");
-	width:235px;
-	height:256px;
+	background-image: url("../images/health-care-shield-150.png");
+	width:116px;
+	height:150px;
 	float: left;
 }
 
@@ -81,7 +78,7 @@ body
 	text-align: right;
 	font-family: Verdana;
 	font-weight: bold;
-	font-size: 20pt;
+	font-size: 22pt;
 	height: 60px;
 	width: 980px;
 
@@ -110,29 +107,32 @@ body
 	color:#FFFFFF;
 }
 
-#izquierdo
-{
-	background-color:#FFFFFF;
-	width:300px;
-	min-height:300px;
-}
-
 #contenido
 {
 	background-color:#FFFFFF;
 	min-height:300px;
 	width: 1020px;
+	/*clear:both;*/
 }
 
-.textoCuerpo 
+#izquierdo
+{
+	background-color:#FFFFFF;
+	width:290px;
+	clear:both;
+	float:left;
+}
+
+#textoCuerpo 
 {
 	font-family: Arial, Helvetica, sans-serif; 
 	font-size: medium;
 	font-weight: bold; 
 	color: #171C56;
 	text-align: center;
-	width: 720px;
-	float:right;
+	width: 730px;
+	margin-left:290px;
+	text-valing:bottom;
 }
 
 #pie
@@ -151,5 +151,11 @@ option.ocupado{
 }
 
 #campofecha {
-	text-align: center;	
+	margin-left:200px;
+	float:left;
+}
+
+#campohoras {
+	text-align: center;
+	clear:both;
 }
