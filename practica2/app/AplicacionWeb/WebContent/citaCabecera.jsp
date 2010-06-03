@@ -26,9 +26,9 @@ else
 	tipoMedico = (medico.getTipoMedico().getCategoria() == CategoriasMedico.Cabecera) ? "médico de cabecera" : "pediatra";
 
   		if (tieneMedico) { %>
-  			<%= beneficiario.getNombre() %>, su <%= tipoMedico %> es el Dr./Dra. <%= medico.getApellidos() %>.
+  			Su <%= tipoMedico %> es el Dr./Dra. <%= medico.getApellidos() %>.
 		<br /><br />
-		Elija el d&iacute;a y hora de la cita:
+		Seleccione el d&iacute;a y hora de la cita:
 		<br /><br />
 		<!-- En este div se carga el datepicker -->
 		<div id="campofecha"></div>

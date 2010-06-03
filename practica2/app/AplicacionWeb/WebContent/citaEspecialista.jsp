@@ -16,8 +16,7 @@
 			throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
 	}
 %>
-<%= b.getNombre() %>, escriba su número de volante:<br>		
-<br>Volante: <s:textfield id="nVolante" name="nVolante"></s:textfield>
+Introduzca el identificador de su volante: <input type="text" id="nVolante" name="nVolante"></input>
 <input type="submit" value="Aceptar" onclick="validarVolante('ajaxValidarVolante.jsp')"/>
 
 <br><br>

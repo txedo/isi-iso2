@@ -69,7 +69,7 @@
 			<% } %>
 		</select>
 		<br><br>
-		<input type="submit" value="Aceptar" onclick="anularCita('ajaxEliminarCita.jsp')" />
+		<input type="submit" value="Anular cita" onclick="anularCita('ajaxEliminarCita.jsp')" />
 		<br><br> <%
 	} else {
 		%> <%= mensaje %> <%
