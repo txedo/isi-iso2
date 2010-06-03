@@ -13,13 +13,15 @@
 	<div class="menu">
 		<div class="navegacion">Inicio</div>
 	</div>
-	<!-- Menú izquierdo -->
-	<div id="izquierdo">
-		<%@ include file="menuIzquierdo.jsp" %>
-	</div>
-	<!-- Menú de selección de rol -->
-    <div id="contenido">
-        <div class="textoCuerpo" style="text-align:center;">		         
+	
+	<!-- El contenido es el menú y el texto de la página -->
+	<div id="contenido">
+		<!-- Menú izquierdo -->
+		<div id="izquierdo">
+			<%@ include file="menuIzquierdo.jsp" %>
+		</div>
+		<!-- Texto de la página -->
+        <div class="textoCuerpo">		         
 			<span id="mod">
 			</span>
         </div>

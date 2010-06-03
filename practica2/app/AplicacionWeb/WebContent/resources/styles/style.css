@@ -103,23 +103,6 @@ body
 	height:27px;
 	background:#008080;
 }
-.menu li {
-	float:right;
-	position:relative;
-}
-
-.menu a {
-	background: right #333333;
-	color:#CCCCCC;
-	font-weight:normal;
-	padding: 7px 12px;
-	height:inherit;
-	text-decoration:none;
-}
-.menu a:hover {
-	background: scroll center bottom #171C56;
-	color:#FFFFFF;
-}
 
 .navegacion
 {
@@ -132,16 +115,13 @@ body
 	background-color:#FFFFFF;
 	width:300px;
 	min-height:300px;
-	padding:15px 0 0;
-
 }
 
 #contenido
 {
 	background-color:#FFFFFF;
 	min-height:300px;
-	padding:15px 0 0;
-	width: 720px;
+	width: 1020px;
 }
 
 .textoCuerpo 
@@ -151,14 +131,8 @@ body
 	font-weight: bold; 
 	color: #171C56;
 	text-align: center;
-}
-
-.imagenesLogin 
-{
-	margin-left:100px;
-	margin-top:0px;
-	font-weight:normal;
-	text-decoration:none;
+	width: 720px;
+	float:right;
 }
 
 #pie
