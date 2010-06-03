@@ -31,8 +31,5 @@ Medico emisor: <input type="text" value="Dr./Dra. <%= med.getApellidos()%>" read
 <span id="mensaje">
 </span>
 
-<div class="volver">
-	<input type="button" onclick="history.go(-1)" value="Volver atrás">
-</div>
 
 

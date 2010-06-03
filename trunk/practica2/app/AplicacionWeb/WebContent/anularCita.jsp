@@ -20,9 +20,8 @@ if (b==null) {
 	throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
 }
 %>
-
-<%= b.getNombre() %>, elija la cita que desee anular: <br>	
-<br>
+Seleccione la cita que desea anular: <br />	
+<br />
 <span id="areaCitas">
 </span>
 <span id="mensaje">

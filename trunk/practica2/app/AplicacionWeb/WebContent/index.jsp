@@ -11,7 +11,10 @@
 	<%@ include file="resources/templates/top.htm" %>
 	
 	<div class="menu">
-		<div class="navegacion">Inicio</div>
+		<span id="nav" class="navegacion">Inicio</span>
+		<span id="auth" class="autenticacion">
+			<%@ include file="sesion.jsp" %>
+		</span>
 	</div>
 	
 	<!-- El contenido es el menú y el texto de la página -->
@@ -23,6 +26,7 @@
 		<!-- Texto de la página -->
         <div id="textoCuerpo">         
 			<span id="mod">
+				<img style="margin-left:-25px" src="./resources/images/prototipo.png"></img>
 			</span>
 		</div>
     </div>

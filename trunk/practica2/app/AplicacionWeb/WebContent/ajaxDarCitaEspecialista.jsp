@@ -56,7 +56,7 @@
 	try {
 		servidor = ServidorFrontend.getServidor();	
 		servidor.pedirCita(sesion.getId(), beneficiario, volante.getId(), fechaCita, IConstantes.DURACION_CITA);
-		mensaje = "";
+		mensaje = "Se ha tramitado correctamente la cita para el día " + formatoDia.format(fechaCita) + ", a las " + formatoHora.format(fechaCita);
 	} catch(RemoteException e) {
 		mensaje = "Error: " + e.getMessage();
 	} catch(SQLException e) {

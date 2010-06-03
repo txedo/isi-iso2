@@ -33,12 +33,7 @@
 					var parametros = "dia=" + stringDiaSeleccionado + "&hora=" + horaSeleccionada;
 					peticion.onreadystatechange = function() {
 						if(peticion.readyState == 4) {	
-							if(peticion.responseText.indexOf("Error") == -1){
-								// Se muestra la página de éxito para las citas, si no hay errores
-								document.location='citaExito.jsp?'+parametros;
-							} else {
-								document.getElementById("mensaje").innerHTML=peticion.responseText;
-							}
+							document.getElementById("mod").innerHTML=peticion.responseText;
 						}						
 					}
 					peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
