@@ -10,20 +10,20 @@
 <body>	
 	<%@ include file="resources/templates/top.htm" %>
 	
-		<ul class="menu">
-			<div class="navegacion">Inicio</div>
-		</ul>
-		<!-- Menú izquierdo -->
-		<div id="izquierdo">
-			<%@ include file="menuIzquierdo.jsp" %>
-		</div>
-		<!-- Menú de selección de rol -->
-	    <div id="contenido">
-	        <div class="textoCuerpo" style="text-align:center;">		         
-				<span id="mod">
-				</span>
-	        </div>
-	    </div>
+	<div class="menu">
+		<div class="navegacion">Inicio</div>
+	</div>
+	<!-- Menú izquierdo -->
+	<div id="izquierdo">
+		<%@ include file="menuIzquierdo.jsp" %>
+	</div>
+	<!-- Menú de selección de rol -->
+    <div id="contenido">
+        <div class="textoCuerpo" style="text-align:center;">		         
+			<span id="mod">
+			</span>
+        </div>
+    </div>
 	    
 	<%@ include file="resources/templates/foot.htm" %>
 </body>
