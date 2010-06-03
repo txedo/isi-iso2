@@ -50,31 +50,6 @@ public class FPUsuario {
 		return usuario;
 	}
 	
-	public static boolean correspondeNIFUsuario(String nif) throws SQLException {
-		ConsultaHibernate consulta;
-		List<?> resultados;
-		boolean existeUsuario;
-		
-		// Consultamos la base de datos
-		consulta = new ConsultaHibernate("FROM " + CLASE_USUARIO + " WHERE "
-				 + ATRIB_NIF + " = ?", nif);
-		resultados = GestorConexionesBD.consultar(consulta);
-		
-		// Si no se obtienen datos, es porque el usuario no existe
-		if(resultados.size() == 0) {
-			existeUsuario = false;
-		} else {
-			existeUsuario = true;
-		}
-		
-		// Borramos los objetos leídos de la caché
-		for(Object objeto : resultados) {
-			GestorConexionesBD.borrarCache(objeto);
-		}
-		
-		return existeUsuario;
-	}
-	
 	public static Usuario consultar(String login, String password) throws SQLException, UsuarioIncorrectoException {
 		ConsultaHibernate consulta;
 		List<?> resultados;
@@ -124,6 +99,31 @@ public class FPUsuario {
 		}
 		
 		return usuario;
+	}
+	
+	public static boolean correspondeNIFUsuario(String nif) throws SQLException {
+		ConsultaHibernate consulta;
+		List<?> resultados;
+		boolean existeUsuario;
+		
+		// Consultamos la base de datos
+		consulta = new ConsultaHibernate("FROM " + CLASE_USUARIO + " WHERE "
+				 + ATRIB_NIF + " = ?", nif);
+		resultados = GestorConexionesBD.consultar(consulta);
+		
+		// Si no se obtienen datos, es porque el usuario no existe
+		if(resultados.size() == 0) {
+			existeUsuario = false;
+		} else {
+			existeUsuario = true;
+		}
+		
+		// Borramos los objetos leídos de la caché
+		for(Object objeto : resultados) {
+			GestorConexionesBD.borrarCache(objeto);
+		}
+		
+		return existeUsuario;
 	}
 	
 	public static Vector<String> consultarMedicos(TipoMedico tipo) throws SQLException {
