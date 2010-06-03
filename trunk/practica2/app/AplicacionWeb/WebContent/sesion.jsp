@@ -11,11 +11,13 @@ else {
 	// si existe, diferenciamos si es médico o beneficario
 	if (request.getSession(false).getAttribute("Medico") != null) {
 		//es médico
-		usuario = ((Medico)request.getSession(false).getAttribute("Medico")).getNombre();
+		Medico m = (Medico)request.getSession(false).getAttribute("Medico");
+		usuario = m.getNombre() + " " + m.getApellidos();
 	}
 	else if (request.getSession(false).getAttribute("Beneficiario") != null) {
 		//es beneficiario
-		usuario = ((Beneficiario)request.getSession(false).getAttribute("Beneficiario")).getNombre();
+		Beneficiario b = (Beneficiario)request.getSession(false).getAttribute("Beneficiario");
+		usuario = b.getNombre() + " " + b.getApellidos();
 	}
 	out.println("Sesi&oacute;n iniciada como "+usuario+" (<a href=\"javascript:cargarModulo('logout.jsp')\" title=\"Terminar la sesión activa\">Cerrar sesi&oacute;n</a>)");
 }

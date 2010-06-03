@@ -1,8 +1,11 @@
+function setLocation(url) {
+		document.location = url;
+	}
+
 function cargarModulo (mod) {
 	var peticion = nuevoAjax();
-	var fichero = mod;
 	if (peticion) {
-		peticion.open('GET',fichero,true);
+		peticion.open('POST',mod,true);
 		peticion.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		peticion.onreadystatechange=function() {
 			if (peticion.readyState==4) {
@@ -16,6 +19,9 @@ function cargarModulo (mod) {
 				// Al ejecutar la accion de obtener beneficiarios, se toma por defcto los especialistas de la primera especialidad
 				if (mod == "obtenerBeneficiariosMedico"){
 					cargarReceptor('ajaxObtenerEspecialistas.jsp');
+				}
+				else if (mod == "loginBeneficiario" || mod == "loginMedico") {
+					// aqui hay que hacer algo
 				}
 				else if (mod == "citaCabecera.jsp") {
 					// script necesario para mostrar el Datepicker y darle formato. En este caso, se deshabilitan los fines de semana
@@ -64,22 +70,24 @@ function cargarModulo (mod) {
 
 function actualizarNavegacion (mod)
 {
-	var localizacion = "<a href=\"index.jsp\" title=\"Ir a la página de inicio\">Inicio</a>";
-	var barraNavegacion = document.getElementById("nav")
-	if (mod == "loginMedico.jsp") {
-		localizacion += " > Inicar sesión como médico";
-	} else if (mod == "loginBeneficiario.jsp") {
-		localizacion += " > Inicar sesión como beneficiario";
-	} else if (mod == "obtenerBeneficiariosMedico") {
-		localizacion += " > Emitir volante";
-	} else if (mod == "citaCabecera.jsp") {
-		localizacion += " > Tramitar cita";
-	} else if (mod == "citaEspecialista.jsp") {
-		localizacion += " > Tramitar cita con un especialista";
-	} else if (mod == "anularCita.jsp") {
-		localizacion += " > Anular una cita";
+	if (mod != "error.jsp") {
+		var localizacion = "<a href=\"index.jsp\" title=\"Ir a la página de inicio\">Inicio</a>";
+		var barraNavegacion = document.getElementById("nav")
+		if (mod == "loginMedico.jsp") {
+			localizacion += " > Inicar sesión como médico";
+		} else if (mod == "loginBeneficiario.jsp") {
+			localizacion += " > Inicar sesión como beneficiario";
+		} else if (mod == "obtenerBeneficiariosMedico") {
+			localizacion += " > Emitir volante";
+		} else if (mod == "citaCabecera.jsp") {
+			localizacion += " > Tramitar cita";
+		} else if (mod == "citaEspecialista.jsp") {
+			localizacion += " > Tramitar cita con un especialista";
+		} else if (mod == "anularCita.jsp") {
+			localizacion += " > Anular una cita";
+		}
+		barraNavegacion.innerHTML = localizacion;
 	}
-	barraNavegacion.innerHTML = localizacion;
 }
 
 function setLocationTimeout(url, timeout) {

@@ -4,14 +4,13 @@ function cargarReceptor(url) {
 	var select = document.getElementById("especialidad");
 	var especialidad = select.options[select.selectedIndex].value;
 	if (peticion) {
-		document.getElementById("mensaje").innerHTML='';
 		peticion.open('post',url,true);
 		peticion.onreadystatechange=function() {
 			if (peticion.readyState==4) {
 				if (peticion.responseText.indexOf("Error")==-1){
 					document.getElementById("especialistasCargados").innerHTML=peticion.responseText;
 				} else {
-					document.getElementById("mensaje").innerHTML=peticion.responseText;
+					document.getElementById("mod").innerHTML=peticion.responseText;
 				}
 			}						
 		}
@@ -25,7 +24,7 @@ function darVolante(url) {
 		peticion.open('post',url,true);
 		peticion.onreadystatechange=function() {
 			if (peticion.readyState==4) {
-				document.getElementById("mensaje").innerHTML=peticion.responseText;
+				document.getElementById("mod").innerHTML=peticion.responseText;
 			}	
 		}
 		var selectBene = document.getElementById("beneficiario");

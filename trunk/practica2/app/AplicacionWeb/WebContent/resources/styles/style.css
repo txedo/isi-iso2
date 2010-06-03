@@ -49,34 +49,26 @@ body
 #header
 {
 	margin: 0 auto;
-	background-image: url( "../images/header.png" );
+	background-image: url( "../images/hospital_header_green.png" );
 	background-repeat: no-repeat;
 	width: 1020px;
+	height: 228px;
 }
 
-.logoCabecera 
+.textoCabecera, textoCabecera a
 {
 	margin: 0 auto;
-	margin-left: 20px;
-	margin-top: 15px;
-	background-image: url("../images/health-care-shield-150.png");
-	width:116px;
-	height:150px;
-	float: left;
-}
-
-.textoCabecera 
-{
-	margin: 0 auto;
-	padding-top:30px;
+	padding-top:10px;
 	text-align: right;
+	text-decoration: none;
 	font-family: Verdana;
 	font-weight: bold;
 	font-size: 22pt;
 	height: 70px;
 	width: 980px;
-
+	color: navy;
 }
+
 
 .tagLine
 {
@@ -161,7 +153,6 @@ body
 	width: 730px;
 	margin-left:290px;
 	min-height:200px;
-	padding-top:56px;
 	padding-bottom:30px;
 	float:none;
 }
