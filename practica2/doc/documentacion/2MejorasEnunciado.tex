@@ -1,0 +1,14 @@
+\section{Tecnologías utilizadas}
+\label{tecnologias}
+
+En este apartado se comentan las tecnologías que se han empleado para el desarrollo de la aplicación web y la adaptación del servidor front-end, resaltando aquellos aspectos que suponen una mejora con respecto al enunciado original de la práctica.
+
+\begin{milista}
+
+	\item Toda la persistencia del servidor front-end se gestiona a través de \textbf{\emph{Hibernate}}. En el enunciado se pedía como condición mínima que se utilizara \emph{Hibernate} para la persistencia de las citas, pero al final se ha conseguido adaptar el servidor front-end para que todos los accesos a la base de datos se hagan mediante este framework. Por lo tanto, en la nueva versión del servidor no se emplea ningún agente de base de datos, y tampoco se hace uso del lenguaje SQL.
+	
+	\item La conexión entre la aplicación web y el servidor front-end se realiza mediante \textbf{\emph{RMI}}, utilizando la misma interfaz que la aplicación de escritorio desarrollada en el primer cuatrimestre para acceder a las funcionalidades del servidor.
+	
+	% Comentar el uso de Ajax, JSP, CSS (que no se pide en la práctica, es una mejora), Struts, validadores y conversores (si al final los acabamos usando)
+	
+\end{milista}
