@@ -21,10 +21,10 @@
 			<%@ include file="menuIzquierdo.jsp" %>
 		</div>
 		<!-- Texto de la página -->
-        <div class="textoCuerpo">		         
+        <div id="textoCuerpo">         
 			<span id="mod">
 			</span>
-        </div>
+		</div>
     </div>
 	    
 	<%@ include file="resources/templates/foot.htm" %>

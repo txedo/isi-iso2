@@ -32,10 +32,11 @@ else
 		<br /><br />
 		<!-- En este div se carga el datepicker -->
 		<div id="campofecha"></div>
-		<br>
-		<span id="spanHoras"></span>
-		<br>
-		<span id="mensaje"></span>
+		<div id="campohoras">
+			<span id="spanHoras"></span>
+			<br>
+			<span id="mensaje"></span>
+		</div>
 <%  } else { %>
 	<%= beneficiario.getNombre() %>, no tiene m&eacute;dico asignado, por lo que no puede pedir una cita
 <%  } %>
