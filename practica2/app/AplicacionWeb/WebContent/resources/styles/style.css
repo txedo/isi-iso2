@@ -64,47 +64,37 @@ body
 	border-bottom: 6px solid #C0C0C0;
 	border-color: #008080;
 	line-height: normal;
-	height: 100px;
 	width: 100%;
+	padding: 20px;
 }
 
 .logoCabecera 
 {
 	background-image: url("../images/health-care-shield-256.png");
-	margin-top: 15px;
-	padding-left: 0px;
-	float:left;
-	z-index:10;
-	padding-right: auto;
-	margin-right: auto;
-	width:256px;
+	width:235px;
 	height:256px;
+	float: left;
 }
 
 .textoCabecera 
 {
 	text-align: right;
-	margin-top: -70px;
-	float:left;
 	font-family: Verdana;
 	font-weight: bold;
 	font-size: 20pt;
-	margin-right: auto;
-	margin-left:-70px;
-	width: 800px;
+	height: 60px;
+	width: 980px;
+
 }
 
 .tagLine
 {
 	text-align: right;
-	float: left;
 	font-family: Verdana;
-	padding-right: auto;
 	font-weight: bold;
 	font-size: 10pt;
-	margin-right: auto;
 	color: #008080;
-	width: 800px;
+	width: 980px;
 }
 
 .menu {
@@ -112,13 +102,10 @@ body
 	width:1020px;
 	height:27px;
 	background:#008080;
-	margin: 0 auto;
-	padding: 0;
 }
 .menu li {
 	float:right;
 	position:relative;
-	margin-top:1px;
 }
 
 .menu a {
@@ -143,22 +130,18 @@ body
 #izquierdo
 {
 	background-color:#FFFFFF;
-	line-height:normal;
-	margin:0 auto;
-	margin-left:-256px;
+	width:300px;
 	min-height:300px;
 	padding:15px 0 0;
-	float:left;
+
 }
 
 #contenido
 {
 	background-color:#FFFFFF;
-	line-height:normal;
-	margin:0 auto;
 	min-height:300px;
 	padding:15px 0 0;
-	float:left;
+	width: 720px;
 }
 
 .textoCuerpo 
@@ -184,9 +167,8 @@ body
 	border-top: 6px solid #C0C0C0;
 	border-color: #008080;
 	border-width: 6px thin thin;
-	margin: 0 auto;
-	padding: 0;
 	text-align: center;
+	width: 1020px;
 }
 
 option.ocupado{
