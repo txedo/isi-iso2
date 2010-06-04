@@ -35,6 +35,12 @@ function cargarModulo (mod) {
 								consultarHoras('ajaxObtenerHorasCabecera.jsp', textoFecha);
 							}
 						});
+						
+						// Se cambia el tema al datepicker
+							$('#dialog_link, ul#icons li').hover(
+								function() { $(this).addClass('ui-state-hover'); }, 
+								function() { $(this).removeClass('ui-state-hover'); }
+							);
 					});
 					cargarFechaInicial();
 				}
@@ -52,7 +58,15 @@ function cargarModulo (mod) {
 								consultarHoras('ajaxObtenerHorasEspecialista.jsp', textoFecha);
 							}
 						});
+						
+							// Se cambia el tema al datepicker
+							$('#dialog_link, ul#icons li').hover(
+								function() { $(this).addClass('ui-state-hover'); }, 
+								function() { $(this).removeClass('ui-state-hover'); }
+							);
 					});
+					
+				
 				}
 				else if(mod == "anularCita.jsp") {
 					obtenerCitas('ajaxObtenerCitas.jsp');
