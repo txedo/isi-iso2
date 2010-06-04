@@ -4,10 +4,9 @@
 <%@ page isErrorPage="true" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<script type="text/javascript" src="resources/scripts/ajax.js"></script>
 <script type="text/javascript" src="resources/scripts/funciones.js"></script>
 
-<!-- Excepciones lanzadas al aaceder a una página interna sin iniciar sesión (provocadas en paginas JSP) -->
+
 <% 
 // Si el objeto exception es nulo, es poruqe se trataba de un error en una acción de struts, por lo que no se hace nada más
 String error = "";
