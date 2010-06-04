@@ -31,10 +31,10 @@ function darVolante(url) {
 		var bene = selectBene.options[selectBene.selectedIndex].value;
 		var selReceptor = document.getElementById("especialista");
 		var nifReceptor = selReceptor.options[selReceptor.selectedIndex].value;
-		if (bene==null)
-			alert("Seleccione un beneficiario");
+		if (bene==null || bene=="-1")
+			alert("Seleccione un beneficiario.");
 		else if (nifReceptor=="-1") 
-			alert("Seleccione una especialidad en la que exista algún especialista");
+			alert("Seleccione una especialidad en la que exista algún especialista.");
 		else if (bene!=null && nifReceptor!="-1"){	
 			peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			peticion.send("nifBeneficiario="+bene+"&nifReceptor="+nifReceptor);
