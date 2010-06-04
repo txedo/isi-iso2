@@ -1,13 +1,15 @@
-\section{Conexión de la aplicación Web con el servidor}
+\section{Implementación de la aplicación web}
 
-% Comentar algo, en plan de pequeña introducción
-% Incluir secciones del diagrama de clases y comentar el proxy 
+\subsection{Conexión de la aplicación Web con el servidor}
 
-% Hay que hacer un diagrama parecido al que aparece en el enunciado
-% pero donde se vea cómo hemos hecho la conexión con la aplicación web
-% (la web usa el servidor RMI del 1er parcial)
+Para conectar la aplicación web con el servidor front-end del sistema de salud, se ha utilizado básicamente el mismo proxy que se empleó en la unidad de citación. Como se observa en el \diagrama{clases}{Conexión con el Servidor} (figura \ref{fig:diagramaServidor}), cada vez que una acción de \emph{Struts 2} o una página JSP de la web necesita solicitar una operación al servidor, se comunica con una clase singleton \emph{ServidorFrontend} que tiene asociada una instancia \emph{ProxyServidorFrontend}.
 
-\subsection{Cambios realizados en el servidor front-end} \label{cambios}
+Este proxy, la primera vez que se utiliza, se conecta a través de \emph{RMI} a la interfaz \emph{IServidorFrontend} exportada por el servidor (por simplicidad, se supone que el servidor está ubicado en la misma máquina que la aplicación web). Desde ese momento, la aplicación web tendrá acceso completo a todas las operaciones de la interfaz del servidor, igual que si fuera un cliente más del sistema, con la única diferencia de que al no exportar la interfaz \emph{ICliente} no recibirá las notificaciones del servidor.
+
+En resumen, como se observa en el \diagrama{despliegue}{Arquitectura del sistema} (figura \ref{fig:diagramaDespliegue}), tanto las unidades de citación como la aplicación web acceden a las funcionalidades del servidor front-end utilizando la misma interfaz. De esta forma, cuando desde la aplicación web se realicen cambios que afecten a los usuarios que hayan iniciado sesión en una unidad de citación, se refrescará la aplicación de escritorio igual que si esa operación se hubiera hecho desde otra unidad de citación.
+
+\subsection{Cambios realizados en el servidor front-end}
+\label{cambios}
 
 Ha sido necesario realizar ligeras modificaciones en el sistema desarrollado con anterioridad para poder dar soporte a la funcionalidad que debe tener la aplicación Web y para que dicha aplicación pueda utilizar y comunicarse con el servidor front-end ya desarrollado. 
 
@@ -48,13 +50,14 @@ Estas modificaciones se enumeran a continuación, comentando brevemente el motivo
 
 \end{milista}
 
-\subsubsection{Cambios referentes a la conexión con la base de datos} \label{cambiosHibernate}
+\subsection{Cambios en la conexión con la base de datos}
+\label{cambiosHibernate}
 
 Sin duda, la capa de persistencia es la parte del servidor front-end que más se ha tenido que modificar para adaptarse a los nuevos requisitos del sistema, puesto que se obligaba a que la persistencia se realizara con \emph{Hibernate} y no a través de un agente SQL (como se comenta en la sección \ref{tecnologias}, aunque sólo se pedía manejar las citas con \emph{Hibernate}, al final se ha usado dicho framework para la persistencia de todo el sistema).
 
-Como se puede ver en el \diagrama{clases}{Gestor Conexiones BBDD}, para poder utilizar \emph{Hibernate} como gestor de persistencia, ha sido necesario cambiar por completo la clase \emph{GestorConexionesBD}, que era la encargada de centralizar todos los acceso a la base de datos. Ahora, los métodos de acceso a la base de datos ya no toman como parámetro una sentencia SQL encapsulada en un \emph{ComandoSQL}, sino que en el caso de las inserciones, actualizaciones y eliminaciones se pasa directamente el objeto persistente, mientras que para realizar las consultas se utiliza una nueva clase llamada \emph{ConsultaHibernate}, que agrupa una sentencia escrita en \emph{HQL} (\emph{Hibernate Query Language}) y sus correspondientes parámetros (igual que se hacía con \emph{ComandoSQL}).
+Como se puede ver en el \diagrama{clases}{Gestor Conexiones BBDD} (figura \ref{fig:diagramaBBDD}), para poder utilizar \emph{Hibernate} como gestor de persistencia, ha sido necesario cambiar por completo la clase \emph{GestorConexionesBD}, que era la encargada de centralizar todos los acceso a la base de datos. Ahora, los métodos de acceso a la base de datos ya no toman como parámetro una sentencia SQL encapsulada en un \emph{ComandoSQL}, sino que en el caso de las inserciones, actualizaciones y eliminaciones se pasa directamente el objeto persistente, mientras que para realizar las consultas se utiliza una nueva clase llamada \emph{ConsultaHibernate}, que agrupa una sentencia escrita en \emph{HQL} (\emph{Hibernate Query Language}) y sus correspondientes parámetros (igual que se hacía con \emph{ComandoSQL}).
 
-Para adaptarse a estos cambios, se ha tenido que modificar el código de todas las operaciones de las clases de persistencia del servidor front-end (los FPs y la clase \emph{UtilidadesPersistencia}), así como eliminar aquellas clases que gestionaban tablas que no se usaban directamente, sino a través claves ajenas (como sucedía con \emph{FPDireccion}, \emph{FPTipoMedico} y \emph{FPPeriodoTrabajo}). Las nuevas clases de la capa de persistencia se pueden ver en el \diagrama{clases}{Fabricaciones puras}. Conviene destacar que la clase \emph{HibernateSessionFactory} fue generada automáticamente con \emph{MyEclipse} y sólo se tuvo que modificar para que se pudiera elegir la IP y el puerto en el que se encontraba la base de datos.
+Para adaptarse a estos cambios, se ha tenido que modificar el código de todas las operaciones de las clases de persistencia del servidor front-end (los FPs y la clase \emph{UtilidadesPersistencia}), así como eliminar aquellas clases que gestionaban tablas que no se usaban directamente, sino a través claves ajenas (como sucedía con \emph{FPDireccion}, \emph{FPTipoMedico} y \emph{FPPeriodoTrabajo}). Las nuevas clases de la capa de persistencia se pueden ver en el \diagrama{clases}{Fabricaciones puras} (figura \ref{fig:diagramaFPs}). Conviene destacar que la clase \emph{HibernateSessionFactory} fue generada automáticamente con \emph{MyEclipse} y sólo se tuvo que modificar para que se pudiera elegir la IP y el puerto en el que se encontraba la base de datos.
 
 Además de modificar las clases de la capa de persistencia, para que las clases del dominio fueran compatibles con \emph{Hibernate}, se tuvieron que cambiar todas las relaciones uno-a-muchos para que usaran colecciones de tipo \emph{Set} y no \emph{Vector} como en el servidor del primer cuatrimestre.
 
@@ -63,3 +66,15 @@ Durante el paso de la persistencia a \emph{Hibernate}, surgieron multitud de pro
 Para solucionar estos y otros problemas relacionados con las referencias de los objetos persistentes, se ha tenido que hacer un uso exhaustivo de los métodos \emph{clone} de las clases del dominio, con el fin de convertir las colecciones especiales de \emph{Hibernate} en listas serializables; y añadir nuevos métodos al \emph{GestorConexionesBD}, como \emph{iniciarTransaccion}, \emph{terminarTransaccion} y \emph{borrarCache}, para poder realizar las operaciones más complejas de modificación de usuarios y beneficiarios.
 
 Finalmente, aunque se ha mantenido la estructura de clases que permitiría al servidor front-end funcionar junto con el servidor de respaldo, tras muchas pruebas no se ha conseguido que en ambos servidores se gestione la persistencia a través de \emph{Hibernate} (este framework tampoco está diseñado para ello). Por este motivo, en el nuevo servidor front-end el uso del servidor de respaldo está desactivado por defecto y no se permite activarlo.
+
+\subsection{Diagramas}
+
+A continuación se muestran los cuatro diagramas a los que se ha hecho referencia en los apartados anteriores. Los diagramas originales se pueden encontrar en el fichero de Visual Paradigm adjunto a este documento.
+
+\imagenCompleta{imagenes/diagramaServidor.png}{Diagrama que muestra la conexión de la aplicación web con el servidor.}{fig:diagramaServidor}
+
+\imagenCompleta{imagenes/diagramaDespliegue.png}{Diagrama de despliegue del sistema completo.}{fig:diagramaDespliegue}
+
+\imagenCompleta{imagenes/diagramaBBDD.png}{Diagrama de clases del Gestor de Conexiones de BBDD.}{fig:diagramaBBDD}
+
+\imagenCompleta{imagenes/diagramaFPs.png}{Diagrama de clases de la capa de persistencia.}{fig:diagramaFPs}
