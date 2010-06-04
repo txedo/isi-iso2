@@ -4,7 +4,7 @@
 
 <script type="text/javascript" src="resources/scripts/funciones.js"></script>
 
-<s:form action="javascript:cargarModulo('loginMedico')" validate="true" method="post">
+<s:form action="loginMedico" validate="true" method="post">
 	<s:textfield name="username" label="Nombre de usuario" />
 	<s:password name="pass" label="Contraseña" />
 	<s:submit value="Iniciar sesión" />

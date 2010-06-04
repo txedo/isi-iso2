@@ -4,10 +4,10 @@
 <%@ page import="dominio.conocimiento.Beneficiario" %>
 <%@ page import="java.util.Vector"%>
 <%@ page errorPage="error.jsp"%>
-<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@page import="excepciones.SesionNoIniciadaException"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="excepciones.SesionNoIniciadaException"%>
+
 <script type="text/javascript" src="resources/scripts/funciones.js"></script>
 <%
 Medico med;

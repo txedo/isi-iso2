@@ -2,10 +2,10 @@
     pageEncoding="ISO-8859-1"%>
 <%@ page import="dominio.conocimiento.Beneficiario" %>
 <%@ page errorPage= "error.jsp" %>
-<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@page import="excepciones.SesionNoIniciadaException"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="excepciones.SesionNoIniciadaException"%>
+
 
 <%  Beneficiario b = null;
 	if(request.getSession(false)==null) {
