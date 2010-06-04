@@ -32,23 +32,26 @@ Vector<String> especialidades = (Vector<String>)request.getAttribute("especialid
 %>
 	
 <!-- El "select" para mostrar la especialidad es un select normal donde se asociará al evento "onchange" la función de AJAX -->
-<%@page import="java.util.Collections"%>
 <table style="margin:0 auto;" border="0" cellpadding="2" cellspacing="2">
 	<tr>
 		<td align="left">Beneficiario:</td>
-		<td align="left"><select id="beneficiario">
+		<td align="left">
 <%
 			if (beneficiarios.size() == 0) {
-				out.println("<option selected value=\"-1\">No existen beneficiarios</option>");
+				out.println("<select disabled id=\"beneficiario\">");
+				out.println("<option selected value=\"-1\">No tiene beneficiarios asignados</option>");
+				out.println("</select>");
 			}
 			else {
+				out.println("<select disabled id=\"beneficiario\">");
 				out.println("<option selected value=\"" + beneficiarios.get(0).getNif() +"\">" + beneficiarios.get(0).getNombre() + " " + beneficiarios.get(0).getApellidos()+ "</option>");
 				for (int i=1; i<beneficiarios.size(); i++) {
 					out.println("<option value=\"" + beneficiarios.get(i).getNif() +"\">" + beneficiarios.get(i).getNombre() + " " + beneficiarios.get(i).getApellidos()+ "</option>");
 				}
+				out.println("</select>");
 			}
 %>
-		</select></td>
+		</td>
 	</tr>
 	<tr>
 		<td align="left">Especialidad:</td>
