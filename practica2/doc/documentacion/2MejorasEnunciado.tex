@@ -5,10 +5,30 @@ En este apartado se comentan las tecnologías que se han empleado para el desarro
 
 \begin{milista}
 
-	\item Toda la persistencia del servidor front-end se gestiona a través de \textbf{\emph{Hibernate}}. En el enunciado se pedía como condición mínima que se utilizara \emph{Hibernate} para la persistencia de las citas, pero al final se ha conseguido adaptar el servidor front-end para que todos los accesos a la base de datos se hagan mediante este framework. Por lo tanto, en la nueva versión del servidor no se emplea ningún agente de base de datos, y tampoco se hace uso del lenguaje SQL.
+	\item Toda la persistencia del servidor front-end se gestiona a través de \textbf{Hibernate}. En el enunciado se pedía como condición mínima que se utilizara \emph{Hibernate} para la persistencia de las citas, pero al final se ha conseguido adaptar el servidor front-end para que todos los accesos a la base de datos se hagan mediante este \textit{framework}. Por lo tanto, en la nueva versión del servidor no se emplea ningún agente de base de datos, y tampoco se hace uso del lenguaje SQL.
 	
-	\item La conexión entre la aplicación web y el servidor front-end se realiza mediante \textbf{\emph{RMI}}, utilizando la misma interfaz que la aplicación de escritorio desarrollada en el primer cuatrimestre para acceder a las funcionalidades del servidor.
+	\item La conexión entre la aplicación web y el servidor front-end se realiza mediante \textbf{RMI}, utilizando la misma interfaz que la aplicación de escritorio desarrollada en el primer cuatrimestre para acceder a las funcionalidades del servidor.
 	
-	% Comentar el uso de Ajax, JSP, CSS (que no se pide en la práctica, es una mejora), Struts, validadores y conversores (si al final los acabamos usando)
+	\item Se ha utilizado \textbf{Struts2} \cite{struts2} para implementar tres acciones: el \textit{login} de beneficiarios, el \textit{login} de médicos y obtener los beneficiarios asociados a un médico (utilizada por la funcionalidad de emitir volantes). Además, se ha desarrollado un validador en struts para cada \textit{login} (tanto el de beneficiarios, como el de médicos).
 	
+	El \textbf{validador} del \textit{login} de beneficiarios comprueba que el número de seguridad social introducido no es vacío y que consta de exactamente 12 dígitos. El validador de \textit{login} de médicos comprueba que tanto el nombre de usuario como la contraseña no se dejan en blanco y que la contraseña consta de, al menos, 8 caracteres.
+	
+	\item Se ha utilizado una \textbf{hoja de estilo en cascada} (CSS) para diseñar el aspecto de la página Web. Además se ha utilizado el Servicio de Validación de CSS que proporciona el W3C \cite{css-validator} y se ha comprobado que éste carece de errores. Por ello se ha agregado al pie de la página Web una imagen que lo certifica.
+	
+	\item Toda la aplicación Web ha sido desarrollada bajo el paradigma de página Web \textbf{dinámica} utilizando \textbf{JSP}. El flujo de HTML devuelto por el servidor Web ha sido analizado con el Servicio de Validación de Marcas que proporciona el W3C \cite{html-validator} y se ha comprobado que éste carece de errores. Por ello se ha agregado al pie de la página Web una imagen que lo certifica.
+	
+	\item Se ha utilizado \textbf{AJAX} en toda la aplicación Web para evitar que la página Web se recargue en su totalidad cuando el usuario desea realizar cualquier tipo de operación. Así, al seleccionar cualquier operación de los menús, sólo se solicitará al servidor el contenido específico de la operación, no siendo necesario recargar toda la página (cabecera, pie, menús, etc.).
+	Esta tecnología también se ha utilizado para recuperar datos en distintas funcionalidades:
+	\begin{itemize}
+		\item Consultar el médico que realmente da una cita, ya que cuando se quiere tramitar una cita y se selecciona un día, es posible que el médico tenga programada una sustitución.
+		\item Tramitar una cita cuando se selecciona correctamente el día y la hora, tanto para el médico de cabecera o pediatra y como para el médico especialista.
+		\item Al anular una cita para recuperar la lista actualizada de citas.
+		\item Cuando se introduce un identificador de un volante, para comprobar si existe, si está asociado al beneficiario que ha iniciado sesión y si no se ha utilizado ya en otra cita.
+		\item Al emitir un volante, para mostrar el identificador del volante que se ha emitido.
+		\item Obtener y visualizar las citas asociadas a un beneficiario.
+		\item Poblar de forma progresiva los \textit{combobox} dependientes o en cascada. Por ejemplo, cargar los especialistas de una especialidad cuando ésta es seleccionada.
+		\item Obtener y visualizar las horas en las que trabaja un médico cuando se selecciona un día en el calendario.
+	\end{itemize}
+
+	\item Se ha utilizado el componente \textit{Datepicker} de \textbf{JQuery} \cite{jquery} para visualizar un calendario donde los usuarios pueden seleccionar el día que desean para pedir una cita.
 \end{milista}
