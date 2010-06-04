@@ -19,6 +19,13 @@ else {
 		throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
 }
 
+//Si se accede directamente en el navegador a esta página, se redirecciona al index.jsp
+if (request.getHeader("referer")==null) { 
+%>
+	<script type="text/javascript" >setLocation("index.jsp");</script>
+<%
+}
+
 // Accedemos a los valores de la ValueStack
 Vector<Beneficiario> beneficiarios = (Vector<Beneficiario>)request.getAttribute("beneficiarios");
 Vector<String> especialidades = (Vector<String>)request.getAttribute("especialidades");

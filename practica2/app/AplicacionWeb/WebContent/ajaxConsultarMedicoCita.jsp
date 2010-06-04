@@ -11,7 +11,15 @@
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.text.ParseException" %>
 
+<script type="text/javascript" src="resources/scripts/funciones.js"></script>
+
 <%
+	//Si se accede directamente en el navegador a esta página, se redirecciona al index.jsp
+	if (request.getHeader("referer")==null) { 
+	%>
+		<script type="text/javascript" >setLocation("index.jsp");</script>
+	<%
+	}
 
 	ServidorFrontend servidor;
 	ISesion sesion;

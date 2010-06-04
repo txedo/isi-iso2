@@ -3,7 +3,16 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
+<script type="text/javascript" src="resources/scripts/funciones.js"></script>
+
 <%
+//Si se accede directamente en el navegador a esta página, se redirecciona al index.jsp
+if (request.getHeader("referer")==null) { 
+%>
+	<script type="text/javascript">setLocation("index.jsp");</script>
+<%
+}
+
 HttpSession sesionHTTP;
 
 // Obtenemos la sesión HTTP y borramos todos sus objetos
