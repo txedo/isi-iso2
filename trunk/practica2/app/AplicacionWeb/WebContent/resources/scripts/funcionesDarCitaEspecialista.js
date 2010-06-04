@@ -18,27 +18,34 @@
 		function validarVolante(url) {
 			if (peticion){
 				// Se limpia el mensaje de error, por si lo hubiera
-				document.getElementById("mensaje").innerHTML='';
+				document.getElementById("spanEspecialista").innerHTML='';
+				document.getElementById("campofecha").style.visibility = "hidden";
+				document.getElementById("spanHoras").innerHTML='';
 				var volante = document.getElementById("nVolante").value;
-				peticion.open("post", url, true);
-				var parametros = "nVolante=" + volante;
-				peticion.onreadystatechange=function() {
-					if (peticion.readyState==4) {
-						if (peticion.responseText.indexOf("Error")==-1) {
-							document.getElementById("spanEspecialista").innerHTML=peticion.responseText + 
-							"<br><br>Elija el día y la hora de la cita:<br>";
-							document.getElementById("campofecha").style.visibility = "visible";
-							// Al mostrar el calendario, se muestran, por defecto, las horas disponibles del día actual
-							consultarHoras('ajaxObtenerHorasEspecialista.jsp', stringDiaSeleccionado);
-						}
-						else {
-							document.getElementById("spanEspecialista").innerHTML=peticion.responseText;
-							document.getElementById("campofecha").style.visibility = "hidden";
-							document.getElementById("spanHoras").innerHTML='';
-						}
-					}					
+				if (isNaN(parseInt(volante))) {
+					alert ("El identificador del volante debe ser numérico.");
 				}
-				peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-				peticion.send(parametros);
+				else {
+					peticion.open("post", url, true);
+					var parametros = "nVolante=" + volante;
+					peticion.onreadystatechange=function() {
+						if (peticion.readyState==4) {
+							if (peticion.responseText.indexOf("Error")==-1) {
+								document.getElementById("spanEspecialista").innerHTML=peticion.responseText + 
+								"<br><br>Elija el día y la hora de la cita:<br>";
+								document.getElementById("campofecha").style.visibility = "visible";
+								// Al mostrar el calendario, se muestran, por defecto, las horas disponibles del día actual
+								consultarHoras('ajaxObtenerHorasEspecialista.jsp', stringDiaSeleccionado);
+							}
+							else {
+								document.getElementById("spanEspecialista").innerHTML=peticion.responseText;
+								document.getElementById("campofecha").style.visibility = "hidden";
+								document.getElementById("spanHoras").innerHTML='';
+							}
+						}					
+					}
+					peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					peticion.send(parametros);
+				}
 			}
 		}
