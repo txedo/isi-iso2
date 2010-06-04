@@ -16,6 +16,7 @@ function cargarModulo (mod) {
 				} else {
 					document.getElementById("mod").innerHTML=peticion.responseText;
 				}
+				
 				// Al ejecutar la accion de obtener beneficiarios, se toma por defcto los especialistas de la primera especialidad
 				if (mod == "obtenerBeneficiariosMedico"){
 					cargarReceptor('ajaxObtenerEspecialistas.jsp');
