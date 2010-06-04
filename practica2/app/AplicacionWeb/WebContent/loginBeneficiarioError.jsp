@@ -1,3 +1,5 @@
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="sx" uri="/struts-dojo-tags" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1" %>
 
@@ -6,16 +8,10 @@
 <head>
 	<%@ include file="resources/templates/header.htm" %>
 	<title>SSCAWeb</title>
+	<sx:head />
 </head>
 <body>	
 	<%@ include file="resources/templates/top.htm" %>
-	
-	<%
-	String contenido = "<img style=\"margin-left:-25px\" src=\"./resources/images/prototipo.png\"></img>";
-	if (request.getParameter("error") != null) {
-		contenido = request.getParameter("error");
-	}
-	%>
 	
 	<div class="menu">
 		<span id="nav" class="navegacion">Inicio</span>
@@ -33,7 +29,10 @@
 		<!-- Texto de la página -->
         <div id="textoCuerpo">         
 			<span id="mod">
-				<%= contenido %>
+				<s:form method="post" action="loginBeneficiario">
+					<s:textfield name="nss" label="Escriba su número de S. Social" />
+					<s:submit value="Iniciar sesión" />
+				</s:form>
 			</span>
 		</div>
     </div>

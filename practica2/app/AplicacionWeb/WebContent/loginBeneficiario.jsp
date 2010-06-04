@@ -13,15 +13,7 @@ if (request.getHeader("referer")==null) {
 }
 %>
 
-<s:form action="loginBeneficiario" validate="true" method="post">
+<s:form method="post" action="loginBeneficiario">
 	<s:textfield name="nss" label="Escriba su número de S. Social" />
 	<s:submit value="Iniciar sesión" />
 </s:form>
-
-<%
-	// Si se ejecuta el validador, el nss introducido es incorrecto
-	if (Boolean.parseBoolean(request.getParameter("invalido"))) {
-%>
-		<script type="text/javascript">setLocation('index.jsp?invalidoBeneficiario=true');</script>
-<%  }
-%>
