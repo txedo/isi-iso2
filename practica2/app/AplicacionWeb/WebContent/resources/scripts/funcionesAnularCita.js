@@ -3,12 +3,16 @@ peticion = nuevoAjax();
 
 function anularCita(url) {
 	if(peticion) {
-		if(confirm("¿Realmente desea anular esa cita?")) {
-			peticion.open('POST', url, true);
-			peticion.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			var selectCita = document.getElementById("citas");
-			var idCita = selectCita.options[selectCita.selectedIndex].value;
-			if (idCita != -1) {
+		var selectCita = document.getElementById("citas");
+		var idCita = selectCita.options[selectCita.selectedIndex].value;
+		if(idCita == -2) {
+			alert("No tiene ninguna cita registrada.");
+		} else if(idCita == -1) {
+			alert("Sólo se puede anular una cita posterior al día de hoy.");
+		} else {
+			if(confirm("¿Realmente desea anular la cita seleccionada?")) {
+				peticion.open('POST', url, true);
+				peticion.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 				var parametros = "idCita=" + idCita;
 				peticion.onreadystatechange=function() {
 					if (peticion.readyState==4) {					
@@ -20,10 +24,6 @@ function anularCita(url) {
 					}
 				}
 				peticion.send(parametros);
-			} else if(idCita == -2) {
-				alert("No tiene ninguna cita registrada.");
-			} else {
-				alert("Sólo se puede anular una cita posterior al día de hoy.");
 			}
 		}
 	}
