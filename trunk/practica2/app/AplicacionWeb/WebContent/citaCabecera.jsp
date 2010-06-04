@@ -34,19 +34,22 @@ if (medico == null)
 else 
 	tipoMedico = (medico.getTipoMedico().getCategoria() == CategoriasMedico.Cabecera) ? "médico de cabecera" : "pediatra";
 
-  		if (tieneMedico) { %>
-  			Su <%= tipoMedico %> es el Dr./Dra. <%= medico.getApellidos() %>.
-		<%@page import="excepciones.AccesoInvalidoException"%>
-<br /><br />
-		Seleccione el d&iacute;a y hora de la cita:
-		<br /><br />
-		<!-- En este div se carga el datepicker -->
-		<div id="campofecha"></div>
-		<div id="campohoras">
-			<span id="spanHoras"></span>
-			<br>
-			<span id="mensaje"></span>
-		</div>
-<%  } else { %>
+if (tieneMedico) { %>
+	Su <%= tipoMedico %> es el Dr./Dra. <%= medico.getApellidos() %>.
+	<br /><br />
+	Seleccione el d&iacute;a y hora de la cita:
+	<br /><br />
+	<!-- En este div se carga el datepicker -->
+	<div id="campofecha"></div>
+	<div id="campohoras">
+		<span id="spanHoras"></span>
+		<br>
+		<span id="mensaje"></span>
+	</div>
+<%
+} else {
+%>
 	<%= beneficiario.getNombre() %>, no tiene m&eacute;dico asignado, por lo que no puede pedir una cita
-<%  } %>
+<%
+}
+%>

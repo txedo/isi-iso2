@@ -6,7 +6,7 @@
 		<action name="loginBeneficiario" class="acciones.loginBeneficiario">
 			<result name="success">menuBeneficiario.jsp</result>
 			<result name="error">error.jsp</result>
-			<result name="input">loginBeneficiario.jsp?invalido=true</result>
+			<result name="input">loginBeneficiarioError.jsp</result>
 			<result name="exceptionLogin">error.jsp</result>
 			<exception-mapping exception="java.rmi.RemoteException" result="exceptionLogin"></exception-mapping>
 			<exception-mapping exception="java.sql.SQLException" result="exceptionLogin"></exception-mapping>
@@ -16,7 +16,7 @@
 		<action name="loginMedico" class="acciones.loginMedico">
 			<result name="success">menuMedico.jsp</result>
 			<result name="error">error.jsp</result>
-			<result name="input">loginMedico.jsp?invalido=true</result>
+			<result name="input">loginMedicoError.jsp</result>
 			<result name="exceptionLogin">error.jsp</result>
 			<exception-mapping exception="java.rmi.RemoteException" result="exceptionLogin"></exception-mapping>
 			<exception-mapping exception="java.sql.SQLException" result="exceptionLogin"></exception-mapping>
