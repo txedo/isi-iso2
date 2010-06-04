@@ -4,14 +4,20 @@
 <%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.CategoriasMedico" %>
 <%@ page errorPage= "error.jsp" %>
+<%@page import="excepciones.SesionNoIniciadaException"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="excepciones.SesionNoIniciadaException"%>
+
 
 <%
 if (request.getSession(false)==null) {
 	throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
 }
+// Si se accede directamente en el navegador a esta página, se redirecciona al index.jsp
+else if (request.getHeader("referer")==null) {
+	
+}
+
 Beneficiario beneficiario = null;
 Medico medico = null;
 String tipoMedico = null;
@@ -27,7 +33,8 @@ else
 
   		if (tieneMedico) { %>
   			Su <%= tipoMedico %> es el Dr./Dra. <%= medico.getApellidos() %>.
-		<br /><br />
+		<%@page import="excepciones.AccesoInvalidoException"%>
+<br /><br />
 		Seleccione el d&iacute;a y hora de la cita:
 		<br /><br />
 		<!-- En este div se carga el datepicker -->
