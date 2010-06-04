@@ -44,6 +44,7 @@ body
 {
 	text-align:center;
 	margin:0 auto;
+	background-color: #ddede6;
 }
 
 #header
@@ -161,7 +162,7 @@ body
 {
 	margin: 0 auto;
 	padding-top:5px;
-	background: #BBF7FF none repeat scroll 0 0;
+	background: #afc9bc none repeat scroll 0 0;
 	border-top: 6px solid #C0C0C0;
 	border-color: #008080;
 	border-width: 6px thin thin;
