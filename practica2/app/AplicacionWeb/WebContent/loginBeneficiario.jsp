@@ -13,7 +13,7 @@ if (request.getHeader("referer")==null) {
 }
 %>
 
-<s:form method="post" action="loginBeneficiario">
+<s:form method="post" action="loginBeneficiario" namespace="/">
 	<s:textfield name="nss" label="Escriba su número de S. Social" />
 	<s:submit value="Iniciar sesión" />
 </s:form>

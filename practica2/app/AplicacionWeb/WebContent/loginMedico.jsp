@@ -13,16 +13,9 @@ if (request.getHeader("referer")==null) {
 }
 %>
 
-<s:form action="loginMedico" validate="true" method="post">
+<s:form action="loginMedico" method="post" namespace="/">
 	<s:textfield name="username" label="Nombre de usuario" />
 	<s:password name="pass" label="Contraseña" />
 	<s:submit value="Iniciar sesión" />
 </s:form>
 
-<%
-	// Si se ejecuta el validador, el login o la contraseña son incorrectos
-	if (Boolean.parseBoolean(request.getParameter("invalido"))) {
-%>
-		<script type="text/javascript">setLocation('index.jsp?invalidoMedico=true');</script>
-<%  }
-%>

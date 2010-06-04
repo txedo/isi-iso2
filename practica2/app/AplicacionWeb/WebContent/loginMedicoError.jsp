@@ -29,7 +29,7 @@
 		<!-- Texto de la página -->
         <div id="textoCuerpo">         
 			<span id="mod">
-				<s:form action="loginMedico" validate="true" method="post">
+				<s:form action="loginMedico" method="post" namespace="/">
 					<s:textfield name="username" label="Nombre de usuario" />
 					<s:password name="pass" label="Contraseña" />
 					<s:submit value="Iniciar sesión" />
