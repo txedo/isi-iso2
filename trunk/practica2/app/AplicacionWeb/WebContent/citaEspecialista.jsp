@@ -6,6 +6,7 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
+<script type="text/javascript" src="resources/scripts/funciones.js"></script>
 
 <%  Beneficiario b = null;
 	if(request.getSession(false)==null) {
@@ -14,6 +15,13 @@
 		b = (Beneficiario) request.getSession(false).getAttribute("Beneficiario");
 		if (b==null) 
 			throw new SesionNoIniciadaException("No se puede acceder a una página interna si no se inicia sesión previamente");
+	}
+	
+	// Si se accede directamente en el navegador a esta página, se redirecciona al index.jsp
+	if (request.getHeader("referer")==null) { 
+	%>
+		<script type="text/javascript" >setLocation("index.jsp");</script>
+	<%
 	}
 %>
 Introduzca el identificador de su volante: <input type="text" id="nVolante" name="nVolante"></input>

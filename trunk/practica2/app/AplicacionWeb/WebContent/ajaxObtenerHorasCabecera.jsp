@@ -14,8 +14,16 @@
 <%@ page import="java.rmi.RemoteException" %>
 <%@ page import="java.sql.SQLException" %>
 
+<script type="text/javascript" src="resources/scripts/funciones.js"></script>
+
 <%
 
+	//Si se accede directamente en el navegador a esta página, se redirecciona al index.jsp
+	if (request.getHeader("referer")==null) { 
+	%>
+		<script type="text/javascript" >setLocation("index.jsp");</script>
+	<%
+	}
 	ServidorFrontend servidor;
 	Hashtable<Date, Vector<String>> citasOcupadas;
 	Hashtable<DiaSemana, Vector<String>> horasCitas;
