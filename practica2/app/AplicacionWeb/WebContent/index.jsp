@@ -11,7 +11,7 @@
 	<%@ include file="resources/templates/top.htm" %>
 	
 	<%
-	String contenido = "<img style=\"margin-left:-25px\" src=\"./resources/images/prototipo.png\"></img>";
+	String contenido = "<img style=\"margin-left:-25px\" src=\"./resources/images/prototipo.png\" alt=\"Prototipo de noticias...\">";
 	if (request.getParameter("error") != null) {
 		contenido = request.getParameter("error");
 	}

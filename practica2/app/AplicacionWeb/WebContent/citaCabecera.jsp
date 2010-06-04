@@ -36,9 +36,9 @@ else
 
 if (tieneMedico) { %>
 	Su <%= tipoMedico %> es el Dr./Dra. <%= medico.getApellidos() %>.
-	<br /><br />
+	<br><br>
 	Seleccione el d&iacute;a y hora de la cita:
-	<br /><br />
+	<br><br>
 	<!-- En este div se carga el datepicker -->
 	<div id="campofecha"></div>
 	<div id="campohoras">
