@@ -26,11 +26,11 @@
 		<action name="obtenerBeneficiariosMedico" class="acciones.obtenerBeneficiariosMedico">
 			<result name="success">darVolante.jsp</result>
 			<result name="error">error.jsp</result>
-			<result name="exceptionLogin">error.jsp</result>
-			<exception-mapping exception="java.rmi.RemoteException" result="exceptionLogin"></exception-mapping>
-			<exception-mapping exception="java.sql.SQLException" result="exceptionLogin"></exception-mapping>
-			<exception-mapping exception="excepciones.NullPointerException" result="exceptionLogin"></exception-mapping>
-			<exception-mapping exception="java.lang.Exception" result="exceptionLogin"></exception-mapping>
+			<result name="exception">error.jsp</result>
+			<exception-mapping exception="java.rmi.RemoteException" result="exception"></exception-mapping>
+			<exception-mapping exception="java.sql.SQLException" result="exception"></exception-mapping>
+			<exception-mapping exception="excepciones.NullPointerException" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
 		</action>
     </package>
 </struts>
