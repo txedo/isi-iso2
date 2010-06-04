@@ -5,11 +5,11 @@ En este apartado se comentan las tecnologías que se han empleado para el desarro
 
 \begin{milista}
 
-	\item Toda la persistencia del servidor front-end se gestiona a través de \textbf{Hibernate}. En el enunciado se pedía como condición mínima que se utilizara \emph{Hibernate} para la persistencia de las citas, pero al final se ha conseguido adaptar el servidor front-end para que todos los accesos a la base de datos se hagan mediante este \textit{framework}. Por lo tanto, en la nueva versión del servidor no se emplea ningún agente de base de datos, y tampoco se hace uso del lenguaje SQL.
+	\item Toda la persistencia del servidor front-end se gestiona a través de \textbf{Hibernate}. En el enunciado se pedía como condición mínima que se utilizara \emph{Hibernate} \cite{hibernate} para la persistencia de las citas, pero al final se ha conseguido adaptar el servidor front-end para que todos los accesos a la base de datos se hagan mediante este \textit{framework}. Por lo tanto, en la nueva versión del servidor no se emplea ningún agente de base de datos, y tampoco se hace uso del lenguaje SQL.
 	
 	\item La conexión entre la aplicación web y el servidor front-end se realiza mediante \textbf{RMI}, utilizando la misma interfaz que la aplicación de escritorio desarrollada en el primer cuatrimestre para acceder a las funcionalidades del servidor.
 	
-	\item Se ha utilizado \textbf{Struts2} \cite{struts2} para implementar tres acciones: el \textit{login} de beneficiarios, el \textit{login} de médicos y obtener los beneficiarios asociados a un médico (utilizada por la funcionalidad de emitir volantes). Además, se ha desarrollado un validador en struts para cada \textit{login} (tanto el de beneficiarios, como el de médicos).
+	\item Se ha utilizado \textbf{Struts 2} \cite{struts2} para implementar tres acciones: el \textit{login} de beneficiarios, el \textit{login} de médicos y obtener los beneficiarios asociados a un médico (utilizada por la funcionalidad de emitir volantes). Además, se ha desarrollado un validador en struts para cada \textit{login} (tanto el de beneficiarios, como el de médicos).
 	
 	El \textbf{validador} del \textit{login} de beneficiarios comprueba que el número de seguridad social introducido no es vacío y que consta de exactamente 12 dígitos. El validador de \textit{login} de médicos comprueba que tanto el nombre de usuario como la contraseña no se dejan en blanco y que la contraseña consta de, al menos, 8 caracteres.
 	

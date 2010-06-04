@@ -42,8 +42,17 @@
  \begin{figure}[h]
  \begin{center}
    \scalebox{#2}{\includegraphics{#1}}
- \caption {#3}
+ \caption{#3}
  \label{#4}
+ \end{center}
+ \end{figure}
+}
+\def\imagenCompleta#1#2#3{
+ \begin{figure}[h]
+ \begin{center}
+   \includegraphics[width=\textwidth]{#1}
+ \caption{#2}
+ \label{#3}
  \end{center}
  \end{figure}
 }
@@ -98,12 +107,12 @@
 % En las páginas de portada e índices, no hay encabezado ni pie de página
 \pagestyle{empty} 
 
+% En las páginas de índices y prefacio, se utiliza numeración romana
+\pagenumbering{Roman}
+
 % Se incluye la portada
 \input{Portada.tex}
 \clearpage
-
-% En las páginas de índices y prefacio, se utiliza numeración romana
-\pagenumbering{Roman}
 
 % Se crea el índice
 \tableofcontents
