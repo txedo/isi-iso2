@@ -20,9 +20,6 @@ function cargarModulo (mod) {
 				if (mod == "obtenerBeneficiariosMedico"){
 					cargarReceptor('ajaxObtenerEspecialistas.jsp');
 				}
-				else if (mod == "loginBeneficiario" || mod == "loginMedico") {
-					// aqui hay que hacer algo
-				}
 				else if (mod == "citaCabecera.jsp") {
 					// script necesario para mostrar el Datepicker y darle formato. En este caso, se deshabilitan los fines de semana
 					$(function(){
@@ -70,7 +67,7 @@ function cargarModulo (mod) {
 
 function actualizarNavegacion (mod)
 {
-	if (mod != "error.jsp") {
+	if (mod != "error.jsp" && mod != "loginBeneficiario" && mod != "loginMedico") {
 		var localizacion = "<a href=\"index.jsp\" title=\"Ir a la página de inicio\">Inicio</a>";
 		var barraNavegacion = document.getElementById("nav")
 		if (mod == "loginMedico.jsp") {
