@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1" %>
 <%@ page import="dominio.conocimiento.ISesion" %>
-<%@ page import="dominio.conocimiento.Medico" %>
 <%@ page import="dominio.conocimiento.DiaSemana" %>
 <%@ page import="dominio.conocimiento.Volante" %>
 <%@ page import="dominio.UtilidadesDominio" %>
