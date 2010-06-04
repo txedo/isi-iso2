@@ -49,15 +49,15 @@ body
 #header
 {
 	margin: 0 auto;
-	background-image: url( "../images/hospital_header_green.png" );
-	background-repeat: no-repeat;
+	/*background-image: url( "../images/hospital_header_green.png" );
+	background-repeat: no-repeat;*/
 	width: 1020px;
 	height: 228px;
 }
 
-.textoCabecera, textoCabecera a, textoCabecera a:active
+.textoCabecera
 {
-	margin: 0 auto;
+	margin: -228px 30px 0;
 	padding-top:10px;
 	text-align: right;
 	text-decoration: none;
@@ -67,8 +67,8 @@ body
 	height: 70px;
 	width: 980px;
 	color: navy;
+	float: left;
 }
-
 
 .tagLine
 {
