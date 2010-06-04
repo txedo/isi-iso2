@@ -1,14 +1,14 @@
 #Fat Jar Configuration File
-#Wed Jun 02 14:39:43 CEST 2010
+#Fri Jun 04 22:02:30 CEST 2010
 onejar.license.required=true
 manifest.classpath=
 manifest.removesigners=true
 onejar.checkbox=false
-jarname=ServidorFrontendStubs.jar
+jarname=ServidorFrontend.jar
 manifest.mergeall=false
-manifest.mainclass=
+manifest.mainclass=dominio.Main
 manifest.file=<createnew>
 jarname.isextern=false
 onejar.expand=
-excludes=<po|servidorFrontend>~dominio/~control/;<po|servidorFrontend>~presentacion/;<po|servidorFrontend>~pruebas/;<po|servidorFrontend>~hibernate.cfg.xml;<jar|com.cloudgarden.layout.jar>;<jar|mysql-connector-java-5.1.10-bin.jar>;<jar|uispec4j-2.2-jdk16.jar>;<jar|junit.jar>;<jar|antlr-2.7.6.jar>;<jar|commons-collections-3.1.jar>;<jar|dom4j-1.6.1.jar>;<jar|hibernate3.jar>;<jar|javassist-3.9.0.GA.jar>;<jar|jta-1.1.jar>;<jar|slf4j-api-1.5.11.jar>;<jar|slf4j-simple-1.5.11.jar>;<jar|ServidorRespaldoStubs.jar>
+excludes=<po|servidorFrontend>~pruebas/;<jar|uispec4j-2.2-jdk16.jar>;<jar|junit.jar>
 includes=
