@@ -894,7 +894,7 @@ public class ServidorFrontend implements IServidorFrontend {
 			try {
 				// Nos identificamos en el sistema con el nss
 				resultado = GestorSesiones.identificarBeneficiario((String)informacion);
-				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Beneficiario con NSS' " + (String)informacion + "' autenticado.");
+				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Beneficiario con NSS '" + (String)informacion + "' autenticado.");
 			} catch(SQLException se) {
 				GestorConexionesLog.ponerMensaje(ITiposMensajeLog.TIPO_READ, "Error SQL mientras se autenticaba el beneficiario con NSS '" + (String)informacion + "': " + se.getLocalizedMessage());
 				throw se;
