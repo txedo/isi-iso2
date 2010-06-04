@@ -1,5 +1,7 @@
 <%@page import="dominio.conocimiento.Beneficiario"%>
 <%@page import="dominio.conocimiento.Medico"%>
+<%@ page errorPage="error.jsp" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 if (request.getSession() == null || (request.getSession(false).getAttribute("Medico") == null && request.getSession(false).getAttribute("Beneficiario") == null)) {

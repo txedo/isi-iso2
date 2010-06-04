@@ -55,7 +55,7 @@ body
 	height: 228px;
 }
 
-.textoCabecera, textoCabecera a
+.textoCabecera, textoCabecera a, textoCabecera a:active
 {
 	margin: 0 auto;
 	padding-top:10px;
