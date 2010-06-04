@@ -4,16 +4,7 @@
 <%@ page errorPage="error.jsp" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<script type="text/javascript" src="resources/scripts/funciones.js"></script>
-
 <%
-//Si se accede directamente en el navegador a esta página, se redirecciona al index.jsp
-if (request.getHeader("referer")==null) { 
-%>
-	<script type="text/javascript" >setLocation("index.jsp");</script>
-<%
-}
-
 if (request.getSession() == null || (request.getSession(false).getAttribute("Medico") == null && request.getSession(false).getAttribute("Beneficiario") == null)) {
 	// si no existe sesión
 	out.println("<a href=\"javascript:cargarModulo('loginMedico.jsp')\" title=\"Iniciar sesión como médico\">Iniciar sesi&oacute;n como m&eacute;dico</a>");
