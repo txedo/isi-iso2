@@ -71,7 +71,7 @@
 	// Mostramos la lista de citas o el mensaje de error
 	if(mensaje.equals("")) { %>
 		<%@page import="dominio.conocimiento.Beneficiario"%>
-<select id="citas" name="citas" size="4" style="width:250px">
+<select id="citas" name="citas" size="8" style="width:250px">
 			<% for(int i = 0; i < options.size(); i++) { %>
 				<%= options.get(i) %>
 			<% } %>

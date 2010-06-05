@@ -43,7 +43,7 @@ Vector<String> especialidades = (Vector<String>)request.getAttribute("especialid
 				out.println("</select>");
 			}
 			else {
-				out.println("<select disabled id=\"beneficiario\">");
+				out.println("<select id=\"beneficiario\">");
 				out.println("<option selected value=\"" + beneficiarios.get(0).getNif() +"\">" + beneficiarios.get(0).getNombre() + " " + beneficiarios.get(0).getApellidos()+ "</option>");
 				for (int i=1; i<beneficiarios.size(); i++) {
 					out.println("<option value=\"" + beneficiarios.get(i).getNif() +"\">" + beneficiarios.get(i).getNombre() + " " + beneficiarios.get(i).getApellidos()+ "</option>");
