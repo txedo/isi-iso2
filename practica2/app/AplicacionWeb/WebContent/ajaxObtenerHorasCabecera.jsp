@@ -56,7 +56,7 @@
 	// hace nada más y se muestra un mensaje de error
 	if(UtilidadesDominio.fechaIgual(diaSeleccionado, diaHoy, false)
 	  && (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)) {
-		mensaje = "El día " + formatoFecha.format(diaHoy) + " no es laborable por ser";
+		mensaje = "El día " + formatoFecha.format(diaHoy) + " no es laborable por ser ";
 		if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 			mensaje += "domingo.";
 		} else {

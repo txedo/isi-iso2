@@ -11,11 +11,9 @@ if (request.getHeader("referer")==null) {
 <%
 }
 
-HttpSession sesionHTTP;
-
 // Obtenemos la sesión HTTP y borramos todos sus objetos
-sesionHTTP = request.getSession(true);
-sesionHTTP.invalidate();
+request.getSession(true).invalidate();
+
 %>
 
 Sesión cerrada correctamente.

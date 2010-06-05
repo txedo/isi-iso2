@@ -7,6 +7,6 @@
 	<classpathentry kind="lib" path="lib/jcalendar-1.3.3.jar"/>
 	<classpathentry kind="lib" path="lib/looks-2.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/uispec4j-2.2-jdk16.jar"/>
-	<classpathentry kind="lib" path="/servidorFrontend/ServidorFrontendStubs.jar"/>
+	<classpathentry kind="lib" path="lib/ServidorFrontendStubs.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
