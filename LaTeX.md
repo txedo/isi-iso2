@@ -1,0 +1,94 @@
+# Paquete Ordenes Article.sty #
+
+Este paquete personalizado se utiliza para dar el formato a un documento de tipo article, cuyas opciones son:
+
+> - spanish: esta opción permite redefinir las leyendas de las tablas, para que aparezca la palabra «Tabla» en lugar de «Cuadro». Se usa junto con el paquete babel, con la opción de español.
+
+> - cap: esta opción se utiliza para cambiar el formato de las leyendas de tablas y figuras, utilizando el paquete caption.
+
+> - cont: esta opción se utiliza para subordinar el contador de figuras y tablas al número de sección. Para ello, se carga el paquete chngcntr.
+
+> - title: opción que se usa para cambiar el formato de los títulos de secciones, subsecciones, etc. Se carga para ello el paquete _titlesec_.
+
+> - fancy: esta opción se usa para configurar el estilo del encabezado y pie de página utilizando el paquete fancyhdr.
+
+Se puede utilizar cualquiera de estas opciones, o ninguna. En caso de usar otra opción, se mostrará un warning avisando que hay alguna opción incorrecta.
+
+Por ultimo, señalar, que para poder utilizar este paquete, hay que colocarlo en el mismo directorio de los archivos .tex. Además, cambiar las siguientes líneas por el nombre del autor y de la asignatura que corresponda:
+
+> \rhead{\small{Juan Andrada Romero}}
+
+> \lfoot{\scriptsize{\textbf{Almacenamiento y Recuperación de la Información}}}
+
+# Paquete chngcntr #
+
+Este paquete, como se comentó anteriormente, se utiliza en el paquete Ordenes Article para subordinar el contador de figuras y tablas al número de sección. Es decir, en la sección 1, los contadores serán 1.1, 1.2, etc. En la sección 2, serán 2.1, 2.2 y así sucesivamente.
+
+Este paquete no viene por defecto en el entorno de MiKTeX (recomendado para Windows, con una instalación completa). Para poder utilizarlo, hay varias opciones:
+
+> - Descargar chngctr.sty desde http://ctan.org/pkg/chngcntr y ponerlo en el mismo directorio de los archivos .tex.
+
+> - Descargar chngctr.sty desde la dirección anterior e instalarlo permanente en MikTeX. Su ubicación lógica es C:\Archivos de programa\MiKTeX 2.7\tex\latex\ltxmisc. Tras esto, ir a Inicio>Todos los programas>MikTeX>Settings y en la pestaña General, pulsar el botón Refresh FNDB. Con ello, se refresca la base de paquetes de MiKTeX.
+
+# Formateo documento #
+
+Para darle el mismo formato a la documentación, os comento como teneis que hacerlo.
+
+1.- Cada sección del documento hacerla en un archivo .tex diferente, para luego irlos incluyendo en el "main" con el \input. Así, al escribir cada sección, sólo os teneis que preocupar del formato de esa sección: poner \section, \subsection, \paragraphg, listas, enumeraciones, etc.
+
+2.- Cuando querais hacer una lista de elementos (diferentes items marcados por "puntitos") teneis que usar el entorno \milista, de la siguiente forma:
+> \begin{milista}
+> > \item ...
+
+> \end{milista}
+Además, cada uno de los "items" ponerlo en negrita (\textbf).
+
+3.- Si quereis hacer enumeraciones, usar \begin{enumerate} ... \end{enumerate}
+
+4.- Si quereis insertar un fragmento de código Java, copiar ese fragmento a un archivo .java e incluirlo de esta manera:
+
+```
+\texttt{\lstinputlisting[inputencoding=latin1]{ruta_al_archivo_de_codigo.java}}.
+```
+
+Si quereis insertar pseudocodigo, podeis usar el entorno \verbatim. Pero siempre que sea código o algo diferente al texto normal, utilizar la familia \texttt, para diferenciarlo del resto.
+
+5.- Para incluir imagenes, se hace asi (utilizando una macro):
+
+```
+\imagen{ruta_imagen}{factor_escalado}{caption o leyenda}{label para referenciar la imagen}
+```
+
+El factor de escalado varía entre 0 y 1 y sirve para redimensionar la imagen sin deformarla.
+
+Un ejemplo para insertar una imagen utilizando esta macro:
+
+```
+\imagen{./imagenes/esi_bw.png}{0.45}{Logo}{fig:logo}
+```
+
+**MUY IMPORTANTE: no poner barras bajas en los nombres de las imagenes ni de los archivos.tex !!!!!!!!!!**
+
+Por cierto, para escapar la barra baja en una palabra es así: `\_`
+
+
+6.- Uso de la macro para insertar referencias a diagramas:
+
+```
+\diagrama{sistema}{tipoDiagrama}{nombreDiagrama}
+```
+
+Las opciones para los dos primeros argumentos son:
+
+- Para el sistema: **frontend**, **cliente** o **respaldo**.
+
+- Para el tipo de diagrama: **secuencia**, **estados**, **casosUso**, **clases**, **análisis** (con tilde), **secuencia**, **colaboración**, **paquetes**, **componentes**, **despliegue**.
+
+Con esas opciones, la macro se encargará de dar el formato necesario e imprimirlo de la forma: **Fichero de Visual Paradigm correspondiente al sistema sistema, tipoDiagrama -> _nombreDiagrama_**
+
+
+Ejemplos:
+
+Si se pone **ver \diagrama{frontend}{análisis}{registrar cita}** se mostrará: **ver Fichero de Visual Paradigm correspondiente al servidor front-end, diagrama de clases de análisis -> _registrar cita_**
+
+Si se pone **ver \diagrama{cliente}{estados}{identificar}** se mostrará: **ver Fichero de Visual Paradigm correspondiente al cliente, diagrama de máquina de estados -> _identificar_**
